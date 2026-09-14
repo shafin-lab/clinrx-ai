@@ -15,7 +15,6 @@ def get_knowledge():
 
 @router.get("/knowledge/{knowledge_id}")
 def get_knowledge_object(knowledge_id: str):
-
     knowledge = get_knowledge_by_id(knowledge_id)
 
     if knowledge is None:
