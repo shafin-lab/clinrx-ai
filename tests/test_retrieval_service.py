@@ -41,3 +41,17 @@ def test_search_with_no_results():
     results = search_knowledge(query="Cardiology")
 
     assert results == []
+
+
+def test_ranking_by_title_match():
+    results = search_knowledge(query="Nutrition")
+
+    assert len(results) == 2
+    assert results[0]["id"] == "NUT-STATE-001"
+
+
+def test_ranking_by_exact_title():
+    results = search_knowledge(query="Metabolic State")
+
+    assert len(results) == 1
+    assert results[0]["id"] == "NUT-STATE-002"

@@ -3,6 +3,39 @@ from typing import Optional
 from app.services.knowledge_service import get_all_knowledge
 
 
+def _calculate_relevance(knowledge: dict, query: str) -> int:
+    """
+    Calculate a deterministic relevance score for a knowledge object.
+
+    Higher scores indicate a stronger textual match.
+    """
+
+    query = query.lower().strip()
+
+    knowledge_id = str(knowledge.get("id", "")).lower()
+    title = str(knowledge.get("title", "")).lower()
+    domain = str(knowledge.get("domain", "")).lower()
+    object_class = str(knowledge.get("object_class", "")).lower()
+
+    score = 0
+
+    if title == query:
+        score += 100
+    elif query in title:
+        score += 50
+
+    if query in knowledge_id:
+        score += 30
+
+    if query in domain:
+        score += 20
+
+    if query in object_class:
+        score += 10
+
+    return score
+
+
 def search_knowledge(
     query: Optional[str] = None,
     domain: Optional[str] = None,
@@ -19,7 +52,8 @@ def search_knowledge(
         object_class: Filter by knowledge object class.
 
     Returns:
-        A list of matching knowledge objects.
+        A list of matching knowledge objects, ranked by relevance
+        when a query is provided.
     """
 
     knowledge_objects = get_all_knowledge()
@@ -54,5 +88,14 @@ def search_knowledge(
             continue
 
         results.append(knowledge)
+
+    if query:
+        results.sort(
+            key=lambda knowledge: _calculate_relevance(
+                knowledge,
+                query,
+            ),
+            reverse=True,
+        )
 
     return results
