@@ -5,14 +5,14 @@ def test_search_by_query():
     results = search_knowledge(query="Metabolic")
 
     assert len(results) == 1
-    assert results[0]["id"] == "NUT-STATE-002"
+    assert results[0].knowledge_id == "NUT-STATE-002"
 
 
 def test_filter_by_status():
     results = search_knowledge(status="Approved")
 
     assert len(results) == 1
-    assert results[0]["id"] == "NUT-STATE-002"
+    assert results[0].knowledge_id == "NUT-STATE-002"
 
 
 def test_filter_by_domain():
@@ -34,7 +34,7 @@ def test_combined_filters():
     )
 
     assert len(results) == 1
-    assert results[0]["id"] == "NUT-STATE-002"
+    assert results[0].knowledge_id == "NUT-STATE-002"
 
 
 def test_search_with_no_results():
@@ -47,11 +47,12 @@ def test_ranking_by_title_match():
     results = search_knowledge(query="Nutrition")
 
     assert len(results) == 2
-    assert results[0]["id"] == "NUT-STATE-001"
+    assert results[0].knowledge_id == "NUT-STATE-001"
 
 
 def test_ranking_by_exact_title():
     results = search_knowledge(query="Metabolic State")
 
     assert len(results) == 1
-    assert results[0]["id"] == "NUT-STATE-002"
+    assert results[0].knowledge_id == "NUT-STATE-002"
+    

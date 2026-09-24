@@ -1,5 +1,6 @@
 from typing import Optional
 
+from app.models.retrieval import RetrievalResult
 from app.services.knowledge_service import get_all_knowledge
 
 
@@ -36,6 +37,24 @@ def _calculate_relevance(knowledge: dict, query: str) -> int:
     return score
 
 
+def _build_retrieval_result(
+    knowledge: dict,
+    relevance_score: Optional[int] = None,
+) -> RetrievalResult:
+    """
+    Convert a knowledge object into a structured RetrievalResult.
+    """
+
+    return RetrievalResult(
+        knowledge_id=knowledge.get("id", ""),
+        title=knowledge.get("title", ""),
+        status=knowledge.get("status", ""),
+        domain=knowledge.get("domain", ""),
+        object_class=knowledge.get("object_class", ""),
+        relevance_score=relevance_score,
+    )
+
+
 def search_knowledge(
     query: Optional[str] = None,
     domain: Optional[str] = None,
@@ -52,12 +71,12 @@ def search_knowledge(
         object_class: Filter by knowledge object class.
 
     Returns:
-        A list of matching knowledge objects, ranked by relevance
+        A list of structured RetrievalResult objects, ranked by relevance
         when a query is provided.
     """
 
     knowledge_objects = get_all_knowledge()
-    results = []
+    matched_objects = []
 
     for knowledge in knowledge_objects:
 
@@ -87,14 +106,27 @@ def search_knowledge(
         ):
             continue
 
-        results.append(knowledge)
+        matched_objects.append(knowledge)
+
+    results = []
+
+    for knowledge in matched_objects:
+        relevance_score = (
+            _calculate_relevance(knowledge, query)
+            if query
+            else None
+        )
+
+        results.append(
+            _build_retrieval_result(
+                knowledge,
+                relevance_score,
+            )
+        )
 
     if query:
         results.sort(
-            key=lambda knowledge: _calculate_relevance(
-                knowledge,
-                query,
-            ),
+            key=lambda result: result.relevance_score or 0,
             reverse=True,
         )
 
