@@ -23,7 +23,8 @@ they neither implement clinical validation nor authorize patient-care use.
 
 These use the backend's existing Pydantic v2 dependency. RetrievalResult, its
 imports, services, endpoints, and dependencies are unchanged. No persistence,
-new framework, endpoint, clinical algorithm, or release engine is introduced.
+new framework, endpoint, or clinical algorithm is introduced. Slice 2 adds pure
+release/presentation governance decisions without performing external actions.
 Import from the owning module, e.g.
 `from app.models.clinical.facts import ClinicalObservation`.
 
@@ -142,8 +143,8 @@ metadata cannot be recovered by structural validation; limitations remain explic
 
 ClinicalRecommendation remains a candidate. RecommendationReview derives candidate,
 rendered or evaluated state from exact matching content/context records, including
-failed evaluations. Released, presented and withheld remain reserved vocabulary
-for later distinct decisions/events, not implemented transitions or writable flags.
+failed evaluations. Slice 2 implements released, presented and withheld as
+separate governance decisions/events; it does not change this review state.
 
 **SafetyEvaluation.outcome and RecommendationReview.state are intentionally
 Python-only derived properties.** They are absent from JSON and both validation
@@ -168,9 +169,9 @@ A modification links a new candidate revision.
 
 ## Remaining boundaries
 
-Release/withholding, actual presentation, effective warning exceptions and later
-eligibility changes require independently enforced authority, freshness,
-exact-meaning assessment and dependency eligibility. No clinical content is
+Governance consumes independently established authority, freshness, exact-meaning
+assessment and dependency eligibility. External adapters must enforce the decisions
+and establish actual delivery. No clinical content is
 wired to an API. Clinical algorithms, rule engines, medication reconciliation,
 terminology/FHIR mappings, evidence eligibility, provider governance, privacy,
 audit storage and retention enforcement remain separate work.
@@ -211,3 +212,128 @@ structure, target reverification, intermediate copying, independent later
 confirmation, Python-only derived-property serialization, reference boundaries,
 base-class behavior and all-not-applicable checks. The candidate revision test
 changes only the version of rec1. Software tests are not clinical validation.
+
+
+## Slice 2: release and presentation governance
+
+`governance.py` adds ReleaseEligibilityAssessment, ReleaseDecision,
+PresentationEligibilityAssessment and PresentationRecord. The pure functions in
+`app/services/governance_service.py` construct auditable records; they do not
+release or display content externally. Existing Slice 1 and retrieval contracts
+remain unchanged.
+
+OutputTarget binds patient/encounter (or longitudinal context), request, intended
+use, destination and recipient. IdentityVerification is a separate assertion:
+reverification does not change the target. GovernancePolicy is a resolved set of
+requirements, not a policy interpreter. It supplies versioned rules, required
+context/dependencies, warning treatment, permitted optional degraded losses and
+an explicit maximum observation age. No numerical clinical thresholds are built in.
+
+### Exact payload, policy and exception bindings
+
+PresentationPayload is the complete delivery manifest: the rendering, every
+recorded safety warning (evaluation/check/rule and reason), exact exception
+proposals including rationale/conditions/actor/time/scope, and safety-evaluation
+and content-validation limitations. `required_payload` assembles these declared
+requirements without interpreting prose. Adapters must deliver the entire manifest.
+`ReleaseDecision.released_payload` is the delivery contract; `released_content`
+is only a rendering-component convenience and does not cover all required material.
+
+ContentValidationAssertion pins both the complete review and the payload with
+canonical SHA-256 digests. Release/presentation authorization pins review, payload
+and exact resolved GovernancePolicy content, including its reference/version.
+These hashes bind supplied evidence; they are neither signatures nor clinical
+validation. Dropping dependency requirements under the same policy revision cannot
+reuse unchanged authority. Changed disclosures require new payload assessment and
+authorization; payload validation cannot predate its exception proposals.
+
+Release requires matched exact meaning, in-scope validation, applicable required
+check coverage and current authority/context/dependencies. No-detected-violation
+and all-not-applicable results cannot assert universal clinical validity. Hard
+failures remain blocking regardless of warning exceptions or HumanDecision events.
+
+WarningExceptionProposal contains all exception terms independently of authority.
+WarningException adds an authorization whose exception digest pins that exact
+proposal, including identity/revision, rationale, conditions and validity. This
+separation avoids a circular hash. Changing those terms cannot reuse unchanged
+exception authority. The original evaluation remains unchanged. Exception and
+authority windows are rechecked for presentation. This slice conservatively
+requires a delivery-scoped ConditionSatisfactionAssertion for every exception's
+conditions. Its trusted producer determines satisfaction; unknown, unsatisfied,
+missing or differently scoped confirmations block. No condition parser is provided.
+Only explicitly configured optional losses permit degraded use; required
+dependency/update loss and unavailable safety checks always withhold.
+
+### Reassessment and local integrity
+
+`validate_governance_bundle` checks a bounded, explicit list of versioned
+assertions, policies and decisions across nested records. Release and presentation
+boundaries invoke it automatically. Call it also when accepting multiple separately
+supplied, already validated model records. Conflicting contents under one exact
+assertion identity/revision raise a validation error; identical reuse is permitted.
+Reassessment requires a new revision or identity. Exception disclosures are checked
+as proposal projections separately from complete authorized exception records.
+
+DependencyState and FreshnessItem references identify observed resources, not the
+assertions themselves: their observations may legitimately change. The containing
+ContextFreshnessAssessment is versioned and cannot silently change. This distinction
+avoids treating a new resource observation as an immutable-resource conflict.
+Cross-request uniqueness and consistency against stored history remain deferred.
+
+### Final verification and delivery evidence
+
+Validity windows are half-open [start, end). Each required context item has its own
+window; general runtime observations have a separately configured maximum age.
+Presentation eligibility rechecks context, output/request status, dependencies and
+presentation authority. Historical release authority is evidence for release;
+current presentation requires its own authority. Original release/content windows
+and warning exceptions still constrain presentation. A withheld assessment cannot
+later silently mature into permission: create a new assessment.
+
+FinalDestinationVerification is distinct from eligibility-time evidence. It binds
+the presentation-record attempt, eligibility assessment, release, exact payload,
+complete final RuntimeState, target and scoped condition confirmations. The final
+runtime observation, verification and delivery must share the logical atomic
+verify-and-deliver event time. A still-fresh eligibility-time observation cannot
+stand in for a later delivery check. Equal event timestamps encode an adapter
+attestation; they do not themselves prove real-world atomicity.
+
+PresentationReceipt names that verification and attempt and retains the complete
+payload actually reported delivered, target and event time. A matching receipt
+cannot establish `presented` without matching final-verification evidence. Missing
+verification withholds an attempted delivery; a receipt inconsistent with the
+required evidence yields `rejected` and is retained. Eligible attempts with proper
+verification but no receipt remain `unconfirmed`. These outcomes do not claim that
+a clinician read, understood or acted on the output. A contradictory same-revision
+assertion bundle is invalid input rather than a valid rejected-delivery record;
+its ingestion failure must be handled by a future audit adapter.
+
+Decision outcome and reasons are serialized and checked against supplied evidence
+on validation. Eligibility summaries, availability and convenience properties are
+Python-only; JSON retains the evidence needed to recompute them. Regression tests
+cover schema requirements and successful/blocked JSON round-trips.
+
+### Deliberate boundaries
+
+These contracts trust authenticated assertion producers, a trustworthy clock and
+an adapter that checks destination atomically with display and records delivery.
+They cannot read live systems or prevent a dishonest adapter from inventing evidence.
+Authentication/signatures, durable audit/idempotency, revocation feeds, actual
+atomic display enforcement, institutional policy selection, clinical validation,
+and historical evaluator migration remain integration work. Exception condition
+satisfaction is a scoped external assertion, not a generic executable policy.
+Policy/assertion shapes and hashing are implementation choices, not additions to
+the parent standards. No UI, FHIR mapping, drug engine or workflow engine is added.
+
+Slice 2 regression coverage is in `tests/test_governance.py`. It includes the five
+adversarial reproductions: contradictory same-revision assertions, missing delivered
+disclosures, reused eligibility-time evidence, changed exception terms under old
+authority, and changed policy requirements under old authority. Positive cases
+cover new revisions, complete delivery, scoped confirmations and round-trips.
+
+Run the complete suite without pytest's cache:
+
+```sh
+PYTEST_ADDOPTS='-p no:cacheprovider' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend backend/venv/bin/python -m pytest -q
+git diff --check
+```
