@@ -30,3 +30,12 @@ venv/
 # IDEs
 .idea/
 .vscode/
+
+# Local synthetic SQLite stores and associated journals
+*.sqlite
+*.sqlite3
+*.db
+*.sqlite-*
+*.sqlite3-*
+*.db-*
+.pytest_cache/
