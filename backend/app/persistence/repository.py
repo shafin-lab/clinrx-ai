@@ -7,13 +7,13 @@ from uuid import UUID
 from pydantic import ValidationError
 from pydantic_core import PydanticSerializationError
 
-from sqlalchemy import Engine, func, select
+from sqlalchemy import Engine, func, or_, select
 from sqlalchemy.orm import Session
 
 from app.models.clinical.common import ContextTarget, Reference
 from app.models.clinical.facts import EncounterContext, PatientContext
 from .database import require_schema
-from .entities import EncounterRow, FactRow, PAYLOAD_VERSION, PatientRow, RepositoryIdentity
+from .entities import EncounterRow, FactRow, PAYLOAD_VERSION, PatientRow, RepositoryIdentity, RevisionLink
 from .errors import (
     PersistenceInputError, RecordConflict, RecordNotFound, ScopeMismatch, StorageIntegrityError,
     TransactionAborted, UnsupportedOperation,
@@ -117,6 +117,66 @@ class PatientRepository:
         self.load_encounter(patient_id=target.patient_id, encounter_id=target.encounter_id)
         return target
 
+    def _chain(self, kind, fact_id):
+        """Validate the entire encountered chain, including links leaving its scope."""
+        rows = self._session.scalars(select(FactRow).where(
+            FactRow.kind == kind, FactRow.fact_id == fact_id
+        ).order_by(FactRow.ingestion_sequence)).all()
+        if not rows:
+            return []
+        sequences = [row.ingestion_sequence for row in rows]
+        links = self._session.scalars(select(RevisionLink).where(or_(
+            RevisionLink.successor_sequence.in_(sequences),
+            RevisionLink.predecessor_sequence.in_(sequences)))).all()
+        expected = {(previous.ingestion_sequence, current.ingestion_sequence)
+                    for previous, current in zip(rows, rows[1:])}
+        actual = {(link.predecessor_sequence, link.successor_sequence) for link in links}
+        if actual != expected or len(links) != len(expected):
+            raise StorageIntegrityError('malformed stored revision links')
+        retained = [load_fact(row, self._repository_id) for row in rows]
+        target = retained[0].fact.binding.target
+        self._target(target)
+        previous = None
+        for stored in retained:
+            if stored.fact.binding.target != target or stored.fact.supersedes != previous:
+                raise StorageIntegrityError('stored revision chain disagrees with payload or ownership')
+            previous = stored.fact.reference
+        return retained
+
+    @_operation
+    def append_revision(self, fact, *, target: ContextTarget):
+        """Append a reasoned successor; never replace an existing exact revision."""
+        fact = validate_fact(fact)
+        target = self._target(target)
+        if fact.binding.target != target:
+            raise ScopeMismatch('fact binding differs from requested patient/encounter')
+        if fact.supersedes is None:
+            raise PersistenceInputError('revision requires an explicit predecessor and correction reason')
+        payload = canonical_payload(fact)
+        chain = self._chain(fact.kind, fact.id)
+        if chain and chain[0].fact.binding.target != target:
+            raise ScopeMismatch('revision chain belongs to a different context')
+        # Retries precede terminal enforcement: an old revision remains retryable.
+        for stored in chain:
+            if stored.fact.reference == fact.reference:
+                if canonical_payload(stored.fact) != payload:
+                    raise RecordConflict('exact fact revision already has different content')
+                return stored
+        predecessor = next((item for item in chain if item.fact.reference == fact.supersedes), None)
+        if predecessor is None:
+            raise RecordNotFound('revision predecessor not found')
+        if predecessor != chain[-1]:
+            raise RecordConflict('revision predecessor already has a successor')
+        row = FactRow(kind=fact.kind, fact_id=fact.id, revision=fact.revision,
+                      patient_id=target.patient_id, encounter_id=target.encounter_id,
+                      payload=payload, payload_version=PAYLOAD_VERSION, ingested_at=_now().isoformat())
+        self._session.add(row)
+        self._session.flush()
+        self._session.add(RevisionLink(successor_sequence=row.ingestion_sequence,
+            predecessor_sequence=predecessor.ingestion.ingestion_sequence))
+        self._session.flush()
+        return load_fact(row, self._repository_id)
+
     @_operation
     def append_fact(self, fact, *, target: ContextTarget):
         fact = validate_fact(fact)
@@ -124,8 +184,9 @@ class PatientRepository:
         if fact.binding.target != target:
             raise ScopeMismatch('fact binding differs from requested patient/encounter')
         if fact.supersedes is not None:
-            raise UnsupportedOperation('correction persistence is deferred')
+            raise UnsupportedOperation('use append_revision for corrections')
         payload = canonical_payload(fact)
+        self._chain(fact.kind, fact.id)
         existing = self._session.scalar(select(FactRow).where(
             FactRow.kind == fact.kind, FactRow.fact_id == fact.id, FactRow.revision == fact.revision))
         if existing:
@@ -137,7 +198,7 @@ class PatientRepository:
             return stored
         if self._session.scalar(select(FactRow.ingestion_sequence).where(
                 FactRow.kind == fact.kind, FactRow.fact_id == fact.id).limit(1)) is not None:
-            raise UnsupportedOperation('additional revisions require the future correction workflow')
+            raise UnsupportedOperation('second root is forbidden; use append_revision')
         row = FactRow(kind=fact.kind, fact_id=fact.id, revision=fact.revision,
                       patient_id=target.patient_id, encounter_id=target.encounter_id,
                       payload=payload, payload_version=PAYLOAD_VERSION, ingested_at=_now().isoformat())
@@ -155,6 +216,7 @@ class PatientRepository:
             raise RecordNotFound('exact fact revision not found')
         if (row.patient_id, row.encounter_id) != (target.patient_id, target.encounter_id):
             raise ScopeMismatch('exact reference does not belong to requested context')
+        self._chain(reference.kind, reference.id)
         return load_fact(row, self._repository_id)
 
     @_operation

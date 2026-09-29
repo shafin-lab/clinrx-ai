@@ -2,7 +2,7 @@
 from sqlalchemy import CheckConstraint, ForeignKey, ForeignKeyConstraint, Integer, Text, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-SCHEMA_REVISION = '7a1_0001'
+SCHEMA_REVISION = '7a2_0002'
 PAYLOAD_VERSION = 1
 
 
@@ -57,4 +57,15 @@ class FactRow(Envelope, Base):
                         name='ck_fact_supported_kind'),
         CheckConstraint('payload_version = 1', name='ck_fact_payload_version'),
         {'sqlite_autoincrement': True},
+    )
+
+
+class RevisionLink(Base):
+    __tablename__ = 'revision_link'
+    successor_sequence: Mapped[int] = mapped_column(
+        Integer, ForeignKey('fact_revision.ingestion_sequence'), primary_key=True)
+    predecessor_sequence: Mapped[int] = mapped_column(
+        Integer, ForeignKey('fact_revision.ingestion_sequence'), nullable=False, unique=True)
+    __table_args__ = (
+        CheckConstraint('predecessor_sequence < successor_sequence', name='ck_revision_forward'),
     )

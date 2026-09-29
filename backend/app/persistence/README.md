@@ -1,4 +1,4 @@
-# Sprint 7A.1 — Persistence Foundation
+# Persistence Foundation — Sprint 7A.1 and 7A.2a
 
 Local, synthetic-data storage only. This implementation follows ARCH-001 v1.1,
 DATA-001 v0.3 and SAFE-001 v0.2 (all Draft). It does not authenticate identity
@@ -10,7 +10,7 @@ Synchronous SQLAlchemy 2.0.54, file-backed SQLite and Alembic. Pydantic clinical
 models are unchanged. The adapter contains all database dependencies; existing
 knowledge APIs and release/presentation governance are unchanged.
 
-Tables: `patient`, `encounter`, `fact_revision`, `repository_identity`, plus
+Tables: `patient`, `encounter`, `fact_revision`, `revision_link`, `repository_identity`, plus
 Alembic's version table. Patient and encounter registrations are immutable through
 the repository. Encounter ownership has a database foreign key; fact ownership
 uses a composite foreign key to the encounter and its patient. Exact fact
@@ -26,9 +26,10 @@ validation and safety evaluation remain later responsibilities.
 
 Concrete encounters are sufficient for this slice. Explicit longitudinal-context
 writes fail with UnsupportedOperation; their domain contract is unchanged.
-Conditions, procedures, derived values, calculation executions and all correction
-writes are also explicitly unsupported. A second revision of an existing stable
-fact requires the future correction workflow, even without a supersedes link.
+Conditions, procedures, derived values and calculation executions remain unsupported.
+Root insertion uses append_fact; corrections use the explicit append_revision operation
+described below. Retraction, invalidation and restoration remain unsupported. Missing
+values, clinical status fields and correction reasons do not implement those lifecycles.
 No reconstruction engine, retained snapshots, graph traversal, patient endpoints,
 release persistence, PostgreSQL adapter or production PHI handling is implemented.
 
@@ -159,3 +160,41 @@ Migration tests cover empty/repeated upgrade, CLI operation, inspected schema
 alignment and rollback of one DDL operation, not every migration-failure recovery
 path. Those additional recovery/contention scenarios remain deferred; this slice
 makes no broader guarantee from these tests.
+
+
+## Sprint 7A.2a — Immutable revision chains
+
+append_revision(fact, target=...) requires an exact supersedes reference and a
+correction reason. Revisions form one linear chain per (kind, id), permanently
+bound to the same patient and encounter. Labels are opaque; ingestion sequence,
+not numeric or lexical revision order, establishes insertion order. The predecessor
+must already exist and be terminal for a genuinely new successor. Root insertion
+remains append_fact; a second root is rejected. No historical/latest query API,
+time filtering, lineage resolution or reconstruction is added.
+
+Exact canonical retries return the original payload and ingestion metadata,
+including retries of revision 2 after revision 3 exists. Retry comparison occurs
+before terminal-predecessor enforcement. Changed canonical content conflicts.
+Existing Decimal, offset, ordering, timestamp and sanitized-error policies remain
+unchanged. Earlier revisions and metadata are never updated.
+
+The additive revision_link table has a successor primary key, unique predecessor,
+two fact-sequence foreign keys and predecessor < successor check. Repository
+operations additionally validate the entire encountered stable-fact chain,
+payload/link agreement and patient/encounter ownership, including links entering
+or leaving the chain. Malformed chains fail on exact reads and writes. Validation
+of revision links is not provenance/dependency traversal or clinical adjudication.
+
+Migration 7a2_0002 follows the unchanged initial migration. Its local preflight
+rejects unexpected multiple legacy revisions, correction records, noncanonical
+JSON, envelope/ownership mismatch, invalid ingestion times, foreign-key violations,
+invalid repository identity and invalid sequence allocation. It does not rewrite
+payloads or infer old history. It is not a comprehensive clinical validator of
+legacy data; normal validated loading remains required. Destructive downgrade
+remains unsupported. Existing sequence gaps/high-water allocation are preserved.
+
+The existing BEGIN IMMEDIATE policy serializes competing successors. A forced
+lock-overlap regression verifies one successor commits and the competitor sees a
+conflict. Revision and link insertion share the surrounding transaction, including
+rollback when errors are caught. Restart tests retain exact historical references
+and idempotent retries; no process-crash or power-loss guarantee is added.

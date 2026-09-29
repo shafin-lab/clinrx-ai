@@ -124,7 +124,7 @@ def registered(database):
 
 
 def test_migration_empty_database_and_repeat(database):
-    expected = {'repository_identity', 'patient', 'encounter', 'fact_revision', 'alembic_version'}
+    expected = {'repository_identity', 'patient', 'encounter', 'fact_revision', 'revision_link', 'alembic_version'}
     with database.connect() as connection:
         assert set(inspect(connection).get_table_names()) == expected
         assert connection.execute(text('SELECT version_num FROM alembic_version')).scalar_one() == SCHEMA_REVISION
