@@ -1,18 +1,18 @@
 # ClinRx AI — Project State and Recovery Checkpoint
 
-Last verified: 2026-09-26. Operational handoff only; this is not an architecture standard.
+Last verified: 2026-09-29. Operational handoff only; this is not an architecture standard.
 
 ## Purpose and stable baseline
 
 ClinRx AI is a clinical decision-support platform being built around structured knowledge, patient context, traceable evidence, deterministic computation and governed AI assistance. It supports clinician judgment; the current repository is a development prototype, not an approved patient-care system.
 
-- Stable `main` baseline: `9171597ee8d3eaaf10aabd07c6b1df02741c6bf2` — `add clinical release and presentation governance`.
-- At checkpoint creation, the working tree was clean and local `main` and `origin/main` matched this commit. Reverify remote state when resuming; this is a dated checkpoint, not a moving branch pointer.
+- Stable `main` baseline: `52ceb23ec83a27b30ef886cfe851570022489663` — `add patient context persistence foundation`.
+- Before this checkpoint update, the working tree was clean and local `main` and `origin/main` matched this commit. Reverify remote state when resuming; this is a dated checkpoint, not a moving branch pointer.
 - **Git history, committed repository artifacts, current code and reproducible tests are authoritative over conversational memory.** This file is a navigation aid; resolve discrepancies from those artifacts and record the result.
 
 ## Test baseline
 
-Verified at the baseline above: **181 passed**, using Python 3.11.6 and pytest 9.1.1. Coverage is in [retrieval tests](../../tests/test_retrieval_service.py), [clinical-model tests](../../tests/test_clinical_models.py) and [governance tests](../../tests/test_governance.py). Passing software tests is not clinical validation.
+Verified at the baseline above: **294 passed**, using Python 3.11.6 and pytest 9.1.1. Coverage is in [retrieval tests](../../tests/test_retrieval_service.py), [clinical-model tests](../../tests/test_clinical_models.py), [governance tests](../../tests/test_governance.py), [persistence tests](../../tests/test_persistence.py) and [persistence correction regressions](../../tests/test_persistence_corrections.py). Passing software tests is not clinical validation.
 
 Run from the repository root, without generating bytecode or pytest cache:
 
@@ -21,7 +21,7 @@ PYTEST_ADDOPTS='-p no:cacheprovider' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backen
 git diff --check
 ```
 
-The existing virtual environment is local setup, not a portable repository artifact. [Backend requirements](../../backend/requirements.txt) pin runtime dependencies but do not include pytest; a fresh session must establish its test environment explicitly rather than assume the environment already exists.
+The existing virtual environment is local setup, not a portable repository artifact. [Backend requirements](../../backend/requirements.txt) pin runtime dependencies; [development requirements](../../backend/requirements-dev.txt) include pinned migration and test dependencies. A fresh session must establish its test environment explicitly rather than assume the environment already exists.
 
 ## Completed milestones
 
@@ -36,6 +36,7 @@ Commit milestones are used where the repository does not establish a reliable sp
 | SAFE v0.2 Draft | `df13999` |
 | Sprint 6B core clinical model prototype, Slice 1 | `c95de5d`; [implementation notes](../../backend/app/models/clinical/README.md) |
 | Slice 2 release and presentation governance | `9171597`; implementation notes and governance tests |
+| Sprint 7A.1 — Patient Context Persistence Foundation complete | `52ceb23`; [persistence implementation notes](../../backend/app/persistence/README.md) and persistence tests |
 
 ## Implemented capabilities
 
@@ -44,6 +45,7 @@ Commit milestones are used where the repository does not establish a reliable sp
 - Separate candidate, rendering, safety-evaluation and human-decision records, with revision/content consistency checks and JSON round-trip coverage. Some derived properties intentionally remain Python-only; consult the implementation notes before designing APIs.
 - [Governance service](../../backend/app/services/governance_service.py): pure release assessment/decision and presentation assessment/recording functions. Contracts bind exact payload, policy, context, authority, freshness, warning exceptions and final-delivery evidence; they record withheld, unconfirmed or rejected outcomes as appropriate.
 - These functions consume supplied assertions. They do not authenticate producers, validate natural-language clinical meaning, inspect live patient systems, persist records or actually display content. No clinical-model/governance API is wired into the application.
+- [Persistence foundation](../../backend/app/persistence/README.md): SQLAlchemy 2.x, file-backed SQLite for local/synthetic development and Alembic migrations, with independent domain and persistence models. Supports patient/encounter registration and ownership, plus ClinicalObservation, MedicationOrder, MedicationAdministration and ClinicalInference persistence with exact-reference retrieval. Repository ingestion metadata, canonical retained-representation idempotency, transactional rollback and committed close/reopen durability are implemented; broader recovery/concurrency guarantees remain deferred.
 
 ## Governing standards and principles
 
@@ -65,12 +67,12 @@ The code enforces structural consistency over supplied evidence, including fresh
 
 ## Deliberate deferrals and next phase
 
-- No clinical persistence, cross-request revision registry, durable audit/idempotency or historical resolver yet; local bundle validation is not database integrity.
+- No PatientContext reconstruction, correction/revision chains, lineage/dependency resolution or historical knowledge-cutoff reconstruction yet. Canonical retry idempotency and ingestion metadata exist for supported persisted records; a broader durable audit system remains deferred. PostgreSQL support is not validated; production PHI use and clinical validation remain unsupported.
 - No live patient ingestion, authenticated assertion producers, revocation feeds, trustworthy-clock infrastructure or atomic display adapter.
 - No clinical algorithms/rule engine, terminology/unit conversion service, FHIR mapping, medication reconciliation, governed evidence retrieval, external AI integration or clinical deployment validation.
 - Frontend, mobile, infrastructure and CI workflow directories remain placeholders. Privacy/retention enforcement and operational recovery integrations are future work.
 
-**Next planned phase: Patient Context + persistence** (direction set for this checkpoint, not a claim of completed implementation). Build on existing PatientContext/EncounterContext and snapshot contracts; first agree the ingestion/reconciliation, retained-reference resolution, immutable revision, authorization and audit boundaries. Select and implement persistence only through explicit design review; no database/provider is selected by this file. Preserve the 181-test baseline and add focused persistence/context regressions using synthetic data.
+**Next planned phase: Sprint 7A.2 — Clinical History Semantics**, focused on corrections/revisions, lineage/dependency resolution, ingestion/knowledge boundaries and temporal history semantics. Build on the completed Sprint 7A.1 persistence foundation; PatientContext reconstruction remains later work. Preserve the 294-test baseline and add focused history regressions using synthetic data.
 
 ## Normal development workflow
 
