@@ -22,6 +22,7 @@ from .mapping import (
     canonical_payload, load_encounter, load_fact, load_patient, validate_fact,
 )
 from .metadata import RepositoryCutoff
+from .history import FactIdentity, retrieve
 
 
 def _now():
@@ -218,6 +219,43 @@ class PatientRepository:
             raise ScopeMismatch('exact reference does not belong to requested context')
         self._chain(reference.kind, reference.id)
         return load_fact(row, self._repository_id)
+
+    @_operation
+    def list_revisions(self, identity, *, target: ContextTarget, cutoff: RepositoryCutoff):
+        identity = FactIdentity.model_validate(identity)
+        return retrieve(self, identity=identity, target=target, cutoff=cutoff)
+
+    @_operation
+    def load_latest_known(self, identity, *, target: ContextTarget, cutoff: RepositoryCutoff,
+                          clinical_filter=None, ingestion_filter=None):
+        identity = FactIdentity.model_validate(identity)
+        return retrieve(self, identity=identity, target=target, cutoff=cutoff, latest=True,
+                        clinical_filter=clinical_filter, ingestion_filter=ingestion_filter)
+
+    @_operation
+    def load_current_latest_known(self, identity, *, target: ContextTarget,
+                                  clinical_filter=None, ingestion_filter=None):
+        identity = FactIdentity.model_validate(identity)
+        return self.load_latest_known(identity, target=target, cutoff=self.capture_cutoff(),
+            clinical_filter=clinical_filter, ingestion_filter=ingestion_filter)
+
+    @_operation
+    def list_history(self, *, target: ContextTarget, cutoff: RepositoryCutoff,
+                     clinical_filter=None, ingestion_filter=None):
+        return retrieve(self, target=target, cutoff=cutoff,
+                        clinical_filter=clinical_filter, ingestion_filter=ingestion_filter)
+
+    @_operation
+    def list_latest_known(self, *, target: ContextTarget, cutoff: RepositoryCutoff,
+                          clinical_filter=None, ingestion_filter=None):
+        return retrieve(self, target=target, cutoff=cutoff, latest=True,
+                        clinical_filter=clinical_filter, ingestion_filter=ingestion_filter)
+
+    @_operation
+    def list_current_latest_known(self, *, target: ContextTarget,
+                                  clinical_filter=None, ingestion_filter=None):
+        return self.list_latest_known(target=target, cutoff=self.capture_cutoff(),
+            clinical_filter=clinical_filter, ingestion_filter=ingestion_filter)
 
     @_operation
     def capture_cutoff(self) -> RepositoryCutoff:

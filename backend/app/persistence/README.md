@@ -198,3 +198,78 @@ lock-overlap regression verifies one successor commits and the competitor sees a
 conflict. Revision and link insertion share the surrounding transaction, including
 rollback when errors are caught. Restart tests retain exact historical references
 and idempotent retries; no process-crash or power-loss guarantee is added.
+
+## Sprint 7A.2b — Historical retrieval
+
+The persistence-local `history.py` defines frozen query contracts and a frozen
+`HistoryResult`. Results contain `cutoff`, `target`, a tuple of `StoredFact`
+`records`, `selection` (`history` or `latest_known`), optional `identity`, and the
+applied `clinical_filter` / `ingestion_filter`. Empty results are explicit empty
+tuples; single-fact latest results contain zero or one record. Single-fact APIs
+validate FactIdentity at their boundary; None cannot broaden their scope. They do not certify
+clinical validity, source completeness or current applicability.
+
+Repository operations (all transaction-scoped):
+
+- `list_revisions(identity, target=..., cutoff=...)`: all visible revisions of a
+  `FactIdentity(kind, id)`, ordered by ingestion sequence.
+- `load_latest_known(identity, target=..., cutoff=..., clinical_filter=None,
+  ingestion_filter=None)`: one terminal revision within the visible prefix.
+- `list_history(target=..., cutoff=..., clinical_filter=None,
+  ingestion_filter=None)`: scoped retained revisions.
+- `list_latest_known(target=..., cutoff=..., clinical_filter=None,
+  ingestion_filter=None)`: one visible terminal revision per stable fact.
+- `load_current_latest_known(identity, target=..., ...)` and
+  `list_current_latest_known(target=..., ...)`: capture a cutoff and invoke the
+  same latest-known operations; results always return that explicit cutoff.
+
+Every historical query validates repository UUID and a strict nonnegative
+watermark no greater than the transaction-visible maximum. Gaps and zero are
+valid prefixes. `captured_at` is retained metadata, not a substitute for the
+watermark, a signature, or proof of historical wall-clock visibility. Results
+obtained while writing are provisional until successful transaction exit.
+
+Fact rows and revision links are bounded by the cutoff before chain validation
+and selection. Only links whose successor is within the prefix are considered;
+future corrections, future payload errors and future successor links do not
+change old results. Visible payloads, metadata, chain structure and ownership
+are validated before any filters are applied. Patient/encounter registrations
+are validated as immutable scope prerequisites, not historically reconstructed.
+Exact `load_fact` retains its existing full-chain validation and is not a
+cutoff-aware API; use `list_revisions` for historical revision visibility.
+
+All results are ordered by ingestion sequence, irrespective of revision labels,
+equal timestamps or a backward wall clock. Latest-known selects the visible
+terminal revision first and then applies both filters. An older matching revision
+is never resurrected when the terminal revision does not match a filter.
+
+`ClinicalTimeFilter(axis='event'|'effective', start=None, end=None,
+include_unknown=False, include_imprecise=False)` requires at least one aware bound
+and, when both exist, start < end by instant. Query windows are half-open
+[start, end). Event filtering tests membership. Effective filtering tests overlap
+with the retained inclusive effective endpoints (including start=end); a missing
+end is treated as an open-ended recorded interval, not evidence of continuing
+clinical applicability. No event/effective fallback is performed.
+
+A missing selected timestamp or `precision='unknown'` is included only with
+`include_unknown=True`, without inventing a timestamp. `day` / `approximate`
+precision is excluded unless `include_imprecise=True`; that option compares the
+retained representative timestamp/interval, not an invented uncertainty range.
+Original precision, uncertainty and offsets remain in every returned fact. With
+no clinical filter, history includes all times, including unknowns. Instant
+comparisons use exact integer ordinal/time-of-day microseconds minus the UTC
+offset, honoring DST folds without constructing a UTC datetime or using floating
+point timestamps. This supports year-1/year-9999 offset boundaries without
+rewriting retained data. Query bounds and ingestion filters use the same comparison.
+
+`IngestionTimeFilter(start=None, end=None)` uses the same half-open interval and
+is strictly subordinate to the already-fixed repository prefix. It filters
+assigned ingestion timestamps; it does not mean committed or externally visible
+by that time. There is no `as_of_commit_time` operation. In particular, backdating
+an ingestion clock never makes a later sequence visible in an earlier prefix.
+
+No schema or migration change is required. No lineage traversal, dependency
+resolution, context reconstruction, retraction lifecycle or clinical adjudication
+is introduced. Scoped retrieval currently loads and validates complete visible
+chains in memory; indexing/pagination and large-history performance remain later
+work. Queries do not persist results or mutate canonical payloads/metadata.
