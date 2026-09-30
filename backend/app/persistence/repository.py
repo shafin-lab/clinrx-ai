@@ -23,6 +23,7 @@ from .mapping import (
 )
 from .metadata import RepositoryCutoff
 from .history import FactIdentity, retrieve
+from .lineage import LineageLimits, LineageResult, resolve
 
 
 def _now():
@@ -256,6 +257,12 @@ class PatientRepository:
                                   clinical_filter=None, ingestion_filter=None):
         return self.list_latest_known(target=target, cutoff=self.capture_cutoff(),
             clinical_filter=clinical_filter, ingestion_filter=ingestion_filter)
+
+    @_operation
+    def resolve_lineage(self, reference: Reference, *, target: ContextTarget,
+                        cutoff: RepositoryCutoff, limits: LineageLimits) -> LineageResult:
+        """Resolve declared exact lineage only in the requested visible prefix."""
+        return resolve(self, reference, target=target, cutoff=cutoff, limits=limits)
 
     @_operation
     def capture_cutoff(self) -> RepositoryCutoff:

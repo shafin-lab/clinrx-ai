@@ -1,4 +1,4 @@
-# Persistence Foundation — Sprint 7A.1 and 7A.2a
+# Persistence Foundation — Sprint 7A.1 through 7A.2c.1
 
 Local, synthetic-data storage only. This implementation follows ARCH-001 v1.1,
 DATA-001 v0.3 and SAFE-001 v0.2 (all Draft). It does not authenticate identity
@@ -21,8 +21,8 @@ Supported facts: ClinicalObservation, MedicationOrder, MedicationAdministration,
 ClinicalInference. Complete nested domain payloads are retained with exact
 references, provenance/lineage, clinical time, verification and uncertainty.
 Storage is not a declaration that these references resolve or are clinically
-consistent across records. Lineage resolution, order/product cross-record
-validation and safety evaluation remain later responsibilities.
+consistent across records. Read-only declared-lineage resolution is described below. Order/product cross-record
+validation and clinical safety evaluation remain later responsibilities.
 
 Concrete encounters are sufficient for this slice. Explicit longitudinal-context
 writes fail with UnsupportedOperation; their domain contract is unchanged.
@@ -30,7 +30,7 @@ Conditions, procedures, derived values and calculation executions remain unsuppo
 Root insertion uses append_fact; corrections use the explicit append_revision operation
 described below. Retraction, invalidation and restoration remain unsupported. Missing
 values, clinical status fields and correction reasons do not implement those lifecycles.
-No reconstruction engine, retained snapshots, graph traversal, patient endpoints,
+No reconstruction engine, retained snapshots, reverse graph lookup, patient endpoints,
 release persistence, PostgreSQL adapter or production PHI handling is implemented.
 
 ## Canonical payload and mapping
@@ -273,3 +273,126 @@ resolution, context reconstruction, retraction lifecycle or clinical adjudicatio
 is introduced. Scoped retrieval currently loads and validates complete visible
 chains in memory; indexing/pagination and large-history performance remain later
 work. Queries do not persist results or mutate canonical payloads/metadata.
+
+
+## Sprint 7A.2c.1 — Read-only durable lineage resolution
+
+`resolve_lineage(reference, *, target, cutoff, limits)` accepts one exact domain
+`Reference`, one explicit patient/encounter `ContextTarget`, a `RepositoryCutoff`,
+and persistence-local `LineageLimits`. Obtain it through the existing transaction
+context. It performs no writes. Existing write acceptance, canonical payloads,
+schema, migrations, domain contracts and revision retries are unchanged.
+
+The immutable `LineageResult` contains the root `reference`, validated `target`
+and `cutoff`, `nodes` (retained `StoredFact` plus roles), `assertions`, expanded
+`dependencies`, separate `associations`, `unresolved` references, retained
+`provenance` disclosures, conservative `confirmations`, `coverage`, and immutable
+exact-reference `ancestry` sets. All collections are tuples/frozensets. Roles are
+`evidence`, `confirmation_validation`, and `association`; they may overlap.
+The root is included in its ancestry. Association-only nodes have no analyzed
+ancestry entry. Returned payloads are authorized scoped data, not sanitized logs.
+
+Each `LineageAssertion` retains the original `LineageEdge`, including target,
+basis order and rationale. Its identity is `(owner exact reference, ordinal)`.
+`Dependency` uses that owner/ordinal and an optional `basis_ordinal`, with explicit
+`source -> owner` direction. Confirmation basis expansion preserves declaration
+order. `Association` identifies either an upstream `fulfills_order` edge or the
+administration's `order` field. An order is never evidence of administration.
+Method/model references remain artifacts inside the retained payload, not patient
+evidence endpoints. Revision `supersedes` links are never dependency edges.
+
+Visibility is established before graph extraction or validation. The resolver
+validates the cutoff UUID/watermark and parent registrations, counts only scoped
+rows at/below the watermark, then uses the existing unfiltered historical reader
+to validate the visible prefix. It never calls unrestricted `load_fact`/`_chain`
+or latest-known selection. All visible revisions are candidates; only exact
+references resolve. A B that depends on A1 still depends on A1 after A2 exists.
+No clinical-time or ingestion-time filter changes this graph. Clock reversal and
+sequence gaps do not change visibility; captured_at is descriptive metadata.
+
+The scope-wide historical reader validates all visible scoped records, including
+records unrelated to the root. Thus unrelated *visible* malformed storage may
+fail a query. Future payloads, revision links and lineage assertions are excluded
+before validation, even if referenced by an earlier fact. Registrations retain
+the existing immutable-parent semantics. This is scope isolation, not authentication.
+
+A missing/out-of-scope/future exact ancestor has one indistinguishable reason:
+`not_resolvable_in_scope_at_cutoff`. Unsupported kinds (including source_record
+and derived_value) use `unsupported_reference_kind`. No out-of-scope/future lookup
+is made to refine these reasons. Unresolved entries retain owner, role and ordinal
+so separate assertions are not conflated. Missing roots fail with RecordNotFound;
+visible malformed records fail safely rather than becoming unresolved. An ancestor
+may arrive after its dependent: a newer cutoff can resolve it, while replaying the
+old cutoff remains unchanged. No ingestion-order prerequisite is invented.
+
+Iterative queue expansion collects dependencies and confirmation validation targets;
+associations resolve their endpoints without expanding their lineage. An iterative
+leaf-first topological reduction rejects self/circular evidence dependencies and
+computes exact ancestry and the longest dependency path, including missing leaves.
+Diamonds deduplicate nodes while preserving distinct assertions. Neither recursive
+Python traversal nor revision-label sorting is used. Nodes/ancestry entries sort by
+ingestion sequence; assertions and dependencies sort by owner sequence, edge ordinal
+and basis ordinal. Associations sort by owner sequence, field and ordinal. Unresolved
+entries sort by exact reference, role, owner and ordinal. Repeated cutoff queries
+are deterministic, including reopening the repository in another process.
+
+Origin checks preserve inferred/derived origin through the declared resolved graph;
+observed/reported records cannot acquire inferred/derived evidentiary ancestry.
+Unavailable external lineage remains an explicit limitation: the resolver cannot
+detect undeclared copying or reconstruct the origin of an absent external record.
+It does not rewrite origins, promote evidence, or perform clinical adjudication.
+
+For independent_confirmation, basis references are evidence; the target and its
+ancestry are visited for validation only. Shared exact ancestry or a shared stable
+(kind, id) family invalidates the independence assertion. Family comparison does
+not traverse revision history or substitute revisions. The confirmation must be
+strictly later than a resolved target and no earlier than resolved basis records,
+using the existing exact, overflow-safe integer instant comparator. Basis/rationale
+structural requirements continue to come from the unchanged domain contracts.
+Accepted confirmation assessments remain `unknown`, with
+`independence_not_established`; missing ancestry adds
+`unresolved_confirmation_ancestry`, and limited retained ancestry adds
+`limited_declared_provenance`. There is no computed independent=True.
+
+`result.support_relationship(left, right)` compares only analyzed closures in that
+result. Shared exact or stable-family ancestry yields `dependent`; otherwise it
+returns `unknown`. Inputs outside the analyzed set fail with a sanitized input
+error. Disjoint IDs, absent ancestors, or successful graph resolution cannot prove
+independence. No database query or reverse dependent lookup is performed.
+
+Coverage is `partial` if any declared endpoint is unresolved, otherwise
+`complete_for_declared_visible_graph`. This describes resolution of the visited
+assertions, including association endpoints and confirmation validation ancestry;
+it is not clinical/source completeness or a statement of independence. Retained
+lineage classifications/limitations remain separately visible even with complete
+resolution. Unrelated visible facts do not contribute assertions or limitations.
+
+`LineageLimits()` defaults (also hard ceilings except depth's default):
+
+| Budget | Default | Hard ceiling | Meaning |
+| --- | ---: | ---: | --- |
+| max_records | 10000 | 10000 | Scoped visible rows before history decoding |
+| max_nodes | 1000 | 1000 | Distinct resolved nodes, including associations/targets |
+| max_assertions | 10000 | 10000 | Expanded endpoints, including basis/target/association slots |
+| max_width | 1000 | 1000 | Per-owner edge/basis slots plus administration order |
+| max_depth | 100 | 1000 | Longest evidence path in edges, including missing leaves |
+| max_ancestry_entries | 100000 | 100000 | Total stored closure memberships |
+
+Budgets are strict integers; depth can be zero, other values must be positive.
+Limit exhaustion raises payload-free `QueryLimitExceeded` and aborts the repository
+unit even if caught; it never returns a truncated graph. These are graph/row budgets,
+not a byte-size cap or wall-clock deadline for existing payload decoding. Scoped
+historical validation still loads visible chains in memory. Large-history indexing,
+pagination and payload-size governance remain later work.
+
+Existing BEGIN IMMEDIATE gives one consistent SQLite unit for scan and traversal.
+Results are provisional until transaction exit, including resolution alongside
+writes. There is no separate lineage table or watermark: assertions are immutable
+parts of their owner's payload and inherit its visibility. Endpoint visibility is
+independently required. A later standalone-link API would need a new visibility
+and immutability design; it cannot silently inherit this policy.
+
+Reverse dependents, prospective write validation, external-source persistence,
+cross-encounter reconciliation, clinical reassessment, invalidation/retraction,
+reconstruction/snapshots, PostgreSQL, API/UI/auth and generalized graph services
+remain deferred. No claim of production or clinical authorization is introduced.

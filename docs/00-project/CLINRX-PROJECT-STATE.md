@@ -1,18 +1,21 @@
 # ClinRx AI — Project State and Recovery Checkpoint
 
-Last verified: 2026-09-29. Operational handoff only; this is not an architecture standard.
+Last verified: 2026-09-30. Operational handoff only; this is not an architecture standard.
 
 ## Purpose and stable baseline
 
 ClinRx AI is a clinical decision-support platform being built around structured knowledge, patient context, traceable evidence, deterministic computation and governed AI assistance. It supports clinician judgment; the current repository is a development prototype, not an approved patient-care system.
 
-- Stable `main` baseline: `52ceb23ec83a27b30ef886cfe851570022489663` — `add patient context persistence foundation`.
-- Before this checkpoint update, the working tree was clean and local `main` and `origin/main` matched this commit. Reverify remote state when resuming; this is a dated checkpoint, not a moving branch pointer.
+- Stable `main` baseline: `1559435b68dae3b8ffdcf34fa1da07dfd5611e66` — `add cutoff-bounded historical retrieval` (Sprint 7A.2b; 454 tests).
+- Current branch: `feature/sprint-7a2c1-lineage-resolution`. HEAD, local `main` and cached `origin/main` match that baseline. No network fetch was performed; cached tracking state is not a claim of live remote synchronization.
+- Sprint 7A.2c.1 implementation and focused adversarial review are complete locally but **uncommitted**. After this checkpoint update there are four modified tracked files and two untracked files; the index is empty. Nothing has been staged, committed, pushed or merged for this slice. Reverify this dated state when resuming.
 - **Git history, committed repository artifacts, current code and reproducible tests are authoritative over conversational memory.** This file is a navigation aid; resolve discrepancies from those artifacts and record the result.
 
 ## Test baseline
 
-Verified at the baseline above: **294 passed**, using Python 3.11.6 and pytest 9.1.1. Coverage is in [retrieval tests](../../tests/test_retrieval_service.py), [clinical-model tests](../../tests/test_clinical_models.py), [governance tests](../../tests/test_governance.py), [persistence tests](../../tests/test_persistence.py) and [persistence correction regressions](../../tests/test_persistence_corrections.py). Passing software tests is not clinical validation.
+Verified for the current uncommitted feature state: **549 passed**, including **95 focused lineage tests**, using Python 3.11.6 and pytest 9.1.1 with bytecode and pytest cache disabled. The focused adversarial review added 18 cases, found no reproducible defect and required no production-code change. This supersedes the Sprint 7A.1 checkpoint; it does not attribute the new tests to the stable baseline.
+
+Coverage includes [retrieval tests](../../tests/test_retrieval_service.py), [clinical models](../../tests/test_clinical_models.py), [governance](../../tests/test_governance.py), [persistence](../../tests/test_persistence.py), [persistence corrections](../../tests/test_persistence_corrections.py), [revision chains](../../tests/test_revision_chains.py), [historical retrieval](../../tests/test_historical_retrieval.py) and [durable lineage](../../tests/test_persistence_lineage.py). Review checks covered exact budget boundaries, repeated endpoint work, association/evidence overlap, nested immutability, DST folds, read-only SQL and rollback without partial results, alongside the existing cutoff, provenance and privacy cases. Passing software tests is not clinical validation.
 
 Run from the repository root, without generating bytecode or pytest cache:
 
@@ -37,6 +40,9 @@ Commit milestones are used where the repository does not establish a reliable sp
 | Sprint 6B core clinical model prototype, Slice 1 | `c95de5d`; [implementation notes](../../backend/app/models/clinical/README.md) |
 | Slice 2 release and presentation governance | `9171597`; implementation notes and governance tests |
 | Sprint 7A.1 — Patient Context Persistence Foundation complete | `52ceb23`; [persistence implementation notes](../../backend/app/persistence/README.md) and persistence tests |
+| Sprint 7A.2a — Immutable revision chains complete and merged | `1d4402b`; revision-chain implementation and regression tests |
+| Sprint 7A.2b — Historical retrieval complete and merged | `1559435`; cutoff-bounded historical retrieval and 454-test baseline |
+| Sprint 7A.2c.1 — Read-only durable lineage resolution complete locally | Uncommitted on `feature/sprint-7a2c1-lineage-resolution`; 95 focused / 549 complete tests after adversarial review |
 
 ## Implemented capabilities
 
@@ -46,6 +52,15 @@ Commit milestones are used where the repository does not establish a reliable sp
 - [Governance service](../../backend/app/services/governance_service.py): pure release assessment/decision and presentation assessment/recording functions. Contracts bind exact payload, policy, context, authority, freshness, warning exceptions and final-delivery evidence; they record withheld, unconfirmed or rejected outcomes as appropriate.
 - These functions consume supplied assertions. They do not authenticate producers, validate natural-language clinical meaning, inspect live patient systems, persist records or actually display content. No clinical-model/governance API is wired into the application.
 - [Persistence foundation](../../backend/app/persistence/README.md): SQLAlchemy 2.x, file-backed SQLite for local/synthetic development and Alembic migrations, with independent domain and persistence models. Supports patient/encounter registration and ownership, plus ClinicalObservation, MedicationOrder, MedicationAdministration and ClinicalInference persistence with exact-reference retrieval. Repository ingestion metadata, canonical retained-representation idempotency, transactional rollback and committed close/reopen durability are implemented; broader recovery/concurrency guarantees remain deferred.
+
+## Durable clinical history and lineage boundaries
+
+- **7A.2a revision history:** reasoned immutable linear chains per stable fact, exact canonical retries before terminal-predecessor enforcement, atomic revision/link writes and fixed patient/encounter ownership. SQLite serializes repository units with BEGIN IMMEDIATE; this does not establish PostgreSQL or crash-recovery guarantees.
+- **7A.2b historical retrieval:** repository UUID plus ingestion watermark defines visibility before revision-prefix validation. Latest-known selection precedes clinical/ingestion-time filtering, so older revisions cannot be resurrected by filtering. Sequence gaps are valid and clock time cannot replace the watermark. Instant comparisons use exact integer arithmetic, including datetime boundaries and DST folds.
+- **7A.2c.1 durable lineage:** `resolve_lineage(reference, *, target, cutoff, limits)` resolves declarations already retained in immutable fact payloads within one explicit patient/encounter prefix. Exact A1 dependencies remain A1 after correction A2; neither revision links nor order associations become evidence dependencies. Confirmation bases provide evidence; confirmation targets provide validation context. Shared exact or stable-family ancestry rejects independence assertions; disjoint ancestry remains unknown. Declared inferred/derived origin is preserved rather than promoted by copying or confirmation.
+- Visibility precedes lineage extraction/traversal/validation. Future facts, revisions and malformed future lineage cannot alter an earlier result. Missing supported endpoints share `not_resolvable_in_scope_at_cutoff`; unsupported kinds remain explicit. No out-of-scope/future lookup refines the missing reason. An ancestor may arrive after its dependent and resolve at a newer cutoff without changing old-cutoff replay.
+- Iterative bounded traversal handles repeated ancestors, diamonds and longest evidence paths. Cycles, malformed retained state and exhausted budgets fail explicitly with sanitized errors; no partial-success result escapes structural failure. Results retain immutable facts/metadata, typed assertions, separate associations, unresolved reasons, origin/provenance limitations and resolution coverage. Complete resolution of the declared graph is not source/clinical completeness or proof of independence.
+- The resolver is persistence-only and read-only: no new table, migration, lineage watermark, domain contract, canonical format or write-acceptance change. Visible scoped history is validated even when unrelated to the root; unrelated visible corruption can therefore fail a query. Row/graph budgets are not payload-byte or wall-clock limits. The resolver cannot detect undeclared copying when external lineage is unavailable.
 
 ## Governing standards and principles
 
@@ -67,12 +82,12 @@ The code enforces structural consistency over supplied evidence, including fresh
 
 ## Deliberate deferrals and next phase
 
-- No PatientContext reconstruction, correction/revision chains, lineage/dependency resolution or historical knowledge-cutoff reconstruction yet. Canonical retry idempotency and ingestion metadata exist for supported persisted records; a broader durable audit system remains deferred. PostgreSQL support is not validated; production PHI use and clinical validation remain unsupported.
+- PatientContext reconstruction, ContextSnapshots, historical knowledge reconstruction and a broader durable audit system remain deferred. Revision chains and cutoff-aware patient-fact history are implemented; read-only declared-lineage resolution is complete locally. Reverse dependent lookup, prospective lineage write validation, standalone links, external-source persistence, cross-encounter reconciliation, automatic reassessment, invalidation and retraction are not part of 7A.2c.1. PostgreSQL support is not validated; production PHI use and clinical validation remain unsupported.
 - No live patient ingestion, authenticated assertion producers, revocation feeds, trustworthy-clock infrastructure or atomic display adapter.
 - No clinical algorithms/rule engine, terminology/unit conversion service, FHIR mapping, medication reconciliation, governed evidence retrieval, external AI integration or clinical deployment validation.
 - Frontend, mobile, infrastructure and CI workflow directories remain placeholders. Privacy/retention enforcement and operational recovery integrations are future work.
 
-**Next planned phase: Sprint 7A.2 — Clinical History Semantics**, focused on corrections/revisions, lineage/dependency resolution, ingestion/knowledge boundaries and temporal history semantics. Build on the completed Sprint 7A.1 persistence foundation; PatientContext reconstruction remains later work. Preserve the 294-test baseline and add focused history regressions using synthetic data.
+**Next action:** review and explicitly authorize staging/committing the completed 7A.2c.1 slice; no such action is performed by this checkpoint. Any later 7A.2c work needs a separately bounded task. Sprint 7A.3 reconstruction and downstream clinical reassessment remain deferred, not implied by graph resolution. Preserve the 549-test feature-state checkpoint and the established historical semantics.
 
 ## Normal development workflow
 

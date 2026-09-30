@@ -35,3 +35,7 @@ class SchemaMismatch(PersistenceError):
 
 class TransactionAborted(PersistenceError):
     pass
+
+
+class QueryLimitExceeded(PersistenceError):
+    pass
