@@ -161,3 +161,96 @@ final relevant-context recheck and decision/execution-record transaction.
 
 Focused verification: tests/test_weight_trend_release.py; existing weight,
 governance/safety and persistence/history/lineage regressions remain applicable.
+
+
+## Phase 4 Increment 1 — execution contracts and pure final recheck
+
+`weight_trend_execution.py` defines immutable in-memory contracts only. It adds no
+storage, schema, SQL, transaction API or release orchestration. The record describes
+a Phase 4 attempt over an already successful original selection/comparison and
+exact Phase 2 inference identity. Failures before that evidence exists are outside
+this narrow envelope. No new generic execution or audit framework is introduced.
+
+Allocate a caller-generated UUID before the attempt. `WeightTrendExecutionRecord`
+retains the complete OutputTarget (context, immutable request ID, intended use,
+destination and recipient), actor, original manifest/comparison, inference reference,
+optional available lineage/recheck evidence, implementation version and start/finalization
+times. Neither time is a database commit timestamp. Repository identity is derived
+from the original cutoff. The complete existing ReleaseDecision retains producer,
+profile, safety, fidelity, policy and authorization identities without new wrappers.
+There is no separate software build identity convention to add here.
+
+Exactly one of `decision` and `issue` is required. Decision records require lineage
+and a final recheck and derive `completed_released` or `completed_withheld`.
+Operational records derive `failed_operationally` and never fabricate a decision;
+lineage/recheck may be absent when that step failed. The issue contains only bounded
+stage/code literals, with no free-text exception, SQL, stack trace or patient values.
+Future adapters must sanitize exceptions; arbitrary validation exception strings
+are not this persistence contract. All records, including withholdings and failures,
+are frozen; there is no mutable status or revision chain.
+
+Later persistence must interpret same UUID + identical canonical payload as
+idempotent recovery, same UUID + different canonical payload as content conflict,
+and genuine re-evaluation as a new UUID. Those retry/recovery behaviors are not
+implemented or established by constructing an envelope.
+
+`WeightTrendSelectionManifest` retains target, full small selection policy (pinning
+its parameters as well as v1 identity), repository cutoff, ordered exact references,
+aligned canonical payload digests, and existing exclusions/issues. Success is
+derived from absence of issues. Failed selection retains no usable pair. Blocking
+exclusions must agree with input issues. No observation bodies are duplicated in
+the manifest; the original comparison retains exact values and event representations.
+Exclusion/issue declaration order is preserved rather than compared for material change.
+
+`weight_trend_lineage_witness` projects a supplied actual LineageResult into the narrow
+one-inference/two-observation declared graph. It retains exact ordered derived_from
+edges, ingestion-ordered body-free nodes with canonical payload digests, metadata,
+evidence roles, sorted self-inclusive ancestry, provenance limitations, coverage and
+sorted unresolved disclosures. Extra/mismatched graph structure is rejected.
+Revision supersedes links are not evidence. Partial lineage can explain a withheld
+unavailable-evidence decision; missing snapshot bodies are not fabricated. Present
+bodies must match retained digests, order and comparison; released decisions require
+complete evidence. An envelope checks consistency, not source authenticity.
+
+`assess_weight_trend_final_recheck` implements WeightTrendFinalRecheckPolicy/v1.
+Supply the original and final Phase 1 results plus a scoped inference-terminal check.
+The same exact selection-policy parameters and patient/encounter must be used, in
+the same repository with a nondecreasing watermark. Only the repository cutoff
+changes; source availability and the half-open event window remain fixed. The function
+does not query, reselect, generate safety/freshness assertions or decide release.
+Terminal inference lookup and protected final selection belong to later orchestration.
+
+Failure of final selection, a changed ordered exact pair (even numerically equal),
+or a superseded consumed inference is material change. Terminal ineligibility,
+third-input ambiguity, conflicts, timing/source-availability failures and selected
+facts leaving the window/concept are handled by the unchanged Phase 1 selector.
+An unavailable terminal lookup is `unavailable` unless another material change is
+already established. Reasons and outcome are deterministic derived properties.
+Inference insertion, unrelated insertions, harmless out-of-window observations and
+benign exclusion growth alone do not make an unchanged pair material.
+
+Contradictory canonical bodies under an overlapping selected exact reference raise
+the existing payload-free StorageIntegrityError, even if another reference changed.
+Malformed supplied contracts raise validation errors. Failed Phase 1 results omit
+excluded bodies: their integrity must already have been established by the trusted
+reader. Digests and caller-supplied terminal status cannot prove a repository read,
+completeness, absence of corruption or a database commit. A changed/unavailable final
+check cannot accompany a released decision; a corresponding withheld decision must
+retain inadequate freshness and, for material change, the material-change flag.
+This is a consistency check, not the later final-context assertion producer.
+
+Use existing `canonical_payload` and validated JSON reloading. Payload version 1 is
+explicit and unsupported versions fail. Keys/defaults use existing canonical rules;
+array order, Decimal lexical representation and timezone offsets remain material.
+Set-like ancestry and unresolved disclosures are explicitly ordered. Derived fields
+recompute on reload. Unsupported lossy timestamp serialization fails through existing
+mapping conventions; no alternative serializer is introduced.
+
+Increment 2+ still owns the table/migration/entity/adapter, storage idempotency and
+conflicts, protected shared transaction, actual final re-selection and terminal lookup,
+final governance composition, commit/recovery behavior and multi-connection race tests.
+API/frontend, reverse lineage, reassessment and withdrawal remain deferred. None of
+these contracts establishes clinical validation, production authorization or delivery.
+
+Focused verification: `tests/test_weight_trend_execution.py` uses synthetic pure
+fixtures, including real existing Phase 3 decision composition, without database fixtures.
