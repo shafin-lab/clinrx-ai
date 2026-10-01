@@ -81,3 +81,83 @@ invalidation, release-race handling, governance, rendering, execution storage an
 all schema/transaction-composition changes remain deferred. The inference payload
 retains exact inputs, not a durable selection policy/cutoff execution envelope;
 that audit responsibility belongs to a later phase.
+
+
+## Phase 3 — synthetic historical governance composition
+
+`weight_trend_release.py` composes existing domain and governance contracts only.
+Its intended use is **Synthetic evaluation of a fixed historical recorded-weight
+comparison, with no patient-care use or delivery.** No execution record, database
+write, API, presentation or continuing clinical eligibility is implemented.
+
+Supply the committed original successful selection/comparison, reopened retained
+inference, actual exact LineageResult, and registered patient/encounter records.
+`build_weight_trend_snapshot` embeds resolved records in memory; its clinical
+temporal cutoff must include inference execution/recording. It declares partial
+clinical completeness with an exact narrow scope, never a complete clinical feed.
+Repository prefixes, source availability and snapshot clinical time remain distinct.
+
+`build_weight_trend_candidate` creates one deterministic descriptive ClinicalClaim
+in the existing ClinicalRecommendation envelope. Its basis and copied_from
+provenance identify the persisted inference; the inference remains inferred and
+unverified. `render_weight_trend` generates the closed Phase 2 wording from the
+comparison. No diagnosis, causality, advice, prediction or changed units are added.
+
+`evaluate_weight_trend` executes exactly two applicable required rules:
+`exact_evidence_and_input_suitability` and `bounded_descriptive_output`, version 1.
+It checks retained representations, input/output prefixes, exact payloads, all
+declarations/roles/ancestry/disclosures and snapshot membership; it also checks
+every output-bearing claim/envelope field and independently derives the permitted
+statement. Contradiction yields hard_failure; missing evidence yields unavailable.
+Neither rule can establish coverage through not_applicable. Source uncertainty is
+closed to the literal `synthetic uncertainty` (or absence); unsupported source
+prose is not endorsed by copying it into a faithfully retained inference.
+
+`validate_weight_trend_content` checks the actual complete review, performed
+evaluation and required_payload disclosures before emitting matched/failed/
+unavailable with derived review/payload digests. It accepts no caller result or
+digest. Hashes establish binding, not meaning. Changed content requires new checks
+and assertions, even when its hashes have been recomputed. Structural malformed
+input remains a validation error; stored corruption remains a persistence error.
+
+`assess_weight_trend_context` assesses adequacy for this fixed historical request,
+not physiological freshness. It checks exact members and availability, observes
+only after snapshot creation and supplies bounded per-item windows. Unknown or
+missing evidence is not fresh. `material_change=False` applies only to this
+immutable historical prefix; it makes no claim about changes outside that prefix.
+`assess_weight_trend_dependencies` checks exact evidence and local versioned
+functions; updates are not_required for this historical use. No revocation feed
+or live clinical dependency availability is inferred.
+
+`issue_synthetic_weight_release` implements SyntheticWeightReleaseIssuer/v1. Its
+fixed local grant permits only synthetic-orchestrator, the synthetic-p1/e1 request,
+synthetic-local destination and synthetic-reviewer recipient under the exact
+resolved v1 policy. Its explicitly synthetic grant window is
+[2026-09-25T14:00:01.123456Z, 2026-09-25T14:01:01.123456Z). Known disallowed subjects
+are denied; unknown subjects return unknown. It checks scope, policy, disclosures,
+content availability and the grant window and derives all digests. This test grant
+is not production authentication, signatures or clinical authority.
+
+`assemble_weight_trend_runtime` checks registered context and uses harness-owned
+active request/output identities; current means the active output for that fixed
+historical request. `weight_trend_governance_policy` requires the two rules, exact
+snapshot/inference/observation context and exact evidence/local method artifacts,
+with no degraded mode or warning exceptions and a synthetic 30-second observation
+age. Resolved policy identities include a deterministic digest of their exact
+requirements, so different context manifests cannot conflict under one immutable
+policy reference; the profile remains version 1. This interval is not a clinical freshness threshold.
+
+`release_weight_trend` composes these producers with unchanged assess_release and
+decide_release. released means the exact payload satisfied this synthetic policy
+at decision time; withheld retains existing governance reasons. Neither means
+approved, presented, delivered, received, accepted or acted upon. The existing
+ReleaseDecision may round-trip in memory; no durable decision history is claimed.
+
+The local harness remains responsible for supplying real committed reads and
+protecting its controlled request state. These functions validate consistency,
+not source authenticity or original selection membership against fabricated reads.
+Later corrections do not rewrite the fixed historical proof. Phase 4 owns the
+final relevant-context recheck and decision/execution-record transaction.
+
+Focused verification: tests/test_weight_trend_release.py; existing weight,
+governance/safety and persistence/history/lineage regressions remain applicable.
