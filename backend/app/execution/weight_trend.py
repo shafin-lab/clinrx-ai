@@ -1,11 +1,15 @@
-"""Synthetic kilogram-only selection/comparison; no inference or release execution."""
+"""Synthetic weight selection, comparison and inference construction; no release."""
+from datetime import datetime
 from decimal import Decimal
 from typing import Annotated, Literal
 
-from pydantic import AwareDatetime, Field, model_validator
+from pydantic import AwareDatetime, Field, TypeAdapter, model_validator
 
-from app.models.clinical.common import ContextTarget, DomainModel, Quantity, Reference, Text
-from app.models.clinical.facts import ClinicalObservation
+from app.models.clinical.common import (
+    ClinicalTime, ContextTarget, DomainModel, LineageEdge, Provenance, Quantity,
+    Reference, Source, Text,
+)
+from app.models.clinical.facts import ClinicalInference, ClinicalObservation
 from app.persistence.metadata import RepositoryCutoff
 from app.persistence.repository import PatientRepository
 
@@ -188,4 +192,60 @@ def compare_recorded_weights(selection: WeightTrendSelectionResult
         earlier_reference=earlier.reference, later_reference=later.reference,
         earlier_kg=a, later_kg=b, earlier_event=earlier.time.event, later_event=later.time.event,
         direction='decrease' if b < a else 'increase' if b > a else 'unchanged',
+    )
+
+
+RECORDED_WEIGHT_TREND_METHOD = Reference(kind='inference_method', id='RecordedWeightTrend', version='1')
+
+
+def build_weight_trend_inference(*, selection: WeightTrendSelectionResult,
+                                comparison: RecordedWeightComparison | WeightTrendSelectionIssue,
+                                inference_id: str, executed_at: datetime, revision: str = '1'
+                                ) -> ClinicalInference | WeightTrendSelectionIssue:
+    """Build only from the supplied exact pair; callers persist through the repository.
+
+    Validation is structural and synthetic, not source authentication or permission
+    to release. This function performs no repository reads or writes.
+    """
+    selection = WeightTrendSelectionResult.model_validate(selection)
+    if selection.issues:
+        return selection.issues[0]
+    comparison = RecordedWeightComparison.model_validate(comparison)
+    expected = compare_recorded_weights(selection)
+    # Compare retained representations too: equal instants/Decimal values must not
+    # silently replace the selected offsets or source precision.
+    if comparison.model_dump(mode='json') != expected.model_dump(mode='json'):
+        raise ValueError('comparison does not match the exact selected observations')
+    executed_at = TypeAdapter(AwareDatetime).validate_python(executed_at)
+    if _instant(executed_at) < _instant(selection.policy.available_at):
+        raise ValueError('inference execution precedes the source availability cutoff')
+    earlier, later = selection.selected
+    inputs = (earlier.reference, later.reference)
+    if comparison.direction == 'unchanged':
+        statement = (f'Recorded weight was unchanged at {comparison.earlier_kg} kg between the selected observations. '
+                     'This comparison does not establish nutritional status. Synthetic evaluation only.')
+    else:
+        verb = 'decreased' if comparison.direction == 'decrease' else 'increased'
+        statement = (f'Recorded weight {verb} from {comparison.earlier_kg} kg to {comparison.later_kg} kg '
+                     'between the selected observations. This comparison does not establish cause or '
+                     'nutritional diagnosis. Synthetic evaluation only.')
+    return ClinicalInference(
+        id=inference_id, revision=revision, binding=earlier.binding, origin='inferred',
+        statement=statement, inputs=inputs, method=RECORDED_WEIGHT_TREND_METHOD,
+        applicability='Synthetic recorded-weight comparison within the selected patient/encounter and event window only.',
+        validation_limitations='Not clinically validated; no diagnosis, causal interpretation or treatment recommendation.',
+        uncertainty=tuple(dict.fromkeys((
+            'Recorded comparison does not establish cause or nutritional status.',
+            'Synthetic evaluation only; input authenticity is not established.',
+            *earlier.uncertainty, *later.uncertainty,
+        ))),
+        provenance=Provenance(
+            source=Source(namespace='clinrx.synthetic', identifier=RECORDED_WEIGHT_TREND_METHOD.id,
+                          version=RECORDED_WEIGHT_TREND_METHOD.version, channel='system'),
+            actor='RecordedWeightTrend/v1', recorded_at=executed_at,
+            upstream=tuple(LineageEdge(target=reference, relationship='derived_from') for reference in inputs),
+            lineage='complete', limitations=('Synthetic evaluation only; no clinical validity or source-authenticity claim.',),
+        ),
+        time=ClinicalTime(event=executed_at, recorded=executed_at, processed=executed_at, precision='instant'),
+        verification='unverified', conflict='unknown', temporal_status='unknown',
     )

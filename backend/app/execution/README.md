@@ -1,7 +1,8 @@
-# Synthetic recorded-weight contracts — Sprint 7B.1 Phase 1
+# Synthetic recorded-weight contracts — Sprint 7B.1 Phases 1–2
 
-`weight_trend.py` selects and compares retained observations only. No inference,
-release, rendering, execution-record storage or clinical validation is performed.
+`weight_trend.py` selects and compares retained observations and constructs a bounded
+ClinicalInference. No release, rendering, execution-record storage or clinical
+validation is performed.
 
 Obtain a transaction-scoped repository and call `select_weight_observations` with
 one encounter target, an explicit repository cutoff and `WeightTrendSelectionPolicy`.
@@ -42,5 +43,41 @@ values and event times and yields decrease/unchanged/increase. No differences,
 percentages, diagnoses, causes or nutritional interpretations are generated.
 
 Returned reads remain provisional until the repository transaction exits successfully.
-This phase does not construct a ContextSnapshot, resolve durable lineage, certify
-selection history submitted by callers, or establish release eligibility.
+These functions do not construct a ContextSnapshot, certify selection history
+submitted by callers, or establish release eligibility.
+
+
+## Phase 2 — inferred fact persistence and exact durable lineage
+
+`build_weight_trend_inference` consumes the successful selection and its comparison,
+plus an explicit inference identity/revision and aware execution time. It revalidates
+both contracts and compares every retained comparison field against the selected
+pair, including Decimal representation and event offsets. Failed selections return
+an existing selection issue; inconsistent/invalid contracts raise ValueError or the
+existing Pydantic ValidationError. No failure-shaped inference is created.
+
+The method is exactly `inference_method:RecordedWeightTrend:1`. The resulting fact
+is inferred and unverified, with unknown conflict/current-use status, synthetic
+applicability and explicit uncertainty/validation/provenance limitations. Its inputs
+and two derived_from edges preserve earlier/later declaration order. Statement text
+only describes decrease/unchanged/increase, with the required synthetic limitations.
+Input uncertainty is retained. No difference, percentage, prediction or advice is
+produced. Execution must not precede the policy's source-availability cutoff;
+inference event/recorded/processed and provenance recording times equal execution.
+Binding retains the selected observation's verified target assertion; this does not
+mint new identity verification or clinical verification for the inference.
+
+The builder performs no database operations. Use existing `append_fact` and commit,
+then obtain an output RepositoryCutoff including the inference. Close/reopen and
+load its exact reference through `load_fact`; use existing `resolve_lineage` with
+that output cutoff and explicit LineageLimits. The input cutoff cannot resolve a
+root inserted later. Direct dependencies are the two consumed exact observation
+revisions; inspect dependency owner/source and assertions, not just graph size.
+
+Later corrections never replace dependencies in the stored inference. Old-cutoff
+selection replays the original pair, while a new selection may use corrected inputs.
+This is historical reproducibility, not continued eligibility. Reassessment,
+invalidation, release-race handling, governance, rendering, execution storage and
+all schema/transaction-composition changes remain deferred. The inference payload
+retains exact inputs, not a durable selection policy/cutoff execution envelope;
+that audit responsibility belongs to a later phase.
