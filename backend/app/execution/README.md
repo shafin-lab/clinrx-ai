@@ -254,3 +254,17 @@ these contracts establishes clinical validation, production authorization or del
 
 Focused verification: `tests/test_weight_trend_execution.py` uses synthetic pure
 fixtures, including real existing Phase 3 decision composition, without database fixtures.
+
+
+## Phase 4 Increment 2 — durable recovery of the execution envelope
+
+The separate `app.persistence.executions` adapter now supports immutable scoped
+append/load of this contract, including its complete recorded decision or operational
+failure. See the persistence README for the one-table migration, canonical digest,
+idempotent retry, privacy and recovery semantics. These calls own independent
+transactions; they must not be nested inside a fact repository transaction.
+
+A recovered record is historical evidence. Final context checks, release decisions
+and execution persistence are not yet one protected transaction. Increment 3 still
+owns that composition and its race/commit/recovery guarantees; storage alone does
+not establish continuing release eligibility, presentation or delivery.

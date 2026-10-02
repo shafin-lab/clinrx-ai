@@ -10,7 +10,7 @@ Synchronous SQLAlchemy 2.0.54, file-backed SQLite and Alembic. Pydantic clinical
 models are unchanged. The adapter contains all database dependencies; existing
 knowledge APIs and release/presentation governance are unchanged.
 
-Tables: `patient`, `encounter`, `fact_revision`, `revision_link`, `repository_identity`, plus
+Tables: `patient`, `encounter`, `fact_revision`, `revision_link`, `repository_identity`, `weight_trend_execution`, plus
 Alembic's version table. Patient and encounter registrations are immutable through
 the repository. Encounter ownership has a database foreign key; fact ownership
 uses a composite foreign key to the encounter and its patient. Exact fact
@@ -30,8 +30,9 @@ Conditions, procedures, derived values and calculation executions remain unsuppo
 Root insertion uses append_fact; corrections use the explicit append_revision operation
 described below. Retraction, invalidation and restoration remain unsupported. Missing
 values, clinical status fields and correction reasons do not implement those lifecycles.
-No reconstruction engine, retained snapshots, reverse graph lookup, patient endpoints,
-release persistence, PostgreSQL adapter or production PHI handling is implemented.
+No reconstruction engine, standalone snapshot store, reverse graph lookup, patient endpoints,
+presentation persistence, PostgreSQL adapter or production PHI handling is implemented.
+Synthetic execution/decision recovery is separately scoped below.
 
 ## Canonical payload and mapping
 
@@ -396,3 +397,79 @@ Reverse dependents, prospective write validation, external-source persistence,
 cross-encounter reconciliation, clinical reassessment, invalidation/retraction,
 reconstruction/snapshots, PostgreSQL, API/UI/auth and generalized graph services
 remain deferred. No claim of production or clinical authorization is introduced.
+
+
+## Sprint 7B.1 Phase 4 Increment 2 — immutable execution persistence
+
+`executions.py` persists the existing `WeightTrendExecutionRecord` as a separate
+workflow/decision artifact, never as a clinical fact or revision. The single
+`weight_trend_execution` table contains execution_id, patient_id, encounter_id,
+payload_version, canonical payload, payload_digest and ingested_at. Its UUID
+primary key supports exact scoped lookup without an additional index. A composite
+encounter/patient foreign key follows the existing ownership pattern; no cascading
+delete, child tables, status column or execution revision links are introduced.
+
+Public API:
+
+```python
+from app.persistence.executions import (
+    append_weight_trend_execution, load_weight_trend_execution,
+)
+
+stored = append_weight_trend_execution(engine, execution_record, target=target)
+recovered = load_weight_trend_execution(engine, execution_record.execution_id,
+                                       target=target)
+```
+
+Each call owns its own SQLAlchemy session/transaction under the existing file-backed
+SQLite connection policy. Call it outside the fact repository transaction. No session
+is exposed, no fact operation joins this transaction, and there is no new transaction
+composition API or coordination policy. A failure rolls back this call. This does not
+make final context selection, governance decisions and execution persistence atomic.
+
+Append accepts the reviewed typed record, revalidates nested contracts and scope,
+checks the active repository UUID and validated registered patient/encounter ownership,
+and writes only a new identity. Same UUID and identical canonical representation
+returns the originally retained record and ingestion time; different canonical content
+raises payload-free RecordConflict. Integrity of an existing in-scope row is checked
+before retry comparison. A UUID collision in a foreign scope conflicts without decoding
+that foreign payload. No UPDATE/upsert, replace or delete API is provided.
+
+Both operations return frozen `StoredWeightTrendExecution(record, ingested_at)`.
+The ingestion time is assigned by the adapter in UTC; callers cannot supply it.
+It is not a clinical event/decision time or commit timestamp. There is deliberately
+no fact ingestion sequence on an execution result. Execution insertion does not change
+fact watermarks, historical prefixes, revision sequences or lineage-node membership.
+
+Load filters by UUID **and patient and encounter before decoding**. Missing IDs and
+foreign-scope IDs both raise the same RecordNotFound message, even when the foreign
+payload is corrupt. Visible rows must pass execution payload-version checks, exact
+SHA-256 verification over UTF-8 payload bytes, contract validation, canonical round-trip,
+identity/scope/repository matching and UTC ingestion-metadata checks. Active ownership
+registrations are also validated. Invalid visible storage raises StorageIntegrityError;
+it never becomes ordinary withholding, an operational issue or a missing result.
+Database/driver failures are sanitized as TransactionAborted; input and schema errors
+retain existing payload-free categories with sensitive exception chains suppressed.
+
+Execution payload version 1 is separately named from clinical payload version 1.
+Existing canonical JSON rules retain Decimal scale, offsets, exact references and
+array order. The digest detects corruption/inconsistency; it is not authentication,
+a signature or protection from privileged database editing. Application immutability
+likewise does not prevent direct privileged SQL edits.
+
+Recovery returns the recorded historical content, including released, withheld,
+operational-failure and permitted partial-evidence records. Deserialization validates
+stored structural/decision consistency using retained evidence and times; it does not
+invoke current selection, lineage resolution, authorization/freshness producers, final
+recheck or a new release decision. Recovery does not reauthorize clinical use.
+
+Migration `7b1_0003` is the additive successor to `7a2_0002`. Explicit DDL creates
+only this table; repository identity, clinical payload version, existing bytes and
+SQLite fact allocator are preserved. Repeated upgrades are harmless. Destructive
+downgrade remains refused. Tests cover populated upgrade and injected post-DDL rollback;
+they do not establish process/power-loss or commit-before-acknowledgement recovery.
+
+Increment 3+ retains protected final re-selection, terminal lookup, shared fact/execution
+transaction, final governance orchestration, correction races and commit/recovery
+sequencing. No API, presentation/delivery, reassessment, reverse index or generic
+workflow/audit/unit-of-work framework is added. Synthetic local use only.
