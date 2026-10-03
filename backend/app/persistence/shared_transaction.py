@@ -10,7 +10,7 @@ from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 
 from .database import require_schema
-from .errors import PersistenceError, PersistenceInputError, SchemaMismatch, TransactionAborted
+from .errors import PersistenceError, PersistenceInputError, SchemaMismatch, TransactionAborted, TransactionCompletionUnknown
 
 if TYPE_CHECKING:
     from .repository import PatientRepository
@@ -105,7 +105,7 @@ def execution_transaction(engine: Engine):
         if error is body_error:
             raise
         if completing:
-            raise TransactionAborted('transaction completion could not be confirmed') from None
+            raise TransactionCompletionUnknown('transaction completion could not be confirmed') from None
         if isinstance(error, SchemaMismatch):
             raise SchemaMismatch('execution storage requires the reviewed schema revision') from None
         if isinstance(error, PersistenceError):

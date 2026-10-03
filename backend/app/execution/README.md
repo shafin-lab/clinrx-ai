@@ -378,3 +378,62 @@ rewrite the retained decision. Lock-wait tests use events and verify clocks/auth
 are sampled after acquisition. Fault injection covers pre-commit rollback and actual
 commit followed by an exception, without implementing reconciliation. No delivery,
 reassessment, reverse graph, migration, payload-version change or generic workflow.
+
+
+## Phase 4 Increment 5 — explicit commit-outcome reconciliation
+
+`reconcile_weight_trend_execution(engine, request)` answers whether this repository
+contains a valid retained protected execution matching the immutable request. It
+accepts an Engine and the existing `WeightTrendReviewRequest`, with no clock,
+automatic execution, retry policy or delivery behavior.
+
+The frozen `WeightTrendReconciliationResult` has exactly two outcomes:
+- `committed_match`, with the exact `StoredWeightTrendExecution`, including original
+  ingestion metadata. Both released and withheld protected decisions qualify.
+- `absent`, with execution None: no retained execution under this ID and expected
+  scope was visible in the supplied repository during this lookup. This does not
+  prove that a transaction never committed, authorize delivery, or describe another
+  repository or a later lookup.
+
+The standalone loader validates version, digest, canonical envelope, repository
+identity and ownership before the shared protected request-match helper runs.
+Matching uses execution_id, complete target, actor, original manifest, comparison,
+inference, lineage and requested_at (stored started_at), preserving canonical
+Decimal/time representations and order. The decision must bear exactly
+SyntheticWeightProtectedExecution/v1. The marker is a convention, not authentication.
+Final cutoff/recheck/decision, finalization time and ingestion metadata are validated
+as retained data but are not request identity. Standalone operational-failure or
+legacy envelopes do not establish protected completion and conflict.
+
+Missing and foreign-scope rows are indistinguishable absence; foreign payloads are
+never decoded. Valid in-scope incompatible requests/markers raise RecordConflict.
+Visible corruption raises StorageIntegrityError before matching. Invalid requests
+raise PersistenceInputError, unsupported schema raises SchemaMismatch, and read or
+unexpected failures raise sanitized TransactionAborted. Reconciliation failure
+leaves prior uncertainty unresolved; it is never represented as absence or success.
+Process-control exceptions propagate. Standard formatted errors suppress internal
+exception chains; Python exception context remains introspectable.
+
+The API performs no application DML or current clinical reads. Existing pure
+retained-envelope validation remains active. Corrections, third observations,
+inference supersession and expired authorization do not refresh a stored decision.
+Recovery establishes historical completion, not current eligibility, authorization,
+delivery, or which invocation committed the row. Required repository/ownership
+integrity still applies. Reopen/process recovery uses only durable state.
+
+After explicit absence, a caller may explicitly retry execute_weight_trend_review
+with the same ID/request. Its protected lookup remains authoritative: an intervening
+matching row is returned, incompatible content conflicts, and continued absence
+permits a new evaluation. Current evidence may then produce a different decision.
+No lost provisional decision is reconstructed from memory.
+
+Execution completion uncertainty now raises TransactionCompletionUnknown, a subtype
+of TransactionAborted, retaining the bounded message "transaction completion could
+not be confirmed". Branch on type, not message. Neither this subtype nor ordinary
+abort messages establish that a commit or rollback definitely occurred.
+
+Reconciliation uses the existing standalone loader, including BEGIN IMMEDIATE and
+its potential writer contention. RecordNotFound is translated only after that call
+has unwound; no shared poisoned handle is reused. No new read policy, schema,
+payload version, automatic execute/reconcile wrapper, background worker, mutable
+status, delivery deduplication or generic recovery framework is introduced.

@@ -37,5 +37,9 @@ class TransactionAborted(PersistenceError):
     pass
 
 
+class TransactionCompletionUnknown(TransactionAborted):
+    """Transaction completion was not acknowledged; commit outcome is unestablished."""
+
+
 class QueryLimitExceeded(PersistenceError):
     pass

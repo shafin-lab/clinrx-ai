@@ -524,7 +524,8 @@ failure in an independent inner transaction does not poison the outer context;
 an exception escaping the outer block does roll it back. No ambient registry,
 propagation, savepoints or asynchronous/distributed transaction behavior is provided.
 
-Completion errors close both handles and raise TransactionAborted with
+Completion errors close both handles and raise TransactionCompletionUnknown
+(a TransactionAborted subtype) with
 "transaction completion could not be confirmed". Cleanup attempts rollback where
 possible; a commit exception does not prove nothing committed. Do not treat flushed
 results as durable or persist a failure record inside the poisoned transaction.
@@ -555,3 +556,29 @@ Released and withheld records both persist as historical completed executions; f
 errors escape and roll back without automatic failure-record insertion. See the
 execution README for request identity, clock, retry and synthetic authorization limits.
 No schema/entity/migration/payload-version changes accompany this increment.
+
+
+## Sprint 7B.1 Phase 4 Increment 5 — explicit reconciliation boundary
+
+The execution layer exposes reconcile_weight_trend_execution(engine, request),
+using the unchanged standalone load_weight_trend_execution API. It translates
+RecordNotFound outside the owned call into scoped absence and validates the exact
+protected request/assessor before returning committed_match. It does not use a
+second wrapping transaction, run clinical work, or change persisted bytes.
+
+The existing loader retains digest/full-contract/repository/ownership validation.
+Foreign rows remain unobservable and undecoded. Reconciliation preserves bounded
+input, conflict, integrity and schema categories, sanitizes SQL/internal/read-exit
+failures as TransactionAborted, and preserves process-control exceptions.
+
+The shared transaction completion boundary now raises TransactionCompletionUnknown
+with the existing bounded completion message. Existing TransactionAborted handlers
+remain compatible; the workflow preserves the subtype. This is an uncertainty
+signal, not proof of commit or rollback. Reconciliation read failures are separate
+operational failures and do not establish the earlier execution outcome.
+
+Existing SQLite BEGIN IMMEDIATE still applies to standalone reads. This increment
+adds no DML, read-policy change, migration, schema field or payload version. Explicit
+reconciliation may contend with a writer; contention is an error, never absence.
+Automatic reconciliation and delivery remain deferred. See the execution README
+for result, identity, explicit retry-after-absence and historical-use semantics.

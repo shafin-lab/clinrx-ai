@@ -1,8 +1,11 @@
-"""Protected synthetic recorded-weight review only; no delivery or reconciliation."""
+"""Protected synthetic recorded-weight review only; explicit recovery, no delivery."""
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from typing import Literal
 from uuid import UUID
 
 from pydantic import AwareDatetime, model_validator
+from sqlalchemy import Engine
 
 from app.execution.weight_trend import (
     RecordedWeightComparison, _instant, build_weight_trend_inference,
@@ -25,9 +28,9 @@ from app.models.clinical.facts import ClinicalInference
 from app.models.clinical.governance import ContextFreshnessAssessment, OutputTarget, ValidityWindow, required_payload
 from app.persistence.errors import (
     PersistenceInputError, QueryLimitExceeded, RecordConflict, RecordNotFound, SchemaMismatch,
-    ScopeMismatch, StorageIntegrityError, TransactionAborted, UnsupportedOperation,
+    ScopeMismatch, StorageIntegrityError, TransactionAborted, TransactionCompletionUnknown, UnsupportedOperation,
 )
-from app.persistence.executions import StoredWeightTrendExecution
+from app.persistence.executions import StoredWeightTrendExecution, load_weight_trend_execution
 from app.persistence.history import FactIdentity
 from app.persistence.lineage import LineageLimits
 from app.persistence.mapping import canonical_payload
@@ -62,6 +65,38 @@ class WeightTrendReviewRequest(DomainModel):
                 or self.lineage.direct_dependencies != self.original.selected):
             raise ValueError('original exact references must agree')
         return self
+
+
+@dataclass(frozen=True)
+class WeightTrendReconciliationResult:
+    """Historical retention only; absence is scoped to this completed lookup."""
+    status: Literal['committed_match', 'absent']
+    execution: StoredWeightTrendExecution | None
+
+    def __post_init__(self):
+        if self.status == 'committed_match':
+            if not isinstance(self.execution, StoredWeightTrendExecution):
+                raise ValueError('committed match requires a retained execution')
+        elif self.status != 'absent' or self.execution is not None:
+            raise ValueError('absence requires no retained execution')
+
+
+def _validate_request(request):
+    try:
+        if type(request) is not WeightTrendReviewRequest:
+            raise ValueError()
+        request = WeightTrendReviewRequest.model_validate(request)
+        canonical_payload(request)
+        return request
+    except Exception:
+        raise PersistenceInputError('invalid weight review request') from None
+
+
+def _require_request_match(stored, request):
+    record = stored.record
+    if (record.decision is None or record.decision.assessment.assessor != WORKFLOW_ASSESSOR
+            or canonical_payload(_request_from_record(record)) != canonical_payload(request)):
+        raise RecordConflict('execution identity already has different request or workflow')
 
 
 def _ref(kind, identity):
@@ -205,28 +240,19 @@ def execute_weight_trend_review(engine, request: WeightTrendReviewRequest, *, cl
     The clock is a trusted runtime dependency, not caller authorization. No
     operational-failure record, delivery or automatic reconciliation is attempted.
     """
-    try:
-        if type(request) is not WeightTrendReviewRequest:
-            raise ValueError()
-        request = WeightTrendReviewRequest.model_validate(request)
-        canonical_payload(request)
-    except Exception:
-        raise PersistenceInputError('invalid weight review request') from None
+    request = _validate_request(request)
     try:
         with execution_transaction(engine) as tx:
             existing = tx.executions.find(request.execution_id, target=request.target.context)
             if existing is not None:
-                record = existing.record
-                if (record.decision is None or record.decision.assessment.assessor != WORKFLOW_ASSESSOR
-                        or canonical_payload(_request_from_record(record)) != canonical_payload(request)):
-                    raise RecordConflict('execution identity already has different request or workflow')
+                _require_request_match(existing, request)
                 result = existing
             else:
                 result = _new_execution(tx, request, clock)
-    except TransactionAborted as error:
-        message = ('transaction completion could not be confirmed' if str(error) ==
-                   'transaction completion could not be confirmed' else 'protected weight execution failed')
-        raise TransactionAborted(message) from None
+    except TransactionCompletionUnknown:
+        raise TransactionCompletionUnknown('transaction completion could not be confirmed') from None
+    except TransactionAborted:
+        raise TransactionAborted('protected weight execution failed') from None
     except (PersistenceInputError, RecordConflict, RecordNotFound, ScopeMismatch,
             StorageIntegrityError, QueryLimitExceeded, SchemaMismatch, UnsupportedOperation) as error:
         messages = {PersistenceInputError: 'invalid weight execution input',
@@ -240,3 +266,32 @@ def execute_weight_trend_review(engine, request: WeightTrendReviewRequest, *, cl
     except Exception:
         raise TransactionAborted('protected weight execution failed') from None
     return result
+
+
+def reconcile_weight_trend_execution(engine: Engine, request: WeightTrendReviewRequest
+                                     ) -> WeightTrendReconciliationResult:
+    """Discover retained protected completion without executing clinical work.
+
+    Absence describes only this scoped lookup, not proof of a historical rollback.
+    The standalone loader owns its transaction, including the existing writer
+    reservation. Errors leave any earlier completion uncertainty unresolved.
+    """
+    request = _validate_request(request)
+    try:
+        try:
+            stored = load_weight_trend_execution(engine, request.execution_id, target=request.target.context)
+        except RecordNotFound:
+            # The standalone boundary has exited; no poisoned handle is reused.
+            return WeightTrendReconciliationResult(status='absent', execution=None)
+        _require_request_match(stored, request)
+        return WeightTrendReconciliationResult(status='committed_match', execution=stored)
+    except (PersistenceInputError, RecordConflict, StorageIntegrityError, SchemaMismatch) as error:
+        messages = {PersistenceInputError: 'invalid weight reconciliation input',
+            RecordConflict: 'execution identity already has different request or workflow',
+            StorageIntegrityError: 'weight reconciliation integrity failure',
+            SchemaMismatch: 'unsupported execution storage schema'}
+        category = next(kind for kind in messages if isinstance(error, kind))
+        raise category(messages[category]) from None
+    except Exception:
+        # Read/completion failure here is not an uncertain clinical execution commit.
+        raise TransactionAborted('weight reconciliation failed') from None
