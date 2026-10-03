@@ -469,7 +469,70 @@ SQLite fact allocator are preserved. Repeated upgrades are harmless. Destructive
 downgrade remains refused. Tests cover populated upgrade and injected post-DDL rollback;
 they do not establish process/power-loss or commit-before-acknowledgement recovery.
 
-Increment 3+ retains protected final re-selection, terminal lookup, shared fact/execution
-transaction, final governance orchestration, correction races and commit/recovery
-sequencing. No API, presentation/delivery, reassessment, reverse index or generic
+Increment 4+ retains protected final re-selection, terminal lookup, final governance
+orchestration, correction races and commit/recovery sequencing. The shared transaction
+primitive is provided by Increment 3 below. No API, presentation/delivery, reassessment, reverse index or generic
 workflow/audit/unit-of-work framework is added. Synthetic local use only.
+
+
+## Sprint 7B.1 Phase 4 Increment 3 — shared transaction boundary
+
+```python
+from app.persistence.shared_transaction import execution_transaction
+
+with execution_transaction(engine) as tx:
+    repo = tx.repository
+    executions = tx.executions
+    stored = executions.append(execution_record, target=target)
+    recovered = executions.load(execution_record.execution_id, target=target)
+# Only successful context exit establishes commit.
+```
+
+The frozen facade exposes two fixed adapters, backed by one private SQLAlchemy
+Session, one connection transaction and one BEGIN IMMEDIATE writer reservation.
+Schema validation occurs before yielding. Adapters explicitly flush writes but do
+not commit or independently roll back. The outer context owns completion. Returned
+records and cutoffs remain provisional until successful exit.
+
+One private active/failed/closed lifecycle guards both adapters before validation
+or SQL. Every exceptional adapter failure poisons the shared transaction, including
+missing required records, scope/content conflicts, invalid input, malformed stored
+payloads, query limits, SQL errors and internal programming errors. Catching an
+exception does not restore usability: both adapters reject subsequent calls without
+SQL, and normal block exit raises TransactionAborted and rolls back. Process-control
+exceptions mark failure and propagate unchanged. Both handles close after success,
+rollback or failed completion; returned immutable values remain inspectable.
+
+Normal typed negative results (empty history or unresolved lineage) do not poison.
+A valid withheld or operational-failure execution record is ordinary persisted data,
+not an adapter failure. Identical canonical retries recognize both committed rows
+and rows flushed earlier in this same transaction, validate retained integrity, and
+retain the original ingestion time. Changed content conflicts. Execution inserts do
+not advance the clinical fact watermark or enter history/lineage.
+
+The shared operation boundary preserves safe persistence error categories, suppresses
+sensitive exception chains, and maps SQL/unexpected internal failures to payload-free
+TransactionAborted errors before the caller can catch them. Legacy transaction(engine)
+retains its existing internal-exception propagation policy. Standalone execution
+append/load retain their Engine-only ownership and reject Session/Connection objects.
+
+Contexts are synchronous and confined to their calling thread/process. They must not
+be stored globally or reused. Separate contexts never implicitly join. Use the two
+shared handles for atomic work; do not nest standalone execution calls. Independent
+nested writers against the same SQLite file contend under BEGIN IMMEDIATE. A caught
+failure in an independent inner transaction does not poison the outer context;
+an exception escaping the outer block does roll it back. No ambient registry,
+propagation, savepoints or asynchronous/distributed transaction behavior is provided.
+
+Completion errors close both handles and raise TransactionAborted with
+"transaction completion could not be confirmed". Cleanup attempts rollback where
+possible; a commit exception does not prove nothing committed. Do not treat flushed
+results as durable or persist a failure record inside the poisoned transaction.
+Commit-outcome reconciliation remains Increment 4+.
+
+Focused tests use real SQLite, SQL/transaction event observation, a separate read
+observer without the application BEGIN IMMEDIATE hook, and zero-timeout competing
+writers. They cover bidirectional rollback, caught failures, validation, privacy,
+post-exit rejection, idempotency, visibility and injected completion failures. This
+is not process/power-loss recovery evidence or a final clinical release workflow.
+No schema, migration, execution contract, governance or selection change is involved.

@@ -1,11 +1,7 @@
 """Transaction-scoped append/load operations. No reconstruction or clinical adjudication."""
 from contextlib import contextmanager
 from datetime import datetime, timezone
-from functools import wraps
 from uuid import UUID
-
-from pydantic import ValidationError
-from pydantic_core import PydanticSerializationError
 
 from sqlalchemy import Engine, func, or_, select
 from sqlalchemy.orm import Session
@@ -21,6 +17,7 @@ from .errors import (
 from .mapping import (
     canonical_payload, load_encounter, load_fact, load_patient, validate_fact,
 )
+from .shared_transaction import _Lifecycle, _operation
 from .metadata import RepositoryCutoff
 from .history import FactIdentity, retrieve
 from .lineage import LineageLimits, LineageResult, resolve
@@ -30,29 +27,12 @@ def _now():
     return datetime.now(timezone.utc)
 
 
-def _operation(method):
-    @wraps(method)
-    def checked(self, *args, **kwargs):
-        if not self._active or self._failed:
-            raise TransactionAborted('repository transaction is closed or failed')
-        try:
-            return method(self, *args, **kwargs)
-        except (ValidationError, PydanticSerializationError):
-            self._failed = True
-            raise PersistenceInputError(f'invalid domain input for {method.__name__}') from None
-        except Exception:
-            self._failed = True
-            raise
-    return checked
-
-
 class PatientRepository:
     """Obtain through transaction(); methods never commit independently."""
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session, *, _lifecycle=None):
         self._session = session
-        self._active = True
-        self._failed = False
+        self._lifecycle = _lifecycle if _lifecycle is not None else _Lifecycle()
         identity = session.get(RepositoryIdentity, 1)
         if identity is None:
             raise StorageIntegrityError('missing repository identity')
@@ -286,8 +266,7 @@ def transaction(engine: Engine):
                 require_schema(session.connection())
                 repository = PatientRepository(session)
                 yield repository
-                if repository._failed:
-                    raise TransactionAborted('a failed operation invalidated this transaction')
+                repository._lifecycle.check()
     finally:
         if repository is not None:
-            repository._active = False
+            repository._lifecycle.close()

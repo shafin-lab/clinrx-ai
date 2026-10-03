@@ -265,6 +265,23 @@ idempotent retry, privacy and recovery semantics. These calls own independent
 transactions; they must not be nested inside a fact repository transaction.
 
 A recovered record is historical evidence. Final context checks, release decisions
-and execution persistence are not yet one protected transaction. Increment 3 still
-owns that composition and its race/commit/recovery guarantees; storage alone does
+and execution persistence are not yet one protected transaction. Increment 4+ still
+owns final workflow composition and its race/commit/recovery guarantees; storage alone does
 not establish continuing release eligibility, presentation or delivery.
+
+
+## Phase 4 Increment 3 — shared persistence primitive
+
+`app.persistence.shared_transaction.execution_transaction(engine)` provides one
+private session and BEGIN IMMEDIATE for `tx.repository` and `tx.executions`.
+The execution adapter offers append(record, target=...) and load(execution_id,
+target=...). An exceptional operation through either handle poisons both, even
+when caught; outer exit rolls back. Successful outer exit alone establishes commit.
+All handles close after exit. Use these handles rather than nesting standalone
+persistence calls, which continue to own independent Engine-only transactions.
+See the persistence README for lifecycle, privacy, retry and completion semantics.
+
+This increment does not compose final selection, terminal lookup, material-change
+assessment, final governance or execution-record insertion into a clinical workflow.
+Those steps, correction races and commit-outcome reconciliation remain Increment 4+.
+No execution-domain contracts or clinical release behavior change here.

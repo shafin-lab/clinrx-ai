@@ -1,7 +1,7 @@
 """Immutable synthetic execution append/recovery, separate from clinical facts.
 
-Each public call owns one transaction. No shared fact/execution transaction or
-release orchestration is provided. Scope checks do not authenticate callers.
+Standalone calls own their transactions; the private adapter can join the narrow
+shared context. No release orchestration. Scope checks do not authenticate callers.
 """
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -24,6 +24,7 @@ from .errors import (
     StorageIntegrityError, TransactionAborted, UnsupportedOperation,
 )
 from .mapping import canonical_payload, load_encounter, load_patient
+from .shared_transaction import _operation
 
 # Execution format is independently versioned; clinical PAYLOAD_VERSION is unchanged.
 EXECUTION_PAYLOAD_VERSION = 1
@@ -125,9 +126,7 @@ def _decode(row, repository_id):
         raise StorageIntegrityError('stored execution failed integrity validation') from None
 
 
-def append_weight_trend_execution(engine: Engine, record: WeightTrendExecutionRecord, *,
-                                  target: ContextTarget) -> StoredWeightTrendExecution:
-    """Insert once or recover the exact existing payload, retaining its metadata."""
+def _prepare_append(record, target):
     if type(record) is not WeightTrendExecutionRecord:
         raise PersistenceInputError('expected a WeightTrendExecutionRecord')
     try:
@@ -138,43 +137,79 @@ def append_weight_trend_execution(engine: Engine, record: WeightTrendExecutionRe
     target = _target(target)
     if record.target.context != target:
         raise ScopeMismatch('execution binding differs from requested context')
-    with _session(engine) as session:
-        repository_id = _identity(session)
-        if record.repository_id != repository_id:
-            raise ScopeMismatch('execution belongs to a different repository')
-        _owner(session, target, retained=False)
-        existing = _scoped_row(session, str(record.execution_id), target)
-        if existing is not None:
-            stored = _decode(existing, repository_id)
-            if canonical_payload(stored.record) != payload:
-                raise RecordConflict('execution identity already has different content')
-            return stored
-        # A global UUID collision in another scope must not decode foreign content.
-        collision = session.scalar(select(WeightTrendExecutionRow.execution_id).where(
-            WeightTrendExecutionRow.execution_id == str(record.execution_id)))
-        if collision is not None:
+    return record, target, payload
+
+
+def _append(session, record, target, payload):
+    repository_id = _identity(session)
+    if record.repository_id != repository_id:
+        raise ScopeMismatch('execution belongs to a different repository')
+    _owner(session, target, retained=False)
+    existing = _scoped_row(session, str(record.execution_id), target)
+    if existing is not None:
+        stored = _decode(existing, repository_id)
+        if canonical_payload(stored.record) != payload:
             raise RecordConflict('execution identity already has different content')
-        row = WeightTrendExecutionRow(execution_id=str(record.execution_id),
-            patient_id=target.patient_id, encounter_id=target.encounter_id,
-            payload_version=EXECUTION_PAYLOAD_VERSION, payload=payload,
-            payload_digest=_digest(payload), ingested_at=_now().isoformat())
-        session.add(row)
-        session.flush()
-        return _decode(row, repository_id)
+        return stored
+    # A global UUID collision in another scope must not decode foreign content.
+    collision = session.scalar(select(WeightTrendExecutionRow.execution_id).where(
+        WeightTrendExecutionRow.execution_id == str(record.execution_id)))
+    if collision is not None:
+        raise RecordConflict('execution identity already has different content')
+    row = WeightTrendExecutionRow(execution_id=str(record.execution_id),
+        patient_id=target.patient_id, encounter_id=target.encounter_id,
+        payload_version=EXECUTION_PAYLOAD_VERSION, payload=payload,
+        payload_digest=_digest(payload), ingested_at=_now().isoformat())
+    session.add(row)
+    session.flush()
+    return _decode(row, repository_id)
 
 
-def load_weight_trend_execution(engine: Engine, execution_id: UUID, *,
-                                target: ContextTarget) -> StoredWeightTrendExecution:
-    """Recover historical content, never reselect evidence or refresh governance."""
+def _prepare_load(execution_id, target):
     try:
         execution_id = str(UUID(str(execution_id)))
     except (ValueError, TypeError, AttributeError):
         raise PersistenceInputError('invalid execution identity') from None
     target = _target(target)
+    return execution_id, target
+
+
+def _load(session, execution_id, target):
+    row = _scoped_row(session, execution_id, target)
+    if row is None:
+        raise RecordNotFound('execution not found in requested context')
+    stored = _decode(row, _identity(session))
+    _owner(session, target, retained=True)
+    return stored
+
+
+class _ExecutionAdapter:
+    """Constructed only by the shared context; never owns commit or rollback."""
+
+    def __init__(self, session, lifecycle):
+        self._session = session
+        self._lifecycle = lifecycle
+
+    @_operation
+    def append(self, record: WeightTrendExecutionRecord, *, target: ContextTarget) -> StoredWeightTrendExecution:
+        return _append(self._session, *_prepare_append(record, target))
+
+    @_operation
+    def load(self, execution_id: UUID, *, target: ContextTarget) -> StoredWeightTrendExecution:
+        return _load(self._session, *_prepare_load(execution_id, target))
+
+
+def append_weight_trend_execution(engine: Engine, record: WeightTrendExecutionRecord, *,
+                                  target: ContextTarget) -> StoredWeightTrendExecution:
+    """Insert once or recover retained content; this call owns its transaction."""
+    prepared = _prepare_append(record, target)
     with _session(engine) as session:
-        row = _scoped_row(session, execution_id, target)
-        if row is None:
-            raise RecordNotFound('execution not found in requested context')
-        stored = _decode(row, _identity(session))
-        _owner(session, target, retained=True)
-        return stored
+        return _append(session, *prepared)
+
+
+def load_weight_trend_execution(engine: Engine, execution_id: UUID, *,
+                                target: ContextTarget) -> StoredWeightTrendExecution:
+    """Recover historical content; return only after the owned transaction exits."""
+    prepared = _prepare_load(execution_id, target)
+    with _session(engine) as session:
+        return _load(session, *prepared)
