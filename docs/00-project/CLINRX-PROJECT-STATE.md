@@ -1,30 +1,48 @@
 # ClinRx AI — Project State and Recovery Checkpoint
 
-Last verified: 2026-09-30. Operational handoff only; this is not an architecture standard.
+Last inspected: 2026-10-04. Operational handoff, not an architecture standard.
 
-## Purpose and stable baseline
+## Kernel v1 baseline and current work
 
-ClinRx AI is a clinical decision-support platform being built around structured knowledge, patient context, traceable evidence, deterministic computation and governed AI assistance. It supports clinician judgment; the current repository is a development prototype, not an approved patient-care system.
+Canonical frozen engineering baseline: `d52efb2b0d1759e432bf902cf5e3e65472c7e7aa`.
+At the start of this documentation task, branch main, HEAD, local main and cached
+origin/main matched this commit and the working tree was clean. No remote fetch was
+performed; cached tracking state is not live remote verification. This task updates
+this checkpoint and adds three documentation/specification files, unstaged and
+uncommitted. Reverify Git state on resume rather than treating this dated statement
+as a permanent description.
 
-- Stable `main` baseline: `1559435b68dae3b8ffdcf34fa1da07dfd5611e66` — `add cutoff-bounded historical retrieval` (Sprint 7A.2b; 454 tests).
-- Current branch: `feature/sprint-7a2c1-lineage-resolution`. HEAD, local `main` and cached `origin/main` match that baseline. No network fetch was performed; cached tracking state is not a claim of live remote synchronization.
-- Sprint 7A.2c.1 implementation and focused adversarial review are complete locally but **uncommitted**. After this checkpoint update there are four modified tracked files and two untracked files; the index is empty. Nothing has been staged, committed, pushed or merged for this slice. Reverify this dated state when resuming.
-- **Git history, committed repository artifacts, current code and reproducible tests are authoritative over conversational memory.** This file is a navigation aid; resolve discrepancies from those artifacts and record the result.
+Phase 4 is complete. The first protected synthetic clinical execution path and explicit
+commit-outcome reconciliation are implemented. Kernel v1 freezes semantics/invariants,
+not every class or API name. It is not clinically validated or deployment-ready.
+Git history, committed artifacts and reproducible tests take precedence over old handoffs.
 
-## Test baseline
+## Validation checkpoint
 
-Verified for the current uncommitted feature state: **549 passed**, including **95 focused lineage tests**, using Python 3.11.6 and pytest 9.1.1 with bytecode and pytest cache disabled. The focused adversarial review added 18 cases, found no reproducible defect and required no production-code change. This supersedes the Sprint 7A.1 checkpoint; it does not attribute the new tests to the stable baseline.
+Previously validated at the Increment 5 baseline; not rerun for this documentation task:
 
-Coverage includes [retrieval tests](../../tests/test_retrieval_service.py), [clinical models](../../tests/test_clinical_models.py), [governance](../../tests/test_governance.py), [persistence](../../tests/test_persistence.py), [persistence corrections](../../tests/test_persistence_corrections.py), [revision chains](../../tests/test_revision_chains.py), [historical retrieval](../../tests/test_historical_retrieval.py) and [durable lineage](../../tests/test_persistence_lineage.py). Review checks covered exact budget boundaries, repeated endpoint work, association/evidence overlap, nested immutability, DST folds, read-only SQL and rollback without partial results, alongside the existing cutoff, provenance and privacy cases. Passing software tests is not clinical validation.
+| Suite | Passed |
+|---|---:|
+| Phase 4 Increment 1 contracts | 105 |
+| Increment 2 execution persistence | 74 |
+| Increment 3 shared transaction | 61 |
+| Increment 4 protected workflow | 138 |
+| Increment 5 reconciliation | 73 |
+| All weight-trend | 701 |
+| Persistence/migration | 170 |
+| Governance/safety | 173 |
+| Persistence/history/lineage | 368 |
+| Full suite | 1,250 |
 
-Run from the repository root, without generating bytecode or pytest cache:
+Counts overlap and must not be summed. Previous diff, whitespace and Python syntax
+checks passed. Passing software tests is not clinical approval. Reproduce from root:
 
 ```sh
-PYTEST_ADDOPTS='-p no:cacheprovider' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend backend/venv/bin/python -m pytest -q
-git diff --check
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend backend/venv/bin/python -m pytest -q -p no:cacheprovider tests
 ```
 
-The existing virtual environment is local setup, not a portable repository artifact. [Backend requirements](../../backend/requirements.txt) pin runtime dependencies; [development requirements](../../backend/requirements-dev.txt) include pinned migration and test dependencies. A fresh session must establish its test environment explicitly rather than assume the environment already exists.
+The local virtual environment is not portable repository state; use pinned backend
+requirements when establishing a fresh environment.
 
 ## Completed milestones
 
@@ -42,78 +60,70 @@ Commit milestones are used where the repository does not establish a reliable sp
 | Sprint 7A.1 — Patient Context Persistence Foundation complete | `52ceb23`; [persistence implementation notes](../../backend/app/persistence/README.md) and persistence tests |
 | Sprint 7A.2a — Immutable revision chains complete and merged | `1d4402b`; revision-chain implementation and regression tests |
 | Sprint 7A.2b — Historical retrieval complete and merged | `1559435`; cutoff-bounded historical retrieval and 454-test baseline |
-| Sprint 7A.2c.1 — Read-only durable lineage resolution complete locally | Uncommitted on `feature/sprint-7a2c1-lineage-resolution`; 95 focused / 549 complete tests after adversarial review |
+| Sprint 7A.2c.1 — Durable lineage complete | `73a1ff9` |
+| Sprint 7B.1 Phase 1 — Weight selection/comparison | `b03f07f` |
+| Phase 2 — Inference and exact lineage | `beac78f` |
+| Phase 3 — Historical governance composition | `79282af` |
+| Phase 4 Increment 1 — Execution contracts | `2c94229` |
+| Phase 4 Increment 2 — Immutable execution persistence | `835765d` |
+| Phase 4 Increment 3 — Shared transaction | `55551df` |
+| Phase 4 Increment 4 — Protected execution | `27be536` |
+| Phase 4 Increment 5 — Explicit reconciliation | `d52efb2` |
 
-## Implemented capabilities
+## Implementation boundary
 
-- [FastAPI application](../../backend/app/main.py): root status, `/knowledge`, `/knowledge/search`, and `/knowledge/{knowledge_id}`. Knowledge is loaded from two JSON objects in `knowledge/objects/`; search supports query/domain/status/object-class filtering and deterministic ranking.
-- [Clinical models](../../backend/app/models/clinical/README.md): Pydantic contracts for patient/encounter context, seven fact categories, units/missingness, medication orders versus administrations, calculation execution provenance, immutable snapshots and bounded lineage checks.
-- Separate candidate, rendering, safety-evaluation and human-decision records, with revision/content consistency checks and JSON round-trip coverage. Some derived properties intentionally remain Python-only; consult the implementation notes before designing APIs.
-- [Governance service](../../backend/app/services/governance_service.py): pure release assessment/decision and presentation assessment/recording functions. Contracts bind exact payload, policy, context, authority, freshness, warning exceptions and final-delivery evidence; they record withheld, unconfirmed or rejected outcomes as appropriate.
-- These functions consume supplied assertions. They do not authenticate producers, validate natural-language clinical meaning, inspect live patient systems, persist records or actually display content. No clinical-model/governance API is wired into the application.
-- [Persistence foundation](../../backend/app/persistence/README.md): SQLAlchemy 2.x, file-backed SQLite for local/synthetic development and Alembic migrations, with independent domain and persistence models. Supports patient/encounter registration and ownership, plus ClinicalObservation, MedicationOrder, MedicationAdministration and ClinicalInference persistence with exact-reference retrieval. Repository ingestion metadata, canonical retained-representation idempotency, transactional rollback and committed close/reopen durability are implemented; broader recovery/concurrency guarantees remain deferred.
+Reusable clinical state supports registered patients/encounters and persisted
+observations, orders, administrations and inferences. Immutable revisions, cutoff
+history and exact durable lineage are implemented. Other domain categories and
+longitudinal persistence remain unsupported. See [persistence notes](../../backend/app/persistence/README.md).
 
-## Durable clinical history and lineage boundaries
+The synthetic weight path now composes selection/comparison, inferred evidence,
+lineage, protected historical replay/final recheck, safety/fidelity/runtime evidence,
+governance and immutable released/withheld execution persistence. Explicit reconciliation
+verifies retained request identity without clinical recomputation. Operational failures
+abort; completion uncertainty is typed; delivery is not implemented. See
+[execution notes](../../backend/app/execution/README.md).
 
-- **7A.2a revision history:** reasoned immutable linear chains per stable fact, exact canonical retries before terminal-predecessor enforcement, atomic revision/link writes and fixed patient/encounter ownership. SQLite serializes repository units with BEGIN IMMEDIATE; this does not establish PostgreSQL or crash-recovery guarantees.
-- **7A.2b historical retrieval:** repository UUID plus ingestion watermark defines visibility before revision-prefix validation. Latest-known selection precedes clinical/ingestion-time filtering, so older revisions cannot be resurrected by filtering. Sequence gaps are valid and clock time cannot replace the watermark. Instant comparisons use exact integer arithmetic, including datetime boundaries and DST folds.
-- **7A.2c.1 durable lineage:** `resolve_lineage(reference, *, target, cutoff, limits)` resolves declarations already retained in immutable fact payloads within one explicit patient/encounter prefix. Exact A1 dependencies remain A1 after correction A2; neither revision links nor order associations become evidence dependencies. Confirmation bases provide evidence; confirmation targets provide validation context. Shared exact or stable-family ancestry rejects independence assertions; disjoint ancestry remains unknown. Declared inferred/derived origin is preserved rather than promoted by copying or confirmation.
-- Visibility precedes lineage extraction/traversal/validation. Future facts, revisions and malformed future lineage cannot alter an earlier result. Missing supported endpoints share `not_resolvable_in_scope_at_cutoff`; unsupported kinds remain explicit. No out-of-scope/future lookup refines the missing reason. An ancestor may arrive after its dependent and resolve at a newer cutoff without changing old-cutoff replay.
-- Iterative bounded traversal handles repeated ancestors, diamonds and longest evidence paths. Cycles, malformed retained state and exhausted budgets fail explicitly with sanitized errors; no partial-success result escapes structural failure. Results retain immutable facts/metadata, typed assertions, separate associations, unresolved reasons, origin/provenance limitations and resolution coverage. Complete resolution of the declared graph is not source/clinical completeness or proof of independence.
-- The resolver is persistence-only and read-only: no new table, migration, lineage watermark, domain contract, canonical format or write-acceptance change. Visible scoped history is validated even when unrelated to the root; unrelated visible corruption can therefore fail a query. Row/graph budgets are not payload-byte or wall-clock limits. The resolver cannot detect undeclared copying when external lineage is unavailable.
+Generic governance contracts consume supplied assertions; they do not authenticate
+producers. Presentation contracts exist, but there is no actual delivery/presentation
+adapter. The FastAPI app remains a knowledge-retrieval skeleton, not a clinical execution
+API. There is no production authentication, PHI boundary, real lab integration,
+terminology/conversion service or distributed transaction guarantee.
 
-## Governing standards and principles
+## Freeze and next capability
 
-Use the committed standards as the governing design references; **all remain Draft**, not clinical-use approvals.
+- [Kernel v1 overview and invariant map](../01-architecture/CLINRX-KERNEL-001-Execution-Kernel-v1.md).
+- [Capability-extension guide](../01-architecture/CLINRX-KERNEL-002-Capability-Extension-Guide.md).
+- [Synthetic serum-creatinine specification](../02-clinical-standards/CLINRX-CAP-001-Synthetic-Serum-Creatinine-Trend.md).
 
-| Standard | Version | Responsibility |
-|---|---|---|
-| [CLINRX-ARCH-001](../01-architecture/CLINRX-ARCH-001-Long-Term-Clinical-AI-Architecture.md) | 1.1 | System responsibilities and release boundaries |
-| [CLINRX-DATA-001](../01-architecture/CLINRX-DATA-001-Clinical-Data-and-Knowledge-Standard.md) | 0.3 | Logical information, versions, provenance and disposition |
-| [CLINRX-SAFE-001](../01-architecture/CLINRX-SAFE-001-Clinical-Safety-and-AI-Governance-Standard.md) | 0.2 | Safety decisions, assurance, oversight and release gates |
+Next separately authorized implementation: creatinine Phase A selection/comparison,
+then Phase B inferred fact persistence and lineage using existing kernel primitives.
+No creatinine code exists yet. No pre-slice production extraction is required. Later
+durable execution needs a small transaction-adapter composition extension, separate
+capability execution storage and explicit reconciliation; preserve the weight API.
+Do not introduce generic trend/workflow/selector/recovery frameworks pre-emptively.
 
-Preserve: “AI reasons. ClinRx governs”; exact clinical meaning validated before release; stable identities and immutable revisions; explicit origin, uncertainty and clinical time; deterministic computation; distinct evidence and knowledge; non-overrideable hard failures; auditable human decisions; technology/provider independence. Detailed requirements belong in the linked standards, not this checkpoint.
+## Governing documents and known gaps
 
-## Current clinical model and governance pipeline
+[ARCH-001 v1.1](../01-architecture/CLINRX-ARCH-001-Long-Term-Clinical-AI-Architecture.md),
+[DATA-001 v0.3](../01-architecture/CLINRX-DATA-001-Clinical-Data-and-Knowledge-Standard.md)
+and [SAFE-001 v0.2](../01-architecture/CLINRX-SAFE-001-Clinical-Safety-and-AI-Governance-Standard.md)
+remain Draft. This engineering freeze does not amend their approval status.
+“AI reasons. ClinRx governs”; preserve exact meaning, origin, uncertainty, evidence,
+immutable identity and hard-stop semantics.
 
-Source facts and verified context → immutable snapshot → structured candidate → exact rendering/payload → safety and meaning assertions → release eligibility/decision → current presentation eligibility → final destination verification and delivery receipt → presentation record.
+PROJECT_HISTORY describes an older architecture checkpoint; CAS architecture files
+are placeholders. Legacy ADR references/taxonomy and missing CAS-CDS-001 remain open
+as described in DATA section 50.1 and SAFE section 2. Older implementation snapshots
+inside standards do not override current code. Broad context reconstruction, clinical
+reassessment, reverse lineage, external-source persistence, production security,
+real integration and clinical deployment validation remain deferred.
 
-The code enforces structural consistency over supplied evidence, including freshness/dependency/authority windows and warning-exception bindings. Final verification and receipt represent trusted adapter attestations, not proof of physical delivery or clinician comprehension. Changed content or assertions require new revisions; acknowledgement cannot convert a failed evaluation into a pass. Retrieval remains a separate prototype, not an integrated end-to-end clinical reasoning pipeline.
+## Resume and change discipline
 
-## Deliberate deferrals and next phase
-
-- PatientContext reconstruction, ContextSnapshots, historical knowledge reconstruction and a broader durable audit system remain deferred. Revision chains and cutoff-aware patient-fact history are implemented; read-only declared-lineage resolution is complete locally. Reverse dependent lookup, prospective lineage write validation, standalone links, external-source persistence, cross-encounter reconciliation, automatic reassessment, invalidation and retraction are not part of 7A.2c.1. PostgreSQL support is not validated; production PHI use and clinical validation remain unsupported.
-- No live patient ingestion, authenticated assertion producers, revocation feeds, trustworthy-clock infrastructure or atomic display adapter.
-- No clinical algorithms/rule engine, terminology/unit conversion service, FHIR mapping, medication reconciliation, governed evidence retrieval, external AI integration or clinical deployment validation.
-- Frontend, mobile, infrastructure and CI workflow directories remain placeholders. Privacy/retention enforcement and operational recovery integrations are future work.
-
-**Next action:** review and explicitly authorize staging/committing the completed 7A.2c.1 slice; no such action is performed by this checkpoint. Any later 7A.2c work needs a separately bounded task. Sprint 7A.3 reconstruction and downstream clinical reassessment remain deferred, not implied by graph resolution. Preserve the 549-test feature-state checkpoint and the established historical semantics.
-
-## Normal development workflow
-
-Use a focused feature branch from verified `main`, inspect applicable instructions and standards, implement a bounded change, run the full baseline plus relevant new checks, review the diff, then seek explicit approval before staging/committing/pushing or merging. Earlier history uses feature branches and PRs; recent foundation commits are directly on main. [CONTRIBUTING](../../CONTRIBUTING.md) does not yet formalize a workflow, so this is the default handoff convention, not a claim of branch-protection enforcement.
-
-## Recovery instructions for a new session
-
-1. Locate the actual Git repository (not a conversation mirror); read applicable `AGENTS.md` instructions and this file.
-2. Inspect `git status --short --branch`, `git rev-parse HEAD`, `git log -10 --oneline`, remotes and any staged/unstaged changes. Preserve existing work; never reset to this checkpoint merely to match it.
-3. Compare with the baseline above. If network access is available, fetch or inspect the remote before claiming live synchronization; do not overwrite divergent work.
-4. Read the three standards, clinical-model implementation notes, current services and tests. Re-run the documented baseline; investigate differences before continuing.
-5. Confirm the next phase and unresolved boundaries below, propose a bounded implementation, and report changed files, test results and limitations. Do not infer approval or completed capabilities from old chat messages.
-
-## Known documentation gaps
-
-[PROJECT_HISTORY](../00-governance/PROJECT_HISTORY.md) stops at the August architecture baseline and calls that version approved/frozen; it does not establish approval of the newer Draft standards. ARCH Section 26's retrieval-only implementation snapshot and references to SAFE as future work predate the current code/SAFE commit. DATA's candidate-parent hash is explicitly historical. For implementation scope, use the current code and clinical-model README.
-
-Legacy taxonomy/lifecycle mappings, missing CAS-CDS-001 and mismatched ADR document references remain open in DATA Section 50.1 and SAFE Section 2. Do not silently rewrite legacy standards. The top-level README and contribution/security procedures are intentionally sparse; automated tests do not establish production readiness.
-
-## Update this file when
-
-- A major merge or milestone changes the stable baseline or implemented capabilities.
-- Architecture, data or safety standard versions/statuses change.
-- A verified test-baseline milestone changes counts, commands or setup requirements.
-- The next development phase, deliberate deferrals or significant blockers change.
-
-## Security
-
-Never store secrets, credentials, tokens, patient-identifiable data or confidential clinical records in this document. Use synthetic examples and non-sensitive repository references; follow [SECURITY](../../SECURITY.md).
+Inspect repository/branch/HEAD, cached remote alignment, status and staged diff first.
+Preserve uncommitted work. Read the freeze/extension/spec documents and applicable
+instructions. Validate the baseline before implementation; use the exact bounded
+user-authorized scope. Do not infer authorization to stage, commit, push or implement
+from this handoff. Record future milestones with verified code/tests and update this
+dated checkpoint. Never include secrets or patient data; use synthetic fixtures only.
