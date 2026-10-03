@@ -528,7 +528,7 @@ Completion errors close both handles and raise TransactionAborted with
 "transaction completion could not be confirmed". Cleanup attempts rollback where
 possible; a commit exception does not prove nothing committed. Do not treat flushed
 results as durable or persist a failure record inside the poisoned transaction.
-Commit-outcome reconciliation remains Increment 4+.
+Automatic commit-outcome reconciliation remains Increment 5+.
 
 Focused tests use real SQLite, SQL/transaction event observation, a separate read
 observer without the application BEGIN IMMEDIATE hook, and zero-timeout competing
@@ -536,3 +536,22 @@ writers. They cover bidirectional rollback, caught failures, validation, privacy
 post-exit rejection, idempotency, visibility and injected completion failures. This
 is not process/power-loss recovery evidence or a final clinical release workflow.
 No schema, migration, execution contract, governance or selection change is involved.
+
+
+## Sprint 7B.1 Phase 4 Increment 4 — scoped find and protected composition
+
+The shared execution adapter adds find(execution_id, target=ContextTarget), returning
+StoredWeightTrendExecution or None. Absence (including a foreign-scope ID) is a normal
+result and does not poison the transaction. The query applies patient, encounter and
+execution ID before decoding. Visible records use the same version/digest/envelope,
+repository identity and ownership validation as load. Invalid input, corruption and
+SQL errors remain exceptional and poison both adapters. find never catches a guarded
+load failure. Existing load and standalone Engine-only APIs remain unchanged.
+
+app.execution.weight_trend_workflow.execute_weight_trend_review composes original
+replay, exact inference/lineage verification, protected final recheck, fresh governance
+and execution append inside this shared transaction. It returns only after commit.
+Released and withheld records both persist as historical completed executions; fatal
+errors escape and roll back without automatic failure-record insertion. See the
+execution README for request identity, clock, retry and synthetic authorization limits.
+No schema/entity/migration/payload-version changes accompany this increment.

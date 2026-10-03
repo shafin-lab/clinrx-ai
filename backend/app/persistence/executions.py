@@ -174,12 +174,19 @@ def _prepare_load(execution_id, target):
     return execution_id, target
 
 
-def _load(session, execution_id, target):
+def _find(session, execution_id, target):
     row = _scoped_row(session, execution_id, target)
     if row is None:
-        raise RecordNotFound('execution not found in requested context')
+        return None
     stored = _decode(row, _identity(session))
     _owner(session, target, retained=True)
+    return stored
+
+
+def _load(session, execution_id, target):
+    stored = _find(session, execution_id, target)
+    if stored is None:
+        raise RecordNotFound('execution not found in requested context')
     return stored
 
 
@@ -193,6 +200,11 @@ class _ExecutionAdapter:
     @_operation
     def append(self, record: WeightTrendExecutionRecord, *, target: ContextTarget) -> StoredWeightTrendExecution:
         return _append(self._session, *_prepare_append(record, target))
+
+    @_operation
+    def find(self, execution_id: UUID, *, target: ContextTarget) -> StoredWeightTrendExecution | None:
+        """Normal scoped absence is data; all exceptional failures still poison."""
+        return _find(self._session, *_prepare_load(execution_id, target))
 
     @_operation
     def load(self, execution_id: UUID, *, target: ContextTarget) -> StoredWeightTrendExecution:

@@ -264,10 +264,10 @@ failure. See the persistence README for the one-table migration, canonical diges
 idempotent retry, privacy and recovery semantics. These calls own independent
 transactions; they must not be nested inside a fact repository transaction.
 
-A recovered record is historical evidence. Final context checks, release decisions
-and execution persistence are not yet one protected transaction. Increment 4+ still
-owns final workflow composition and its race/commit/recovery guarantees; storage alone does
-not establish continuing release eligibility, presentation or delivery.
+A recovered record is historical evidence. Standalone storage does not make final
+context checks and release decisions atomic. The Increment 4 workflow below adds
+that protected composition. Storage alone does not establish continuing release
+eligibility, presentation or delivery.
 
 
 ## Phase 4 Increment 3 — shared persistence primitive
@@ -283,5 +283,98 @@ See the persistence README for lifecycle, privacy, retry and completion semantic
 
 This increment does not compose final selection, terminal lookup, material-change
 assessment, final governance or execution-record insertion into a clinical workflow.
-Those steps, correction races and commit-outcome reconciliation remain Increment 4+.
-No execution-domain contracts or clinical release behavior change here.
+Increment 4 below adds the protected workflow and correction-race tests; automatic
+commit-outcome reconciliation remains Increment 5. Increment 3 itself changes no
+execution-domain contracts or clinical release behavior.
+
+
+## Phase 4 Increment 4 — protected synthetic weight review
+
+```python
+from app.execution.weight_trend_workflow import (
+    WeightTrendReviewRequest, execute_weight_trend_review,
+)
+
+stored = execute_weight_trend_review(engine, request, clock=trusted_clock)
+# Returned StoredWeightTrendExecution means the owning context exited successfully.
+```
+
+The frozen request carries execution_id (caller UUID), complete OutputTarget,
+actor, original successful selection manifest, comparison, exact inference reference,
+compact lineage witness and requested_at. It accepts no final selection, snapshot,
+candidate, authorization, runtime state or decision. These historical assertions
+are independently checked against storage; they do not authenticate sources.
+
+Inside one execution_transaction, a scoped normal-absence find checks retry identity
+before any clinical reads or runtime clock sampling. An identical canonical request
+projection recovers the original execution without selection/governance recomputation,
+even after later corrections. The projection includes all request fields, mapping
+requested_at to started_at; generated final evidence and ingestion metadata are
+excluded. The retained decision assessment must name SyntheticWeightProtectedExecution/v1.
+This marker distinguishes the application workflow convention, not cryptographic
+proof against privileged writers. Other request content or incompatible legacy
+records conflict. No request digest, registry, mutable status or schema field is added.
+
+For new work, a cutoff captured under BEGIN IMMEDIATE bounds the protected final
+prefix. The workflow writes no facts. It replays the original selection and compares
+its complete canonical manifest, including ordered exclusions/issues, then reconstructs
+and compares the exact comparison (including Decimal scale and timestamp offsets).
+It resolves historical lineage at the request's output cutoff, checks the complete
+compact witness, and rebuilds the retained inference against the Phase 2 grammar.
+Contradictions, invalid retained inference timing, unsupported weight lineage and
+missing required evidence abort; they are not fabricated clinical withholding.
+
+Final selection uses exactly the original policy with only the repository cutoff
+changed. Existing terminal-before-eligibility, kg-only, event ordering, source
+availability and cardinality semantics remain unchanged. The existing latest-known
+inference-family reader supplies the terminal check, without filters or automatic
+replacement. WeightTrendFinalRecheckPolicy/v1 is unchanged. A changed exact reference
+(including a same-value correction), ineligible terminal, third eligible observation
+or superseded inference causes material change. Unrelated facts and harmless exclusion
+growth do not automatically invalidate the comparison. Same-reference contradictions
+are integrity failures. An inexplicably absent previously verified inference family
+is an integrity failure in this append-only workflow.
+
+Fresh snapshot/candidate/rendering/safety/fidelity/dependencies/authorization/runtime
+and release assessment/decision are built under that transaction. The separately
+identified SyntheticWeightFinalContext/v1 producer retains historical suitability
+checks and adds final-recheck evidence. On material change it sets inadequate context,
+material_change=True and bounded stale items. Governance still reviews the ORIGINAL
+historical evidence; correctly passing historical safety/fidelity checks are not
+fabricated failures. Existing assess_release/decide_release derive withholding.
+Phase 3's historical producer and governance policy semantics are unchanged.
+
+requested_at is immutable request metadata, retained as started_at. Trusted runtime
+clock samples occur after transaction acquisition, at governance observation, at
+final decision/authorization and at finalization. Runtime values are aware UTC and
+must not move backward. Repository cutoff capture time and execution ingestion time
+are not commit timestamps. Evidence validity is evaluated at decision time. The
+existing fixed September 25, 2026 synthetic grant is unchanged: happy-path tests use
+an explicit controlled clock within it; current/out-of-window clocks normally withhold.
+No production identity or clinical authority is implied by the supplied actor.
+
+The existing WeightTrendExecutionRecord retains actual reconstructed historical
+manifest/comparison/lineage, protected final recheck and complete release OR withholding
+decision. tx.executions.append runs inside the same transaction. Only after successful
+context exit is its immutable result returned, without a second transaction. Execution
+insertion does not change clinical fact watermarks, history or lineage.
+
+Adapter failures poison the shared transaction. Pure builder/integrity exceptions
+escape it before public error translation; no lifecycle reset or public poison method
+is needed. Public errors use bounded existing categories and suppress sensitive chains.
+KeyboardInterrupt/SystemExit propagate. No automatic operational-failure execution
+row is written. Valid withholding commits as a completed historical execution.
+
+Completion uncertainty returns no success and does not claim definite rollback.
+Automatic reconciliation and delivery remain Increment 5+. An explicit same-ID retry
+first reads: if present, it recovers the exact retained result; if absent, it can run
+a new protected evaluation for that still-unretained attempt. New evaluation of an
+already retained execution requires a new UUID and coherent historical evidence.
+
+Focused tests: tests/test_weight_trend_workflow.py. Independent zero-timeout writers
+cannot insert corrections or third measurements between final recheck and execution
+append; changes committed before acquisition are seen and changes after commit do not
+rewrite the retained decision. Lock-wait tests use events and verify clocks/authorization
+are sampled after acquisition. Fault injection covers pre-commit rollback and actual
+commit followed by an exception, without implementing reconciliation. No delivery,
+reassessment, reverse graph, migration, payload-version change or generic workflow.
