@@ -437,3 +437,43 @@ its potential writer contention. RecordNotFound is translated only after that ca
 has unwound; no shared poisoned handle is reused. No new read policy, schema,
 payload version, automatic execute/reconcile wrapper, background worker, mutable
 status, delivery deduplication or generic recovery framework is introduced.
+
+
+## Slice #2 Phase A — synthetic serum-creatinine selection and comparison
+
+`creatinine_trend.py` implements only `select_creatinine_observations` and the pure
+`compare_recorded_creatinine`, with separate frozen creatinine contracts. Supply
+an encounter target, repository cutoff and `CreatinineTrendSelectionPolicy` v1.
+The concept is fixed to `synthetic-serum-creatinine`; unit is exact raw/UCUM `mg/dL`
+with assessed/normalized status and a finite, strictly positive Decimal. No unit
+conversion, trimming, rounding or clinical thresholds are applied.
+
+Terminal visible revisions are selected by unchanged unfiltered history before
+eligibility. The sample/event window is half-open and the separate availability
+bound inclusive. Event, recorded, retrieved and processed times are required in
+that instant order; provenance recording equals result recording by instant.
+All availability and binding-assessment times must satisfy the bound. Comparison
+orders by sample instant, preserves offsets and Decimal scale, and rejects ties.
+
+The synthetic source namespace is `clinrx.synthetic.serum-creatinine`, version `1`,
+with measurement/external_record channel. Its identifier names one sample.
+Verified fact/binding, conflict none_known, complete provenance without upstream
+or limitations, and only the permitted synthetic uncertainty disclosure are required.
+Duplicate sample keys among relevant terminals block independently of eligibility.
+Two distinct stable IDs and two distinct sample keys are both required; this is
+not real laboratory specimen authentication or deduplication.
+
+Relevant exclusions block even with two otherwise eligible inputs. Exactly two
+eligible observations are required; more than two is ambiguous, never latest-two.
+Issues/exclusions follow terminal ingestion order; duplicate issues follow that
+record's eligibility issue, then cardinality issues. Any issue leaves no selected
+pair. Comparison revalidates selection and returns its first issue on failure;
+malformed contracts/storage raise rather than becoming ordinary selection issues.
+Returned contracts establish consistency, not proof that caller-supplied evidence
+came from a repository. Selection and comparison perform no writes.
+
+The comparison contains only exact references, values, unit, sample times and
+direction. Inference construction, lineage witness, governance, final recheck,
+execution persistence, reconciliation and delivery remain deferred. Kernel and
+weight behavior are unchanged. See CLINRX-CAP-001 for the full source contract;
+focused tests are in `tests/test_creatinine_trend.py`.
