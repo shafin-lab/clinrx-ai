@@ -534,3 +534,55 @@ authentication or proof that supplied selections came from a repository.
 Focused tests: `tests/test_creatinine_trend_inference.py`. Governance, snapshots,
 safety/fidelity, authorization, final recheck, execution storage, transaction changes,
 reconciliation and delivery remain deferred. Kernel v1 and weight behavior are unchanged.
+
+
+## Slice #2 Phase C — bounded synthetic governance composition
+
+`creatinine_trend_release.py` composes supplied Phase A selection/comparison,
+retained Phase B inference and generic LineageResult into the unchanged governance
+contracts. Callers obtain committed evidence first; Phase C performs no database
+access, final selection, protected recheck, persistence or delivery.
+
+The partial ContextSnapshot contains the two retained observations and inference,
+registered patient/encounter, sources and explicit limitations. Its scope binds
+selection, comparison and output-cutoff digests using existing content_digest.
+These pins establish consistency, not authentication or a durable execution
+manifest. Missing retained nodes stay missing. ClinicalRecommendation is only the
+existing output envelope: its single deterministic claim copies the descriptive
+inference, with applicability, uncertainty and limitations, without treatment advice.
+Rendering preserves CAP-001's exact three statements and Decimal representations.
+
+Exactly two required, non-overrideable safety rules check exact evidence/input
+suitability and bounded descriptive output. Explicit mismatches hard-fail; unavailable
+required evidence remains unavailable; passing means no detected violation of these
+bounded rules. Fidelity independently derives wording from selected Decimal values,
+checks the exact Phase B contract, performed evaluations and complete payload. Generic
+assess_release and decide_release remain unchanged, with no degraded exceptions.
+
+Historical context assertions establish suitability only for the supplied cutoffs,
+within an explicit validity window. They do not detect later corrections or establish
+current clinical eligibility. Dependencies retain exact refs and local versioned
+methods/rules; declared graph completeness is not biological independence.
+
+SyntheticCreatinineReleaseIssuer/v1 uses SyntheticCreatinineReleaseGrant:1, distinct
+from weight. The fixed local v1 grant permits synthetic-creatinine-orchestrator,
+synthetic-p1/synthetic-e1, synthetic-creatinine-request, intended use
+SyntheticHistoricalCreatinineComparison:1, destination synthetic-creatinine-local,
+and recipient synthetic-creatinine-reviewer. Its UTC window is half-open:
+2026-10-04 12:00:00 through 12:05:00. Controlled synthetic runs must explicitly supply
+a time within that window; other actors/targets/times are denied. This is fixture
+policy, not production authentication or clinical authorization. Runtime composition
+rejects another issuer and checks registered scope, active request and output.
+Resolved governance policies use SyntheticCreatinineHistoricalRelease/<digest>:1
+so differing exact context/dependency requirements do not share an immutable identity.
+
+Released means only that this bounded synthetic output passed policy for supplied
+historical evidence at assessment time. It does not mean current status, clinical
+validation, patient-care approval, delivery or action. Withheld records policy or
+required-evidence failure in memory. Malformed contracts and actual storage/lineage
+exceptions propagate; process-control exceptions are not converted into decisions.
+Trusted producers remain a project convention, not a cryptographic trust boundary.
+
+Focused tests: tests/test_creatinine_trend_release.py. Phase D execution records,
+durable decisions, protected transaction/final recheck and reconciliation remain
+deferred. Generic models/services, frozen Kernel v1 and the weight slice are unchanged.
