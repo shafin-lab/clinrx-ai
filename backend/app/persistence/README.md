@@ -10,7 +10,7 @@ Synchronous SQLAlchemy 2.0.54, file-backed SQLite and Alembic. Pydantic clinical
 models are unchanged. The adapter contains all database dependencies; existing
 knowledge APIs and release/presentation governance are unchanged.
 
-Tables: `patient`, `encounter`, `fact_revision`, `revision_link`, `repository_identity`, `weight_trend_execution`, plus
+Tables: `patient`, `encounter`, `fact_revision`, `revision_link`, `repository_identity`, `weight_trend_execution`, `creatinine_trend_execution`, plus
 Alembic's version table. Patient and encounter registrations are immutable through
 the repository. Encounter ownership has a database foreign key; fact ownership
 uses a composite foreign key to the encounter and its patient. Exact fact
@@ -582,3 +582,49 @@ adds no DML, read-policy change, migration, schema field or payload version. Exp
 reconciliation may contend with a writer; contention is an error, never absence.
 Automatic reconciliation and delivery remain deferred. See the execution README
 for result, identity, explicit retry-after-absence and historical-use semantics.
+
+
+## Creatinine Slice #2 Phase D2 — immutable execution persistence
+
+`creatinine_executions.py` exposes Engine-only `append_creatinine_trend_execution`,
+`load_creatinine_trend_execution` and `find_creatinine_trend_execution`. Each call
+owns its standalone transaction under the existing SQLite connection policy and
+returns only after successful exit. Use these calls outside repository/shared
+transactions. Session/Connection inputs are rejected. Find returns None for scoped
+absence; load raises RecordNotFound. Neither converts corruption into absence.
+
+The dedicated `creatinine_trend_execution` table stores execution_id (text UUID
+primary key), patient_id, encounter_id, payload_version, canonical payload,
+payload_digest and assigned UTC ingested_at. The composite encounter/patient FK
+and v1 check use creatinine-specific constraint names. No extra index, cascade,
+revision sequence or clinical watermark field is added. Execution identity is
+capability-qualified: identical UUIDs in different capability tables are independent.
+
+Append revalidates the exact D1 contract, scope, repository identity and registered
+ownership. Exact full canonical retries return the original record and ingestion
+metadata without DML. Changed immutable or generated content conflicts; storage
+idempotency does not implement workflow request matching. Foreign-scope collisions
+conflict without decoding the foreign payload. Missing and foreign scoped reads
+are indistinguishable, with SQL filtering before decode.
+
+Visible rows must pass the independent creatinine payload version, SHA256 over
+UTF-8 canonical content, complete D1 validation, exact canonical round-trip,
+row/record identity/scope/repository agreement and canonical UTC metadata checks.
+Failures use existing bounded persistence errors with standard exception chains
+suppressed. Python exception context remains introspectable, as in the existing
+kernel. Decimal scale, offsets, sample keys, array order, governance and final
+recheck evidence are retained. D1's immutable StoredCreatinineTrendExecution is
+reused; it is not a second envelope format or a proof of protected execution.
+
+Migration `7b2_0004` follows `7b1_0003`, creating only this table and advancing the
+reviewed schema head. Existing clinical rows, allocator, repository identity,
+weight table and weight payloads are preserved. Repeated upgrade is harmless;
+destructive downgrade remains refused. Tests cover populated upgrade, injected
+post-DDL rollback, exact reopen and separate-process recovery after retry. These
+are not process-crash/power-loss or commit-acknowledgement recovery guarantees.
+
+Appending, retrying and reading execution rows do not advance fact watermarks or
+change historical/lineage visibility. Loading validates retained evidence rather
+than running current selection or governance. No shared adapter/lifecycle exposure,
+protected workflow, retry-before-work, final cutoff capture, reconciliation or
+completion-uncertainty integration is implemented. D3–D5 remain deferred.

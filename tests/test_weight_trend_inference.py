@@ -133,7 +133,7 @@ def test_principal_reopen_persist_commit_and_exact_durable_dependencies(register
         assert result.coverage == 'complete_for_declared_visible_graph'
         with engine.connect() as conn:
             assert set(inspect(conn).get_table_names()) == {
-                'patient', 'encounter', 'fact_revision', 'revision_link', 'repository_identity', 'weight_trend_execution', 'alembic_version'}
+                'patient', 'encounter', 'fact_revision', 'revision_link', 'repository_identity', 'weight_trend_execution', 'creatinine_trend_execution', 'alembic_version'}
     finally:
         engine.dispose()
 
