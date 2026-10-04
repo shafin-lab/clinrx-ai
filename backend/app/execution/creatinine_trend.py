@@ -1,12 +1,15 @@
-"""Synthetic serum-creatinine selection/comparison only; no clinical interpretation."""
+"""Synthetic serum-creatinine selection, comparison and inference; no release."""
 from collections import Counter
+from datetime import datetime
 from decimal import Decimal
 from typing import Annotated, Literal
 
-from pydantic import AwareDatetime, Field, field_validator, model_validator
+from pydantic import AwareDatetime, Field, TypeAdapter, field_validator, model_validator
 
-from app.models.clinical.common import ContextTarget, DomainModel, Quantity, Reference
-from app.models.clinical.facts import ClinicalObservation
+from app.models.clinical.common import (
+    ClinicalTime, ContextTarget, DomainModel, LineageEdge, Provenance, Quantity, Reference, Source,
+)
+from app.models.clinical.facts import ClinicalInference, ClinicalObservation
 from app.persistence.metadata import RepositoryCutoff
 from app.persistence.repository import PatientRepository
 
@@ -246,4 +249,62 @@ def compare_recorded_creatinine(selection: CreatinineTrendSelectionResult
         earlier_value=a, later_value=b, unit=selection.policy.unit,
         earlier_sample_time=earlier.time.event, later_sample_time=later.time.event,
         direction='increase' if b > a else 'decrease' if b < a else 'unchanged',
+    )
+
+
+RECORDED_CREATININE_TREND_METHOD = Reference(
+    kind='inference_method', id='RecordedCreatinineTrend', version='1')
+
+
+def build_creatinine_trend_inference(*, selection: CreatinineTrendSelectionResult,
+                                    comparison: RecordedCreatinineComparison,
+                                    inference_id: str, executed_at: datetime, revision: str = '1'
+                                    ) -> ClinicalInference:
+    """Build from an exact successful pair, without storage access or clock sampling.
+
+    Revalidation establishes supplied-contract consistency, not source authenticity
+    or durable visibility. Callers persist and resolve exact lineage separately.
+    """
+    selection = CreatinineTrendSelectionResult.model_validate(selection)
+    if not selection.successful:
+        raise ValueError('inference requires a successful creatinine selection')
+    comparison = RecordedCreatinineComparison.model_validate(comparison)
+    expected = compare_recorded_creatinine(selection)
+    if (comparison.model_dump(mode='json') != expected.model_dump(mode='json')
+            or any(getattr(comparison, field).isoformat() != getattr(expected, field).isoformat()
+                   for field in ('earlier_sample_time', 'later_sample_time'))):
+        raise ValueError('comparison does not match the exact selected observations')
+    executed_at = TypeAdapter(AwareDatetime).validate_python(executed_at)
+    if _instant(executed_at) < _instant(selection.policy.available_at):
+        raise ValueError('inference execution precedes the source availability bound')
+    earlier, later = selection.selected
+    inputs = (earlier.reference, later.reference)
+    a, b = comparison.earlier_value, comparison.later_value
+    if comparison.direction == 'unchanged':
+        statement = (f'Recorded serum creatinine was unchanged between the selected samples '
+                     f'({a} mg/dL then {b} mg/dL). '
+                     'Synthetic evaluation only; bounded historical comparison.')
+    else:
+        verb = 'increased' if comparison.direction == 'increase' else 'decreased'
+        statement = (f'Recorded serum creatinine {verb} from {a} mg/dL to {b} mg/dL '
+                     'between the selected samples. Synthetic evaluation only; bounded historical comparison.')
+    return ClinicalInference(
+        id=inference_id, revision=revision, binding=earlier.binding, origin='inferred',
+        statement=statement, inputs=inputs, method=RECORDED_CREATININE_TREND_METHOD,
+        applicability='Synthetic serum-creatinine comparison within the selected patient/encounter and sample-time window only.',
+        validation_limitations='Not clinically validated; recorded values and synthetic sample identity only.',
+        uncertainty=tuple(dict.fromkeys((
+            'Recorded comparison does not establish clinical significance or cause.',
+            'Synthetic evaluation only; specimen identity and input authenticity are assumed.',
+            *earlier.uncertainty, *later.uncertainty,
+        ))),
+        provenance=Provenance(
+            source=Source(namespace='clinrx.synthetic', identifier='RecordedCreatinineTrend',
+                          version='1', channel='system'),
+            actor='RecordedCreatinineTrend/v1', recorded_at=executed_at,
+            upstream=tuple(LineageEdge(target=reference, relationship='derived_from') for reference in inputs),
+            lineage='complete', limitations=('Synthetic evaluation only; no clinical validity or source-authenticity claim.',),
+        ),
+        time=ClinicalTime(event=executed_at, recorded=executed_at, processed=executed_at, precision='instant'),
+        verification='unverified', conflict='unknown', temporal_status='unknown',
     )

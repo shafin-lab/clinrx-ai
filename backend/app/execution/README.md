@@ -477,3 +477,60 @@ direction. Inference construction, lineage witness, governance, final recheck,
 execution persistence, reconciliation and delivery remain deferred. Kernel and
 weight behavior are unchanged. See CLINRX-CAP-001 for the full source contract;
 focused tests are in `tests/test_creatinine_trend.py`.
+
+
+## Slice #2 Phase B — inferred fact and exact durable lineage
+
+`build_creatinine_trend_inference(selection=..., comparison=..., inference_id=...,
+executed_at=..., revision='1')` is a pure builder returning the unchanged
+ClinicalInference. Failed selection raises ValueError; malformed selection or
+comparison raises validation errors. No failure-shaped inference is emitted.
+The builder revalidates Phase A eligibility, scope, sample distinctness and order,
+then checks every comparison field against the exact selected pair, including
+Decimal scale and sample-time offsets. It performs no storage access or clock lookup.
+
+Method identity is exactly `inference_method:RecordedCreatinineTrend:1`. The three
+statement patterns, applicability, uncertainty and validation/provenance limitations
+are exactly those committed in CLINRX-CAP-001 section 8. Increase/decrease use
+`increased/decreased from {A} mg/dL to {B} mg/dL between the selected samples`;
+unchanged retains both source representations as `({A} mg/dL then {B} mg/dL)`.
+No rounding, delta, percentage, diagnostic/causal interpretation, assay harmonization,
+reference-range interpretation, conversion or recommendation is performed.
+
+The inference is inferred/unverified, with unknown conflict/temporal status and
+binding retained from the earlier observation. Inputs and the two derived_from
+edges are exactly earlier then later. System source is clinrx.synthetic /
+RecordedCreatinineTrend / 1; actor is RecordedCreatinineTrend/v1. The explicit aware
+executed_at must be at or after available_at by instant and supplies event, recorded,
+processed and provenance recording times. Target/horizon remain None and validation
+references empty. Required uncertainty is followed by deduplicated permitted input
+uncertainty. Synthetic sample identity and source authenticity remain assumptions.
+
+Persist with unchanged append_fact and capture an output cutoff after successful
+transaction exit. The input cutoff cannot see the later inference. Generic
+resolve_lineage with an explicit scope/cutoff/budget supplies the actual retained
+graph. Phase B tests verify the root, ordered declarations/dependencies, exact nodes,
+evidence roles, ancestry, ingestion metadata and disclosures. No capability witness
+or new lineage wrapper is introduced. Complete declared graph coverage is not
+clinical/source completeness or biological independence.
+
+Missing, future, wrong-scope or unsupported ancestors remain explicit unresolved
+entries with partial coverage. Missing roots, corrupt visible history, prohibited
+cycles and exhausted budgets retain their existing exceptions. No category is
+converted into an ordinary inference result. Generic storage/lineage does not
+certify this capability's exact two-input contract for arbitrary caller-created
+ClinicalInference objects; extra generic declarations remain visible.
+
+Later observation corrections never substitute inside a retained inference, including
+same-value corrections. New selections may use corrected evidence. Inference
+corrections use existing reasoned append_revision: each exact inference revision
+resolves its own inputs, while supersedes links remain outside evidence lineage.
+Exact retries retain original metadata; changed content under the same ref conflicts.
+The inference does not duplicate the selection policy/cutoff or sample times in its
+payload: exact inputs resolve retained observations; later execution evidence owns
+any durable selection manifest. Returned contracts establish consistency, not source
+authentication or proof that supplied selections came from a repository.
+
+Focused tests: `tests/test_creatinine_trend_inference.py`. Governance, snapshots,
+safety/fidelity, authorization, final recheck, execution storage, transaction changes,
+reconciliation and delivery remain deferred. Kernel v1 and weight behavior are unchanged.
