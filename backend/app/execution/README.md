@@ -586,3 +586,95 @@ Trusted producers remain a project convention, not a cryptographic trust boundar
 Focused tests: tests/test_creatinine_trend_release.py. Phase D execution records,
 durable decisions, protected transaction/final recheck and reconciliation remain
 deferred. Generic models/services, frozen Kernel v1 and the weight slice are unchanged.
+
+
+## Slice #2 Phase D1 — pure execution contracts and final recheck
+
+`creatinine_trend_execution.py` adds immutable capability-specific contracts only.
+It performs no SQL, clock lookup, authorization, release decision, transaction,
+persistence, workflow execution or reconciliation. It imports no weight types.
+A valid record or StoredCreatinineTrendExecution does not establish actual storage,
+protected execution or commit; future trusted readers/workflow must provide that evidence.
+
+CreatinineTrendSelectionManifest v1 retains target patient/encounter, complete
+selection policy and input cutoff, exact selected refs and canonical SHA256 payload
+digests, exact sample identities, Decimal values and sample times, and ordered
+exclusions/issues. The redundant value/time representations permit exact comparison
+validation without decoding fact bodies. Selected samples retain namespace/identifier
+in selection order; existing Source parsing has already occurred, and the manifest
+performs no extra normalization or authentication. A successful manifest requires two
+distinct stable observations and sample keys. Failed manifests retain no invented
+selected evidence. Duplicate-sample issues can exist without eligibility exclusions;
+when both occur, the eligibility issue precedes that terminal's duplicate disclosure.
+Full historical replay, not this compact manifest, proves actual cardinality and reads.
+
+CreatinineTrendLineageWitness v1 pins the supplied exact two-input graph: root/scope,
+output cutoff, ordered derived_from declarations, ingestion-ordered nodes with exact
+refs/digests/metadata, evidence roles, ancestry and provenance disclosures, coverage
+and unresolved entries. Ancestry sets receive deterministic reference ordering;
+declaration, node and issue arrays remain ordered. Missing observation ancestors
+remain partial/unresolved. Extra or contradictory graph structure is rejected rather
+than pruned. Generic resolver semantics and exceptions are unchanged. This witness
+neither establishes complete clinical provenance nor biological independence.
+
+CreatinineTrendInferenceTerminalCheck v1 carries consumed ref/digest, historical
+output cutoff, final cutoff, and terminal ref/digest. Same-ref different digest is a
+contract error. None terminal requires explicit check_not_performed or reader_unavailable;
+it never means the verified family disappeared. D4 must treat an actual absent family
+as integrity failure. No terminal lookup occurs here.
+
+`assess_creatinine_trend_final_recheck(original=..., final=..., inference_terminal=...)`
+accepts validated selections or manifests. CreatinineTrendFinalRecheckPolicy:1 and
+CreatinineTrendFinalRecheck:1 preserve the full original manifest, final manifest and
+terminal assertion. Original must succeed; scope/policy/repository must match and
+input < historical output <= final watermark. Cutoff capture times do not determine
+visibility. Same exact ref with a different payload digest raises StorageIntegrityError;
+other impossible supplied contracts/representations fail validation. Outcome/reasons
+are derived, never independently writable status fields.
+
+Exact refs/digests/sample identities/representations plus current inference are
+unchanged. Replacement revision (even same value), unsuccessful final selection,
+third/duplicate sample, terminal ineligibility or superseded inference is material.
+Harmless exclusion growth, unrelated prefix growth and watermark-neutral execution
+activity are not automatically material. Unavailable check evidence cannot establish
+release. If selection is already materially changed, that outcome remains material
+even when the inference check is unavailable; both reasons are retained. A failed
+manifest lacks observation bodies: D4 historical replay must detect contradictions
+that cannot be established from the compact supplied evidence alone.
+
+CreatinineTrendReviewRequest contains exactly execution_id, complete target, actor,
+original manifest, comparison, inference ref, lineage and requested_at. The pure
+`creatinine_trend_request_projection(request_or_record)` returns existing canonical
+JSON for precisely those fields, preserving scale, offsets, ordering and cutoff
+metadata. It does not match requests or query storage. Generated final recheck,
+governance, started_at/finalized_at and ingestion metadata are excluded from identity.
+
+CreatinineTrendExecutionRecord v1 requires complete original lineage, final recheck
+and typed ReleaseDecision. The nested decision retains snapshot/candidate/rendering,
+safety/fidelity/context/dependencies/authorization/runtime and assessment; these are
+not duplicated in arbitrary dictionaries. Cross-validation binds snapshot bodies,
+sample identities, comparison, inference, witness digests/provenance, recheck and
+request. Valid inference supersedes/correction_reason metadata remains canonical
+content, not an evidence edge. Record validation cannot verify revision-chain storage.
+The exact protected assessor marker is SyntheticCreatinineProtectedExecution/v1 and
+final-context marker SyntheticCreatinineFinalContext/v1. Markers are compatibility
+conventions, not authenticated proof that the future workflow ran.
+
+requested_at is immutable caller metadata. started_at and finalized_at are distinct
+generated execution times, ordered by actual instant around assessment/decision.
+Fresh governance artifact times must fall within started_at and decision time;
+historical clinical times are not rewritten. Changed/unavailable final recheck
+requires withheld/inadequate context; material_change must agree with the recheck.
+A valid withholding decision is retained, never replaced by an operational failure row.
+No operational-failure envelope is introduced. Partial witnesses may be represented
+and requested, but cannot masquerade as completed protected historical evidence.
+
+StoredCreatinineTrendExecution contains the revalidated record and supplied original
+UTC ingested_at only. It preserves that metadata and invents neither a sequence nor a
+commit time. All contracts follow existing frozen/revalidation conventions and
+canonical_payload serialization; unsupported lossy timestamps fail explicitly.
+
+Focused tests: tests/test_creatinine_trend_execution.py, using pure synthetic evidence
+and independent expected fields with no database fixtures. D2 table/adapter/migration,
+D3 shared transaction extension, D4 protected replay/final context/workflow, and D5
+reconciliation remain deferred. Existing kernel, governance and weight behavior are unchanged.
