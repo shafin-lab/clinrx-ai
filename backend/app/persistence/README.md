@@ -628,3 +628,49 @@ change historical/lineage visibility. Loading validates retained evidence rather
 than running current selection or governance. No shared adapter/lifecycle exposure,
 protected workflow, retry-before-work, final cutoff capture, reconciliation or
 completion-uncertainty integration is implemented. D3–D5 remain deferred.
+
+
+## Creatinine Slice #2 Phase D3 — explicit shared composition
+
+The existing `execution_transaction(engine)` facade now exposes three fixed handles:
+
+```python
+with execution_transaction(engine) as tx:
+    repo = tx.repository
+    weight = tx.executions
+    creatinine = tx.creatinine_executions
+    stored = creatinine.append(execution_record, target=target)
+    retained = creatinine.find(execution_record.execution_id, target=target)
+```
+
+The private creatinine adapter provides append/load/find using the unchanged D2
+preparation, storage and decoding functions. All three handles receive the same
+private Session and authoritative lifecycle from the existing owner. Acquisition
+still uses one connection, one BEGIN IMMEDIATE and the existing schema validation.
+Adapters do not begin, commit, roll back or close the unit. Standalone Engine-only
+creatinine and weight APIs retain their previous ownership and behavior.
+
+The existing operation guard checks lifecycle before argument validation. Every
+exceptional creatinine operation poisons all three handles, including validation
+and serialization failures before SQL, conflicts and visible corruption. Catching
+an exception cannot restore activity or permit commit. A scoped find returning
+None is ordinary data and leaves every handle usable. Foreign payloads remain
+undecoded. Error categories and standard formatted-chain sanitization are unchanged.
+
+Mixed fact, weight and creatinine writes commit or roll back through the single
+outer owner. Results remain provisional before successful exit. Process-control
+exceptions preserve their identity and trigger cleanup. Completion uncertainty
+retains TransactionCompletionUnknown; all handles close whether completion was
+acknowledged or not. Tests inject failures both before and after the actual commit;
+this is not reconciliation or process/power-loss recovery.
+
+Nested contexts retain the existing independent-owner policy: they do not join,
+and same-database writers contend. A caught failed independent acquisition does
+not poison the outer unit. D3 adds no blanket nesting prohibition, propagation,
+savepoints, second lifecycle, registry or generic UnitOfWork.
+
+Focused tests: tests/test_creatinine_trend_shared_transaction.py. The change is
+an extensible API/composition addition only. No schema, execution contract,
+repository/history/lineage, governance or weight persistence semantics change.
+Protected creatinine replay, retry-before-work, final cutoff/recheck/governance
+orchestration and reconciliation remain D4/D5 work.

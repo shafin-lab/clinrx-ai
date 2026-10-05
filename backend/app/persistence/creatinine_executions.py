@@ -1,6 +1,7 @@
-"""Standalone immutable creatinine execution storage; no protected workflow.
+"""Immutable creatinine execution storage; no protected workflow.
 
-Calls own their transaction. Retained contracts do not prove authenticated
+Standalone calls own their transaction; the private adapter joins the shared owner.
+Retained contracts do not prove authenticated
 producers or clinical validity. Execution identities are capability-specific.
 """
 from contextlib import contextmanager
@@ -25,6 +26,7 @@ from .errors import (
     StorageIntegrityError, TransactionAborted, UnsupportedOperation,
 )
 from .mapping import canonical_payload, load_encounter, load_patient
+from .shared_transaction import _operation
 
 CREATININE_EXECUTION_PAYLOAD_VERSION = 1
 
@@ -169,6 +171,29 @@ def _find(session, execution_id, target):
     stored = _decode(row, _identity(session))
     _owner(session, target, retained=True)
     return stored
+
+
+class _CreatinineExecutionAdapter:
+    """Shared-owner handle; never begins, commits, or closes the transaction."""
+
+    def __init__(self, session, lifecycle):
+        self._session = session
+        self._lifecycle = lifecycle
+
+    @_operation
+    def append(self, record: CreatinineTrendExecutionRecord, *, target: ContextTarget) -> StoredCreatinineTrendExecution:
+        return _append(self._session, *_prepare_append(record, target))
+
+    @_operation
+    def find(self, execution_id: UUID, *, target: ContextTarget) -> StoredCreatinineTrendExecution | None:
+        return _find(self._session, *_prepare_load(execution_id, target))
+
+    @_operation
+    def load(self, execution_id: UUID, *, target: ContextTarget) -> StoredCreatinineTrendExecution:
+        stored = _find(self._session, *_prepare_load(execution_id, target))
+        if stored is None:
+            raise RecordNotFound('execution not found in requested context')
+        return stored
 
 
 def append_creatinine_trend_execution(engine: Engine, record: CreatinineTrendExecutionRecord, *,

@@ -545,12 +545,12 @@ def test_downgrade_refused_and_owner_fk_enforced(case,registered):
         with pytest.raises(IntegrityError),registered.begin() as conn: conn.execute(text(sql))
 
 
-def test_no_lifecycle_or_weight_dependency():
+def test_no_workflow_or_weight_dependency():
     source=Path(adapter.__file__).read_text()
     imports=[n.module for n in ast.walk(ast.parse(source)) if isinstance(n,ast.ImportFrom)]
-    assert not any('weight' in name or 'shared_transaction' in name or 'workflow' in name for name in imports)
-    assert not any(word in source for word in ('TransactionCompletionUnknown','reconcile_', '_operation', 'capture_cutoff'))
-    assert not any(isinstance(n,ast.ClassDef) for n in ast.parse(source).body)
+    assert not any('weight' in name or 'workflow' in name for name in imports)
+    assert not any(word in source for word in ('TransactionCompletionUnknown','reconcile_', 'capture_cutoff'))
+    assert {n.name for n in ast.parse(source).body if isinstance(n,ast.ClassDef)}=={'_CreatinineExecutionAdapter'}
 
 
 

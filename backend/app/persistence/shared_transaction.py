@@ -15,6 +15,7 @@ from .errors import PersistenceError, PersistenceInputError, SchemaMismatch, Tra
 if TYPE_CHECKING:
     from .repository import PatientRepository
     from .executions import _ExecutionAdapter
+    from .creatinine_executions import _CreatinineExecutionAdapter
 
 
 class _Lifecycle:
@@ -66,11 +67,12 @@ def _operation(method):
 class ExecutionTransaction:
     repository: 'PatientRepository'
     executions: '_ExecutionAdapter'
+    creatinine_executions: '_CreatinineExecutionAdapter'
 
 
 @contextmanager
 def execution_transaction(engine: Engine):
-    """Yield two adapters sharing one BEGIN IMMEDIATE and failure lifecycle.
+    """Yield three adapters sharing one BEGIN IMMEDIATE and failure lifecycle.
 
     Results remain provisional until successful exit. Contexts never implicitly
     join; use these handles rather than nesting standalone persistence calls.
@@ -81,6 +83,7 @@ def execution_transaction(engine: Engine):
     # Local imports avoid a cycle through execution contracts and the repository.
     from .repository import PatientRepository
     from .executions import _ExecutionAdapter
+    from .creatinine_executions import _CreatinineExecutionAdapter
 
     state = _Lifecycle(sanitize=True)
     body_error = None
@@ -90,7 +93,8 @@ def execution_transaction(engine: Engine):
             with session.begin():
                 require_schema(session.connection())
                 tx = ExecutionTransaction(PatientRepository(session, _lifecycle=state),
-                                          _ExecutionAdapter(session, state))
+                                          _ExecutionAdapter(session, state),
+                                          _CreatinineExecutionAdapter(session, state))
                 try:
                     yield tx
                 except BaseException as error:
