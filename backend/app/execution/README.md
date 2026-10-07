@@ -678,3 +678,55 @@ Focused tests: tests/test_creatinine_trend_execution.py, using pure synthetic ev
 and independent expected fields with no database fixtures. D2 table/adapter/migration,
 D3 shared transaction extension, D4 protected replay/final context/workflow, and D5
 reconciliation remain deferred. Existing kernel, governance and weight behavior are unchanged.
+
+
+## Creatinine Phase D4: protected durable workflow
+
+`execute_creatinine_trend_review(engine, request, *, clock=...)` in
+`creatinine_trend_workflow.py` composes the existing creatinine A–D3 contracts.
+This is capability-specific workflow composition, not a generic execution framework.
+It accepts an Engine and a validated CreatinineTrendReviewRequest. Caller-owned
+Sessions/Connections are rejected by the existing shared transaction boundary.
+
+Within one protected transaction, scoped execution lookup precedes clock sampling
+and clinical work. An exact canonical request and workflow marker match returns the
+retained record, finalized_at and ingested_at after successful context exit. A
+same-ID/different-request retry conflicts; retries neither reauthorize nor read
+current facts. This remains true after later corrections or synthetic grant expiry.
+
+A new execution samples a trusted aware clock after acquiring the writer lock,
+captures a final fact cutoff, and replays original selection/comparison at the input
+cutoff and exact inference/lineage at the output cutoff. Canonical replay preserves
+Decimal scale, timestamp offsets, sample identities, ordered evidence and cutoff
+metadata. The Phase B inference rebuild preserves valid supersedes/correction_reason
+content without treating revision ancestry as evidence dependencies. Required
+historical contradictions, incomplete lineage and impossible terminal inference
+evidence abort without a completed execution row.
+
+The same-policy final selection and inference-family terminal read feed the existing
+pure final recheck. Same-value corrections, supersession or changed eligible samples
+are material and produce durable withholding; unrelated/excluded growth is not
+inherently material. No replacement inference is persisted. Fresh Phase C artifacts
+and unchanged generic governance decide release or withholding. The final-context
+assessor SyntheticCreatinineFinalContext/v1 binds the full retained final recheck
+and lineage witness through canonical digests; the execution record retains the
+underlying evidence. The workflow marker is SyntheticCreatinineProtectedExecution/v1.
+These markers are compatibility conventions, not authentication proofs.
+
+Runtime samples are aware, normalized to UTC and nondecreasing across start,
+observation, decision and finalization. The fixed synthetic grant window remains
+2026-10-04 12:00–12:05 UTC; the default current clock outside that window yields
+withholding. Tests inject historical trusted runtime times inside that window;
+this facility is not production authorization.
+
+The D2 append participates in the existing D3 transaction and only the transaction
+owner commits. Return occurs after successful context exit. Operational failures
+roll back; uncertain completion preserves TransactionCompletionUnknown and does
+not return a provisional result or trigger automatic recovery. Public errors use
+bounded messages with suppressed exception chaining. Process-control exceptions
+retain existing cleanup behavior.
+
+Focused tests: tests/test_creatinine_trend_workflow.py. Shared transaction lifecycle,
+persistence/schema, generic lineage/governance and weight behavior remain unchanged.
+D5 explicit reconciliation and completion-uncertainty APIs remain deferred, along
+with delivery, production authorization/PHI and any generic workflow abstraction.
