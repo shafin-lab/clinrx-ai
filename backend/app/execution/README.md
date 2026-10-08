@@ -775,3 +775,92 @@ Focused coverage: tests/test_creatinine_trend_reconciliation.py. This is
 capability-specific explicit recovery/reconciliation, not new kernel infrastructure.
 D5 completes the planned D1–D5 composition subject to the recorded validation results;
 production authorization, PHI handling and delivery remain outside this synthetic slice.
+
+## Multidomain Patient State v1 — M1 contracts only
+
+`patient_state.py` defines PatientStateScope, RetainedStateItem, ten typed recorded
+payloads, and PatientStateSnapshot. PatientStateSnapshot is clinical evidence supplied
+for future reasoning; it does not reuse governance ContextSnapshot and establishes
+neither release eligibility nor an inference dependency graph. No assembly, repository
+query, clinical inference, governance execution or storage API is implemented.
+
+PatientStateScope v1 carries patient/encounter IDs, aware review_start/review_end and
+the existing RepositoryCutoff (repository UUID plus fact watermark). The review
+interval is explicitly closed [start, end], with equal bounds permitted. Comparisons
+use actual instants while canonical serialization preserves wall time and UTC offset.
+Cutoff captured_at is metadata, not clinical time or a source-availability threshold.
+
+RetainedStateItem carries one exact Reference (including revision), Binding, observed
+or reported origin, ClinicalTime, Provenance, optional IngestionMetadata, verification,
+conflict/temporal status, ordered disclosures and a discriminated typed payload.
+Domain is derived from the payload; it cannot disagree with a separate domain field.
+Reference category must suit the payload domain. Each exact source reference appears
+at most once in a snapshot, including across domains. Different revisions may coexist:
+M1 does not select terminal revisions or claim the snapshot is current.
+
+The supplied payload_digest is SHA-256 of the typed domain payload's existing
+canonical_payload serialization and is validated. It is NOT the digest of a persisted
+PatientFact/FactRow. The Python-only canonical_digest property covers the complete
+item or snapshot, including its source, exact ref, times and metadata. Digests detect
+inconsistency, not source authenticity. There is no second serializer. Decimal scale,
+unit spelling, offsets and meaningful source-array/disclosure ordering are preserved
+under existing domain conventions. Unsupported lossy timestamps are rejected.
+
+Payloads reuse ClinicalValue, Quantity/Unit, MedicationIdentity, Dose/Frequency and
+Source. LaboratoryState retains concept, value, specimen identity/type and recorded
+status. MedicationState retains identity, optional dose/route/frequency/schedule and
+source status; AntimicrobialState is separately discriminated with optional explicitly
+recorded indication. HemodynamicSupportState retains support/agent identity, status,
+rate/dose and typed parameters. RespiratorySupportState and RenalSupportState retain
+source mode/modality, status and parameters. FluidOutputState retains category,
+quantity and site; negative recorded balances are not reinterpreted. MicrobiologyState
+retains specimen identity/type, collection time, reported organisms, result/status and
+typed susceptibility observations. ProcedureState and HistoryEventState retain source
+concept, status and optional recorded context/site. Open source text avoids named-drug,
+transplant or ICU policy enums. Recorded labels, including diagnoses, remain source
+assertions rather than diagnoses produced by M1.
+
+Each item declares temporal_basis:
+- event: an explicit clinical event must lie in the closed review interval;
+- effective_interval: a supplied effective start is required and its recorded interval
+  must overlap the review interval; a missing end stays unknown, not proof of activity;
+- contextual_history: only HistoryEventState may predate the review start, and its
+  event (or effective start when event is absent) cannot follow review_end.
+
+ClinicalTime retains event, recorded, retrieved, processed and effective timestamps;
+Provenance retains recorded_at and MicrobiologyState separately retains collected_at.
+No availability time is synthesized, no source eligibility is inferred, and ingestion
+never substitutes for clinical time. Existing ClinicalTime validation remains unchanged;
+M1 additionally rejects effective intervals reversed by actual instant. Actual source
+mapping and domain-specific temporal/availability eligibility belong to M2 or later policy.
+
+Buckets sort by event time when present, otherwise effective start, then domain and
+exact reference kind/ID/revision. ordered_items provides the same deterministic global
+display order without implying simultaneity or clinical priority. Source parameter,
+organism, susceptibility and disclosure arrays retain declared order. Duplicate support
+parameter identities are rejected. Snapshot validation checks bucket/domain pairing,
+patient/encounter scope, duplicate refs and ingestion identities, repository UUID and
+watermark bounds. Missing ingestion metadata requires a disclosure and establishes no
+durable visibility claim. Registered ownership and source authenticity are not queried.
+
+All models follow existing frozen, extra-forbidden, nested-revalidation conventions.
+Mutable input lists are converted to tuples; caller mutation cannot change retained
+content. Storage metadata is explicitly revalidated at this boundary. Trusted Python
+model_construct/model_copy escape hatches still require validation at acceptance.
+
+M2 gaps/deferrals: these are supplied recorded-state descriptors, not registered new
+fact categories or lossless adapters from every existing PatientFact. Existing durable
+facts support observations, medication orders/administrations and inferences; procedure
+and condition domain models are not supported by current fact persistence. Generic
+observations do not supply structured specimen/settings/susceptibility fields, and
+existing medication contracts do not cover all stopped/changed/unknown-dose source
+records. No mapping from free text, new event store, unit normalization or inferred
+medication/antimicrobial classification is supplied here. M2 must define evidenced
+mappings, preserve source linkage, and disclose unsupported data rather than fabricate
+fields. Selection, availability policy, conflict handling, completeness, terminal
+revision policy and explicit inference-input subsets also remain deferred. M1 neither
+promotes every state item into lineage nor claims biological independence/adherence.
+
+Focused tests: tests/test_patient_state.py. Classification:
+MULTIDOMAIN CLINICAL STATE CONTRACTS ONLY. Kernel, persistence/schema, governance,
+lineage and the completed weight/creatinine implementations remain unchanged.
