@@ -730,3 +730,48 @@ Focused tests: tests/test_creatinine_trend_workflow.py. Shared transaction lifec
 persistence/schema, generic lineage/governance and weight behavior remain unchanged.
 D5 explicit reconciliation and completion-uncertainty APIs remain deferred, along
 with delivery, production authorization/PHI and any generic workflow abstraction.
+
+## Creatinine Phase D5: explicit reconciliation
+
+`reconcile_creatinine_trend_execution(engine, request)` explicitly checks whether an
+exact protected execution is durably retained. Its frozen
+`CreatinineTrendReconciliationResult` has only `status` and `stored`:
+`committed_match` requires the retained StoredCreatinineTrendExecution; `absent`
+requires None. Released and withheld decisions are equally recoverable completions.
+
+Request validation and canonical projection precede the existing scoped standalone
+`find_creatinine_trend_execution` lookup. D4 retries and D5 reconciliation share
+`_require_creatinine_request_match`, including the exact protected workflow marker.
+All eight D1 immutable request fields participate; generated final evidence,
+governance, decision and ingestion/finalization metadata do not enter request identity.
+Those retained fields still undergo unchanged D1/D2 integrity validation and are
+returned without replacement. An invalid stored workflow marker fails D1 decoding
+as StorageIntegrityError; a valid different in-scope request raises RecordConflict.
+
+Reconciliation invokes no clock, clinical repository query, workflow replay,
+selection, lineage resolution, final recheck producer or governance producer. It
+does not reauthorize or assess current clinical eligibility. Existing D1 validation
+still checks the retained comparison and reconstructs the expected inference purely
+from the stored snapshot for canonical integrity; D2 still validates repository and
+patient/encounter ownership. These checks do not read current fact revisions, replace
+retained evidence or generate a new decision. Their semantics are not bypassed.
+
+The standalone lookup retains the existing SQLite BEGIN IMMEDIATE policy. It performs
+no application DML but can encounter writer-lock contention. Scope filtering precedes
+payload decoding: missing and foreign-scope rows both yield absent; foreign corrupt
+payloads remain undecoded. Visible corruption, schema/input failures and operational
+failures remain bounded exceptions, never absence. Process-control exceptions retain
+cleanup behavior. No shared transaction lifecycle or persistence policy changed.
+
+After TransactionCompletionUnknown, the caller may explicitly reconcile. A committed
+match preserves the original record, decision, finalized_at and ingested_at, even
+after later corrections, supersession or authority expiry. Absence describes only
+that completed lookup, not proof of historical rollback or permission to reuse an ID
+without checking. The caller may subsequently invoke D4 explicitly; D4 checks again.
+A failed reconciliation leaves the earlier completion uncertainty unresolved.
+There is no automatic execute/reconcile wrapper, retry, polling or recovery loop.
+
+Focused coverage: tests/test_creatinine_trend_reconciliation.py. This is
+capability-specific explicit recovery/reconciliation, not new kernel infrastructure.
+D5 completes the planned D1–D5 composition subject to the recorded validation results;
+production authorization, PHI handling and delivery remain outside this synthetic slice.

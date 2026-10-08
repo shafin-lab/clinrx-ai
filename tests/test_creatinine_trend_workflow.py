@@ -536,14 +536,16 @@ finally: engine.dispose()
     assert proc.stdout.strip()==canonical_payload(saved)
 
 
-def test_no_framework_weight_or_reconciliation():
+def test_no_framework_weight_or_automatic_reconciliation():
     source=Path(workflow.__file__).read_text()
     tree=ast.parse(source)
-    assert not any(isinstance(n,ast.ClassDef) for n in tree.body)
+    assert {n.name for n in tree.body if isinstance(n,ast.ClassDef)} == {'CreatinineTrendReconciliationResult'}
     imports=[n.module for n in ast.walk(tree) if isinstance(n,ast.ImportFrom)]
     assert not any('weight' in name or 'sqlalchemy' in name for name in imports)
-    assert not any(word in source for word in ('reconcile_creatinine','append_fact(', 'append_revision(', 'load_creatinine_trend_execution('))
+    assert not any(word in source for word in ('append_fact(', 'append_revision(', 'load_creatinine_trend_execution('))
     function=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='execute_creatinine_trend_review')
+    assert not any(isinstance(n,ast.Call) and isinstance(n.func,ast.Name)
+                   and n.func.id == 'reconcile_creatinine_trend_execution' for n in ast.walk(function))
     assert isinstance(function.body[-1],ast.Return)
     for node in ast.walk(function):
         if isinstance(node,ast.With): assert not any(isinstance(child,ast.Return) for child in ast.walk(node))

@@ -1,5 +1,7 @@
-"""Protected synthetic creatinine composition; no reconciliation or delivery."""
+"""Protected synthetic creatinine composition and explicit historical recovery."""
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from typing import Literal
 from hashlib import sha256
 
 from app.execution.creatinine_trend import (
@@ -24,6 +26,7 @@ from app.models.clinical.common import Reference
 from app.models.clinical.decisions import RecommendationReview
 from app.models.clinical.facts import ClinicalInference
 from app.models.clinical.governance import ContextFreshnessAssessment, ValidityWindow, required_payload
+from app.persistence.creatinine_executions import find_creatinine_trend_execution
 from app.persistence.errors import (
     PersistenceInputError, QueryLimitExceeded, RecordConflict, RecordNotFound, SchemaMismatch,
     ScopeMismatch, StorageIntegrityError, TransactionAborted, TransactionCompletionUnknown, UnsupportedOperation,
@@ -239,3 +242,42 @@ def execute_creatinine_trend_review(engine, request: CreatinineTrendReviewReques
     except Exception:
         raise TransactionAborted('protected creatinine execution failed') from None
     return result
+
+
+@dataclass(frozen=True)
+class CreatinineTrendReconciliationResult:
+    """Retention observed by this scoped lookup, not current clinical eligibility."""
+    status: Literal['committed_match', 'absent']
+    stored: StoredCreatinineTrendExecution | None
+
+    def __post_init__(self):
+        if self.status == 'committed_match':
+            if not isinstance(self.stored, StoredCreatinineTrendExecution):
+                raise ValueError('committed match requires a retained execution')
+        elif self.status != 'absent' or self.stored is not None:
+            raise ValueError('absence requires no retained execution')
+
+
+def reconcile_creatinine_trend_execution(engine, request: CreatinineTrendReviewRequest
+                                         ) -> CreatinineTrendReconciliationResult:
+    """Explicit scoped recovery; no current clinical evaluation or automatic retry.
+
+    Existing D1/D2 retained-content validation remains intact. The standalone
+    lookup inherits SQLite's writer reservation; errors do not establish absence.
+    """
+    request = _validate_request(request)
+    try:
+        stored = find_creatinine_trend_execution(engine, request.execution_id, target=request.target.context)
+        if stored is None:
+            return CreatinineTrendReconciliationResult(status='absent', stored=None)
+        _require_creatinine_request_match(stored, request)
+        return CreatinineTrendReconciliationResult(status='committed_match', stored=stored)
+    except (PersistenceInputError, RecordConflict, StorageIntegrityError, SchemaMismatch) as error:
+        messages = {PersistenceInputError: 'invalid creatinine reconciliation input',
+            RecordConflict: 'execution identity already has different request or workflow',
+            StorageIntegrityError: 'creatinine reconciliation integrity failure',
+            SchemaMismatch: 'unsupported execution storage schema'}
+        category = next(kind for kind in messages if isinstance(error, kind))
+        raise category(messages[category]) from None
+    except Exception:
+        raise TransactionAborted('creatinine reconciliation failed') from None
