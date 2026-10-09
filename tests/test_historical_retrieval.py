@@ -424,3 +424,122 @@ def test_s1_boundary_equivalent_instants_and_microsecond_order(year):
 def test_s1_invalid_boundary_query_input_still_rejected(registered,bad):
     with pytest.raises(PersistenceInputError),transaction(registered) as repo:
         repo.list_history(target=TARGET,cutoff=repo.capture_cutoff(),clinical_filter={'axis':'event','start':bad})
+
+
+_HISTORY_METHODS = ('list_history', 'list_latest_known', 'list_current_latest_known',
+                    'list_revisions', 'load_latest_known', 'load_current_latest_known')
+
+
+@pytest.mark.parametrize('method', _HISTORY_METHODS)
+def test_foreign_visible_chain_rejected_before_any_payload_decode(registered, monkeypatch, method):
+    import app.persistence.history as history
+    cuts, (_, _, _, terminal) = build(registered)
+    sentinel = 'FOREIGN_PAYLOAD_MUST_NOT_BE_DECODED'
+    with registered.begin() as connection:
+        connection.execute(text('UPDATE fact_revision SET patient_id=:p, encounter_id=:e, payload=:payload WHERE ingestion_sequence=:s'),
+            {'p':'synthetic-p2', 'e':'synthetic-e3', 'payload':sentinel,
+             's':terminal.ingestion.ingestion_sequence})
+    decoded = []
+    original = history.load_fact
+    def observed_decode(row, repository_id):
+        decoded.append(row.ingestion_sequence)
+        return original(row, repository_id)
+    monkeypatch.setattr(history, 'load_fact', observed_decode)
+    kwargs = {} if 'current' in method else {'cutoff':cuts[-1]}
+    # A filter that excludes every event must not hide the malformed chain.
+    if method != 'list_revisions':
+        kwargs['clinical_filter'] = ClinicalTimeFilter(axis='event', start=AT+timedelta(days=500))
+    args = (KEY,) if method in ('list_revisions', 'load_latest_known', 'load_current_latest_known') else ()
+    with pytest.raises(ScopeMismatch) as caught, transaction(registered) as repo:
+        getattr(repo, method)(*args, target=TARGET, **kwargs)
+    # Broad retrieval may visit another independent identity first. No member of
+    # the malformed chain may decode, even its otherwise valid predecessor.
+    assert not set(decoded).intersection({1, 3, 4})
+    assert str(caught.value) == 'visible revision chain does not belong to requested context'
+    formatted = ''.join(traceback.format_exception(caught.value))
+    assert sentinel not in formatted
+    assert 'synthetic-p2' not in formatted and 'synthetic-e3' not in formatted
+
+
+@pytest.mark.parametrize('sequence,other', [
+    (1, replace(TARGET, encounter_id='synthetic-e2')),
+    (4, replace(TARGET, patient_id='synthetic-p2', encounter_id='synthetic-e3')),
+])
+def test_valid_foreign_payload_in_visible_chain_is_not_filtered(registered, sequence, other):
+    from app.persistence.mapping import canonical_payload
+    cuts, records = build(registered)
+    source = next(s.fact for s in records if s.ingestion.ingestion_sequence == sequence)
+    foreign = replace(source, binding=replace(source.binding, target=other))
+    with registered.begin() as connection:
+        connection.execute(text('UPDATE fact_revision SET patient_id=:p, encounter_id=:e, payload=:payload WHERE ingestion_sequence=:s'),
+            {'p':other.patient_id, 'e':other.encounter_id, 'payload':canonical_payload(foreign), 's':sequence})
+    with pytest.raises(ScopeMismatch), transaction(registered) as repo:
+        repo.list_latest_known(target=TARGET, cutoff=cuts[-1])
+
+
+def test_future_foreign_malformed_revision_preserves_old_prefix(registered, monkeypatch):
+    import app.persistence.history as history
+    cuts, (first, other, second, terminal) = build(registered)
+    with registered.begin() as connection:
+        connection.execute(text("UPDATE fact_revision SET patient_id='synthetic-p2', encounter_id='synthetic-e3', payload='not-json' WHERE ingestion_sequence=:s"),
+                           {'s':terminal.ingestion.ingestion_sequence})
+    decoded = []
+    original = history.load_fact
+    def observed_decode(row, repository_id):
+        decoded.append(row.ingestion_sequence)
+        return original(row, repository_id)
+    monkeypatch.setattr(history, 'load_fact', observed_decode)
+    with transaction(registered) as repo:
+        assert repo.list_history(target=TARGET, cutoff=cuts[3]).records == (first, other, second)
+        assert repo.list_latest_known(target=TARGET, cutoff=cuts[3]).records == (other, second)
+        assert repo.load_latest_known(KEY, target=TARGET, cutoff=cuts[3]).records == (second,)
+    assert terminal.ingestion.ingestion_sequence not in decoded
+    decoded.clear()
+    with pytest.raises(ScopeMismatch), transaction(registered) as repo:
+        repo.load_latest_known(KEY, target=TARGET, cutoff=cuts[-1])
+    assert decoded == []
+
+
+def test_unrelated_foreign_corruption_excluded_but_explicit_identity_guarded(registered, monkeypatch):
+    import app.persistence.history as history
+    from app.persistence.history import FactIdentity
+    other = replace(TARGET, patient_id='synthetic-p2', encounter_id='synthetic-e3')
+    with transaction(registered) as repo:
+        own = repo.append_fact(fact(), target=TARGET)
+        foreign = repo.append_fact(fact(id='foreign', binding=replace(fact().binding, target=other)), target=other)
+        cutoff = repo.capture_cutoff()
+    with registered.begin() as connection:
+        connection.execute(text("UPDATE fact_revision SET payload='not-json' WHERE ingestion_sequence=:s"),
+                           {'s':foreign.ingestion.ingestion_sequence})
+    original = history.load_fact
+    def reject_foreign_decode(row, repository_id):
+        assert row.ingestion_sequence != foreign.ingestion.ingestion_sequence
+        return original(row, repository_id)
+    monkeypatch.setattr(history, 'load_fact', reject_foreign_decode)
+    with transaction(registered) as repo:
+        assert repo.list_latest_known(target=TARGET, cutoff=cutoff).records == (own,)
+        assert repo.list_history(target=TARGET, cutoff=cutoff).records == (own,)
+    with pytest.raises(ScopeMismatch), transaction(registered) as repo:
+        repo.list_revisions(FactIdentity(kind='observation', id='foreign'), target=TARGET, cutoff=cutoff)
+
+
+def test_in_scope_envelope_with_foreign_payload_remains_decode_integrity_error(registered, monkeypatch):
+    import app.persistence.history as history
+    from app.persistence.mapping import canonical_payload
+    with transaction(registered) as repo:
+        stored = repo.append_fact(fact(), target=TARGET)
+        cutoff = repo.capture_cutoff()
+    foreign = replace(stored.fact, binding=replace(stored.fact.binding,
+        target=replace(TARGET, encounter_id='synthetic-e2')))
+    with registered.begin() as connection:
+        connection.execute(text('UPDATE fact_revision SET payload=:payload WHERE ingestion_sequence=:s'),
+                           {'payload':canonical_payload(foreign), 's':stored.ingestion.ingestion_sequence})
+    decoded = []
+    original = history.load_fact
+    def observed_decode(row, repository_id):
+        decoded.append(row.ingestion_sequence)
+        return original(row, repository_id)
+    monkeypatch.setattr(history, 'load_fact', observed_decode)
+    with pytest.raises(StorageIntegrityError), transaction(registered) as repo:
+        repo.list_latest_known(target=TARGET, cutoff=cutoff)
+    assert decoded == [stored.ingestion.ingestion_sequence]

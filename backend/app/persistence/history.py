@@ -98,6 +98,11 @@ def _visible_chain(repository, identity, target, watermark):
         FactRow.ingestion_sequence <= watermark).order_by(FactRow.ingestion_sequence)).all()
     if not rows:
         return []
+    # Check every visible envelope before decoding any member of this chain.
+    # Reject mixed ownership, never filter it into an older terminal revision.
+    if any((row.patient_id, row.encounter_id) != (target.patient_id, target.encounter_id)
+           for row in rows):
+        raise ScopeMismatch('visible revision chain does not belong to requested context')
     sequences = [row.ingestion_sequence for row in rows]
     # Future successors are deliberately excluded, including their payloads and
     # validation failures. Do not reuse the full-database _chain validator here.
