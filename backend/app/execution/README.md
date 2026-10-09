@@ -864,3 +864,72 @@ promotes every state item into lineage nor claims biological independence/adhere
 Focused tests: tests/test_patient_state.py. Classification:
 MULTIDOMAIN CLINICAL STATE CONTRACTS ONLY. Kernel, persistence/schema, governance,
 lineage and the completed weight/creatinine implementations remain unchanged.
+
+## Multidomain Patient State v1 — M2.1 source-backed assembly
+
+`patient_state_assembly.assemble_patient_state(engine, scope=PatientStateScope(...))`
+returns an immutable PatientStateAssemblyResult after one existing repository
+transaction exits successfully. SyntheticLaboratoryMedicationState version 1 reads
+`list_latest_known(target=scope.target, cutoff=scope.repository_cutoff)` exactly once,
+without time/ingestion filters, clock sampling or replacement cutoff capture.
+Terminal visibility and M2.0 scope-before-decode validation precede all mapping.
+No predecessor is resurrected when a terminal no longer maps or leaves the window.
+
+Laboratory support is partial: observations must name synthetic-serum-creatinine,
+source namespace clinrx.synthetic.serum-creatinine, version 1, and measurement or
+external_record channel. A known Quantity is required by this numeric source shape.
+All such terminal observations may be retained, including zero/negative values;
+there is no cardinality, unit-conversion, positivity, verification or comparison
+policy. Quantity/unit/source representations remain exact. Dedicated specimen and
+result-status fields are absent from the durable model and remain absent/disclosed.
+No creatinine capability code is imported or invoked.
+
+Medication support covers durable orders and administrations. Orders retain dose,
+route, frequency, schedule and source order_status. Administrations retain delivered
+dose/route and their source type's completed-delivery meaning as administered.
+Medication records are not classified as antimicrobial or support. This projection
+is not a lossless copy of every fact field: exact source refs preserve access to
+correction reasons and administration/order associations, which are not new lineage.
+Source uncertainty is retained in labelled item disclosures, and provenance/time,
+verification/conflict/status, binding and ingestion metadata are copied unchanged.
+
+Point membership is closed [review_start, review_end], with explicit instant event
+time and no time uncertainty. Missing/imprecise/uncertain point timing is unsuitable.
+Orders with effective_start use inclusive overlap; absent end stays unknown and
+never implies active therapy. Day/approximate recorded interval endpoints may be
+used as representative bounds with explicit disclosure; unknown precision is
+unsuitable. Event-first M1 ordering remains unchanged even for interval membership.
+Availability by review_end is not asserted. Recorded/retrieved/processed and ingestion
+metadata remain distinct, and captured_at never substitutes for an availability bound.
+
+Exactly ten ordered DomainSourceCoverage entries accompany the snapshot. Laboratory
+is partial, medication supported, and the other eight domains unsupported/not_attempted
+with absent counts. Every source_completeness is unknown. Candidate counts count
+unique terminal observations considered by the laboratory mapper (including unknown
+concept/source profiles) or unique terminal medication orders/administrations.
+Retained counts match bucket lengths. Unsuitable counts include supported-profile
+shape/timing failures only; out-of-window and unsupported-profile exclusions are not
+unsuitable. Thus candidate = retained + domain mapping issues; unsuitable is a subset
+of those issues. Unsupported fact categories have unclassified profile issues and
+are not counted as candidates in an invented domain.
+
+Typed issues carry exact references, optional mapped domain and bounded reason codes,
+ordered by reference kind/ID/revision then fixed reason order. Exact repeated records
+are deduplicated only when canonical full fact AND ingestion metadata agree; conflicting
+exact records or multiple terminal revisions in a supplied history result fail integrity.
+Distinct equal-value facts remain distinct. Coverage and essential source/availability
+limitations are mirrored into deterministic snapshot disclosures, including an omission
+notice when issues exist. Empty never means clinically absent.
+
+Public errors preserve bounded persistence categories, sanitize unexpected mapper/read/
+transaction-exit failures as TransactionAborted, and preserve process-control exceptions.
+Malformed storage never becomes an empty domain. There are no automatic retries.
+The existing SQLite BEGIN IMMEDIATE policy still applies, including possible contention;
+assembly performs no application writes and is not lock-free. Existing encounter-wide
+history scanning is not a new bounded-resource/pagination guarantee.
+
+M1 contracts, historical retrieval, shared transaction, schema, inference, lineage,
+governance, execution/reconciliation and weight/creatinine implementations are unchanged.
+Procedure/condition persistence, richer specimen/microbiology/support mappings and
+contextual-history assembly remain deferred. M2.1 creates no clinical reasoning,
+dependency graph or release decision. Focused tests: tests/test_patient_state_assembly.py.
