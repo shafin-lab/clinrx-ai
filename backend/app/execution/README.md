@@ -933,3 +933,69 @@ governance, execution/reconciliation and weight/creatinine implementations are u
 Procedure/condition persistence, richer specimen/microbiology/support mappings and
 contextual-history assembly remain deferred. M2.1 creates no clinical reasoning,
 dependency graph or release decision. Focused tests: tests/test_patient_state_assembly.py.
+
+## M3.1: explicit-subset laboratory/medication temporal inference
+
+`build_patient_state_temporal_inference(*, assembly, request)` is pure and returns
+one `ClinicalInference` with method `RecordedPatientStateTemporalRelation:1`.
+`PatientStateTemporalRelationRequest` contains scope, earlier_laboratory,
+later_laboratory and medication pins, inference_id, revision (default `1`), supplied
+aware executed_at, and optional paired supersedes/correction_reason. Each frozen
+`PatientStateSelectionPin` contains only reference and expected_digest (SHA-256 of
+the canonical entire retained item). No values, times or prose are accepted separately.
+
+The entire typed M2.1 assembly is revalidated, including coverage, issues, payload
+digests, scope and ingestion prefix. Request scope is compared canonically, including
+representation. Each selected exact reference must occur in its expected bucket and
+match its whole-item digest. Malformed unrelated content fails validation; valid extra
+items and unrelated mapping issues do not change the inference. These checks establish
+supplied consistency, not authentication or proof of a repository read.
+
+A/B must be synthetic-serum-creatinine observations from the committed M2.1 source
+namespace/version/channels, with known finite Quantity values and assessed/normalized
+UCUM mg/dL units (both raw and code exactly mg/dL). Stable observation identities and
+declared namespace/identifier sample keys must differ. Finite zero/negative values
+remain descriptive recorded values. No conversion, positivity rule, reference range,
+renal interpretation or absolute/percentage change is introduced.
+
+All three events must be explicit instants without uncertainty. Actual instants must
+satisfy A < M < B; boundary equality, reversed A/B and interval-only medication timing
+fail. An order interval never substitutes for its event. Order status is not interpreted
+as delivery or active therapy. Administration requires status administered and a
+nonmissing total_administered dose, without implying continuing therapy.
+
+Statement templates preserve Decimal string scale and timestamp isoformat offsets.
+They describe increased/decreased/unchanged laboratory values, followed by exactly one
+recorded-order-event or recorded-administration-time clause, then the fixed temporal
+noncausality and synthetic-evaluation disclaimer. Medication identity and other source
+prose never enter the statement. Fixed applicability, validation limitation and six
+mandatory uncertainties are followed by selected A/B/M disclosures, provenance
+limitations and labelled verification/conflict/provenance-completeness/binding states.
+First-occurrence deduplication preserves order. Retained source disclosures remain
+source-supplied limitations, not authored clinical conclusions; they are not sanitized
+into clinically validated content. No release authorization is implied.
+
+Inputs and direct derived_from edges are exactly A/B/M in that order, with local
+ordered equality enforced. Neither snapshot membership nor associated orders, upstream
+ancestry, supersedes links or source profiles add direct dependencies. Old pins remain
+old revisions; a later correction requires explicit new pins even at the same value.
+
+executed_at is never sampled. It must be at or after each selected event, recorded,
+retrieved, processed, provenance recorded_at and binding assessed_at instant. Ingestion,
+cutoff capture, future effective_end and unrelated-item timestamps are not availability
+bounds. Output event/recorded/processed/provenance times retain executed_at. Correction
+metadata follows existing same-inference/different-revision paired rules; predecessor
+persistence and method are not verifiable here.
+
+The builder reports bounded `PatientStateTemporalInferenceError.code` values. Invalid
+request/assembly validation is sanitized; expected selection errors remain explicit;
+unexpected ordinary construction errors abort with a bounded content error. Process
+control exceptions propagate. Raw chained validation display is suppressed, but Python
+exception context/traceback-local introspection is not a privacy boundary. Direct model
+construction outside the builder retains normal Pydantic validation behavior.
+
+No repository reads/writes, clock, terminology, lineage resolution, governance,
+execution/reconciliation, schema or shared contracts change. Source authentication,
+clinical validation, persistence/lineage integration and release remain separate future
+work. There is no rule engine or automatic subset selection. Focused tests:
+`tests/test_patient_state_inference.py`.
