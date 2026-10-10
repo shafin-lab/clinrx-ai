@@ -76,7 +76,7 @@ def test_atomic_success_and_single_connection(case, registered, variant):
     before = counts(registered)
     with trace(registered) as events:
         with execution_transaction(registered) as tx:
-            assert {f.name for f in fields(tx)} == {'repository', 'executions', 'creatinine_executions'}
+            assert {f.name for f in fields(tx)} == {'repository', 'executions', 'creatinine_executions', 'patient_state_executions'}
             assert not any(hasattr(tx, name) for name in ('session', 'connection', 'commit', 'rollback', 'reset'))
             assert not any(isinstance(value, Session) for value in vars(tx).values())
             with pytest.raises(FrozenInstanceError): tx.repository = None

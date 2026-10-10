@@ -92,7 +92,7 @@ def test_one_owner_and_atomic_visibility(mixed,registered,monkeypatch,variant):
     try:
         with trace(registered) as events:
             with execution_transaction(registered) as tx:
-                assert {f.name for f in fields(tx)}=={'repository','executions','creatinine_executions'}
+                assert {f.name for f in fields(tx)}=={'repository','executions','creatinine_executions','patient_state_executions'}
                 for handle in (tx,tx.repository,tx.executions,tx.creatinine_executions):
                     assert not any(hasattr(handle,name) for name in ('session','connection','commit','rollback','reset'))
                 assert not any(isinstance(v,Session) for v in vars(tx).values())

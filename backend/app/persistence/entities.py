@@ -2,7 +2,7 @@
 from sqlalchemy import CheckConstraint, ForeignKey, ForeignKeyConstraint, Integer, Text, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-SCHEMA_REVISION = '7b2_0004'
+SCHEMA_REVISION = 'm4_0005'
 PAYLOAD_VERSION = 1
 
 
@@ -94,4 +94,17 @@ class CreatinineTrendExecutionRow(Envelope, Base):
         ForeignKeyConstraint(['encounter_id', 'patient_id'],
             ['encounter.encounter_id', 'encounter.patient_id'], name='fk_creatinine_execution_encounter_owner'),
         CheckConstraint('payload_version = 1', name='ck_creatinine_execution_payload_version'),
+    )
+
+
+class PatientStateTemporalExecutionRow(Envelope, Base):
+    __tablename__ = 'patient_state_temporal_execution'
+    execution_id: Mapped[str] = mapped_column(Text, primary_key=True)
+    patient_id: Mapped[str] = mapped_column(Text, nullable=False)
+    encounter_id: Mapped[str] = mapped_column(Text, nullable=False)
+    payload_digest: Mapped[str] = mapped_column(Text, nullable=False)
+    __table_args__ = (
+        ForeignKeyConstraint(['encounter_id', 'patient_id'],
+            ['encounter.encounter_id', 'encounter.patient_id'], name='fk_patient_state_execution_encounter_owner'),
+        CheckConstraint('payload_version = 1', name='ck_patient_state_execution_payload_version'),
     )

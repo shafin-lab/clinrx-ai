@@ -1095,3 +1095,36 @@ storage and shared adapter integration. Protected orchestration, actual reads/cu
 retry-before-work, trusted clocks, commit uncertainty and explicit reconciliation remain M4.3.
 Kernel, M1/M2/M3, inference, lineage, history, persistence, transactions, governance core,
 weight and creatinine are unchanged. Focused tests: tests/test_patient_state_execution.py.
+
+
+## M4.2: immutable patient-state temporal execution storage
+
+`app.persistence.patient_state_executions` exposes Engine-only
+`append_patient_state_temporal_execution`, `find_patient_state_temporal_execution`
+and `load_patient_state_temporal_execution`. The returned frozen storage receipt
+contains the unchanged M4.1 record plus assigned UTC `ingested_at` metadata.
+The canonical M4.1 record is the payload; there is no second execution format.
+Scoped SQL constrains execution UUID, patient and encounter before decoding.
+Foreign/missing rows are absent; visible corruption is `StorageIntegrityError`.
+An identical full payload recovers the original receipt; different content under
+the same UUID raises bounded `RecordConflict`. This is storage idempotency, not
+M4.1 protected-request matching or workflow retry orchestration.
+
+Migration `m4_0005` follows `7b2_0004` and adds only
+`patient_state_temporal_execution`, with a UUID primary key, ownership foreign key,
+payload/version/digest and UTC ingestion text. Existing tables and fact allocator
+are unchanged. Immutability is enforced by the append-only adapter surface, matching
+existing execution stores; privileged direct SQL is outside that API contract.
+
+`execution_transaction(...).patient_state_executions` supplies append/find/load
+using the same Session, connection, lifecycle and completion owner as the other
+adapters. Failures poison the transaction, all handles expire on exit, and returned
+values are provisional until successful context exit. Completion uncertainty retains
+the existing exception and semantics. Standalone operations own their transaction.
+
+Decode performs M4.1 structural validation only: no assembly, inference builder,
+policy factory, governance producer, clinical fact reads or clock sampling.
+Ingestion is sampled only for a new insert and is not a clinical time, cutoff or
+commit timestamp. Execution writes never advance the clinical fact watermark.
+M4.3 retains protected workflow orchestration, final recheck reads, trusted workflow
+clocks, cutoff capture, request-based retry and explicit reconciliation.
