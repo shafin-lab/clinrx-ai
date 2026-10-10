@@ -999,3 +999,99 @@ execution/reconciliation, schema or shared contracts change. Source authenticati
 clinical validation, persistence/lineage integration and release remain separate future
 work. There is no rule engine or automatic subset selection. Focused tests:
 `tests/test_patient_state_inference.py`.
+
+## M4.1: protected temporal-evidence contracts and pure governance
+
+Classification: protected multidomain execution contracts + pure governance only.
+`patient_state_execution.py` supplies frozen request, evidence, final-recheck,
+runtime and execution-record contracts. `patient_state_release.py` supplies pure
+context/candidate/rendering, safety, independent fidelity, freshness, dependency
+and synthetic authority producers. Neither module reads storage, invokes assembly
+or M3.1, samples clocks, opens transactions or provides execute/reconcile APIs.
+
+Preparation requires the original M3.1 inference to have been persisted through
+existing ClinicalInference fact persistence, after the original input prefix.
+`PatientStateTemporalExecutionRequest` carries execution UUID, OutputTarget, actor,
+complete M3.1 request, historical inference cutoff, complete inference digest,
+requested_at and fixed workflow/profile markers. The inference reference is derived
+from the M3.1 identity/revision. The inference cutoff must be in the same repository
+and strictly follow the input watermark: one newly persisted inference requires a
+later ingestion identity. Supplied witnesses and metadata do not prove persistence;
+the future workflow must obtain and verify them through trusted repository reads.
+No original or replacement inference is appended here.
+
+The canonical request projection includes every caller-controlled field. The exact
+matcher compares canonical content and validates version markers; differing requests
+raise bounded RecordConflict. Runtime cutoff/recheck/governance/finalization fields
+never enter request identity. No lookup, retry orchestration or recovery is performed.
+
+Exactly ordered A/B/M witnesses retain consumed refs, whole-item digests, source-fact
+digests and ingestion metadata, plus final terminal refs/digests/metadata and a bounded
+suitability assessment. An additional inference witness binds persisted identity,
+method, content, ingestion, exact ordered inputs/declarations and supplied reconstruction
+digest. It is an output-currentness witness, not a fourth clinical input.
+The pure final recheck derives reasons and outcome; caller success flags are forbidden.
+Same-value/same-visible-field successors are materially_changed. Failed suitability
+or reconstruction mismatch also prevents unchanged. Genuine assessment unavailability
+is unavailable; terminal identities cannot disappear, and contradictory same-reference
+content/metadata or invalid ingestion/prefix relationships reject. Material change has
+precedence over unavailable, with all reasons retained in fixed A/B/M/inference order.
+Unrelated facts, mapping issues, coverage counts and complete snapshots have no field
+in this predicate. Historical reconstruction must preserve the original scope/cutoff;
+future targeted final checks must not manufacture a replacement M2.1 assembly.
+
+`PatientStateTemporalEvidence` validates supplied original source/item correspondence,
+pins, scope, provenance and ingestion, the original inference digest/method/identity,
+and exactly three ordered derived_from declarations. Source/item correspondence is
+explicitly checked against M2.1's fixed mapping representation; compatibility tests
+compare representative pure mappings without repository access. Admission requires
+verified source and inference bindings. Verification is never promoted or synthesized.
+M3.1 remains broader and unchanged. Governance ContextSnapshot retains only original
+A/B/M/I with registered patient/encounter and partial completeness, distinct from
+PatientStateSnapshot. No upstream graph is flattened or required to resolve completely.
+
+Safety uses required non-overrideable rules for exact supplied evidence, protected
+terminal suitability and bounded descriptive content. The independent six-template
+fidelity checker derives expected text from selected Decimal values/event offsets and
+medication kind, without invoking M3.1 or comparing a renderer against itself. It also
+checks applicability, uncertainty ordering, inference/candidate envelopes and complete
+presentation disclosures. The actual presentation payload retains all original
+uncertainty, applicability and validation/provenance limitations, not just the candidate.
+No generic governance models change and no degraded mode or warning override is added.
+Freshness binds original cutoffs, final cutoff, final-recheck digest and inference digest.
+
+The dedicated v1 synthetic authority profile is SyntheticPatientStateTemporalReleaseGrant:1,
+actor synthetic-patient-state-orchestrator, patient/encounter synthetic-p1/synthetic-e1,
+request synthetic-patient-state-request, destination synthetic-patient-state-local,
+recipient synthetic-patient-state-reviewer, with an explicit 2026-10-08 12:00–12:05 UTC
+fixture validity window. Its pure producer evaluates a supplied timestamp; it is not
+production authentication or workflow authorization orchestration. Outside the fixed
+window the producer denies. Future exact retry/reconciliation must not call it.
+
+Runtime metadata carries supplied UTC start, observation, decision and finalization
+instants in nondecreasing order. Cutoff-capture and storage-ingestion timestamps are
+separate metadata, not part of this four-sample contract. Generic governance can withhold
+for denied/expired authority, expired assessments, failed fidelity or final evidence
+change/unavailability. Malformed requests, unsupported admission, corruption and operational
+exceptions do not become completed failure-shaped decisions.
+
+`PatientStateTemporalExecutionRecord` embeds the request, compact final recheck, context
+digest, generic ReleaseDecision (which retains its governance bundle), runtime and fixed
+implementation/payload version. No duplicate full patient-state assembly is retained.
+Validation checks canonical bindings, context/source/inference digests, request/witness
+agreement, policy/assertion identity/order, disclosure preservation and chronology. Released
+text/claim must remain bound to the retained inference; changed/unavailable checks require
+withholding. It never calls M3.1, safety/fidelity/authority producers or clinical builders.
+Pure structural validation and digests are not producer authentication or proof of commit.
+Tests patch clinical producers and runtime I/O during decoding and exact request matching.
+
+Public local validation uses bounded PatientStateExecutionError codes; no raw payload or
+nested validation dump is included in its message. Ordinary Pydantic mutation errors remain
+standard frozen-model behavior. Python traceback/context introspection is not a privacy
+boundary. Unexpected producer implementation failures remain exceptions, never withholding.
+
+M4.2 retains responsibility for an additive execution table/migration, scoped immutable
+storage and shared adapter integration. Protected orchestration, actual reads/cutoff capture,
+retry-before-work, trusted clocks, commit uncertainty and explicit reconciliation remain M4.3.
+Kernel, M1/M2/M3, inference, lineage, history, persistence, transactions, governance core,
+weight and creatinine are unchanged. Focused tests: tests/test_patient_state_execution.py.
