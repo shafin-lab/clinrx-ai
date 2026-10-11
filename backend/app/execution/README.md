@@ -1128,3 +1128,56 @@ Ingestion is sampled only for a new insert and is not a clinical time, cutoff or
 commit timestamp. Execution writes never advance the clinical fact watermark.
 M4.3 retains protected workflow orchestration, final recheck reads, trusted workflow
 clocks, cutoff capture, request-based retry and explicit reconciliation.
+
+
+## M4.3: protected patient-state review and explicit reconciliation
+
+`patient_state_workflow.execute_patient_state_temporal_review(engine, request,
+clock=...)` returns the existing immutable storage receipt only after successful
+shared transaction exit. The optional clock is a trusted runtime dependency.
+Exactly four nondecreasing UTC workflow samples cover start, observation, decision
+and finalization. Cutoff capture and assigned storage ingestion remain separate.
+
+Scoped execution lookup and the M4.1 canonical request matcher precede all fresh
+work. Exact released and withheld retries recover the original receipt without
+clinical fact reads, reconstruction, producers, authority evaluation, clocks or
+writes. A changed canonical request under the same identity conflicts.
+
+Fresh execution captures one final cutoff under the existing writer reservation,
+replays the complete M2.1 assembly at the original input cutoff on the shared
+repository, and loads exact original sources and persisted inference at their
+respective prefixes. It validates the supplied pins, ingestion, binding, identity,
+method, direct dependencies and digest before calling unchanged M3.1 reconstruction.
+Complete canonical reconstruction mismatch prevents release without substituting
+an inference. Invalid admission, missing required originals and malformed storage
+abort. No replacement inference is appended.
+
+Final reads target only A/B/M stable identities and original inference currentness.
+Any successor is material, even with identical visible values. Successor content is
+never substituted or remapped; its suitability is not established because it is not
+consumed. Same-reference content/metadata contradictions and impossible disappearance
+are integrity failures. The unchanged M4.1 recheck derives the final outcome.
+Unrelated records added after the original prefix do not enter a final encounter-wide
+assembly. Supported retrieval cannot manufacture an unavailable result from a failed
+or poisoned repository operation; such failures abort.
+
+M4.1 context, safety, independent fidelity, freshness, dependency and synthetic
+permission producers feed the unchanged generic governance APIs. Context contains
+only original A/B/M/I and partial-completeness limitations. Released and withheld
+outcomes both append through the shared patient-state execution adapter without
+advancing the clinical fact watermark. The fixed M4.1 authority window remains a
+synthetic fixture; real times outside it yield withholding, not a widened grant.
+
+`reconcile_patient_state_temporal_execution(engine, request)` is a separate explicit
+scoped lookup returning frozen `committed_match` (released or withheld receipt) or
+`absent`. It shares the exact M4.1 matcher and does no fresh clinical work. Absence
+is an observation, not an instruction to execute. Foreign scope remains absence;
+visible corruption remains an integrity error. Original finalization and ingestion
+metadata survive retry, reconciliation and reopen.
+
+Existing `TransactionCompletionUnknown` propagates without a success result or an
+automatic recovery attempt. Callers explicitly reconcile an uncertain completion.
+SQLite contention follows existing local writer-reservation semantics; no distributed
+execution claim is made. M5/new domains, production authority, API/frontend, delivery
+and generic workflow abstractions remain outside this implementation.
+Focused tests: `tests/test_patient_state_workflow.py`.
