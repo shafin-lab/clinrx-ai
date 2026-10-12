@@ -1181,3 +1181,59 @@ SQLite contention follows existing local writer-reservation semantics; no distri
 execution claim is made. M5/new domains, production authority, API/frontend, delivery
 and generic workflow abstractions remain outside this implementation.
 Focused tests: `tests/test_patient_state_workflow.py`.
+
+## M6.1 Patient State v2: supplied contracts only
+
+`patient_state_v2.py` is an additive contract surface, distinct from both M1
+PatientStateSnapshot and governance ContextSnapshot. It performs no repository
+reads, assembly, inference, execution, clock sampling or API/UI work. New fact
+kinds are not persistable yet; M6.2 must explicitly implement persistence admission,
+migration, exact mapping/decoding and bounded historical assembly.
+
+A snapshot stores each exact fact once. Microbiology specimen/isolate/panel groups,
+antimicrobial order/administration/non-delivery views and medication aliases contain
+references, not duplicate evidence objects. Reference-only lists sort by kind, ID
+and revision; groups sort by exact parent reference or structured panel source code.
+Duplicates are rejected. Items sort by their domain semantic time as an actual
+instant, then exact identity, with missing-time items last. Sorting is not an
+availability or eligibility rule. Reported microbiology uses supplied availability
+as its ordering anchor, falling back to report time without equating those axes.
+Caller-owned lists remain unchanged and equivalent supported permutations serialize
+identically. Existing M1 canonical behavior is unchanged.
+
+The review interval is closed. Supplied contextual parents may predate it, but must
+name retained children that bind the exact parent. This validates supplied context;
+it does not fetch parents. Missing times and unresolved bindings remain incomplete
+data, not fabricated values or automatic corruption. Contradictory exact identity,
+scope, digest, ingestion metadata and supplied view relationships are rejected.
+Coverage explicitly distinguishes supported/partial/unsupported mapping and completed,
+not-attempted or limit-exceeded retrieval. Source completeness remains unknown.
+Preliminary/final/corrected are report states, not mapping-error categories.
+
+Finite limits are enforced without truncation:
+
+| Collection | Maximum |
+| --- | ---: |
+| Canonical items, top-level reference lists, mapping issues | 512 |
+| Specimen groups | 128 |
+| Isolate groups | 256 |
+| Panel groups, group children, panel targets, contextual children | 64 |
+| Disclosures, coverage limitations | 32 |
+| Coverage domains | 2 |
+
+Fact/provenance bounds are documented in the clinical models README. Decimal scale,
+raw source text and timestamp offsets survive canonical round-trips. Nested models
+are frozen and collections are tuples; hashes validate supplied content, not source
+truth or clinical completeness.
+
+Future exact S/I/U/D selection can reference specimen, isolate, susceptibility and
+completed administration independently. This snapshot does not implicitly make all
+retained facts inference inputs. M6.4 needs a separate typed four-role request,
+witness, policy, execution envelope and reconciliation capability; M4 must not be
+converted into a generic dictionary-based workflow.
+
+Hemodynamic support, CRRT settings/events, respiratory settings/observations and
+fluid/output intervals can use independent typed facts and exact references. They
+still require their own contracts and explicit union admission. They must not be
+encoded as antimicrobial events, microbiology results or generic metadata blobs.
+No such future domain or production clinical validation is implemented in M6.1.

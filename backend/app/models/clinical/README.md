@@ -337,3 +337,48 @@ Run the complete suite without pytest's cache:
 PYTEST_ADDOPTS='-p no:cacheprovider' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend backend/venv/bin/python -m pytest -q
 git diff --check
 ```
+
+## M6.1 recorded microbiology and antimicrobial contracts
+
+`recorded_v2.py`, `microbiology.py` and `antimicrobials.py` are additive, frozen,
+versioned contracts only. Existing M1–M5 models, canonical serialization, Kernel v1,
+lineage and governance behavior remain unchanged. The twelve new fact kinds are
+not admitted by persistence. M6.2 requires explicit fact-kind admission, mapping,
+decoding, historical identity support and an additive migration before storage.
+No assembly, inference, protected execution, API or UI integration is implemented.
+
+Specimen, direct examination, culture, isolate identification, susceptibility,
+resistance finding, molecular target, blood-culture set and bottle have independent
+stable IDs and exact revision references. Names and array positions are not IDs.
+Report status (including preliminary/final) is separate from change disposition
+(including corrected). Correction links preserve exact supersedes references;
+these pure contracts do not verify persisted revision chains or source authenticity.
+Domain bindings explicitly distinguish resolved, unresolved and ambiguous targets,
+with scoped stable identity and exact revision. They are not derived_from edges.
+
+Collection, receipt, report, source availability, identification, order and delivery
+times remain distinct. Missing, unknown, approximate and bounded times are explicit.
+The common ClinicalTime permits recording/retrieval/processing metadata, but not
+competing event/effective timestamps. Offsets and supplied precision are retained;
+actual instants govern comparisons. No universal clinical time ordering is imposed.
+MIC comparator, decimal scale, source units, raw interpretation and optional
+breakpoint authority/version are retained. Floats are rejected, not normalized.
+Resistance mechanisms and organism/agent equivalence are never inferred.
+
+Antimicrobial identity retains source coding and an explicit mapping assertion with
+bounded provenance; no name matching occurs. An order is intent. A completed
+administration records delivered quantity, while held/refused/missed/not-given
+records cannot contain an administered dose. Missing administration is unknown;
+zero-dose pseudo-administration and continuous exposure inference are unsupported.
+Therapy purpose is explicit source documentation only. These records do not prove
+clinical effectiveness or validate a regimen.
+
+All new provenance owners use BoundedProvenance: at most 32 upstream edges, 32
+limitations and 16 references per confirmation basis. Source identifiers, domain
+bindings, ambiguous candidates and ingredient IDs are limited to 16; role constraints
+can impose smaller limits. Examination findings, disclosures and uncertainty arrays
+are limited to 32. Oversize input fails without truncation. Collections become
+immutable tuples; meaningful provenance declaration order is preserved.
+
+Focused validation: `tests/test_patient_state_v2.py`, including exact-bound and
+one-over-bound cases, caller alias mutation, permutations and canonical round-trips.
