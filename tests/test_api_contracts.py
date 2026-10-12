@@ -88,7 +88,10 @@ def test_factory_existing_routes_and_health(config):
         assert client.get('/knowledge/search', params={'q':'Metabolic'}).json()[0]['knowledge_id'] == 'NUT-STATE-002'
         assert client.get('/knowledge/missing').status_code == 404
         paths = client.get('/openapi.json').json()['paths']
-        assert set(paths) == {'/','/health','/knowledge','/knowledge/search','/knowledge/{knowledge_id}'}
+        assert set(paths) == {'/','/health','/knowledge','/knowledge/search','/knowledge/{knowledge_id}'} | {
+            '/api/v1/patients/{patient_id}/encounters/{encounter_id}'+suffix for suffix in (
+                '/state','/temporal-review-preparations','/temporal-reviews',
+                '/temporal-executions/{execution_id}','/temporal-executions/{execution_id}/reconcile')}
         for path in ('/', '/health', '/knowledge'):
             assert 'cache-control' not in client.get(path).headers
     assert not config.database_path.exists()

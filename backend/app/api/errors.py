@@ -75,8 +75,15 @@ def error_response(error, correlation_id, *, execution_id=None):
 async def handle_error(request, error):
     cid = correlation(request)
     status, body = error_response(error, cid, execution_id=getattr(request.state, 'execution_id', None))
+    preparation_unknown = (isinstance(error, TransactionCompletionUnknown)
+        and getattr(request.state, 'completion_stage', None) == 'inference_preparation')
+    if preparation_unknown:
+        body = APIError(code='completion_unknown',
+            message='Inference preparation completion could not be confirmed.', correlation_id=cid)
     request.state.error_code = getattr(body, 'code', getattr(body, 'status', 'internal_error'))
     headers = {'X-Correlation-ID': str(cid)}
+    if preparation_unknown:
+        headers['X-ClinRx-Stage'] = 'inference_preparation'
     if getattr(request.state, 'no_store', False):
         headers['Cache-Control'] = 'no-store'
     return JSONResponse(status_code=status, content=body.model_dump(mode='json'), headers=headers)

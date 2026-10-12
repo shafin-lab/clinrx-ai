@@ -68,6 +68,7 @@ class GovernanceView(DTO):
     outcome: Literal['released', 'withheld']
     decision_reference: ExactReference
     decided_at: AwareTimestamp
+    assessed_at: AwareTimestamp | None = None
     reasons: tuple[Text, ...]
     safety_status: Text
     fidelity_status: Text

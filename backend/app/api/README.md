@@ -1,117 +1,111 @@
-# M5.1: API contracts and application dependencies
+# M5.2: synthetic patient-state review API
 
-Transport boundary only. There are no state, preparation, execution, lookup or
-reconciliation routes, no response projection implementation, and no clinical
-inference, governance, storage writes or frontend. Existing `/`, `/knowledge`,
-`/knowledge/search` and `/knowledge/{knowledge_id}` remain registered. `/health`
-returns process health only. Errors, including unknown knowledge IDs, now use a
-bounded APIError instead of echoing supplied identifiers in HTTPException detail.
-Successful knowledge/root response semantics remain unchanged.
+The application now exposes five scoped routes under
+`/api/v1/patients/{patient_id}/encounters/{encounter_id}`:
 
-## Configuration and lifecycle
+- `GET /state?review_start=...&review_end=...`: closed aware review window, existing
+  M2.1 assembly at a server-captured cutoff, all ten coverage entries, exact item
+  selection digests and signed state context. Scope is the synthetic patient/encounter
+  header; unsupported buckets remain explicit coverage, never clinical absence.
+- `POST /temporal-review-preparations`: M5.1 execution UUID, state context and exact
+  A/B/M pins. Replay the complete original assembly, call M3.1, persist inference,
+  capture the post-inference cutoff and sign the unchanged M4.1 request. Server owns
+  actor, target, inference identity, revision and timestamps.
+- `POST /temporal-reviews`: verified command delegated unchanged to M4.3. Released
+  and withheld both return 200. Exact retry recovers retained content; a different
+  canonical request with the same execution UUID returns 409.
+- `GET /temporal-executions/{execution_id}`: scoped storage lookup, 404 for missing
+  or foreign scope, 500 for visible corrupt retained content.
+- `POST /temporal-executions/{execution_id}/reconcile`: verified command and path
+  identity delegated to existing reconciliation; committed_match or absent. No
+  automatic execution, retry, clocks, clinical reads or governance recomputation.
 
-`app.main.create_app(config=None, ...)` supports explicit dependencies and retains
-`app.main.app` for import/ASGI compatibility. Import constructs no Engine, reads no
-configuration, opens no database and runs no migration. Lifespan validates settings,
-creates an application-owned Engine with the existing database factory, then disposes
-it on exit. An injected Engine remains caller-owned. There is no Session dependency.
-Database connections remain lazy: constructing/starting the app and calling health
-or knowledge does not connect, migrate, seed or create a database file.
+Preparation and execution are separate commits. An abandoned preparation can leave
+an unused immutable inference. There is no preparation table, cleanup job or recovery
+framework. Unacknowledged preparation returns a bounded 503 completion_unknown APIError
+with an inference-preparation message and `X-ClinRx-Stage: inference_preparation`.
+It has no execution-reconcile instruction; initiate a new preparation only explicitly.
+Execution completion uncertainty returns the existing 503 CompletionUnknownResponse
+with execution_id, next_action=reconcile and automatic_retry=false. Keep the original
+command verbatim. Absence does not trigger execution; retry is a separate explicit call.
 
-Required environment variables at startup:
-- `CLINRX_DATABASE_PATH`: absolute local file path; existing schema is managed by
-  the existing separate migration command, never by this application.
-- `CLINRX_ENVIRONMENT`: `local_synthetic_demo` or `test`; no production fallback.
-- `CLINRX_ENVELOPE_SIGNING_KEY`: a securely generated 32-byte random key encoded as
-  64 hexadecimal characters. No built-in key. Keep it outside source control.
+Projections use retained A/B/M/I, witnesses, decision and storage receipt only. They
+preserve decimal strings, original times, consumed versus terminal references, direct
+edges, cutoffs, applicability, uncertainty, limitations, assessment/decision/finalization
+and ingestion times. No complete ancestry claim is made. A withheld response suppresses
+inference.statement and exposes audit provenance and reasons only. Assessment time is
+an additive optional DTO field (always populated by these routes); existing M5.1
+transport construction remains compatible.
 
-Optional: `CLINRX_API_HOST` (loopback only), `CLINRX_API_PORT` (8000),
-`CLINRX_ALLOWED_DEV_ORIGINS` (comma-separated exact loopback origins; default none),
-`CLINRX_CLOCK_MODE` (`real` by default), and `CLINRX_SIMULATION_AT` (aware time,
-required only for explicitly selected `historical_simulation`). The simulation
-clock returns that fixed scenario instant. It never changes persistence clocks,
-grant windows or request content. Nothing executes clinically in M5.1.
+## Local configuration and explicit demo
 
-Use `PYTHONPATH=backend backend/venv/bin/python -m app.api.run` for local serving.
-This launcher disables Uvicorn's raw-path access log. Direct Uvicorn invocation
-must also use `--no-access-log`; third-party server/proxy/client logging is outside
-application middleware. Host/port settings are applied by the local launcher.
-The existing ASGI import path remains usable with explicit server options.
+No migration, seed or database connection occurs at app import or health/knowledge
+requests. Database creation remains lazy; lifespan owns its Engine unless injected.
+Required configuration: `CLINRX_DATABASE_PATH` (absolute local path),
+`CLINRX_ENVIRONMENT=local_synthetic_demo` (or test), and
+`CLINRX_ENVELOPE_SIGNING_KEY` (secure random 32-byte key encoded as 64 hex characters).
+Keep the key outside source control. The existing untimed purpose-separated HMAC
+state/command protocol is unchanged. Envelopes authenticate issuance, not access or
+release; they are not encrypted. Key retention/rotation remains an operator concern.
 
-Dependencies expose Engine, configuration, frozen synthetic scope allowlist,
-server-owned actor/OutputTarget, workflow clock and both envelope codecs. Tests may
-override providers or factory dependencies. No incoming actor header is trusted.
-Access scopes default to synthetic-p1/synthetic-e1 and can be explicitly configured
-in APIConfig. This is not authentication/RBAC. OutputTarget.request_id stays the
-existing fixed synthetic request identity, never an HTTP correlation ID.
+Optional configuration: `CLINRX_API_HOST` (loopback only), `CLINRX_API_PORT` (8000),
+`CLINRX_ALLOWED_DEV_ORIGINS` (exact comma-separated loopback origins),
+`CLINRX_MAX_REVIEW_WINDOW_SECONDS` (604800), and `CLINRX_MAX_RESPONSE_BYTES` (2097152).
+Requests are bounded at 262144 bytes before parsing. State arrays/issue limits remain
+M5.1 bounds. Oversize views are explicitly rejected, never truncated. M2.1 still scans
+encounter-wide terminal history: use controlled synthetic/demo encounters only, with
+no pagination or claim of production resource isolation.
 
-## Immutable envelope protocol v1
+Explicitly migrate and seed a **disposable** database from the repository root:
 
-`StateContextCodec` binds the existing PatientStateScope, assembly profile/version,
-transport version and whole-item selection-digest version. `ExecutionCommandCodec`
-binds the complete existing PatientStateTemporalExecutionRequest. Both validate
-models and use existing `canonical_payload`; no second clinical canonicalizer or
-request matcher exists. Domain canonicality retains offsets and exact representations.
+```sh
+PYTHONPATH=backend backend/venv/bin/python -m app.demo.patient_state bootstrap --database /tmp/clinrx-patient-state-demo.sqlite3
+```
 
-ItsDangerous 2.2.0 Signer authenticates bytes with HMAC-SHA256 and HMAC key derivation.
-Purpose-specific versioned salts and signed prefixes separate state-context from
-execution-command. Payload bytes are uncompressed base64url canonical JSON; tokens
-are at most 65,536 ASCII bytes, bounded before verification/decoding. Canonical
-payload, encoding and signature spellings are checked. No timestamp signer, expiry,
-clock, unsafe deserializer or algorithm negotiation is used. Same key across process
-restart preserves verification. Changing/removing that key invalidates old commands;
-key rotation/recovery policy is deferred.
+The command runs reviewed Alembic migrations and existing registration/append APIs.
+It prints a deterministic manifest for synthetic-p1/e1 with A at 08:00Z, M at 09:00Z,
+B at 10:00Z on 2026-10-08. A/B have distinct stable and sample identities. Exact reruns
+are idempotent, including after correction; no existing history is reset or deleted.
+Conflicting pre-existing identities fail through existing persistence contracts.
 
-Envelopes are opaque to clients but not encrypted. They prove server issuance and
-integrity only, not authenticated identity, access, clinical validity or release.
-Send them only in request bodies; never URLs, logs or analytics. Repr hides envelope
-fields, but callers must not log model dumps. Preserve a prepared command verbatim
-for execute/reconcile; never regenerate its immutable timestamps/cutoffs on retry.
-No issuance HTTP endpoint exists yet.
+For the released demonstration explicitly set `CLINRX_CLOCK_MODE=historical_simulation`
+and `CLINRX_SIMULATION_AT=2026-10-08T12:01:00+00:00`. The synthetic grant is unchanged.
+Persistence ingestion still uses real time. Default clock mode is real and never
+silently backdates requests. `X-ClinRx-Mode` labels the serving configuration as
+historical-synthetic-simulation or synthetic-only-real-clock. It is configuration
+metadata, not a newly persisted execution clock-mode assertion. Retained timestamps
+always remain authoritative. This is not live clinical execution or patient-care authority.
 
-## DTOs and errors
+Run the API with raw-path access logging disabled:
 
-Frozen, extra-forbidden transport contracts prepare state, explicit A/B/M pins,
-prepared commands, execution, provenance, reconciliation and uncertainty responses.
-Clinical decimals are strict lexical strings, not floats. Aware timestamp input
-requires explicit ISO timestamps, rejects numeric epoch strings and unsupported sub-microsecond precision; existing canonical serialization rejects lossy
-representations. Tuple nesting follows existing deep-immutability conventions.
-Window comparison uses exact UTC instants, including DST and microseconds.
+```sh
+PYTHONPATH=backend backend/venv/bin/python -m app.api.run
+```
 
-State views retain lab/medication arrays, ten coverage entries and mapping issues;
-unsupported domains have coverage rather than fabricated populated buckets.
-Execution response separates minimal context, governance and exact provenance.
-Released and withheld are successful completed outcomes; DTOs do not evaluate them.
-Provenance fixes the A/B/M roles, exact consumed/terminal references, direct edges,
-original/inference/final cutoffs, applicability, uncertainty and limitations. No
-populator, complete ancestry, unrelated state or clinical eligibility rule is added.
-M5.2 must honor withheld presentation and map only validated backend results.
+Fetch state, explicitly select returned A/B/M reference+digest pins, prepare, then
+execute the returned command. To demonstrate withholding, prepare first and then run:
 
-Error handlers use static messages and allowlisted validation field paths/codes;
-raw errors, submitted values, SQL, bodies and stack traces are never returned.
-TransactionCompletionUnknown is mapped ahead of its TransactionAborted parent to
-503. When trusted request state supplies an execution UUID it returns the explicit
-CompletionUnknownResponse with reconcile action and automatic_retry=false. Without
-that trusted identity it returns a bounded completion_unknown APIError and invents
-no execution ID. Future routes must set the ID only after validated command decoding.
-Reconciliation is not implemented or triggered by an error handler.
+```sh
+PYTHONPATH=backend backend/venv/bin/python -m app.demo.patient_state correct --database /tmp/clinrx-patient-state-demo.sqlite3
+```
 
-Middleware generates a server UUID correlation ID (incoming values are ignored),
-bounds request bodies at 262,144 bytes before parsing, and logs only correlation ID,
-route template, typed execution UUID if supplied, status/error category and duration.
-Unmatched paths log a constant. CORS allows exact configured origins, no credentials;
-it is not access control. The no_store dependency opts future clinical routes into
-Cache-Control: no-store; health/knowledge do not acquire that cache policy.
+The correction appends A revision2 through append_revision. Executing the old command
+then detects supersession and retains a withheld outcome. Correction after an already
+completed execution never changes its lookup/reconciliation response.
 
-## Verification and deferrals
+## Privacy and compatibility
 
-`tests/test_api_contracts.py` uses test-only routes and synthetic pure requests,
-including separate-process envelope recovery, tampering, privacy, dependency
-injection and app lifespan checks. No M3.1/M4.3 invocation or fact write is needed.
-HTTPX 0.28.1 is a pinned development test dependency; installed Starlette currently
-emits a deprecation notice recommending httpx2. This does not affect runtime APIs.
+Every clinical operation checks configured synthetic scope independently of envelopes.
+There is no production authentication/RBAC. Routes have no ORM or clinical predicates.
+No-store also covers malformed JSON and oversized-body errors before route dependencies.
+Application logs contain only correlation UUID, route template, validated execution UUID,
+category/status and duration. Errors never echo submitted values, SQL or envelopes.
+The launcher disables raw-path Uvicorn logging; other server/proxy/client logs remain
+outside this middleware. CORS is not authorization. Existing root, health and knowledge
+routes remain available. No HTTP seed/reset/history/provenance endpoint exists.
 
-M5.2 owns all clinical product routes, original inference preparation and its
-separate commit/uncertainty boundary, real response projections and demo bootstrap.
-UI/frontend, production identity/PHI, new domains, auth/RBAC and schema changes are
-deferred. Existing M1-M4, Kernel, governance and persistence semantics are unchanged.
+M1–M4, Kernel v1, persistence/schema, ClinicalInference, lineage and governance are
+unchanged. M5.1 additions are bounded-view configuration, early no-store handling,
+preparation-specific uncertainty wording and retained assessment time. Frontend/M5.3,
+production PHI, authentication, patient discovery, generic history, new domains,
+background jobs, automatic retry, key rotation and deployment remain deferred.

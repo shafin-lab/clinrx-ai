@@ -25,6 +25,9 @@ class BoundaryMiddleware:
         state = scope.setdefault('state', {})
         cid = uuid4()  # Never reflect an arbitrary incoming correlation header.
         state['correlation_id'] = cid
+        # Clinical prefix must be protected even before JSON/dependency validation.
+        if scope.get('path', '').startswith('/api/v1/patients/'):
+            state['no_store'] = True
         started, status = perf_counter(), 500
         response_started = False
 
@@ -97,5 +100,5 @@ class DevelopmentCORS:
         config = scope['app'].state.dependencies.config
         middleware = CORSMiddleware(self.app, allow_origins=config.allowed_dev_origins,
             allow_credentials=False, allow_methods=['GET', 'POST'], allow_headers=['Content-Type'],
-            expose_headers=['X-Correlation-ID'])
+            expose_headers=['X-Correlation-ID', 'X-ClinRx-Mode', 'X-ClinRx-Stage'])
         await middleware(scope, receive, send)

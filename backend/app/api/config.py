@@ -22,6 +22,8 @@ class APIConfig(DTO):
     envelope_signing_key: SecretStr = Field(repr=False)
     clock_mode: Literal['real', 'historical_simulation'] = 'real'
     simulation_at: AwareDatetime | None = None
+    max_review_window_seconds: int = Field(default=604800, strict=True, ge=1, le=31536000)
+    max_response_bytes: int = Field(default=2097152, strict=True, ge=1024, le=16777216)
     synthetic_scopes: tuple[SyntheticScope, ...] = (SyntheticScope(patient_id='synthetic-p1', encounter_id='synthetic-e1'),)
 
     @field_validator('database_path')
@@ -73,6 +75,8 @@ def load_config():
             allowed_dev_origins=tuple(filter(None, os.environ.get('CLINRX_ALLOWED_DEV_ORIGINS', '').split(','))),
             envelope_signing_key=os.environ['CLINRX_ENVELOPE_SIGNING_KEY'],
             clock_mode=os.environ.get('CLINRX_CLOCK_MODE', 'real'),
-            simulation_at=os.environ.get('CLINRX_SIMULATION_AT'))
+            simulation_at=os.environ.get('CLINRX_SIMULATION_AT'),
+            max_review_window_seconds=int(os.environ.get('CLINRX_MAX_REVIEW_WINDOW_SECONDS', '604800')),
+            max_response_bytes=int(os.environ.get('CLINRX_MAX_RESPONSE_BYTES', '2097152')))
     except Exception:
         raise RuntimeError('invalid ClinRx API configuration') from None
