@@ -136,14 +136,14 @@ def test_migration_preserves_populated_bytes_links_and_high_water(tmp_path):
 
 def test_migration_head_and_refused_downgrade(database):
     scripts=ScriptDirectory.from_config(Config(str(ROOT/'backend/alembic.ini')))
-    assert scripts.get_heads()==['m6_0006']
+    assert scripts.get_heads()==['m6_0007']
     assert scripts.get_revision('m6_0006').down_revision=='m4_0005'
     config=Config(str(ROOT/'backend/alembic.ini'))
     with pytest.raises(RuntimeError), database.begin() as conn:
         config.attributes['connection']=conn
         command.downgrade(config,'m4_0005')
     with database.connect() as conn:
-        assert conn.execute(text('SELECT version_num FROM alembic_version')).scalar_one()=='m6_0006'
+        assert conn.execute(text('SELECT version_num FROM alembic_version')).scalar_one()=='m6_0007'
 
 
 def test_migration_failure_rolls_back_table_copy(tmp_path):

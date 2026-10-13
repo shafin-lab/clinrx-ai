@@ -20,7 +20,7 @@ def test_bootstrap_rerun_correction_and_reopen(tmp_path):
         assert a.time.event < m.time.event < b.time.event
         assert a.id != b.id and a.provenance.source.identifier != b.provenance.source.identifier
         assert str(a.value.value.value)=='1.00' and str(b.value.value.value)=='2.000'
-        assert len(inspect(engine).get_table_names()) == 9
+        assert len(inspect(engine).get_table_names()) == 10
         correction = demo.correct(engine)
         assert correction == demo.correct(engine)
         assert demo.bootstrap(engine) == first

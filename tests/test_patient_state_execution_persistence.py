@@ -326,7 +326,7 @@ finally: engine.dispose()
 def test_schema_matches_entity(database):
     with database.connect() as conn:
         schema=inspect(conn)
-        assert SCHEMA_REVISION=='m6_0006'
+        assert SCHEMA_REVISION=='m6_0007'
         assert {x['name'] for x in schema.get_columns(TABLE)}=={'execution_id','patient_id','encounter_id','payload_version','payload','payload_digest','ingested_at'}
         assert all(not x['nullable'] for x in schema.get_columns(TABLE))
         assert schema.get_pk_constraint(TABLE)['constrained_columns']==['execution_id']
@@ -335,7 +335,7 @@ def test_schema_matches_entity(database):
         assert schema.get_check_constraints(TABLE)==[{'name':'ck_patient_state_execution_payload_version','sqltext':'payload_version = 1'}]
         assert compare_metadata(MigrationContext.configure(conn),Base.metadata)==[]
     scripts=ScriptDirectory.from_config(Config(str(ROOT/'backend/alembic.ini')))
-    assert scripts.get_heads()==['m6_0006'] and scripts.get_revision('m4_0005').down_revision=='7b2_0004'
+    assert scripts.get_heads()==['m6_0007'] and scripts.get_revision('m4_0005').down_revision=='7b2_0004'
 
 
 @pytest.mark.parametrize('fail',[False,True])
@@ -362,10 +362,10 @@ def test_additive_upgrade_and_failure_rollback(tmp_path,monkeypatch,fail):
             assert snapshot()==(before,ddl)
         else:
             migrate(engine); after,newddl=snapshot()
-            assert set(after)-set(before)=={TABLE}
+            assert set(after)-set(before)=={TABLE,'micro_antimicrobial_execution'}
             assert all(after[n]==value for n,value in before.items() if n!='alembic_version')
             assert_fact_kind_extension_only(ddl, newddl)
-            assert after['alembic_version']==[('m6_0006',)]
+            assert after['alembic_version']==[('m6_0007',)]
             migrate(engine); assert snapshot()==(after,newddl)
     finally:
         if fail: event.remove(engine,'after_cursor_execute',broken)

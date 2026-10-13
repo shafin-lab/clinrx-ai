@@ -1410,3 +1410,53 @@ cannot alter it; explicitly selected same-value or provenance-only successors re
 different evidence. Future currentness/final recheck, dedicated four-role execution
 storage, governance/release/reconciliation belong to M6.4; transport/UI belong to
 later work. Focused tests: `tests/test_patient_state_v2_inference.py`.
+
+## M6.4 protected S/I/U/D execution
+
+`patient_state_v2_execution`, `patient_state_v2_release` and
+`patient_state_v2_workflow` provide the dedicated
+`SyntheticMicroAntimicrobialProtectedExecution/v1` capability for M6.3.
+`execute_micro_antimicrobial_review(engine, request, clock=...)` requires an
+already persisted inference and its persistence cutoff. The immutable request
+includes the complete original M6.2 assembly request (including resource limits),
+M6.3 named pins and assembly digest, inference digest, scoped output target,
+execution UUID, actor and request timestamp.
+
+Retained lookup precedes clocks and clinical work. Exact retries return the
+original receipt; different request content conflicts. New executions replay the
+original prefix, call the existing M6.3 builder and require canonical equality
+with the persisted inference. A mismatch is an integrity failure, not withholding.
+The protected transaction checks terminal S/I/U/D plus inference currentness.
+Any selected successor is material, including same-value/provenance-only changes.
+Unrelated new facts do not establish a completeness claim and are not material.
+Terminal typed payloads retain explicit specimen/isolate and tested/administered
+identity assertions; required binding or canonical mapping incompatibility is
+material. No name-based rebinding or identity fallback is used.
+
+The dedicated record retains the four original facts/items and four terminal
+facts with exact ingestion metadata and digest witnesses. Existing governance
+ContextSnapshot stays unchanged and carries the original ClinicalInference only;
+its capability policy explicitly requires all four input references. The retained
+record keeps v2 source payloads separate from the governance snapshot. Existing
+assess_release/decide_release enforce safety, fidelity, freshness and synthetic
+authority. Authorization is deliberately restricted to the fixed synthetic actor,
+target and time window declared in this capability; it is not authentication or
+patient-care authority. Withheld decisions retain provenance but do not authorize
+clinical presentation. No new clinical interpretation is generated.
+
+Migration m6_0007 adds only micro_antimicrobial_execution, a capability-specific,
+strongly validated immutable envelope with ownership foreign key and version
+constraint. It does not rewrite facts or existing execution storage. The adapter
+joins the existing shared session/lifecycle; the owner remains responsible for
+completion. Execution writes never allocate clinical ingestion sequences.
+
+Both released and withheld return only after confirmed transaction completion.
+TransactionCompletionUnknown is propagated without automatic retry or recovery.
+`reconcile_micro_antimicrobial_execution` performs scoped retained lookup and the
+same exact request matcher, returning committed_match or absent. It does not call
+clocks, replay evidence, rebuild inference, run governance or read clinical facts.
+Foreign scope is absence before decoding; visible malformed storage is an integrity
+failure. Retained output is never enriched with later clinical state.
+
+M6.5 transport, browser selection/presentation, and historical comparison UI remain
+deferred. No generic workflow registry or role dictionary is introduced.

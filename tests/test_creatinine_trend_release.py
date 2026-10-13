@@ -479,7 +479,7 @@ def test_no_database_access_or_schema_changes_during_phase_c(case, registered):
     assert not statements
     with registered.connect() as conn:
         assert set(inspect(conn).get_table_names()) == {'patient', 'encounter', 'fact_revision', 'revision_link',
-            'repository_identity', 'weight_trend_execution', 'creatinine_trend_execution', 'patient_state_temporal_execution', 'alembic_version'}
+            'repository_identity', 'weight_trend_execution', 'creatinine_trend_execution', 'patient_state_temporal_execution', 'micro_antimicrobial_execution', 'alembic_version'}
     assert decision.outcome == 'released'
 
 
