@@ -506,3 +506,30 @@ def test_concurrent_conflicting_retry_preserves_one_revision(registered):
     assert sorted(outcomes) == ['conflict', 'stored']
     with transaction(registered) as repository:
         assert repository.load_fact(fact().reference, target=TARGET).fact.concept_id in ('synthetic-a', 'synthetic-b')
+
+
+def assert_fact_kind_extension_only(before, after):
+    """M6 permits one CHECK extension, not unrelated legacy DDL changes."""
+    old, new = dict(before), dict(after)
+    for name, ddl in old.items():
+        if name != 'fact_revision':
+            assert new[name] == ddl
+            continue
+        def parts(value):
+            lines = [line.strip().rstrip(',') for line in value.replace('"fact_revision"', 'fact_revision').splitlines()]
+            kind = [line for line in lines if 'CONSTRAINT ck_fact_supported_kind ' in line]
+            assert len(kind) == 1
+            return sorted(line for line in lines if line not in kind), kind[0]
+        old_parts, old_kind = parts(ddl)
+        new_parts, new_kind = parts(new[name])
+        assert old_parts == new_parts
+        import re
+        old_kinds = set(re.findall("'([^']+)'", old_kind))
+        new_kinds = set(re.findall("'([^']+)'", new_kind))
+        assert old_kinds == {'observation', 'medication_order', 'medication_administration', 'inference'}
+        assert new_kinds - old_kinds == {
+            'microbiology_specimen', 'microbiology_direct_examination', 'microbiology_culture',
+            'microbiology_isolate', 'microbiology_susceptibility', 'microbiology_resistance',
+            'microbiology_molecular', 'blood_culture_set', 'blood_culture_bottle',
+            'antimicrobial_order', 'antimicrobial_administration', 'antimicrobial_non_delivery'}
+        assert old_kinds <= new_kinds

@@ -2,7 +2,7 @@
 from sqlalchemy import CheckConstraint, ForeignKey, ForeignKeyConstraint, Integer, Text, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-SCHEMA_REVISION = 'm4_0005'
+SCHEMA_REVISION = 'm6_0006'
 PAYLOAD_VERSION = 1
 
 
@@ -53,7 +53,7 @@ class FactRow(Envelope, Base):
         ForeignKeyConstraint(['encounter_id', 'patient_id'],
                              ['encounter.encounter_id', 'encounter.patient_id'],
                              name='fk_fact_encounter_owner'),
-        CheckConstraint("kind IN ('observation', 'medication_order', 'medication_administration', 'inference')",
+        CheckConstraint("kind IN ('observation', 'medication_order', 'medication_administration', 'inference', 'microbiology_specimen', 'microbiology_direct_examination', 'microbiology_culture', 'microbiology_isolate', 'microbiology_susceptibility', 'microbiology_resistance', 'microbiology_molecular', 'blood_culture_set', 'blood_culture_bottle', 'antimicrobial_order', 'antimicrobial_administration', 'antimicrobial_non_delivery')",
                         name='ck_fact_supported_kind'),
         CheckConstraint('payload_version = 1', name='ck_fact_payload_version'),
         {'sqlite_autoincrement': True},

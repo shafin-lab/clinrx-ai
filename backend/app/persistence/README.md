@@ -674,3 +674,49 @@ an extensible API/composition addition only. No schema, execution contract,
 repository/history/lineage, governance or weight persistence semantics change.
 Protected creatinine replay, retry-before-work, final cutoff/recheck/governance
 orchestration and reconciliation remain D4/D5 work.
+
+## M6.2 recorded microbiology / antimicrobial admission
+
+Schema head `m6_0006` follows `m4_0005`. The existing `fact_revision` and
+`revision_link` machinery now admits twelve explicit additional kinds:
+`microbiology_specimen`, `microbiology_direct_examination`, `microbiology_culture`,
+`microbiology_isolate`, `microbiology_susceptibility`, `microbiology_resistance`,
+`microbiology_molecular`, `blood_culture_set`, `blood_culture_bottle`,
+`antimicrobial_order`, `antimicrobial_administration`, `antimicrobial_non_delivery`.
+The SQL check, closed Python mapping and historical FactIdentity agree. These are
+not text observations and do not enter the original governance Fact union.
+
+SQLite cannot alter a CHECK in place. The new migration transactionally backs up
+revision links, rebuilds the fact table with the expanded constraint, restores
+links and verifies foreign keys. It preserves canonical payload bytes, ingestion
+sequences/metadata, repository identity and sqlite_sequence's allocator high-water
+mark, including gaps above MAX(sequence). Foreign keys stay enabled. Failed DDL
+rolls back; prior migration files are untouched. Destructive downgrade is refused,
+consistent with earlier migrations. No execution table or speculative index is added.
+
+Append, exact retry/conflict, linear correction, transaction poisoning and commit
+ownership use the existing repository APIs. Exact-load/write chain validation now
+checks relational ownership before decoding any member. Historical scope-before-
+decode and cutoff semantics remain unchanged. A future malformed revision cannot
+contaminate an earlier prefix. New lineage associations are retained domain bindings,
+not silently converted into derived_from edges.
+
+`list_bounded_history` adds a finite preflight before existing historical validation:
+at most 4096 scoped visible envelopes plus one overflow sentinel, and 16 MiB of
+aggregate encoded payload. It checks visible chain ownership in bounded parameter
+chunks before payload decoding. The existing locked transaction keeps preflight and
+retrieval consistent. All revisions count toward this budget, including unsupported
+profile kinds. No event/eligibility predicate can select a predecessor first.
+
+This bounds returned candidate material and decoding work, not the SQLite query
+planner's physical scan work. Encounter histories exceeding the cap fail explicitly.
+An indexed/paginated redesign and PostgreSQL optimization remain deferred.
+Envelope-only exact binding scope checks do not read foreign or future payloads.
+Visible foreign declared targets fail with ScopeMismatch; absent/future targets
+remain unresolved. Corrupt visible in-scope payloads/chains remain integrity errors.
+
+Canonical serialization was moved unchanged into `canonical.py` and re-exported
+from `mapping.py` to avoid the admission/contracts import cycle. No stored digest
+column was introduced: existing canonical-byte/envelope validation remains the
+storage contract, and retained state derives/verifies its digest from those bytes.
+Contract field semantics and existing canonical payloads are unchanged.

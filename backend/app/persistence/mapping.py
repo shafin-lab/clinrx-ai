@@ -1,10 +1,6 @@
 """Lossless, explicit mappings with conservative canonical-content equality."""
-import json
 from dataclasses import dataclass
-from datetime import datetime
 
-from pydantic import AwareDatetime, TypeAdapter
-from pydantic_core import PydanticSerializationError
 
 from pydantic import ValidationError
 
@@ -15,14 +11,33 @@ from app.models.clinical.facts import (
 from .entities import EncounterRow, FactRow, PAYLOAD_VERSION, PatientRow
 from .errors import PersistenceInputError, StorageIntegrityError, UnsupportedOperation
 from .metadata import IngestionMetadata
+from .canonical import canonical_payload
+from app.models.clinical.microbiology import (Specimen, DirectExamination, CultureFinding,
+    IsolateIdentification, SusceptibilityResult, ResistanceFinding, MolecularResult,
+    BloodCultureSet, BloodCultureBottle)
+from app.models.clinical.antimicrobials import (AntimicrobialOrder,
+    CompletedAntimicrobialAdministration, AntimicrobialNonDelivery)
 
 SUPPORTED_FACTS = {
     'observation': ClinicalObservation,
     'medication_order': MedicationOrder,
     'medication_administration': MedicationAdministration,
     'inference': ClinicalInference,
+    'microbiology_specimen': Specimen,
+    'microbiology_direct_examination': DirectExamination,
+    'microbiology_culture': CultureFinding,
+    'microbiology_isolate': IsolateIdentification,
+    'microbiology_susceptibility': SusceptibilityResult,
+    'microbiology_resistance': ResistanceFinding,
+    'microbiology_molecular': MolecularResult,
+    'blood_culture_set': BloodCultureSet,
+    'blood_culture_bottle': BloodCultureBottle,
+    'antimicrobial_order': AntimicrobialOrder,
+    'antimicrobial_administration': CompletedAntimicrobialAdministration,
+    'antimicrobial_non_delivery': AntimicrobialNonDelivery,
 }
-SupportedFact = ClinicalObservation | MedicationOrder | MedicationAdministration | ClinicalInference
+SupportedFact = (ClinicalObservation | MedicationOrder | MedicationAdministration | ClinicalInference
+    | Specimen | DirectExamination | CultureFinding | IsolateIdentification | SusceptibilityResult | ResistanceFinding | MolecularResult | BloodCultureSet | BloodCultureBottle | AntimicrobialOrder | CompletedAntimicrobialAdministration | AntimicrobialNonDelivery)
 
 
 @dataclass(frozen=True)
@@ -37,40 +52,6 @@ def validate_fact(fact) -> SupportedFact:
         raise UnsupportedOperation('unsupported clinical fact category')
     return model.model_validate(fact)
 
-
-_AWARE_TIME = TypeAdapter(AwareDatetime)
-
-
-def _check_timestamps(original, encoded):
-    """Reject lossy representations recursively; never normalize retained timestamps."""
-    if isinstance(original, datetime):
-        try:
-            restored = _AWARE_TIME.validate_python(encoded)
-        except (ValidationError, ValueError, TypeError):
-            raise UnsupportedOperation('timestamp is not faithfully representable in payload version 1') from None
-        # Compare wall time AND offset, not datetime equality alone (which can
-        # equate different offsets or obscure fold distinctions).
-        if original.isoformat() != restored.isoformat():
-            raise UnsupportedOperation('timestamp is not faithfully representable in payload version 1')
-    elif isinstance(original, dict):
-        for key, value in original.items():
-            _check_timestamps(value, encoded[key])
-    elif isinstance(original, (tuple, list)):
-        for value, serialized in zip(original, encoded, strict=True):
-            _check_timestamps(value, serialized)
-
-
-def canonical_payload(model) -> str:
-    # JSON key order and omitted defaults do not affect equality. Array order,
-    # Decimal lexical precision, offsets and source spelling DO remain material.
-    try:
-        original = model.model_dump(mode='python', exclude_none=False, exclude_defaults=False)
-        encoded = model.model_dump(mode='json', exclude_none=False, exclude_defaults=False)
-        _check_timestamps(original, encoded)
-        return json.dumps(encoded, sort_keys=True, separators=(',', ':'),
-                          ensure_ascii=False, allow_nan=False)
-    except (ValidationError, PydanticSerializationError, ValueError, TypeError):
-        raise PersistenceInputError('payload serialization failed') from None
 
 
 def decode(row, model):

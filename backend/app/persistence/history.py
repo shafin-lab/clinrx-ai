@@ -32,7 +32,7 @@ class QueryContract(StorageMetadata):
 
 
 class FactIdentity(QueryContract):
-    kind: Literal['observation', 'medication_order', 'medication_administration', 'inference']
+    kind: Literal['observation', 'medication_order', 'medication_administration', 'inference', 'microbiology_specimen', 'microbiology_direct_examination', 'microbiology_culture', 'microbiology_isolate', 'microbiology_susceptibility', 'microbiology_resistance', 'microbiology_molecular', 'blood_culture_set', 'blood_culture_bottle', 'antimicrobial_order', 'antimicrobial_administration', 'antimicrobial_non_delivery']
     id: Text
 
 

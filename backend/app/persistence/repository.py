@@ -99,13 +99,18 @@ class PatientRepository:
         self.load_encounter(patient_id=target.patient_id, encounter_id=target.encounter_id)
         return target
 
-    def _chain(self, kind, fact_id):
+    def _chain(self, kind, fact_id, target=None):
         """Validate the entire encountered chain, including links leaving its scope."""
         rows = self._session.scalars(select(FactRow).where(
             FactRow.kind == kind, FactRow.fact_id == fact_id
         ).order_by(FactRow.ingestion_sequence)).all()
         if not rows:
             return []
+        owner = (rows[0].patient_id, rows[0].encounter_id)
+        if target is not None and owner != (target.patient_id, target.encounter_id):
+            raise ScopeMismatch('revision chain belongs to a different context')
+        if any((row.patient_id, row.encounter_id) != owner for row in rows):
+            raise StorageIntegrityError('stored revision chain has mixed ownership')
         sequences = [row.ingestion_sequence for row in rows]
         links = self._session.scalars(select(RevisionLink).where(or_(
             RevisionLink.successor_sequence.in_(sequences),
@@ -135,7 +140,7 @@ class PatientRepository:
         if fact.supersedes is None:
             raise PersistenceInputError('revision requires an explicit predecessor and correction reason')
         payload = canonical_payload(fact)
-        chain = self._chain(fact.kind, fact.id)
+        chain = self._chain(fact.kind, fact.id, target)
         if chain and chain[0].fact.binding.target != target:
             raise ScopeMismatch('revision chain belongs to a different context')
         # Retries precede terminal enforcement: an old revision remains retryable.
@@ -168,7 +173,7 @@ class PatientRepository:
         if fact.supersedes is not None:
             raise UnsupportedOperation('use append_revision for corrections')
         payload = canonical_payload(fact)
-        self._chain(fact.kind, fact.id)
+        self._chain(fact.kind, fact.id, target)
         existing = self._session.scalar(select(FactRow).where(
             FactRow.kind == fact.kind, FactRow.fact_id == fact.id, FactRow.revision == fact.revision))
         if existing:
@@ -198,7 +203,7 @@ class PatientRepository:
             raise RecordNotFound('exact fact revision not found')
         if (row.patient_id, row.encounter_id) != (target.patient_id, target.encounter_id):
             raise ScopeMismatch('exact reference does not belong to requested context')
-        self._chain(reference.kind, reference.id)
+        self._chain(reference.kind, reference.id, target)
         return load_fact(row, self._repository_id)
 
     @_operation
@@ -225,6 +230,18 @@ class PatientRepository:
                      clinical_filter=None, ingestion_filter=None):
         return retrieve(self, target=target, cutoff=cutoff,
                         clinical_filter=clinical_filter, ingestion_filter=ingestion_filter)
+
+    @_operation
+    def check_visible_binding_scopes(self, references, *, target, cutoff):
+        """Envelope-only check; never inspect future or foreign payload content."""
+        from .bounded_history import check_binding_scopes
+        return check_binding_scopes(self, references, target=target, cutoff=cutoff)
+
+    @_operation
+    def list_bounded_history(self, *, target, cutoff, budget):
+        """Bound candidate envelopes/bytes before existing historical decoding."""
+        from .bounded_history import bounded_history
+        return bounded_history(self, target=target, cutoff=cutoff, budget=budget)
 
     @_operation
     def list_latest_known(self, *, target: ContextTarget, cutoff: RepositoryCutoff,

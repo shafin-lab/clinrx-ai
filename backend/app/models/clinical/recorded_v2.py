@@ -7,7 +7,7 @@ from pydantic import AwareDatetime, Field, field_validator, model_validator
 
 from .common import ContextTarget, DomainModel, Provenance, LineageEdge, Quantity, Reference, Text
 from .facts import PatientFact
-from app.persistence.mapping import canonical_payload
+from app.persistence.canonical import canonical_payload
 
 RawText = Annotated[str, Field(min_length=1, max_length=4096)]
 Digest = Annotated[str, Field(pattern=r'^[0-9a-f]{64}$')]
@@ -192,7 +192,7 @@ class ReportState(Contract):
 
 
 class RecordedFactV2(PatientFact):
-    """New kinds only; deliberately absent from Fact/SUPPORTED_FACTS and SQL."""
+    """Recorded v2 kinds; separate from the original governance Fact union."""
     contract_version: Literal['2'] = '2'
     provenance: BoundedProvenance
     origin: Literal['observed', 'reported']
