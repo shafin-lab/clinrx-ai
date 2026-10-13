@@ -1237,3 +1237,79 @@ fluid/output intervals can use independent typed facts and exact references. The
 still require their own contracts and explicit union admission. They must not be
 encoded as antimicrobial events, microbiology results or generic metadata blobs.
 No such future domain or production clinical validation is implemented in M6.1.
+
+## M6.2 bounded durable Patient State v2 assembly
+
+`assemble_patient_state_v2(engine, request=...)` accepts an `AssemblyRequestV2`
+requiring explicit patient/encounter, aware closed review interval, repository
+cutoff and `SyntheticMicrobiologyAntimicrobialState:2`. It produces a frozen
+`PatientStateAssemblyResultV2`: snapshot, request/budgets, candidate-row and terminal
+counts, exact binding outcomes and ordered typed issues. The original
+`SyntheticLaboratoryMedicationState:1` implementation is unchanged.
+
+The profile validates bounded visible history before choosing each stable family's
+terminal revision, then maps and places records. Withdrawn terminals are omitted
+with an explicit issue; no eligible predecessor is resurrected. Preliminary,
+uncertain and incomplete recorded facts remain representable. Missing-time terminal
+records are retained as unplaced, within the finite candidate budget. Approximate
+and bounded source times retain their uncertainty. Repository visibility does not
+establish source availability or clinical completeness.
+
+The snapshot retains each exact fact once. Microbiology specimen/isolate/panel
+views and distinct antimicrobial order/administration/non-delivery views contain
+references only. Agent/organism names and array positions never resolve identity.
+Source codes retain namespace/version; mapping assertions are not a terminology
+service. Existing unsupported fact families produce explicit profile issues.
+The two domain coverage entries report partial mapping, completed bounded retrieval,
+candidate/retained counts and unknown source completeness. Report states and detailed
+binding/mapping issues supply the finer distinctions; absence is not clinical absence.
+
+Declared exact bindings are looked up only in the specified visible prefix.
+Unresolved/ambiguous assertions remain so; no plausible candidate is chosen.
+A declared U1→I1 remains U1→I1 after I2 is terminal. The result reports
+`historical_exact_not_retained` and may retain I2 separately, without grouping U1
+under I2. PatientStateSnapshotV2 prohibits two revisions of one stable family, so
+historical I1 is not injected alongside terminal I2. Missing/future exact targets,
+withdrawn targets and targets outside this profile have distinct binding outcomes.
+No historical binding is rewritten to latest.
+
+The fixed profile follows only exact terminal parents for contextual inclusion.
+Pre-window parents retain their source timestamps and exact child references.
+Unrelated dated out-of-window records are not included. An old nonterminal target
+is disclosed rather than resurrected. Scope contradictions, inconsistent exact
+relationships, malformed visible history and illegal duplicate identities are hard
+errors; missing/ambiguous data is represented by typed outcomes.
+
+Default hard budgets (callers may lower them within the declared maxima):
+
+| Work/result | Maximum |
+| --- | ---: |
+| Candidate revision envelopes | 4096 |
+| Aggregate input payload / serialized result | 16 MiB each |
+| Retained facts | 512 |
+| Specimens / isolates | 128 / 256 |
+| Children per grouping / molecular targets | 64 / 64 |
+| Binding outcomes | 1024 |
+| Contextual depth / per-record fan-out | 8 / 16 |
+| Traversal steps | 8192 |
+| Combined assembly and snapshot issues | 512 |
+
+M6.1's nested bounds still apply. Limit exhaustion raises QueryLimitExceeded with
+no partial-success result or silent truncation. Candidate scanning is bounded before
+decoding. Assembly uses one existing transaction and performs no writes or clock
+sampling. It opens no nested writer and does not change shared transaction ownership.
+
+Exact IDs, source representations, Decimal scale, offsets and provenance order
+survive storage and reopen. Output ordering is independent of incidental SQL row
+order. Identical database/request/prefix produces identical canonical output;
+different ingestion metadata or repository identity remains materially different.
+
+M6.3 descriptive S/I/U/D inference is deferred: no temporal statement, susceptibility
+match, appropriateness, infection interpretation or therapy episode is produced.
+M6.4 execution/witnesses/governance/reconciliation and M5 API/UI admission remain
+separate work. There are no new endpoints, frontend changes or connectors.
+
+Focused tests: `test_patient_state_v2_persistence.py` and
+`test_patient_state_v2_assembly.py`. The earlier M6.1 notes above describe that
+phase's pre-admission boundary; M6.2 explicitly supersedes persistence/assembly
+admission only, while preserving the typed contracts.

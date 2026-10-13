@@ -99,14 +99,14 @@ def snapshot(records=None, **kw):
 
 
 @pytest.mark.parametrize('index',range(12))
-def test_each_fact_frozen_roundtrip_and_not_persistable(index):
+def test_each_fact_frozen_roundtrip_and_explicit_admission(index):
     fact=all_facts()[index]
     encoded=canonical_payload(fact)
     assert canonical_payload(type(fact).model_validate_json(encoded))==encoded
     assert fact.canonical_digest==sha256(encoded.encode()).hexdigest()
     with pytest.raises(ValidationError): fact.id='changed'
     with pytest.raises(ValidationError): fact.provenance.actor='changed'
-    with pytest.raises(UnsupportedOperation): validate_fact(fact)
+    assert canonical_payload(validate_fact(fact)) == encoded
 
 
 @pytest.mark.parametrize('index',range(12))
@@ -532,11 +532,15 @@ def test_closed_window_boundaries_and_contextual_link_validation():
     with pytest.raises(ValidationError): snapshot((item(facts()[0],inclusion='contextual_parent',contextual_for=(unrelated,)),))
 
 
-def test_api_and_persistence_not_implicitly_admitting_new_types():
+def test_explicit_persistence_admission_does_not_expand_governance_fact_union():
     from app.persistence.mapping import SUPPORTED_FACTS
     from app.persistence.history import FactIdentity
-    assert set(SUPPORTED_FACTS)=={'observation','medication_order','medication_administration','inference'}
-    with pytest.raises(ValidationError): FactIdentity(kind='microbiology_specimen',id='S')
+    assert {'observation','medication_order','medication_administration','inference'} <= set(SUPPORTED_FACTS)
+    assert FactIdentity(kind='microbiology_specimen',id='S').kind == 'microbiology_specimen'
+    from app.models.clinical.facts import Fact
+    from pydantic import TypeAdapter
+    with pytest.raises(ValidationError): TypeAdapter(Fact).validate_python(facts()[0].model_dump())
+    with pytest.raises(ValidationError): FactIdentity(kind='unadmitted',id='S')
 
 
 @pytest.mark.parametrize('owner', ['fact', 'binding', 'mapping', 'purpose'])
