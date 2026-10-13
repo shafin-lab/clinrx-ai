@@ -1313,3 +1313,100 @@ Focused tests: `test_patient_state_v2_persistence.py` and
 `test_patient_state_v2_assembly.py`. The earlier M6.1 notes above describe that
 phase's pre-admission boundary; M6.2 explicitly supersedes persistence/assembly
 admission only, while preserving the typed contracts.
+
+## M6.3 four-input recorded microbiology/antimicrobial timing
+
+`build_micro_antimicrobial_timing_inference(assembly=..., request=...)` is pure and
+returns one existing ClinicalInference or a bounded MicroAntimicrobialInferenceError.
+Method identity is `RecordedAntimicrobialSpecimenSusceptibilityTiming/v1`. It does
+not read a repository, sample a clock, rebuild assembly, call terminology services,
+perform governance or expose an API. Existing M3/M4 and M6.2 implementations remain
+unchanged.
+
+`MicroAntimicrobialTimingRequest` requires named S/I/U/D pins, each with its role,
+exact reference and expected canonical **fact** digest. It also pins the complete
+normalized assembly digest, scope/cutoff and `SyntheticMicrobiologyAntimicrobialState:2`,
+and supplies inference identity/revision and execution time explicitly. This checks
+consistency of supplied content, not authenticated origin or source completeness.
+Rehashing fabricated evidence is not prevented by an unsigned pure contract.
+
+The four roles are specimen, isolate identification, susceptibility result and
+completed antimicrobial administration. Orders, non-delivery, culture records and
+resistance records cannot substitute for these types. The isolate must bind the
+exact specimen, and susceptibility must bind the exact selected isolate. Required
+assembly binding outcomes must agree with retained source assertions. Unresolved
+or ambiguous relationships are unsuitable. U1→I1 never becomes U1→I2; an absent
+historical I1 cannot be selected merely because its reference is disclosed.
+
+Version 1 accepts final isolate reports with final identification and final,
+reported susceptibility results. Original/amended/corrected dispositions may qualify;
+superseded dispositions do not. Explicit unresolved conflicts are unsuitable. These
+are this family's selection rules, not claims that final means correct or that
+preliminary evidence is unusable by every future family.
+
+Both tested and administered agents must have mapped version-1 identity assertions,
+identical canonical IDs and identical ordered ingredient declarations. Different
+raw spellings may match through these explicit identities. No fuzzy/brand matching,
+partial-ingredient matching, permutation-based combination equivalence or inferred
+formulation equivalence is performed. Source mapping assertions are not independently
+validated by this family.
+
+Required clinical times are exactly S.collected, D.administered and
+U.report.available. No receipt, report, final-report, infusion-start, order or
+repository timestamp substitutes for a missing required axis. Execution time must
+not precede the consumed upper bounds or selected source recording/verification
+metadata; it is supplied explicitly and never sampled.
+
+Temporal policy:
+
+- Exact instants without an additional uncertainty assertion are point intervals.
+- Explicit bounded times use their inclusive lower/upper bounds, ignoring any
+  representative value for ordering. Approximate timing with explicit bounds can
+  qualify.
+- Before means the administration upper bound is strictly below the other lower
+  bound; after is the converse. At requires both intervals to be singleton instants
+  with the same actual instant.
+- Touching/overlapping non-singleton intervals are unsuitable. Point-only
+  approximate/day values and free-text uncertainty cannot prove bounds and are not
+  converted into invented intervals.
+- Offset and DST-fold comparisons use actual instants; source ISO offsets remain
+  visible. D-vs-S and D-vs-U are independent; no S<D<U rule is imposed.
+
+Exact-time grammar is fixed:
+
+> The selected antimicrobial administration was recorded at D. The selected
+> specimen was collected at S. The selected susceptibility revision was recorded
+> as available at U. Administration occurred [before/at/after] specimen collection
+> and [before/at/after] susceptibility availability.
+
+For bounded times, `at T` becomes `within [lower, upper]`. The statement contains
+only temporal description. Exact inputs and attributed digest/uncertainty fields
+retain evidence identity; MIC, dose, organism and drug labels are not added as
+clinical narrative. All four selected fact digests are retained in uncertainty,
+so changed consumed evidence remains distinguishable even if temporal wording is
+unchanged.
+
+Inputs and direct derived_from edges are exactly S, I, U, D, in that fixed role
+order. Associated orders, bottle/set facts, revision predecessors and unrelated
+snapshot items are not added. Domain bindings are not evidence edges. Output
+remains inferred, unverified and synthetic, with no target or prediction horizon.
+
+Mandatory limitations deny claims of treatment appropriateness, infection versus
+colonization, source authenticity/completeness, clinician awareness, causality,
+complete antimicrobial exposure, susceptibility actionability and breakpoint
+validity. Selected source, time, mapping and binding limitations are attributed and
+preserved. Uncertainty is bounded to 512 entries and 65,536 total characters;
+overflow is explicit unsuitability, never truncation. Request IDs/revisions/correction
+reasons have finite length limits.
+
+Errors expose a fixed code and category: invalid_input for malformed requests,
+integrity for malformed/inconsistent assemblies or digest/scope mismatches, and
+unsuitable for missing exact evidence, unsupported bindings/identity/report states,
+missing or ambiguous times, unresolved conflicts and family limits. Displayed
+messages omit evidence; traceback locals are not a privacy boundary.
+
+Historical replay consumes the original supplied assembly only. Later corrections
+cannot alter it; explicitly selected same-value or provenance-only successors remain
+different evidence. Future currentness/final recheck, dedicated four-role execution
+storage, governance/release/reconciliation belong to M6.4; transport/UI belong to
+later work. Focused tests: `tests/test_patient_state_v2_inference.py`.
