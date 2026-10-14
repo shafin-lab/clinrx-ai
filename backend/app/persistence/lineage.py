@@ -10,7 +10,7 @@ from app.models.clinical.common import ContextTarget, LineageEdge, Reference, va
 from .entities import FactRow
 from .errors import (PersistenceInputError, QueryLimitExceeded, RecordNotFound,
                      ScopeMismatch, StorageIntegrityError)
-from .history import QueryContract, _instant_key, retrieve
+from .history import QueryContract, _instant_key
 from .mapping import SUPPORTED_FACTS, StoredFact
 from .metadata import RepositoryCutoff
 
@@ -127,7 +127,7 @@ def _limit(condition):
         raise QueryLimitExceeded('lineage query resource limit exceeded')
 
 
-def resolve(repository, reference, *, target, cutoff, limits):
+def resolve(repository, reference, *, target, cutoff, limits, history_budget=None, accounting=None):
     """Called inside the repository's checked transaction boundary."""
     reference = Reference.model_validate(reference)
     limits = LineageLimits.model_validate(limits)
@@ -145,7 +145,13 @@ def resolve(repository, reference, *, target, cutoff, limits):
         FactRow.patient_id == target.patient_id, FactRow.encounter_id == target.encounter_id,
         FactRow.ingestion_sequence <= cutoff.fact_watermark))
     _limit(count > limits.max_records)
-    history = retrieve(repository, target=target, cutoff=cutoff)
+    from .bounded_history import HistoryBudget, _bounded_retrieve
+    budget = HistoryBudget.model_validate(history_budget) if history_budget is not None else None
+    # Preserve the legacy max_records ceiling, including values above 4096.
+    history = _bounded_retrieve(repository, target=target, cutoff=cutoff,
+        max_rows=limits.max_records if budget is None else min(limits.max_records, budget.max_rows),
+        max_payload_bytes=16777216 if budget is None else budget.max_payload_bytes,
+        accounting=accounting)
     visible = {item.fact.reference: item for item in history.records}
     if reference not in visible:
         raise RecordNotFound('lineage root not resolvable in scope at cutoff')

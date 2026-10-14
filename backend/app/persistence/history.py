@@ -91,11 +91,16 @@ def _clinical_matches(stored, window):
             (window.start is None or time.effective_end is None or _instant_key(time.effective_end) >= _instant_key(window.start)))
 
 
-def _visible_chain(repository, identity, target, watermark):
+def _visible_chain(repository, identity, target, watermark, admitted_sequences=None):
     session = repository._session
-    rows = session.scalars(select(FactRow).where(
+    query = select(FactRow).where(
         FactRow.kind == identity.kind, FactRow.fact_id == identity.id,
-        FactRow.ingestion_sequence <= watermark).order_by(FactRow.ingestion_sequence)).all()
+        FactRow.ingestion_sequence <= watermark).order_by(FactRow.ingestion_sequence)
+    if admitted_sequences is not None:
+        query = query.limit(len(admitted_sequences) + 1)
+    rows = session.scalars(query).all()
+    if admitted_sequences is not None and tuple(row.ingestion_sequence for row in rows) != admitted_sequences:
+        raise StorageIntegrityError('visible history differs from admitted envelopes')
     if not rows:
         return []
     # Check every visible envelope before decoding any member of this chain.
@@ -106,10 +111,14 @@ def _visible_chain(repository, identity, target, watermark):
     sequences = [row.ingestion_sequence for row in rows]
     # Future successors are deliberately excluded, including their payloads and
     # validation failures. Do not reuse the full-database _chain validator here.
-    links = session.scalars(select(RevisionLink).where(
+    link_query = select(RevisionLink).where(
         RevisionLink.successor_sequence <= watermark,
         or_(RevisionLink.successor_sequence.in_(sequences),
-            RevisionLink.predecessor_sequence.in_(sequences)))).all()
+            RevisionLink.predecessor_sequence.in_(sequences)))
+    if admitted_sequences is not None:
+        # At most two incident links per admitted row under the reviewed schema.
+        link_query = link_query.limit(2 * len(sequences) + 1)
+    links = session.scalars(link_query).all()
     expected = {(a.ingestion_sequence, b.ingestion_sequence) for a, b in zip(rows, rows[1:])}
     if {(link.predecessor_sequence, link.successor_sequence) for link in links} != expected or len(links) != len(expected):
         raise StorageIntegrityError('malformed visible revision links')
@@ -125,7 +134,7 @@ def _visible_chain(repository, identity, target, watermark):
 
 
 def retrieve(repository, *, target, cutoff, identity=None, latest=False,
-             clinical_filter=None, ingestion_filter=None):
+             clinical_filter=None, ingestion_filter=None, _admission=None):
     """Internal helper; called only inside checked repository operations."""
     # RepositoryCutoff predates revalidate_instances: round-trip Python fields to
     # revalidate even model_copy/model_construct objects supplied by callers.
@@ -140,7 +149,10 @@ def retrieve(repository, *, target, cutoff, identity=None, latest=False,
     identity = FactIdentity.model_validate(identity) if identity is not None else None
     clinical_filter = ClinicalTimeFilter.model_validate(clinical_filter) if clinical_filter is not None else None
     ingestion_filter = IngestionTimeFilter.model_validate(ingestion_filter) if ingestion_filter is not None else None
-    if identity is not None:
+    admitted = None if _admission is None else dict(_admission.families)
+    if admitted is not None:
+        identities = [identity] if identity is not None else list(admitted)
+    elif identity is not None:
         identities = [identity]
     else:
         keys = repository._session.execute(select(FactRow.kind, FactRow.fact_id).where(
@@ -157,7 +169,8 @@ def retrieve(repository, *, target, cutoff, identity=None, latest=False,
             raise StorageIntegrityError('invalid visible fact identity') from None
     records = []
     for key in identities:
-        chain = _visible_chain(repository, key, target, cutoff.fact_watermark)
+        chain = _visible_chain(repository, key, target, cutoff.fact_watermark,
+            None if admitted is None else admitted.get(key, ()))
         # Both filters apply after latest selection, so neither can resurrect an
         # older revision. Validate all encountered visible records before filtering.
         records.extend(chain[-1:] if latest else chain)

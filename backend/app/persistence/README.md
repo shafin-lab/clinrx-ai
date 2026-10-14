@@ -720,3 +720,57 @@ from `mapping.py` to avoid the admission/contracts import cycle. No stored diges
 column was introduced: existing canonical-byte/envelope validation remains the
 storage contract, and retained state derives/verifies its digest from those bytes.
 Contract field semantics and existing canonical payloads are unchanged.
+
+
+## H1-B1: bounded historical admission infrastructure
+
+No clinical workflow integration occurs in this increment. Existing unbounded
+history APIs remain compatible. `list_bounded_history` now supports an optional
+`FactIdentity`, `latest=True`, clinical/ingestion filters, a per-family
+`HistoryBudget`, and trusted `HistoryAccounting`. It returns the unchanged
+`HistoryResult`: exact identity/selection/cutoff metadata and ingestion ordering.
+
+A read budget counts all visible candidate revisions and their stored UTF-8
+payload bytes before payload transfer/decoding. Family budget counts all visible
+members of each stable kind/id, regardless of latest selection or eligibility.
+Rows and payload-byte boundaries are inclusive; exceeding either raises
+`QueryLimitExceeded`. There is no truncation, cache, older fallback or withholding.
+
+`HistoryBudget` serialization remains exactly max_rows (default/ceiling 4096)
+and max_payload_bytes (default/ceiling 16777216). New `AggregateHistoryBudget`
+has default allowances of 16384 rows and 67108864 bytes (ceilings 100000 rows,
+268435456 bytes). These are operational allowances, not clinical capacity claims.
+`HistoryAccounting` is a synchronous in-memory counter, never a persisted contract.
+An admitted read charges its full candidate rows/bytes once, even on repeated
+identity/cutoff reads, filtering to zero results, or subsequent integrity failure.
+Rejected admission does not charge payload allowance. Envelope/ownership verification
+queries are not charged again. Missing families charge zero. Share an account only
+within one trusted synchronous unit of work; there is no automatic reset or cache.
+
+Envelope metadata queries use SQL LIMIT + one overflow sentinel and SQLite
+length(CAST(payload AS BLOB)); clinical decimal and timestamp representations are
+untouched. Identity and ownership checks precede decoding. Entire-scope reads also
+check visible envelopes of discovered stable families for foreign successors.
+Payload queries use admitted family row counts plus a sentinel; exact ingestion
+sequences must match admission. Revision-link reads have explicit limits and retain
+existing full visible-prefix link-set/predecessor validation. Future revisions and
+links outside cutoff are excluded from admission and validation. All limits apply
+inside existing repository operations, preserving shared failure poisoning, rollback,
+post-exit invalidation, one connection and commit ownership.
+
+`resolve_lineage` adds optional runtime `history_budget` and `accounting` arguments,
+without changing `LineageLimits` serialization. Default history byte admission is
+16 MiB. The existing max_records ceiling (default 10000) remains authoritative and
+is not inadvertently reduced to 4096; an explicit history_budget may tighten it.
+Ancestry, missing/unsupported-reference disclosures, origin/cycle validation and
+existing exceptions remain unchanged for admitted evidence.
+
+H1-B2 must pass trusted budgets/accounting through initial assembly, historical
+replay and protected rechecks. Preserve retained-receipt lookup before initializing
+new-work budgets, and keep reconciliation free of clinical reads and clocks.
+Do not add these operational limits to existing serialized requests, command
+signatures, inference contents, witnesses or execution receipts. No schema, migration,
+API, dependency, transaction-lifecycle or governance change is part of H1-B1.
+SQL admission bounds application materialization; it does not promise bounded
+SQLite scan time or change lock/timeout policy. Live append/load `_chain` operations
+remain outside this historical infrastructure change.
