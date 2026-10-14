@@ -42,11 +42,32 @@ def test_demo_and_routes_have_no_direct_storage_or_test_imports():
     for path in files:
         tree = ast.parse(path.read_text())
         for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    assert not alias.name.startswith(('test_', 'tests', 'pytest', 'sqlalchemy', 'app.persistence.entities'))
+                    if path.parent.name == 'routes':
+                        assert not alias.name.startswith('app.persistence')
             if isinstance(node, ast.ImportFrom):
                 assert not (node.module or '').startswith(('test_', 'tests', 'pytest', 'sqlalchemy', 'app.persistence.entities'))
+                if path.parent.name == 'routes':
+                    assert not (node.module or '').startswith('app.persistence')
+                    assert not (node.module == 'app' and any(alias.name == 'persistence' for alias in node.names))
             if isinstance(node, ast.Call):
                 name = getattr(node.func,'attr',getattr(node.func,'id',''))
-                assert name not in ('execute','add','flush','commit','query','select') or path.name=='temporal_reviews.py' and name=='execute'
+                service_delegation = (
+                    isinstance(node.func, ast.Attribute)
+                    and node.func.attr == 'execute'
+                    and isinstance(node.func.value, ast.Name)
+                    and (path.name, node.func.value.id) in (
+                        ('temporal_reviews.py', 'service'),
+                        ('micro_antimicrobial.py', 'app'),
+                    )
+                    and len(node.args) == 1
+                    and isinstance(node.args[0], ast.Name)
+                    and node.args[0].id == 'command'
+                    and not node.keywords
+                )
+                assert name not in ('execute','add','flush','commit','query','select') or service_delegation
 
 
 
