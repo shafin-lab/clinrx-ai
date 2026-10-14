@@ -10,6 +10,7 @@ from app.api.review_commands import ExecutionCommandCodec, StateContextCodec
 from app.api.routes.health import router as health_router
 from app.api.routes.patient_state import router as patient_state_router
 from app.api.routes.temporal_reviews import router as temporal_reviews_router
+from app.api.routes.micro_antimicrobial import router as micro_antimicrobial_router
 from app.persistence.database import create_database
 
 
@@ -45,6 +46,7 @@ def create_app(config: APIConfig | None = None, *, engine=None, clock=None, acce
     application.include_router(health_router)
     application.include_router(patient_state_router)
     application.include_router(temporal_reviews_router)
+    application.include_router(micro_antimicrobial_router)
     install_error_handlers(application)
     application.add_middleware(DevelopmentCORS)
     application.add_middleware(BoundaryMiddleware)

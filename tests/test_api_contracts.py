@@ -91,7 +91,10 @@ def test_factory_existing_routes_and_health(config):
         assert set(paths) == {'/','/health','/knowledge','/knowledge/search','/knowledge/{knowledge_id}'} | {
             '/api/v1/patients/{patient_id}/encounters/{encounter_id}'+suffix for suffix in (
                 '/state','/temporal-review-preparations','/temporal-reviews',
-                '/temporal-executions/{execution_id}','/temporal-executions/{execution_id}/reconcile')}
+                '/temporal-executions/{execution_id}','/temporal-executions/{execution_id}/reconcile',
+                '/patient-state-v2','/micro-antimicrobial-review-preparations',
+                '/micro-antimicrobial-reviews','/micro-antimicrobial-reviews/{execution_id}',
+                '/micro-antimicrobial-review-reconciliations')}
         for path in ('/', '/health', '/knowledge'):
             assert 'cache-control' not in client.get(path).headers
     assert not config.database_path.exists()

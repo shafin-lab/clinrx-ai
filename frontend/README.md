@@ -59,3 +59,40 @@ npm --prefix frontend run build
 Vitest/Testing Library cover selection pins, command reuse, preparation uncertainty, execution uncertainty, explicit committed_match/absent reconciliation, safe errors, privacy and dialog focus. No lint/format script is configured.
 
 Browser acceptance used a disposable real SQLite database, FastAPI on 8013 and Vite on 5173. Verified loading, ten coverage entries, exact A/B/M, preparation, release, provenance, keyboard Escape/focus return, lookup, exact-command retry, missing lookup, and correction-driven withholding with consumed A1 / terminal A2. Completion-unknown/reconciliation outcomes are component/API tests rather than induced browser commit failures. Foreign-scope privacy is checked by backend compatibility tests. No production deployment or cross-browser accessibility certification is claimed.
+
+
+## M6.5 S/I/U/D section
+
+The same review page now includes a separate microbiology/antimicrobial section.
+Use `app.demo.micro_antimicrobial bootstrap` in place of the older bootstrap command
+above, keeping the API and Vite configuration the same. It includes both demos.
+Load microbiology state, inspect specimen → isolate → susceptibility reference views,
+then explicitly choose S/I/U/D. Orders and non-delivery records have separate sections
+and cannot be selected as D. Grouping follows server reference views; ungrouped facts
+remain visible. Labels, timestamps, quantities and canonical identity are displayed
+without client-side clinical interpretation or text-based equivalence.
+
+Preparation previews the descriptive inference and its limitations. Execute is a
+separate explicit action. Review-window or role changes discard prepared command,
+preview and selection-bound result. Parent scope changes remount this section, clearing
+its memory. While execution completion is unknown, reconciliation is the only execution
+action; there is no polling or automatic retry. Absence is displayed before any explicit
+same-command retry. Session-local IDs allow retained lookup. Reload clears all handles.
+
+Released output displays the backend statement. Withheld output suppresses the main
+statement but allows the original inference in historical provenance. Original consumed
+and protected final-checked facts are separate columns, with backend witness status,
+exact references/digests, reasons, policy/version and cutoffs. The frontend never fetches
+current facts to enrich this retained record. Detailed limitations are disclosures so
+provenance does not dominate the initial result. Standard controls, focusable live status,
+keyboard disclosure controls and a one-column narrow layout support accessibility.
+
+M6.5 browser acceptance on a disposable SQLite database exercised load, source detail,
+exact selection, prepare, release, retry, lookup, committed release/withheld and absent
+reconciliation, supported U2 correction, bounded invalid identity rejection and ungrouped
+visibility. Layout was checked at 1280px and 390px without horizontal overflow. Completion
+uncertainty uses API fault injection/component tests, not an interactive commit fault.
+The fixed JSON test fixture is synthetic output from the real API with signed envelopes
+replaced by non-secret placeholders. Expected outcomes and roles are independently asserted.
+No production auth, PHI, cross-browser certification, persistent recovery, connectors,
+terminology service or treatment advice is added.

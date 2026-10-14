@@ -26,7 +26,7 @@ export class ReviewClient {
     if (!['http:','https:'].includes(url.protocol) || !['127.0.0.1','localhost','[::1]'].includes(url.hostname) || url.username || url.password || url.search || url.hash || url.pathname!=='/') throw new Error('Configure a loopback API origin.');
     this.path = url.origin+'/api/v1/patients/'+encodeURIComponent(patient)+'/encounters/'+encodeURIComponent(encounter);
   }
-  private async request<T>(suffix: string, body?: unknown): Promise<Reply<T>> {
+  protected async request<T>(suffix: string, body?: unknown): Promise<Reply<T>> {
     let response: Response;
     const fetcher = this.fetcher;
     try { response = await fetcher(this.path+suffix, {method:body===undefined?'GET':'POST', cache:'no-store', credentials:'omit', headers:body===undefined?undefined:{'Content-Type':'application/json'}, body:body===undefined?undefined:JSON.stringify(body)}); }

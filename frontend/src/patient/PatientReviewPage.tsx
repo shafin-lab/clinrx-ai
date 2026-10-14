@@ -1,3 +1,5 @@
+import { MicroReview } from './MicroReview';
+import type { MicroReviewClient } from '../api/microClient';
 import { useReducer, useRef, useState } from 'react';
 import { ApiFailure, ReviewClient } from '../api/client';
 import type { PatientState, Evidence, Execution } from '../api/types';
@@ -10,7 +12,7 @@ const failure=(error:unknown)=>error instanceof ApiFailure?error:new ApiFailure(
 const uncertain=(error:ApiFailure)=>['completion_unknown','network_error','invalid_response'].includes(error.code);
 function ErrorPanel({error}:{error:ApiFailure}) { return <div role="alert" className="error"><strong>{error.code}</strong><p>{error.message}</p>{error.fields.map((f,i)=><p key={i}>{f.path}: {f.code}</p>)}</div>; }
 function SourceDetails({item}:{item:Evidence}) { return <details><summary>Source details</summary><p>{item.source.namespace} / {item.source.identifier}</p><p>Provenance: {item.provenance_completeness}; {item.provenance_recorded_at}</p><TextList items={[...item.disclosures,...item.provenance_limitations]}/></details>; }
-export function PatientReviewPage({client,config}:{client:ReviewClient;config:Config}) {
+export function PatientReviewPage({client,config,microClient}:{client:ReviewClient;config:Config;microClient?:MicroReviewClient}) {
   const [start,setStart]=useState(config.start),[end,setEnd]=useState(config.end);
   const [view,setView]=useState<PatientState>(),[mode,setMode]=useState<string|null>(null);
   const [selection,setSelection]=useState({a:'',b:'',m:''});
@@ -68,6 +70,7 @@ export function PatientReviewPage({client,config}:{client:ReviewClient;config:Co
       <button className="secondary" onClick={()=>setDrawer(true)}>Why am I seeing this?</button>
     </section>}
     <section className="panel"><h2>Reviews opened in this session</h2><p className="muted">Session-local IDs only; this is not the encounter’s complete execution history. Reloading clears this list, selections, and commands.</p>{known.length===0?<p>No reviews opened in this session.</p>:<ul className="session-list">{known.map(id=><li key={id}><code>{id}</code><button className="secondary" disabled={busy||unresolved} onClick={()=>void lookup(id)}>Retrieve execution {id}</button></li>)}</ul>}</section>
+    {microClient&&<MicroReview key={JSON.stringify([config.patient,config.encounter,config.start,config.end])} client={microClient} config={config}/>}
     <footer>Synthetic evidence review · No diagnosis, causal interpretation, or treatment recommendation.</footer>
     </main>{drawer&&result&&<ProvenanceDrawer result={result} onClose={()=>setDrawer(false)}/>}
   </>;

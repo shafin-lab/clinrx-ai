@@ -109,3 +109,55 @@ unchanged. M5.1 additions are bounded-view configuration, early no-store handlin
 preparation-specific uncertainty wording and retained assessment time. Frontend/M5.3,
 production PHI, authentication, patient discovery, generic history, new domains,
 background jobs, automatic retry, key rotation and deployment remain deferred.
+
+
+## M6.5 additive S/I/U/D product flow
+
+The existing M5 routes are unchanged. Five additional routes share the same scoped
+prefix, configured synthetic access, HMAC signer, bounded errors, request logging,
+and no-store middleware:
+
+- `GET /patient-state-v2`: aware review_start/end only; server captures the repository
+  cutoff. Returns strict typed M6.2 assembly, including exact source digests, reference
+  hierarchies, binding outcomes, coverage, issues and contextual parents.
+- `POST /micro-antimicrobial-review-preparations`: execution UUID, signed state context,
+  and named specimen_ref/isolate_ref/susceptibility_ref/administration_ref exact pins.
+  Replays the signed assembly at its original cutoff and calls M6.3. Persists inference
+  separately and signs the complete M6.4 request. No protected execution occurs here.
+- `POST /micro-antimicrobial-reviews`: opaque command only. Existing M6.4 executes it;
+  released and withheld both return 200. Same-ID different-request conflict is 409.
+- `GET /micro-antimicrobial-reviews/{execution_id}`: retained scoped lookup only.
+- `POST /micro-antimicrobial-review-reconciliations`: opaque command only; delegates
+  to M6.4 reconciliation, returning committed_match or absent without clinical reads,
+  clocks, writes, or recomputation.
+
+State and command envelopes have separate capability-specific purposes. They retain
+M5 bounds, signature validation and key semantics. Neither envelope is authorization.
+Clinical Decimal values remain strings and time offsets remain as recorded. Transport
+reuses the existing strict v2 fact union instead of creating competing domain types.
+Provenance includes original four items, original inference and exact inputs/edges,
+terminal witnesses/facts, backend current/superseded statuses, binding and canonical
+identity witnesses, three cutoffs, governance policy and decision references.
+Top-level statement is null when withheld; original inference remains in explicitly
+historical provenance. All projection fields come from the retained execution.
+Invalid user pins remain bounded 422; malformed stored assembly remains an integrity
+failure. Execution uncertainty uses existing completion_unknown/reconcile semantics.
+Preparation uncertainty remains distinct and can leave an unused immutable inference.
+
+For the shared synthetic patient, use the additive explicit bootstrap:
+
+```sh
+PYTHONPATH=backend backend/venv/bin/python -m app.demo.micro_antimicrobial bootstrap --database /tmp/clinrx-m65-demo.sqlite3
+```
+
+This also retains the existing A/B/M demo, adds S/I/U/D plus order, non-delivery,
+direct examination, culture, resistance and molecular records through repository APIs.
+For release use the same explicit historical simulation time above. Prepare a new
+S/I/U/D review, then append the deterministic U2 correction before executing:
+
+```sh
+PYTHONPATH=backend backend/venv/bin/python -m app.demo.micro_antimicrobial correct --database /tmp/clinrx-m65-demo.sqlite3
+```
+
+No reset or HTTP bootstrap exists. Repeated bootstrap/correction is idempotent.
+M6.1–M6.4, Kernel v1, persistence/schema and governance remain unchanged.
