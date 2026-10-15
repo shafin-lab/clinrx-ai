@@ -3,8 +3,9 @@
 Acquisition and mapping assertions are source evidence, never a claim that all
 parameters are supported by every product/software/sensor configuration.
 """
+import re
 from typing import Annotated, Literal
-from pydantic import AwareDatetime, Field, TypeAdapter, model_validator
+from pydantic import AwareDatetime, Field, TypeAdapter, ValidationInfo, model_validator
 from .common import ContextTarget, Reference, Text
 from .facts import PatientFact
 from .recorded_v2 import (Contract, RecordedTime, SourceCode, RecordedConcept,
@@ -25,11 +26,46 @@ class ClockAlignment(Contract):
     provenance: BoundedProvenance
 
 
+def _lossless_microseconds(value):
+    """Datetime retains six fractional digits; discarded zeroes are harmless."""
+    if value is None:
+        return True
+    fraction = re.search(r"[Tt ]\d{2}:\d{2}:\d{2}[.,](\d+)", value)
+    return fraction is None or not any(d != '0' for d in fraction.group(1)[6:])
+
+
+def _retain_time(value):
+    if isinstance(value, dict):
+        recorded = value.get('recorded')
+        if isinstance(recorded, dict) and isinstance(recorded.get('value'), str) and 'source_timestamp' not in value:
+            return {**value, 'source_timestamp': recorded['value']}
+    return value
+
+
 class SourceTimeAssertion(Contract):
+    source_timestamp: Annotated[str, Field(min_length=1, max_length=128)] | None = Field(default=None, exclude_if=lambda v: v is None)
     recorded: RecordedTime
     source: SourceCode
     clock: Literal['verified', 'unreliable', 'unknown'] = 'unknown'
     provenance: BoundedProvenance
+
+
+    @model_validator(mode='before')
+    @classmethod
+    def retain_timestamp(cls, value, info: ValidationInfo):
+        if info.mode == 'json' and isinstance(value, dict) and 'source_timestamp' not in value:
+            raw = value.get('recorded', {}).get('value')
+            if not isinstance(raw, str) or _lossless_microseconds(raw):
+                return value
+        return _retain_time(value)
+
+    @model_validator(mode='after')
+    def consistent_timestamp(self):
+        if self.source_timestamp is not None:
+            parsed = TypeAdapter(AwareDatetime).validate_python(self.source_timestamp)
+            if self.recorded.value is None or parsed.isoformat() != self.recorded.value.isoformat():
+                raise ValueError('source timestamp contradicts alternative clinical time')
+        return self
 
 
 class ClinicalInstant(Contract):
@@ -40,14 +76,18 @@ class ClinicalInstant(Contract):
     conflicting: Annotated[tuple[AwareDatetime, ...], Field(max_length=8)] = ()
     alternative_sources: Annotated[tuple[SourceTimeAssertion, ...], Field(max_length=8)] = ()
     alignment: ClockAlignment | None = None
+    # Omitted for legacy payloads; retain lexemes only when actually supplied.
+    conflicting_source_timestamps: Annotated[tuple[str, ...], Field(max_length=8, exclude_if=lambda v: not v)] = ()
 
     @model_validator(mode='before')
     @classmethod
-    def retain_timestamp_lexeme(cls, value):
-        if isinstance(value, dict):
-            recorded = value.get('recorded')
-            if isinstance(recorded, dict) and isinstance(recorded.get('value'), str) and 'source_timestamp' not in value:
-                value = {**value, 'source_timestamp': recorded['value']}
+    def retain_timestamp_lexeme(cls, value, info: ValidationInfo):
+        value = _retain_time(value)
+        if isinstance(value, dict) and 'conflicting_source_timestamps' not in value:
+            conflicts = value.get('conflicting', ())
+            if any(isinstance(v, str) and (info.mode != 'json' or not _lossless_microseconds(v)) for v in conflicts):
+                value = {**value, 'conflicting_source_timestamps': tuple(
+                    v if isinstance(v, str) else v.isoformat() for v in conflicts)}
         return value
 
     @model_validator(mode='after')
@@ -56,6 +96,10 @@ class ClinicalInstant(Contract):
             restored = TypeAdapter(AwareDatetime).validate_python(self.source_timestamp)
             if self.recorded.value is None or restored.isoformat() != self.recorded.value.isoformat():
                 raise ValueError('source timestamp contradicts retained clinical time')
+        if self.conflicting_source_timestamps:
+            parsed = tuple(TypeAdapter(AwareDatetime).validate_python(v).isoformat() for v in self.conflicting_source_timestamps)
+            if parsed != tuple(v.isoformat() for v in self.conflicting):
+                raise ValueError('conflicting timestamp evidence differs from retained times')
         if self.clock == 'verified' and self.clock_basis is None:
             raise ValueError('verified clock requires explicit evidence')
         return self
@@ -63,11 +107,13 @@ class ClinicalInstant(Contract):
     @property
     def trustworthy(self):
         t = self.recorded
-        return (self.clock == 'verified' and t.status == 'known'
+        return (_lossless_microseconds(self.source_timestamp)
+                and all(_lossless_microseconds(v) for v in self.conflicting_source_timestamps)
+                and self.clock == 'verified' and t.status == 'known'
                 and t.precision == 'instant' and not t.uncertainty
                 and (self.alignment is None or (self.alignment.synchronization == 'synchronized'
                     and all(q is None or q.value == 0 for q in (self.alignment.offset,self.alignment.drift,self.alignment.uncertainty))))
-                and all(a.clock == 'verified' and a.recorded.status == 'known'
+                and all(_lossless_microseconds(a.source_timestamp) and a.clock == 'verified' and a.recorded.status == 'known'
                     and a.recorded.precision == 'instant' and not a.recorded.uncertainty
                     and instant(a.recorded.value) == instant(t.value) for a in self.alternative_sources)
                 and all(instant(v) == instant(t.value) for v in self.conflicting))
