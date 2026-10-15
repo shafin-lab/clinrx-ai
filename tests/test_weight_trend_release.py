@@ -435,7 +435,7 @@ def test_pure_post_persistence_and_unchanged_schema(case,registered):
     assert statements == []
     assert canonical_payload(case['inference']) == before
     with registered.connect() as conn:
-        assert set(inspect(conn).get_table_names()) == {'patient','encounter','fact_revision','revision_link','repository_identity','weight_trend_execution', 'creatinine_trend_execution','patient_state_temporal_execution','micro_antimicrobial_execution','alembic_version'}
+        assert set(inspect(conn).get_table_names()) == {'patient','encounter','fact_revision','revision_link','repository_identity','weight_trend_execution', 'creatinine_trend_execution','patient_state_temporal_execution','micro_antimicrobial_execution','circulatory_execution','alembic_version'}
 
 
 def test_malformed_retained_inference_remains_integrity_exception(case,registered):

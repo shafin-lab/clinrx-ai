@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from .creatinine_executions import _CreatinineExecutionAdapter
     from .patient_state_executions import _PatientStateExecutionAdapter
     from .micro_antimicrobial_executions import _MicroAntimicrobialExecutionAdapter
+    from .circulatory_executions import _CirculatoryExecutionAdapter
 
 
 class _Lifecycle:
@@ -72,11 +73,12 @@ class ExecutionTransaction:
     creatinine_executions: '_CreatinineExecutionAdapter'
     patient_state_executions: '_PatientStateExecutionAdapter'
     micro_antimicrobial_executions: '_MicroAntimicrobialExecutionAdapter'
+    circulatory_executions: '_CirculatoryExecutionAdapter'
 
 
 @contextmanager
 def execution_transaction(engine: Engine):
-    """Yield five adapters sharing one BEGIN IMMEDIATE and failure lifecycle.
+    """Yield six adapters sharing one BEGIN IMMEDIATE and failure lifecycle.
 
     Results remain provisional until successful exit. Contexts never implicitly
     join; use these handles rather than nesting standalone persistence calls.
@@ -90,6 +92,7 @@ def execution_transaction(engine: Engine):
     from .creatinine_executions import _CreatinineExecutionAdapter
     from .patient_state_executions import _PatientStateExecutionAdapter
     from .micro_antimicrobial_executions import _MicroAntimicrobialExecutionAdapter
+    from .circulatory_executions import _CirculatoryExecutionAdapter
 
     state = _Lifecycle(sanitize=True)
     body_error = None
@@ -102,7 +105,8 @@ def execution_transaction(engine: Engine):
                                           _ExecutionAdapter(session, state),
                                           _CreatinineExecutionAdapter(session, state),
                                           _PatientStateExecutionAdapter(session, state),
-                                          _MicroAntimicrobialExecutionAdapter(session, state))
+                                          _MicroAntimicrobialExecutionAdapter(session, state),
+                                          _CirculatoryExecutionAdapter(session, state))
                 try:
                     yield tx
                 except BaseException as error:
