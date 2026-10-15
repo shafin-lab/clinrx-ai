@@ -5,7 +5,7 @@ import { ReviewClient } from '../src/api/client';
 import type { PatientState,Execution } from '../src/api/types';
 import { PatientReviewPage } from '../src/patient/PatientReviewPage';
 import fixture from './fixtures.json';
-const state=fixture.state as PatientState, result=fixture.execution as unknown as Execution;
+const state=fixture.state, result=fixture.execution;
 const id=result.execution_id, command='opaque.command.DO_NOT_DECODE';
 const config={patient:'synthetic-p1',encounter:'synthetic-e1',start:state.scope.review_start,end:state.scope.review_end};
 const prepared={status:'prepared',execution_id:id,inference_reference:result.provenance.inference.reference,command};
@@ -61,7 +61,7 @@ describe('evidence and preparation',()=>{
 });
 describe('execution and recovery',()=>{
   it('renders exact released statement and retries the identical command',async()=>{const {user,fetcher}=setup([json(result),json(result)]);await prepare(user);await user.click(screen.getByRole('button',{name:'Run protected review'}));await screen.findByText(result.provenance.inference.statement!);await user.click(screen.getByRole('button',{name:'Retry same prepared review'}));await waitFor(()=>expect(fetcher).toHaveBeenCalledTimes(4));expect(fetcher.mock.calls.slice(2).map(c=>c[1]?.body)).toEqual([JSON.stringify({command}),JSON.stringify({command})]);});
-  it('suppresses withheld statement even if transport unexpectedly includes it',async()=>{const withheld=structuredClone(result);withheld.governance.outcome='withheld';withheld.governance.reasons=['evidence_changed'];const {user}=setup([json(withheld)]);await prepare(user);await user.click(screen.getByRole('button',{name:'Run protected review'}));await screen.findByText('Withheld');expect(screen.queryByText(result.provenance.inference.statement!)).not.toBeInTheDocument();expect(screen.queryByRole('alert')).not.toBeInTheDocument();await user.click(screen.getByRole('button',{name:'Why am I seeing this?'}));expect(within(screen.getByRole('dialog')).queryByText(result.provenance.inference.statement!)).not.toBeInTheDocument();});
+  it('renders a valid withheld receipt with no released statement',async()=>{const withheld={...result,governance:{...result.governance,outcome:'withheld',reasons:['evidence_changed']},provenance:{...result.provenance,inference:{...result.provenance.inference,statement:null}}};const {user}=setup([json(withheld)]);await prepare(user);await user.click(screen.getByRole('button',{name:'Run protected review'}));await screen.findByText('Withheld');expect(screen.queryByText(result.provenance.inference.statement!)).not.toBeInTheDocument();expect(screen.queryByRole('alert')).not.toBeInTheDocument();await user.click(screen.getByRole('button',{name:'Why am I seeing this?'}));expect(within(screen.getByRole('dialog')).queryByText(result.provenance.inference.statement!)).not.toBeInTheDocument();});
   it.each(['completion_unknown','network_error','invalid_response'])('holds command after %s and reconciles only explicitly',async(code)=>{
     const unknown=code==='network_error'?Error('PRIVATE'):code==='invalid_response'?new Response('PRIVATE',{status:200}):json({status:'completion_unknown',execution_id:id,next_action:'reconcile',automatic_retry:false},503);
     const {user,fetcher}=setup([unknown,json({status:'committed_match',execution:result})]);await prepare(user);await user.click(screen.getByRole('button',{name:'Run protected review'}));await screen.findByRole('button',{name:'Reconcile execution'});expect(fetcher).toHaveBeenCalledTimes(3);expect(screen.queryByRole('button',{name:'Run protected review'})).not.toBeInTheDocument();await user.click(screen.getByRole('button',{name:'Reconcile execution'}));await screen.findByText(result.provenance.inference.statement!);expect(fetcher.mock.calls[3][1]?.body).toBe(JSON.stringify({command}));
@@ -75,4 +75,46 @@ describe('retained provenance and session lookup',()=>{
   it('looks up only a known scoped session ID',async()=>{const {user,fetcher}=setup([json(result),json(result)]);await prepare(user);await user.click(screen.getByRole('button',{name:'Run protected review'}));await screen.findByText(result.provenance.inference.statement!);await user.click(screen.getByRole('button',{name:'Retrieve execution '+id}));await waitFor(()=>expect(fetcher).toHaveBeenCalledTimes(4));expect(String(fetcher.mock.calls[3][0]).endsWith('/patients/synthetic-p1/encounters/synthetic-e1/temporal-executions/'+id)).toBe(true);expect(screen.getByText(/not the encounter’s complete/)).toBeVisible();});
   it('renders lookup absence as bounded unavailable',async()=>{const {user}=setup([json({code:'not_found',message:'PRIVATE'},404)]);await prepare(user);await user.click(screen.getByRole('button',{name:'Retrieve execution '+id}));expect(await screen.findByRole('alert')).toHaveTextContent('not_found');});
   it('does not persist or console-log clinical payloads or envelopes',async()=>{const log=vi.spyOn(console,'log');const storage=vi.spyOn(Storage.prototype,'setItem');const {user}=setup([json(result)]);await prepare(user);await user.click(screen.getByRole('button',{name:'Run protected review'}));await screen.findByText(result.provenance.inference.statement!);expect(log).not.toHaveBeenCalled();expect(storage).not.toHaveBeenCalled();expect(document.body.textContent).not.toContain(command);});
+});
+
+it('rejects malformed state before rendering any evidence',async()=>{
+  const {user,fetcher}=setup();fetcher.mockResolvedValueOnce(json({...state,laboratory:null,private:'PRIVATE'}));
+  await user.click(screen.getByRole('button',{name:'Load state'}));expect(await screen.findByRole('alert')).toHaveTextContent('invalid_response');
+  expect(screen.queryByRole('radio')).not.toBeInTheDocument();expect(document.body.textContent).not.toContain('PRIVATE');expect(fetcher).toHaveBeenCalledTimes(1);
+});
+it('malformed preparation never becomes an executable command',async()=>{
+  const {user,fetcher}=setup();fetcher.mockResolvedValueOnce(json(state)).mockResolvedValueOnce(json({...prepared,inference_reference:null,command:'PRIVATE.COMMAND'}));
+  await select(user);await user.click(screen.getByRole('button',{name:'Prepare review'}));await screen.findByText('Preparation completion could not be confirmed.');
+  expect(screen.queryByRole('button',{name:'Run protected review'})).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Reconcile execution'})).not.toBeInTheDocument();expect(fetcher).toHaveBeenCalledTimes(2);expect(document.body.textContent).not.toContain('PRIVATE');
+});
+it.each(['released','withheld'])('malformed committed %s receipt keeps UUID/command for explicit reconciliation',async(outcome)=>{
+  const stored=outcome==='released'?result:{...result,governance:{...result.governance,outcome:'withheld'},provenance:{...result.provenance,inference:{...result.provenance.inference,statement:null}}};
+  const malformed={...stored,provenance:{private:'PRIVATE'}};
+  const {user,fetcher}=setup([json(malformed),json({status:'committed_match',execution:stored})]);let committed=false;
+  const implementation=fetcher.getMockImplementation()!;fetcher.mockImplementation(async(input,init)=>{if(String(input).endsWith('/temporal-reviews'))committed=true;return implementation(input,init);});
+  await prepare(user);await user.click(screen.getByRole('button',{name:'Run protected review'}));await screen.findByRole('button',{name:'Reconcile execution'});
+  expect(committed).toBe(true);expect(screen.getByText(/Prepared execution:/)).toHaveTextContent(id);expect(screen.getByText(/Review status:/)).toHaveTextContent('completion unknown');
+  expect(screen.queryByRole('region',{name:'Review result'})).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Retry same prepared review'})).not.toBeInTheDocument();
+  expect(fetcher).toHaveBeenCalledTimes(3);expect(document.body.textContent).not.toContain('PRIVATE');expect(document.body.textContent).not.toContain(command);
+  await user.click(screen.getByRole('button',{name:'Reconcile execution'}));await screen.findByRole('region',{name:'Review result'});
+  expect(fetcher).toHaveBeenCalledTimes(4);expect(fetcher.mock.calls[3][0]).toContain(id+'/reconcile');expect(fetcher.mock.calls[3][1]?.body).toBe(JSON.stringify({command}));
+  expect(fetcher.mock.calls.filter(c=>String(c[0]).endsWith('/temporal-reviews'))).toHaveLength(1);
+  expect(screen.getByRole('region',{name:'Review result'})).toHaveTextContent(outcome==='released'?'Released':'Withheld');
+});
+it.each([{status:'absent',execution:result},{status:'committed_match',execution:{}}])('malformed reconciliation %# cannot establish completion or absence',async(malformed)=>{
+  const {user,fetcher}=setup([json({status:'completion_unknown'},503),json(malformed),json({status:'committed_match',execution:result})]);
+  await prepare(user);await user.click(screen.getByRole('button',{name:'Run protected review'}));await user.click(await screen.findByRole('button',{name:'Reconcile execution'}));
+  expect(await screen.findByRole('alert')).toHaveTextContent('invalid_response');expect(screen.getByText(/Review status:/)).toHaveTextContent('completion unknown');
+  expect(screen.queryByRole('button',{name:'Run same prepared review'})).not.toBeInTheDocument();expect(fetcher).toHaveBeenCalledTimes(4);
+  await user.click(screen.getByRole('button',{name:'Reconcile execution'}));await screen.findByRole('region',{name:'Review result'});expect(fetcher).toHaveBeenCalledTimes(5);
+  expect(fetcher.mock.calls.slice(3).map(c=>c[1]?.body)).toEqual([JSON.stringify({command}),JSON.stringify({command})]);
+});
+it('malformed retained lookup displays bounded failure without rendering a receipt',async()=>{
+  const {user,fetcher}=setup([json({...result,governance:null})]);await prepare(user);await user.click(screen.getByRole('button',{name:'Retrieve execution '+id}));
+  expect(await screen.findByRole('alert')).toHaveTextContent('invalid_response');expect(screen.queryByRole('region',{name:'Review result'})).not.toBeInTheDocument();expect(fetcher).toHaveBeenCalledTimes(3);
+});
+it('renders backend-optional missing fields without modifying the response',async()=>{
+  const optional=structuredClone(state) as unknown as Record<string,unknown>;
+  const labs=optional.laboratory as Record<string,unknown>[];delete labs[0].provenance_limitations;delete labs[0].provenance_actor;delete labs[0].domain;
+  const {user,fetcher}=setup();fetcher.mockResolvedValueOnce(json(optional));await select(user);expect(screen.getByText('1.00')).toBeVisible();expect(screen.queryByRole('alert')).not.toBeInTheDocument();expect(labs[0]).not.toHaveProperty('domain');
 });

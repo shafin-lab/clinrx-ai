@@ -1,21 +1,23 @@
 import { it,expect,vi } from 'vitest';
 import { render,screen,within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { decodeMicroPrepared } from '../src/api/microDecoders';
 import { MicroReviewClient } from '../src/api/microClient';
 import { PatientReviewPage } from '../src/patient/PatientReviewPage';
 import { ReviewClient } from '../src/api/client';
 import { MicroReview } from '../src/patient/MicroReview';
 import type { MicroState,MicroPrepared,MicroExecution } from '../src/api/microTypes';
 import fixture from './microFixtures.json';
-const state=fixture.state as unknown as MicroState, prepared=fixture.prepared as unknown as MicroPrepared;
-const released=fixture.released as unknown as MicroExecution;
-const withheld={...fixture.withheld,execution_id:prepared.execution_id} as unknown as MicroExecution;
+const state=fixture.state, prepared=fixture.prepared;
+const released=fixture.released;
+const withheld=fixture.withheld;
+const withheldPrepared={...prepared,execution_id:withheld.execution_id,inference:withheld.provenance.inference,command:'OPAQUE.WITHHELD.COMMAND'};
 const config={patient:'synthetic-p1',encounter:'synthetic-e1',start:state.assembly.request.scope.review_start,end:state.assembly.request.scope.review_end};
 const json=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','X-ClinRx-Mode':'historical-synthetic-simulation'}});
-function setup(tail:Array<Response|Error>=[],view=state) {
-  const replies=[json(view),json(prepared),...tail];
+function setup(tail:Array<Response|Error>=[],view=state,preparation=prepared) {
+  const replies=[json(view),json(preparation),...tail];
   const fetcher=vi.fn<typeof fetch>().mockImplementation(async()=>{const r=replies.shift();if(r instanceof Error)throw r;if(!r)throw Error('No response queued');return r;});
-  vi.spyOn(crypto,'randomUUID').mockReturnValue(prepared.execution_id as `${string}-${string}-${string}-${string}-${string}`);
+  vi.spyOn(crypto,'randomUUID').mockReturnValue(preparation.execution_id as `${string}-${string}-${string}-${string}-${string}`);
   const client=new MicroReviewClient('http://127.0.0.1:8000',config.patient,config.encounter,fetcher);
   const rendered=render(<MicroReview client={client} config={config}/>);
   return {fetcher,client,user:userEvent.setup(),...rendered};
@@ -71,14 +73,14 @@ it('shows released content with exact provenance and command-only execution',asy
   expect(JSON.parse(fetcher.mock.calls[2][1]!.body as string)).toEqual({command:prepared.command});
 });
 it('withholds main statement while preserving original history and terminal correction',async()=>{
-  const {user}=setup([json(withheld)]);await execute(user);await screen.findByText('Protected descriptive review withheld');
+  const {user}=setup([json(withheld)],state,withheldPrepared);await execute(user);await screen.findByText('Protected descriptive review withheld');
   expect(screen.queryByText(withheld.provenance.inference.statement,{exact:true})).not.toBeInTheDocument();
   await user.click(screen.getByText('Retained provenance · consumed versus final checked'));
   expect(screen.getByText('U: Corrected / changed')).toBeVisible();expect(screen.getByText('Original inference statement: '+withheld.provenance.inference.statement)).toBeVisible();
   expect(screen.getAllByText('microbiology_susceptibility / demo-U / revision 2').length).toBeGreaterThan(0);
 });
 it.each([released,withheld])('explicitly reconciles committed $governance.outcome without auto retry',async(result)=>{
-  const {user,fetcher}=setup([json({status:'completion_unknown'},503),json({status:'committed_match',execution:result})]);await execute(user);
+  const {user,fetcher}=setup([json({status:'completion_unknown'},503),json({status:'committed_match',execution:result})],state,result===withheld?withheldPrepared:prepared);await execute(user);
   await screen.findByText('Execution completion unknown');expect(fetcher).toHaveBeenCalledTimes(3);
   expect(screen.queryByRole('button',{name:'Explicitly execute same command'})).not.toBeInTheDocument();
   await user.click(screen.getByRole('button',{name:'Reconcile S/I/U/D execution'}));await screen.findByText('Protected descriptive review '+result.governance.outcome);
@@ -122,7 +124,7 @@ it('rejects malformed response identity, withholding contradictions, and reconci
   for(const value of [{...released,execution_id:'other'},{...withheld,statement:'not released'},{status:'absent',execution:released}]) {
     const fetcher=vi.fn<typeof fetch>().mockResolvedValue(json(value));
     const client=new MicroReviewClient('http://127.0.0.1:8000',config.patient,config.encounter,fetcher);
-    await expect(value.status==='absent'?client.microReconcile(prepared):client.microExecute(prepared)).rejects.toMatchObject({code:'invalid_response'});
+    await expect(value.status==='absent'?client.microReconcile(decodeMicroPrepared(prepared)):client.microExecute(decodeMicroPrepared(prepared))).rejects.toMatchObject({code:'invalid_response'});
   }
 });
 
@@ -147,4 +149,43 @@ it.each(['patient','encounter'])('scope change in %s clears the prepared command
   const page=render(<PatientReviewPage client={client} microClient={microClient} config={config}/>);const user=userEvent.setup();
   await prepare(user);page.rerender(<PatientReviewPage client={client} microClient={microClient} config={{...config,[field]:'other-scope'}}/>);
   expect(screen.queryByRole('button',{name:'Execute S/I/U/D review'})).not.toBeInTheDocument();expect(screen.getByText('S/I/U/D reviews in this session (0)')).toBeVisible();
+});
+
+it('rejects malformed microbiology state before rendering evidence',async()=>{
+  const {user,fetcher}=setup();fetcher.mockResolvedValueOnce(json({...state,assembly:{snapshot:{items:[]}},private:'PRIVATE'}));
+  await user.click(screen.getByRole('button',{name:'Load microbiology state'}));expect(await screen.findByRole('alert')).toHaveTextContent('invalid_response');
+  expect(screen.queryByRole('combobox')).not.toBeInTheDocument();expect(document.body.textContent).not.toContain('PRIVATE');expect(fetcher).toHaveBeenCalledTimes(1);
+});
+it('malformed microbiology preparation cannot expose preview or executable command',async()=>{
+  const {user,fetcher}=setup();fetcher.mockResolvedValueOnce(json(state)).mockResolvedValueOnce(json({...prepared,inference:{statement:'PRIVATE'},command:'PRIVATE.COMMAND'}));
+  await select(user);await user.click(screen.getByRole('button',{name:'Prepare S/I/U/D review'}));await screen.findByText('Preparation completion unknown');
+  expect(screen.queryByRole('region',{name:'Prepared descriptive preview'})).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Execute S/I/U/D review'})).not.toBeInTheDocument();expect(document.body.textContent).not.toContain('PRIVATE');expect(fetcher).toHaveBeenCalledTimes(2);
+});
+it.each([released,withheld])('malformed committed $governance.outcome micro receipt preserves command and UUID',async(stored)=>{
+  const preparation=stored===withheld?withheldPrepared:prepared;
+  const {user,fetcher}=setup([json({...stored,provenance:{private:'PRIVATE'}}),json({status:'committed_match',execution:stored})],state,preparation);
+  let committed=false;const implementation=fetcher.getMockImplementation()!;fetcher.mockImplementation(async(input,init)=>{if(String(input).endsWith('/micro-antimicrobial-reviews'))committed=true;return implementation(input,init);});
+  await execute(user);await screen.findByText('Execution completion unknown');expect(committed).toBe(true);expect(fetcher).toHaveBeenCalledTimes(3);
+  expect(screen.getByText(/Prepared execution:/)).toHaveTextContent(preparation.execution_id);expect(screen.queryByRole('button',{name:'Explicitly execute same command'})).not.toBeInTheDocument();expect(screen.queryByRole('region',{name:'Microbiology protected result'})).not.toBeInTheDocument();expect(document.body.textContent).not.toContain('PRIVATE');
+  await user.click(screen.getByRole('button',{name:'Reconcile S/I/U/D execution'}));await screen.findByText('Protected descriptive review '+stored.governance.outcome);
+  expect(fetcher).toHaveBeenCalledTimes(4);expect(fetcher.mock.calls[3][1]?.body).toBe(JSON.stringify({command:preparation.command}));
+  expect(fetcher.mock.calls.filter(c=>String(c[0]).endsWith('/micro-antimicrobial-reviews'))).toHaveLength(1);
+});
+it.each([{status:'absent',execution:released},{status:'committed_match',execution:{}}])('malformed micro reconciliation %# keeps uncertainty until a valid result',async(malformed)=>{
+  const {user,fetcher}=setup([json({status:'completion_unknown'},503),json(malformed),json({status:'committed_match',execution:released})]);
+  await execute(user);await user.click(await screen.findByRole('button',{name:'Reconcile S/I/U/D execution'}));expect(await screen.findByRole('alert')).toHaveTextContent('invalid_response');
+  expect(screen.getByText('Execution completion unknown')).toBeVisible();expect(screen.queryByRole('button',{name:'Explicitly execute same command'})).not.toBeInTheDocument();expect(fetcher).toHaveBeenCalledTimes(4);
+  await user.click(screen.getByRole('button',{name:'Reconcile S/I/U/D execution'}));await screen.findByText('Protected descriptive review released');expect(fetcher).toHaveBeenCalledTimes(5);
+  expect(fetcher.mock.calls.slice(3).map(c=>c[1]?.body)).toEqual([JSON.stringify({command:prepared.command}),JSON.stringify({command:prepared.command})]);
+});
+it('rejects malformed micro lookup without rendering a retained result',async()=>{
+  const {user,fetcher}=setup([json(released),json({...released,governance:null})]);await execute(user);await screen.findByText('Protected descriptive review released');
+  await user.click(screen.getByText('S/I/U/D reviews in this session (1)'));await user.click(screen.getByRole('button',{name:'Retrieve S/I/U/D execution '+released.execution_id}));
+  expect(await screen.findByRole('alert')).toHaveTextContent('invalid_response');expect(screen.queryByRole('region',{name:'Microbiology protected result'})).not.toBeInTheDocument();expect(fetcher).toHaveBeenCalledTimes(4);
+});
+it('can render omitted optional v2 collections without fabricating selectable evidence',async()=>{
+  const minimal={...state,assembly:{request:state.assembly.request,candidate_rows:0,terminal_count:0,snapshot:{scope:state.assembly.snapshot.scope}}};
+  const {user,fetcher}=setup();fetcher.mockResolvedValueOnce(json(minimal));await user.click(screen.getByRole('button',{name:'Load microbiology state'}));
+  const selections=await screen.findAllByRole('combobox');for(const s of selections)expect(within(s).getAllByRole('option')).toHaveLength(1);
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Prepare S/I/U/D review'})).toBeDisabled();expect(minimal.assembly.snapshot).not.toHaveProperty('items');
 });

@@ -11,7 +11,7 @@ export function MicroResult({result:r}:{result:MicroExecution}) {
     <details><summary>Retained provenance · consumed versus final checked</summary>
       <p>This is the immutable execution record. Final checked evidence did not replace the original inference inputs.</p>
       <p>Original inference: {p.inference.id} / {p.inference.revision}</p><p>Method: {refText(p.inference.method)}</p>
-      <p>Original inference statement: {p.inference.statement}</p><p>Applicability: {p.inference.applicability}</p><p>{p.inference.validation_limitations}</p><Notes items={[...p.inference.uncertainty,...p.inference.provenance.limitations]}/>
+      <p>Original inference statement: {p.inference.statement}</p><p>Applicability: {p.inference.applicability}</p><p>{p.inference.validation_limitations}</p><Notes items={[...(p.inference.uncertainty??[]),...(p.inference.provenance.limitations??[])]}/>
       <h4>Exact derived-from inputs</h4>{p.inference.inputs.map((r,i)=><p key={i}>{refText(r)}</p>)}
       {p.final_recheck.evidence.map((w,i)=><section className="micro-witness" key={w.role}><h4>{w.role}: {p.witness_statuses[i]==='current'?'Unchanged':'Corrected / changed'}</h4>
         <div className="micro-columns"><div><h5>Consumed</h5><p>{refText(w.consumed)}</p><p className="digest">Source digest: {w.source_digest}</p><p className="digest">Item digest: {w.item_digest}</p><FactSummary fact={p.consumed[i].fact}/></div><div><h5>Final checked</h5><p>{refText(w.terminal)}</p><p className="digest">Source digest: {w.terminal_source_digest}</p><p>Backend suitability: {w.suitability}</p><FactSummary fact={p.final_recheck.terminal_facts[i]}/></div></div>
