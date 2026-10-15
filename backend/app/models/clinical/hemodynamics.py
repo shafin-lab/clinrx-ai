@@ -51,11 +51,20 @@ def _lossless_microseconds(value):
     return fraction is None or not any(d != '0' for d in fraction.group(1)[6:])
 
 
+def _numeric_time_lexeme(value):
+    raw = str(value)
+    if 'e' in raw.lower() and '.' not in raw:
+        mantissa, exponent = re.split('[eE]', raw)
+        return mantissa + '.0e' + exponent
+    return raw
+
+
 def _retain_time(value):
     if isinstance(value, dict):
         recorded = value.get('recorded')
-        if isinstance(recorded, dict) and isinstance(recorded.get('value'), str):
-            raw = recorded['value']
+        raw = recorded.get('value') if isinstance(recorded, dict) else None
+        if isinstance(raw, (str, int, float, Decimal)) and not isinstance(raw, bool):
+            raw = raw if isinstance(raw, str) else _numeric_time_lexeme(raw)
             if not _lossless_microseconds(raw):
                 if value.get('source_timestamp') not in (None, raw):
                     raise ValueError('source timestamp contradicts supplied fractional precision')
@@ -79,7 +88,9 @@ class SourceTimeAssertion(Contract):
         if info.mode == 'json' and isinstance(value, dict) and 'source_timestamp' not in value:
             recorded = value.get('recorded')
             raw = recorded.get('value') if isinstance(recorded, dict) else None
-            if not isinstance(raw, str) or _lossless_microseconds(raw):
+            if isinstance(raw, str) and _lossless_microseconds(raw):
+                return value
+            if not isinstance(raw, (str, int, float, Decimal)) or isinstance(raw, bool):
                 return value
         return _retain_time(value)
 
@@ -106,11 +117,7 @@ def _conflict_lexeme(value, parsed):
     if isinstance(value, bytes):
         return value.decode('utf-8')  # already accepted by _CONFLICT_TIMES
     if isinstance(value, (int, float, Decimal)):
-        raw = str(value)
-        if 'e' in raw.lower() and '.' not in raw:
-            mantissa, exponent = re.split('[eE]', raw)
-            return mantissa + '.0e' + exponent
-        return raw
+        return _numeric_time_lexeme(value)
     return parsed.isoformat()
 
 

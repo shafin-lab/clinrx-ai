@@ -144,3 +144,12 @@ R1/R2 do not change F2/F3, exact support closure, workflow/receipt identities,
 immutable stored history, shared transactions, governance, schema or dependencies.
 No automatic retry/re-execution or connected M7-C work is introduced. Existing PR
 #22 is the review target; no additional PR or ZIP is created in this correction pass.
+
+A further R1 probe covered native numeric primary/alternative values. They now
+retain the numeric object's value spelling as well, so precision loss cannot hide
+behind a non-string input. Supported exact native values still admit and qualify;
+lossy values remain retained but unsuitable. A JSON number's original wire spelling
+cannot be reconstructed after decoding; callers needing that lexeme must supply it
+as string evidence. Existing canonical JSON contains parsed datetime strings, so
+this capture does not rewrite legacy payloads. The interrupted backend validation
+log is retained; final validation is rerun against the completed correction.

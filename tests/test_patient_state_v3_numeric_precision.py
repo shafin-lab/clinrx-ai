@@ -118,3 +118,21 @@ def test_global_decimal_parse_traps_do_not_reject_exact_iso_evidence():
         assert raw_stamp('2026-10-08T08:00:00.123456+05:30').trustworthy
         assert raw_stamp('1791426600123456.0e-6').trustworthy
         assert not raw_stamp('1791426600123456.1e-6').trustworthy
+
+
+@pytest.mark.parametrize('mode',['python','json'])
+@pytest.mark.parametrize('where',['primary','alternative'])
+@pytest.mark.parametrize('raw,exact',[(1791426600.1234565,False),(1791426600.123456,True),(0.0000001,False)])
+def test_native_numeric_inputs_preserve_precision_evidence(mode,where,raw,exact):
+    import json
+    fields={'recorded':{'status':'known','precision':'instant','value':raw},'clock':'verified','clock_basis':PROV.model_dump(mode='json')}
+    if where=='alternative':
+        alternative={k:v for k,v in fields.items() if k!='clock_basis'}
+        alternative.update(source=code().model_dump(),provenance=PROV.model_dump(mode='json'))
+        fields=raw_stamp(str(raw) if 'e' not in str(raw) else '0.0000001').model_dump(mode='json')
+        fields['alternative_sources']=[alternative]
+    t=h.ClinicalInstant.model_validate(fields) if mode=='python' else h.ClinicalInstant.model_validate_json(json.dumps(fields))
+    assert t.trustworthy is exact
+    evidence=t if where=='primary' else t.alternative_sources[0]
+    assert evidence.source_timestamp is not None
+    assert h.ClinicalInstant.model_validate_json(t.model_dump_json())==t
