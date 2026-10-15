@@ -11,6 +11,7 @@ from app.models.clinical.common import (
 )
 from app.models.clinical.facts import ClinicalInference, ClinicalObservation
 from app.persistence.metadata import RepositoryCutoff
+from app.persistence.bounded_history import HistoryBudget, AggregateHistoryBudget, HistoryAccounting
 from app.persistence.repository import PatientRepository
 
 
@@ -172,11 +173,13 @@ class CreatinineTrendSelectionResult(DomainModel):
 
 def select_creatinine_observations(repository: PatientRepository, *, target: ContextTarget,
                                    cutoff: RepositoryCutoff,
-                                   policy: CreatinineTrendSelectionPolicy) -> CreatinineTrendSelectionResult:
+                                   policy: CreatinineTrendSelectionPolicy, history_budget=None, family_budget=None, accounting=None) -> CreatinineTrendSelectionResult:
     """Read terminal visible revisions first; no filters, writes or older fallback."""
     policy = CreatinineTrendSelectionPolicy.model_validate(policy)
     target = ContextTarget.model_validate(target)
-    history = repository.list_latest_known(target=target, cutoff=cutoff)
+    history = repository.list_bounded_history(target=target, cutoff=cutoff, latest=True,
+        budget=HistoryBudget() if history_budget is None else history_budget, family_budget=family_budget,
+        accounting=HistoryAccounting(AggregateHistoryBudget()) if accounting is None else accounting)
     # Duplicate sample identity is checked independently of other eligibility failures.
     relevant = [stored.fact for stored in history.records
                 if isinstance(stored.fact, ClinicalObservation)

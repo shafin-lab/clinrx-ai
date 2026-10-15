@@ -103,7 +103,8 @@ def record(case, **changes):
 def final_from_terminals(case, *facts):
     """An explicit terminal-reader double; no history or DB behavior is implemented here."""
     class Reader:
-        def list_latest_known(self, *, target, cutoff):
+        def list_bounded_history(self, *, target, cutoff, latest, budget, family_budget, accounting):
+            assert latest is True and budget.max_rows==4096 and accounting is not None
             return HistoryResult(target=target,cutoff=cutoff,
                 records=tuple(stored(f,i) for i,f in enumerate(facts,1)),selection='latest_known')
     return select_weight_observations(Reader(),target=TARGET,cutoff=cutoff(8),policy=POLICY)

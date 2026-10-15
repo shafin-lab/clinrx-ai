@@ -574,10 +574,11 @@ def test_find_rejects_after_exit_or_poison_without_sql(registered, failed):
 
 def test_inference_family_disappearing_is_integrity_not_withholding(case, registered, monkeypatch):
     from dataclasses import replace as dc_replace
-    original = PatientRepository.load_latest_known
+    original = PatientRepository.list_bounded_history
     def absent(self, *args, **kwargs):
-        return dc_replace(original(self, *args, **kwargs), records=())
-    monkeypatch.setattr(PatientRepository, 'load_latest_known', absent)
+        result=original(self, *args, **kwargs)
+        return dc_replace(result, records=()) if kwargs.get('identity') is not None else result
+    monkeypatch.setattr(PatientRepository, 'list_bounded_history', absent)
     with pytest.raises(StorageIntegrityError): run(registered, request_for(case))
     assert counts(registered) == (3, 0)
 

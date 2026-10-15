@@ -120,7 +120,8 @@ def record(case, check=None, actor=GRANT_ACTOR, **updates):
 
 def final_from(case, *facts):
     class Reader:
-        def list_latest_known(self, *, target, cutoff):
+        def list_bounded_history(self, *, target, cutoff, latest, budget, family_budget, accounting):
+            assert latest is True and budget.max_rows==4096 and accounting is not None
             return HistoryResult(target=target, cutoff=cutoff, selection='latest_known',
                 records=tuple(stored(f, i) for i, f in enumerate(facts, 1)))
     return select_creatinine_observations(Reader(), target=TARGET, cutoff=cutoff(10), policy=POLICY)

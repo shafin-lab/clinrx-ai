@@ -588,7 +588,7 @@ def test_direct_comparison_rejects_forged_identity_or_time(registered, case):
 
 def test_invalid_policy_fails_before_repository_access():
     class UnreadableRepository:
-        def list_latest_known(self, **kwargs):
+        def list_bounded_history(self, **kwargs):
             pytest.fail('invalid policy must not reach storage')
     forged = POLICY.model_copy(update={'unit': 'µmol/L'})
     with pytest.raises(ValidationError):

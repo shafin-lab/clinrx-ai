@@ -1460,3 +1460,42 @@ failure. Retained output is never enriched with later clinical state.
 
 M6.5 transport, browser selection/presentation, and historical comparison UI remain
 deferred. No generic workflow registry or role dictionary is introduced.
+
+
+## H1-B2: operational history budgets in protected execution
+
+All four protected entry points (`execute_weight_trend_review`,
+`execute_creatinine_trend_review`, `execute_patient_state_temporal_review`, and
+`execute_micro_antimicrobial_review`) accept trusted keyword-only `history_budget`,
+`family_budget` and `aggregate_budget`. These are operational runtime dependencies,
+not model fields, clinical policies, API inputs or signed command contents.
+
+Retained scoped lookup and exact request matching occur first. Only the new-work
+branch creates one `HistoryAccounting` context. Original-cutoff assembly/selection,
+source/inference family replay, lineage and protected final rechecks share that same
+context. Repeated reads charge again; no cache or stage reset is used. Defaults reuse
+H1-B1: HistoryBudget 4096 rows/16 MiB per read, AggregateHistoryBudget 16384 rows/64 MiB
+per attempt. Optional family limits apply to lineage admission too.
+
+Standalone initial assembly/selection now uses bounded admission and a fresh account
+unless a trusted caller supplies one. M6 combines its existing serialized assembly
+limits with a stricter supplied operational ceiling without mutating its request or
+result identity. M4/M6 final reads remain targeted to selected stable families;
+weight/creatinine final selection preserves the existing encounter-wide candidate
+universe and exclusions. Scope-before-decode, terminal-before-filter, visible chain
+validation and exact reconstruction remain unchanged for admitted work.
+
+Exhaustion raises QueryLimitExceeded, never a clinical exclusion or successful
+withholding. Repository failure poisoning aborts the existing shared transaction,
+including provisional facts/receipts. Completion uncertainty and explicit reconciliation
+remain unchanged. Exact retry returns the original receipt without creating a budget,
+sampling clocks, or reading clinical history, even with stricter runtime limits.
+Reconciliation remains a retained-only operation. No request/receipt, governance,
+schema, migration, dependency, API or frontend fields are changed.
+
+Regression coverage compares canonical under-budget receipts with legacy retrieval
+on cloned evidence databases, and exercises all four workflows for row/byte aggregate
+exhaustion, successor chains, future corruption outside cutoff, scope failures, exact
+retry, rollback and uncertain completion. SQL admission bounds materialization, not
+SQLite scan time. Live append/load full-chain validation and deployment capacity
+qualification remain separate concerns.

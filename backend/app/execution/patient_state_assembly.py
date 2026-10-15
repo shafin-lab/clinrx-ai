@@ -3,6 +3,7 @@ from hashlib import sha256
 from typing import Annotated, Literal
 
 from pydantic import Field, ValidationError, model_validator
+from app.persistence.bounded_history import HistoryBudget, AggregateHistoryBudget, HistoryAccounting
 from sqlalchemy import Engine
 
 from app.execution.patient_state import (
@@ -197,8 +198,11 @@ def _map(stored, scope):
     return domain, item, None
 
 
-def _assemble(repository, scope):
-    history = repository.list_latest_known(target=scope.target, cutoff=scope.repository_cutoff)
+def _assemble(repository, scope, *, history_budget=None, family_budget=None, accounting=None):
+    history = repository.list_bounded_history(target=scope.target, cutoff=scope.repository_cutoff,
+        latest=True, budget=HistoryBudget() if history_budget is None else history_budget,
+        family_budget=family_budget,
+        accounting=HistoryAccounting(AggregateHistoryBudget()) if accounting is None else accounting)
     if (history.target != scope.target or canonical_payload(history.cutoff) != canonical_payload(scope.repository_cutoff)
             or history.selection != 'latest_known' or history.clinical_filter is not None
             or history.ingestion_filter is not None or history.identity is not None):
@@ -241,7 +245,7 @@ def _assemble(repository, scope):
     return PatientStateAssemblyResult(snapshot=snapshot, coverage=tuple(coverage), issues=issues)
 
 
-def assemble_patient_state(engine: Engine, *, scope: PatientStateScope) -> PatientStateAssemblyResult:
+def assemble_patient_state(engine: Engine, *, scope: PatientStateScope, history_budget=None, family_budget=None, accounting=None) -> PatientStateAssemblyResult:
     """Return only after one existing transaction exits; no clocks, writes or retries."""
     if not isinstance(engine, Engine):
         raise PersistenceInputError('patient state assembly requires an Engine')
@@ -251,7 +255,8 @@ def assemble_patient_state(engine: Engine, *, scope: PatientStateScope) -> Patie
         raise PersistenceInputError('invalid patient state scope') from None
     try:
         with transaction(engine) as repository:
-            result = _assemble(repository, scope)
+            result = _assemble(repository, scope, history_budget=history_budget,
+                family_budget=family_budget, accounting=accounting)
         return result
     except PersistenceError as error:
         raise error from None

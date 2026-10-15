@@ -16,6 +16,7 @@ from app.persistence.errors import (
     SchemaMismatch, ScopeMismatch, StorageIntegrityError, TransactionAborted,
     TransactionCompletionUnknown, UnsupportedOperation,
 )
+from app.persistence.bounded_history import HistoryBudget, AggregateHistoryBudget, HistoryAccounting
 from app.persistence.history import FactIdentity
 from app.persistence.patient_state_executions import (
     StoredPatientStateTemporalExecution, find_patient_state_temporal_execution,
@@ -50,9 +51,11 @@ def _validate_request(request):
         raise PersistenceInputError('invalid patient-state execution request') from None
 
 
-def _history(repo, reference, target, cutoff, *, latest):
+def _history(repo, reference, target, cutoff, *, latest, history_budget=None, family_budget=None, accounting=None):
     identity = FactIdentity(kind=reference.kind, id=reference.id)
-    result = (repo.load_latest_known if latest else repo.list_revisions)(identity, target=target, cutoff=cutoff)
+    result = repo.list_bounded_history(identity=identity, target=target, cutoff=cutoff, latest=latest,
+        budget=HistoryBudget() if history_budget is None else history_budget,
+        family_budget=family_budget, accounting=accounting)
     if (result.target != target or not c.same(result.cutoff, cutoff) or result.identity != identity
             or result.selection != ('latest_known' if latest else 'history')
             or result.clinical_filter is not None or result.ingestion_filter is not None):
@@ -68,17 +71,17 @@ def _history(repo, reference, target, cutoff, *, latest):
     return matches[0]
 
 
-def _replay(repo, request):
+def _replay(repo, request, **reads):
     scope = request.inference_request.scope
-    assembly = _assemble(repo, scope)
+    assembly = _assemble(repo, scope, **reads)
     selected = []
     for pin in request.pins:
         matches = tuple(i for i in assembly.snapshot.ordered_items if i.reference == pin.reference)
         if len(matches) != 1 or matches[0].canonical_digest != pin.expected_digest:
             raise StorageIntegrityError('original selected evidence differs from request')
         selected.append(matches[0])
-    original = _history(repo, request.inference_reference, request.target.context, request.inference_cutoff, latest=False)
-    sources = tuple(_history(repo, pin.reference, request.target.context, scope.repository_cutoff, latest=False)
+    original = _history(repo, request.inference_reference, request.target.context, request.inference_cutoff, latest=False, **reads)
+    sources = tuple(_history(repo, pin.reference, request.target.context, scope.repository_cutoff, latest=False, **reads)
                     for pin in request.pins)
     if any(not c.same(s.ingestion,i.ingestion) for s,i in zip(sources,selected,strict=True)):
         raise StorageIntegrityError('selected ingestion metadata contradicts original replay')
@@ -98,11 +101,11 @@ def _replay(repo, request):
     return evidence, reconstruction_digest
 
 
-def _final_recheck(repo, evidence, reconstruction_digest, cutoff):
+def _final_recheck(repo, evidence, reconstruction_digest, cutoff, **reads):
     request = evidence.request
     witnesses = []
     for role,item,fact in zip(('A','B','M'),evidence.items,evidence.facts,strict=True):
-        terminal = _history(repo, fact.reference, request.target.context, cutoff, latest=True)
+        terminal = _history(repo, fact.reference, request.target.context, cutoff, latest=True, **reads)
         # Exact retained source/item content was admitted above. A successor is
         # never remapped or substituted: currentness alone already makes it material.
         witnesses.append(c.PatientStateEvidenceWitness(role=role, consumed=fact.reference,
@@ -111,7 +114,7 @@ def _final_recheck(repo, evidence, reconstruction_digest, cutoff):
             terminal_ingestion=terminal.ingestion,
             suitability='established' if terminal.fact.reference == fact.reference else 'unavailable'))
     i = evidence.inference
-    terminal = _history(repo,i.reference,request.target.context,cutoff,latest=True)
+    terminal = _history(repo,i.reference,request.target.context,cutoff,latest=True, **reads)
     witness = c.PatientStateInferenceWitness(reference=i.reference, expected_digest=request.expected_inference_digest,
         observed_digest=c.digest(i), ingestion=evidence.inference_ingestion,
         terminal=terminal.fact.reference, terminal_digest=c.digest(terminal.fact), terminal_ingestion=terminal.ingestion,
@@ -121,16 +124,19 @@ def _final_recheck(repo, evidence, reconstruction_digest, cutoff):
         inference_cutoff=request.inference_cutoff, final_cutoff=cutoff, evidence=tuple(witnesses), inference=witness)
 
 
-def _new_execution(tx, request, clock):
+def _new_execution(tx, request, clock, *, history_budget=None, family_budget=None, aggregate_budget=None):
+    # Construct only after retained lookup; one counter covers every new-work read.
+    reads = dict(history_budget=history_budget, family_budget=family_budget,
+        accounting=HistoryAccounting(AggregateHistoryBudget() if aggregate_budget is None else aggregate_budget))
     repo, target = tx.repository, request.target.context
     started_at = _tick(clock,request.requested_at)
     cutoff = repo.capture_cutoff()
     if (cutoff.repository_id != request.inference_cutoff.repository_id
             or cutoff.fact_watermark < request.inference_cutoff.fact_watermark):
         raise StorageIntegrityError('requested evidence is outside protected prefix')
-    evidence, reconstruction_digest = _replay(repo,request)
+    evidence, reconstruction_digest = _replay(repo,request, **reads)
     try:
-        recheck = _final_recheck(repo,evidence,reconstruction_digest,cutoff)
+        recheck = _final_recheck(repo,evidence,reconstruction_digest,cutoff, **reads)
     except c.PatientStateExecutionError:
         raise StorageIntegrityError('terminal evidence contradicts original evidence') from None
     observed_at = _tick(clock,started_at)
@@ -166,7 +172,8 @@ def _new_execution(tx, request, clock):
     return tx.patient_state_executions.append(record,target=target)
 
 
-def execute_patient_state_temporal_review(engine, request: c.PatientStateTemporalExecutionRequest, *, clock=None
+def execute_patient_state_temporal_review(engine, request: c.PatientStateTemporalExecutionRequest, *, clock=None,
+                                         history_budget=None, family_budget=None, aggregate_budget=None
                                          ) -> PatientStateTemporalExecutionResult:
     """Return only after transaction completion; clock is a trusted runtime dependency."""
     request = _validate_request(request)
@@ -177,7 +184,8 @@ def execute_patient_state_temporal_review(engine, request: c.PatientStateTempora
                 c.require_patient_state_temporal_request_match(stored.record,request)
                 result = stored
             else:
-                result = _new_execution(tx,request,_utc_now if clock is None else clock)
+                result = _new_execution(tx,request,_utc_now if clock is None else clock,
+                    history_budget=history_budget, family_budget=family_budget, aggregate_budget=aggregate_budget)
     except TransactionCompletionUnknown:
         raise TransactionCompletionUnknown('transaction completion could not be confirmed') from None
     except (PersistenceInputError,RecordConflict,RecordNotFound,ScopeMismatch,StorageIntegrityError,

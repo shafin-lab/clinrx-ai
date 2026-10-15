@@ -214,7 +214,7 @@ def test_scope_errors(registered, case):
 @pytest.mark.parametrize('change', ['same','payload','metadata','revision'])
 def test_exact_duplicate_contract(registered,monkeypatch,change):
     cutoff = save(registered,lab())
-    original = PatientRepository.list_latest_known
+    original = PatientRepository.list_bounded_history
     def repeated(self, **kwargs):
         result = original(self, **kwargs)
         stored = result.records[0]
@@ -223,7 +223,7 @@ def test_exact_duplicate_contract(registered,monkeypatch,change):
         if change == 'metadata': other = dc_replace(stored,ingestion=replace(stored.ingestion,ingested_at=AT))
         if change == 'revision': other = dc_replace(stored,fact=revision(stored.fact,'other'))
         return dc_replace(result,records=(stored,other))
-    monkeypatch.setattr(PatientRepository,'list_latest_known',repeated)
+    monkeypatch.setattr(PatientRepository,'list_bounded_history',repeated)
     if change == 'same':
         result = run(registered,cutoff)
         assert result.coverage[0].candidate_count == result.coverage[0].retained_count == 1
@@ -247,17 +247,19 @@ def test_one_read_one_transaction_no_clock_no_dml(registered,monkeypatch):
     sql, calls = [],[]
     def observe(conn,cursor,statement,parameters,context,executemany): sql.append(statement)
     event.listen(registered,'before_cursor_execute',observe)
-    original = PatientRepository.list_latest_known
+    original = PatientRepository.list_bounded_history
     def read(self, **kwargs):
         calls.append(kwargs)
         return original(self,**kwargs)
     def forbidden(*args,**kwargs): pytest.fail('forbidden clock or cutoff capture')
     monkeypatch.setattr(repository,'_now',forbidden)
     monkeypatch.setattr(PatientRepository,'capture_cutoff',forbidden)
-    monkeypatch.setattr(PatientRepository,'list_latest_known',read)
+    monkeypatch.setattr(PatientRepository,'list_bounded_history',read)
     try: result = run(registered,cutoff)
     finally: event.remove(registered,'before_cursor_execute',observe)
-    assert calls == [dict(target=TARGET,cutoff=cutoff)]
+    assert len(calls)==1
+    assert calls[0]['target']==TARGET and calls[0]['cutoff']==cutoff and calls[0]['latest'] is True
+    assert calls[0]['budget'].max_rows==4096 and calls[0]['accounting'].rows==2
     assert sum(s == 'BEGIN IMMEDIATE' for s in sql) == 1
     assert not any(s.lstrip().upper().startswith(('INSERT','UPDATE','DELETE','CREATE','ALTER','DROP')) for s in sql)
     assert len(result.snapshot.ordered_items) == 2
@@ -265,7 +267,7 @@ def test_one_read_one_transaction_no_clock_no_dml(registered,monkeypatch):
 
 def test_later_concurrent_writer_cannot_enter_assembly(registered,monkeypatch):
     cutoff = save(registered,lab())
-    original = PatientRepository.list_latest_known
+    original = PatientRepository.list_bounded_history
     attempted=[]
     def read(self,**kwargs):
         import sqlite3
@@ -274,7 +276,7 @@ def test_later_concurrent_writer_cannot_enter_assembly(registered,monkeypatch):
                 competing.execute('BEGIN IMMEDIATE')
         attempted.append(True)
         return original(self,**kwargs)
-    monkeypatch.setattr(PatientRepository,'list_latest_known',read)
+    monkeypatch.setattr(PatientRepository,'list_bounded_history',read)
     assert len(run(registered,cutoff).snapshot.laboratory) == 1
     assert attempted == [True]
 
@@ -298,7 +300,7 @@ def test_failures_never_become_empty_success(registered,monkeypatch,failure):
         def broken(*args,**kwargs):
             if failure == 'interrupt': raise KeyboardInterrupt()
             raise RuntimeError('PRIVATE_DRIVER_CONTENT')
-        monkeypatch.setattr(assembly,'_map',broken) if failure in ('mapper','interrupt') else monkeypatch.setattr(PatientRepository,'list_latest_known',broken)
+        monkeypatch.setattr(assembly,'_map',broken) if failure in ('mapper','interrupt') else monkeypatch.setattr(PatientRepository,'list_bounded_history',broken)
     with pytest.raises(expected) as caught: run(registered,cutoff)
     assert 'PRIVATE_DRIVER_CONTENT' not in ''.join(traceback.format_exception(caught.value))
     assert 'PRIVATE_BROKEN_JSON' not in ''.join(traceback.format_exception(caught.value))
@@ -396,7 +398,7 @@ def test_missing_order_time_and_inference_are_not_invented_domains(registered):
 @pytest.mark.parametrize('part',['target','cutoff','selection','record_scope'])
 def test_inconsistent_history_result_aborts(registered,monkeypatch,part):
     cutoff=save(registered,lab())
-    original=PatientRepository.list_latest_known
+    original=PatientRepository.list_bounded_history
     def inconsistent(self,**kwargs):
         result=original(self,**kwargs)
         if part=='target': return dc_replace(result,target=replace(TARGET,encounter_id='synthetic-e2'))
@@ -405,7 +407,7 @@ def test_inconsistent_history_result_aborts(registered,monkeypatch,part):
         stored=result.records[0]
         foreign=replace(stored.fact,binding=replace(stored.fact.binding,target=replace(TARGET,encounter_id='synthetic-e2')))
         return dc_replace(result,records=(dc_replace(stored,fact=foreign),))
-    monkeypatch.setattr(PatientRepository,'list_latest_known',inconsistent)
+    monkeypatch.setattr(PatientRepository,'list_bounded_history',inconsistent)
     with pytest.raises(StorageIntegrityError): run(registered,cutoff)
 
 

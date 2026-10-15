@@ -7,7 +7,7 @@ from app.models.clinical.recorded_v2 import Contract, RecordedFactV2, instant, r
 from app.execution.patient_state_v2 import (PatientStateScopeV2, PatientStateSnapshotV2,
     RetainedStateItemV2, MicrobiologyView, AntimicrobialView, SpecimenGroup,
     IsolateGroup, MolecularPanelGroup, CoverageV2, MappingIssueV2)
-from app.persistence.bounded_history import HistoryBudget
+from app.persistence.bounded_history import HistoryBudget, AggregateHistoryBudget, HistoryAccounting
 from app.persistence.errors import (PersistenceError, PersistenceInputError, QueryLimitExceeded,
     StorageIntegrityError, TransactionAborted)
 from app.persistence.mapping import canonical_payload
@@ -100,10 +100,16 @@ def _placement(fact, scope):
     return 'in_window' if instant(lo) <= instant(scope.review_end) and instant(hi) >= instant(scope.review_start) else None
 
 
-def _assemble(repository, request):
+def _assemble(repository, request, *, history_budget=None, family_budget=None, accounting=None):
     scope, limits = request.scope, request.limits
+    budget = limits.history
+    if history_budget is not None:
+        operational = HistoryBudget.model_validate(history_budget)
+        budget = HistoryBudget(max_rows=min(budget.max_rows, operational.max_rows),
+            max_payload_bytes=min(budget.max_payload_bytes, operational.max_payload_bytes))
     history = repository.list_bounded_history(target=scope.target,
-        cutoff=scope.repository_cutoff, budget=limits.history)
+        cutoff=scope.repository_cutoff, budget=budget, family_budget=family_budget,
+        accounting=HistoryAccounting(AggregateHistoryBudget()) if accounting is None else accounting)
     exact, terminal = {}, {}
     for stored in history.records:
         ref = stored.fact.reference
@@ -276,7 +282,7 @@ def _assemble(repository, request):
     return result
 
 
-def assemble_patient_state_v2(engine: Engine, *, request: AssemblyRequestV2) -> PatientStateAssemblyResultV2:
+def assemble_patient_state_v2(engine: Engine, *, request: AssemblyRequestV2, history_budget=None, family_budget=None, accounting=None) -> PatientStateAssemblyResultV2:
     """One existing transaction, no writes, clock sampling or execution."""
     if not isinstance(engine, Engine):
         raise PersistenceInputError('patient state v2 assembly requires an Engine')
@@ -286,7 +292,8 @@ def assemble_patient_state_v2(engine: Engine, *, request: AssemblyRequestV2) -> 
         raise PersistenceInputError('invalid patient state v2 assembly request') from None
     try:
         with transaction(engine) as repository:
-            result = _assemble(repository, request)
+            result = _assemble(repository, request, history_budget=history_budget,
+                family_budget=family_budget, accounting=accounting)
         return result
     except PersistenceError as error:
         raise error from None

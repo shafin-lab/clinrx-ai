@@ -238,10 +238,13 @@ class PatientRepository:
         return check_binding_scopes(self, references, target=target, cutoff=cutoff)
 
     @_operation
-    def list_bounded_history(self, *, target, cutoff, budget):
+    def list_bounded_history(self, *, target, cutoff, budget, identity=None, latest=False,
+                             family_budget=None, accounting=None, clinical_filter=None, ingestion_filter=None):
         """Bound candidate envelopes/bytes before existing historical decoding."""
         from .bounded_history import bounded_history
-        return bounded_history(self, target=target, cutoff=cutoff, budget=budget)
+        return bounded_history(self, target=target, cutoff=cutoff, budget=budget,
+            identity=identity, latest=latest, family_budget=family_budget, accounting=accounting,
+            clinical_filter=clinical_filter, ingestion_filter=ingestion_filter)
 
     @_operation
     def list_latest_known(self, *, target: ContextTarget, cutoff: RepositoryCutoff,
@@ -257,9 +260,11 @@ class PatientRepository:
 
     @_operation
     def resolve_lineage(self, reference: Reference, *, target: ContextTarget,
-                        cutoff: RepositoryCutoff, limits: LineageLimits) -> LineageResult:
+                        cutoff: RepositoryCutoff, limits: LineageLimits,
+                        history_budget=None, family_budget=None, accounting=None) -> LineageResult:
         """Resolve declared exact lineage only in the requested visible prefix."""
-        return resolve(self, reference, target=target, cutoff=cutoff, limits=limits)
+        return resolve(self, reference, target=target, cutoff=cutoff, limits=limits,
+            history_budget=history_budget, family_budget=family_budget, accounting=accounting)
 
     @_operation
     def capture_cutoff(self) -> RepositoryCutoff:
