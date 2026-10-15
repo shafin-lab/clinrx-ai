@@ -46,4 +46,3 @@ def consumed_provenance_references(fact):
     if isinstance(fact,h.VasoactiveEvent) and isinstance(fact.action,h.InfusionEvent):
         visit(fact.drug.mapping_provenance);visit(fact.action.delivery.attestation)
     return tuple(sorted(refs, key=ref_key))
-
