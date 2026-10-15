@@ -105,3 +105,20 @@ separate correction commits, original policy/review, source archives, patches,
 checksums, environment versions and raw commands/logs/exit codes. Python 3.11.6
 is required for the backend. No hosted feature CI is claimed or triggered, and no
 push, merge, deployment or connected M7-C implementation is part of this pass.
+
+## Director R1: remaining numeric precision bypass
+
+At a1680c4, `1791426600123456.1e-6` and `1791426600123456.4e-6`
+were admitted as the same trusted instant. Numeric exactness now compares the
+full Decimal value, including its exponent, to the actual parsed epoch in seconds
+or milliseconds. Exact Decimal construction/comparison avoids arithmetic-context
+rounding and enormous integer-ratio expansion for extreme exponents. Numeric forms
+rejected by the existing datetime parser remain rejected. No normalization or unit
+conversion changes that parser's admission or interpretation rules.
+
+Lossy exponent evidence remains persistable with its original string, but cannot
+establish exact inference ordering. An affected old preparation without a receipt
+fails corrected reconstruction with the existing sanitized integrity error and
+creates no receipt; retained history is not rewritten. The existing explicit
+reconciliation/retry and separately explicit re-preparation policy above applies.
+The four policy questions above remain pending, and M7-C remains gated.

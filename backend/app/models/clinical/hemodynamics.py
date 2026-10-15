@@ -5,7 +5,7 @@ parameters are supported by every product/software/sensor configuration.
 """
 import re
 from datetime import datetime, timezone
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation, Context
 from typing import Annotated, Literal
 from pydantic import AwareDatetime, Field, TypeAdapter, ValidationInfo, model_validator
 from .common import ContextTarget, Reference, Text
@@ -32,13 +32,21 @@ def _lossless_microseconds(value):
     """Datetime retains six fractional digits; discarded zeroes are harmless."""
     if value is None:
         return True
-    if re.fullmatch(r"[+-]?\d+(?:\.\d+)?", value):
-        # Pydantic accepts both epoch seconds and milliseconds. Verify their
-        # exact decimal meaning instead of relying on its truncated datetime.
+    try:
+        raw = Decimal(value, context=Context(traps=[InvalidOperation]))
+    except InvalidOperation:
+        # Extremely large exponent spellings may be accepted (underflowing to
+        # zero) by the datetime parser but not representable by Decimal.
+        if re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)[eE][+-]?\d+", value):
+            return not any(c in '123456789' for c in value.lower().split('e')[0])
+    else:
+        if not raw.is_finite():
+            return False
         parsed = TypeAdapter(AwareDatetime).validate_python(value)
         epoch_us = instant(parsed) - instant(datetime(1970, 1, 1, tzinfo=timezone.utc))
-        numerator, denominator = Decimal(value).as_integer_ratio()
-        return numerator * 1_000_000 == epoch_us * denominator or numerator * 1_000 == epoch_us * denominator
+        # Decimal constructors and comparisons are exact without expanding huge
+        # exponents or depending on the caller's arithmetic precision context.
+        return raw == Decimal(f'{epoch_us}e-6') or raw == Decimal(f'{epoch_us}e-3')
     fraction = re.search(r"[.,](\d+)", value)
     return fraction is None or not any(d != '0' for d in fraction.group(1)[6:])
 
