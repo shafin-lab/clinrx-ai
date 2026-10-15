@@ -191,3 +191,15 @@ def test_corrupt_receipt_raw_number_is_integrity_failure_not_absence(registered)
         raw=json.dumps(payload).replace('"TOKEN"','1791426600.12345601')
         conn.execute(text('UPDATE circulatory_execution SET payload=:raw'),{'raw':raw})
     with pytest.raises(StorageIntegrityError):w.reconcile_circulatory_execution(registered,req)
+
+
+@pytest.mark.parametrize('value',[AT.isoformat().encode(),b'1791426600123456.000e-6',1791426600,Decimal('1791426600.123456')])
+def test_full_recorded_container_keeps_new_scalar_source_evidence(value):
+    # Canonical historical JSON contains datetime strings; raw bytes/integers/
+    # Decimal objects are distinguishable new inputs even in a full container.
+    recorded=raw_stamp(AT.isoformat()).recorded.model_dump()
+    recorded['value']=value
+    assertion=h.SourceTimeAssertion(recorded=recorded,source=code(),clock='verified',provenance=PROV)
+    assert assertion.source_timestamp is not None
+    if isinstance(value,bytes):assert assertion.source_timestamp==value.decode()
+    assert h.SourceTimeAssertion.model_validate_json(assertion.model_dump_json())==assertion

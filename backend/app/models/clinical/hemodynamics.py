@@ -126,6 +126,7 @@ class SourceTimeAssertion(Contract):
                         raise ValueError('floating-point timestamp input cannot establish source precision')
                 if ('source_timestamp' not in value and 'timestamp_precision' not in value
                         and set(RecordedTime.model_fields) <= set(recorded)
+                        and isinstance(recorded.get('value'), (str, datetime, type(None)))
                         and not (isinstance(recorded.get('value'), (str,bytes))
                             and not _lossless_microseconds(_source_lexeme(recorded['value'])))):
                     return value
