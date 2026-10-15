@@ -1,5 +1,6 @@
 """Actual historical producers, current consumers, exact identities and receipts."""
 import io
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -20,8 +21,12 @@ VERSIONS=('a1680c455939099cec94c369a191da8ba0f6a211','fe3cb12933179153142df201db
 @pytest.fixture(scope='session',params=VERSIONS)
 def historical_source(request,tmp_path_factory):
     root=tmp_path_factory.mktemp('historical-'+request.param[:7])
-    archive=subprocess.check_output(['git','archive',request.param],cwd=ROOT)
+    fixtures=ROOT/'tests/fixtures/m7_timestamp_producers'
+    archive=(fixtures/(request.param+'.tar.gz')).read_bytes()
+    expected=json.loads((fixtures/'manifest.json').read_text())[request.param]
+    assert hashlib.sha256(archive).hexdigest()==expected['sha256']
     with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
+        assert tar.pax_headers['comment']==request.param
         assert all(not Path(m.name).is_absolute() and '..' not in Path(m.name).parts and not m.issym() for m in tar.getmembers())
         tar.extractall(root,filter='data')
     return root,request.param

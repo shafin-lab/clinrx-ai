@@ -239,3 +239,10 @@ The four clinical-policy questions remain separate and unresolved. F2/F3, exact
 support closure, generic inference/governance, shared transactions, Kernel v1,
 M5/M6/H1-D, schema and dependency contracts are unchanged. Connected M7-C remains
 gated. No additional PR or review ZIP is created by this correction pass.
+
+The historical producer sources are checksum-pinned test fixtures exported from the
+two exact Git commits, with original Git archive commit comments. Compatibility
+tests therefore run from source archives and shallow CI checkouts without network
+access or requiring historical Git objects at test runtime. These are engineering
+test fixtures, not another review ZIP. They contain tracked source only, no Git
+repository, databases, environment files, installed dependencies or build output.
