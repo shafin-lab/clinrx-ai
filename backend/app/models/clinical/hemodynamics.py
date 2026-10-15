@@ -291,7 +291,8 @@ class Measurement(CirculatoryFact):
     @model_validator(mode='after')
     def calculation_evidence(self):
         if self.acquisition.parameter_support == 'source_documented':
-            if self.acquisition.parameter_concept != self.concept:
+            expected_concept = 'lactate' if isinstance(self, LactateResult) else self.concept
+            if self.acquisition.parameter_concept != expected_concept:
                 raise ValueError('source parameter mapping contradicts measurement concept')
         if self.production == 'direct_measurement' and (self.calculation_method or self.calculation_inputs):
             raise ValueError('direct measurement cannot declare calculation')
