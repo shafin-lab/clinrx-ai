@@ -4,6 +4,8 @@ Acquisition and mapping assertions are source evidence, never a claim that all
 parameters are supported by every product/software/sensor configuration.
 """
 import re
+from datetime import datetime, timezone
+from decimal import Decimal
 from typing import Annotated, Literal
 from pydantic import AwareDatetime, Field, TypeAdapter, ValidationInfo, model_validator
 from .common import ContextTarget, Reference, Text
@@ -30,7 +32,14 @@ def _lossless_microseconds(value):
     """Datetime retains six fractional digits; discarded zeroes are harmless."""
     if value is None:
         return True
-    fraction = re.search(r"[Tt ]\d{2}:\d{2}:\d{2}[.,](\d+)", value)
+    if re.fullmatch(r"[+-]?\d+(?:\.\d+)?", value):
+        # Pydantic accepts both epoch seconds and milliseconds. Verify their
+        # exact decimal meaning instead of relying on its truncated datetime.
+        parsed = TypeAdapter(AwareDatetime).validate_python(value)
+        epoch_us = instant(parsed) - instant(datetime(1970, 1, 1, tzinfo=timezone.utc))
+        numerator, denominator = Decimal(value).as_integer_ratio()
+        return numerator * 1_000_000 == epoch_us * denominator or numerator * 1_000 == epoch_us * denominator
+    fraction = re.search(r"[.,](\d+)", value)
     return fraction is None or not any(d != '0' for d in fraction.group(1)[6:])
 
 

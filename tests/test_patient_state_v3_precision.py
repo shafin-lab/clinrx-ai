@@ -82,3 +82,13 @@ def test_precision_lexemes_survive_reopen_and_canonical_projection(registered):
     assert canonical_payload(f)==canonical_payload(p)
     assert '2026-10-08T08:00:00.123456100+05:30' in f.model_dump_json()
     assert not f.occurred.trustworthy
+
+@pytest.mark.parametrize('value,trustworthy',[
+    ('2026-10-08_08:00:00.1234561+05:30',False),
+    ('2026-10-08_08:00:00.123456000+05:30',True),
+    ('1791417600.1234561',False),('1791417600.12345600000000000000000000000001',False),('1791417600.123456000',True),
+    ('1791417600123.4561',False),('1791417600123.456000',True)])
+def test_all_parser_accepted_source_forms_check_precision(value,trustworthy):
+    t=raw_stamp(value)
+    assert t.trustworthy is trustworthy
+    assert h.ClinicalInstant.model_validate_json(t.model_dump_json()).source_timestamp==value
