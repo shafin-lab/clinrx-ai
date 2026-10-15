@@ -22,7 +22,7 @@ def concept(value='source description'):
 
 
 def stamp(at=AT):
-    return h.ClinicalInstant(recorded=time(at), clock='verified', clock_basis=PROV)
+    return h.ClinicalInstant(recorded=time(at), source_timestamp=at.isoformat(), timestamp_precision=h.PRECISION_CONTRACT, clock='verified', clock_basis=PROV)
 
 
 def acquisition(method='invasive_arterial', **kw):
@@ -253,7 +253,7 @@ def test_clock_alignment_is_retained_without_adjusting_event_time():
 def test_alternative_time_sources_keep_provenance_and_conflict():
     a=h.SourceTimeAssertion(recorded=time(AT+timedelta(seconds=1)),source=code('other-clock'),clock='verified',provenance=PROV)
     assert not change(stamp(),alternative_sources=(a,)).trustworthy
-    b=change(a,recorded=time(AT.astimezone(timezone.utc)))
+    b=change(a,recorded=time(AT.astimezone(timezone.utc)),source_timestamp=AT.astimezone(timezone.utc).isoformat(),timestamp_precision=h.PRECISION_CONTRACT)
     assert change(stamp(),alternative_sources=(b,)).trustworthy
 
 

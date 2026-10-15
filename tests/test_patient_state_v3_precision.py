@@ -8,7 +8,7 @@ from test_patient_state_v3_inference import inputs, selected
 
 
 def raw_stamp(value):
-    return h.ClinicalInstant(recorded={'status':'known','precision':'instant','value':value},clock='verified',clock_basis=PROV)
+    return h.ClinicalInstant(timestamp_precision=h.PRECISION_CONTRACT, recorded={'status':'known','precision':'instant','value':value},clock='verified',clock_basis=PROV)
 
 
 def test_f1_material_fractional_precision_abstains(registered):

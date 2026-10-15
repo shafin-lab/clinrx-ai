@@ -16,8 +16,8 @@ def test_null_conflict_container_is_structured_rejection(mode):
 
 
 def test_mixed_iso_and_numeric_conflicting_times_admit():
-    t=change(raw_stamp('1791426600.123456'),conflicting=('2026-10-08T02:30:00.123456Z',1791426600.123456))
-    assert t.trustworthy
+    with pytest.raises(ValidationError):
+        change(raw_stamp('1791426600.123456'),conflicting=('2026-10-08T02:30:00.123456Z',1791426600.123456))
 
 from decimal import Decimal
 from datetime import datetime, timezone
@@ -50,9 +50,9 @@ def test_companion_lexeme_shapes_are_structured_before_capture(mode,bad):
 
 @pytest.mark.parametrize('mode',['python','json'])
 def test_mixed_accepted_conflicts_round_trip(mode):
-    data=raw_stamp('1791426600.123456').model_dump(mode='json')
-    values=['2026-10-08T08:00:00.123456+05:30',1791426600.123456,'1791426600123456.000e-6']
-    if mode=='python':values.extend([datetime(2026,10,8,2,30,0,123456,tzinfo=timezone.utc),Decimal('1791426600.123456')])
+    data=raw_stamp('1791426600').model_dump(mode='json')
+    values=['2026-10-08T08:00:00+05:30',1791426600,'1791426600.000e0']
+    if mode=='python':values.extend([datetime(2026,10,8,2,30,0,tzinfo=timezone.utc),Decimal('1791426600')])
     data['conflicting']=values
     t=h.ClinicalInstant.model_validate(data) if mode=='python' else h.ClinicalInstant.model_validate_json(json.dumps(data))
     assert t.trustworthy
@@ -64,6 +64,9 @@ def test_mixed_accepted_conflicts_round_trip(mode):
 @pytest.mark.parametrize('value',[0.0000001,Decimal('1E-7'),'1791426600123456.1e-6'])
 def test_mixed_numeric_precision_not_erased(value):
     # Different instants are already unsuitable; ensure precision evidence also survives.
+    if isinstance(value,float):
+        with pytest.raises(ValidationError):change(raw_stamp('1791426600.123456'),conflicting=('2026-10-08T02:30:00.123456Z',value))
+        return
     t=change(raw_stamp('1791426600.123456'),conflicting=('2026-10-08T02:30:00.123456Z',value))
     assert not t.trustworthy
     assert len(t.conflicting_source_timestamps)==2
@@ -72,12 +75,13 @@ def test_mixed_numeric_precision_not_erased(value):
 
 @pytest.mark.parametrize('container',[list,tuple,iter])
 def test_supported_python_containers_remain_supported(container):
-    t=change(raw_stamp('1791426600.123456'),conflicting=container(['2026-10-08T02:30:00.123456Z',1791426600.123456]))
+    t=change(raw_stamp('1791426600.123456'),conflicting=container(['2026-10-08T02:30:00.123456Z',Decimal('1791426600.123456')]))
     assert t.trustworthy
 
 
 def test_legacy_conflict_payload_does_not_gain_optional_fields():
     data=raw_stamp('1791426600.123456').model_dump(mode='json')
+    data.pop('timestamp_precision',None)  # genuine pre-contract canonical shape
     data['conflicting']=['2026-10-08T02:30:00.123456Z']
     raw=json.dumps(data,sort_keys=True,separators=(',',':'))
     t=h.ClinicalInstant.model_validate_json(raw)

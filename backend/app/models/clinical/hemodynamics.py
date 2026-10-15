@@ -31,14 +31,14 @@ class ClockAlignment(Contract):
 def _lossless_microseconds(value):
     """Datetime retains six fractional digits; discarded zeroes are harmless."""
     if value is None:
-        return True
+        return False
     try:
         raw = Decimal(value, context=Context(traps=[InvalidOperation]))
     except InvalidOperation:
-        # Extremely large exponent spellings may be accepted (underflowing to
-        # zero) by the datetime parser but not representable by Decimal.
-        if re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)[eE][+-]?\d+", value):
-            return not any(c in '123456789' for c in value.lower().split('e')[0])
+        # Non-numeric source text must be an admitted ISO timestamp. If an
+        # extreme numeric token cannot be represented exactly, abstain.
+        if not re.match(r'^\d{4}-\d{2}-\d{2}[Tt _]', value):
+            return False
     else:
         if not raw.is_finite():
             return False
@@ -59,22 +59,53 @@ def _numeric_time_lexeme(value):
     return raw
 
 
+PRECISION_CONTRACT = 'M7ExactTimestampInput/v1'
+
+
+def _source_lexeme(value):
+    if isinstance(value, float):
+        raise ValueError('M7 timestamps require exact text, integer, Decimal or datetime; float is not precision evidence')
+    if isinstance(value, bool):
+        raise ValueError('boolean is not timestamp evidence')
+    if isinstance(value, bytes):
+        try:
+            return value.decode('utf-8')
+        except UnicodeDecodeError:
+            raise ValueError('invalid timestamp byte encoding') from None
+    if isinstance(value, str):
+        return value
+    if isinstance(value, (int, Decimal)):
+        return _numeric_time_lexeme(value)
+    if isinstance(value, datetime):
+        return value.isoformat()
+    return None
+
+
+def _exact_source(value, contract):
+    return (_lossless_microseconds(value) and
+        (contract == PRECISION_CONTRACT or bool(re.match(r'^\d{4}-\d{2}-\d{2}[Tt _]', value))))
+
+
 def _retain_time(value):
     if isinstance(value, dict):
         recorded = value.get('recorded')
-        raw = recorded.get('value') if isinstance(recorded, dict) else None
-        if isinstance(raw, (str, int, float, Decimal)) and not isinstance(raw, bool):
-            raw = raw if isinstance(raw, str) else _numeric_time_lexeme(raw)
-            if not _lossless_microseconds(raw):
-                if value.get('source_timestamp') not in (None, raw):
-                    raise ValueError('source timestamp contradicts supplied fractional precision')
-                return {**value, 'source_timestamp': raw}
-            if 'source_timestamp' not in value:
-                return {**value, 'source_timestamp': raw}
+        if isinstance(recorded, dict):
+            for anchor in ('value', 'lower', 'upper'):
+                if isinstance(recorded.get(anchor), float):
+                    raise ValueError('floating-point timestamp input cannot establish source precision')
+            raw = _source_lexeme(recorded.get('value'))
+            if raw is not None:
+                if not _lossless_microseconds(raw):
+                    if value.get('source_timestamp') not in (None, raw):
+                        raise ValueError('source timestamp contradicts supplied fractional precision')
+                    return {**value, 'source_timestamp': raw}
+                if 'source_timestamp' not in value:
+                    return {**value, 'source_timestamp': raw}
     return value
 
 
 class SourceTimeAssertion(Contract):
+    timestamp_precision: Literal['M7ExactTimestampInput/v1'] | None = Field(default=None, exclude_if=lambda v: v is None)
     source_timestamp: Annotated[str, Field(min_length=1, max_length=128)] | None = Field(default=None, exclude_if=lambda v: v is None)
     recorded: RecordedTime
     source: SourceCode
@@ -85,17 +116,25 @@ class SourceTimeAssertion(Contract):
     @model_validator(mode='before')
     @classmethod
     def retain_timestamp(cls, value, info: ValidationInfo):
-        if info.mode == 'json' and isinstance(value, dict) and 'source_timestamp' not in value:
+        # A full previously serialized RecordedTime is not new source evidence.
+        # Never infer a precision declaration when decoding/revalidating history.
+        if isinstance(value, dict):
             recorded = value.get('recorded')
-            raw = recorded.get('value') if isinstance(recorded, dict) else None
-            if isinstance(raw, str) and _lossless_microseconds(raw):
-                return value
-            if not isinstance(raw, (str, int, float, Decimal)) or isinstance(raw, bool):
-                return value
+            if isinstance(recorded, dict):
+                for anchor in ('value','lower','upper'):
+                    if isinstance(recorded.get(anchor), float):
+                        raise ValueError('floating-point timestamp input cannot establish source precision')
+                if ('source_timestamp' not in value and 'timestamp_precision' not in value
+                        and set(RecordedTime.model_fields) <= set(recorded)
+                        and not (isinstance(recorded.get('value'), (str,bytes))
+                            and not _lossless_microseconds(_source_lexeme(recorded['value'])))):
+                    return value
         return _retain_time(value)
 
     @model_validator(mode='after')
     def consistent_timestamp(self):
+        if self.timestamp_precision is not None and self.source_timestamp is None:
+            raise ValueError('precision contract requires retained source timestamp')
         if self.source_timestamp is not None:
             parsed = TypeAdapter(AwareDatetime).validate_python(self.source_timestamp)
             if self.recorded.value is None or parsed.isoformat() != self.recorded.value.isoformat():
@@ -109,19 +148,12 @@ _CONFLICT_LEXEMES = TypeAdapter(Annotated[tuple[str, ...], Field(max_length=8)])
 
 
 def _conflict_lexeme(value, parsed):
-    # Strings keep their exact source spelling. Numeric objects have no original
-    # string lexeme; retain their value's spelling, with a decimal point when the
-    # existing datetime string parser requires it for exponent notation.
-    if isinstance(value, str):
-        return value
-    if isinstance(value, bytes):
-        return value.decode('utf-8')  # already accepted by _CONFLICT_TIMES
-    if isinstance(value, (int, float, Decimal)):
-        return _numeric_time_lexeme(value)
-    return parsed.isoformat()
+    text = _source_lexeme(value)
+    return parsed.isoformat() if text is None else text
 
 
 class ClinicalInstant(Contract):
+    timestamp_precision: Literal['M7ExactTimestampInput/v1'] | None = Field(default=None, exclude_if=lambda v: v is None)
     recorded: RecordedTime = Field(default_factory=missing_time)
     source_timestamp: Annotated[str, Field(min_length=1, max_length=128)] | None = None
     clock: Literal['verified', 'unreliable', 'unknown'] = 'unknown'
@@ -140,6 +172,8 @@ class ClinicalInstant(Contract):
             # Shape and datetime validation precede iteration/lexeme capture.
             # Materialize supported iterables only once, under the field's cap.
             conflicts = _CONFLICT_SHAPE.validate_python(value.get('conflicting', ()))
+            for member in conflicts:
+                _source_lexeme(member)  # reject floats before datetime coercion
             parsed = _CONFLICT_TIMES.validate_python(conflicts)
             supplied = 'conflicting_source_timestamps' in value
             if supplied:
@@ -147,8 +181,8 @@ class ClinicalInstant(Contract):
                 value = {**value, 'conflicting_source_timestamps': retained}
             lexemes = tuple(_conflict_lexeme(v, t) for v, t in zip(conflicts, parsed, strict=True))
             material = any(not _lossless_microseconds(v) for v in lexemes)
-            capture = not supplied and (info.mode != 'json' or any(not isinstance(v, str) for v in conflicts))
-            if material or (capture and any(not isinstance(v, datetime) for v in conflicts)):
+            capture = not supplied and (info.mode != 'json' or value.get('timestamp_precision') == PRECISION_CONTRACT or any(not isinstance(v, str) for v in conflicts))
+            if material or (capture and conflicts):
                 if material and supplied and retained and retained != lexemes:
                     raise ValueError('conflicting source timestamps conceal supplied precision')
                 value = {**value, 'conflicting_source_timestamps': lexemes}
@@ -157,6 +191,8 @@ class ClinicalInstant(Contract):
 
     @model_validator(mode='after')
     def verified_basis(self):
+        if self.timestamp_precision is not None and self.source_timestamp is None:
+            raise ValueError('precision contract requires retained source timestamp')
         if self.source_timestamp is not None:
             restored = TypeAdapter(AwareDatetime).validate_python(self.source_timestamp)
             if self.recorded.value is None or restored.isoformat() != self.recorded.value.isoformat():
@@ -172,13 +208,14 @@ class ClinicalInstant(Contract):
     @property
     def trustworthy(self):
         t = self.recorded
-        return (_lossless_microseconds(self.source_timestamp)
-                and all(_lossless_microseconds(v) for v in self.conflicting_source_timestamps)
+        return (_exact_source(self.source_timestamp, self.timestamp_precision)
+                and len(self.conflicting_source_timestamps) == len(self.conflicting)
+                and all(_exact_source(v, self.timestamp_precision) for v in self.conflicting_source_timestamps)
                 and self.clock == 'verified' and t.status == 'known'
                 and t.precision == 'instant' and not t.uncertainty
                 and (self.alignment is None or (self.alignment.synchronization == 'synchronized'
                     and all(q is None or q.value == 0 for q in (self.alignment.offset,self.alignment.drift,self.alignment.uncertainty))))
-                and all(_lossless_microseconds(a.source_timestamp) and a.clock == 'verified' and a.recorded.status == 'known'
+                and all(_exact_source(a.source_timestamp, a.timestamp_precision) and a.clock == 'verified' and a.recorded.status == 'known'
                     and a.recorded.precision == 'instant' and not a.recorded.uncertainty
                     and instant(a.recorded.value) == instant(t.value) for a in self.alternative_sources)
                 and all(instant(v) == instant(t.value) for v in self.conflicting))

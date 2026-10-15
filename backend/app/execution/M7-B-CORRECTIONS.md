@@ -153,3 +153,89 @@ cannot be reconstructed after decoding; callers needing that lexeme must supply 
 as string evidence. Existing canonical JSON contains parsed datetime strings, so
 this capture does not rewrite legacy payloads. The interrupted backend validation
 log is retained; final validation is rerun against the completed correction.
+
+## Director B1/B2: complete admission rule and historical disposition
+
+This section supersedes earlier claims that decimal spelling of a Python float
+established exactness, or that every previously affected preparation was already
+rejected. Discarded precision cannot be reconstructed. The seven independent
+safe-outcome assertions all failed at fe3cb12 and are retained as regressions.
+
+### Explicit input matrix
+
+The rule is **retain exact source evidence before coercion, or fail safely**:
+
+| Input at M7 timestamp admission | Behavior |
+| --- | --- |
+| ISO string / UTF-8 bytes | Retain the complete decoded source lexeme. Unsupported bytes produce structured validation errors. Discarded nonzero fractional digits abstain; trailing zeros are harmless. |
+| Numeric string / numeric bytes | Retain exact spelling; compare exact Decimal meaning to the parser's actual seconds/milliseconds result. Exact ordering additionally requires the new precision contract declaration. |
+| Integer / Python Decimal | Retain an exact numeric representation and perform the same comparison. Numeric objects have no original wire lexeme. The precision contract is required for ordering. |
+| Python float / raw JSON floating number | Reject through structured ValidationError **before datetime coercion**, even with an explicit contract/source field. This includes exact-looking decimals, exponent tokens, bounds and conflicting/alternative assertions. No float repr is treated as source evidence. |
+| Native aware datetime | Retain supplied microsecond representation when admitted as raw input, or require an explicit retained ISO source assertion. It cannot recover precision lost before the caller supplied it. |
+| Already parsed RecordedTime / historical canonical datetime | Do not fabricate a source lexeme or retroactively declare precision. Missing evidence remains unknown. |
+| Raw JSON integer / string | Same integer/string rule at the model boundary, including nested facts and assertions. |
+
+No raw JSON float token is converted into a trusted string by these validators.
+Direct model_validate_json, nested domain models, fact persistence decoding and
+retained receipt decoding all reach the same M7-only gate. No API-only shim or
+spelling-specific exponent fallback is used. Decimal context/traps cannot affect
+precision decisions; unrepresentable source precision abstains.
+
+### Revision-bound precision declaration
+
+M7 ClinicalInstant and SourceTimeAssertion have an optional
+`timestamp_precision = M7ExactTimestampInput/v1` declaration. It is omitted when
+absent, preserving old canonical bytes. New producers declare it only at exact
+source admission and retain the corresponding source lexeme. It is structural
+producer-version evidence, not authentication, clock verification or source truth.
+It cannot override float rejection or material fractional loss. Every nonempty
+conflicting assertion set requires complete retained lexemes; each alternative
+requires its own source evidence.
+
+A legacy complete, exact ISO source lexeme remains usable: the reviewed producers'
+byte/float coercion paths did not produce that evidence. A legacy numeric spelling
+without the new declaration is ambiguous: it may be a genuine source string or the
+repr of an already rounded float. It is unsuitable for **new** ordering. Missing
+source evidence is also unsuitable, including benign old native-datetime cases
+that cannot be distinguished from discarded-precision cases. This is a deliberate,
+conservative engineering disposition, not a clinical-policy approval.
+
+Declarations are never automatically added when decoding historical records.
+Adding one changes the fact's canonical digest: an existing exact revision cannot
+be updated or silently re-pinned. A replacement requires actual source-backed
+re-attestation, an explicit new fact/revision where appropriate, and separate fresh
+preparation. Formatting an old parsed datetime or rounded numeric spelling is not
+source recovery and must not be used as re-attestation.
+
+### Pending preparations and uncertain submissions
+
+The existing protected workflow checks the exact scoped retained receipt **before**
+new assembly, precision assessment or reconstruction. This ordering is unchanged.
+If a receipt exists, retry/reconciliation preserve its exact historical decision,
+UUID, facts and metadata; they do not reauthorize it under the new rules. This is
+history preservation, not renewed endorsement of a previously unsafe release.
+
+If no receipt exists, original-prefix replay must meet the evidence rule above.
+Insufficient or ambiguous precision causes a sanitized integrity failure and no
+new receipt. This also rejects some genuinely exact but unverifiable historical
+preparations. Unaffected historical preparations with retained exact ISO source
+evidence can execute without identity changes. No broad claim that all historical
+facts can be classified or recovered is made.
+
+An uncertain submission retains its original command/UUID. Reconciliation remains
+retained-only and can recover already committed released/withheld receipts even
+when their precision is now unsuitable. Absence is not rollback proof and triggers
+no automatic action. Any same-command retry is explicit and, if still absent,
+passes through the new precision gate. There is no automatic replacement,
+re-preparation or re-execution.
+
+Actual archived a1680c4 and fe3cb12 producers are executed in subprocesses to test
+unaffected and insufficient-evidence preparations, unsafe historical released and
+withheld receipts, and both committed/absent completion uncertainty. Consumer tests
+verify unchanged stored fact/receipt bytes and exact request identities. These are
+cross-version tests, not patched current-producer simulations.
+
+The four clinical-policy questions remain separate and unresolved. F2/F3, exact
+support closure, generic inference/governance, shared transactions, Kernel v1,
+M5/M6/H1-D, schema and dependency contracts are unchanged. Connected M7-C remains
+gated. No additional PR or review ZIP is created by this correction pass.

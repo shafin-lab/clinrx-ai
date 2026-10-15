@@ -131,8 +131,9 @@ def test_native_numeric_inputs_preserve_precision_evidence(mode,where,raw,exact)
         alternative.update(source=code().model_dump(),provenance=PROV.model_dump(mode='json'))
         fields=raw_stamp(str(raw) if 'e' not in str(raw) else '0.0000001').model_dump(mode='json')
         fields['alternative_sources']=[alternative]
-    t=h.ClinicalInstant.model_validate(fields) if mode=='python' else h.ClinicalInstant.model_validate_json(json.dumps(fields))
-    assert t.trustworthy is exact
-    evidence=t if where=='primary' else t.alternative_sources[0]
-    assert evidence.source_timestamp is not None
-    assert h.ClinicalInstant.model_validate_json(t.model_dump_json())==t
+    # Floating-point objects/raw JSON floating numbers have no recoverable token
+    # precision. The declared B2 boundary now rejects them uniformly.
+    from pydantic import ValidationError
+    with pytest.raises(ValidationError):
+        if mode=='python':h.ClinicalInstant.model_validate(fields)
+        else:h.ClinicalInstant.model_validate_json(json.dumps(fields))
