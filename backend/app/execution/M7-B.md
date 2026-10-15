@@ -49,14 +49,14 @@ bytes. Exhaustion is QueryLimitExceeded, not successful withholding or truncatio
 M7 execution payloads are limited to 16 MiB, with scoped byte admission before
 payload materialization/decoding, including reconciliation. SQL scan time is not bounded by this.
 
-## Approved first inference policy
+## First inference: approved policy and implementation decisions
 
 Method `RecordedPressureLactateVasopressorTiming/v1` is a pure function over a
 validated assembly plus exact named pins and digests. It samples no clock and
 performs no repository reads or writes.
 
 P: recorded systemic systolic, diastolic or mean pressure; invasive arterial or
-automated cuff; source mmHg (or explicitly assessed UCUM mm[Hg]); numeric uncensored
+automated cuff; raw source unit exactly mmHg; numeric uncensored
 result; acceptable quality and no artifact. Invasive acquisition requires attributed
 adequate calibration and zeroing. Cuff zeroing is not required. Monitor MAP is
 accepted as source output when provenance/configuration/mapping is explicit; no
@@ -74,11 +74,15 @@ epinephrine, vasopressin, phenylephrine and dopamine under identity version 1;
 broader agents including dobutamine and milrinone remain persistable. No terminology
 matching, equivalence inference, dose conversion or continuous-exposure claim exists.
 
+The implementation refinements and unresolved policy questions below are not
+verbatim additions to the original approval. See `M7-B-CORRECTIONS.md`.
+
 Selected clinical times require explicit verified clock provenance, exact precision,
 no unresolved contradictory instant and no free-text uncertainty. Declared unknown
 or unsynchronized alignment and known nonzero offset/drift/uncertainty are unsuitable
 for exact ordering; source timestamps are never automatically adjusted. Offset-equivalent
-assertions agree. Known future source availability/event/recording is unsuitable.
+assertions agree. Material sub-microsecond precision loss abstains; discarded
+trailing zeroes are harmless. Original supplied lexemes remain evidence. Known future source availability/event/recording is unsuitable.
 Bindings must be verified and scoped. Missing clock information is not synchronization.
 
 P/L/V inputs and derived_from edges retain that role order. Independently consumed
@@ -133,3 +137,5 @@ strict DTOs and runtime decoders for all five response paths, retained provenanc
 projection and clinician review UI. Preserve H1-D uncertainty behavior, exact command
 and UUID, explicit reconciliation, late-response protection and no automatic execution.
 No M5/M6 route, transport schema, frontend or existing clinical policy is changed here.
+
+Correction and prepared-request compatibility details: `M7-B-CORRECTIONS.md`.
