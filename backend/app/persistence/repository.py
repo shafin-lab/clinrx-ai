@@ -261,10 +261,10 @@ class PatientRepository:
     @_operation
     def resolve_lineage(self, reference: Reference, *, target: ContextTarget,
                         cutoff: RepositoryCutoff, limits: LineageLimits,
-                        history_budget=None, accounting=None) -> LineageResult:
+                        history_budget=None, family_budget=None, accounting=None) -> LineageResult:
         """Resolve declared exact lineage only in the requested visible prefix."""
         return resolve(self, reference, target=target, cutoff=cutoff, limits=limits,
-            history_budget=history_budget, accounting=accounting)
+            history_budget=history_budget, family_budget=family_budget, accounting=accounting)
 
     @_operation
     def capture_cutoff(self) -> RepositoryCutoff:

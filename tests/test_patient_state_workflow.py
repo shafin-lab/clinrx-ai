@@ -115,7 +115,7 @@ def forbid_fresh(monkeypatch):
     for name in dir(g):
         if name.startswith(('build_','render_','evaluate_','validate_patient_','assess_','issue_')) or name=='patient_state_temporal_policy':
             monkeypatch.setattr(g,name,forbidden)
-    for name in ('capture_cutoff','list_revisions','load_latest_known','list_latest_known','load_fact','resolve_lineage'):
+    for name in ('capture_cutoff','list_revisions','load_latest_known','list_latest_known','list_bounded_history','load_fact','resolve_lineage'):
         monkeypatch.setattr(PatientRepository,name,forbidden)
     monkeypatch.setattr(store,'_now',forbidden)
     return forbidden
@@ -171,18 +171,21 @@ def test_exact_request_conflicts_before_work(case,registered,monkeypatch,part):
 def test_original_complete_assembly_once_and_targeted_final_reads(registered,monkeypatch):
     request,facts=prepare(registered,extra=True)
     with transaction(registered) as repo: repo.append_fact(lab('unrelated-after','7',AT),target=TARGET)
-    seen=[]; assembly_fn=w._assemble; builder=w.build_patient_state_temporal_inference; terminal=PatientRepository.load_latest_known
-    def assembled(repo,scope):
-        seen.append(('assembly',scope.repository_cutoff)); result=assembly_fn(repo,scope)
+    seen=[]; assembly_fn=w._assemble; builder=w.build_patient_state_temporal_inference; terminal=PatientRepository.list_bounded_history
+    def assembled(repo,scope,**reads):
+        seen.append(('assembly',scope.repository_cutoff)); result=assembly_fn(repo,scope,**reads)
         assert len(result.snapshot.ordered_items)==4
         return result
     def build(**kw):
         seen.append(('builder',kw['assembly'].snapshot.scope.repository_cutoff))
         assert len(kw['assembly'].snapshot.ordered_items)==4
         return builder(**kw)
-    def latest(repo,identity,**kw): seen.append(('terminal',identity)); return terminal(repo,identity,**kw)
+    def latest(repo,**kw):
+        if kw.get('latest') and kw.get('identity') is not None:
+            seen.append(('terminal',kw['identity']))
+        return terminal(repo,**kw)
     monkeypatch.setattr(w,'_assemble',assembled); monkeypatch.setattr(w,'build_patient_state_temporal_inference',build)
-    monkeypatch.setattr(PatientRepository,'load_latest_known',latest)
+    monkeypatch.setattr(PatientRepository,'list_bounded_history',latest)
     saved=execute(registered,request,clock=Clock())
     assert saved.record.decision.outcome=='released'
     assert seen[:2]==[('assembly',request.inference_request.scope.repository_cutoff),('builder',request.inference_request.scope.repository_cutoff)]
@@ -273,16 +276,16 @@ def test_integrity_never_becomes_withhold(case,registered,part):
 
 @pytest.mark.parametrize('part',['content','metadata','missing'])
 def test_contradictory_final_exact_evidence_aborts(case,registered,monkeypatch,part):
-    request,_=case; original=PatientRepository.load_latest_known
-    def altered(repo,identity,**kw):
-        result=original(repo,identity,**kw)
-        if identity.id=='A':
+    request,_=case; original=PatientRepository.list_bounded_history
+    def altered(repo,**kw):
+        result=original(repo,**kw)
+        if kw.get('latest') and kw.get('identity') is not None and kw['identity'].id=='A':
             if part=='missing': return dc_replace(result,records=())
             stored=result.records[0]
             stored=dc_replace(stored,fact=replace(stored.fact,uncertainty=('different',))) if part=='content' else dc_replace(stored,ingestion=replace(stored.ingestion,ingested_at=AT))
             result=dc_replace(result,records=(stored,))
         return result
-    monkeypatch.setattr(PatientRepository,'load_latest_known',altered)
+    monkeypatch.setattr(PatientRepository,'list_bounded_history',altered)
     with pytest.raises(StorageIntegrityError): execute(registered,request,clock=Clock())
     assert count(registered)==0
 

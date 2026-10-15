@@ -774,3 +774,13 @@ API, dependency, transaction-lifecycle or governance change is part of H1-B1.
 SQL admission bounds application materialization; it does not promise bounded
 SQLite scan time or change lock/timeout policy. Live append/load `_chain` operations
 remain outside this historical infrastructure change.
+
+
+### H1-B2 integration
+
+Protected workflows now propagate the operational budgets described above; see
+[execution notes](../execution/README.md). The runtime-only `family_budget` argument
+also propagates through `resolve_lineage` into existing bounded admission. No
+serialized lineage limits or persistence format changes are introduced. Legacy
+unbounded repository methods remain available, but protected new-work reads and
+initial clinical assembly/selection use the bounded operation.

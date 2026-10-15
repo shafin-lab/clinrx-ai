@@ -31,7 +31,7 @@ reconcile = workflow.reconcile_weight_trend_execution
 
 def forbid_work(monkeypatch):
     def forbidden(*args, **kwargs): pytest.fail('reconciliation executed clinical work')
-    for name in ('capture_cutoff', 'resolve_lineage', 'list_history', 'list_latest_known', 'load_latest_known'):
+    for name in ('capture_cutoff', 'resolve_lineage', 'list_history', 'list_latest_known', 'list_bounded_history', 'load_latest_known'):
         monkeypatch.setattr(PatientRepository, name, forbidden)
     for name in ('_new_execution', '_tick', '_utc_now', 'select_weight_observations',
         'assess_weight_trend_final_recheck', 'build_weight_trend_snapshot', 'build_weight_trend_candidate',

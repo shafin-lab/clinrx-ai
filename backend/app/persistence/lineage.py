@@ -127,7 +127,7 @@ def _limit(condition):
         raise QueryLimitExceeded('lineage query resource limit exceeded')
 
 
-def resolve(repository, reference, *, target, cutoff, limits, history_budget=None, accounting=None):
+def resolve(repository, reference, *, target, cutoff, limits, history_budget=None, family_budget=None, accounting=None):
     """Called inside the repository's checked transaction boundary."""
     reference = Reference.model_validate(reference)
     limits = LineageLimits.model_validate(limits)
@@ -151,7 +151,7 @@ def resolve(repository, reference, *, target, cutoff, limits, history_budget=Non
     history = _bounded_retrieve(repository, target=target, cutoff=cutoff,
         max_rows=limits.max_records if budget is None else min(limits.max_records, budget.max_rows),
         max_payload_bytes=16777216 if budget is None else budget.max_payload_bytes,
-        accounting=accounting)
+        family_budget=family_budget, accounting=accounting)
     visible = {item.fact.reference: item for item in history.records}
     if reference not in visible:
         raise RecordNotFound('lineage root not resolvable in scope at cutoff')

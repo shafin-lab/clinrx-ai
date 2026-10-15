@@ -204,7 +204,7 @@ def test_expiry_between_observation_and_decision_withholds(case,registered):
 
 def forbid_work(monkeypatch):
     def forbidden(*args,**kwargs): pytest.fail('retained retry performed clinical work or sampled clock')
-    for name in ('capture_cutoff','resolve_lineage','list_history','list_latest_known','load_latest_known','load_fact'):
+    for name in ('capture_cutoff','resolve_lineage','list_history','list_latest_known','list_bounded_history','load_latest_known','load_fact'):
         monkeypatch.setattr(PatientRepository,name,forbidden)
     for name in ('_new_execution','_tick','select_creatinine_observations','assess_creatinine_trend_final_recheck',
                  'build_creatinine_trend_snapshot','evaluate_creatinine_trend','assess_release','decide_release'):
@@ -327,14 +327,15 @@ def test_valid_inference_revision_metadata_is_retained(case,registered):
 
 @pytest.mark.parametrize('kind',['missing','contradictory_digest'])
 def test_impossible_terminal_check_is_integrity_failure(case,registered,monkeypatch,kind):
-    original=PatientRepository.load_latest_known
+    original=PatientRepository.list_bounded_history
     def altered(repo,*args,**kw):
         result=original(repo,*args,**kw)
+        if kw.get('identity') is None: return result
         if kind=='missing': return dc_replace(result,records=())
         node=result.records[0]
         changed=replace(node.fact,statement='Contradictory exact retained inference')
         return dc_replace(result,records=(dc_replace(node,fact=changed),))
-    monkeypatch.setattr(PatientRepository,'load_latest_known',altered)
+    monkeypatch.setattr(PatientRepository,'list_bounded_history',altered)
     with pytest.raises(StorageIntegrityError): run(registered,request_for(case))
     assert counts(registered)==(3,0)
 
@@ -435,11 +436,11 @@ def test_serialized_same_id_callers(case,registered,monkeypatch,different):
     entered=Event(); release=Event(); attempted=Event()
     original=workflow._new_execution
     executions=[]
-    def held(tx,req,clock):
+    def held(tx,req,clock,**operational):
         executions.append(req.execution_id)
         entered.set()
         assert release.wait(5)
-        return original(tx,req,clock)
+        return original(tx,req,clock,**operational)
     def before(conn,cursor,statement,parameters,context,many):
         if statement=='BEGIN IMMEDIATE': attempted.set()
     monkeypatch.setattr(workflow,'_new_execution',held)

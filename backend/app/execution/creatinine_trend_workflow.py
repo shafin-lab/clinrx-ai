@@ -31,6 +31,7 @@ from app.persistence.errors import (
     PersistenceInputError, QueryLimitExceeded, RecordConflict, RecordNotFound, SchemaMismatch,
     ScopeMismatch, StorageIntegrityError, TransactionAborted, TransactionCompletionUnknown, UnsupportedOperation,
 )
+from app.persistence.bounded_history import HistoryBudget, AggregateHistoryBudget, HistoryAccounting
 from app.persistence.history import FactIdentity
 from app.persistence.lineage import LineageLimits
 from app.persistence.mapping import canonical_payload
@@ -110,10 +111,10 @@ def assess_creatinine_trend_final_context(*, selection, comparison, inference, l
         'assessor': FINAL_CONTEXT_ASSESSOR, 'rationale': binding})
 
 
-def _replay(repo, request):
+def _replay(repo, request, **reads):
     target = request.target.context
     selection = select_creatinine_observations(repo, target=target,
-        cutoff=request.original.cutoff, policy=request.original.policy)
+        cutoff=request.original.cutoff, policy=request.original.policy, **reads)
     if canonical_payload(creatinine_trend_selection_manifest(selection)) != canonical_payload(request.original):
         raise StorageIntegrityError('original selection replay differs from requested evidence')
     comparison = compare_recorded_creatinine(selection)
@@ -121,7 +122,7 @@ def _replay(repo, request):
         raise StorageIntegrityError('original comparison differs from retained evidence')
     try:
         lineage = repo.resolve_lineage(request.inference, target=target,
-            cutoff=request.lineage.cutoff, limits=LineageLimits())
+            cutoff=request.lineage.cutoff, limits=LineageLimits(), **reads)
     except RecordNotFound:
         raise StorageIntegrityError('required historical inference is absent') from None
     try:
@@ -146,16 +147,22 @@ def _replay(repo, request):
     return selection, comparison, inference, lineage, witness
 
 
-def _new_execution(tx, request, clock):
+def _new_execution(tx, request, clock, *, history_budget=None, family_budget=None, aggregate_budget=None):
+    # Construct only after retained lookup; repeated stages share one account.
+    reads = dict(history_budget=HistoryBudget() if history_budget is None else history_budget,
+        family_budget=family_budget,
+        accounting=HistoryAccounting(AggregateHistoryBudget() if aggregate_budget is None else aggregate_budget))
     repo, target = tx.repository, request.target.context
     started_at = _tick(clock, request.requested_at)
     final_cutoff = repo.capture_cutoff()
     if (final_cutoff.repository_id != request.original.cutoff.repository_id
             or request.lineage.cutoff.fact_watermark > final_cutoff.fact_watermark):
         raise StorageIntegrityError('historical evidence is outside the protected repository prefix')
-    original, comparison, inference, lineage, witness = _replay(repo, request)
-    final = select_creatinine_observations(repo, target=target, cutoff=final_cutoff, policy=original.policy)
-    latest = repo.load_latest_known(FactIdentity(kind='inference', id=inference.id), target=target, cutoff=final_cutoff)
+    original, comparison, inference, lineage, witness = _replay(repo, request, **reads)
+    final = select_creatinine_observations(repo, target=target, cutoff=final_cutoff, policy=original.policy, **reads)
+    latest = repo.list_bounded_history(identity=FactIdentity(kind='inference', id=inference.id),
+        target=target, cutoff=final_cutoff, latest=True, budget=reads['history_budget'],
+        family_budget=family_budget, accounting=reads['accounting'])
     if len(latest.records) != 1:
         raise StorageIntegrityError('verified inference family absent from final prefix')
     terminal = latest.records[0].fact
@@ -209,7 +216,8 @@ def _new_execution(tx, request, clock):
     return tx.creatinine_executions.append(record, target=target)
 
 
-def execute_creatinine_trend_review(engine, request: CreatinineTrendReviewRequest, *, clock=_utc_now
+def execute_creatinine_trend_review(engine, request: CreatinineTrendReviewRequest, *, clock=_utc_now,
+                                history_budget=None, family_budget=None, aggregate_budget=None
                                    ) -> StoredCreatinineTrendExecution:
     """Return retained completion only after context exit; exact retries skip new work.
 
@@ -224,7 +232,8 @@ def execute_creatinine_trend_review(engine, request: CreatinineTrendReviewReques
                 _require_creatinine_request_match(existing, request)
                 result = existing
             else:
-                result = _new_execution(tx, request, clock)
+                result = _new_execution(tx, request, clock, history_budget=history_budget,
+                    family_budget=family_budget, aggregate_budget=aggregate_budget)
     except TransactionCompletionUnknown:
         raise TransactionCompletionUnknown('transaction completion could not be confirmed') from None
     except TransactionAborted:

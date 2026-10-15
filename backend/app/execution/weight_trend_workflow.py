@@ -31,6 +31,7 @@ from app.persistence.errors import (
     ScopeMismatch, StorageIntegrityError, TransactionAborted, TransactionCompletionUnknown, UnsupportedOperation,
 )
 from app.persistence.executions import StoredWeightTrendExecution, load_weight_trend_execution
+from app.persistence.bounded_history import HistoryBudget, AggregateHistoryBudget, HistoryAccounting
 from app.persistence.history import FactIdentity
 from app.persistence.lineage import LineageLimits
 from app.persistence.mapping import canonical_payload
@@ -149,7 +150,11 @@ def assess_weight_trend_final_context(*, selection, comparison, inference, linea
         'assessor': FINAL_CONTEXT_ASSESSOR, 'rationale': reason})
 
 
-def _new_execution(tx, request, clock):
+def _new_execution(tx, request, clock, *, history_budget=None, family_budget=None, aggregate_budget=None):
+    # Construct only after retained lookup; repeated stages share one account.
+    reads = dict(history_budget=HistoryBudget() if history_budget is None else history_budget,
+        family_budget=family_budget,
+        accounting=HistoryAccounting(AggregateHistoryBudget() if aggregate_budget is None else aggregate_budget))
     repo, target = tx.repository, request.target.context
     acquired_at = _tick(clock, request.requested_at)
     final_cutoff = repo.capture_cutoff()
@@ -157,7 +162,7 @@ def _new_execution(tx, request, clock):
             or request.lineage.cutoff.fact_watermark > final_cutoff.fact_watermark):
         raise StorageIntegrityError('historical evidence is outside the protected repository prefix')
     original = select_weight_observations(repo, target=target, cutoff=request.original.cutoff,
-                                         policy=request.original.policy)
+                                         policy=request.original.policy, **reads)
     manifest = weight_trend_selection_manifest(original)
     if canonical_payload(manifest) != canonical_payload(request.original):
         raise StorageIntegrityError('original selection replay differs from requested evidence')
@@ -165,7 +170,7 @@ def _new_execution(tx, request, clock):
     if canonical_payload(comparison) != canonical_payload(request.comparison):
         raise StorageIntegrityError('original comparison differs from retained evidence')
     lineage = repo.resolve_lineage(request.inference, target=target, cutoff=request.lineage.cutoff,
-                                   limits=LineageLimits())
+                                   limits=LineageLimits(), **reads)
     try:
         witness = weight_trend_lineage_witness(lineage)
     except (ValueError, TypeError):
@@ -181,9 +186,10 @@ def _new_execution(tx, request, clock):
         inference_id=inference.id, revision=inference.revision, executed_at=inference.time.event)
     if canonical_payload(expected) != canonical_payload(inference):
         raise StorageIntegrityError('retained inference differs from exact Phase 2 construction')
-    final = select_weight_observations(repo, target=target, cutoff=final_cutoff, policy=original.policy)
-    terminal = repo.load_latest_known(FactIdentity(kind='inference', id=inference.id),
-                                     target=target, cutoff=final_cutoff)
+    final = select_weight_observations(repo, target=target, cutoff=final_cutoff, policy=original.policy, **reads)
+    terminal = repo.list_bounded_history(identity=FactIdentity(kind='inference', id=inference.id),
+        target=target, cutoff=final_cutoff, latest=True, budget=reads['history_budget'],
+        family_budget=family_budget, accounting=reads['accounting'])
     if len(terminal.records) != 1:
         raise StorageIntegrityError('verified inference family absent from final prefix')
     terminal_check = WeightTrendInferenceTerminalCheck(target=target, cutoff=final_cutoff,
@@ -233,7 +239,8 @@ def _new_execution(tx, request, clock):
     return tx.executions.append(record, target=target)
 
 
-def execute_weight_trend_review(engine, request: WeightTrendReviewRequest, *, clock=_utc_now
+def execute_weight_trend_review(engine, request: WeightTrendReviewRequest, *, clock=_utc_now,
+                                history_budget=None, family_budget=None, aggregate_budget=None
                                 ) -> StoredWeightTrendExecution:
     """Return only after commit; identical retries recover without re-evaluation.
 
@@ -248,7 +255,8 @@ def execute_weight_trend_review(engine, request: WeightTrendReviewRequest, *, cl
                 _require_request_match(existing, request)
                 result = existing
             else:
-                result = _new_execution(tx, request, clock)
+                result = _new_execution(tx, request, clock, history_budget=history_budget,
+                    family_budget=family_budget, aggregate_budget=aggregate_budget)
     except TransactionCompletionUnknown:
         raise TransactionCompletionUnknown('transaction completion could not be confirmed') from None
     except TransactionAborted:

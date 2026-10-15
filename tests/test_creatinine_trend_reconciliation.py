@@ -38,7 +38,7 @@ reconcile = workflow.reconcile_creatinine_trend_execution
 def forbid_work(monkeypatch):
     def forbidden(*args, **kwargs):
         pytest.fail('reconciliation invoked execution, current clinical work, or a clock')
-    for name in ('capture_cutoff', 'resolve_lineage', 'list_history', 'list_latest_known',
+    for name in ('capture_cutoff', 'resolve_lineage', 'list_history', 'list_latest_known', 'list_bounded_history',
                  'load_latest_known', 'load_fact', 'load_patient', 'load_encounter'):
         monkeypatch.setattr(PatientRepository, name, forbidden)
     # Keep D1/D2 pure validation of retained payload intact. These are workflow

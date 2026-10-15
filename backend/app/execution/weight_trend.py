@@ -11,6 +11,7 @@ from app.models.clinical.common import (
 )
 from app.models.clinical.facts import ClinicalInference, ClinicalObservation
 from app.persistence.metadata import RepositoryCutoff
+from app.persistence.bounded_history import HistoryBudget, AggregateHistoryBudget, HistoryAccounting
 from app.persistence.repository import PatientRepository
 
 
@@ -126,12 +127,14 @@ class WeightTrendSelectionResult(DomainModel):
 
 def select_weight_observations(repository: PatientRepository, *, target: ContextTarget,
                                cutoff: RepositoryCutoff,
-                               policy: WeightTrendSelectionPolicy) -> WeightTrendSelectionResult:
+                               policy: WeightTrendSelectionPolicy, history_budget=None, family_budget=None, accounting=None) -> WeightTrendSelectionResult:
     """Read the explicit visible prefix; invalid relevant candidates block v1."""
     policy = WeightTrendSelectionPolicy.model_validate(policy)
     target = ContextTarget.model_validate(target)
     # No time/concept predicate is passed to persistence: terminal selection first.
-    history = repository.list_latest_known(target=target, cutoff=cutoff)
+    history = repository.list_bounded_history(target=target, cutoff=cutoff, latest=True,
+        budget=HistoryBudget() if history_budget is None else history_budget, family_budget=family_budget,
+        accounting=HistoryAccounting(AggregateHistoryBudget()) if accounting is None else accounting)
     eligible, exclusions, issues = [], [], []
     for stored in history.records:
         fact = stored.fact
