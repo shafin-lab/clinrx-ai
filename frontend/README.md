@@ -96,3 +96,24 @@ The fixed JSON test fixture is synthetic output from the real API with signed en
 replaced by non-secret placeholders. Expected outcomes and roles are independently asserted.
 No production auth, PHI, cross-browser certification, persistent recovery, connectors,
 terminology service or treatment advice is added.
+
+## H1-D execution uncertainty
+
+Both clients bound each request, including response-body reading, to 30 seconds by
+default. A trusted caller may supply a different timeout as the fifth constructor
+argument. A timeout aborts the local transport; it never confirms backend rollback.
+The client does not retry requests automatically. Late responses after the deadline
+cannot replace an already settled request or a newer reconciled result.
+
+After an execution attempt, any unsuccessful or untrustworthy completion response
+keeps the original command and UUID in memory and requires explicit reconciliation.
+This includes typed HTTP errors: response projection or validation can fail after
+commit, including with a 422 or 500 response. The original bounded error code remains
+visible. Reconciliation failures preserve uncertainty. Valid absence permits only an
+explicit retry of the same command/identity, never a new automatic execution.
+
+Both review sections request the browser's native leave/reload warning while execution
+is pending or completion is unresolved. Browser policy controls whether a prompt is
+shown. This is not persistent recovery: force-close, reload, or an externally imposed
+component unmount can still discard memory-held commands. The current app has no SPA
+router to guard. M5 now invalidates asynchronous callbacks on unmount, matching M6.

@@ -12,12 +12,12 @@ export function ProvenanceDrawer({result,onClose}:{result:Execution;onClose:()=>
     <p>Historical synthetic audit information. This view uses the retained execution, not current patient state. Complete ancestry is not provided.</p>
     {([p.earlier_laboratory,p.later_laboratory,p.medication] as const).map((item,i)=><section className="audit-evidence" key={i}>
       <h3>{['A · Earlier laboratory','B · Later laboratory','M · Medication event'][i]}</h3>
-      <p>{item.domain==='laboratory'?`${item.quantity.value} ${item.quantity.unit_raw}`:item.event_type==='medication_order'?'Medication order':'Medication administration'}</p>
+      <p>{'quantity' in item?`${item.quantity.value} ${item.quantity.unit_raw}`:item.event_type==='medication_order'?'Medication order':'Medication administration'}</p>
       <dl><dt>Consumed revision</dt><dd>{refLabel(item.reference)}</dd><dt>Terminal revision</dt><dd>{refLabel(p.terminal_references[i])}</dd>
       <dt>Event</dt><dd>{item.time.event ?? 'Not recorded'}</dd><dt>Effective interval</dt><dd>{item.time.effective_start ?? 'Not recorded'} → {item.time.effective_end ?? 'Not recorded'}</dd>
       <dt>Source</dt><dd>{item.source.namespace} / {item.source.identifier} / {item.source.version ?? 'Version unknown'} ({item.source.channel})</dd>
       <dt>Provenance recorded</dt><dd>{item.provenance_recorded_at}</dd><dt>Ingested</dt><dd>{item.ingested_at}</dd></dl>
-      <TextList items={[...item.disclosures,...item.provenance_limitations]}/>
+      <TextList items={[...item.disclosures,...(item.provenance_limitations??[])]}/>
     </section>)}
     <h3>Retained temporal relationship</h3>
     {result.governance.outcome==='released' && p.inference.statement ? <p>{p.inference.statement}</p>:<p>Inference statement withheld. Exact selected event times are shown above; no relationship is reconstructed in this view.</p>}
