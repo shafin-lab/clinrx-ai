@@ -92,6 +92,28 @@ class SourceTimeAssertion(Contract):
         return self
 
 
+_CONFLICT_SHAPE = TypeAdapter(Annotated[tuple[object, ...], Field(max_length=8)])
+_CONFLICT_TIMES = TypeAdapter(Annotated[tuple[AwareDatetime, ...], Field(max_length=8)])
+_CONFLICT_LEXEMES = TypeAdapter(Annotated[tuple[str, ...], Field(max_length=8)])
+
+
+def _conflict_lexeme(value, parsed):
+    # Strings keep their exact source spelling. Numeric objects have no original
+    # string lexeme; retain their value's spelling, with a decimal point when the
+    # existing datetime string parser requires it for exponent notation.
+    if isinstance(value, str):
+        return value
+    if isinstance(value, bytes):
+        return value.decode('utf-8')  # already accepted by _CONFLICT_TIMES
+    if isinstance(value, (int, float, Decimal)):
+        raw = str(value)
+        if 'e' in raw.lower() and '.' not in raw:
+            mantissa, exponent = re.split('[eE]', raw)
+            return mantissa + '.0e' + exponent
+        return raw
+    return parsed.isoformat()
+
+
 class ClinicalInstant(Contract):
     recorded: RecordedTime = Field(default_factory=missing_time)
     source_timestamp: Annotated[str, Field(min_length=1, max_length=128)] | None = None
@@ -108,14 +130,22 @@ class ClinicalInstant(Contract):
     def retain_timestamp_lexeme(cls, value, info: ValidationInfo):
         value = _retain_time(value)
         if isinstance(value, dict):
-            conflicts = value.get('conflicting', ())
-            material = any(isinstance(v, str) and not _lossless_microseconds(v) for v in conflicts)
-            capture = 'conflicting_source_timestamps' not in value and info.mode != 'json'
-            if material or (capture and any(isinstance(v, str) for v in conflicts)):
-                lexemes = tuple(v if isinstance(v, str) else v.isoformat() for v in conflicts)
-                if material and value.get('conflicting_source_timestamps') and tuple(value['conflicting_source_timestamps']) != lexemes:
+            # Shape and datetime validation precede iteration/lexeme capture.
+            # Materialize supported iterables only once, under the field's cap.
+            conflicts = _CONFLICT_SHAPE.validate_python(value.get('conflicting', ()))
+            parsed = _CONFLICT_TIMES.validate_python(conflicts)
+            supplied = 'conflicting_source_timestamps' in value
+            if supplied:
+                retained = _CONFLICT_LEXEMES.validate_python(value['conflicting_source_timestamps'])
+                value = {**value, 'conflicting_source_timestamps': retained}
+            lexemes = tuple(_conflict_lexeme(v, t) for v, t in zip(conflicts, parsed, strict=True))
+            material = any(not _lossless_microseconds(v) for v in lexemes)
+            capture = not supplied and (info.mode != 'json' or any(not isinstance(v, str) for v in conflicts))
+            if material or (capture and any(not isinstance(v, datetime) for v in conflicts)):
+                if material and supplied and retained and retained != lexemes:
                     raise ValueError('conflicting source timestamps conceal supplied precision')
                 value = {**value, 'conflicting_source_timestamps': lexemes}
+            value = {**value, 'conflicting': parsed}
         return value
 
     @model_validator(mode='after')

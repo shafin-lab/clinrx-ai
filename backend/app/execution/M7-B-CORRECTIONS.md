@@ -122,3 +122,25 @@ fails corrected reconstruction with the existing sanitized integrity error and
 creates no receipt; retained history is not rewritten. The existing explicit
 reconciliation/retry and separately explicit re-preparation policy above applies.
 The four policy questions above remain pending, and M7-C remains gated.
+
+## Director R2: timestamp validation boundary
+
+Conflict containers and members are now checked with bounded Pydantic adapters
+before any iteration or lexeme capture. Null/malformed containers, members and
+companion-lexeme fields produce structured ValidationError results. Existing
+list/tuple/iterable admission, mixed ISO/numeric/datetime values and the eight-member
+cap remain supported. Valid byte strings and Decimal numeric values follow the
+existing datetime admission rules as well.
+
+String assertions preserve their original lexemes. Non-string numeric objects have
+no original string lexeme; their value spelling is retained, adding a harmless `.0`
+where the existing string parser requires it for scientific notation. This does not
+reconstruct any wire lexeme already lost when an upstream JSON number was decoded.
+New loss evidence cannot be hidden by a mixed container or explicit empty companion.
+Legacy canonical JSON does not acquire optional lexeme fields on read. Round trips,
+stored corruption and sanitized inference-boundary failures have regressions.
+
+R1/R2 do not change F2/F3, exact support closure, workflow/receipt identities,
+immutable stored history, shared transactions, governance, schema or dependencies.
+No automatic retry/re-execution or connected M7-C work is introduced. Existing PR
+#22 is the review target; no additional PR or ZIP is created in this correction pass.
