@@ -14,7 +14,7 @@ const roles = [
 const empty = ():Record<Role,string>=>({S:'',I:'',U:'',D:''});
 type Phase='idle'|'loading_state'|'state_ready'|'selection_incomplete'|'preparing'|'prepared'|'executing'|'released'|'withheld'|'completion_unknown'|'preparation_unknown'|'reconciling'|'reconciled_released'|'reconciled_withheld'|'reconciled_absent'|'error';
 const asFailure=(e:unknown)=>e instanceof ApiFailure?e:new ApiFailure('invalid_response');
-const uncertain=(e:ApiFailure)=>['completion_unknown','network_error','invalid_response'].includes(e.code);
+const uncertain=(e:ApiFailure)=>['completion_unknown','network_error','invalid_response','request_timeout'].includes(e.code);
 export interface MicroConfig { patient:string; encounter:string; start:string; end:string }
 export function MicroReview({client,config}:{client:MicroReviewClient;config:MicroConfig}) {
   const [start,setStart]=useState(config.start),[end,setEnd]=useState(config.end);
@@ -54,7 +54,7 @@ export function MicroReview({client,config}:{client:MicroReviewClient;config:Mic
     if(gate.current||!prepared||phase==='completion_unknown')return;
     gate.current=true;setError(undefined);setResult(undefined);setPhase('executing');const version=generation.current;
     try {const reply=await client.microExecute(prepared);if(version===generation.current)accept(reply.data);}
-    catch(e) {if(version===generation.current){const failure=asFailure(e);setError(failure);setPhase(uncertain(failure)?'completion_unknown':'error');}}
+    catch(e) {if(version===generation.current){const failure=asFailure(e);setError(failure);setPhase('completion_unknown');}}
     finally {gate.current=false;}
   }
   async function reconcile() {
@@ -72,6 +72,12 @@ export function MicroReview({client,config}:{client:MicroReviewClient;config:Mic
     finally {gate.current=false;}
   }
   const unresolved=phase==='completion_unknown'||phase==='reconciling';
+  useEffect(()=>{
+    if(!unresolved && phase!=='executing')return;
+    const warn=(event:BeforeUnloadEvent)=>{event.preventDefault();event.returnValue='';};
+    window.addEventListener('beforeunload',warn);
+    return ()=>window.removeEventListener('beforeunload',warn);
+  },[unresolved,phase]);
   return <section className="panel micro-review" aria-label="Microbiology and antimicrobial review">
     <div className="section-heading"><h2>Microbiology &amp; antimicrobial review</h2><span className="step">S / I / U / D</span></div>
     <p>Four explicitly selected source records. Descriptive timing only; no treatment recommendation or infection diagnosis.</p>

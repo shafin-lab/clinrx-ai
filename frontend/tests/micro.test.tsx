@@ -1,5 +1,5 @@
 import { it,expect,vi } from 'vitest';
-import { render,screen,within } from '@testing-library/react';
+import { render,screen,within,act,waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { decodeMicroPrepared } from '../src/api/microDecoders';
 import { MicroReviewClient } from '../src/api/microClient';
@@ -14,11 +14,11 @@ const withheld=fixture.withheld;
 const withheldPrepared={...prepared,execution_id:withheld.execution_id,inference:withheld.provenance.inference,command:'OPAQUE.WITHHELD.COMMAND'};
 const config={patient:'synthetic-p1',encounter:'synthetic-e1',start:state.assembly.request.scope.review_start,end:state.assembly.request.scope.review_end};
 const json=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','X-ClinRx-Mode':'historical-synthetic-simulation'}});
-function setup(tail:Array<Response|Error>=[],view=state,preparation=prepared) {
+function setup(tail:Array<Response|Error>=[],view=state,preparation=prepared,timeoutMs=30_000) {
   const replies=[json(view),json(preparation),...tail];
   const fetcher=vi.fn<typeof fetch>().mockImplementation(async()=>{const r=replies.shift();if(r instanceof Error)throw r;if(!r)throw Error('No response queued');return r;});
   vi.spyOn(crypto,'randomUUID').mockReturnValue(preparation.execution_id as `${string}-${string}-${string}-${string}-${string}`);
-  const client=new MicroReviewClient('http://127.0.0.1:8000',config.patient,config.encounter,fetcher);
+  const client=new MicroReviewClient('http://127.0.0.1:8000',config.patient,config.encounter,fetcher,timeoutMs);
   const rendered=render(<MicroReview client={client} config={config}/>);
   return {fetcher,client,user:userEvent.setup(),...rendered};
 }
@@ -188,4 +188,42 @@ it('can render omitted optional v2 collections without fabricating selectable ev
   const {user,fetcher}=setup();fetcher.mockResolvedValueOnce(json(minimal));await user.click(screen.getByRole('button',{name:'Load microbiology state'}));
   const selections=await screen.findAllByRole('combobox');for(const s of selections)expect(within(s).getAllByRole('option')).toHaveLength(1);
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Prepare S/I/U/D review'})).toBeDisabled();expect(minimal.assembly.snapshot).not.toHaveProperty('items');
+});
+
+it.each([['projection error',500,'internal_error'],['projection validation error',422,'invalid_request']] as const)('M6 %s after commit remains uncertain with original identity',async(_,status,code)=>{
+  const {user,fetcher}=setup([json({code,message:'PRIVATE'},status),json({status:'committed_match',execution:released})]);await execute(user);
+  expect(await screen.findByRole('alert')).toHaveTextContent(code);expect(screen.getByText('Execution completion unknown')).toBeVisible();expect(screen.getByText(/Prepared execution:/)).toHaveTextContent(prepared.execution_id);
+  expect(screen.queryByRole('button',{name:'Explicitly execute same command'})).not.toBeInTheDocument();expect(fetcher).toHaveBeenCalledTimes(3);
+  await user.click(screen.getByRole('button',{name:'Reconcile S/I/U/D execution'}));await screen.findByText('Protected descriptive review released');expect(fetcher.mock.calls[3][1]?.body).toBe(JSON.stringify({command:prepared.command}));expect(fetcher).toHaveBeenCalledTimes(4);expect(document.body.textContent).not.toContain('PRIVATE');
+});
+it('M6 committed network loss and reconciliation loss preserve exact command',async()=>{
+  const {user,fetcher}=setup([Error('PRIVATE committed loss'),Error('PRIVATE reconcile loss'),json({status:'committed_match',execution:released})]);let committed=false;
+  const original=fetcher.getMockImplementation()!;fetcher.mockImplementation(async(input,init)=>{if(String(input).endsWith('/micro-antimicrobial-reviews'))committed=true;return original(input,init);});
+  await execute(user);await screen.findByText('Execution completion unknown');expect(committed).toBe(true);await user.click(screen.getByRole('button',{name:'Reconcile S/I/U/D execution'}));
+  expect(await screen.findByRole('alert')).toHaveTextContent('network_error');expect(screen.queryByRole('button',{name:'Explicitly execute same command'})).not.toBeInTheDocument();expect(fetcher).toHaveBeenCalledTimes(4);
+  await user.click(screen.getByRole('button',{name:'Reconcile S/I/U/D execution'}));await screen.findByText('Protected descriptive review released');expect(fetcher.mock.calls.slice(3).map(c=>c[1]?.body)).toEqual([JSON.stringify({command:prepared.command}),JSON.stringify({command:prepared.command})]);expect(fetcher).toHaveBeenCalledTimes(5);
+});
+it('M6 timed-out execution late response cannot overwrite newer reconciliation',async()=>{
+  const retained={...released,statement:null,governance:{...released.governance,outcome:'withheld'}};
+  const {user,fetcher}=setup([],state,prepared,50);let finish!:(response:Response)=>void;
+  fetcher.mockResolvedValueOnce(json(state)).mockResolvedValueOnce(json(prepared)).mockImplementationOnce(()=>new Promise(resolve=>{finish=resolve;})).mockResolvedValueOnce(json({status:'committed_match',execution:retained}));
+  await execute(user);expect(await screen.findByRole('alert')).toHaveTextContent('request_timeout');expect(screen.getByText(/Prepared execution:/)).toHaveTextContent(prepared.execution_id);expect(fetcher).toHaveBeenCalledTimes(3);
+  await user.click(screen.getByRole('button',{name:'Reconcile S/I/U/D execution'}));await screen.findByText('Protected descriptive review withheld');
+  await act(async()=>{finish(json(released));await new Promise(resolve=>setTimeout(resolve,0));});
+  expect(screen.getByText('Protected descriptive review withheld')).toBeVisible();expect(screen.queryByText('Protected descriptive review released')).not.toBeInTheDocument();expect(fetcher).toHaveBeenCalledTimes(4);
+});
+it('M6 pending execution prevents repeated POSTs and warns before leaving',async()=>{
+  const {user,fetcher}=setup();let finish!:(response:Response)=>void;
+  fetcher.mockResolvedValueOnce(json(state)).mockResolvedValueOnce(json(prepared)).mockImplementationOnce(()=>new Promise(resolve=>{finish=resolve;}));
+  await prepare(user);let leave=new Event('beforeunload',{cancelable:true});window.dispatchEvent(leave);expect(leave.defaultPrevented).toBe(false);
+  await user.dblClick(screen.getByRole('button',{name:'Execute S/I/U/D review'}));expect(fetcher).toHaveBeenCalledTimes(3);leave=new Event('beforeunload',{cancelable:true});window.dispatchEvent(leave);expect(leave.defaultPrevented).toBe(true);expect(screen.getByRole('textbox',{name:'Microbiology review start'})).toBeDisabled();
+  finish(json(released));await screen.findByText('Protected descriptive review released');leave=new Event('beforeunload',{cancelable:true});window.dispatchEvent(leave);expect(leave.defaultPrevented).toBe(false);
+});
+it('M6 reconciliation failure preserves leave warning until valid absence',async()=>{
+  const {user,fetcher}=setup([Error('loss'),Error('loss'),json({status:'absent',execution:null})]);await execute(user);await user.click(await screen.findByRole('button',{name:'Reconcile S/I/U/D execution'}));
+  expect(await screen.findByRole('alert')).toHaveTextContent('network_error');let leave=new Event('beforeunload',{cancelable:true});window.dispatchEvent(leave);expect(leave.defaultPrevented).toBe(true);expect(fetcher).toHaveBeenCalledTimes(4);
+  await user.click(screen.getByRole('button',{name:'Reconcile S/I/U/D execution'}));await screen.findByText(/No retained execution found at reconciliation/);leave=new Event('beforeunload',{cancelable:true});window.dispatchEvent(leave);expect(leave.defaultPrevented).toBe(false);expect(fetcher).toHaveBeenCalledTimes(5);
+});
+it('M6 removes unresolved beforeunload guard on unmount',async()=>{
+  const {user,unmount}=setup([Error('loss')]);await execute(user);await screen.findByText('Execution completion unknown');unmount();const leave=new Event('beforeunload',{cancelable:true});window.dispatchEvent(leave);expect(leave.defaultPrevented).toBe(false);
 });

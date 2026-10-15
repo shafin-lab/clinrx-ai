@@ -98,3 +98,39 @@ it('preserves exact numeric and timestamp strings through both network paths',as
   expect(data.laboratory[0].quantity.value).toBe('1.234567890123456789000');expect(data.laboratory[0].time.event).toBe('2026-11-01T01:30:00.123456-04:00');
   const g=vi.fn<typeof fetch>().mockResolvedValue(reply(microFixture.state));expect((await micro(g).microState(scope.review_start,scope.review_end)).data).toEqual(microFixture.state);
 });
+
+it.each(['M5','M6'])('%s deadline rejects an abort-ignoring fetch without a second POST',async(capability)=>{
+  vi.useFakeTimers();
+  try {
+    let finish!:(response:Response)=>void;
+    const f=vi.fn<typeof fetch>().mockImplementation(()=>new Promise(resolve=>{finish=resolve;}));
+    const client=capability==='M5'?new ReviewClient('http://localhost:8000',scope.patient_id,scope.encounter_id,f,50):new MicroReviewClient('http://localhost:8000',scope.patient_id,scope.encounter_id,f,50);
+    const pending=capability==='M5'?client.execute(prepared):(client as MicroReviewClient).microExecute(mPrepared);
+    const rejected=expect(pending).rejects.toMatchObject({code:'request_timeout'});
+    await vi.advanceTimersByTimeAsync(50);await rejected;
+    expect(f).toHaveBeenCalledTimes(1);expect(f.mock.calls[0][1]?.signal?.aborted).toBe(true);expect(vi.getTimerCount()).toBe(0);
+    finish(reply(capability==='M5'?fixture.execution:microFixture.released));await vi.advanceTimersByTimeAsync(100);
+    expect(f).toHaveBeenCalledTimes(1);expect(vi.getTimerCount()).toBe(0);
+  } finally {vi.useRealTimers();}
+});
+it('deadline includes a stalled response body, not just response headers',async()=>{
+  vi.useFakeTimers();
+  try {
+    const response=reply(fixture.execution);vi.spyOn(response,'json').mockImplementation(()=>new Promise(()=>{}));
+    const f=vi.fn<typeof fetch>().mockResolvedValue(response),client=new ReviewClient('http://localhost:8000',scope.patient_id,scope.encounter_id,f,50);
+    const rejected=expect(client.execute(prepared)).rejects.toMatchObject({code:'request_timeout'});
+    await vi.advanceTimersByTimeAsync(50);await rejected;expect(f).toHaveBeenCalledTimes(1);expect(vi.getTimerCount()).toBe(0);
+  } finally {vi.useRealTimers();vi.restoreAllMocks();}
+});
+it('clears deadlines on successful responses and bounded API failures',async()=>{
+  vi.useFakeTimers();
+  try {
+    const f=vi.fn<typeof fetch>().mockResolvedValueOnce(reply(fixture.execution)).mockResolvedValueOnce(reply({code:'internal_error'},500));
+    const client=new ReviewClient('http://localhost:8000',scope.patient_id,scope.encounter_id,f,50);
+    await client.execute(prepared);expect(vi.getTimerCount()).toBe(0);
+    await expect(client.execute(prepared)).rejects.toMatchObject({code:'internal_error',status:500});expect(vi.getTimerCount()).toBe(0);
+  } finally {vi.useRealTimers();}
+});
+it.each([0,-1,Infinity,NaN,2_147_483_648])('rejects invalid operational timeout %s',timeout=>{
+  expect(()=>new ReviewClient('http://localhost:8000','p','e',fetch,timeout)).toThrow('Configure a valid request timeout.');
+});
