@@ -37,8 +37,14 @@ def _lossless_microseconds(value):
 def _retain_time(value):
     if isinstance(value, dict):
         recorded = value.get('recorded')
-        if isinstance(recorded, dict) and isinstance(recorded.get('value'), str) and 'source_timestamp' not in value:
-            return {**value, 'source_timestamp': recorded['value']}
+        if isinstance(recorded, dict) and isinstance(recorded.get('value'), str):
+            raw = recorded['value']
+            if not _lossless_microseconds(raw):
+                if value.get('source_timestamp') not in (None, raw):
+                    raise ValueError('source timestamp contradicts supplied fractional precision')
+                return {**value, 'source_timestamp': raw}
+            if 'source_timestamp' not in value:
+                return {**value, 'source_timestamp': raw}
     return value
 
 
@@ -54,7 +60,8 @@ class SourceTimeAssertion(Contract):
     @classmethod
     def retain_timestamp(cls, value, info: ValidationInfo):
         if info.mode == 'json' and isinstance(value, dict) and 'source_timestamp' not in value:
-            raw = value.get('recorded', {}).get('value')
+            recorded = value.get('recorded')
+            raw = recorded.get('value') if isinstance(recorded, dict) else None
             if not isinstance(raw, str) or _lossless_microseconds(raw):
                 return value
         return _retain_time(value)
@@ -83,11 +90,15 @@ class ClinicalInstant(Contract):
     @classmethod
     def retain_timestamp_lexeme(cls, value, info: ValidationInfo):
         value = _retain_time(value)
-        if isinstance(value, dict) and 'conflicting_source_timestamps' not in value:
+        if isinstance(value, dict):
             conflicts = value.get('conflicting', ())
-            if any(isinstance(v, str) and (info.mode != 'json' or not _lossless_microseconds(v)) for v in conflicts):
-                value = {**value, 'conflicting_source_timestamps': tuple(
-                    v if isinstance(v, str) else v.isoformat() for v in conflicts)}
+            material = any(isinstance(v, str) and not _lossless_microseconds(v) for v in conflicts)
+            capture = 'conflicting_source_timestamps' not in value and info.mode != 'json'
+            if material or (capture and any(isinstance(v, str) for v in conflicts)):
+                lexemes = tuple(v if isinstance(v, str) else v.isoformat() for v in conflicts)
+                if material and value.get('conflicting_source_timestamps') and tuple(value['conflicting_source_timestamps']) != lexemes:
+                    raise ValueError('conflicting source timestamps conceal supplied precision')
+                value = {**value, 'conflicting_source_timestamps': lexemes}
         return value
 
     @model_validator(mode='after')

@@ -48,3 +48,37 @@ def test_old_timestamp_serialization_unchanged():
     t=stamp()
     assert 'conflicting_source_timestamps' not in t.model_dump()
     assert 'source_timestamp' not in h.SourceTimeAssertion(recorded=t.recorded,source={'namespace':'synthetic','code':'clock','raw_display':'clock'},clock='verified',provenance=PROV).model_dump()
+
+@pytest.mark.parametrize('component',['primary','alternative','conflicting'])
+def test_explicit_empty_lexeme_cannot_hide_lost_precision(component):
+    from test_patient_state_v3 import code
+    value='2026-10-08T08:00:00.1234569+05:30'
+    raw={'recorded':{'status':'known','precision':'instant','value':value},'source_timestamp':None,'clock':'verified','clock_basis':PROV}
+    if component=='primary':t=h.ClinicalInstant.model_validate(raw)
+    elif component=='alternative':
+        alt={k:v for k,v in raw.items() if k!='clock_basis'}
+        alt.update(source=code(),provenance=PROV)
+        t=change(raw_stamp('2026-10-08T08:00:00.123456+05:30'),alternative_sources=(alt,))
+    else:t=change(raw_stamp('2026-10-08T08:00:00.123456+05:30'),conflicting=(value,),conflicting_source_timestamps=())
+    assert not t.trustworthy
+    assert value in t.model_dump_json()
+
+
+def test_alternative_time_malformed_recorded_is_validation_error():
+    from pydantic import ValidationError
+    from test_patient_state_v3 import code
+    import json
+    data={'recorded':'private invalid','source':code().model_dump(),'provenance':PROV.model_dump(mode='json')}
+    with pytest.raises(ValidationError):h.SourceTimeAssertion.model_validate_json(json.dumps(data))
+
+
+def test_precision_lexemes_survive_reopen_and_canonical_projection(registered):
+    from test_patient_state_v3_persistence import save
+    from app.persistence.repository import transaction
+    from app.persistence.canonical import canonical_payload
+    p=change(inputs()[0],occurred=raw_stamp('2026-10-08T08:00:00.123456100+05:30'))
+    save(registered,p);registered.dispose()
+    with transaction(registered) as repo:f=repo.load_fact(p.reference,target=TARGET).fact
+    assert canonical_payload(f)==canonical_payload(p)
+    assert '2026-10-08T08:00:00.123456100+05:30' in f.model_dump_json()
+    assert not f.occurred.trustworthy
