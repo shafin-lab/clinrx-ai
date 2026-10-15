@@ -8,6 +8,7 @@ from app.persistence.bounded_history import HistoryBudget, HistoryAccounting, Ag
 from app.persistence.canonical import canonical_payload
 from app.persistence.errors import QueryLimitExceeded, StorageIntegrityError, PersistenceInputError
 from app.persistence.repository import transaction
+from .patient_state_v3_support import consumed_provenance_references
 from .patient_state_v3 import (PatientStateScopeV3, PatientStateSnapshotV3, RetainedStateItemV3,
     CoverageV3, StateIssueV3, clinical_time)
 
@@ -53,6 +54,7 @@ class PatientStateAssemblyResultV3(Contract):
 
 def related_references(fact):
     refs = [b.exact for b in fact.associations if b.exact is not None]
+    refs.extend(consumed_provenance_references(fact))
     if isinstance(fact, DynamicAssessment):
         refs.extend((*fact.baseline, *fact.intervention, *fact.subsequent))
     if isinstance(fact, Measurement):

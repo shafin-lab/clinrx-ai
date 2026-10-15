@@ -156,7 +156,7 @@ def test_dense_support_graph_is_bounded_and_keeps_exact_dependencies(registered)
     supports=[change(records()[11],id=f'support-{n:02d}') for n in range(32)]
     for n in range(32):
         supports[n]=change(supports[n],provenance=change(supports[n].provenance,
-            upstream=tuple(LineageEdge(target=f.reference,relationship='derived_from') for f in supports[n+1:])))
+            upstream=tuple(LineageEdge(target=f.reference,relationship='derived_from') for f in supports[16:] if n < 16)))
     p=change(p,provenance=change(p.provenance,upstream=tuple(LineageEdge(target=f.reference,relationship='derived_from') for f in supports)))
     assembly,r=selected(registered,(p,l,v,*supports))
     r=change(r,supporting=tuple(EvidencePin(reference=f.reference,expected_digest=f.canonical_digest) for f in supports))

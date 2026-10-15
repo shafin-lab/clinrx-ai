@@ -6,6 +6,7 @@ from app.models.clinical.facts import ClinicalInference
 from app.models.clinical import hemodynamics as h
 from app.models.clinical.recorded_v2 import Contract, Digest, instant, ref_key
 from app.persistence.canonical import canonical_payload
+from .patient_state_v3_support import consumed_binding_roles, consumed_provenance_references
 from .patient_state_v3 import PatientStateScopeV3
 from .patient_state_v3_assembly import PatientStateAssemblyResultV3
 
@@ -62,49 +63,13 @@ class CirculatoryTimingRequest(Contract):
         return tuple(p.reference for p in self.pins)
 
 
-def consumed_binding_roles(fact):
-    if isinstance(fact,h.PressureObservation):
-        return ('device','calibration','zeroing') if fact.acquisition.method=='invasive_arterial' else ('device',)
-    if isinstance(fact,h.LactateResult): return ('specimen',)
-    if isinstance(fact,h.VasoactiveEvent): return ('delivery',)
-    if isinstance(fact,h.MonitoringEvent):
-        return ('device',fact.event_type) if fact.event_type in ('calibration','zeroing') else ('device',)
-    return ()
-
-
 def required_support(fact):
-    """Every exact assertion actually used to establish eligible P/L/V evidence.
-
-    Context, order and dosing weight are not consumed by a timing-only method.
-    Nested provenance dependencies ARE consumed when validating their assertions.
-    """
-    refs = set()
-    for b in fact.associations:
-        if b.role in consumed_binding_roles(fact):
-            require(b.status == 'resolved','unresolved_required_binding')
-            refs.add(b.exact)
-    def visit(value):
-        if isinstance(value, Provenance):
-            refs.update(value.dependencies)
-        if hasattr(type(value),'model_fields'):
-            for name in type(value).model_fields:
-                visit(getattr(value,name))
-        elif isinstance(value,(tuple,list)):
-            for child in value: visit(child)
-    # These assertions participate in eligibility. Unrelated event context does not.
-    visit(fact.provenance)
-    if not isinstance(fact,h.LactateResult): visit(fact.occurred)
-    if isinstance(fact,h.PressureObservation):
-        visit(fact.acquisition.quality.provenance)
-        if fact.acquisition.method=='invasive_arterial':
-            visit(fact.acquisition.calibration_provenance);visit(fact.acquisition.zeroing_provenance)
-        if fact.acquisition.device is not None: visit(fact.acquisition.support_provenance)
-    if isinstance(fact,h.MonitoringEvent) and fact.event_type in ('calibration','zeroing'):
-        visit(getattr(fact.acquisition,fact.event_type+'_provenance'))
-    if isinstance(fact,h.LactateResult):
-        visit(fact.collected);visit(fact.collection_assertion);visit(fact.acquisition.quality.provenance)
-    if isinstance(fact,h.VasoactiveEvent) and isinstance(fact.action,h.InfusionEvent):
-        visit(fact.drug.mapping_provenance);visit(fact.action.delivery.attestation)
+    """Require pins for each consumed binding and its supporting provenance."""
+    refs = set(consumed_provenance_references(fact))
+    for binding in fact.associations:
+        if binding.role in consumed_binding_roles(fact):
+            require(binding.status == 'resolved', 'unresolved_required_binding')
+            refs.add(binding.exact)
     return refs
 
 
