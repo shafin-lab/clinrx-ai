@@ -9,10 +9,10 @@ import {record} from '../src/demo/evidencePresentation';
 const items=()=>decodeCirculatoryState(structuredClone(fixture)).assembly.snapshot.items;
 const ids=()=>screen.getAllByRole('button',{name:/^Chart source /}).map(b=>b.getAttribute('aria-label'));
 afterEach(cleanup);
-it('defaults to a compact overview with all three groups and exact source selection',()=>{
+it('defaults to a compact overview with all six groups and exact source selection',()=>{
  const sources=items(),before=JSON.stringify(sources),inspect=vi.fn();render(<ICUFlowsheet items={sources} onInspect={inspect}/>);
  expect(screen.getByRole('combobox',{name:'Flowsheet section'})).toHaveValue('overview');
- for(const name of ['Infusion events','Fluid records','Perfusion observations'])expect(screen.getByRole('rowgroup',{name})).toBeInTheDocument();
+ for(const name of ['BP / MAP','Cardiac output / index','Rhythm / heart rate','Infusion events','Fluid records','Perfusion observations'])expect(screen.getByRole('rowgroup',{name})).toBeInTheDocument();
  expect(screen.getByText('Recorded times 9–12 of 12 · UTC')).toBeInTheDocument();
  const button=screen.getByRole('button',{name:'Chart source fs-D-CHANGE revision 1'});expect(button).toHaveTextContent('Changed');expect(button).toHaveTextContent('3.0 mcg/kg/min');fireEvent.click(button);
  expect(inspect).toHaveBeenCalledWith(sources.find(i=>i.fact.id==='fs-D-CHANGE'),button);
@@ -32,7 +32,8 @@ it('keeps full-detail records and unknown or withdrawn source status available',
  const sources=items(),lactate=sources.find(i=>i.fact.id==='fs-LACTATE-60')!;record(record(lactate.fact.acquisition).quality).status='unknown';lactate.fact.record_status='withdrawn';
  render(<ICUFlowsheet items={sources} onInspect={vi.fn()}/>);
  expect(screen.getByRole('button',{name:'Chart source fs-LACTATE-60 revision 1'})).toHaveTextContent('Quality: unknown');expect(screen.getByRole('button',{name:'Chart source fs-LACTATE-60 revision 1'})).toHaveTextContent('withdrawn');
- expect(screen.queryByRole('button',{name:'Chart source fs-CO-60 revision 1'})).not.toBeInTheDocument();
+ expect(screen.getByRole('button',{name:'Chart source fs-CO-60 revision 1'})).toHaveTextContent('Quality: suspect');
+ expect(screen.queryByRole('button',{name:'Chart source fs-CVP-60 revision 1'})).not.toBeInTheDocument();
  fireEvent.change(screen.getByRole('combobox',{name:'Flowsheet section'}),{target:{value:'all'}});
  expect(screen.getByRole('button',{name:'Chart source fs-CO-60 revision 1'})).toHaveTextContent('Quality: suspect');
  expect(screen.getAllByRole('button',{name:/^Chart source /})).toHaveLength(150);
@@ -56,4 +57,27 @@ it('clamps paging safely for shorter or empty datasets without inventing columns
  expect(overviewTimeWindow([],9,false).times).toEqual([]);
  expect(overviewTimeWindow(['a','b'],9,false)).toMatchObject({times:['a','b'],page:0,start:0,end:2});
  expect(overviewTimeWindow(['a','b','c','d','e'],1,false).times).toEqual(['a']);
+});
+
+it('keeps pressure, method-specific flow and source rhythm on exact times with inspectable uncertainty',()=>{
+ const sources=items(),before=JSON.stringify(sources),inspect=vi.fn();render(<ICUFlowsheet items={sources} onInspect={inspect}/>);
+ for(const id of ['fs-MAP-60','fs-systemic_systolic-60','fs-systemic_diastolic-60','fs-CO-60','fs-CI-60','fs-HR-60','fs-RHYTHM-60']){
+  const source=sources.find(i=>i.fact.id===id)!,button=screen.getByRole('button',{name:'Chart source '+id+' revision 1'});
+  fireEvent.click(button);expect(inspect).toHaveBeenLastCalledWith(source,button);
+  expect(button.closest('td')?.cellIndex).toBe(4);
+ }
+ expect(screen.getByRole('button',{name:'Chart source fs-CO-60 revision 1'})).toHaveTextContent('Quality: suspect');
+ expect(screen.getByText(/No preferred output or rhythm diagnosis/i)).toBeInTheDocument();
+ fireEvent.click(screen.getByRole('checkbox',{name:'Show all recorded times'}));
+ const table=screen.getByRole('table');
+ for(const id of ['m7-CO','m7-FLOTRAC','m7-PICCO-CO','m7-VOLUMEVIEW']){
+  const button=screen.getByRole('button',{name:'Chart source '+id+' revision 1'});
+  expect(button.closest('tr')).toHaveTextContent(id==='m7-CO'?'bolus thermodilution':id==='m7-VOLUMEVIEW'?'transpulmonary thermodilution':'pulse contour');
+ }
+ expect(screen.getByRole('button',{name:'Chart source m7-CO revision 1'}).closest('tr')).not.toBe(screen.getByRole('button',{name:'Chart source m7-FLOTRAC revision 1'}).closest('tr'));
+ expect(screen.getByRole('button',{name:'Chart source m7-FLOTRAC revision 1'}).closest('tr')).not.toBe(screen.getByRole('button',{name:'Chart source m7-PICCO-CO revision 1'}).closest('tr'));
+ expect(table).not.toHaveTextContent('m7-CONTEXT-CO');
+ expect(screen.queryByRole('button',{name:'Chart source m7-ECG revision 1'})).not.toBeInTheDocument();
+ expect(screen.getByRole('button',{name:'Chart source fs-RHYTHM-30 revision 1'})).toHaveTextContent('no arrhythmia classification confirmed');
+ expect(JSON.stringify(sources)).toBe(before);
 });
