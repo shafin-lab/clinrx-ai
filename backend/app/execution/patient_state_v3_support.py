@@ -18,11 +18,11 @@ def consumed_binding_roles(fact):
     return ()
 
 
-def consumed_provenance_references(fact):
-    refs = set()
+def consumed_provenances(fact):
+    values = []
     def visit(value):
         if isinstance(value, Provenance):
-            refs.update(value.dependencies)
+            values.append(value)
         if hasattr(type(value),'model_fields'):
             for name in type(value).model_fields:
                 visit(getattr(value,name))
@@ -47,4 +47,9 @@ def consumed_provenance_references(fact):
         visit(fact.collected);visit(fact.collection_assertion);visit(fact.acquisition.quality.provenance)
     if isinstance(fact,h.VasoactiveEvent) and isinstance(fact.action,h.InfusionEvent):
         visit(fact.drug.mapping_provenance);visit(fact.action.delivery.attestation)
+    return tuple(values)
+
+
+def consumed_provenance_references(fact):
+    refs={ref for provenance in consumed_provenances(fact) for ref in provenance.dependencies}
     return tuple(sorted(refs, key=ref_key))

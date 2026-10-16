@@ -102,3 +102,15 @@ def test_lossy_attestation_availability_cannot_collapse_to_cutoff(registered):
     p=change(p,acquisition=change(p.acquisition,calibration_application=application))
     a,r=selected(registered,(p,l,v))
     with pytest.raises(CirculatoryInferenceError):build(assembly=a,request=r)
+
+
+@pytest.mark.parametrize('role',['pressure_quality','calibration_adequacy','lactate_quality','delivery','clock_basis'])
+def test_all_actually_consumed_future_attestations_are_unsuitable(registered,role):
+    p,l,v=inputs();future=change(PROV,recorded_at=AT+timedelta(hours=1))
+    if role=='pressure_quality':p=change(p,acquisition=change(p.acquisition,quality=change(p.acquisition.quality,provenance=future)))
+    elif role=='calibration_adequacy':p=change(p,acquisition=change(p.acquisition,calibration_provenance=future))
+    elif role=='lactate_quality':l=change(l,acquisition=change(l.acquisition,quality=change(l.acquisition.quality,provenance=future)))
+    elif role=='delivery':v=change(v,action=change(v.action,delivery=change(v.action.delivery,attestation=future)))
+    else:p=change(p,occurred=change(p.occurred,clock_basis=future))
+    a,r=selected(registered,(p,l,v))
+    with pytest.raises(CirculatoryInferenceError,match='future_recording'):build(assembly=a,request=r)

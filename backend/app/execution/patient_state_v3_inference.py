@@ -6,7 +6,7 @@ from app.models.clinical.facts import ClinicalInference
 from app.models.clinical import hemodynamics as h
 from app.models.clinical.recorded_v2 import Contract, Digest, instant, ref_key
 from app.persistence.canonical import canonical_payload
-from .patient_state_v3_support import consumed_binding_roles, consumed_provenance_references
+from .patient_state_v3_support import consumed_binding_roles, consumed_provenance_references, consumed_provenances
 from .patient_state_v3 import PatientStateScopeV3
 from .patient_state_v3_assembly import PatientStateAssemblyResultV3
 
@@ -103,7 +103,7 @@ def _build_circulatory_timing_inference(*, assembly, request):
         f=item.fact
         require(f.binding.target==request.scope.target and f.binding.verification.status=='verified','unverified_binding')
         require(f.record_status=='recorded' and f.conflict not in ('unresolved',), 'invalid_selected_status')
-        require(instant(f.provenance.recorded_at)<=instant(request.executed_at),'future_recording')
+        require(all(instant(provenance.recorded_at)<=instant(request.executed_at) for provenance in consumed_provenances(f)),'future_recording')
         axes=(f.available, f.occurred)
         if isinstance(f,h.LactateResult):axes=(*axes,f.collected,f.measured,f.reported)
         for axis in axes:
