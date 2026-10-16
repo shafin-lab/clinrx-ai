@@ -1,0 +1,110 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/evidenceExplanation.test.tsx (5 tests | 1 failed) 902374ms
+   × keeps source-specific quality, placement, missing context and estimate caveats distinct 901328ms
+ ❯ tests/client.test.ts (88 tests | 1 failed) 902415ms
+   × rejects a mismatched execution receipt 900938ms
+ ❯ tests/circulatoryLookup.test.tsx (3 tests | 2 failed) 902661ms
+   ❯ PR23 retained lookup identity (3)
+     × clears result A when lookup B is failed 902176ms
+     × clears result A when lookup B is not_found 337ms
+ ❯ tests/microDecoders.test.ts (116 tests | 1 failed) 903002ms
+   ❯ M6 complete response contracts (83)
+     × accepts retained withheld with original provenance 901119ms
+ ❯ tests/circulatory.test.tsx (52 tests | 1 failed) 914344ms
+   ❯ M7 complete runtime decoders (22)
+     × accepts authoritative state, preparation, released/withheld, reconciliation and correction history 901539ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/circulatory.test.tsx > M7 complete runtime decoders > accepts authoritative state, preparation, released/withheld, reconciliation and correction history
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/circulatory.test.tsx:14:3
+     12| afterEach(()=>{cleanup();vi.useRealTimers();});
+     13| describe('M7 complete runtime decoders',()=>{
+     14|   it('accepts authoritative state, preparation, released/withheld, rec…
+       |   ^
+     15|     expect(state(fixtures.state,scope).assembly.snapshot.items).toHave…
+     16|     expect(prepared(fixtures.prepared,scope).inference.inputs).toHaveL…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/circulatoryLookup.test.tsx > PR23 retained lookup identity > clears result A when lookup B is failed
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/circulatoryLookup.test.tsx:12:46
+     10| function mockClient(){return {circulatoryLookup:vi.fn().mockResolvedVa…
+     11| describe('PR23 retained lookup identity',()=>{
+     12|   it.each(['failed','not_found','malformed'])('clears result A when lo…
+       |                                              ^
+     13|     const client=mockClient();render(<CirculatoryReview client={client…
+     14|     const input=screen.getByLabelText('Retained circulatory execution …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/circulatoryLookup.test.tsx > PR23 retained lookup identity > clears result A when lookup B is not_found
+AssertionError: expected '00000000-0000-0000-0000-00000000004d' to be '00000000-0000-0000-0000-00000000004e' // Object.is equality
+
+Expected: "00000000-0000-0000-0000-00000000004e"
+Received: "00000000-0000-0000-0000-00000000004d"
+
+ ❯ tests/circulatoryLookup.test.tsx:23:55
+     21|     fail(reason==='not_found'?new (await import('../src/api/client')).…
+     22|     await screen.findByRole('alert');expect(screen.queryByText('Retain…
+     23|     expect(client.circulatoryLookup.mock.calls[1][0]).toBe(fixtures.pr…
+       |                                                       ^
+     24|   });
+     25| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/client.test.ts > rejects a mismatched execution receipt
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/client.test.ts:12:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/evidenceExplanation.test.tsx > keeps source-specific quality, placement, missing context and estimate caveats distinct
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/evidenceExplanation.test.tsx:9:1
+      7| const items=()=>decodeCirculatoryState(structuredClone(expanded)).asse…
+      8| afterEach(cleanup);
+      9| it('keeps source-specific quality, placement, missing context and esti…
+       | ^
+     10|   const sources=items(),before=JSON.stringify(sources),notes=sourceUnc…
+     11|   expect(byId['m7-PICCO-CO'].reasons.join(' ')).toContain('Recorded qu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/microDecoders.test.ts > M6 complete response contracts > accepts retained withheld with original provenance
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/microDecoders.test.ts:19:47
+     17|     expect(JSON.stringify(fixture)).toBe(before);
+     18|   });
+     19|   it.each([fixture.released,fixture.withheld])('accepts retained $gove…
+       |                                               ^
+     20|     expect(decodeMicroExecution(raw,{execution_id:raw.execution_id})).…
+     21|     expect(decodeMicroRetainedExecution(raw)).toBe(raw);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  5 failed | 5 passed (10)
+      Tests  6 failed | 455 passed (461)
+   Start at  19:51:12
+   Duration  927.79s (tests 56%, transform 33%, import 11%)
+
+  Transform  transforming modules took 2708.36s · 33% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+
