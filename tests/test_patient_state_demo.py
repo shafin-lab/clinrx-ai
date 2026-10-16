@@ -64,6 +64,7 @@ def test_demo_and_routes_have_no_direct_storage_or_test_imports():
                     and (path.name, node.func.value.id) in (
                         ('temporal_reviews.py', 'service'),
                         ('micro_antimicrobial.py', 'app'),
+                        ('circulatory.py', 'app'),
                     )
                     and len(node.args) == 1
                     and isinstance(node.args[0], ast.Name)

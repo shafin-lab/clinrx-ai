@@ -14,6 +14,7 @@ class SyntheticScope(DTO):
 
 
 class APIConfig(DTO):
+    circulatory_execution_enabled: bool = Field(default=False, strict=True)
     database_path: Path
     environment: Literal['local_synthetic_demo', 'test']
     api_host: Literal['127.0.0.1', 'localhost', '::1'] = '127.0.0.1'
