@@ -1,0 +1,113 @@
+{
+  "source_head": "17e2064c3f1a1761876e9a42c5c7a131646d465c",
+  "source_tree": "3723885d26a9ba62ff271361a1c8a6a7351de63c",
+  "working_tree_clean": true,
+  "cases": [
+    {
+      "scenario": "release",
+      "status": "PASS",
+      "execution_id": "0680dad6-f324-4802-9a52-ecebb6205934",
+      "outcome": "released",
+      "receipt_count": 1,
+      "execution_attempts": 2,
+      "payload_sha256": "9a1081353e750de866b4ed799806fb09944942c903324543e20c81cf7fac2d0c",
+      "original_support_retained": true,
+      "terminal_support_revision": "1"
+    },
+    {
+      "scenario": "same_value",
+      "status": "PASS",
+      "execution_id": "48714dc1-8166-4dfe-b11e-fdf39b8a91ad",
+      "outcome": "withheld",
+      "receipt_count": 1,
+      "execution_attempts": 1,
+      "payload_sha256": "ee1d11d688d63536bcc4958337ede6ee8d074aef4165e83349ca27de031c4ff9",
+      "original_support_retained": true,
+      "terminal_support_revision": "2"
+    },
+    {
+      "scenario": "provenance",
+      "status": "PASS",
+      "execution_id": "2de048b9-49d2-4c8e-8d7f-70090e18918b",
+      "outcome": "withheld",
+      "receipt_count": 1,
+      "execution_attempts": 1,
+      "payload_sha256": "26ef880d6270a5eb7c3a14a4e3570b7ec31c1d30ff743d0dcc0eb6eaa78d422b",
+      "original_support_retained": true,
+      "terminal_support_revision": "2"
+    },
+    {
+      "scenario": "withdrawn",
+      "status": "PASS",
+      "execution_id": "0c112307-c744-48d0-add8-579027683ec6",
+      "outcome": "withheld",
+      "receipt_count": 1,
+      "execution_attempts": 1,
+      "payload_sha256": "0c43ea25827cf583454c09e0b210d94873cff1ca42afea056df21d27b8588b06",
+      "original_support_retained": true,
+      "terminal_support_revision": "2"
+    },
+    {
+      "scenario": "pressure",
+      "status": "PASS",
+      "execution_id": "27ddecd3-5f4e-4096-a0b2-65b73437f8b1",
+      "outcome": "withheld",
+      "receipt_count": 1,
+      "execution_attempts": 1,
+      "payload_sha256": "6e40e6d2cce23c15171ef82c1997590fd7307ea2ec343a5158eb2cf648f39ae3",
+      "original_support_retained": true,
+      "terminal_support_revision": "1"
+    },
+    {
+      "scenario": "malformed",
+      "status": "PASS",
+      "execution_id": "585c11db-0222-48ad-a10f-34b969084b7e",
+      "outcome": "released",
+      "receipt_count": 1,
+      "execution_attempts": 1,
+      "payload_sha256": "c085bf4be272c6265fa631e3813137ddadf3c8a35f4ed8cd05cdfcbb34761880",
+      "original_support_retained": true,
+      "terminal_support_revision": "1"
+    },
+    {
+      "scenario": "post_commit",
+      "status": "PASS",
+      "execution_id": "e24eeea3-1e3c-4555-9c2f-5b4c045e1722",
+      "outcome": "released",
+      "receipt_count": 1,
+      "execution_attempts": 1,
+      "payload_sha256": "9eece494cddffcbc04292c680e7a51b050ca9257b87f45a376104a0f4db08873",
+      "original_support_retained": true,
+      "terminal_support_revision": "1"
+    },
+    {
+      "scenario": "timeout",
+      "status": "PASS",
+      "execution_id": "b1fa6248-a5db-4ca2-b668-05e083bbc897",
+      "outcome": "released",
+      "receipt_count": 1,
+      "execution_attempts": 1,
+      "payload_sha256": "c41fe826b016d3e61f4797abd2370ff5a3b62c51a940a53275df6d5f20002632",
+      "original_support_retained": true,
+      "terminal_support_revision": "1"
+    },
+    {
+      "scenario": "absent",
+      "status": "PASS",
+      "execution_id": "15109137-34c2-4cf4-89aa-afd3bc4557ef",
+      "outcome": "released",
+      "receipt_count": 1,
+      "execution_attempts": 2,
+      "payload_sha256": "45079f2bdfad87b03bc1f20345bf52c67c18bcc0ee7d3b76863d3cd0abf861c3",
+      "original_support_retained": true,
+      "terminal_support_revision": "1"
+    },
+    {
+      "scenario": "gate_pending",
+      "status": "PASS",
+      "execution_id": "9ddde64b-f5cf-46e0-bcef-91181158dc2d",
+      "receipt_count": 0,
+      "execution_http_status": 422
+    }
+  ]
+}

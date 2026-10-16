@@ -1,0 +1,19 @@
+{
+  "database": "original/same_value.sqlite3",
+  "exported_at": "2026-10-16T07:12:54.347244+00:00",
+  "table": "patient",
+  "columns": [
+    "patient_id",
+    "payload_version",
+    "payload",
+    "ingested_at"
+  ],
+  "rows": [
+    [
+      "synthetic-p1",
+      1,
+      "{\"patient_id\":\"synthetic-p1\",\"source_identifiers\":[{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"}]}",
+      "2026-10-16T06:47:28.775188+00:00"
+    ]
+  ]
+}

@@ -1,0 +1,308 @@
+{
+  "row": {
+    "ingestion_sequence": 11,
+    "kind": "circulatory_lactate",
+    "fact_id": "m7-L",
+    "revision": "1",
+    "patient_id": "synthetic-p1",
+    "encounter_id": "synthetic-e1",
+    "payload_version": 1,
+    "payload": "{\"acquisition\":{\"algorithm\":null,\"averaging\":null,\"calibration\":\"unknown\",\"calibration_provenance\":null,\"compartment\":\"unknown\",\"device\":null,\"episode\":null,\"indexing_basis\":null,\"indexing_denominator\":null,\"indicator\":null,\"injection\":null,\"interval_end\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"interval_start\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"laterality\":\"unknown\",\"limitations\":[],\"method\":\"laboratory\",\"parameter\":null,\"parameter_concept\":null,\"parameter_support\":\"unknown\",\"position\":null,\"quality\":{\"artifacts\":[],\"limitations\":[],\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"status\":\"acceptable\"},\"reference_level\":null,\"respiratory_phase\":null,\"site\":null,\"source_method\":null,\"support_provenance\":null,\"zeroing\":\"unknown\",\"zeroing_provenance\":null},\"analyzer\":null,\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:03:00Z\"},\"source_timestamp\":\"2026-10-08T08:03:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"blood_source\":\"unknown\",\"calculation_inputs\":[],\"calculation_method\":null,\"change\":\"original\",\"collected\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:01:00Z\"},\"source_timestamp\":\"2026-10-08T08:01:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"collection_assertion\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"disclosures\":[],\"id\":\"m7-L\",\"kind\":\"circulatory_lactate\",\"measured\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:00:00Z\"},\"source_timestamp\":\"2026-10-08T08:00:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"production\":\"direct_measurement\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"record_status\":\"recorded\",\"report_status\":\"final\",\"reported\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"result\":{\"comparator\":\"=\",\"quantity\":{\"unit\":{\"code\":null,\"limitation\":\"Synthetic source unit.\",\"raw\":\"mmol/L\",\"status\":\"unresolved\",\"system\":null},\"value\":\"2.000\"},\"result_type\":\"numeric\"},\"revision\":\"1\",\"sampling_site\":null,\"source_identifiers\":[],\"specimen\":{\"code\":\"sample\",\"namespace\":\"clinrx.synthetic.micro\",\"raw_display\":\"sample\",\"version\":\"1\"},\"specimen_type\":null,\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[],\"verification\":\"unverified\"}",
+    "ingested_at": "2026-10-16T06:51:04.091755+00:00"
+  },
+  "fact": {
+    "acquisition": {
+      "algorithm": null,
+      "averaging": null,
+      "calibration": "unknown",
+      "calibration_provenance": null,
+      "compartment": "unknown",
+      "device": null,
+      "episode": null,
+      "indexing_basis": null,
+      "indexing_denominator": null,
+      "indicator": null,
+      "injection": null,
+      "interval_end": {
+        "lower": null,
+        "precision": "unknown",
+        "status": "not_recorded",
+        "uncertainty": null,
+        "upper": null,
+        "value": null
+      },
+      "interval_start": {
+        "lower": null,
+        "precision": "unknown",
+        "status": "not_recorded",
+        "uncertainty": null,
+        "upper": null,
+        "value": null
+      },
+      "laterality": "unknown",
+      "limitations": [],
+      "method": "laboratory",
+      "parameter": null,
+      "parameter_concept": null,
+      "parameter_support": "unknown",
+      "position": null,
+      "quality": {
+        "artifacts": [],
+        "limitations": [],
+        "provenance": {
+          "actor": "synthetic-demo",
+          "limitations": [
+            "Synthetic source assertion only."
+          ],
+          "lineage": "unknown",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "source": {
+            "channel": "system",
+            "identifier": "patient-state-v1",
+            "namespace": "clinrx.synthetic.demo",
+            "version": "1"
+          },
+          "upstream": []
+        },
+        "status": "acceptable"
+      },
+      "reference_level": null,
+      "respiratory_phase": null,
+      "site": null,
+      "source_method": null,
+      "support_provenance": null,
+      "zeroing": "unknown",
+      "zeroing_provenance": null
+    },
+    "analyzer": null,
+    "associations": [],
+    "available": {
+      "alignment": null,
+      "alternative_sources": [],
+      "clock": "verified",
+      "clock_basis": {
+        "actor": "synthetic-demo",
+        "limitations": [
+          "Synthetic source assertion only."
+        ],
+        "lineage": "unknown",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "channel": "system",
+          "identifier": "patient-state-v1",
+          "namespace": "clinrx.synthetic.demo",
+          "version": "1"
+        },
+        "upstream": []
+      },
+      "conflicting": [],
+      "recorded": {
+        "lower": null,
+        "precision": "instant",
+        "status": "known",
+        "uncertainty": null,
+        "upper": null,
+        "value": "2026-10-08T08:03:00Z"
+      },
+      "source_timestamp": "2026-10-08T08:03:00+00:00",
+      "timestamp_precision": "M7ExactTimestampInput/v1"
+    },
+    "binding": {
+      "target": {
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null,
+        "patient_id": "synthetic-p1"
+      },
+      "verification": {
+        "ambiguity": null,
+        "assessed_at": "2026-10-08T08:00:00Z",
+        "method": "synthetic-demo",
+        "source": {
+          "channel": "system",
+          "identifier": "patient-state-v1",
+          "namespace": "clinrx.synthetic.demo",
+          "version": "1"
+        },
+        "status": "verified",
+        "verifier": "synthetic-system"
+      }
+    },
+    "blood_source": "unknown",
+    "calculation_inputs": [],
+    "calculation_method": null,
+    "change": "original",
+    "collected": {
+      "alignment": null,
+      "alternative_sources": [],
+      "clock": "verified",
+      "clock_basis": {
+        "actor": "synthetic-demo",
+        "limitations": [
+          "Synthetic source assertion only."
+        ],
+        "lineage": "unknown",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "channel": "system",
+          "identifier": "patient-state-v1",
+          "namespace": "clinrx.synthetic.demo",
+          "version": "1"
+        },
+        "upstream": []
+      },
+      "conflicting": [],
+      "recorded": {
+        "lower": null,
+        "precision": "instant",
+        "status": "known",
+        "uncertainty": null,
+        "upper": null,
+        "value": "2026-10-08T08:01:00Z"
+      },
+      "source_timestamp": "2026-10-08T08:01:00+00:00",
+      "timestamp_precision": "M7ExactTimestampInput/v1"
+    },
+    "collection_assertion": {
+      "actor": "synthetic-demo",
+      "limitations": [
+        "Synthetic source assertion only."
+      ],
+      "lineage": "unknown",
+      "recorded_at": "2026-10-08T08:00:00Z",
+      "source": {
+        "channel": "system",
+        "identifier": "patient-state-v1",
+        "namespace": "clinrx.synthetic.demo",
+        "version": "1"
+      },
+      "upstream": []
+    },
+    "conflict": "unknown",
+    "contract_version": "3",
+    "correction_reason": null,
+    "disclosures": [],
+    "id": "m7-L",
+    "kind": "circulatory_lactate",
+    "measured": {
+      "alignment": null,
+      "alternative_sources": [],
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "recorded": {
+        "lower": null,
+        "precision": "unknown",
+        "status": "not_recorded",
+        "uncertainty": null,
+        "upper": null,
+        "value": null
+      },
+      "source_timestamp": null
+    },
+    "occurred": {
+      "alignment": null,
+      "alternative_sources": [],
+      "clock": "verified",
+      "clock_basis": {
+        "actor": "synthetic-demo",
+        "limitations": [
+          "Synthetic source assertion only."
+        ],
+        "lineage": "unknown",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "channel": "system",
+          "identifier": "patient-state-v1",
+          "namespace": "clinrx.synthetic.demo",
+          "version": "1"
+        },
+        "upstream": []
+      },
+      "conflicting": [],
+      "recorded": {
+        "lower": null,
+        "precision": "instant",
+        "status": "known",
+        "uncertainty": null,
+        "upper": null,
+        "value": "2026-10-08T08:00:00Z"
+      },
+      "source_timestamp": "2026-10-08T08:00:00+00:00",
+      "timestamp_precision": "M7ExactTimestampInput/v1"
+    },
+    "origin": "reported",
+    "production": "direct_measurement",
+    "provenance": {
+      "actor": "synthetic-demo",
+      "limitations": [
+        "Synthetic source assertion only."
+      ],
+      "lineage": "unknown",
+      "recorded_at": "2026-10-08T08:00:00Z",
+      "source": {
+        "channel": "system",
+        "identifier": "patient-state-v1",
+        "namespace": "clinrx.synthetic.demo",
+        "version": "1"
+      },
+      "upstream": []
+    },
+    "record_status": "recorded",
+    "report_status": "final",
+    "reported": {
+      "alignment": null,
+      "alternative_sources": [],
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "recorded": {
+        "lower": null,
+        "precision": "unknown",
+        "status": "not_recorded",
+        "uncertainty": null,
+        "upper": null,
+        "value": null
+      },
+      "source_timestamp": null
+    },
+    "result": {
+      "comparator": "=",
+      "quantity": {
+        "unit": {
+          "code": null,
+          "limitation": "Synthetic source unit.",
+          "raw": "mmol/L",
+          "status": "unresolved",
+          "system": null
+        },
+        "value": "2.000"
+      },
+      "result_type": "numeric"
+    },
+    "revision": "1",
+    "sampling_site": null,
+    "source_identifiers": [],
+    "specimen": {
+      "code": "sample",
+      "namespace": "clinrx.synthetic.micro",
+      "raw_display": "sample",
+      "version": "1"
+    },
+    "specimen_type": null,
+    "supersedes": null,
+    "temporal_status": "unknown",
+    "time": {
+      "effective_end": null,
+      "effective_start": null,
+      "event": null,
+      "precision": "unknown",
+      "processed": null,
+      "recorded": null,
+      "retrieved": null,
+      "uncertainty": null
+    },
+    "uncertainty": [],
+    "verification": "unverified"
+  },
+  "payload_sha256": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429"
+}

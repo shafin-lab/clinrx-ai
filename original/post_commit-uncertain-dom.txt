@@ -1,0 +1,264 @@
+- banner:
+  - link "ClinRx AI":
+    - /url: "#main"
+  - generic: Historical synthetic simulation · connection not yet verified
+- main:
+  - text: Evidence review / Synthetic patient
+  - heading "Patient review" [level=1]
+  - paragraph: Inspect recorded evidence. Review one explicitly selected temporal relationship.
+  - generic: Synthetic use only
+  - region "Synthetic patient":
+    - strong: Synthetic patient
+    - text: Patient
+    - code: synthetic-p1
+    - text: Encounter
+    - code: synthetic-e1
+    - paragraph: No live patient care or clinical validation is implied.
+  - heading "Review window" [level=2]
+  - generic: 01 / Recorded state
+  - paragraph: Exact timestamps with timezone. The backend determines the bounded repository view.
+  - text: Review start
+  - textbox "Review start": 2026-10-08T08:00:00+00:00
+  - text: Review end
+  - textbox "Review end": 2026-10-08T10:00:00+00:00
+  - button "Load state"
+  - heading "Reviews opened in this session" [level=2]
+  - paragraph: Session-local IDs only; this is not the encounter’s complete execution history. Reloading clears this list, selections, and commands.
+  - paragraph: No reviews opened in this session.
+  - region "Microbiology and antimicrobial review":
+    - heading "Microbiology & antimicrobial review" [level=2]
+    - generic: S / I / U / D
+    - paragraph: Four explicitly selected source records. Descriptive timing only; no treatment recommendation or infection diagnosis.
+    - paragraph: Patient synthetic-p1 · Encounter synthetic-e1 · Load to confirm server mode
+    - text: Microbiology review start
+    - textbox "Microbiology review start": 2026-10-08T08:00:00+00:00
+    - text: Microbiology review end
+    - textbox "Microbiology review end": 2026-10-08T10:00:00+00:00
+    - button "Load microbiology state"
+    - status: "Microbiology review status: idle"
+    - generic "S/I/U/D reviews in this session (0)"
+  - generic: Synthetic evidence review · No diagnosis, causal interpretation, or treatment recommendation.
+- region "Comprehensive circulatory evidence":
+  - heading "Hemodynamic and circulatory evidence" [level=2]
+  - paragraph: Synthetic recorded evidence across 15 families. No shock diagnosis, causal interpretation or treatment advice.
+  - text: Circulatory review start
+  - textbox "Circulatory review start" [disabled]: 2026-10-08T08:00:00+00:00
+  - text: Circulatory review end
+  - textbox "Circulatory review end" [disabled]: 2026-10-08T10:00:00+00:00
+  - button "Load circulatory evidence" [disabled]
+  - status: "Circulatory review: completion unknown"
+  - alert: The request could not be completed.
+  - generic "Coverage and recorded-state issues"
+  - heading "Pressure and PAC/RHC" [level=3]
+  - article:
+    - heading "m7-P · revision 2" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-P"
+  - article:
+    - heading "m7-PAC · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-PAC"
+  - article:
+    - heading "m7-RHC · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-RHC"
+  - article:
+    - heading "m7-UNPLACED · revision 1" [level=4]
+    - paragraph: Recorded source evidence · unplaced
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-UNPLACED"
+  - heading "Cardiac output and performance" [level=3]
+  - article:
+    - heading "m7-CONTEXT-CO · revision 1" [level=4]
+    - paragraph: Recorded source evidence · contextual
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-CONTEXT-CO"
+  - article:
+    - heading "m7-CO · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-CO"
+  - article:
+    - heading "m7-PICCO-CO · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-PICCO-CO"
+  - heading "Volume and lung water" [level=3]
+  - article:
+    - heading "m7-GEDV · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-GEDV"
+  - heading "Dynamic measurements" [level=3]
+  - article:
+    - heading "m7-SVV · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-SVV"
+  - heading "Recorded device predictions" [level=3]
+  - article:
+    - heading "m7-HPI · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-HPI"
+  - heading "Tissue perfusion" [level=3]
+  - article:
+    - heading "m7-CRT · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-CRT"
+  - heading "Oxygen transport" [level=3]
+  - article:
+    - heading "m7-SVO2 · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-SVO2"
+  - heading "Lactate" [level=3]
+  - article:
+    - heading "m7-L · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-L"
+  - heading "Echo and POCUS" [level=3]
+  - article:
+    - heading "m7-ECHO · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-ECHO"
+  - heading "ECG and rhythm" [level=3]
+  - article:
+    - heading "m7-ECG · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-ECG"
+  - article:
+    - heading "m7-RHYTHM · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-RHYTHM"
+  - heading "Vasoactive events" [level=3]
+  - article:
+    - heading "m7-V · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-V"
+  - heading "Edwards / PiCCO and monitoring context" [level=3]
+  - article:
+    - heading "m7-CAL · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-CAL"
+  - heading "Dynamic assessment episodes" [level=3]
+  - article:
+    - heading "m7-PLR · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-PLR"
+  - heading "Recorded circulatory events" [level=3]
+  - article:
+    - heading "m7-EVENT · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-EVENT"
+  - heading "Signal manifests" [level=3]
+  - article:
+    - heading "m7-SIGNAL · revision 1" [level=4]
+    - paragraph: Recorded source evidence · in window
+    - generic "Source, timing, quality and device context"
+    - generic "Repository metadata and inclusion"
+    - button "Inspect corrections for m7-SIGNAL"
+  - heading "Explicit P/L/V descriptive review" [level=3]
+  - paragraph: Select exact pressure, lactate and actual vasopressor-initiation evidence. The backend applies SyntheticPLVEligibility/1; appearing here does not imply eligibility.
+  - group "Exact primary selections":
+    - generic: Exact primary selections
+    - text: pressure
+    - combobox "Select pressure" [disabled]:
+      - option "Choose exact revision" [disabled]
+      - option "m7-P / 2" [disabled] [selected]
+      - option "m7-PAC / 1" [disabled]
+      - option "m7-RHC / 1" [disabled]
+      - option "m7-UNPLACED / 1" [disabled]
+    - text: lactate
+    - combobox "Select lactate" [disabled]:
+      - option "Choose exact revision" [disabled]
+      - option "m7-L / 1" [disabled] [selected]
+    - text: vasopressor
+    - combobox "Select vasopressor" [disabled]:
+      - option "Choose exact revision" [disabled]
+      - option "m7-V / 1" [disabled] [selected]
+  - generic "Explicit independently revisioned support"
+  - paragraph: Select every supporting revision actually consumed. No evidence is added silently.
+  - checkbox "m7-CONTEXT-CO / 1" [disabled]
+  - text: m7-CONTEXT-CO / 1
+  - checkbox "m7-PLR / 1" [disabled]
+  - text: m7-PLR / 1
+  - checkbox "m7-CO / 1" [disabled]
+  - text: m7-CO / 1
+  - checkbox "m7-PICCO-CO / 1" [disabled]
+  - text: m7-PICCO-CO / 1
+  - checkbox "m7-HPI / 1" [disabled]
+  - text: m7-HPI / 1
+  - checkbox "m7-SVV / 1" [disabled]
+  - text: m7-SVV / 1
+  - checkbox "m7-ECG / 1" [disabled]
+  - text: m7-ECG / 1
+  - checkbox "m7-RHYTHM / 1" [disabled]
+  - text: m7-RHYTHM / 1
+  - checkbox "m7-ECHO / 1" [disabled]
+  - text: m7-ECHO / 1
+  - checkbox "m7-EVENT / 1" [disabled]
+  - text: m7-EVENT / 1
+  - checkbox "m7-CAL / 1" [checked] [disabled]
+  - text: m7-CAL / 1
+  - checkbox "m7-SVO2 / 1" [disabled]
+  - text: m7-SVO2 / 1
+  - checkbox "m7-CRT / 1" [disabled]
+  - text: m7-CRT / 1
+  - checkbox "m7-PAC / 1" [disabled]
+  - text: m7-PAC / 1
+  - checkbox "m7-RHC / 1" [disabled]
+  - text: m7-RHC / 1
+  - checkbox "m7-SIGNAL / 1" [disabled]
+  - text: m7-SIGNAL / 1
+  - checkbox "m7-GEDV / 1" [disabled]
+  - text: m7-GEDV / 1
+  - checkbox "m7-UNPLACED / 1" [disabled]
+  - text: m7-UNPLACED / 1
+  - button "Prepare P/L/V review" [disabled]
+  - region "Prepared circulatory review":
+    - heading "Prepared descriptive inference" [level=3]
+    - paragraph: The selected pressure observation was recorded as acquired at 2026-10-08T08:00:00+00:00. The selected lactate sample was recorded as collected at 2026-10-08T08:01:00+00:00. The selected vasopressor initiation was documented at 2026-10-08T08:02:00+00:00. Pressure acquisition occurred before the initiation event. Lactate collection occurred before the initiation event.
+    - paragraph:
+      - text: "Execution UUID:"
+      - code: e24eeea3-1e3c-4555-9c2f-5b4c045e1722
+    - button "Execute prepared P/L/V review" [disabled]
+    - button "Reconcile original circulatory command"
+  - paragraph: Completion is uncertain. The original command and execution UUID are retained in this page. Reconcile explicitly; do not create a replacement execution.
+  - button "Start another circulatory selection" [disabled]
+  - text: Retained circulatory execution UUID
+  - textbox "Retained circulatory execution UUID" [disabled]
+  - button "Look up retained circulatory execution" [disabled]
+  - paragraph: Commands remain in page memory only. Keep this page open while completion is unresolved. Source measurements and source interpretations are distinct from the explicitly labelled ClinRx descriptive inference. VA-ECMO, Impella and IABP are deferred.

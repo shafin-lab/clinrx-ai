@@ -1,0 +1,1074 @@
+{
+  "status": "PASS",
+  "receipt_cases_checked": 10,
+  "cases": [
+    {
+      "group": "original",
+      "scenario": "absent",
+      "execution_id": "15109137-34c2-4cf4-89aa-afd3bc4557ef",
+      "repository_id": "fbd5c49c-751a-4b57-9031-cdc08c2c872b",
+      "cutoffs": [
+        25,
+        26,
+        26
+      ],
+      "outcome": "released",
+      "receipt_payload_sha256": "45079f2bdfad87b03bc1f20345bf52c67c18bcc0ee7d3b76863d3cd0abf861c3",
+      "all_correspondence_checks": "PASS",
+      "evidence_witnesses": [
+        {
+          "consumed": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "terminal": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "source_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "terminal_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "source_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "terminal_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "content_and_metadata_verified": true
+        }
+      ],
+      "inference_terminal": {
+        "id": "b78fe83f-43b4-4c63-bb86-e79a3b7a64c0",
+        "kind": "inference",
+        "version": "1"
+      },
+      "inference_terminal_digest": "8708c3732bc9e61edfdf8b55fa8212706a0aea104d73370f1bb710936125462c"
+    },
+    {
+      "group": "original",
+      "scenario": "malformed",
+      "execution_id": "585c11db-0222-48ad-a10f-34b969084b7e",
+      "repository_id": "d776f295-5232-4505-b86b-e74139c72633",
+      "cutoffs": [
+        25,
+        26,
+        26
+      ],
+      "outcome": "released",
+      "receipt_payload_sha256": "c085bf4be272c6265fa631e3813137ddadf3c8a35f4ed8cd05cdfcbb34761880",
+      "all_correspondence_checks": "PASS",
+      "evidence_witnesses": [
+        {
+          "consumed": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "terminal": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "source_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "terminal_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "source_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "terminal_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "content_and_metadata_verified": true
+        }
+      ],
+      "inference_terminal": {
+        "id": "a9272a3d-bc17-4bf4-b555-36aa89cc1e27",
+        "kind": "inference",
+        "version": "1"
+      },
+      "inference_terminal_digest": "d387081437dfc1da616d58607004848af10e64d461d962068c941820c76af77f"
+    },
+    {
+      "group": "original",
+      "scenario": "post_commit",
+      "execution_id": "e24eeea3-1e3c-4555-9c2f-5b4c045e1722",
+      "repository_id": "4e9cca16-1dc9-4672-8c7b-d50066d9a260",
+      "cutoffs": [
+        25,
+        26,
+        26
+      ],
+      "outcome": "released",
+      "receipt_payload_sha256": "9eece494cddffcbc04292c680e7a51b050ca9257b87f45a376104a0f4db08873",
+      "all_correspondence_checks": "PASS",
+      "evidence_witnesses": [
+        {
+          "consumed": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "terminal": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "source_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "terminal_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "source_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "terminal_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "content_and_metadata_verified": true
+        }
+      ],
+      "inference_terminal": {
+        "id": "ebcf6e1e-8e2c-4da7-b7f3-e1e7092d96c9",
+        "kind": "inference",
+        "version": "1"
+      },
+      "inference_terminal_digest": "8415fd59cdd6650b7d61cb58b45ea7c9726dcea4ee13759b91c3e119643648bd"
+    },
+    {
+      "group": "original",
+      "scenario": "pressure",
+      "execution_id": "27ddecd3-5f4e-4096-a0b2-65b73437f8b1",
+      "repository_id": "a1ace395-7563-4fd4-825c-68858909ae1c",
+      "cutoffs": [
+        25,
+        26,
+        27
+      ],
+      "outcome": "withheld",
+      "receipt_payload_sha256": "6e40e6d2cce23c15171ef82c1997590fd7307ea2ec343a5158eb2cf648f39ae3",
+      "all_correspondence_checks": "PASS",
+      "evidence_witnesses": [
+        {
+          "consumed": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "terminal": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "3"
+          },
+          "source_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "terminal_digest": "4627fc182898cb2a4aac4d6768d1558471a31304b35914438a203e60641fabb6",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "source_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "terminal_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "content_and_metadata_verified": true
+        }
+      ],
+      "inference_terminal": {
+        "id": "39c8bd07-95fd-4b5b-9d39-3df102293be5",
+        "kind": "inference",
+        "version": "1"
+      },
+      "inference_terminal_digest": "5bee9d783d366ea59162a773dcad1a4b822e46f030217e0429793c92e5a02abd"
+    },
+    {
+      "group": "original",
+      "scenario": "provenance",
+      "execution_id": "2de048b9-49d2-4c8e-8d7f-70090e18918b",
+      "repository_id": "b06f3695-a88b-48c1-91d0-337a8368836a",
+      "cutoffs": [
+        25,
+        26,
+        27
+      ],
+      "outcome": "withheld",
+      "receipt_payload_sha256": "26ef880d6270a5eb7c3a14a4e3570b7ec31c1d30ff743d0dcc0eb6eaa78d422b",
+      "all_correspondence_checks": "PASS",
+      "evidence_witnesses": [
+        {
+          "consumed": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "terminal": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "source_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "terminal_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "2"
+          },
+          "source_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "terminal_digest": "ef709714728d315713233e1ffc92f81b87b27a32d6675c5b65d6525f55fb5440",
+          "content_and_metadata_verified": true
+        }
+      ],
+      "inference_terminal": {
+        "id": "713d141e-26a9-40a1-87de-4dca4c0ce2b8",
+        "kind": "inference",
+        "version": "1"
+      },
+      "inference_terminal_digest": "af79949dc55f6dae7104e63bb12e93173b8d67f19b7f87322d0c1b5dabec14ff"
+    },
+    {
+      "group": "original",
+      "scenario": "release",
+      "execution_id": "0680dad6-f324-4802-9a52-ecebb6205934",
+      "repository_id": "ae5f7529-57d3-41b0-bc16-f901d73568e6",
+      "cutoffs": [
+        25,
+        26,
+        26
+      ],
+      "outcome": "released",
+      "receipt_payload_sha256": "9a1081353e750de866b4ed799806fb09944942c903324543e20c81cf7fac2d0c",
+      "all_correspondence_checks": "PASS",
+      "evidence_witnesses": [
+        {
+          "consumed": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "terminal": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "source_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "terminal_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "source_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "terminal_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "content_and_metadata_verified": true
+        }
+      ],
+      "inference_terminal": {
+        "id": "bed1f370-4a46-4812-be1d-48f0afa0a081",
+        "kind": "inference",
+        "version": "1"
+      },
+      "inference_terminal_digest": "d3e8891358ed5b502872009d52990f6a4c42d9f362c6c8ccf388d2cb43d984bc"
+    },
+    {
+      "group": "original",
+      "scenario": "same_value",
+      "execution_id": "48714dc1-8166-4dfe-b11e-fdf39b8a91ad",
+      "repository_id": "1e9572da-140c-40ef-bb12-987c5726223f",
+      "cutoffs": [
+        26,
+        27,
+        28
+      ],
+      "outcome": "withheld",
+      "receipt_payload_sha256": "ee1d11d688d63536bcc4958337ede6ee8d074aef4165e83349ca27de031c4ff9",
+      "all_correspondence_checks": "PASS",
+      "evidence_witnesses": [
+        {
+          "consumed": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "terminal": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "source_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "terminal_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "2"
+          },
+          "source_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "terminal_digest": "434f25e891dbce25d99b1e3e6b40ff1925da5c718cc77370064a6c8aca07498a",
+          "content_and_metadata_verified": true
+        }
+      ],
+      "inference_terminal": {
+        "id": "66d040b6-e3a1-4566-9c43-c3dbeed60afb",
+        "kind": "inference",
+        "version": "1"
+      },
+      "inference_terminal_digest": "7aa2ff8f9b3ab3b6359e545885434c5c6d174cedd9776f1ab1c15ca90278ccde"
+    },
+    {
+      "group": "original",
+      "scenario": "timeout",
+      "execution_id": "b1fa6248-a5db-4ca2-b668-05e083bbc897",
+      "repository_id": "9f4bc301-77bd-45ab-9e2d-20dc8a9f94db",
+      "cutoffs": [
+        25,
+        26,
+        26
+      ],
+      "outcome": "released",
+      "receipt_payload_sha256": "c41fe826b016d3e61f4797abd2370ff5a3b62c51a940a53275df6d5f20002632",
+      "all_correspondence_checks": "PASS",
+      "evidence_witnesses": [
+        {
+          "consumed": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "terminal": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "source_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "terminal_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "source_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "terminal_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "content_and_metadata_verified": true
+        }
+      ],
+      "inference_terminal": {
+        "id": "a492d4f6-ed24-4bf3-b42a-595cdfe031f0",
+        "kind": "inference",
+        "version": "1"
+      },
+      "inference_terminal_digest": "6f45f66d0042a3366c3608caacd32d5f3ec01b0ae4a4d56c6d8bdb30f4f70b9d"
+    },
+    {
+      "group": "original",
+      "scenario": "withdrawn",
+      "execution_id": "0c112307-c744-48d0-add8-579027683ec6",
+      "repository_id": "f5fbc8d5-262c-43dd-a84c-db6088030874",
+      "cutoffs": [
+        25,
+        26,
+        27
+      ],
+      "outcome": "withheld",
+      "receipt_payload_sha256": "0c43ea25827cf583454c09e0b210d94873cff1ca42afea056df21d27b8588b06",
+      "all_correspondence_checks": "PASS",
+      "evidence_witnesses": [
+        {
+          "consumed": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "terminal": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "source_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "terminal_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "2"
+          },
+          "source_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "terminal_digest": "1f376c5babaefe73287244e6f82e966e32264a299f56f659d70731308af3d51e",
+          "content_and_metadata_verified": true
+        }
+      ],
+      "inference_terminal": {
+        "id": "456f7eaf-84b9-4d6f-84f4-dd6d2d53a4b2",
+        "kind": "inference",
+        "version": "1"
+      },
+      "inference_terminal_digest": "3b593440705794187dcf0a12106435ab3caeed48aae15c7fa2c7b15dcccb7858"
+    },
+    {
+      "group": "supplemental-absent",
+      "scenario": "absent",
+      "execution_id": "16290b83-7126-4dc1-a1db-25c9a29b5944",
+      "repository_id": "0170ab33-81e1-4f53-85bc-e9b9e41e5908",
+      "cutoffs": [
+        25,
+        26,
+        26
+      ],
+      "outcome": "released",
+      "receipt_payload_sha256": "8b93c84d356880e9f6898bc09773cd7dfb61a0eef2b4c62b01bbe24bf137bd65",
+      "all_correspondence_checks": "PASS",
+      "evidence_witnesses": [
+        {
+          "consumed": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "terminal": {
+            "id": "m7-P",
+            "kind": "circulatory_pressure",
+            "version": "2"
+          },
+          "source_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "terminal_digest": "8103cc27c1aaf8b41937eb12451a6517408cf2f7c61783bd73eb2bfd8a4fe1d8",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-L",
+            "kind": "circulatory_lactate",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-V",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "content_and_metadata_verified": true
+        },
+        {
+          "consumed": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "terminal": {
+            "id": "m7-CAL",
+            "kind": "circulatory_monitoring",
+            "version": "1"
+          },
+          "source_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "terminal_digest": "6d9b85b1c4446c084d24662f6c3d9fb8c2a49f938c309aa20180827735585aba",
+          "content_and_metadata_verified": true
+        }
+      ],
+      "inference_terminal": {
+        "id": "d245caa5-69ea-434b-9ba4-ddcba87d0590",
+        "kind": "inference",
+        "version": "1"
+      },
+      "inference_terminal_digest": "45525e67695ba66babf05ca4f8cd69dfd233e252763c83d1603974273bb7c777"
+    }
+  ],
+  "raw_request_byte_audit": [
+    {
+      "group": "original",
+      "scenario": "absent",
+      "event": 56,
+      "baseline_event": 56,
+      "raw_bytes_equal": true,
+      "raw_sha256": "a41c2d5a984db02d2826d57076c3fd965e3bb506a0eaded811516daccbba6eaa",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "absent",
+      "event": 58,
+      "baseline_event": 56,
+      "raw_bytes_equal": true,
+      "raw_sha256": "a41c2d5a984db02d2826d57076c3fd965e3bb506a0eaded811516daccbba6eaa",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "absent",
+      "event": 60,
+      "baseline_event": 56,
+      "raw_bytes_equal": true,
+      "raw_sha256": "a41c2d5a984db02d2826d57076c3fd965e3bb506a0eaded811516daccbba6eaa",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "gate_pending",
+      "event": 65,
+      "baseline_event": 65,
+      "raw_bytes_equal": true,
+      "raw_sha256": "ca56fa92c3cd4f6ce45290478219fc343178a330aba88c300bd29ad3b4fcc597",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "gate_pending",
+      "event": 67,
+      "baseline_event": 65,
+      "raw_bytes_equal": true,
+      "raw_sha256": "ca56fa92c3cd4f6ce45290478219fc343178a330aba88c300bd29ad3b4fcc597",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "malformed",
+      "event": 35,
+      "baseline_event": 35,
+      "raw_bytes_equal": true,
+      "raw_sha256": "89adb91e1480ed1c5c6a8cc47a5d218e6196a6ef18fe9d778eb4dbe289eac6a7",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "malformed",
+      "event": 37,
+      "baseline_event": 35,
+      "raw_bytes_equal": true,
+      "raw_sha256": "89adb91e1480ed1c5c6a8cc47a5d218e6196a6ef18fe9d778eb4dbe289eac6a7",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "post_commit",
+      "event": 42,
+      "baseline_event": 42,
+      "raw_bytes_equal": true,
+      "raw_sha256": "af1e8a30599471d21fe8ef9fb02e69ce007ec2c4dae481bd12c1b0c435e9f2b8",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "post_commit",
+      "event": 44,
+      "baseline_event": 42,
+      "raw_bytes_equal": true,
+      "raw_sha256": "af1e8a30599471d21fe8ef9fb02e69ce007ec2c4dae481bd12c1b0c435e9f2b8",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "pressure",
+      "event": 30,
+      "baseline_event": 30,
+      "raw_bytes_equal": true,
+      "raw_sha256": "b632f03e3577d07cf937e023f834f34dcc66c54362fb95922e7fb45eb67c9e64",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "provenance",
+      "event": 20,
+      "baseline_event": 20,
+      "raw_bytes_equal": true,
+      "raw_sha256": "01aa5709aeeb609600ef86fe3245a2572de81da5bb23c609b12b39b67c754d24",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "release",
+      "event": 5,
+      "baseline_event": 5,
+      "raw_bytes_equal": true,
+      "raw_sha256": "d806d6f2990d01e8532922b24a962fd88d3f9511385f39f33d710c28695ae372",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "release",
+      "event": 68,
+      "baseline_event": 5,
+      "raw_bytes_equal": false,
+      "raw_sha256": "d32f1a7ffd4a313b3bea920b0352e6371dc9953fd7c1805c2d94233e46d524c8",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": ""
+    },
+    {
+      "group": "original",
+      "scenario": "release",
+      "event": 69,
+      "baseline_event": 5,
+      "raw_bytes_equal": false,
+      "raw_sha256": "d32f1a7ffd4a313b3bea920b0352e6371dc9953fd7c1805c2d94233e46d524c8",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": ""
+    },
+    {
+      "group": "original",
+      "scenario": "same_value",
+      "event": 15,
+      "baseline_event": 15,
+      "raw_bytes_equal": true,
+      "raw_sha256": "deeef7cf72b557825e2b1e6017fc08b7d54dca065be91a2598a1baf543407413",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "timeout",
+      "event": 49,
+      "baseline_event": 49,
+      "raw_bytes_equal": true,
+      "raw_sha256": "7786e2509704dc08b5d7db1e39521aafefe9b867b07574ab1303e01876bd34b5",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "timeout",
+      "event": 51,
+      "baseline_event": 49,
+      "raw_bytes_equal": true,
+      "raw_sha256": "7786e2509704dc08b5d7db1e39521aafefe9b867b07574ab1303e01876bd34b5",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "original",
+      "scenario": "withdrawn",
+      "event": 25,
+      "baseline_event": 25,
+      "raw_bytes_equal": true,
+      "raw_sha256": "5f544a4099138b55221a1c1dc6afb60c1e39d5da9d69f6e5db005d91f443a983",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "supplemental-absent",
+      "scenario": "absent",
+      "event": 5,
+      "baseline_event": 5,
+      "raw_bytes_equal": true,
+      "raw_sha256": "fe1456d5b6e7fbfd15a508fe222f1de5a547d95acb1434143685546e4a368729",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "supplemental-absent",
+      "scenario": "absent",
+      "event": 7,
+      "baseline_event": 5,
+      "raw_bytes_equal": true,
+      "raw_sha256": "fe1456d5b6e7fbfd15a508fe222f1de5a547d95acb1434143685546e4a368729",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    },
+    {
+      "group": "supplemental-absent",
+      "scenario": "absent",
+      "event": 9,
+      "baseline_event": 5,
+      "raw_bytes_equal": true,
+      "raw_sha256": "fe1456d5b6e7fbfd15a508fe222f1de5a547d95acb1434143685546e4a368729",
+      "command_string_equal": true,
+      "parsed_body_equal": true,
+      "origin": "http://127.0.0.1:5178"
+    }
+  ],
+  "gate_preimages": {
+    "fact_revision": {
+      "sha256": "3fe495fe5b79015ca410cf880b0e69dcfae4bb6525a0217950ba1c789df98dde",
+      "matches_original_before_and_after_commitments": true,
+      "path": "gate-row-preimages/fact_revision.repr.txt",
+      "exported_later_from_unchanged_retained_database": true
+    },
+    "circulatory_execution": {
+      "sha256": "54a302df9295dcb6f644739b5a00e8bff026220097883fa641504563903abe09",
+      "matches_original_before_and_after_commitments": true,
+      "path": "gate-row-preimages/circulatory_execution.repr.txt",
+      "exported_later_from_unchanged_retained_database": true
+    }
+  },
+  "note": "Gate diagnostic requests use JSON whitespace distinct from browser bodies. Their parsed bodies and command strings match; raw byte equality is NOT claimed for those requests."
+}
