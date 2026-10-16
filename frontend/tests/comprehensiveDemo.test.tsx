@@ -3,13 +3,13 @@ import {render,screen,fireEvent,waitFor,cleanup,within} from '@testing-library/r
 import fixtures from './fixtures/circulatory.json';
 import expanded from './fixtures/comprehensive.json';
 import {ComprehensiveDemo} from '../src/demo/ComprehensiveDemo';
-import {decodeCirculatoryState,decodeCirculatoryExecution} from '../src/api/circulatoryDecoders';
+import {decodeCirculatoryState,decodeCirculatoryExecution,decodeCirculatoryHistory} from '../src/api/circulatoryDecoders';
 import type {CirculatoryClient} from '../src/api/circulatoryClient';
 import {value,sourceTime,bloodGasSummary} from '../src/demo/evidencePresentation';
 const config={start:'2026-10-08T08:00:00+00:00',end:'2026-10-08T10:00:00+00:00',releasedExample:'released',withheldExample:'withheld'};
 function setup(hosted=false,executionEnabled=false,raw:object=fixtures.state){
   const state=decodeCirculatoryState({...raw,execution_enabled:executionEnabled});
-  const client={circulatoryState:vi.fn().mockResolvedValue({data:state}),circulatoryHistory:vi.fn().mockResolvedValue({data:fixtures.history}),circulatoryLookup:vi.fn().mockResolvedValue({data:decodeCirculatoryExecution(fixtures.released)}),circulatoryPrepare:vi.fn(),circulatoryExecute:vi.fn()};
+  const client={circulatoryState:vi.fn().mockResolvedValue({data:state}),circulatoryHistory:vi.fn().mockResolvedValue({data:decodeCirculatoryHistory(fixtures.history)}),circulatoryLookup:vi.fn().mockResolvedValue({data:decodeCirculatoryExecution(fixtures.released)}),circulatoryPrepare:vi.fn(),circulatoryExecute:vi.fn()};
   render(<ComprehensiveDemo client={client as unknown as CirculatoryClient} config={{...config,hosted}}/>);return {client,state};
 }
 async function ready(){await screen.findByRole('heading',{name:'Cardiac output + echo'});}
@@ -107,9 +107,16 @@ it('combines ABG, cardiac output and echo in one patient summary with exact sour
   expect(within(summary).getByRole('button',{name:'Open summary source pH m7-ABG-PH'})).toHaveTextContent('7.31 (unit: 1)');
   expect(within(summary).getByRole('button',{name:'Open summary source Cardiac output m7-CO'})).toHaveTextContent('4.50 L/min');
   expect(within(summary).getByRole('button',{name:'Open summary source LVOT VTI m7-VTI'})).toHaveTextContent('17.5 cm');
+  const item=state.assembly.snapshot.items.find(i=>i.fact.id==='m7-RVSP')!;
+  const reference={kind:'circulatory_echo',id:'m7-RVSP',version:'1'};
+  const history=decodeCirculatoryHistory({...fixtures.history,
+    context:{...fixtures.history.context,assembly_request:expanded.assembly_request,assembly_digest:expanded.assembly_digest},
+    reference,revisions:[{fact:item.fact,ingestion:item.ingestion}]},{reference,patient_id:'synthetic-p1',encounter_id:'synthetic-e1'});
+  client.circulatoryHistory.mockResolvedValueOnce({data:history});
   fireEvent.click(within(summary).getByRole('button',{name:'Open summary source Estimated RVSP m7-RVSP'}));
   expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveFocus();
-  fireEvent.click(screen.getByRole('button',{name:'Inspect revision history'}));await screen.findByText('2 retained revisions at this cutoff');
+  fireEvent.click(screen.getByRole('button',{name:'Inspect revision history'}));await screen.findByText('1 retained revision at this cutoff');
+  expect(screen.getByRole('region',{name:'Bounded source revision history'})).toHaveTextContent('m7-RVSP / 1');
   expect(client.circulatoryHistory).toHaveBeenCalledWith(state.state_context,{kind:'circulatory_echo',id:'m7-RVSP',version:'1'});
   expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
 });
@@ -158,4 +165,37 @@ it('labels qualitative PH source wording without presenting its preserved raw ta
   expect(inspector).toHaveTextContent('Qualitative echo findings are source-report assertions, not directly measured diagnoses.');
   expect(inspector).not.toHaveTextContent('Source assertion: direct measurement');
   expect(inspector).toHaveTextContent('no invasive confirmation or PAH subtype established');
+});
+
+
+it('explains complementary streams with source-linked uncertainty and no execution',async()=>{
+  const {client,state}=setup(false,false,expanded);await ready();fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
+  const explanation=screen.getByRole('region',{name:'How the evidence fits together'});
+  expect(explanation).toHaveTextContent('Patient-level relationship: not established');
+  expect(explanation).toHaveTextContent('3 of 3 evidence streams have records');
+  expect(explanation).toHaveTextContent('Source quality labels are not confidence in a combined interpretation.');
+  const uncertainty=within(explanation).getByRole('region',{name:'What remains uncertain'});
+  expect(uncertainty).toHaveTextContent('Recorded quality: unknown');
+  expect(uncertainty).toHaveTextContent('Sample context not recorded');
+  expect(uncertainty).toHaveTextContent('RVOT obstruction not documented');
+  fireEvent.click(within(uncertainty).getByRole('button',{name:'Inspect uncertainty Cardiac output m7-PICCO-CO'}));
+  expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveTextContent('m7-PICCO-CO / 1');
+  expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveTextContent('unknown');
+  expect(client.circulatoryState).toHaveBeenCalledTimes(1);expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
+  expect(state.execution_enabled).toBe(false);
+});
+
+it('explanation source links preserve exact value spelling and open the original source',async()=>{
+  setup(false,false,expanded);await ready();fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
+  const gases=screen.getByRole('region',{name:'Blood sample and oxygen context'});
+  const details=within(gases).getByText('Recorded sources behind this explanation (8)');fireEvent.click(details);
+  const source=await within(gases).findByRole('button',{name:'Explain source PaCO₂ m7-ABG-PACO2'});
+  expect(source).toHaveTextContent('48.0 mmHg');fireEvent.click(source);
+  expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveTextContent('m7-ABG-PACO2 / 1');
+  expect(screen.getByRole('region',{name:'Blood gas sample context'})).toHaveTextContent('40 %');
+});
+
+it('explanation is withheld with the rest of summary browsing when execution is enabled',async()=>{
+  setup(true,true,expanded);await screen.findByRole('alert');fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
+  expect(screen.queryByRole('region',{name:'How the evidence fits together'})).not.toBeInTheDocument();
 });

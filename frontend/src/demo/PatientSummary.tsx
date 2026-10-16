@@ -1,3 +1,4 @@
+import {EvidenceExplanation} from './PatientEvidenceExplanation';
 import type {CirculatoryItem} from '../api/circulatoryTypes';
 import {bloodGasSummary,method,quality,record,sourceTime,title,value,words} from './evidencePresentation';
 
@@ -16,6 +17,7 @@ function context(item:CirculatoryItem){
 export function PatientSummary({items,patientId,encounterId,start,end,onInspect}:Props){
   return <section aria-label="Combined patient evidence summary" className="demo-summary">
     <div className="demo-summary-intro"><h2>One patient, evidence together</h2><p>Read blood gases and sample-time settings beside recorded flow, pressures and echo findings. Open any source to inspect its exact revision and correction history.</p><p>Patient: {patientId} · Encounter: {encounterId}</p><p><strong>Recorded review window:</strong> {start} → {end}</p><p>These records are grouped for browsing. A shared time or study label does not establish simultaneity or clinical agreement. No combined diagnosis, score, treatment recommendation or new inference is generated.</p></div>
+    <EvidenceExplanation items={items} onInspect={onInspect}/>
     <div className="demo-summary-panels">{sections.map(section=>{
       const records=items.filter(item=>section.kinds.includes(item.fact.kind));
       return <section key={section.id} className="demo-summary-panel" aria-label={section.title}><h3>{section.title}</h3><p>{section.description}</p>
