@@ -47,6 +47,12 @@ describe('M7 complete runtime decoders',()=>{
     expect(()=>reconciliation({status:'committed_match',execution:null},scope)).toThrow();
     expect(()=>history(fixtures.history,{...scope,reference:{kind:'circulatory_pressure',id:'other',version:'1'}})).toThrow();
   });
+  it.each(['NaN','Infinity','0x10',' 1E-7'])('rejects non-Decimal source quantity %s',value=>{
+    const v:any=clone(fixtures.exponent_state);v.assembly.snapshot.items.find((i:any)=>i.fact.id==='m7-CO').fact.result.quantity.value=value;expect(()=>state(v,scope)).toThrow();
+  });
+  it('preserves finite Decimal exponent strings from an actual backend response',()=>{
+    const decoded=state(fixtures.exponent_state,scope);const co:any=decoded.assembly.snapshot.items.find(i=>i.fact.id==='m7-CO')!.fact;expect(co.result.quantity.value).toBe('1E-7');
+  });
   it('preserves Decimal/source time strings and accepts every family',()=>{
     const v=state(fixtures.state,scope);
     expect(new Set(v.assembly.snapshot.items.map(i=>i.fact.kind)).size).toBe(15);

@@ -3258,7 +3258,7 @@
       "additionalProperties": false,
       "properties": {
         "value": {
-          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "pattern": "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$",
           "title": "Value",
           "type": "string"
         },
@@ -9390,7 +9390,7 @@
       "additionalProperties": false,
       "properties": {
         "value": {
-          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "pattern": "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$",
           "title": "Value",
           "type": "string"
         },
