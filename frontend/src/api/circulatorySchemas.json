@@ -681,6 +681,78 @@
       "title": "Binding",
       "type": "object"
     },
+    "BloodGasContext": {
+      "additionalProperties": false,
+      "description": "Source-recorded respiratory context; no derived ratios or interpretation.",
+      "properties": {
+        "collected": {
+          "$ref": "#/$defs/ClinicalInstant"
+        },
+        "fio2": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactQuantity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "oxygen_device": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedConcept"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ventilator_mode": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedConcept"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "peep": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactQuantity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "provenance": {
+          "$ref": "#/$defs/BoundedProvenance"
+        },
+        "limitations": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Limitations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "collected",
+        "provenance"
+      ],
+      "title": "BloodGasContext",
+      "type": "object"
+    },
     "BoundedProvenance": {
       "additionalProperties": false,
       "properties": {
@@ -4297,7 +4369,11 @@
             "cvo2",
             "do2",
             "vo2",
-            "extraction_ratio"
+            "extraction_ratio",
+            "ph",
+            "paco2",
+            "bicarbonate",
+            "base_excess"
           ],
           "title": "Concept",
           "type": "string"
@@ -4318,6 +4394,17 @@
           "anyOf": [
             {
               "$ref": "#/$defs/SourceCode"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "blood_gas_context": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BloodGasContext"
             },
             {
               "type": "null"

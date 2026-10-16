@@ -465,18 +465,33 @@ class PerfusionObservation(Measurement):
     regional_site: RecordedConcept | None = None
 
 
+class BloodGasContext(Contract):
+    """Source-recorded respiratory context; no derived ratios or interpretation."""
+    collected: ClinicalInstant
+    fio2: ExactQuantity | None = None
+    oxygen_device: RecordedConcept | None = None
+    ventilator_mode: RecordedConcept | None = None
+    peep: ExactQuantity | None = None
+    provenance: BoundedProvenance
+    limitations: Notes = ()
+
+
 class OxygenTransport(Measurement):
     kind: Literal['circulatory_oxygen'] = 'circulatory_oxygen'
     concept: Literal['sao2', 'spo2', 'scvo2', 'svo2', 'hemoglobin', 'pao2', 'pvo2',
-        'cao2', 'cvo2', 'do2', 'vo2', 'extraction_ratio']
+        'cao2', 'cvo2', 'do2', 'vo2', 'extraction_ratio',
+        'ph', 'paco2', 'bicarbonate', 'base_excess']
     sample_type: Literal['arterial', 'central_venous', 'mixed_venous', 'peripheral_venous',
                          'noninvasive', 'unknown']
     specimen: SourceCode | None = None
+    blood_gas_context: BloodGasContext | None = Field(default=None, exclude_if=lambda v: v is None)
 
     @model_validator(mode='after')
     def sample_identity(self):
+        if self.blood_gas_context is not None and (self.acquisition.method != 'blood_gas' or self.sample_type == 'noninvasive'):
+            raise ValueError('blood gas context requires a sampled blood gas acquisition')
         expected = {'scvo2': 'central_venous', 'svo2': 'mixed_venous',
-                    'sao2': 'arterial', 'spo2': 'noninvasive'}
+                    'sao2': 'arterial', 'spo2': 'noninvasive', 'paco2': 'arterial'}
         if self.concept in expected and self.sample_type not in (expected[self.concept], 'unknown'):
             raise ValueError('oxygen concept contradicts sample context')
         return self

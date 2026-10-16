@@ -21,9 +21,11 @@ def test_comprehensive_fixture_browses_all_families_and_retained_examples_while_
         with TestClient(create_app(config,engine=engine)) as client:
             state=client.get(P+'/patient-state-v3',params={k:manifest[k] for k in ('review_start','review_end')}).json()
             assert state['execution_enabled'] is False
-            items=state['assembly']['snapshot']['items'];assert len(items)==26
-            assert {i['fact']['kind'] for i in items}==set(M7_FACTS)
+            items=state['assembly']['snapshot']['items'];assert len(items)==41
+            assert {i['fact']['kind'] for i in items}==set(M7_FACTS)-{'circulatory_device_prediction'}
             by_id={i['fact']['id']:i for i in items}
+            assert 'm7-HPI' not in by_id
+            assert manifest['recorded_families']==14 and manifest['optional_hpi_included'] is False
             assert by_id['m7-CO']['fact']['result']['quantity']['value']=='4.50'
             assert by_id['m7-CO']['fact']['acquisition']['method']=='bolus_thermodilution'
             assert all(by_id[id]['fact']['acquisition']['method']=='echo' for id in ('m7-ECHO','m7-EF','m7-VTI'))
@@ -56,4 +58,51 @@ def test_comprehensive_bootstrap_refuses_to_replace_existing_data(tmp_path):
         with transaction(engine) as repo:before=repo.capture_cutoff().fact_watermark
         with pytest.raises(ValueError,match='fresh disposable'):bootstrap(engine)
         with transaction(engine) as repo:assert repo.capture_cutoff().fact_watermark==before
+    finally:engine.dispose()
+
+
+def test_expanded_abg_echo_records_survive_canonical_roundtrip_and_old_oxygen_is_unchanged():
+    from app.demo.comprehensive import demo_facts, replace
+    from app.demo.circulatory import facts
+    from app.models.clinical import hemodynamics as h
+    from app.persistence.canonical import canonical_payload
+    from pydantic import ValidationError
+    by_id={f.id:f for f in demo_facts()}
+    expected={'PH':('ph','7.31'),'PACO2':('paco2','48.0'),'PAO2':('pao2','78.0'),
+        'HCO3':('bicarbonate','23.0'),'BE':('base_excess','-2.0'),
+        'SAO2':('sao2','95.0'),'HB':('hemoglobin','10.2')}
+    for suffix,(analyte,value) in expected.items():
+        fact=by_id['m7-ABG-'+suffix]
+        decoded=h.OxygenTransport.model_validate_json(fact.model_dump_json())
+        assert canonical_payload(decoded)==canonical_payload(fact)
+        assert decoded.concept==analyte and str(decoded.result.quantity.value)==value
+        assert decoded.sample_type=='arterial'
+        assert decoded.blood_gas_context.collected==decoded.occurred
+        assert str(decoded.blood_gas_context.fio2.value)=='40'
+        assert str(decoded.blood_gas_context.peep.value)=='5'
+        assert decoded.specimen.code=='synthetic-arterial-sample-1'
+    old=next(f for f in facts() if f.id=='m7-SVO2')
+    assert 'blood_gas_context' not in old.model_dump(mode='json')
+    assert canonical_payload(h.OxygenTransport.model_validate_json(old.model_dump_json()))==canonical_payload(old)
+    with pytest.raises(ValidationError):replace(by_id['m7-ABG-PACO2'],sample_type='mixed_venous')
+    with pytest.raises(ValidationError):replace(by_id['m7-ABG-PH'],sample_type='noninvasive')
+    with pytest.raises(ValidationError):
+        h.BloodGasContext.model_validate({**by_id['m7-ABG-PH'].blood_gas_context.model_dump(),
+            'fio2':{'value':0.4,'unit':{'raw':'1','status':'unresolved','limitation':'test'}}})
+    for id in ('m7-RVSP','m7-PASP','m7-TRV','m7-RVD','m7-RVFUNCTION','m7-SEPTUM','m7-VALVE','m7-EFFUSION','m7-PH','m7-VTI'):
+        fact=by_id[id]
+        assert canonical_payload(h.EchoObservation.model_validate_json(fact.model_dump_json()))==canonical_payload(fact)
+    assert by_id['m7-RVSP'].production=='source_calculated'
+    assert 'no invasive confirmation or PAH subtype' in by_id['m7-PH'].result.finding.raw_display
+    with_hpi=demo_facts(include_hpi=True)
+    assert len(with_hpi)==42 and len({f.kind for f in with_hpi})==15
+    assert next(f for f in with_hpi if f.id=='m7-HPI').acquisition.device.technology=='AcumenIQ'
+
+
+def test_bootstrap_with_optional_hpi_keeps_gate_closed_and_receipts_available(tmp_path):
+    engine=create_database(tmp_path/'hpi.sqlite3')
+    try:
+        result=bootstrap(engine,include_hpi=True)
+        assert result['recorded_families']==15 and result['optional_hpi_included'] is True
+        assert result['execution_enabled'] is False
     finally:engine.dispose()

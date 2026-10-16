@@ -5,7 +5,7 @@ from pathlib import Path
 from uuid import UUID
 from sqlalchemy import inspect
 from app.demo.patient_state import bootstrap as patient_bootstrap
-from app.demo.circulatory import facts, manifest, TARGET, SIMULATION_AT, PROV, device
+from app.demo.circulatory import facts, manifest, TARGET, SIMULATION_AT, PROV, device, quantity, code, concept, stamp
 from app.models.clinical.common import LineageEdge
 from app.models.clinical import hemodynamics as h
 from app.persistence.database import create_database
@@ -21,7 +21,7 @@ WITHHELD_ID=UUID('00000000-0000-4000-8000-00000000c902')
 
 def replace(model,**fields):return type(model).model_validate({**model.model_dump(),**fields})
 
-def demo_facts():
+def demo_facts(*, include_hpi=False):
     original=list(facts());support=original[11]
     methods={'circulatory_cardiac':'bolus_thermodilution','circulatory_volume':'transpulmonary_thermodilution',
         'circulatory_dynamic':'pulse_contour','circulatory_perfusion':'bedside_examination',
@@ -34,6 +34,7 @@ def demo_facts():
             if fact.kind=='circulatory_cardiac':fields['device']=device('SwanGanz','HemoSphere')
             if fact.kind in ('circulatory_volume','circulatory_dynamic'):fields['device']=device()
             original[n]=replace(fact,acquisition=replace(acq,**fields))
+    if not include_hpi:original=[f for f in original if f.kind!='circulatory_device_prediction']
     p=original[0]
     original[0]=replace(p,acquisition=replace(p.acquisition,calibration_provenance=replace(PROV,
         upstream=(LineageEdge(target=support.reference,relationship='derived_from'),))))
@@ -42,7 +43,41 @@ def demo_facts():
         result=replace(template.result,quantity=replace(template.result.quantity,value=value,
             unit=replace(template.result.quantity.unit,raw=unit)))
         return replace(template,id=id,concept=concept,result=result,**extra)
-    return (*original,
+    oxygen=next(f for f in original if f.id=='m7-SVO2')
+    abg_context=h.BloodGasContext(collected=stamp(),fio2=quantity('40','%'),
+        oxygen_device=concept('Synthetic invasive ventilation'),ventilator_mode=concept('Volume assist-control'),
+        peep=quantity('5','cmH2O'),provenance=PROV,
+        limitations=('Synthetic sample-time settings, not current ventilator settings.',))
+    abg=[]
+    for id,analyte,v,u in (
+        ('PH','ph','7.31','1'),('PACO2','paco2','48.0','mmHg'),('PAO2','pao2','78.0','mmHg'),
+        ('HCO3','bicarbonate','23.0','mmol/L'),('BE','base_excess','-2.0','mmol/L'),
+        ('SAO2','sao2','95.0','%'),('HB','hemoglobin','10.2','g/dL')):
+        acq=replace(oxygen.acquisition,quality=h.EvidenceQuality(status='acceptable',provenance=PROV),
+            limitations=(('Source-reported analyzer calculation; not calculated by ClinRx.',)
+                if analyte in ('bicarbonate','base_excess') else ()))
+        abg.append(numeric(oxygen,'m7-ABG-'+id,analyte,v,u,sample_type='arterial',
+            specimen=code('synthetic-arterial-sample-1'),blood_gas_context=abg_context,acquisition=acq,
+            production='source_calculated' if analyte in ('bicarbonate','base_excess') else 'direct_measurement',
+            calculation_method=code('source-analyzer-calculation') if analyte in ('bicarbonate','base_excess') else None))
+    def finding(id,analyte,text):
+        return replace(echo,id=id,concept=analyte,result=h.QualitativeResult(finding=concept(text)))
+    return (*original,*abg,
+        numeric(echo,'m7-RVSP','estimated_rvsp','45.0','mmHg',production='source_calculated',
+            calculation_method=code('echo-report-rvsp-estimate'),
+            disclosures=('Source-reported estimate using TR velocity and estimated RAP 5 mmHg; not recalculated by ClinRx. RVOT obstruction not documented.',)),
+        numeric(echo,'m7-PASP','estimated_pasp','45.0','mmHg',production='source_calculated',
+            calculation_method=code('echo-report-pasp-estimate'),
+            disclosures=('Source-reported PASP estimate; equivalence to RVSP is not established by ClinRx. RVOT obstruction not documented.',)),
+        numeric(echo,'m7-TRV','tr_measurement','3.16','m/s',
+            disclosures=('Source-reported peak TR velocity; envelope adequacy reported acceptable in the synthetic study.',)),
+        numeric(echo,'m7-RVD','rv_dimension','4.3','cm',
+            disclosures=('Source-reported RV basal end-diastolic dimension, apical four-chamber view.',)),
+        finding('m7-RVFUNCTION','rv_function','Synthetic report: mildly reduced RV systolic function.'),
+        finding('m7-SEPTUM','septal_configuration','Synthetic report: systolic septal flattening.'),
+        finding('m7-VALVE','valve_finding','Synthetic report: moderate tricuspid regurgitation.'),
+        finding('m7-EFFUSION','pericardial_effusion','Synthetic report: no pericardial effusion visualized.'),
+        finding('m7-PH','structural_finding','Synthetic report: findings suggest pulmonary hypertension; no invasive confirmation or PAH subtype established.'),
         numeric(echo,'m7-EF','lv_ef','55.0','%'),
         numeric(echo,'m7-VTI','lvot_vti','17.5','cm'),
         numeric(co,'m7-CI','ci','2.60','L/min/m2'),
@@ -71,10 +106,10 @@ def prepare_example(engine,execution_id):
         inference_request=request,assembly_request=ar,inference_cutoff=cutoff,
         expected_inference_digest=digest(inference),requested_at=SIMULATION_AT)
 
-def bootstrap(engine):
+def bootstrap(engine, *, include_hpi=False):
     if inspect(engine).has_table('fact_revision'):raise ValueError('choose a fresh disposable database')
     patient_bootstrap(engine)
-    seeded=demo_facts()
+    seeded=demo_facts(include_hpi=include_hpi)
     with transaction(engine) as repo:
         for fact in seeded:repo.append_fact(fact,target=TARGET)
     released=execute_circulatory_review(engine,prepare_example(engine,RELEASED_ID),clock=lambda:SIMULATION_AT)
@@ -87,7 +122,8 @@ def bootstrap(engine):
     withheld=execute_circulatory_review(engine,pending,clock=lambda:SIMULATION_AT)
     assert released.record.decision.outcome=='released' and withheld.record.decision.outcome=='withheld'
     return {**manifest(),'released_example':str(RELEASED_ID),'withheld_example':str(WITHHELD_ID),
-        'dataset':'comprehensive-synthetic-demo/1','recorded_families':15,'execution_enabled':False}
+        'dataset':'comprehensive-synthetic-demo/2','recorded_families':len({f.kind for f in seeded}),
+        'optional_hpi_included':include_hpi,'execution_enabled':False}
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--database',type=Path,required=True)

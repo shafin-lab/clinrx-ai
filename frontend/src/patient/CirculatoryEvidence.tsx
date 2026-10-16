@@ -4,7 +4,7 @@ export const families:Record<string,string>={
   circulatory_pressure:'Pressure and PAC/RHC',circulatory_cardiac:'Cardiac output and performance',
   circulatory_volume:'Volume and lung water',circulatory_dynamic:'Dynamic measurements',
   circulatory_device_prediction:'Recorded device predictions',circulatory_perfusion:'Tissue perfusion',
-  circulatory_oxygen:'Oxygen transport',circulatory_lactate:'Lactate',circulatory_echo:'Echo and POCUS',
+  circulatory_oxygen:'Oxygen transport and blood gases',circulatory_lactate:'Lactate',circulatory_echo:'Echo and POCUS',
   circulatory_ecg:'ECG and rhythm',circulatory_vasoactive:'Vasoactive events',circulatory_monitoring:'Edwards / PiCCO and monitoring context',
   circulatory_assessment:'Dynamic assessment episodes',circulatory_event:'Recorded circulatory events',circulatory_signal:'Signal manifests'};
 export function reference(item:CirculatoryItem):ExactRef{return {kind:item.fact.kind,id:item.fact.id,version:item.fact.revision};}

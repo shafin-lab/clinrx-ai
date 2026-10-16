@@ -38,7 +38,7 @@ def test_hosted_browsing_real_history_and_retained_receipts_do_not_write(hosted)
         state=client.get(PREFIX+'/patient-state-v3',params={k:manifest[k] for k in ('review_start','review_end')})
         assert state.status_code==200 and state.json()['execution_enabled'] is False
         data=state.json();items=data['assembly']['snapshot']['items']
-        assert len(items)==26 and len({i['fact']['kind'] for i in items})==15
+        assert len(items)==41 and len({i['fact']['kind'] for i in items})==14
         for id,outcome in ((RELEASED_ID,'released'),(WITHHELD_ID,'withheld')):
             result=client.get(PREFIX+'/circulatory-reviews/'+str(id))
             assert result.status_code==200 and result.json()['record']['decision']['outcome']==outcome

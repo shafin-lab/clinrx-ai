@@ -115,7 +115,7 @@ command recovery and does not replace hosted restart/access acceptance.
    trigger while publishing review source.
 3. Build the container on the intended platform; verify startup, pinned runtime,
    HTTPS origin behavior and provider access protection, including API fetches.
-4. At the actual preview URL verify 26 records / all 15 families, CO/CI, echo,
+4. At the actual preview URL verify 41 records / 14 present of 15 supported families (HPI optional and absent by default), CO/CI, ABG, broader echo,
    device/method evidence, unknowns, exact source details, CAL/1→CAL/2 history,
    ingestion timeline, and the released/withheld examples. Verify mobile layout.
 5. Verify execution_enabled=false; blocked prepare/execute routes cannot write;

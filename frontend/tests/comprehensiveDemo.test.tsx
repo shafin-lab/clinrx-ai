@@ -1,13 +1,14 @@
 import {afterEach,describe,it,expect,vi} from 'vitest';
 import {render,screen,fireEvent,waitFor,cleanup} from '@testing-library/react';
 import fixtures from './fixtures/circulatory.json';
+import expanded from './fixtures/comprehensive.json';
 import {ComprehensiveDemo} from '../src/demo/ComprehensiveDemo';
 import {decodeCirculatoryState,decodeCirculatoryExecution} from '../src/api/circulatoryDecoders';
 import type {CirculatoryClient} from '../src/api/circulatoryClient';
-import {value,sourceTime} from '../src/demo/evidencePresentation';
+import {value,sourceTime,bloodGasSummary} from '../src/demo/evidencePresentation';
 const config={start:'2026-10-08T08:00:00+00:00',end:'2026-10-08T10:00:00+00:00',releasedExample:'released',withheldExample:'withheld'};
-function setup(hosted=false,executionEnabled=false){
-  const state=decodeCirculatoryState({...fixtures.state,execution_enabled:executionEnabled});
+function setup(hosted=false,executionEnabled=false,raw:object=fixtures.state){
+  const state=decodeCirculatoryState({...raw,execution_enabled:executionEnabled});
   const client={circulatoryState:vi.fn().mockResolvedValue({data:state}),circulatoryHistory:vi.fn().mockResolvedValue({data:fixtures.history}),circulatoryLookup:vi.fn().mockResolvedValue({data:decodeCirculatoryExecution(fixtures.released)}),circulatoryPrepare:vi.fn(),circulatoryExecute:vi.fn()};
   render(<ComprehensiveDemo client={client as unknown as CirculatoryClient} config={{...config,hosted}}/>);return {client,state};
 }
@@ -53,3 +54,46 @@ it('hosted presentation identifies the preview and hides legacy execution tools'
 it('blocks evidence browsing and replaces the disabled badge if the server reports execution enabled',async()=>{const {client}=setup(true,true);await screen.findByRole('alert');expect(screen.getByText('Browsing is blocked: the server did not confirm that new execution is disabled.')).toBeInTheDocument();expect(screen.getByText('Execution configuration unverified — browsing blocked')).toBeInTheDocument();expect(screen.queryByText('New execution disabled in this demo')).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Inspect Cardiac output m7-CO'})).not.toBeInTheDocument();expect(client.circulatoryPrepare).not.toHaveBeenCalled();});
 
 it('moves keyboard focus to selected source details and returns it when closed',async()=>{setup(true);await ready();const trigger=screen.getByRole('button',{name:'Inspect Cardiac output m7-CO'});trigger.focus();fireEvent.click(trigger);expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveFocus();fireEvent.click(screen.getByRole('button',{name:'Close source'}));expect(trigger).toHaveFocus();});
+
+
+it('shows broader source echo evidence and estimate limitations without inferring PH or PAH',async()=>{
+  const {client}=setup(false,false,expanded);await ready();
+  for(const name of ['Inspect LVOT VTI m7-VTI','Inspect Estimated RVSP m7-RVSP','Inspect TR peak velocity m7-TRV','Inspect RV function m7-RVFUNCTION','Inspect Pulmonary hypertension report finding m7-PH'])expect(screen.getByRole('button',{name})).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button',{name:'Inspect Estimated RVSP m7-RVSP'}));
+  expect(screen.getByRole('region',{name:'Echo study context'})).toHaveTextContent('Echo estimates remain separate from invasive pressure measurements. No PH diagnosis or PAH subtype is inferred.');
+  expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveTextContent('45.0 mmHg');
+  expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
+});
+
+it('browses ABG independently of lactate, retains exact quantities and sample context',async()=>{
+  setup(false,false,expanded);await ready();
+  fireEvent.click(screen.getByRole('button',{name:/ABG \+ oxygen transport/}));
+  for(const name of ['Inspect pH m7-ABG-PH','Inspect PaCO₂ m7-ABG-PACO2','Inspect PaO₂ m7-ABG-PAO2','Inspect Bicarbonate m7-ABG-HCO3','Inspect Base excess m7-ABG-BE','Inspect Haemoglobin m7-ABG-HB','Inspect Lactate m7-L'])expect(screen.getByRole('button',{name})).toBeInTheDocument();
+  expect(screen.getByRole('button',{name:'Inspect pH m7-ABG-PH'})).toHaveTextContent('7.31 (unit: 1)');
+  expect(screen.getByRole('button',{name:'Inspect Base excess m7-ABG-BE'})).toHaveTextContent('-2.0');
+  fireEvent.click(screen.getByRole('button',{name:'Inspect PaCO₂ m7-ABG-PACO2'}));
+  expect(screen.getByRole('region',{name:'Blood gas sample context'})).toHaveTextContent('arterial');
+  expect(screen.getByRole('region',{name:'Blood gas sample context'})).toHaveTextContent('synthetic-arterial-sample-1');
+  expect(screen.getByRole('region',{name:'Blood gas sample context'})).toHaveTextContent('40 %');
+  expect(screen.getByRole('region',{name:'Blood gas sample context'})).toHaveTextContent('5 cmH2O');
+  const summary=screen.getByText('Sample-time oxygen and ventilation settings');fireEvent.click(summary);fireEvent(summary.closest('details')!,new Event('toggle'));
+  await screen.findAllByText('Volume assist-control');expect(screen.getByText('40')).toBeInTheDocument();expect(screen.getByText('cmH2O')).toBeInTheDocument();
+});
+
+it('keeps missing HPI optional and exposes all supported families without inventing a prediction',async()=>{
+  const {client}=setup(true,false,expanded);await ready();
+  expect(screen.getByText('HPI is optional.',{exact:false})).toHaveTextContent('Not recorded in this case');
+  expect(screen.getByRole('region',{name:'Recorded-state coverage'})).toHaveTextContent('14 / 15');
+  fireEvent.click(screen.getByRole('button',{name:'Evidence library'}));
+  fireEvent.change(screen.getByLabelText('Evidence family'),{target:{value:'circulatory_device_prediction'}});
+  expect(screen.getByText('0 recorded items in this view')).toBeInTheDocument();expect(screen.queryByRole('button',{name:/Inspect Source HPI/})).not.toBeInTheDocument();
+  expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
+});
+
+
+it('does not substitute arterial ABG settings into a mixed-venous record lacking sample context',()=>{
+  const state=decodeCirculatoryState(expanded),item=state.assembly.snapshot.items.find(i=>i.fact.id==='m7-SVO2')!;
+  const summary=Object.fromEntries(bloodGasSummary(item));
+  expect(summary['Sample type']).toBe('mixed venous');
+  for(const field of ['Collected','Sample-time FiO₂','Ventilator mode','Sample-time PEEP'])expect(summary[field]).toBe('Not recorded');
+});
