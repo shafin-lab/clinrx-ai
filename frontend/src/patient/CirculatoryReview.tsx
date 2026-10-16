@@ -63,7 +63,7 @@ export function CirculatoryReview({client,config}:{client:CirculatoryClient;conf
     catch(e){if(current())setError(failure(e));}
   });}
   async function retained(){if(busy||locked)return;await work(async current=>{
-    setError(undefined);try{const reply=await client.circulatoryLookup(lookup);if(current())setResult(reply.data);}
+    setError(undefined);setResult(undefined);try{const reply=await client.circulatoryLookup(lookup);if(current())setResult(reply.data);}
     catch(e){if(current())setError(failure(e));}
   });}
   function reset(){if(unresolved||busy)return;setPrepared(undefined);setResult(undefined);setPhase(view?'ready':'idle');setError(undefined);}
@@ -98,7 +98,7 @@ export function CirculatoryReview({client,config}:{client:CirculatoryClient;conf
     {phase==='completion_unknown'&&<p>Completion is uncertain. The original command and execution UUID are retained in this page. Reconcile explicitly; do not create a replacement execution.</p>}
     {phase==='absent'&&<p>No retained match was found. Absence is not proof of rollback. Nothing has been retried. An explicit retry uses the same command and UUID.</p>}
     {phase==='preparation_unknown'&&<p>Preparation completion could not be confirmed. No execution command is available; nothing will be executed or re-prepared automatically. Keep this page open for investigation.</p>}
-    {result&&<section aria-label="Retained circulatory result"><h3>Retained decision</h3>{result.statement?<p>{result.statement}</p>:<p>Withheld: no released statement.</p>}
+    {result&&<section aria-label="Retained circulatory result"><h3>Retained decision</h3><p>Retained execution UUID: <code>{result.execution_id}</code></p>{result.statement?<p>{result.statement}</p>:<p>Withheld: no released statement.</p>}
       <RecordedDisclosure label="Complete original evidence, terminal witnesses and governance receipt" value={result.record}/><p>Receipt ingested: {result.ingested_at}</p></section>}
     <button disabled={unresolved||busy} onClick={reset}>Start another circulatory selection</button>
     <form onSubmit={e=>{e.preventDefault();void retained();}}><label>Retained circulatory execution UUID<input value={lookup} disabled={busy||locked} onChange={e=>setLookup(e.target.value)}/></label><button disabled={!lookup||busy||locked}>Look up retained circulatory execution</button></form>
