@@ -1,0 +1,240 @@
+{
+  "Id": "29bea9c6ba49ce97898fae3001829c26c8bb3e33e07c0589362ad167f65ab64a",
+  "Created": "2026-10-16T10:13:39.698919879Z",
+  "Path": "python",
+  "Args": [
+    "-m",
+    "uvicorn",
+    "app.demo.hosting:from_environment",
+    "--factory",
+    "--host",
+    "0.0.0.0",
+    "--port",
+    "8080",
+    "--workers",
+    "1",
+    "--no-proxy-headers",
+    "--no-access-log"
+  ],
+  "State": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-10-16T10:13:49.801119757Z",
+    "FinishedAt": "2026-10-16T10:16:30.728377254Z"
+  },
+  "Image": "sha256:4345bbac82a23b75451cb77d2ae1a4c0fda800912b2905985dba0e05c66733f2",
+  "ResolvConfPath": "/var/lib/docker/containers/29bea9c6ba49ce97898fae3001829c26c8bb3e33e07c0589362ad167f65ab64a/resolv.conf",
+  "HostnamePath": "/var/lib/docker/containers/29bea9c6ba49ce97898fae3001829c26c8bb3e33e07c0589362ad167f65ab64a/hostname",
+  "HostsPath": "/var/lib/docker/containers/29bea9c6ba49ce97898fae3001829c26c8bb3e33e07c0589362ad167f65ab64a/hosts",
+  "LogPath": "/var/lib/docker/containers/29bea9c6ba49ce97898fae3001829c26c8bb3e33e07c0589362ad167f65ab64a/29bea9c6ba49ce97898fae3001829c26c8bb3e33e07c0589362ad167f65ab64a-json.log",
+  "Name": "/clinrx-review-28496c4",
+  "RestartCount": 0,
+  "Driver": "overlayfs",
+  "Platform": "linux",
+  "MountLabel": "",
+  "ProcessLabel": "",
+  "AppArmorProfile": "docker-default",
+  "ExecIDs": null,
+  "HostConfig": {
+    "Binds": null,
+    "ContainerIDFile": "",
+    "LogConfig": {
+      "Type": "json-file",
+      "Config": {}
+    },
+    "NetworkMode": "bridge",
+    "PortBindings": {
+      "8080/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "5182"
+        }
+      ]
+    },
+    "RestartPolicy": {
+      "Name": "no",
+      "MaximumRetryCount": 0
+    },
+    "AutoRemove": false,
+    "VolumeDriver": "",
+    "VolumesFrom": null,
+    "ConsoleSize": [
+      0,
+      0
+    ],
+    "CapAdd": null,
+    "CapDrop": [
+      "ALL"
+    ],
+    "CgroupnsMode": "private",
+    "Dns": null,
+    "DnsOptions": [],
+    "DnsSearch": [],
+    "ExtraHosts": null,
+    "GroupAdd": null,
+    "IpcMode": "private",
+    "Cgroup": "",
+    "Links": null,
+    "OomScoreAdj": 0,
+    "PidMode": "",
+    "Privileged": false,
+    "PublishAllPorts": false,
+    "ReadonlyRootfs": false,
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "UTSMode": "",
+    "UsernsMode": "",
+    "ShmSize": 67108864,
+    "Runtime": "runc",
+    "Isolation": "",
+    "CpuShares": 0,
+    "Memory": 536870912,
+    "NanoCpus": 1000000000,
+    "CgroupParent": "",
+    "BlkioWeight": 0,
+    "BlkioWeightDevice": [],
+    "BlkioDeviceReadBps": [],
+    "BlkioDeviceWriteBps": [],
+    "BlkioDeviceReadIOps": [],
+    "BlkioDeviceWriteIOps": [],
+    "CpuPeriod": 0,
+    "CpuQuota": 0,
+    "CpuRealtimePeriod": 0,
+    "CpuRealtimeRuntime": 0,
+    "CpusetCpus": "",
+    "CpusetMems": "",
+    "Devices": [],
+    "DeviceCgroupRules": null,
+    "DeviceRequests": null,
+    "MemoryReservation": 0,
+    "MemorySwap": 1073741824,
+    "MemorySwappiness": null,
+    "OomKillDisable": null,
+    "PidsLimit": 128,
+    "Ulimits": null,
+    "CpuCount": 0,
+    "CpuPercent": 0,
+    "IOMaximumIOps": 0,
+    "IOMaximumBandwidth": 0,
+    "MaskedPaths": [
+      "/proc/acpi",
+      "/proc/asound",
+      "/proc/interrupts",
+      "/proc/kcore",
+      "/proc/keys",
+      "/proc/latency_stats",
+      "/proc/sched_debug",
+      "/proc/scsi",
+      "/proc/timer_list",
+      "/proc/timer_stats",
+      "/sys/devices/virtual/powercap",
+      "/sys/firmware"
+    ],
+    "ReadonlyPaths": [
+      "/proc/bus",
+      "/proc/fs",
+      "/proc/irq",
+      "/proc/sys",
+      "/proc/sysrq-trigger"
+    ]
+  },
+  "Storage": {
+    "RootFS": {
+      "Snapshot": {
+        "Name": "overlayfs"
+      }
+    }
+  },
+  "Mounts": [],
+  "Config": {
+    "Hostname": "29bea9c6ba49",
+    "Domainname": "",
+    "User": "10001:10001",
+    "AttachStdin": false,
+    "AttachStdout": false,
+    "AttachStderr": false,
+    "ExposedPorts": {
+      "8080/tcp": {}
+    },
+    "Tty": false,
+    "OpenStdin": false,
+    "StdinOnce": false,
+    "Env": [
+      "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "LANG=C.UTF-8",
+      "GPG_KEY=A035C8C19219BA821ECEA86B64E628F8D684696D",
+      "PYTHON_VERSION=3.11.6",
+      "PYTHON_PIP_VERSION=23.2.1",
+      "PYTHON_SETUPTOOLS_VERSION=65.5.1",
+      "PYTHON_GET_PIP_URL=https://github.com/pypa/get-pip/raw/4cfa4081d27285bda1220a62a5ebf5b4bd749cdb/public/get-pip.py",
+      "PYTHON_GET_PIP_SHA256=9cc01665956d22b3bf057ae8287b035827bfd895da235bcea200ab3b811790b6",
+      "PYTHONPATH=/app/backend",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "CLINRX_SYNTHETIC_DATABASE=/app/synthetic/synthetic.sqlite3",
+      "CLINRX_SYNTHETIC_FRONTEND=/app/frontend-dist"
+    ],
+    "Cmd": [
+      "python",
+      "-m",
+      "uvicorn",
+      "app.demo.hosting:from_environment",
+      "--factory",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8080",
+      "--workers",
+      "1",
+      "--no-proxy-headers",
+      "--no-access-log"
+    ],
+    "Image": "clinrx-synthetic-demo:28496c4-local",
+    "Volumes": null,
+    "WorkingDir": "/app",
+    "Entrypoint": null,
+    "Labels": {
+      "org.opencontainers.image.revision": "28496c46494dcafc5440b92712eab382cd3c80de"
+    }
+  },
+  "NetworkSettings": {
+    "SandboxID": "",
+    "SandboxKey": "",
+    "Ports": {},
+    "Networks": {
+      "bridge": {
+        "IPAMConfig": null,
+        "Links": null,
+        "Aliases": null,
+        "DriverOpts": null,
+        "GwPriority": 0,
+        "NetworkID": "c0d2ca89cf4868d9146c55fa7d768802bb8a8e3dd27472cbf2caf5ad778df9c7",
+        "EndpointID": "",
+        "Gateway": "",
+        "IPAddress": "",
+        "MacAddress": "",
+        "IPPrefixLen": 0,
+        "IPv6Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "DNSNames": null
+      }
+    }
+  },
+  "ImageManifestDescriptor": {
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "digest": "sha256:e03f8f6ae2b8dd30c2aab206d7db9301419ae42b42f16e28ccb889755d8219d0",
+    "size": 2387,
+    "platform": {
+      "architecture": "arm64",
+      "os": "linux"
+    }
+  }
+}

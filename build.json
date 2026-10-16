@@ -1,0 +1,23 @@
+{
+  "command": [
+    "docker",
+    "--host",
+    "unix:///Users/mohammedshafiqshajahan/.colima/clinrx-review-28496c4/docker.sock",
+    "build",
+    "--platform",
+    "linux/arm64",
+    "--progress",
+    "plain",
+    "--label",
+    "org.opencontainers.image.revision=28496c46494dcafc5440b92712eab382cd3c80de",
+    "--file",
+    "deploy/synthetic-demo.Dockerfile",
+    "--tag",
+    "clinrx-synthetic-demo:28496c4-local",
+    "."
+  ],
+  "started_unix": 1792145551.8660412,
+  "duration_seconds": 57.47,
+  "exit_code": 0,
+  "docker_config": "dedicated test configuration; no user credentials"
+}

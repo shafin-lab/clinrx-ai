@@ -1,0 +1,28 @@
+{
+  "command": [
+    "docker",
+    "--host",
+    "unix:///Users/mohammedshafiqshajahan/.colima/clinrx-review-28496c4/docker.sock",
+    "run",
+    "--detach",
+    "--name",
+    "clinrx-review-28496c4",
+    "--publish",
+    "127.0.0.1:5182:8080",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--pids-limit",
+    "128",
+    "--memory",
+    "512m",
+    "--cpus",
+    "1",
+    "clinrx-synthetic-demo:28496c4-local"
+  ],
+  "started_unix": 1792145619.514712,
+  "duration_seconds": 0.29,
+  "exit_code": 0,
+  "docker_config": "dedicated test configuration; no user credentials"
+}

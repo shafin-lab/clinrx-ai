@@ -1,0 +1,289 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: SYNTHETIC PREVIEW
+  - generic: New execution disabled in this demo
+- complementary:
+  - paragraph: EVIDENCE WORKSPACE
+  - generic: "01"
+  - strong: Synthetic ICU case
+  - generic: Fabricated patient · ICU–01
+  - navigation "Demo views":
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library" [active]:
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+  - strong: One case, many sources
+  - paragraph: Compare what was recorded, where it came from, and what changed.
+  - generic: Recorded evidence and source interpretations are not a ClinRx diagnosis.
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / EVIDENCE LIBRARY
+  - heading "Evidence library" [level=1]
+  - paragraph: Cardiac output, echo, pressure and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - region "Recorded-state coverage":
+    - strong: "26"
+    - generic: recorded items
+    - strong: 15 / 15
+    - generic: evidence families present
+    - strong: "1"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - text: Search recorded evidence
+  - searchbox "Search recorded evidence"
+  - text: Evidence family
+  - combobox "Evidence family":
+    - option "All 15 families" [selected]
+    - option "Pressure and PAC/RHC (4)"
+    - option "Cardiac output and performance (6)"
+    - option "Volume and lung water (1)"
+    - option "Dynamic measurements (1)"
+    - option "Recorded device predictions (1)"
+    - option "Tissue perfusion (1)"
+    - option "Oxygen transport (1)"
+    - option "Lactate (1)"
+    - option "Echo and POCUS (3)"
+    - option "ECG and rhythm (2)"
+    - option "Vasoactive events (1)"
+    - option "Edwards / PiCCO and monitoring context (1)"
+    - option "Dynamic assessment episodes (1)"
+    - option "Recorded circulatory events (1)"
+    - option "Signal manifests (1)"
+  - status: 26 recorded items in this view
+  - region "Evidence library results":
+    - heading "Pressure and PAC/RHC" [level=2]
+    - button "Inspect Mean arterial pressure m7-P":
+      - generic: Mean arterial pressure
+      - strong: 65.00mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-P / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Central venous pressure m7-PAC":
+      - generic: Central venous pressure
+      - strong: 8.0mmHg
+      - generic: pac
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-PAC / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Pulmonary artery wedge pressure m7-RHC":
+      - generic: Pulmonary artery wedge pressure
+      - strong: 12.0mmHg
+      - generic: rhc
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-RHC / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Central venous pressure m7-UNPLACED":
+      - generic: Central venous pressure
+      - strong: Not established
+      - generic: unknown
+      - generic: unplaced · Time not established
+      - text: m7-UNPLACED / 1
+      - generic: "Quality: acceptable"
+    - heading "Cardiac output and performance" [level=2]
+    - button "Inspect Cardiac output m7-CONTEXT-CO":
+      - generic: Cardiac output
+      - strong: 4.500L/min
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: contextual · 2026-10-08T06:00:00+00:00
+      - text: m7-CONTEXT-CO / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac index m7-CI":
+      - generic: Cardiac index
+      - strong: 2.60L/min/m2
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-CI / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac output m7-CO":
+      - generic: Cardiac output
+      - strong: 4.50L/min
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-CO / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac output m7-FLOTRAC":
+      - generic: Cardiac output
+      - strong: 4.40L/min
+      - generic: pulse contour · FloTrac · HemoSphere
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-FLOTRAC / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac output m7-PICCO-CO":
+      - generic: Cardiac output
+      - strong: 4.60L/min
+      - generic: pulse contour · PiCCO · PiCCO
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-PICCO-CO / 1
+      - generic: "Quality: unknown"
+    - button "Inspect Cardiac output m7-VOLUMEVIEW":
+      - generic: Cardiac output
+      - strong: 4.60L/min
+      - generic: transpulmonary thermodilution · VolumeView · EV1000
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-VOLUMEVIEW / 1
+      - generic: "Quality: acceptable"
+    - heading "Volume and lung water" [level=2]
+    - button "Inspect Global end-diastolic volume m7-GEDV":
+      - generic: Global end-diastolic volume
+      - strong: 700mL
+      - generic: transpulmonary thermodilution · PiCCO · PiCCO
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-GEDV / 1
+      - generic: "Quality: acceptable"
+    - heading "Dynamic measurements" [level=2]
+    - button "Inspect Stroke volume variation m7-SVV":
+      - generic: Stroke volume variation
+      - strong: 12.0%
+      - generic: pulse contour · PiCCO · PiCCO
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-SVV / 1
+      - generic: "Quality: acceptable"
+    - heading "Recorded device predictions" [level=2]
+    - button "Inspect Source HPI m7-HPI":
+      - generic: Source HPI
+      - strong: "301"
+      - generic: invasive arterial · AcumenIQ · HemoSphere
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-HPI / 1
+      - generic: "Quality: acceptable"
+    - heading "Tissue perfusion" [level=2]
+    - button "Inspect Capillary refill m7-CRT":
+      - generic: Capillary refill
+      - strong: 2.0s
+      - generic: bedside examination
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-CRT / 1
+      - generic: "Quality: acceptable"
+    - heading "Oxygen transport" [level=2]
+    - button "Inspect Mixed venous oxygen saturation m7-SVO2":
+      - generic: Mixed venous oxygen saturation
+      - strong: 65.0%
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-SVO2 / 1
+      - generic: "Quality: acceptable"
+    - heading "Lactate" [level=2]
+    - button "Inspect Lactate m7-L":
+      - generic: Lactate
+      - strong: 2.000mmol/L
+      - generic: laboratory
+      - generic: in window · 2026-10-08T08:01:00+00:00
+      - text: m7-L / 1
+      - generic: "Quality: acceptable"
+    - heading "Echo and POCUS" [level=2]
+    - button "Inspect TAPSE m7-ECHO":
+      - generic: TAPSE
+      - strong: 18mm
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ECHO / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect LV ejection fraction m7-EF":
+      - generic: LV ejection fraction
+      - strong: 55.0%
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-EF / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect LVOT VTI m7-VTI":
+      - generic: LVOT VTI
+      - strong: 17.5cm
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-VTI / 1
+      - generic: "Quality: acceptable"
+    - heading "ECG and rhythm" [level=2]
+    - button "Inspect QTc m7-ECG":
+      - generic: QTc
+      - strong: 420ms
+      - generic: ecg 12 lead
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ECG / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Source rhythm m7-RHYTHM":
+      - generic: Source rhythm
+      - strong: Synthetic source-reported rhythm
+      - generic: ecg monitor
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-RHYTHM / 1
+      - generic: "Quality: acceptable"
+    - heading "Vasoactive events" [level=2]
+    - button "Inspect Vasopressor event m7-V":
+      - generic: Vasopressor event
+      - strong: norepinephrineinitiation
+      - generic: Method not supplied
+      - generic: in window · 2026-10-08T08:02:00+00:00
+      - text: m7-V / 1
+      - generic: "Quality: not recorded"
+    - heading "Edwards / PiCCO and monitoring context" [level=2]
+    - button "Inspect Monitor configuration m7-CAL":
+      - generic: Monitor configuration
+      - strong: Source device configuration
+      - generic: source other
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-CAL / 2
+      - generic: "Quality: acceptable"
+    - heading "Dynamic assessment episodes" [level=2]
+    - button "Inspect Passive leg raise episode m7-PLR":
+      - generic: Passive leg raise episode
+      - strong: Recorded source
+      - generic: Method not supplied
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-PLR / 1
+      - generic: "Quality: not recorded"
+    - heading "Recorded circulatory events" [level=2]
+    - button "Inspect Position change m7-EVENT":
+      - generic: Position change
+      - strong: Recorded position change
+      - generic: Method not supplied
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-EVENT / 1
+      - generic: "Quality: not recorded"
+    - heading "Signal manifests" [level=2]
+    - button "Inspect Arterial pressure signal m7-SIGNAL":
+      - generic: Arterial pressure signal
+      - strong: unavailable
+      - generic: Method not supplied
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-SIGNAL / 1
+      - generic: "Quality: not recorded"
+  - complementary "Selected source evidence":
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "LV ejection fraction" [level=2]
+    - paragraph: 55.0 %
+    - paragraph:
+      - code: m7-EF / 1
+    - paragraph: echo
+    - term: Source time
+    - definition: 2026-10-08T08:00:00+00:00
+    - term: Recorded quality
+    - definition: acceptable
+    - term: Source unit mapping
+    - definition: unresolved
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx.synthetic.demo
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

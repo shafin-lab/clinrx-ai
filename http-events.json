@@ -1,0 +1,400 @@
+[
+  {
+    "name": "state",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/patient-state-v3?review_start=2026-10-08T08%3A00%3A00%2B00%3A00&review_end=2026-10-08T10%3A00%3A00%2B00%3A00",
+    "method": "GET",
+    "status": 200,
+    "started_unix": 1792145627.355219,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:46 GMT",
+      "server": "uvicorn",
+      "content-length": "119640",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "a044cdf0-c891-4d95-97f0-c501b66daa39",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "040899bf58b6e7908447cda1ba04cecef8c64e9d4cca7301b0da8b9d07cd9fab"
+  },
+  {
+    "name": "history",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-evidence-history",
+    "method": "POST",
+    "status": 200,
+    "started_unix": 1792145627.9448361,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "9385",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "68f1a8b4-78f1-4eb9-acd7-067159fd09cc",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "38282ccd37148967ad42771fcf9593ea788a6a1dc3c9b6311b3da9f0ae628e86"
+  },
+  {
+    "name": "released",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-reviews/00000000-0000-4000-8000-00000000c901",
+    "method": "GET",
+    "status": 200,
+    "started_unix": 1792145627.962305,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "102240",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "841bc9b5-ac0c-483a-9301-c42bb6d0ee9a",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "a26f9c83e29390cf5ff2ab0483412b9396e89d7b23f4441ae28011c1fd930e0f"
+  },
+  {
+    "name": "withheld",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-reviews/00000000-0000-4000-8000-00000000c902",
+    "method": "GET",
+    "status": 200,
+    "started_unix": 1792145628.191993,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "101952",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "39c6ffe0-c7e7-4048-99fb-7dc4879b243c",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "76725652fda82f9b9e54e21e23ff3a461e4dc0f999689b718136d4dc15e1d20a"
+  },
+  {
+    "name": "blocked-circulatory-review-preparations",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-review-preparations",
+    "method": "POST",
+    "status": 404,
+    "started_unix": 1792145628.4130728,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  },
+  {
+    "name": "blocked-circulatory-reviews",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-reviews",
+    "method": "POST",
+    "status": 404,
+    "started_unix": 1792145628.415444,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  },
+  {
+    "name": "blocked-circulatory-review-reconciliations",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-review-reconciliations",
+    "method": "POST",
+    "status": 404,
+    "started_unix": 1792145628.416901,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  },
+  {
+    "name": "blocked-temporal-review-preparations",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/temporal-review-preparations",
+    "method": "POST",
+    "status": 404,
+    "started_unix": 1792145628.418519,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  },
+  {
+    "name": "blocked-temporal-reviews",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/temporal-reviews",
+    "method": "POST",
+    "status": 404,
+    "started_unix": 1792145628.41997,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  },
+  {
+    "name": "blocked-file-9",
+    "path": "/docs",
+    "method": "GET",
+    "status": 404,
+    "started_unix": 1792145628.421175,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  },
+  {
+    "name": "blocked-file-10",
+    "path": "/openapi.json",
+    "method": "GET",
+    "status": 404,
+    "started_unix": 1792145628.422254,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  },
+  {
+    "name": "blocked-file-11",
+    "path": "/synthetic/synthetic.sqlite3",
+    "method": "GET",
+    "status": 404,
+    "started_unix": 1792145628.423404,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  },
+  {
+    "name": "blocked-file-12",
+    "path": "/api/v1/patients/foreign/encounters/synthetic-e1/patient-state-v3",
+    "method": "GET",
+    "status": 404,
+    "started_unix": 1792145628.424802,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  },
+  {
+    "name": "malformed-history",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-evidence-history",
+    "method": "POST",
+    "status": 422,
+    "started_unix": 1792145628.426099,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:47 GMT",
+      "server": "uvicorn",
+      "content-length": "267",
+      "content-type": "application/json",
+      "x-correlation-id": "5585358b-fd2f-4660-9e05-136502a81d9f",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "2ad2a7ad65649998defaf3271ad7bf1ec586bdce9f14b7380a79f831f1e1cf35"
+  },
+  {
+    "name": "released-after-restart",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-reviews/00000000-0000-4000-8000-00000000c901",
+    "method": "GET",
+    "status": 200,
+    "started_unix": 1792145631.256889,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:51 GMT",
+      "server": "uvicorn",
+      "content-length": "102240",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "41baf06c-aa14-488e-9d6e-b956dc19e8e5",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "a26f9c83e29390cf5ff2ab0483412b9396e89d7b23f4441ae28011c1fd930e0f"
+  },
+  {
+    "name": "withheld-after-restart",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-reviews/00000000-0000-4000-8000-00000000c902",
+    "method": "GET",
+    "status": 200,
+    "started_unix": 1792145631.626503,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:51 GMT",
+      "server": "uvicorn",
+      "content-length": "101952",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "07e4865b-4375-4fad-9e43-5bc187c9a1db",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "76725652fda82f9b9e54e21e23ff3a461e4dc0f999689b718136d4dc15e1d20a"
+  },
+  {
+    "name": "stale-context",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-evidence-history",
+    "method": "POST",
+    "status": 422,
+    "started_unix": 1792145631.919677,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:51 GMT",
+      "server": "uvicorn",
+      "content-length": "135",
+      "content-type": "application/json",
+      "x-correlation-id": "3a34bfa6-d793-49b6-9496-c157f270484f",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "6e640c1b31e8bfc82a6a85b25ec0a4b1af3d33c06575c486ce1b5800a641c0f3"
+  },
+  {
+    "name": "fresh-state",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/patient-state-v3?review_start=2026-10-08T08%3A00%3A00%2B00%3A00&review_end=2026-10-08T10%3A00%3A00%2B00%3A00",
+    "method": "GET",
+    "status": 200,
+    "started_unix": 1792145631.923415,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:51 GMT",
+      "server": "uvicorn",
+      "content-length": "119640",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "d4bce733-3f90-4ce1-829b-54564cb1b554",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "079795be08a9888d203a89cf5b80102514c3165a6a9ac25e5b3454a7160ffd7f"
+  },
+  {
+    "name": "fresh-history",
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-evidence-history",
+    "method": "POST",
+    "status": 200,
+    "started_unix": 1792145632.27353,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 10:13:51 GMT",
+      "server": "uvicorn",
+      "content-length": "9385",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "3ae53644-f5ea-426f-a7ea-3674a0f3a970",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "sha256": "de33baa47a4c67238c3baff058167a03b37372ab9c3df335802255d454b9ddfc"
+  }
+]

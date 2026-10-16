@@ -1,0 +1,86 @@
+{
+  "Id": "sha256:4345bbac82a23b75451cb77d2ae1a4c0fda800912b2905985dba0e05c66733f2",
+  "RepoTags": [
+    "clinrx-synthetic-demo:28496c4-local"
+  ],
+  "RepoDigests": [
+    "clinrx-synthetic-demo@sha256:4345bbac82a23b75451cb77d2ae1a4c0fda800912b2905985dba0e05c66733f2"
+  ],
+  "Comment": "buildkit.dockerfile.v0",
+  "Created": "2026-10-16T15:43:26.700134436+05:30",
+  "Config": {
+    "User": "10001:10001",
+    "ExposedPorts": {
+      "8080/tcp": {}
+    },
+    "Env": [
+      "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "LANG=C.UTF-8",
+      "GPG_KEY=A035C8C19219BA821ECEA86B64E628F8D684696D",
+      "PYTHON_VERSION=3.11.6",
+      "PYTHON_PIP_VERSION=23.2.1",
+      "PYTHON_SETUPTOOLS_VERSION=65.5.1",
+      "PYTHON_GET_PIP_URL=https://github.com/pypa/get-pip/raw/4cfa4081d27285bda1220a62a5ebf5b4bd749cdb/public/get-pip.py",
+      "PYTHON_GET_PIP_SHA256=9cc01665956d22b3bf057ae8287b035827bfd895da235bcea200ab3b811790b6",
+      "PYTHONPATH=/app/backend",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "CLINRX_SYNTHETIC_DATABASE=/app/synthetic/synthetic.sqlite3",
+      "CLINRX_SYNTHETIC_FRONTEND=/app/frontend-dist"
+    ],
+    "Cmd": [
+      "python",
+      "-m",
+      "uvicorn",
+      "app.demo.hosting:from_environment",
+      "--factory",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8080",
+      "--workers",
+      "1",
+      "--no-proxy-headers",
+      "--no-access-log"
+    ],
+    "WorkingDir": "/app",
+    "Labels": {
+      "org.opencontainers.image.revision": "28496c46494dcafc5440b92712eab382cd3c80de"
+    },
+    "ArgsEscaped": true
+  },
+  "Architecture": "arm64",
+  "Os": "linux",
+  "Size": 66223837,
+  "RootFS": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:f4e4d9391e1332a5b50063a92ccc434b92fccd14962fd9c37711d864d587d98a",
+      "sha256:69dcd0feb16103c078ceac5561749e40b35ad9e9cc88c8d5c3cd002dc9944540",
+      "sha256:ac17319224d2165663fd9cef732ad3fd280a4f9e19134bdaf18ed9f862680ec2",
+      "sha256:6e1ef740abe8efce9cdd531455ccb6b1633d53ab6a46b2b279712668975c325d",
+      "sha256:e1681be0734433594d56807af15a34938f0dba1929f164492b1a575f800394a2",
+      "sha256:84036682e418ddeef87c50c0e2ded6d8fffaaafe466398f54e68f358bb06aa21",
+      "sha256:b252367f7ba738db535759fe215be86e65b729c38d542dce9d1b98540ec26161",
+      "sha256:c35626093785a4c869595d47921b665c9dd2c0fe3f335846b9b51c840eac6ba0",
+      "sha256:faa6d04225f1f5c89037ca5c6b5a6df9bb5153a00deee695e3339eed883c2dbd",
+      "sha256:b5e36f1669f38b989a103ff0ca08faa7973d4bf5ba189285b749bf085af00c21",
+      "sha256:4bea960e3889557febcd9da32aabab6ba38cb0bacc8dd0092c76ae696bebd53d"
+    ]
+  },
+  "Metadata": {
+    "LastTagTime": "2026-10-16T10:13:28.947260963Z"
+  },
+  "Descriptor": {
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "digest": "sha256:4345bbac82a23b75451cb77d2ae1a4c0fda800912b2905985dba0e05c66733f2",
+    "size": 856
+  },
+  "Identity": {
+    "Build": [
+      {
+        "Ref": "4bsi4k35u8wkzof66flfr6au7",
+        "CreatedAt": "2026-10-16T15:43:29.392828585+05:30"
+      }
+    ]
+  }
+}
