@@ -10,12 +10,23 @@ from app.models.clinical.recorded_v2 import ref_key, RecordedTime
 
 def consumed_binding_roles(fact):
     if isinstance(fact,h.PressureObservation):
-        return ('device','calibration','zeroing') if fact.acquisition.method=='invasive_arterial' else ('device',)
+        if fact.acquisition.method=='invasive_arterial':
+            return ('device','calibration','zeroing')
+        if _applied_cuff_calibration(fact):
+            return ('device','calibration')
+        return ('device',)
     if isinstance(fact,h.LactateResult): return ('specimen',)
     if isinstance(fact,h.VasoactiveEvent): return ('delivery',)
     if isinstance(fact,h.MonitoringEvent):
         return ('device',fact.event_type) if fact.event_type in ('calibration','zeroing') else ('device',)
     return ()
+
+
+def _applied_cuff_calibration(fact):
+    acquisition = fact.acquisition
+    return (acquisition.method=='automated_cuff'
+            and acquisition.calibration_application is not None
+            and acquisition.calibration_application.status=='applied')
 
 
 def _consumed_assertions(fact):
@@ -36,8 +47,10 @@ def _consumed_assertions(fact):
     if not isinstance(fact,h.LactateResult): visit(fact.occurred)
     if isinstance(fact,h.PressureObservation):
         visit(fact.acquisition.quality.provenance)
+        if fact.acquisition.method=='invasive_arterial' or _applied_cuff_calibration(fact):
+            visit(fact.acquisition.calibration_provenance)
         if fact.acquisition.method=='invasive_arterial':
-            visit(fact.acquisition.calibration_provenance);visit(fact.acquisition.zeroing_provenance)
+            visit(fact.acquisition.zeroing_provenance)
             visit(fact.acquisition.zeroing_application)
         visit(fact.acquisition.calibration_application)
         if fact.acquisition.device is not None: visit(fact.acquisition.support_provenance)
