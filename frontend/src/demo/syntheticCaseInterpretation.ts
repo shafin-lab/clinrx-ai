@@ -20,6 +20,13 @@ export function matchesAuthoredCase(items:CirculatoryItem[],scope:CaseScope){
   if(relevant.length!==expected.size||new Set(relevant.map(key)).size!==relevant.length)return false;
   return relevant.every(i=>expected.get(key(i))===stable(pin(i)));
 }
+// Narrative labels resolve through immutable authoring pins, never a bare-ID input map.
+const pinnedKeys=new Map(pins.items.map(item=>[item.fact.id,key(item)]));
+export function matchedAuthoredSources(items:CirculatoryItem[],scope:CaseScope){
+  if(!matchesAuthoredCase(items,scope))return null;
+  const byReference=new Map(items.filter(item=>item.fact.kind!=='circulatory_device_prediction').map(item=>[key(item),item]));
+  return (id:string)=>{const reference=pinnedKeys.get(id);return reference?byReference.get(reference):undefined;};
+}
 export const casePanels=[
   {id:'abg',title:'ABG: possible respiratory contribution',sources:['m7-ABG-PH','m7-ABG-PACO2','m7-ABG-HCO3','m7-ABG-BE','m7-ABG-PAO2','m7-ABG-SAO2','m7-ABG-HB'],
     possibility:'The pH and PaCO₂ pattern could include a respiratory contribution to acidemia. PaO₂ in the recorded supplemental-oxygen context also raises a possible oxygenation concern.',

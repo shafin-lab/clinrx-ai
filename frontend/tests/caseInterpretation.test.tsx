@@ -1,6 +1,7 @@
 import {it,expect,vi,afterEach} from 'vitest';
 import {render,screen,cleanup,fireEvent} from '@testing-library/react';
 import expanded from './fixtures/comprehensive.json';
+import collision from './fixtures/authoredCaseHpiCollision.json';
 import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
 import type {CirculatoryItem} from '../src/api/circulatoryTypes';
 import {record} from '../src/demo/evidencePresentation';
@@ -9,6 +10,8 @@ import {PatientCaseInterpretation} from '../src/demo/PatientCaseInterpretation';
 const scope={patientId:'synthetic-p1',encounterId:'synthetic-e1',start:'2026-10-08T08:00:00Z',end:'2026-10-08T10:00:00Z'};
 const items=()=>decodeCirculatoryState(structuredClone(expanded)).assembly.snapshot.items;
 afterEach(cleanup);
+
+function withRealHpi(order:'first'|'last'){return decodeCirculatoryState(structuredClone(collision[order])).assembly.snapshot.items;}
 it('matches only the complete authored case, without mutating inputs or assigning clinical eligibility',()=>{
   const sources=items(),before=JSON.stringify(sources);expect(matchesAuthoredCase(sources,scope)).toBe(true);
   expect(matchesAuthoredCase([...sources].reverse(),scope)).toBe(true);expect(JSON.stringify(sources)).toBe(before);
@@ -47,10 +50,22 @@ it('allows equivalent fixture window spellings and object-key order without nume
   const sources=items();sources[0].fact=Object.fromEntries(Object.entries(sources[0].fact).reverse()) as CirculatoryItem['fact'];
   expect(matchesAuthoredCase(sources,{...scope,start:'2026-10-08T08:00:00+00:00',end:'2026-10-08T10:00:00+00:00'})).toBe(true);
 });
-it('keeps HPI optional and unconsumed while still requiring patient correspondence',()=>{
-  const sources=items(),hpi=structuredClone(sources[0]);hpi.fact.kind='circulatory_device_prediction';hpi.fact.id='optional-hpi';
-  expect(matchesAuthoredCase([...sources,hpi],scope)).toBe(true);hpi.fact.binding.target.encounter_id='other';
-  expect(matchesAuthoredCase([...sources,hpi],scope)).toBe(false);
+it('keeps a legitimate decoded HPI optional and unconsumed while requiring patient correspondence',()=>{
+ const sources=withRealHpi('last');expect(matchesAuthoredCase(sources,scope)).toBe(true);
+ sources.find(i=>i.fact.kind==='circulatory_device_prediction')!.fact.binding.target.encounter_id='other';
+ expect(matchesAuthoredCase(sources,scope)).toBe(false);
+});
+it.each(['first','last'] as const)('never replaces pinned ABG evidence with a decoded colliding HPI placed %s',order=>{
+ const sources=withRealHpi(order),before=JSON.stringify(sources),onInspect=vi.fn();
+ const original=sources.find(i=>i.fact.kind==='circulatory_oxygen'&&i.fact.id==='m7-ABG-PH')!;
+ const hpi=sources.find(i=>i.fact.kind==='circulatory_device_prediction')!;
+ expect(hpi.fact.concept).toBe('hpi');expect(hpi.fact.id).toBe(original.fact.id);expect(matchesAuthoredCase(sources,scope)).toBe(true);
+ render(<PatientCaseInterpretation {...scope} items={sources} onInspect={onInspect}/>);
+ expect(screen.getByRole('region',{name:'Possible combined interpretation'})).toBeInTheDocument();
+ const button=screen.getByRole('button',{name:'Case source pH m7-ABG-PH'});expect(button).toHaveTextContent('7.31 (unit: 1)');
+ expect(screen.getByText(/Arterial pH source context/)).toHaveTextContent('Sample type: arterial');
+ expect(screen.getByText(/Arterial pH source context/)).toHaveTextContent('Sample-time FiO₂: 40 %');
+ fireEvent.click(button);expect(onInspect).toHaveBeenCalledWith(original,button);expect(onInspect.mock.calls[0][0].fact.kind).toBe('circulatory_oxygen');expect(JSON.stringify(sources)).toBe(before);
 });
 it('separates source facts from hypotheses and opens the exact original record',()=>{
   const sources=items(),onInspect=vi.fn();render(<PatientCaseInterpretation {...scope} items={sources} onInspect={onInspect}/>);
