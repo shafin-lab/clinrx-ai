@@ -1,0 +1,61 @@
+CLINRX DIRECTOR — COMPREHENSIVE SYNTHETIC DEMO REVIEW
+
+VERDICT: ACCEPTED FOR SHAREABLE-PREVIEW PREPARATION.
+
+This is a useful evidence-review prototype beyond creatinine and microbiology. No blocking application defect was identified in the reviewed increment. It is not yet accepted as a hosted, friend-tested service: access protection, hosted configuration and final live usability checks remain release conditions.
+
+REVIEWED IDENTITIES
+Source: 8d3ce9cec1aa5c843cb25af385735d358fb02a44
+Tree: deaeb0e59f520b56a5ddf845f92609a502d42446
+Parent: 17e2064c3f1a1761876e9a42c5c7a131646d465c
+Evidence: cdde6b0ec2a83e9d2e3c266bb995e99569889fe5
+
+Git metadata confirms the source/tree/parent. The complete increment changes ten files. Clinical policy, protected workflows, transport decoders, schemas, migrations and dependency versions are unchanged.
+
+INDEPENDENTLY CHECKED EVIDENCE
+- All 106 published artifact checksums matched, with zero mismatches.
+- All ten changed source-file hashes matched the published identity record.
+- SQLite integrity passed: migration m7_0008, 32 fact-revision rows and exactly two retained receipts.
+- Both captured state responses contain 26 current records across all 15 families and execution_enabled=false. Their content/digests match database rows and the applicable cutoff.
+- Both retained receipts match stored canonical payloads and original response records. Eight complete evidence witnesses, repository/cutoff correspondence, inference dependencies and ingestion metadata passed independent data-only checks.
+- Released example c901 retains CAL/1 with terminal CAL/1; withheld example c902 retains CAL/1 with terminal CAL/2. Original evidence remains intact.
+- Fresh gate-rejection evidence contains a 422 response and unchanged repository-identity, fact and receipt rows, matching the database. Request/response hashes and original gate commitments recompute correctly.
+
+I inspected source, raw logs, captured DOM/screenshots and database evidence. I did not personally exercise the website or rerun the application, harness or full suites.
+
+COVERAGE AND PRACTICAL UTILITY
+The evidence supports cardiac output/index; TAPSE, LV EF and LVOT VTI; PAC/RHC pressure; rhythm; oxygen transport; lactate; vasoactive initiation; perfusion; and all remaining families. FloTrac/HemoSphere, PiCCO and VolumeView/EV1000 are recorded synthetic context, not device integrations.
+
+The overview → guided view → source inspector → revision history path has clear practical value: it makes recorded values traceable and exposes uncertainty and corrections. Retained examples explain why a provenance-only support correction can withhold a later review while preserving the original.
+
+Numeric strings, raw units, source timestamps and exact revisions remain faithful. Unresolved unit mapping is disclosed. Contextual, unplaced, unknown-quality and unavailable evidence stay visible; missing matches do not become normal findings. Featured cards are fixed presentation choices, not clinical rankings. The timeline explicitly uses ingestion order and does not claim acquisition-time ordering.
+
+This is one synthetic evidence workspace, not yet a multi-patient hospital operating system or a demonstration of improved clinical outcomes.
+
+READ-ONLY AND FIXTURE BOUNDARIES
+ComprehensiveDemo.tsx calls state, bounded history and retained lookup only. It has no prepare/execute action. Request-generation guards prevent late responses from replacing a different selection; failed lookup clears the previous receipt.
+
+comprehensive.py creates the two protected-workflow examples during explicit disposable fixture setup. The launcher performs that setup before starting the API; ordinary API startup does not seed these examples. Browsing does not create new reviews. The inspected API gate remains closed.
+
+VALIDATION QUALIFICATION
+Supplied raw logs show 4,223 backend tests and 431 frontend tests passing, with one existing backend warning. Those suites ran before commit creation; attribution to the committed working content is documented, not an independently witnessed run. Published source hashes agree.
+
+Exact-head typecheck/build logs pass. Final-checkpoint browser captures are distinct from earlier development captures. No hosted-CI run for this demo increment is claimed. Republishing evidence does not require another full-suite run by itself.
+
+NONBLOCKING FINDINGS / SMALLEST IMPROVEMENTS
+1. Source-inspector discoverability, narrow screens.
+   ComprehensiveDemo.tsx:42,71,81; demo.css:3–4.
+   At narrow widths the inspector follows the card list; selecting a card does not move focus, scroll or announce the update. Add an accessible “view selected source” destination or equivalent focus/announcement behavior. Verify by keyboard and mobile navigation.
+
+2. Configuration warning should be authoritative before hosting.
+   ComprehensiveDemo.tsx:58,65.
+   The header always says new execution is disabled, although another line handles execution_enabled=true. No mismatch occurs in the inspected data. Before sharing, reject that unexpected configuration or prominently replace the disabled badge with a warning.
+
+REQUIRED BEFORE A FRIEND RECEIVES A HOSTED LINK
+- Protect both UI and API with approved access controls, HTTPS and a synthetic-only database; no production credentials or integrations.
+- Enforce the intended read-only server surface. The “Existing review tools” link is not a security boundary: remove it from the shared experience or separately constrain its routes, including legacy write paths.
+- Prepare reproducible production-style startup, persistent retained fixtures and restart verification. Do not expose the loopback Vite development launcher directly.
+- Complete exact-source live desktop/mobile and keyboard guided tasks. Final desktop captures appear cropped and lack viewport metadata; the 390px no-overflow capture is from an earlier presentation stage. Neither establishes final live responsive acceptance.
+- Verify fresh-visitor access, safe API/error behavior, isolation and external reachability. Obtain separate approval for hosting provider, cost and duration.
+
+No production gate activation, merge, deployment or repository modification was performed or authorized. Durable browser-session command recovery remains deferred. This acceptance is preparation approval only, not clinical validation.

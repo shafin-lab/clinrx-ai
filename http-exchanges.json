@@ -1,0 +1,143 @@
+[
+  {
+    "name": "state",
+    "method": "GET",
+    "url": "http://127.0.0.1:5181/api/v1/patients/synthetic-p1/encounters/synthetic-e1/patient-state-v3?review_start=2026-10-08T08%3A00%3A00%2B00%3A00&review_end=2026-10-08T10%3A00%3A00%2B00%3A00",
+    "status": 200,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 09:31:38 GMT",
+      "server": "uvicorn",
+      "content-length": "119640",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "77d3058b-6ff2-4dbb-91ae-9e6d6075d335",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "response_sha256": "384a23056cdaca47e41ca00234da9e4b5b79cd5ab568306b72029c142714de4d"
+  },
+  {
+    "name": "history",
+    "method": "POST",
+    "url": "http://127.0.0.1:5181/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-evidence-history",
+    "status": 200,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 09:31:39 GMT",
+      "server": "uvicorn",
+      "content-length": "9385",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "977d39c6-f9c1-4ffb-b636-f89b2ba33597",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "response_sha256": "8a0b0e20746991c9f56cd04ac53f7abecd22036738526868002b290c8bd80489"
+  },
+  {
+    "name": "released",
+    "method": "GET",
+    "url": "http://127.0.0.1:5181/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-reviews/00000000-0000-4000-8000-00000000c901",
+    "status": 200,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 09:31:39 GMT",
+      "server": "uvicorn",
+      "content-length": "102240",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "f9f74d18-2b78-4bb7-aae8-9e046077ac50",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "response_sha256": "eb9ef7e982530190ec19704076db29e99c390c19bb30ac4360939c5479de89e7"
+  },
+  {
+    "name": "withheld",
+    "method": "GET",
+    "url": "http://127.0.0.1:5181/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-reviews/00000000-0000-4000-8000-00000000c902",
+    "status": 200,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 09:31:39 GMT",
+      "server": "uvicorn",
+      "content-length": "101952",
+      "content-type": "application/json",
+      "x-clinrx-mode": "historical-synthetic-simulation",
+      "x-correlation-id": "3b4ade80-b668-4d92-bf87-c76f45b9a116",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "response_sha256": "029ba88431bbc33bdf0c2329f81ffa51d1bfb663519e2fe33b2bd778cc925c03"
+  },
+  {
+    "name": "blocked-circulatory-review-preparations",
+    "method": "POST",
+    "url": "http://127.0.0.1:5181/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-review-preparations",
+    "status": 404,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 09:31:40 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "response_sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  },
+  {
+    "name": "blocked-circulatory-reviews",
+    "method": "POST",
+    "url": "http://127.0.0.1:5181/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-reviews",
+    "status": 404,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 09:31:40 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "response_sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  },
+  {
+    "name": "blocked-circulatory-review-reconciliations",
+    "method": "POST",
+    "url": "http://127.0.0.1:5181/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-review-reconciliations",
+    "status": 404,
+    "headers": {
+      "date": "Fri, 16 Oct 2026 09:31:40 GMT",
+      "server": "uvicorn",
+      "content-length": "20",
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-frame-options": "DENY",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "Connection": "close"
+    },
+    "response_sha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90"
+  }
+]

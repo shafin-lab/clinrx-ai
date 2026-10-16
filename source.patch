@@ -1,0 +1,630 @@
+diff --git a/backend/app/demo/hosting.py b/backend/app/demo/hosting.py
+new file mode 100644
+index 0000000..1665ad8
+--- /dev/null
++++ b/backend/app/demo/hosting.py
+@@ -0,0 +1,70 @@
++"""Separate read-only synthetic gateway. Never used by the normal API entry point."""
++import os
++import secrets
++from pathlib import Path
++from starlette.responses import JSONResponse
++from starlette.staticfiles import StaticFiles
++from app.api.config import APIConfig
++from app.demo.circulatory import SIMULATION_AT
++from app.demo.comprehensive import RELEASED_ID, WITHHELD_ID
++from app.main import create_app
++
++PREFIX = '/api/v1/patients/synthetic-p1/encounters/synthetic-e1'
++LOOKUPS = {PREFIX + '/circulatory-reviews/' + str(id) for id in (RELEASED_ID, WITHHELD_ID)}
++
++
++class SyntheticDemoGateway:
++    """Allow only the comprehensive workspace's three read operations.
++
++    History uses POST but does not append facts or receipts. All other API paths,
++    documentation, legacy operations and filesystem paths are unavailable.
++    """
++    def __init__(self, database: Path, frontend: Path, signing_key: str):
++        if not database.is_absolute() or not database.is_file():
++            raise ValueError('existing absolute synthetic fixture database required')
++        if not frontend.is_absolute() or not (frontend / 'index.html').is_file() or not (frontend / 'assets').is_dir():
++            raise ValueError('existing absolute frontend build directory required')
++        self.config = APIConfig(database_path=database, environment='local_synthetic_demo',
++            envelope_signing_key=signing_key, clock_mode='historical_simulation',
++            simulation_at=SIMULATION_AT, circulatory_execution_enabled=False)
++        self.core = create_app(self.config)
++        self.static = StaticFiles(directory=frontend, html=True, follow_symlink=False)
++
++    async def __call__(self, scope, receive, send):
++        if scope['type'] == 'lifespan':
++            return await self.core(scope, receive, send)
++        if scope['type'] != 'http':
++            return await send({'type': 'websocket.close', 'code': 1008})
++        path, method = scope['path'], scope['method']
++
++        async def protected_send(message):
++            if message['type'] == 'http.response.start':
++                headers = [(k, v) for k, v in message.get('headers', ()) if k.lower() != b'cache-control']
++                headers += [(b'cache-control', b'no-store'), (b'x-content-type-options', b'nosniff'),
++                    (b'referrer-policy', b'no-referrer'), (b'x-frame-options', b'DENY'),
++                    (b'content-security-policy', b"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'")]
++                message = {**message, 'headers': headers}
++            await send(message)
++
++        api_read = (method == 'GET' and (path == PREFIX + '/patient-state-v3' or path in LOOKUPS))
++        history_read = method == 'POST' and path == PREFIX + '/circulatory-evidence-history'
++        if api_read or history_read:
++            return await self.core(scope, receive, protected_send)
++        if method == 'GET' and path == '/health':
++            return await JSONResponse({'status': 'ok', 'mode': 'synthetic-read-only', 'execution_enabled': False})(scope, receive, protected_send)
++        if method in ('GET', 'HEAD') and (path == '/' or path.startswith('/assets/')):
++            # StaticFiles protects traversal. No source, database, manifest or SPA fallback.
++            try:
++                return await self.static(scope, receive, protected_send)
++            except Exception as error:
++                from starlette.exceptions import HTTPException
++                if not isinstance(error, HTTPException) or error.status_code != 404:
++                    raise
++        return await JSONResponse({'code': 'not_found'}, status_code=404)(scope, receive, protected_send)
++
++
++def from_environment():
++    # Separate namespace: no production env loading, gate switch or inherited key.
++    # One process owns the ephemeral state-context signing key. Startup never seeds.
++    return SyntheticDemoGateway(Path(os.environ['CLINRX_SYNTHETIC_DATABASE']),
++        Path(os.environ['CLINRX_SYNTHETIC_FRONTEND']), secrets.token_hex(32))
+diff --git a/deploy/synthetic-demo.Dockerfile b/deploy/synthetic-demo.Dockerfile
+new file mode 100644
+index 0000000..5e3fba6
+--- /dev/null
++++ b/deploy/synthetic-demo.Dockerfile
+@@ -0,0 +1,32 @@
++# Build locally first. Deployment requires Director approval and user authorization.
++FROM node:22.13.0-bookworm-slim AS frontend
++WORKDIR /build
++COPY frontend/package.json frontend/package-lock.json ./
++RUN npm ci
++COPY frontend/ ./
++RUN VITE_SYNTHETIC_HOSTED=true npm run build
++
++FROM python:3.11.6-slim-bookworm AS fixture
++WORKDIR /app
++COPY backend/requirements.txt backend/requirements-migrations.txt ./backend/
++RUN pip install --no-cache-dir -r backend/requirements-migrations.txt
++COPY backend/app ./backend/app
++COPY backend/alembic.ini ./backend/alembic.ini
++COPY backend/migrations ./backend/migrations
++ENV PYTHONPATH=/app/backend PYTHONDONTWRITEBYTECODE=1
++RUN mkdir /fixture && python -m app.demo.comprehensive --database /fixture/synthetic.sqlite3 > /fixture/manifest.json
++
++FROM python:3.11.6-slim-bookworm AS runtime
++WORKDIR /app
++COPY backend/requirements.txt backend/requirements-migrations.txt ./backend/
++# The fixture modules supplying retained IDs import the pinned migration package.
++RUN pip install --no-cache-dir -r backend/requirements-migrations.txt && useradd --uid 10001 --create-home demo
++COPY backend/app ./backend/app
++COPY --from=frontend /build/dist ./frontend-dist
++COPY --from=fixture --chown=10001:10001 /fixture /app/synthetic
++ENV PYTHONPATH=/app/backend PYTHONDONTWRITEBYTECODE=1 \
++    CLINRX_SYNTHETIC_DATABASE=/app/synthetic/synthetic.sqlite3 \
++    CLINRX_SYNTHETIC_FRONTEND=/app/frontend-dist
++USER 10001:10001
++EXPOSE 8080
++CMD ["python", "-m", "uvicorn", "app.demo.hosting:from_environment", "--factory", "--host", "0.0.0.0", "--port", "8080", "--workers", "1", "--no-proxy-headers", "--no-access-log"]
+diff --git a/deploy/synthetic-demo.Dockerfile.dockerignore b/deploy/synthetic-demo.Dockerfile.dockerignore
+new file mode 100644
+index 0000000..308bafb
+--- /dev/null
++++ b/deploy/synthetic-demo.Dockerfile.dockerignore
+@@ -0,0 +1,19 @@
++**
++!frontend/
++!frontend/**
++frontend/node_modules
++frontend/dist
++!backend/
++!backend/app/
++!backend/app/**
++!backend/requirements.txt
++!backend/requirements-migrations.txt
++!backend/alembic.ini
++!backend/migrations/
++!backend/migrations/**
++**/__pycache__
++**/*.pyc
++**/.env*
++**/*.sqlite*
++**/*.db
++**/*.log
+diff --git a/docs/COMPREHENSIVE-SYNTHETIC-DEMO.md b/docs/COMPREHENSIVE-SYNTHETIC-DEMO.md
+index 393496f..47a871b 100644
+--- a/docs/COMPREHENSIVE-SYNTHETIC-DEMO.md
++++ b/docs/COMPREHENSIVE-SYNTHETIC-DEMO.md
+@@ -41,6 +41,12 @@ No clinical policy, inference eligibility, Kernel/M5/M6/H1-D workflow, schema, m
+ 
+ Durable browser-session command recovery remains deferred. The new read-only workspace does not retain an execution command; the legacy interface still has its documented reload/closure limitation. No clinical validation or production activation is implied.
+ 
++## Hosting preparation
++
++The separately gated, single-origin read-only hosting recipe is documented in
++[SYNTHETIC-DEMO-HOSTING.md](SYNTHETIC-DEMO-HOSTING.md). It requires independent
++review and separate deployment authorization; this local launcher is unchanged.
++
+ ## Checks
+ 
+ `tests/test_comprehensive_demo.py` exercises full-family data, device/method assertions, closed-gate API rejection without writes, exact retained release/withhold, support correction history and refusal to overwrite a database. `frontend/tests/comprehensiveDemo.test.tsx` exercises useful overview/browsing, uncertainty visibility, exact source/history requests, late-response isolation, retained lookup failure clearing, source lexemes, read-only behavior and failed loading without invented data. Browser acceptance additionally covers the actual local API and responsive layout. Record exact commands/results in the local validation report; passing tests alone do not authorize merge or deployment.
+diff --git a/docs/SYNTHETIC-DEMO-HOSTING.md b/docs/SYNTHETIC-DEMO-HOSTING.md
+new file mode 100644
+index 0000000..7312b67
+--- /dev/null
++++ b/docs/SYNTHETIC-DEMO-HOSTING.md
+@@ -0,0 +1,131 @@
++# Comprehensive synthetic demo: hosting preparation
++
++Status: local preparation only. Do not merge, deploy, enable automatic previews or
++activate production execution. Director must review this change and the user must
++separately authorize any deployment. The source baseline is
++`8d3ce9cec1aa5c843cb25af385735d358fb02a44`; this hosting work is a new review scope.
++
++## Architecture
++
++One isolated container serves the compiled comprehensive website and a narrowly
++allowlisted synthetic API at the same origin. This avoids a browser-to-localhost
++connection and avoids widening the normal API's loopback/CORS configuration.
++No production project, database, environment file or signing key is reused.
++
++`VITE_SYNTHETIC_HOSTED=true` is an explicit build-time opt-in. In this mode the
++client accepts only its own page origin (HTTPS externally; HTTP only on loopback
++for local tests). It allows only M7 state/history/retained reads, keeps all existing
++response decoders, and uses same-origin credentials for a hosting provider's
++access-protection cookie. Default local transport still requires loopback and
++omits credentials. This flag is not an authorization mechanism.
++
++The dedicated `app.demo.hosting` entry point independently limits API access to:
++
++- GET M7 patient state for synthetic-p1 / synthetic-e1.
++- POST bounded evidence history, which reads data without appending facts.
++- GET the two fixed retained synthetic receipt UUIDs ending c901 and c902.
++
++It denies preparation, execution, reconciliation, legacy APIs, other scopes,
++API documentation and arbitrary files. Hosted legacy navigation is hidden, and
++`?workspace=legacy` displays an unavailable message. New circulatory execution is
++also explicitly false in the underlying API configuration. Environment variables
++cannot turn it on through this entry point. Normal application entry points,
++clinical policy, execution services and production configuration are unchanged.
++
++The only public files are the built index and assets. Responses use no-store,
++nosniff, no-referrer, frame denial and a same-origin content security policy.
++The health endpoint is liveness/mode information; the full state/history/receipt
++checks below are required to establish demo readiness.
++
++## Local build and exercise
++
++Use the pinned Python 3.11.6 environment and installed frontend dependencies.
++Choose fresh absolute paths; bootstrap refuses existing databases. From repo root:
++
++```sh
++PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend backend/venv/bin/python \
++  -m app.demo.comprehensive --database /absolute/new/synthetic.sqlite3
++cd frontend
++VITE_SYNTHETIC_HOSTED=true npm run build -- --outDir /absolute/new/hosted-dist
++```
++
++Then, from repo root, serve only on loopback:
++
++```sh
++CLINRX_SYNTHETIC_DATABASE=/absolute/new/synthetic.sqlite3 \
++CLINRX_SYNTHETIC_FRONTEND=/absolute/new/hosted-dist \
++PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend backend/venv/bin/python \
++  -m uvicorn app.demo.hosting:from_environment --factory \
++  --host 127.0.0.1 --port 5181 --workers 1 --no-proxy-headers --no-access-log
++```
++
++The signing key is generated in process memory, not printed or bundled into
++frontend assets. Use one worker; after a restart old state contexts may require
++refreshing the recorded state. Durable browser-session recovery remains deferred.
++
++## Container preparation
++
++The recipe is `deploy/synthetic-demo.Dockerfile`, with its adjacent Dockerfile-specific
++ignore file. Build context is the repository root. Node 22.13.0 and Python 3.11.6
++match the existing validation versions; dependency versions and locks are reused.
++
++```sh
++docker build -f deploy/synthetic-demo.Dockerfile -t clinrx-synthetic-demo:review .
++docker run --rm -p 127.0.0.1:5181:8080 clinrx-synthetic-demo:review
++```
++
++These commands build/run locally; they do not publish an image or website. The
++fixture stage explicitly creates a new disposable database and its two protected
++retained examples before runtime. The server never seeds, resets or upgrades a
++database at startup. It runs as a non-root user. The SQLite adapter uses immediate
++transactions even for reads, so its dedicated fixture directory remains writable;
++read-only here describes exposed operations, not a filesystem read-only mount.
++No volume holding real data should be attached. A replacement container starts
++from its packaged synthetic fixture; this demo promises no user-created persistence.
++
++Docker is unavailable on the current Mac command path, so the image build and
++container launch remain unverified. The compiled frontend plus the same gateway
++are exercised directly with the pinned local environment. Do not treat that as
++container or hosting-provider acceptance.
++
++## Director preparation findings
++
++Director accepted the baseline `8d3ce9c` for preview preparation, not deployment.
++This increment also addresses the two nonblocking findings: selecting evidence
++focuses its source inspector (including on narrow screens), closing it returns
++focus to the triggering card, and an unexpected execution-enabled response blocks
++browsing and replaces the disabled badge with an unverified-configuration warning.
++Loading and failed reads do not claim verified gate closure. Regression checks
++and a 390×844 keyboard browser exercise cover these paths. These changes require
++review as part of this new hosting increment.
++
++Local restart verification preserves both retained receipt response bodies byte
++for byte and all 12 database tables. An old signed state context is rejected after
++the process key changes; refreshing obtains a new context. This is not durable
++command recovery and does not replace hosted restart/access acceptance.
++
++## Required checks before sharing
++
++1. Director reviews this exact hosting source and its local evidence; any required
++   fixes receive appropriate regression checks.
++2. User separately authorizes a named hosting project and synthetic preview target.
++   Configure access protection covering both the website and API. The gateway
++   itself does not authenticate visitors. Keep access revocable and initially
++   share with the intended friend only. Do not connect an automatic deployment
++   trigger while publishing review source.
++3. Build the container on the intended platform; verify startup, pinned runtime,
++   HTTPS origin behavior and provider access protection, including API fetches.
++4. At the actual preview URL verify 26 records / all 15 families, CO/CI, echo,
++   device/method evidence, unknowns, exact source details, CAL/1→CAL/2 history,
++   ingestion timeline, and the released/withheld examples. Verify mobile layout.
++5. Verify execution_enabled=false; blocked prepare/execute routes cannot write;
++   compare all database table rows before/after the exercise and repeated reads.
++   No preparation or execution control may be offered. Test legacy query access,
++   malformed responses and unavailable service presentation.
++6. Record source/tree and image identity, URLs, browser evidence and results.
++   Only then provide the tested link and walkthrough. Stop the preview or revoke
++   access when it is no longer wanted. Production execution remains disabled.
++
++This is a fabricated evidence exploration demo, not clinical validation, a live
++device integration, treatment guidance or permission to use real patient data.
++No merge or production promotion is required to host a separately authorized preview.
+diff --git a/frontend/src/App.tsx b/frontend/src/App.tsx
+index c70a579..ea4a29f 100644
+--- a/frontend/src/App.tsx
++++ b/frontend/src/App.tsx
+@@ -4,11 +4,12 @@ import { CirculatoryClient } from './api/circulatoryClient';
+ import { CirculatoryReview } from './patient/CirculatoryReview';
+ import { MicroReviewClient } from './api/microClient';
+ import { ReviewClient } from './api/client';
+-import { demo } from './config';
++import { demo, hostedSyntheticDemo } from './config';
+ import { PatientReviewPage } from './patient/PatientReviewPage';
+ export default function App() {
+-  const [clients]=useState(()=>{try{return {circulatory:new CirculatoryClient(demo.base,demo.patient,demo.encounter),patient:new ReviewClient(demo.base,demo.patient,demo.encounter),micro:new MicroReviewClient(demo.base,demo.patient,demo.encounter)};}catch{return null;}});
+-  if(!clients)return <main><h1>ClinRx AI</h1><p role="alert">Configure a loopback API origin before opening this synthetic demo.</p></main>;
++  const [clients]=useState(()=>{try{return {circulatory:new CirculatoryClient(demo.base,demo.patient,demo.encounter,fetch,30_000,hostedSyntheticDemo?'same-origin-read-only':'loopback'),patient:new ReviewClient(demo.base,demo.patient,demo.encounter,fetch,30_000,hostedSyntheticDemo?'same-origin-read-only':'loopback'),micro:new MicroReviewClient(demo.base,demo.patient,demo.encounter,fetch,30_000,hostedSyntheticDemo?'same-origin-read-only':'loopback')};}catch{return null;}});
++  if(!clients)return <main><h1>ClinRx AI</h1><p role="alert">The synthetic demo connection is unavailable.</p></main>;
++  if(hostedSyntheticDemo && new URLSearchParams(window.location.search).get('workspace')==='legacy')return <main><h1>Read-only synthetic demo</h1><p>The legacy workspace is unavailable in this hosted preview.</p><a href="/">Open the comprehensive demo</a></main>;
+   if(new URLSearchParams(window.location.search).get('workspace')==='legacy')return <><PatientReviewPage client={clients.patient} config={demo} microClient={clients.micro}/><div className="m7-shell"><CirculatoryReview client={clients.circulatory} config={demo}/></div></>;
+   return <ComprehensiveDemo client={clients.circulatory} config={demo}/>;
+ }
+diff --git a/frontend/src/api/client.ts b/frontend/src/api/client.ts
+index 9b22a94..f9d9d76 100644
+--- a/frontend/src/api/client.ts
++++ b/frontend/src/api/client.ts
+@@ -24,14 +24,21 @@ export interface Reply<T> { data: T; mode: string|null }
+ export class ReviewClient {
+   private path: string;
+   protected readonly scope: {patient_id:string;encounter_id:string};
+-  constructor(base: string, patient: string, encounter: string, private fetcher: typeof fetch = fetch, private timeoutMs=30_000) {
++  constructor(base: string, patient: string, encounter: string, private fetcher: typeof fetch = fetch, private timeoutMs=30_000, private transport: 'loopback'|'same-origin-read-only' = 'loopback') {
+     if(!Number.isSafeInteger(timeoutMs) || timeoutMs<1 || timeoutMs>2_147_483_647)throw new Error('Configure a valid request timeout.');
+     this.scope={patient_id:patient,encounter_id:encounter};
+     const url = new URL(base);
+-    if (!['http:','https:'].includes(url.protocol) || !['127.0.0.1','localhost','[::1]'].includes(url.hostname) || url.username || url.password || url.search || url.hash || url.pathname!=='/') throw new Error('Configure a loopback API origin.');
++    const loopback=['127.0.0.1','localhost','[::1]'].includes(url.hostname);
++    const hosted=transport==='same-origin-read-only' && typeof window!=='undefined' && url.origin===window.location.origin && (url.protocol==='https:' || (url.protocol==='http:' && loopback));
++    if (!['http:','https:'].includes(url.protocol) || (transport==='loopback'?!loopback:!hosted) || url.username || url.password || url.search || url.hash || url.pathname!=='/') throw new Error('Configure a loopback API origin or the explicit same-origin read-only demo.');
+     this.path = url.origin+'/api/v1/patients/'+encodeURIComponent(patient)+'/encounters/'+encodeURIComponent(encounter);
+   }
+   protected async request<T>(suffix: string, decode:(value:unknown)=>T, body?: unknown): Promise<Reply<T>> {
++    if(this.transport==='same-origin-read-only') {
++      const path=suffix.split('?')[0];
++      const permitted=body===undefined ? path==='/patient-state-v3' || /^\/circulatory-reviews\/[0-9a-f-]{36}$/.test(path) : path==='/circulatory-evidence-history';
++      if(!permitted)throw new ApiFailure('method_not_allowed',403);
++    }
+     const controller=new AbortController();
+     let timer:ReturnType<typeof setTimeout>|undefined;
+     const deadline=new Promise<never>((_,reject)=>{
+@@ -47,7 +54,7 @@ export class ReviewClient {
+   private async receive<T>(suffix:string,decode:(value:unknown)=>T,body:unknown,signal:AbortSignal):Promise<Reply<T>> {
+     let response: Response;
+     const fetcher = this.fetcher;
+-    try { response = await fetcher(this.path+suffix, {method:body===undefined?'GET':'POST', cache:'no-store', credentials:'omit', signal, headers:body===undefined?undefined:{'Content-Type':'application/json'}, body:body===undefined?undefined:JSON.stringify(body)}); }
++    try { response = await fetcher(this.path+suffix, {method:body===undefined?'GET':'POST', cache:'no-store', credentials:this.transport==='same-origin-read-only'?'same-origin':'omit', signal, headers:body===undefined?undefined:{'Content-Type':'application/json'}, body:body===undefined?undefined:JSON.stringify(body)}); }
+     catch { throw new ApiFailure('network_error'); }
+     let raw: unknown;
+     try { raw=await response.json(); } catch { throw new ApiFailure('invalid_response',response.status); }
+diff --git a/frontend/src/config.ts b/frontend/src/config.ts
+index 6524975..adb73f4 100644
+--- a/frontend/src/config.ts
++++ b/frontend/src/config.ts
+@@ -1,10 +1,12 @@
++export const hostedSyntheticDemo = import.meta.env.VITE_SYNTHETIC_HOSTED === 'true';
+ // Defaults copied from the checked-in app.demo.patient_state.manifest (v1).
+ export const demo = {
++  hosted: hostedSyntheticDemo,
+   patient: import.meta.env.VITE_PATIENT_ID || 'synthetic-p1',
+   encounter: import.meta.env.VITE_ENCOUNTER_ID || 'synthetic-e1',
+   start: import.meta.env.VITE_REVIEW_START || '2026-10-08T08:00:00+00:00',
+   end: import.meta.env.VITE_REVIEW_END || '2026-10-08T10:00:00+00:00',
+   releasedExample: import.meta.env.VITE_RELEASED_EXAMPLE || '00000000-0000-4000-8000-00000000c901',
+   withheldExample: import.meta.env.VITE_WITHHELD_EXAMPLE || '00000000-0000-4000-8000-00000000c902',
+-  base: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
++  base: hostedSyntheticDemo ? window.location.origin : import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
+ };
+diff --git a/frontend/src/demo/ComprehensiveDemo.tsx b/frontend/src/demo/ComprehensiveDemo.tsx
+index 99cd969..06fe025 100644
+--- a/frontend/src/demo/ComprehensiveDemo.tsx
++++ b/frontend/src/demo/ComprehensiveDemo.tsx
+@@ -4,12 +4,12 @@ import type {CirculatoryState,CirculatoryItem,CirculatoryHistory,CirculatoryExec
+ import {families,RecordedDisclosure,reference,refKey} from '../patient/CirculatoryEvidence';
+ import {record,words,title,value,quality,sourceTime,method,lenses,inLens,hasUncertainQuality,type Lens} from './evidencePresentation';
+ import './demo.css';
+-type Config={start:string;end:string;releasedExample:string;withheldExample:string};
++type Config={start:string;end:string;releasedExample:string;withheldExample:string;hosted?:boolean};
+ type View='overview'|'library'|'timeline'|'examples';
+ const views:Record<View,string>={overview:'Patient overview',library:'Evidence library',timeline:'Recording timeline',examples:'Retained examples'};
+-function EvidenceCard({item,onInspect}:{item:CirculatoryItem;onInspect:(item:CirculatoryItem)=>void}){
++function EvidenceCard({item,onInspect}:{item:CirculatoryItem;onInspect:(item:CirculatoryItem,trigger:HTMLButtonElement)=>void}){
+   const result=value(item);
+-  return <button className="demo-evidence" onClick={()=>onInspect(item)} aria-label={'Inspect '+title(item)+' '+item.fact.id}>
++  return <button className="demo-evidence" onClick={event=>onInspect(item,event.currentTarget)} aria-label={'Inspect '+title(item)+' '+item.fact.id}>
+     <span className="demo-card-label">{title(item)}</span><strong>{result.text}<small>{result.unit}</small></strong>
+     <span className="demo-card-method">{method(item)}</span><span className="demo-card-time">{words(item.inclusion)} · {sourceTime(item)}</span><span className="demo-card-meta">{item.fact.id} / {item.fact.revision}<span className={'demo-quality '+(quality(item)==='acceptable'?'':'demo-uncertain')}>Quality: {quality(item)}</span></span>
+   </button>;
+@@ -21,15 +21,20 @@ export function ComprehensiveDemo({client,config}:{client:CirculatoryClient;conf
+   const [selected,setSelected]=useState<CirculatoryItem>(),[history,setHistory]=useState<CirculatoryHistory>();
+   const [detailError,setDetailError]=useState(''),[historyBusy,setHistoryBusy]=useState(false);
+   const [receipt,setReceipt]=useState<CirculatoryExecution>(),[receiptBusy,setReceiptBusy]=useState(false),[receiptError,setReceiptError]=useState('');
++  const sourceInspector=useRef<HTMLElement|null>(null),sourceTrigger=useRef<HTMLButtonElement|null>(null);
++  useEffect(()=>{if(selected)sourceInspector.current?.focus();},[selected]);
+   const generation=useRef(0),detailGeneration=useRef(0),receiptGeneration=useRef(0);
+   async function load(){
+     const token=++generation.current;detailGeneration.current++;receiptGeneration.current++;
+     setLoading(true);setError('');setState(undefined);setSelected(undefined);setHistory(undefined);setHistoryBusy(false);setDetailError('');setReceipt(undefined);setReceiptBusy(false);setReceiptError('');
+-    try{const reply=await client.circulatoryState(config.start,config.end);if(token===generation.current)setState(reply.data);}
+-    catch{if(token===generation.current)setError('The local evidence service could not be read safely. Start the comprehensive demo and try again.');}
++    try{const reply=await client.circulatoryState(config.start,config.end);if(token===generation.current){
++      if(reply.data.execution_enabled!==false){setError('Browsing is blocked: the server did not confirm that new execution is disabled.');return;}
++      setState(reply.data);
++    }}
++    catch{if(token===generation.current)setError(config.hosted?'The synthetic evidence service could not be read safely. Please try refreshing the recorded state.':'The local evidence service could not be read safely. Start the comprehensive demo and try again.');}
+     finally{if(token===generation.current)setLoading(false);}
+   }
+-  useEffect(()=>{void load();return()=>{generation.current++;detailGeneration.current++;receiptGeneration.current++;};},[client,config.start,config.end]);
++  useEffect(()=>{void load();return()=>{generation.current++;detailGeneration.current++;receiptGeneration.current++;};},[client,config.start,config.end,config.hosted]);
+   const items=state?.assembly.snapshot.items??[];
+   const counts=Object.fromEntries(Object.keys(families).map(kind=>[kind,items.filter(i=>i.fact.kind===kind).length]));
+   // Stable fixture presentation order, never clinical ranking or temporal inference.
+@@ -39,7 +44,7 @@ export function ComprehensiveDemo({client,config}:{client:CirculatoryClient;conf
+     return rank(a)-rank(b);
+   });
+   const visible=items.filter(item=>(family==='all'||item.fact.kind===family)&&[title(item),method(item),item.fact.id,value(item).text].join(' ').toLowerCase().includes(search.toLowerCase()));
+-  function inspect(item:CirculatoryItem){detailGeneration.current++;setSelected(item);setHistory(undefined);setDetailError('');setHistoryBusy(false);}
++  function inspect(item:CirculatoryItem,trigger:HTMLButtonElement){sourceTrigger.current=trigger;if(selected===item)sourceInspector.current?.focus();detailGeneration.current++;setSelected(item);setHistory(undefined);setDetailError('');setHistoryBusy(false);}
+   async function loadHistory(){
+     if(!selected||!state||historyBusy)return;const token=++detailGeneration.current;setHistoryBusy(true);setDetailError('');
+     try{const reply=await client.circulatoryHistory(state.state_context,reference(selected));if(token===detailGeneration.current)setHistory(reply.data);}
+@@ -55,11 +60,11 @@ export function ComprehensiveDemo({client,config}:{client:CirculatoryClient;conf
+   const decision=record(receipt?.record.decision),evidence=record(receipt?.record.evidence),recheck=record(receipt?.record.final_recheck);
+   return <div className="demo-app">
+     <a className="demo-skip" href="#demo-main">Skip to evidence workspace</a>
+-    <header className="demo-topbar"><a href="/" className="demo-brand"><span className="demo-mark" aria-hidden="true">C</span>ClinRx <span>AI</span></a><span className="demo-environment">LOCAL SYNTHETIC DEMO</span><span className="demo-gate">New execution disabled in this demo</span></header>
++    <header className="demo-topbar"><a href="/" className="demo-brand"><span className="demo-mark" aria-hidden="true">C</span>ClinRx <span>AI</span></a><span className="demo-environment">{config.hosted?'SYNTHETIC PREVIEW':'LOCAL SYNTHETIC DEMO'}</span><span className="demo-gate">{state?.execution_enabled===false?'New execution disabled in this demo':loading?'Checking execution configuration…':'Execution configuration unverified — browsing blocked'}</span></header>
+     <div className="demo-layout"><aside className="demo-sidebar"><p className="demo-overline">EVIDENCE WORKSPACE</p><div className="demo-patient"><span className="demo-avatar">01</span><div><strong>Synthetic ICU case</strong><span>Fabricated patient · ICU–01</span></div></div>
+       <nav aria-label="Demo views">{Object.entries(views).map(([key,label])=><button key={key} aria-current={view===key?'page':undefined} onClick={()=>setView(key as View)}><span>{label}</span><span aria-hidden="true">↗</span></button>)}</nav>
+       <div className="demo-sidebar-note"><strong>One case, many sources</strong><p>Compare what was recorded, where it came from, and what changed.</p><small>Recorded evidence and source interpretations are not a ClinRx diagnosis.</small></div>
+-      <a className="demo-legacy" href="?workspace=legacy">Existing review tools ↗</a>
++      {!config.hosted&&<a className="demo-legacy" href="?workspace=legacy">Existing review tools ↗</a>}
+     </aside>
+     <main id="demo-main" className="demo-workspace"><div className="demo-page-heading"><div><p className="demo-overline">CIRCULATORY EVIDENCE / {views[view].toUpperCase()}</p><h1>{view==='overview'?'See the fuller picture.':views[view]}</h1><p>Cardiac output, echo, pressure and perfusion — with the source evidence in reach.</p></div><button className="demo-refresh" disabled={loading} onClick={()=>void load()}>Refresh recorded state</button></div>
+       <div className="demo-safety">Synthetic exploration only. No treatment recommendations or live device connections. {state&&<span>New reviews: {state.execution_enabled?'permitted by local service; this workspace remains read-only':'disabled'}.</span>}</div>
+@@ -71,12 +76,12 @@ export function ComprehensiveDemo({client,config}:{client:CirculatoryClient;conf
+           <div className="demo-inspection-layout"><section aria-label="Guided recorded measurements" className="demo-measurements">{guided.map(item=><EvidenceCard key={refKey(reference(item))} item={item} onInspect={inspect}/>)}</section>{inspector()}</div>
+           <section className="demo-family-overview"><div className="demo-section-title"><h2>Explore every evidence family</h2><span>Missing records do not establish clinical absence.</span></div><div className="demo-family-grid">{Object.entries(families).map(([kind,label],n)=><button key={kind} onClick={()=>{setFamily(kind);setSearch('');setView('library');}}><span>{String(n+1).padStart(2,'0')}</span><strong>{label}</strong><small>{counts[kind]} recorded {counts[kind]===1?'item':'items'} →</small></button>)}</div></section></>}
+         {view==='library'&&<><div className="demo-library-controls"><label>Search recorded evidence<input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Cardiac output, echo, PiCCO, source ID…"/></label><label>Evidence family<select value={family} onChange={e=>setFamily(e.target.value)}><option value="all">All 15 families</option>{Object.entries(families).map(([kind,label])=><option key={kind} value={kind}>{label} ({counts[kind]})</option>)}</select></label></div><p role="status">{visible.length} recorded {visible.length===1?'item':'items'} in this view</p><div className="demo-inspection-layout"><section aria-label="Evidence library results">{Object.entries(families).filter(([kind])=>family==='all'||kind===family).map(([kind,label])=><section className="demo-library-family" key={kind}><h2>{label}</h2><div className="demo-measurements">{visible.filter(i=>i.fact.kind===kind).map(item=><EvidenceCard key={refKey(reference(item))} item={item} onInspect={inspect}/>)}</div>{!visible.some(i=>i.fact.kind===kind)&&<p className="demo-empty">No matching records in this bounded view. Clinical absence is not established.</p>}</section>)}</section>{inspector()}</div></>}
+-        {view==='timeline'&&<><div className="demo-guide-intro"><h2>How the repository received the evidence</h2><p>Ordered by repository ingestion sequence, not clinical event time. Source times retain their recorded spelling; this display makes no new temporal inference. Open any item to inspect its correction history at this cutoff.</p></div><div className="demo-inspection-layout"><ol className="demo-timeline">{[...items].sort((a,b)=>a.ingestion.ingestion_sequence-b.ingestion.ingestion_sequence).map(item=><li key={refKey(reference(item))}><span className="demo-sequence">{item.ingestion.ingestion_sequence}</span><button onClick={()=>inspect(item)}><strong>{title(item)}</strong><span>{item.fact.id} / {item.fact.revision} · {words(item.inclusion)}</span><span>Source: {sourceTime(item)}</span><small>Ingested: {item.ingestion.ingested_at}</small>{item.fact.supersedes!=null&&<span className="demo-correction">Corrected source revision · inspect history</span>}</button></li>)}</ol>{inspector()}</div></>}
++        {view==='timeline'&&<><div className="demo-guide-intro"><h2>How the repository received the evidence</h2><p>Ordered by repository ingestion sequence, not clinical event time. Source times retain their recorded spelling; this display makes no new temporal inference. Open any item to inspect its correction history at this cutoff.</p></div><div className="demo-inspection-layout"><ol className="demo-timeline">{[...items].sort((a,b)=>a.ingestion.ingestion_sequence-b.ingestion.ingestion_sequence).map(item=><li key={refKey(reference(item))}><span className="demo-sequence">{item.ingestion.ingestion_sequence}</span><button onClick={event=>inspect(item,event.currentTarget)}><strong>{title(item)}</strong><span>{item.fact.id} / {item.fact.revision} · {words(item.inclusion)}</span><span>Source: {sourceTime(item)}</span><small>Ingested: {item.ingestion.ingested_at}</small>{item.fact.supersedes!=null&&<span className="demo-correction">Corrected source revision · inspect history</span>}</button></li>)}</ol>{inspector()}</div></>}
+         {view==='examples'&&<><section className="demo-guide-intro"><h2>What retained review adds</h2><p>These examples were generated during disposable synthetic fixture setup. Opening one reads a stored receipt; it does not prepare or execute a new review. The descriptive inference concerns pressure, lactate and vasopressor timing only. Cardiac output and echo remain recorded source evidence.</p></section><div className="demo-example-buttons"><button disabled={receiptBusy} onClick={()=>void example(config.releasedExample)}><span>01 / UNCHANGED SELECTED EVIDENCE</span><strong>Open the released example</strong><span>Inspect exact P/L/V and calibration support.</span></button><button disabled={receiptBusy} onClick={()=>void example(config.withheldExample)}><span>02 / CORRECTED CALIBRATION SUPPORT</span><strong>Open the withheld example</strong><span>See original evidence and final witnesses side by side.</span></button></div>{receiptBusy&&<p role="status">Reading retained receipt…</p>}{receiptError&&<p className="demo-error" role="alert">{receiptError}</p>}{receipt&&<section className="demo-receipt" aria-label="Retained demonstration receipt"><p className="demo-overline">STORED SYNTHETIC RESULT</p><h2>Retained outcome: {words(decision.outcome)}</h2><p>Execution UUID: <code>{receipt.execution_id}</code></p>{receipt.statement?<p className="demo-statement">{receipt.statement}</p>:<p className="demo-withheld">Withheld — no released statement. The selected original evidence remains in this receipt.</p>}<div className="demo-receipt-columns"><div><h3>Original selected revisions</h3><RecordedDisclosure label="Original source facts and exact support" value={evidence.facts}/></div><div><h3>What final review witnessed</h3><RecordedDisclosure label="Terminal witnesses and correction status" value={recheck.evidence}/></div></div><RecordedDisclosure label="Complete retained governance and provenance receipt" value={receipt.record}/></section>}</>}
+         <details className="demo-coverage"><summary>Review boundary and repository coverage</summary><p>Patient {state.assembly.request.scope.patient_id} · Encounter {state.assembly.request.scope.encounter_id}</p><p>Window: {state.assembly.request.scope.review_start} → {state.assembly.request.scope.review_end}</p><RecordedDisclosure label="Exact cutoff, coverage and recorded-state issues" value={{cutoff:state.assembly.request.scope.repository_cutoff,coverage:state.assembly.snapshot.coverage,issues:state.assembly.snapshot.issues}}/></details>
+       </>}
+-      <footer className="demo-footer">A local evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.</footer>
++      <footer className="demo-footer">A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.</footer>
+     </main></div>
+   </div>;
+-  function inspector(){return <aside className="demo-inspector" aria-label="Selected source evidence">{selected?<><div className="demo-section-title"><span className="demo-overline">SOURCE INSPECTOR</span><button className="demo-close" onClick={()=>{detailGeneration.current++;setSelected(undefined);setHistory(undefined);setHistoryBusy(false);}}>Close source</button></div><h2>{title(selected)}</h2><p className="demo-inspector-value">{value(selected).text} <small>{value(selected).unit}</small></p><p><code>{selected.fact.id} / {selected.fact.revision}</code></p><p className="demo-card-method">{method(selected)}</p><dl className="demo-source-summary"><dt>Source time</dt><dd>{sourceTime(selected)}</dd><dt>Recorded quality</dt><dd>{quality(selected)}</dd><dt>Source unit mapping</dt><dd>{words(record(record(record(selected.fact.result).quantity).unit).status)||'Not supplied / not applicable'}</dd><dt>Placement</dt><dd>{words(selected.inclusion)}</dd><dt>Source</dt><dd>{String(record(record(selected.fact.provenance).source).namespace??'Not recorded')}</dd></dl><RecordedDisclosure label="Full source, timing, quality and device context" value={selected.fact}/><RecordedDisclosure label="Exact digest and ingestion metadata" value={{expected_digest:selected.expected_digest,ingestion:selected.ingestion,contextual_for:selected.contextual_for,disclosures:selected.disclosures}}/><button className="demo-history-button" disabled={historyBusy} onClick={()=>void loadHistory()}>{historyBusy?'Reading revisions…':'Inspect revision history'}</button>{detailError&&<p role="alert">{detailError}</p>}{history&&<section aria-label="Bounded source revision history"><h3>{history.revisions.length} retained {history.revisions.length===1?'revision':'revisions'} at this cutoff</h3>{history.revisions.map(entry=><div className="demo-history-entry" key={entry.fact.revision}><strong>{entry.fact.id} / {entry.fact.revision}</strong><p>{typeof entry.fact.correction_reason==='string'?entry.fact.correction_reason:'Original recorded assertion'}</p><RecordedDisclosure label={'Complete revision '+entry.fact.revision} value={entry}/></div>)}</section>}</>:<><span className="demo-overline">SOURCE INSPECTOR</span><h2>Evidence within reach.</h2><p>Select any recorded item to inspect its exact source, quality, device context and revision history.</p><div className="demo-inspector-illustration" aria-hidden="true"><span>Source</span><span>Exact revision</span><span>Provenance</span></div><small>Values are shown as recorded. Units are not converted, and quality labels are source assertions.</small></>}</aside>;}
++  function inspector(){return <aside className="demo-inspector" aria-label="Selected source evidence" tabIndex={-1} ref={sourceInspector}>{selected?<><div className="demo-section-title"><span className="demo-overline">SOURCE INSPECTOR</span><button className="demo-close" onClick={()=>{detailGeneration.current++;setSelected(undefined);setHistory(undefined);setHistoryBusy(false);if(sourceTrigger.current?.isConnected)sourceTrigger.current.focus();}}>Close source</button></div><h2>{title(selected)}</h2><p className="demo-inspector-value">{value(selected).text} <small>{value(selected).unit}</small></p><p><code>{selected.fact.id} / {selected.fact.revision}</code></p><p className="demo-card-method">{method(selected)}</p><dl className="demo-source-summary"><dt>Source time</dt><dd>{sourceTime(selected)}</dd><dt>Recorded quality</dt><dd>{quality(selected)}</dd><dt>Source unit mapping</dt><dd>{words(record(record(record(selected.fact.result).quantity).unit).status)||'Not supplied / not applicable'}</dd><dt>Placement</dt><dd>{words(selected.inclusion)}</dd><dt>Source</dt><dd>{String(record(record(selected.fact.provenance).source).namespace??'Not recorded')}</dd></dl><RecordedDisclosure label="Full source, timing, quality and device context" value={selected.fact}/><RecordedDisclosure label="Exact digest and ingestion metadata" value={{expected_digest:selected.expected_digest,ingestion:selected.ingestion,contextual_for:selected.contextual_for,disclosures:selected.disclosures}}/><button className="demo-history-button" disabled={historyBusy} onClick={()=>void loadHistory()}>{historyBusy?'Reading revisions…':'Inspect revision history'}</button>{detailError&&<p role="alert">{detailError}</p>}{history&&<section aria-label="Bounded source revision history"><h3>{history.revisions.length} retained {history.revisions.length===1?'revision':'revisions'} at this cutoff</h3>{history.revisions.map(entry=><div className="demo-history-entry" key={entry.fact.revision}><strong>{entry.fact.id} / {entry.fact.revision}</strong><p>{typeof entry.fact.correction_reason==='string'?entry.fact.correction_reason:'Original recorded assertion'}</p><RecordedDisclosure label={'Complete revision '+entry.fact.revision} value={entry}/></div>)}</section>}</>:<><span className="demo-overline">SOURCE INSPECTOR</span><h2>Evidence within reach.</h2><p>Select any recorded item to inspect its exact source, quality, device context and revision history.</p><div className="demo-inspector-illustration" aria-hidden="true"><span>Source</span><span>Exact revision</span><span>Provenance</span></div><small>Values are shown as recorded. Units are not converted, and quality labels are source assertions.</small></>}</aside>;}
+ }
+diff --git a/frontend/tests/client.test.ts b/frontend/tests/client.test.ts
+index 7dcf05a..0c08215 100644
+--- a/frontend/tests/client.test.ts
++++ b/frontend/tests/client.test.ts
+@@ -1,4 +1,5 @@
+ import {it,expect,vi} from 'vitest';
++import {CirculatoryClient} from '../src/api/circulatoryClient';
+ import {ReviewClient,ApiFailure} from '../src/api/client';
+ import fixture from './fixtures.json';
+ const id=fixture.execution.execution_id, command='OPAQUE.DO.NOT.DECODE';
+@@ -134,3 +135,29 @@ it('clears deadlines on successful responses and bounded API failures',async()=>
+ it.each([0,-1,Infinity,NaN,2_147_483_648])('rejects invalid operational timeout %s',timeout=>{
+   expect(()=>new ReviewClient('http://localhost:8000','p','e',fetch,timeout)).toThrow('Configure a valid request timeout.');
+ });
++
++it('allows an explicitly opted-in same-origin HTTPS read without changing validation',async()=>{
++  vi.stubGlobal('window',{location:new URL('https://demo.example/')});
++  try {
++    const f=vi.fn<typeof fetch>().mockResolvedValue(reply({}));
++    const client=new CirculatoryClient('https://demo.example',scope.patient_id,scope.encounter_id,f,30_000,'same-origin-read-only');
++    await expect(client.circulatoryLookup(id)).rejects.toMatchObject({code:'invalid_response'});
++    expect(String(f.mock.calls[0][0])).toContain('https://demo.example/api/v1/');
++    expect(f.mock.calls[0][1]).toMatchObject({credentials:'same-origin',cache:'no-store'});
++  } finally {vi.unstubAllGlobals();}
++});
++it.each(['https://foreign.example','http://demo.example','https://demo.example/path','https://user@demo.example','https://demo.example/?q=1'])('hosted mode rejects unrelated or malformed origin %s',base=>{
++  vi.stubGlobal('window',{location:new URL('https://demo.example/')});
++  try {expect(()=>new ReviewClient(base,'p','e',fetch,30_000,'same-origin-read-only')).toThrow();}
++  finally {vi.unstubAllGlobals();}
++});
++it('hosted read-only transport blocks legacy and execution calls before any network request',async()=>{
++  vi.stubGlobal('window',{location:new URL('https://demo.example/')});
++  try {
++    const f=vi.fn<typeof fetch>();
++    const client=new ReviewClient('https://demo.example','p','e',f,30_000,'same-origin-read-only');
++    for(const op of [()=>client.prepare(preparation),()=>client.execute(prepared),()=>client.reconcile(prepared),()=>client.state('start','end')])
++      await expect(op()).rejects.toMatchObject({code:'method_not_allowed'});
++    expect(f).not.toHaveBeenCalled();
++  } finally {vi.unstubAllGlobals();}
++});
+diff --git a/frontend/tests/comprehensiveDemo.test.tsx b/frontend/tests/comprehensiveDemo.test.tsx
+index de0a9d4..5596de1 100644
+--- a/frontend/tests/comprehensiveDemo.test.tsx
++++ b/frontend/tests/comprehensiveDemo.test.tsx
+@@ -6,10 +6,10 @@ import {decodeCirculatoryState,decodeCirculatoryExecution} from '../src/api/circ
+ import type {CirculatoryClient} from '../src/api/circulatoryClient';
+ import {value,sourceTime} from '../src/demo/evidencePresentation';
+ const config={start:'2026-10-08T08:00:00+00:00',end:'2026-10-08T10:00:00+00:00',releasedExample:'released',withheldExample:'withheld'};
+-function setup(){
+-  const state=decodeCirculatoryState({...fixtures.state,execution_enabled:false});
++function setup(hosted=false,executionEnabled=false){
++  const state=decodeCirculatoryState({...fixtures.state,execution_enabled:executionEnabled});
+   const client={circulatoryState:vi.fn().mockResolvedValue({data:state}),circulatoryHistory:vi.fn().mockResolvedValue({data:fixtures.history}),circulatoryLookup:vi.fn().mockResolvedValue({data:decodeCirculatoryExecution(fixtures.released)}),circulatoryPrepare:vi.fn(),circulatoryExecute:vi.fn()};
+-  render(<ComprehensiveDemo client={client as unknown as CirculatoryClient} config={config}/>);return {client,state};
++  render(<ComprehensiveDemo client={client as unknown as CirculatoryClient} config={{...config,hosted}}/>);return {client,state};
+ }
+ async function ready(){await screen.findByRole('heading',{name:'Cardiac output + echo'});}
+ afterEach(cleanup);
+@@ -47,3 +47,9 @@ describe('comprehensive read-only synthetic demo',()=>{
+     const {client}=setup();await ready();client.circulatoryState.mockRejectedValueOnce(new Error('offline'));fireEvent.click(screen.getByRole('button',{name:'Refresh recorded state'}));await screen.findByRole('alert');expect(screen.queryByRole('button',{name:'Inspect Cardiac output m7-CO'})).not.toBeInTheDocument();
+   });
+ });
++
++it('hosted presentation identifies the preview and hides legacy execution tools',async()=>{setup(true);await ready();expect(screen.getByText('SYNTHETIC PREVIEW')).toBeInTheDocument();expect(screen.queryByRole('link',{name:/Existing review tools/})).not.toBeInTheDocument();});
++
++it('blocks evidence browsing and replaces the disabled badge if the server reports execution enabled',async()=>{const {client}=setup(true,true);await screen.findByRole('alert');expect(screen.getByText('Browsing is blocked: the server did not confirm that new execution is disabled.')).toBeInTheDocument();expect(screen.getByText('Execution configuration unverified — browsing blocked')).toBeInTheDocument();expect(screen.queryByText('New execution disabled in this demo')).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Inspect Cardiac output m7-CO'})).not.toBeInTheDocument();expect(client.circulatoryPrepare).not.toHaveBeenCalled();});
++
++it('moves keyboard focus to selected source details and returns it when closed',async()=>{setup(true);await ready();const trigger=screen.getByRole('button',{name:'Inspect Cardiac output m7-CO'});trigger.focus();fireEvent.click(trigger);expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveFocus();fireEvent.click(screen.getByRole('button',{name:'Close source'}));expect(trigger).toHaveFocus();});
+diff --git a/frontend/tests/hostedDemo.test.tsx b/frontend/tests/hostedDemo.test.tsx
+new file mode 100644
+index 0000000..2c0a846
+--- /dev/null
++++ b/frontend/tests/hostedDemo.test.tsx
+@@ -0,0 +1,15 @@
++import {afterEach,it,expect,vi} from 'vitest';
++import {cleanup,render,screen} from '@testing-library/react';
++vi.mock('../src/config',()=>({hostedSyntheticDemo:true,demo:{base:window.location.origin,patient:'synthetic-p1',encounter:'synthetic-e1'}}));
++vi.mock('../src/demo/ComprehensiveDemo',()=>({ComprehensiveDemo:()=> <h1>Comprehensive workspace</h1>}));
++import App from '../src/App';
++afterEach(()=>{cleanup();window.history.replaceState({},'', '/');});
++it('opens the comprehensive workspace with explicit hosted transport',()=>{
++  render(<App/>);expect(screen.getByRole('heading',{name:'Comprehensive workspace'})).toBeTruthy();
++});
++it('does not expose the legacy preparation workspace through the query string',()=>{
++  window.history.replaceState({},'', '/?workspace=legacy');render(<App/>);
++  expect(screen.getByText('The legacy workspace is unavailable in this hosted preview.')).toBeTruthy();
++  expect(screen.queryByRole('heading',{name:'Comprehensive workspace'})).toBeNull();
++  expect(screen.getByRole('link',{name:'Open the comprehensive demo'}).getAttribute('href')).toBe('/');
++});
+diff --git a/tests/test_synthetic_hosting.py b/tests/test_synthetic_hosting.py
+new file mode 100644
+index 0000000..4b88be3
+--- /dev/null
++++ b/tests/test_synthetic_hosting.py
+@@ -0,0 +1,84 @@
++"""The hosted surface reads real synthetic APIs and rejects all other operations."""
++import sqlite3
++from pathlib import Path
++import pytest
++from starlette.testclient import TestClient
++from app.demo.comprehensive import bootstrap, RELEASED_ID, WITHHELD_ID
++from app.demo.hosting import SyntheticDemoGateway, PREFIX
++from app.persistence.database import create_database
++
++
++def rows(path):
++    with sqlite3.connect(path) as db:
++        tables=db.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").fetchall()
++        return {name:db.execute('SELECT * FROM "'+name+'" ORDER BY rowid').fetchall() for name, in tables}
++
++
++@pytest.fixture
++def hosted(tmp_path):
++    database=tmp_path/'synthetic.sqlite3';engine=create_database(database)
++    try:manifest=bootstrap(engine)
++    finally:engine.dispose()
++    frontend=tmp_path/'dist';(frontend/'assets').mkdir(parents=True)
++    (frontend/'index.html').write_text('<html>synthetic workspace</html>')
++    (frontend/'assets'/'test.js').write_text('/* synthetic asset */')
++    app=SyntheticDemoGateway(database,frontend,'a7'*32)
++    return app,database,manifest
++
++
++def test_hosted_browsing_real_history_and_retained_receipts_do_not_write(hosted):
++    app,database,manifest=hosted;before=rows(database)
++    assert app.config.circulatory_execution_enabled is False
++    with TestClient(app,base_url='https://demo.example') as client:
++        response=client.get('/');assert response.status_code==200
++        assert response.headers['content-security-policy'].find("connect-src 'self'")>=0
++        assert response.headers['cache-control']=='no-store'
++        assert client.get('/assets/test.js').status_code==200
++        assert client.get('/health').json()['execution_enabled'] is False
++        state=client.get(PREFIX+'/patient-state-v3',params={k:manifest[k] for k in ('review_start','review_end')})
++        assert state.status_code==200 and state.json()['execution_enabled'] is False
++        data=state.json();items=data['assembly']['snapshot']['items']
++        assert len(items)==26 and len({i['fact']['kind'] for i in items})==15
++        for id,outcome in ((RELEASED_ID,'released'),(WITHHELD_ID,'withheld')):
++            result=client.get(PREFIX+'/circulatory-reviews/'+str(id))
++            assert result.status_code==200 and result.json()['record']['decision']['outcome']==outcome
++        support=next(i for i in items if i['fact']['id']=='m7-CAL')
++        history=client.post(PREFIX+'/circulatory-evidence-history',json={'state_context':data['state_context'],
++            'reference':{'kind':support['fact']['kind'],'id':'m7-CAL','version':'2'}})
++        assert history.status_code==200
++        assert [r['fact']['revision'] for r in history.json()['revisions']]==['1','2']
++        assert client.post(PREFIX+'/circulatory-evidence-history',json={'state_context':'invalid','reference':{}}).status_code==422
++    assert rows(database)==before
++
++
++@pytest.mark.parametrize('method,path',[
++    ('POST',PREFIX+'/circulatory-review-preparations'),('POST',PREFIX+'/circulatory-reviews'),
++    ('POST',PREFIX+'/circulatory-review-reconciliations'),('POST',PREFIX+'/temporal-review-preparations'),
++    ('POST',PREFIX+'/temporal-reviews'),('GET',PREFIX+'/state'),('GET','/docs'),('GET','/openapi.json'),
++    ('GET','/synthetic/synthetic.sqlite3'),('GET','/manifest.json'),('GET','/src/main.tsx'),
++    ('GET','/assets/../synthetic/synthetic.sqlite3'),('GET','/assets/missing.js'),
++    ('DELETE',PREFIX+'/patient-state-v3'),('POST','/'),('GET',PREFIX+'/circulatory-reviews/00000000-0000-4000-8000-00000000ffff'),
++    ('GET',PREFIX.replace('synthetic-p1','foreign')+'/patient-state-v3')])
++def test_hosted_gateway_denies_non_read_surface_without_changes(hosted,method,path):
++    app,database,_=hosted;before=rows(database)
++    with TestClient(app) as client:
++        result=client.request(method,path,json={'command':'never-dispatch'})
++        assert result.status_code==404
++        assert result.headers['cache-control']=='no-store'
++    assert rows(database)==before
++
++
++def test_hosted_startup_refuses_missing_database_or_build(tmp_path):
++    with pytest.raises(ValueError,match='database'):SyntheticDemoGateway(tmp_path/'missing',tmp_path/'dist','a7'*32)
++    database=tmp_path/'exists';database.touch()
++    with pytest.raises(ValueError,match='frontend'):SyntheticDemoGateway(database,tmp_path/'dist','a7'*32)
++
++
++def test_hosted_environment_cannot_enable_execution(hosted,monkeypatch):
++    app,database,_=hosted
++    monkeypatch.setenv('CLINRX_CIRCULATORY_EXECUTION_ENABLED','true')
++    monkeypatch.setenv('CLINRX_ENVIRONMENT','production')
++    monkeypatch.setenv('CLINRX_SYNTHETIC_DATABASE',str(database))
++    monkeypatch.setenv('CLINRX_SYNTHETIC_FRONTEND',str(app.static.directory))
++    from app.demo.hosting import from_environment
++    assert from_environment().config.circulatory_execution_enabled is False
