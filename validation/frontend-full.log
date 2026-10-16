@@ -1,0 +1,47 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/icu-flowsheet-corrections-exact-source/frontend
+
+ ❯ tests/sourceUnitMappings.test.tsx (4 tests | 2 failed) 22278ms
+   × displays the actual quantity mapping for fs-IO-output_urine-15 8434ms
+   × displays the actual quantity mapping for fs-D-ORDER 5156ms
+ ❯ tests/circulatory.test.tsx (52 tests | 1 failed) 31465ms
+   ❯ M7 explicit review state (9)
+     × browses all families and corrections even with execution gate closed 6292ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/circulatory.test.tsx > M7 explicit review state > browses all families and corrections even with execution gate closed
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/circulatory.test.tsx:76:3
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/sourceUnitMappings.test.tsx > displays the actual quantity mapping for fs-IO-output_urine-15
+ FAIL  tests/sourceUnitMappings.test.tsx > displays the actual quantity mapping for fs-D-ORDER
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/sourceUnitMappings.test.tsx:14:3
+     12|  ['fs-D-ORDER','Prescribed rate','mcg/kg/min'],
+     13|  ['fs-D-CHANGE','Delivered rate','mcg/kg/min'],
+     14| ])('displays the actual quantity mapping for %s',async(id,label,unit)=…
+       |   ^
+     15|  const state=decodeCirculatoryState(structuredClone(fixture)),item=sta…
+     16|  expect(sourceUnitMappings(item)).toContainEqual({label,unit,status:'u…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  2 failed | 11 passed (13)
+      Tests  3 failed | 514 passed (517)
+   Start at  00:00:01
+   Duration  53.05s (tests 69%, environment 21%, transform 6%, setup 2%, import 1%)
+
+    Isolate  13 workers spawned · ~6.26s startup each (spawn + environment, per file)
+             at least ~2.78s faster with isolate: false — reuses workers across files instead of one per file
+

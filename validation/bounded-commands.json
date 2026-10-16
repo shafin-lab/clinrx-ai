@@ -1,0 +1,64 @@
+[
+  {
+    "name": "frontend-bounded",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "test",
+      "--",
+      "--maxWorkers=2"
+    ],
+    "cwd": "clean Git archive of b7d8b806bca6c23d3ab91f3120e36371e78ddc75",
+    "environment_additions": {},
+    "exit_code": 0,
+    "seconds": 91.58238911628723
+  },
+  {
+    "name": "typecheck",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "run",
+      "typecheck"
+    ],
+    "cwd": "clean Git archive of b7d8b806bca6c23d3ab91f3120e36371e78ddc75",
+    "environment_additions": {},
+    "exit_code": 0,
+    "seconds": 1.765699863433838
+  },
+  {
+    "name": "build-default",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "run",
+      "build"
+    ],
+    "cwd": "clean Git archive of b7d8b806bca6c23d3ab91f3120e36371e78ddc75",
+    "environment_additions": {},
+    "exit_code": 0,
+    "seconds": 1.8138787746429443
+  },
+  {
+    "name": "build-hosted",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "run",
+      "build",
+      "--",
+      "--outDir",
+      "/Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/icu-flowsheet-corrections-publication/validation/hosted-dist"
+    ],
+    "cwd": "clean Git archive of b7d8b806bca6c23d3ab91f3120e36371e78ddc75",
+    "environment_additions": {
+      "VITE_SYNTHETIC_HOSTED": "true"
+    },
+    "exit_code": 0,
+    "seconds": 1.8898780345916748
+  }
+]

@@ -1,0 +1,48 @@
+[
+  {
+    "name": "f1-old-code-negative-control",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "test",
+      "--",
+      "tests/caseInterpretation.test.tsx",
+      "-t",
+      "never replaces pinned"
+    ],
+    "cwd": "clean Git archive of b7d8b806bca6c23d3ab91f3120e36371e78ddc75",
+    "environment_additions": {},
+    "exit_code": 1,
+    "seconds": 8.327095031738281
+  },
+  {
+    "name": "focused",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "test",
+      "--",
+      "tests/caseInterpretation.test.tsx",
+      "tests/sourceUnitMappings.test.tsx"
+    ],
+    "cwd": "clean Git archive of b7d8b806bca6c23d3ab91f3120e36371e78ddc75",
+    "environment_additions": {},
+    "exit_code": 0,
+    "seconds": 18.765446186065674
+  },
+  {
+    "name": "frontend-full",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "test"
+    ],
+    "cwd": "clean Git archive of b7d8b806bca6c23d3ab91f3120e36371e78ddc75",
+    "environment_additions": {},
+    "exit_code": 1,
+    "seconds": 55.60659623146057
+  }
+]

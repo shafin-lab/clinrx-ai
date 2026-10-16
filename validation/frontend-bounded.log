@@ -1,0 +1,16 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/icu-flowsheet-corrections-exact-source/frontend
+
+
+ Test Files  13 passed (13)
+      Tests  517 passed (517)
+   Start at  00:01:40
+   Duration  89.54s (tests 71%, environment 19%, setup 4%, transform 3%, import 2%)
+
+    Isolate  13 workers spawned · ~2.95s startup each (spawn + environment, per file)
+             at least ~16.21s faster with isolate: false — reuses workers across files instead of one per file
+
