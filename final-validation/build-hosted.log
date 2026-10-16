@@ -1,0 +1,23 @@
+
+> clinrx-synthetic-review@0.1.0 build
+> tsc --noEmit && vite build --outDir /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/combined-overview-director-publication/final-validation/hosted-dist
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 50 modules transformed.
+
+(!) outDir /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/combined-overview-director-publication/final-validation/hosted-dist is not inside project root and will not be emptied.
+Use --emptyOutDir to override.
+
+rendering chunks...
+computing gzip size...
+../../combined-overview-director-publication/final-validation/hosted-dist/index.html                   0.37 kB │ gzip:   0.27 kB
+../../combined-overview-director-publication/final-validation/hosted-dist/assets/index-BgvEC8-o.css   27.75 kB │ gzip:   6.34 kB
+../../combined-overview-director-publication/final-validation/hosted-dist/assets/index-BZMBEQxY.js   716.86 kB │ gzip: 139.13 kB
+
+✓ built in 219ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

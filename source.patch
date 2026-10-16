@@ -1,0 +1,248 @@
+diff --git a/docs/SYNTHETIC-ICU-FLOWSHEET.md b/docs/SYNTHETIC-ICU-FLOWSHEET.md
+index 2d9cbc9..857a5d6 100644
+--- a/docs/SYNTHETIC-ICU-FLOWSHEET.md
++++ b/docs/SYNTHETIC-ICU-FLOWSHEET.md
+@@ -51,3 +51,14 @@ The comparison uses publicly available documentation patterns, not private hospi
+ - US, [MIMIC-IV archived ICU infusion structure](https://mimic.mit.edu/docs/iv/modules/icu/inputevents.html), a research representation of historical documentation, not a current EHR specification.
+ 
+ These examples informed separation of source times, fluid intervals, orders/delivery and measurement context. ClinRx does not claim worldwide policy completeness. Units and source clinician goals remain explicit, and no universal dose unit, target, recording frequency or freshness threshold is imposed.
++
++
++## Local combined overview readability increment
++
++A new default Combined overview brings infusion events, measured interval urine, source-reported interval/cumulative chart balance, lactate and capillary refill into three named row groups. Four exact recorded timestamps are displayed at a time, initially the final four source times in the bounded state. Earlier/Later controls reach every timestamp; Show all recorded times exposes the full overview axis. These are display slices, not bins, an interpretation of current clinical state, or a change to timestamp eligibility.
++
++Rows lacking records in the selected time slice are omitted only in this compact overview, with an explicit disclosure. Earlier/Later and all-times mode retain all overview events. All hemodynamic sections and existing section views retain all 150 plotted controls, with the original off-axis records separately inspectable. No source data or evidence family is deleted. Dashes mean no recorded point/event, not zero or continued administration.
++
++Compact cells preserve raw values/units and explicit order/start/change/pause/restart/stop labels. Unknown/suspect/missing quality and non-recorded statuses remain visible; acceptable quality and repeated identifiers/concentration/pump context are available in the exact source inspector. Infusion source identities remain in the row labels, including explicit missing identities. Fluid source-calculation qualifiers remain in row/group labels. Source interval boundaries shorten to time-of-day only when both are exact supported UTC assertions on the displayed source date; ambiguous, fractional, conflicting or foreign-day context is labeled for inspection. No duration is calculated or ordering established.
++
++Focus chart brings the combined table into view. A persistent table caption explains dashes; detailed reading instructions and fluid completeness/double-counting caveats remain expandable. This is a local UI increment after cc8aeca; Director's ongoing review of that immutable source does not cover these new edits. Backend, fixture, schema, policy, execution gates, dependencies and migrations are unchanged by this readability increment. No new backend full-suite, hosted CI or container acceptance is inferred.
+diff --git a/frontend/src/demo/ICUFlowsheet.tsx b/frontend/src/demo/ICUFlowsheet.tsx
+index 0f34fde..9d2fcde 100644
+--- a/frontend/src/demo/ICUFlowsheet.tsx
++++ b/frontend/src/demo/ICUFlowsheet.tsx
+@@ -1,37 +1,69 @@
+ import {useState} from 'react';
++import {overviewGroup,overviewGroups,overviewTimeWindow,shortSourceInterval} from './flowsheetOverview';
+ import {chartEntry,chartSections,intervalText,type ChartSection} from './chartEntries';
+ import {deliverySupport,quantityText} from './HemodynamicContext';
+ import type {CirculatoryItem} from '../api/circulatoryTypes';
+ import {buildFlowsheet,infusionText,infusionSeries,sourceTime} from './flowsheetPresentation';
+ import {record,quality,title,value,words} from './evidencePresentation';
+ type Props={items:CirculatoryItem[];onInspect:(item:CirculatoryItem,trigger:HTMLButtonElement)=>void};
+-function ChartPoint({item,onInspect,prefix='Chart source'}:{item:CirculatoryItem;onInspect:Props['onInspect'];prefix?:string}){
++function ChartPoint({item,onInspect,prefix='Chart source',compact=false}:{item:CirculatoryItem;onInspect:Props['onInspect'];prefix?:string;compact?:boolean}){
+   const entry=chartEntry(item),interval=intervalText(item);
+   const result=value(item),drug=item.fact.kind==='circulatory_vasoactive',infusion=infusionText(item);
+-  return <button className="demo-chart-point" aria-label={prefix+' '+item.fact.id+' revision '+item.fact.revision} onClick={event=>onInspect(item,event.currentTarget)}>
+-    <strong>{drug?infusion.event:result.text+' '+(result.unit==='1'?'(unit: 1)':result.unit)}</strong>
+-    {drug&&<span>{['pause','permanent_stop','non_delivery'].includes(String(record(item.fact.action).event_type))?infusion.reason:infusion.rate}</span>}
+-    <small>Quality: {drug?'not assessed here':quality(item)} · {words(item.fact.record_status)}</small>
+-    {entry&&<small>{entry.sourceType}</small>}{interval&&<small>{interval}</small>}
+-    <small>{item.fact.id} / {item.fact.revision}</small>
+-    {drug&&record(infusion.delivery.rate).value!=null&&<small>Concentration: {String(record(infusion.delivery.concentration).value??'Not recorded')} {String(record(record(infusion.delivery.concentration).unit).raw??'')} · Dosing weight: {infusion.delivery.dosing_weight?'see source reference':'not recorded'}</small>}
++  const sourceQuality=quality(item),status=words(item.fact.record_status);
++  const eventType=String(record(item.fact.action).event_type),eventLabel=({initiation:'Started',rate_change:'Changed',permanent_stop:'Stopped',pause:'Paused',restart:'Restarted',order:'Order',preparation:'Prepared'} as Record<string,string>)[eventType]??infusion.event;
++  const interruption=['pause','permanent_stop','non_delivery'].includes(eventType);
++  return <button className={'demo-chart-point'+(compact?' demo-chart-point-compact':'')} aria-label={prefix+' '+item.fact.id+' revision '+item.fact.revision} title={compact?[item.fact.id+' / '+item.fact.revision,interval??'',drug?infusion.event+' · '+infusion.rate:'Quality: '+sourceQuality,'Status: '+status].filter(Boolean).join(' · '):undefined} onClick={event=>onInspect(item,event.currentTarget)}>
++    <strong>{drug?(compact?eventLabel:infusion.event):result.text+' '+(result.unit==='1'?'(unit: 1)':result.unit)}</strong>
++    {drug&&(!compact||!interruption)&&<span>{interruption?infusion.reason:infusion.rate}</span>}
++    {compact?<>
++      {!drug&&sourceQuality!=='acceptable'&&<small className="demo-chart-quality">Quality: {sourceQuality}</small>}
++      {status!=='recorded'&&<small className="demo-chart-status">{status}</small>}
++      {interval&&<small>{shortSourceInterval(item)}</small>}
++    </>:<>
++      <small>Quality: {drug?'not assessed here':sourceQuality} · {status}</small>
++      {entry&&<small>{entry.sourceType}</small>}{interval&&<small>{interval}</small>}
++      <small>{item.fact.id} / {item.fact.revision}</small>
++      {drug&&record(infusion.delivery.rate).value!=null&&<small>Concentration: {String(record(infusion.delivery.concentration).value??'Not recorded')} {String(record(record(infusion.delivery.concentration).unit).raw??'')} · Dosing weight: {infusion.delivery.dosing_weight?'see source reference':'not recorded'}</small>}
++    </>}
+   </button>;
+ }
+ export function ICUFlowsheet({items,onInspect}:Props){
+   const chart=buildFlowsheet(items);
+-  const [section,setSection]=useState<ChartSection|'all'>('all');
+-  const rows=chart.rows.filter(row=>section==='all'||row.section===section);
++  const [section,setSection]=useState<ChartSection|'all'|'overview'>('overview');
++  const [page,setPage]=useState(0),[showAllTimes,setShowAllTimes]=useState(false);
++  const compact=section==='overview';
++  const rows=chart.rows.filter(row=>compact?overviewGroup(row)!==null:section==='all'||row.section===section);
++  const window=overviewTimeWindow(chart.times,page,!compact||showAllTimes);
++  const times=window.times;
++  const visibleRows=compact&&!showAllTimes?rows.filter(row=>times.some(at=>row.cells.has(at))):rows;
++  const groups=compact?overviewGroups.map(label=>({label,rows:visibleRows.filter(row=>overviewGroup(row)===label)})):[{label:'Recorded sources',rows}];
+   const notes=items.filter(item=>chartEntry(item)?.section==='goals');
++  const displayed=rows.flatMap(row=>times.flatMap(at=>row.cells.get(at)??[])).length;
+   return <section className="demo-flowsheet" aria-label="Read-only ICU flowsheet">
+     <h2>Hemodynamics and infusions over time</h2>
+-    <p>Fictional charted observations and infusion events — not a treatment protocol or dosing advice. No pump control, prescribing or execution is available.</p>
+-    <p><strong>Read each column as a recorded timestamp, not proof of physiological simultaneity or treatment response.</strong> Rates are shown only at documented events. Blank cells do not mean zero, unchanged measurements, continued delivery or a stopped infusion. No dose conversion, averaging or carry-forward is performed.</p>
+-    <p>Orders and preparations are not administration. Dose units are preserved, including mcg/min, units/h and mcg/kg/min. Pump rates and dosing weights appear only when separately source-recorded and exactly linked; missing context is not filled in. CO methods, oxygen sample types and acquisition sites remain distinct.</p>
+-    <p>{chart.included} records from displayed families in the loaded view; {chart.unplaced.length} are kept off the time axis. Other evidence remains in the Evidence library. HPI is optional.</p>
+-    <div className="demo-chart-controls"><label>Flowsheet section<select value={section} onChange={event=>setSection(event.target.value as ChartSection|'all')}><option value="all">All hemodynamic sections</option>{Object.entries(chartSections).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
+-    <p className="demo-chart-ownership">Fluid volumes are hemodynamic context, not a replacement for renal or nutrition records. Reported net balances and cumulative totals are source assertions, not ClinRx calculations; completeness of all intake/losses is not established. Intervention volumes may already be included in input totals and must not be counted again.</p>
++    <p>Fictional recorded evidence. Open any value for its exact source and history. No prescribing, pump control or execution.</p>
++    <div className="demo-chart-controls"><label>Flowsheet section<select value={section} onChange={event=>setSection(event.target.value as ChartSection|'all'|'overview')}><option value="overview">Combined overview</option><option value="all">All hemodynamic sections</option>{Object.entries(chartSections).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
++    {compact&&<p className="demo-chart-overview-scope">Together: infusion events, interval urine output, source-reported interval/cumulative chart balance, lactate and capillary refill. Rows without records in these selected times are omitted; they remain available through time navigation. Other measurements, pump context and perfusion observations remain in the detailed sections.</p>}
++    {compact&&chart.times.length>0&&<div className="demo-chart-time-controls" aria-label="Recorded time navigation">
++      <button disabled={showAllTimes||window.page===window.lastPage} onClick={()=>setPage(window.page+1)}>Earlier times</button>
++      <span role="status">{showAllTimes?'All recorded times':`Recorded times ${window.start+1}–${window.end} of ${chart.times.length}`} · UTC</span>
++      <button disabled={showAllTimes||window.page===0} onClick={()=>setPage(window.page-1)}>Later times</button>
++      <label><input type="checkbox" checked={showAllTimes} onChange={event=>setShowAllTimes(event.target.checked)}/>Show all recorded times</label>
++    </div>}
++    <p className="demo-chart-reading-key"><strong>Blank means no record at that time.</strong> No carry-forward, dose conversion or treatment-response inference. Quality concerns and non-recorded statuses stay visible; open a cell for full source quality and context.</p>
++    <a className="demo-chart-jump" href="#demo-icu-time-chart">Focus chart ↓</a>
++    <p className="demo-chart-count">{displayed} source records shown · {chart.unplaced.length} off-axis · {compact?'Use earlier/later times and detailed sections for remaining records.':'Other evidence remains in the Evidence library.'}</p>
+     {!!notes.length&&(section==='all'||section==='goals')&&<details className="demo-chart-notes"><summary>Recorded goals, review and handover ({notes.length})</summary><p>These are source-recorded clinician notes and targets, not system recommendations, active prescriptions or automatic escalation rules.</p>{notes.map(item=><ChartPoint key={item.fact.id+item.fact.revision} prefix="Note source" item={item} onInspect={onInspect}/>)}</details>}
+-    {chart.times.length&&rows.length?<div className="demo-chart-scroll" role="region" aria-label="Scrollable ICU time chart" tabIndex={0}><table className="demo-chart"><caption>Recorded source times in UTC · separate point observations, no interpolated trends</caption><thead><tr><th scope="col">Measurement / infusion</th>{chart.times.map(at=><th scope="col" key={at}><time dateTime={at}>{at.slice(0,10)}<br/>{at.slice(11,19)}</time></th>)}</tr></thead><tbody>{rows.map(row=><tr key={row.key}><th scope="row">{row.label}<small>{row.context}</small></th>{chart.times.map(at=><td key={at}>{row.cells.get(at)?.map(item=><ChartPoint key={JSON.stringify([item.fact.kind,item.fact.id,item.fact.revision])} item={item} onInspect={onInspect}/>)??<span className="demo-chart-empty">{row.drug?'No event recorded':'No observation recorded'}</span>}</td>)}</tr>)}</tbody></table></div>:<p>No observations can be placed on this time axis for the selected section. No values or infusion intervals are inferred.</p>}
++    {times.length>0&&rows.length>0?<div id="demo-icu-time-chart" className={'demo-chart-scroll'+(compact?' demo-chart-scroll-compact':'')} role="region" aria-label="Scrollable ICU time chart" tabIndex={0}><table className={'demo-chart'+(compact?' demo-chart-compact':'')}><caption>Recorded source times in UTC · — means no record, not zero or continued delivery · source intervals stay separate from point measurements</caption><thead><tr><th scope="col">Measurement / infusion</th>{times.map(at=><th scope="col" key={at}><time dateTime={at}>{at.slice(0,10)}<br/>{at.slice(11,19)}</time></th>)}</tr></thead>{groups.filter(group=>group.rows.length>0).map(group=><tbody key={group.label} aria-label={group.label}>
++      {compact&&<tr className="demo-chart-group"><th scope="rowgroup" colSpan={times.length+1}>{group.label}{group.label==='Fluid records'&&<small>Volumes over recorded intervals · balances are source-reported, not calculated here</small>}</th></tr>}
++      {group.rows.map(row=><tr key={row.key}><th scope="row">{row.label}<small title={row.context}>{compact&&row.drug?(row.context.startsWith('Infusion: ')?row.context.slice(10).replace(' · documented events only',''):'Infusion identity not recorded'):row.context}</small></th>{times.map(at=><td key={at}>{row.cells.get(at)?.map(item=><ChartPoint key={JSON.stringify([item.fact.kind,item.fact.id,item.fact.revision])} item={item} onInspect={onInspect} compact={compact}/>)??<span className="demo-chart-empty" aria-label={row.drug?'No event recorded':'No observation recorded'}>{compact?'—':row.drug?'No event recorded':'No observation recorded'}</span>}</td>)}</tr>)}
++    </tbody>)}</table></div>:<p>No observations can be placed on this time axis for the selected section. No values or infusion intervals are inferred.</p>}
++    <details className="demo-chart-policy"><summary>How to read this chart and fluid records</summary>
++      <p>Fictional charted observations and infusion events — not a treatment protocol or dosing advice. No pump control, prescribing or execution is available.</p>
++      <p><strong>Read each column as a recorded timestamp, not proof of physiological simultaneity or treatment response.</strong> Rates are shown only at documented events. Blank cells do not mean zero, unchanged measurements, continued delivery or a stopped infusion. No dose conversion, averaging or carry-forward is performed.</p>
++      <p>Orders and preparations are not administration. Dose units are preserved, including mcg/min, units/h and mcg/kg/min. Pump rates and dosing weights appear only when separately source-recorded and exactly linked; missing context is not filled in. CO methods, oxygen sample types and acquisition sites remain distinct. Infusion quality is not assessed by this display. HPI is optional.</p>
++      <p className="demo-chart-ownership">Fluid volumes are hemodynamic context, not a replacement for renal or nutrition records. Reported net balances and cumulative totals are source assertions, not ClinRx calculations; completeness of all intake/losses is not established. Intervention volumes may already be included in input totals and must not be counted again. Interval bounds are source assertions; duration and interval ordering are not assessed here.</p>
++    </details>
+     <details className="demo-chart-policy"><summary>Scope and international documentation context</summary><p>This synthetic chart uses public documentation patterns. Local institutions differ in units, recording practices, goals and protocols; no hospital’s treatment policy is imposed here. Source drug units, clinician targets, methods and timestamps remain explicit. HPI is optional. Nutrition, comprehensive renal management and other organ-system assessments remain separate modules; VA-ECMO, Impella and IABP remain deferred.</p><p>Examples: <a href="https://www.lhsc.on.ca/critical-care-trauma-centre/standard-of-care-cardiovascular-monitoring" target="_blank" rel="noreferrer">Canada: LHSC monitoring documentation</a> · <a href="https://www.austin.org.au/Assets/Files/Austin%20Intensive%20Care%20Unit%20Referral%20Form.pdf" target="_blank" rel="noreferrer">Australia: Austin ICU referral form</a> · <a href="https://londonccn.nhs.uk/wp-content/uploads/critical-care_ncr-pages_2015-1.pdf" target="_blank" rel="noreferrer">UK: historical critical-care transfer chart</a> · <a href="https://mimic.mit.edu/docs/iv/modules/icu/inputevents.html" target="_blank" rel="noreferrer">US: archived MIMIC infusion data structure</a>. Historical examples illustrate recording patterns, not current institutional-policy approval.</p></details>
+     <section aria-label="Evidence kept off the time axis" className="demo-chart-unplaced"><h3>Evidence kept off the time axis</h3><p>Contextual/unplaced records and source times that this restrictive display cannot place confidently remain inspectable. The source timestamp is preserved.</p>{chart.unplaced.map(item=><div key={JSON.stringify([item.fact.kind,item.fact.id,item.fact.revision])}><button className="demo-explanation-inspect" onClick={event=>onInspect(item,event.currentTarget)}>{title(item)} · {item.fact.id} / {item.fact.revision} ↗</button><span> {sourceTime(item)} · {words(item.inclusion)}</span></div>)}</section>
+   </section>;
+diff --git a/frontend/src/demo/demo.css b/frontend/src/demo/demo.css
+index c54113f..6ddc3a0 100644
+--- a/frontend/src/demo/demo.css
++++ b/frontend/src/demo/demo.css
+@@ -16,3 +16,9 @@
+ .demo-flowsheet{min-width:0}.demo-flowsheet>p{font-size:12px;line-height:1.6}.demo-chart-scroll{overflow:auto;max-height:76vh;border:1px solid #c9d9ce;border-radius:8px;background:white}.demo-chart{border-collapse:separate;border-spacing:0;font-size:11px;width:max-content;min-width:100%}.demo-chart caption{text-align:left;padding:12px;background:#eef4ed;color:#315e51}.demo-chart th,.demo-chart td{padding:8px;vertical-align:top;border-right:1px solid #dae3dc;border-bottom:1px solid #dae3dc;width:170px;min-width:170px}.demo-chart thead th{position:sticky;top:0;z-index:2;background:#e8f0e7;font-size:11px;text-align:left}.demo-chart th:first-child{position:sticky;left:0;background:#f1f6ef;z-index:1;min-width:180px;width:180px}.demo-chart thead th:first-child{z-index:3}.demo-chart th small{display:block;font-size:10px;font-weight:400;line-height:1.5;margin-top:6px}.demo-chart-point{display:flex;flex-direction:column;gap:6px;width:100%;padding:9px;text-align:left;border:1px solid #bbd1c1;border-radius:5px;background:#fff;color:#19343a;overflow-wrap:anywhere;margin-bottom:5px}.demo-chart-point strong{font-size:12px}.demo-chart-point small{font-size:9px;line-height:1.5}.demo-chart-empty{color:#77867b;font-size:10px}.demo-chart-unplaced{background:#fbf4e2;padding:15px;margin-top:18px;border:1px solid #e3d8bd;border-radius:7px;font-size:11px}.demo-chart-unplaced p{line-height:1.6}
+ 
+ .demo-chart-controls{padding:12px;background:#eaf2e8;border-radius:7px;margin:14px 0}.demo-chart-controls label{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:12px;font-weight:600}.demo-chart-controls select{padding:9px;border:1px solid #c2d3c7;border-radius:5px;background:white;color:#19343a}.demo-chart-ownership{padding:12px;background:#faf4e3;border:1px solid #e3d8bd;border-radius:7px}.demo-chart-notes,.demo-chart-policy{padding:12px;border:1px solid #d5e0d6;border-radius:7px;background:#f6f9f3;margin:14px 0}.demo-chart-notes .demo-chart-point{margin:10px 0}.demo-chart-policy p{font-size:12px;line-height:1.6}.demo-chart-scroll{scroll-padding-left:200px;scroll-padding-top:60px}.demo-chart-point{scroll-margin-left:200px;scroll-margin-top:60px}
++
++.demo-chart-overview-scope,.demo-chart-count{color:#52665c;font-size:11px!important}.demo-chart-reading-key{border-left:3px solid #4f7a63;padding:7px 10px;background:#f1f6ef}.demo-chart-time-controls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:10px 0;font-size:11px}.demo-chart-time-controls button{background:#fff;border:1px solid #b6cdbd;border-radius:5px;padding:7px 10px;color:#244b3b}.demo-chart-time-controls button:disabled{opacity:.45}.demo-chart-time-controls label{display:flex;align-items:center;gap:5px;margin-left:auto}.demo-chart-time-controls input{accent-color:#315e51}.demo-chart-compact{width:100%;table-layout:fixed}.demo-chart-compact th,.demo-chart-compact td{padding:4px;width:92px;min-width:92px}.demo-chart-compact th:first-child{width:146px;min-width:146px;font-size:10px;overflow-wrap:anywhere}.demo-chart-compact th small{font-size:9px;line-height:1.25;margin-top:3px}.demo-chart-compact caption{padding:7px;font-size:10px}.demo-chart-compact thead th{font-size:10px;padding:6px 4px}.demo-chart-group th:first-child{position:static;background:#dceade;color:#244a37;text-align:left;letter-spacing:.035em;padding:6px 8px;font-size:10px}.demo-chart-group small{display:inline!important;margin-left:8px;font-weight:400;letter-spacing:normal}.demo-chart-point-compact{padding:5px;gap:2px;margin:0;border-color:transparent;background:#f7faf6;border-radius:3px;font-size:10px;line-height:1.25;scroll-margin-left:160px}.demo-chart-point-compact:hover{border-color:#6c957b;background:#edf5e9}.demo-chart-point-compact strong{font-size:11px}.demo-chart-point-compact small{font-size:9px;line-height:1.25}.demo-chart-quality,.demo-chart-status{color:#794b21}.demo-chart-scroll-compact{max-height:82vh;scroll-padding-left:160px}.demo-chart-compact .demo-chart-empty{display:block;text-align:center;color:#64756b;padding-top:5px}.demo-chart-point:focus-visible,.demo-chart-time-controls button:focus-visible{outline:2px solid #366ca3;outline-offset:1px}@media(max-width:600px){.demo-chart-compact th:first-child{width:128px;min-width:128px}.demo-chart-compact th,.demo-chart-compact td{width:85px;min-width:85px}.demo-chart-time-controls label{margin-left:0;width:100%}}
++
++.demo-chart-time-controls input{width:auto;flex:0 0 auto;margin:0}.demo-chart-time-controls label{font-size:11px}.demo-chart-jump{display:inline-block;color:#315e51;font-size:11px;margin-bottom:4px}.demo-chart-compact th{text-transform:none;letter-spacing:0;font-weight:600}.demo-chart-compact th small{font-weight:400}.demo-chart-scroll-compact{scroll-margin-top:12px}
++
++.demo-chart-time-controls label input[type=checkbox]{width:13px;min-width:13px;max-width:13px;flex:0 0 13px;margin:0;padding:0}
+diff --git a/frontend/src/demo/flowsheetOverview.ts b/frontend/src/demo/flowsheetOverview.ts
+new file mode 100644
+index 0000000..f267cb0
+--- /dev/null
++++ b/frontend/src/demo/flowsheetOverview.ts
+@@ -0,0 +1,26 @@
++import type {CirculatoryItem} from '../api/circulatoryTypes';
++import {chartEntry,intervalText} from './chartEntries';
++import {chartTime,type ChartRow} from './flowsheetPresentation';
++import {record} from './evidencePresentation';
++export const overviewGroups=['Infusion events','Fluid records','Perfusion observations'] as const;
++export function overviewGroup(row:ChartRow):typeof overviewGroups[number]|null{
++ if(row.drug)return 'Infusion events';
++ const items=[...row.cells.values()].flat();
++ if(items.some(i=>['output_urine','net_balance_reported','balance_total_reported'].includes(chartEntry(i)?.code??'')))return 'Fluid records';
++ if(items.some(i=>i.fact.kind==='circulatory_lactate'||(i.fact.kind==='circulatory_perfusion'&&i.fact.concept==='capillary_refill')))return 'Perfusion observations';
++ return null;
++}
++/** Only shortens exact same-day UTC source bounds; never calculates duration. */
++export function shortSourceInterval(item:CirculatoryItem){
++ const interval=record(item.fact.recorded_interval);if(!Object.keys(interval).length)return null;
++ const sourceBound=(bound:unknown)=>chartTime({...item,inclusion:'in_window',fact:{...item.fact,collected:undefined,occurred:bound}});
++ const start=sourceBound(interval.start),end=sourceBound(interval.end),at=chartTime(item);
++ if(start&&end&&at&&start.slice(0,10)===end.slice(0,10)&&end.slice(0,10)===at.slice(0,10))return 'Interval '+start.slice(11,19)+' → '+end.slice(11,19)+' UTC';
++ return 'Interval context: inspect source';
++}
++export function overviewTimeWindow(times:string[],page:number,showAll:boolean){
++ const lastPage=Math.max(0,Math.ceil(times.length/4)-1),safePage=Math.max(0,Math.min(page,lastPage));
++ const end=Math.max(0,times.length-safePage*4),start=Math.max(0,end-4);
++ return {times:showAll?times:times.slice(start,end),start:showAll?0:start,end:showAll?times.length:end,page:safePage,lastPage};
++}
++export {intervalText};
+diff --git a/frontend/tests/flowsheet.test.tsx b/frontend/tests/flowsheet.test.tsx
+index 8ed7bde..94efcc0 100644
+--- a/frontend/tests/flowsheet.test.tsx
++++ b/frontend/tests/flowsheet.test.tsx
+@@ -43,6 +43,7 @@ it('does not carry forward a dose or replace a pause/stop with zero',()=>{
+ });
+ it('preserves exact drug units, event distinctions and source links',()=>{
+  const sources=items(),onInspect=vi.fn();render(<ICUFlowsheet items={sources} onInspect={onInspect}/>);
++ fireEvent.change(screen.getByLabelText('Flowsheet section'),{target:{value:'all'}});
+  const button=screen.getByRole('button',{name:'Chart source fs-D-CHANGE revision 1'});expect(button).toHaveTextContent('3.0 mcg/kg/min');fireEvent.click(button);
+  expect(onInspect).toHaveBeenCalledWith(sources.find(i=>i.fact.id==='fs-D-CHANGE'),button);
+  expect(screen.getByRole('button',{name:'Chart source fs-N-ORDER revision 1'})).toHaveTextContent('order');
+@@ -60,6 +61,7 @@ it('labels prescribed rate and missing weight/pump-rate without converting them
+ it('retains withdrawn source status and empty states without inventing observations',()=>{
+  const source=items().find(i=>i.fact.id==='fs-CO-15')!;source.fact.record_status='withdrawn';
+  const view=render(<ICUFlowsheet items={[source]} onInspect={vi.fn()}/>);
++ fireEvent.change(screen.getByLabelText('Flowsheet section'),{target:{value:'all'}});
+  expect(screen.getByRole('button',{name:'Chart source fs-CO-15 revision 1'})).toHaveTextContent('withdrawn');
+  view.rerender(<ICUFlowsheet items={[]} onInspect={vi.fn()}/>);expect(screen.getByText(/No observations can be placed/)).toBeInTheDocument();
+  expect(screen.queryByRole('table')).not.toBeInTheDocument();
+@@ -127,5 +129,6 @@ it('retains top-level assessment and signal quality rather than labeling it miss
+   const item=sources.find(i=>i.fact.id===id)!;expect(quality(item)).toBe('unknown');expect(hasUncertainQuality(item)).toBe(true);
+  }
+  render(<ICUFlowsheet items={sources} onInspect={vi.fn()}/>);
++ fireEvent.change(screen.getByLabelText('Flowsheet section'),{target:{value:'all'}});
+  expect(screen.getByRole('button',{name:'Chart source fs-FLUID-ASSESSMENT revision 1'})).toHaveTextContent('Quality: unknown');
+ });
+diff --git a/frontend/tests/flowsheetOverview.test.tsx b/frontend/tests/flowsheetOverview.test.tsx
+new file mode 100644
+index 0000000..4184897
+--- /dev/null
++++ b/frontend/tests/flowsheetOverview.test.tsx
+@@ -0,0 +1,59 @@
++import {it,expect,vi,afterEach} from 'vitest';
++import {render,screen,fireEvent,cleanup} from '@testing-library/react';
++import fixture from './fixtures/icuFlowsheet.json';
++import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
++import {ICUFlowsheet} from '../src/demo/ICUFlowsheet';
++import {buildFlowsheet} from '../src/demo/flowsheetPresentation';
++import {overviewGroup,overviewTimeWindow,shortSourceInterval} from '../src/demo/flowsheetOverview';
++import {record} from '../src/demo/evidencePresentation';
++const items=()=>decodeCirculatoryState(structuredClone(fixture)).assembly.snapshot.items;
++const ids=()=>screen.getAllByRole('button',{name:/^Chart source /}).map(b=>b.getAttribute('aria-label'));
++afterEach(cleanup);
++it('defaults to a compact overview with all three groups and exact source selection',()=>{
++ const sources=items(),before=JSON.stringify(sources),inspect=vi.fn();render(<ICUFlowsheet items={sources} onInspect={inspect}/>);
++ expect(screen.getByRole('combobox',{name:'Flowsheet section'})).toHaveValue('overview');
++ for(const name of ['Infusion events','Fluid records','Perfusion observations'])expect(screen.getByRole('rowgroup',{name})).toBeInTheDocument();
++ expect(screen.getByText('Recorded times 9–12 of 12 · UTC')).toBeInTheDocument();
++ const button=screen.getByRole('button',{name:'Chart source fs-D-CHANGE revision 1'});expect(button).toHaveTextContent('Changed');expect(button).toHaveTextContent('3.0 mcg/kg/min');fireEvent.click(button);
++ expect(inspect).toHaveBeenCalledWith(sources.find(i=>i.fact.id==='fs-D-CHANGE'),button);
++ expect(screen.getByRole('button',{name:'Chart source fs-BALANCE-TOTAL revision 1'})).toHaveTextContent('285 mL');
++ expect(screen.getByRole('button',{name:'Chart source fs-LACTATE-60 revision 1'})).toHaveTextContent('2.0 mmol/L');expect(JSON.stringify(sources)).toBe(before);
++});
++it('makes every overview event reachable through time pages and through all-times mode',()=>{
++ const sources=items(),chart=buildFlowsheet(sources),expected=chart.rows.filter(r=>overviewGroup(r)!==null).flatMap(r=>[...r.cells.values()].flat().map(i=>'Chart source '+i.fact.id+' revision '+i.fact.revision));
++ render(<ICUFlowsheet items={sources} onInspect={vi.fn()}/>);const seen=new Set(ids());
++ while(!(screen.getByRole('button',{name:'Earlier times'}) as HTMLButtonElement).disabled){fireEvent.click(screen.getByRole('button',{name:'Earlier times'}));ids().forEach(i=>seen.add(i));}
++ expect([...seen].sort()).toEqual(expected.sort());expect(screen.getByRole('button',{name:'Chart source fs-N-ORDER revision 1'})).toHaveTextContent('Order');
++ fireEvent.click(screen.getByRole('checkbox',{name:'Show all recorded times'}));expect(ids().sort()).toEqual(expected.sort());
++ expect(screen.getByRole('button',{name:'Earlier times'})).toBeDisabled();expect(screen.getByRole('button',{name:'Later times'})).toBeDisabled();
++ expect(screen.getByRole('button',{name:'Chart source fs-D-PAUSE revision 1'})).toHaveTextContent('Paused');expect(screen.getByRole('button',{name:'Chart source fs-D-PAUSE revision 1'})).not.toHaveTextContent('0 mcg');
++});
++it('keeps full-detail records and unknown or withdrawn source status available',()=>{
++ const sources=items(),lactate=sources.find(i=>i.fact.id==='fs-LACTATE-60')!;record(record(lactate.fact.acquisition).quality).status='unknown';lactate.fact.record_status='withdrawn';
++ render(<ICUFlowsheet items={sources} onInspect={vi.fn()}/>);
++ expect(screen.getByRole('button',{name:'Chart source fs-LACTATE-60 revision 1'})).toHaveTextContent('Quality: unknown');expect(screen.getByRole('button',{name:'Chart source fs-LACTATE-60 revision 1'})).toHaveTextContent('withdrawn');
++ expect(screen.queryByRole('button',{name:'Chart source fs-CO-60 revision 1'})).not.toBeInTheDocument();
++ fireEvent.change(screen.getByRole('combobox',{name:'Flowsheet section'}),{target:{value:'all'}});
++ expect(screen.getByRole('button',{name:'Chart source fs-CO-60 revision 1'})).toHaveTextContent('Quality: suspect');
++ expect(screen.getAllByRole('button',{name:/^Chart source /})).toHaveLength(150);
++});
++it('labels source intervals and reported balances without recalculating or confusing them with points',()=>{
++ const sources=items();render(<ICUFlowsheet items={sources} onInspect={vi.fn()}/>);
++ const button=screen.getByRole('button',{name:'Chart source fs-IO-net_balance_reported-60 revision 1'});
++ expect(button).toHaveTextContent('-50 mL');expect(button).toHaveTextContent('Interval 08:45:00 → 09:00:00 UTC');expect(button).toHaveTextContent('Quality: not recorded');
++ expect(screen.getByText(/balances are source-reported, not calculated here/)).toBeInTheDocument();
++ expect(screen.getByText('Blank means no record at that time.')).toBeInTheDocument();
++});
++it('does not shorten ambiguous, fractional, foreign-day or missing interval boundaries',()=>{
++ const item=items().find(i=>i.fact.id==='fs-IO-output_urine-15')!;
++ expect(shortSourceInterval(item)).toBe('Interval 08:00:00 → 08:15:00 UTC');
++ for(const change of [(b:Record<string,unknown>)=>{b.clock='unknown';},(b:Record<string,unknown>)=>{b.source_timestamp='2026-10-08T08:00:00.0000001Z';},(b:Record<string,unknown>)=>{b.alternative_sources=[{}];},(b:Record<string,unknown>)=>{b.source_timestamp='2026-10-07T08:00:00Z';record(b.recorded).value=b.source_timestamp;}]){
++  const other=structuredClone(item);change(record(record(other.fact.recorded_interval).start));expect(shortSourceInterval(other)).toBe('Interval context: inspect source');
++ }
++ expect(shortSourceInterval(items().find(i=>i.fact.id==='fs-LACTATE-60')!)).toBeNull();
++});
++it('clamps paging safely for shorter or empty datasets without inventing columns',()=>{
++ expect(overviewTimeWindow([],9,false).times).toEqual([]);
++ expect(overviewTimeWindow(['a','b'],9,false)).toMatchObject({times:['a','b'],page:0,start:0,end:2});
++ expect(overviewTimeWindow(['a','b','c','d','e'],1,false).times).toEqual(['a']);
++});

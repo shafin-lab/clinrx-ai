@@ -1,0 +1,270 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "ICU flowsheet":
+      - generic: ICU flowsheet
+      - generic: ↗
+    - button "Patient summary":
+      - generic: Patient summary
+      - generic: ↗
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / ICU FLOWSHEET
+  - heading "ICU flowsheet" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "156"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - region "Read-only ICU flowsheet":
+    - heading "Hemodynamics and infusions over time" [level=2]
+    - paragraph: Fictional recorded evidence. Open any value for its exact source and history. No prescribing, pump control or execution.
+    - text: Flowsheet section
+    - combobox "Flowsheet section":
+      - option "Combined overview" [selected]
+      - option "All hemodynamic sections"
+      - option "Infusions and delivery context"
+      - option "Pressures, flow and rhythm"
+      - option "Fluid input / output context"
+      - option "Gases and tissue perfusion"
+      - option "Interventions and assessments"
+      - option "Recorded goals and handover"
+    - paragraph: "Together: infusion events, interval urine output, source-reported interval/cumulative chart balance, lactate and capillary refill. Rows without records in these selected times are omitted; they remain available through time navigation. Other measurements, pump context and perfusion observations remain in the detailed sections."
+    - generic "Recorded time navigation":
+      - button "Earlier times"
+      - status: Recorded times 5–8 of 12 · UTC
+      - button "Later times"
+      - checkbox "Show all recorded times"
+      - text: Show all recorded times
+    - paragraph:
+      - strong: Blank means no record at that time.
+      - text: No carry-forward, dose conversion or treatment-response inference. Quality concerns and non-recorded statuses stay visible; open a cell for full source quality and context.
+    - link "Focus chart ↓":
+      - /url: "#demo-icu-time-chart"
+    - paragraph: 13 source records shown · 2 off-axis · Use earlier/later times and detailed sections for remaining records.
+    - region "Scrollable ICU time chart":
+      - table "Recorded source times in UTC · — means no record, not zero or continued delivery · source intervals stay separate from point measurements":
+        - caption: Recorded source times in UTC · — means no record, not zero or continued delivery · source intervals stay separate from point measurements
+        - rowgroup:
+          - row "Measurement / infusion 2026-10-08 08:10:00 2026-10-08 08:15:00 2026-10-08 08:20:00 2026-10-08 08:30:00":
+            - columnheader "Measurement / infusion"
+            - columnheader "2026-10-08 08:10:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:10:00
+            - columnheader "2026-10-08 08:15:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:15:00
+            - columnheader "2026-10-08 08:20:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:20:00
+            - columnheader "2026-10-08 08:30:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:30:00
+        - rowgroup "Infusion events":
+          - row "Infusion events":
+            - rowheader "Infusion events"
+          - row "Dobutamine · inotrope fs-infusion-dobutamine No event recorded No event recorded Chart source fs-D-ORDER revision 1 Chart source fs-D-START revision 1":
+            - rowheader "Dobutamine · inotrope fs-infusion-dobutamine":
+              - text: Dobutamine · inotrope
+              - 'generic "Infusion: fs-infusion-dobutamine · documented events only"': fs-infusion-dobutamine
+            - cell "No event recorded":
+              - generic "No event recorded": —
+            - cell "No event recorded":
+              - generic "No event recorded": —
+            - cell "Chart source fs-D-ORDER revision 1":
+              - button "Chart source fs-D-ORDER revision 1":
+                - strong: Order
+                - generic: 2.5 mcg/kg/min
+            - cell "Chart source fs-D-START revision 1":
+              - button "Chart source fs-D-START revision 1":
+                - strong: Started
+                - generic: 2.5 mcg/kg/min
+          - row "Noradrenaline (norepinephrine) fs-infusion-norepinephrine Chart source fs-N-START revision 1 Chart source fs-N-CHANGE revision 1 No event recorded No event recorded":
+            - rowheader "Noradrenaline (norepinephrine) fs-infusion-norepinephrine":
+              - text: Noradrenaline (norepinephrine)
+              - 'generic "Infusion: fs-infusion-norepinephrine · documented events only"': fs-infusion-norepinephrine
+            - cell "Chart source fs-N-START revision 1":
+              - button "Chart source fs-N-START revision 1":
+                - strong: Started
+                - generic: 5 mcg/min
+            - cell "Chart source fs-N-CHANGE revision 1":
+              - button "Chart source fs-N-CHANGE revision 1":
+                - strong: Changed
+                - generic: 7 mcg/min
+            - cell "No event recorded":
+              - generic "No event recorded": —
+            - cell "No event recorded":
+              - generic "No event recorded": —
+          - row "Vasopressin fs-infusion-vasopressin No event recorded Chart source fs-V-START revision 1 No event recorded No event recorded":
+            - rowheader "Vasopressin fs-infusion-vasopressin":
+              - text: Vasopressin
+              - 'generic "Infusion: fs-infusion-vasopressin · documented events only"': fs-infusion-vasopressin
+            - cell "No event recorded":
+              - generic "No event recorded": —
+            - cell "Chart source fs-V-START revision 1":
+              - button "Chart source fs-V-START revision 1":
+                - strong: Started
+                - generic: 1.8 units/h
+            - cell "No event recorded":
+              - generic "No event recorded": —
+            - cell "No event recorded":
+              - generic "No event recorded": —
+        - rowgroup "Fluid records":
+          - row "Fluid recordsVolumes over recorded intervals · balances are source-reported, not calculated here":
+            - rowheader "Fluid recordsVolumes over recorded intervals · balances are source-reported, not calculated here"
+          - row "Reported interval fluid balance Source-reported calculation; not calculated by ClinRx No observation recorded Chart source fs-IO-net_balance_reported-15 revision 1 No observation recorded Chart source fs-IO-net_balance_reported-30 revision 1":
+            - rowheader "Reported interval fluid balance Source-reported calculation; not calculated by ClinRx":
+              - text: Reported interval fluid balance
+              - generic "Source-reported calculation; not calculated by ClinRx"
+            - cell "No observation recorded":
+              - generic "No observation recorded": —
+            - cell "Chart source fs-IO-net_balance_reported-15 revision 1":
+              - button "Chart source fs-IO-net_balance_reported-15 revision 1":
+                - strong: 205 mL
+                - generic: "Quality: not recorded"
+                - generic: Interval 08:00:00 → 08:15:00 UTC
+            - cell "No observation recorded":
+              - generic "No observation recorded": —
+            - cell "Chart source fs-IO-net_balance_reported-30 revision 1":
+              - button "Chart source fs-IO-net_balance_reported-30 revision 1":
+                - strong: 20 mL
+                - generic: "Quality: not recorded"
+                - generic: Interval 08:15:00 → 08:30:00 UTC
+          - row "Urine output Measured interval volume No observation recorded Chart source fs-IO-output_urine-15 revision 1 No observation recorded Chart source fs-IO-output_urine-30 revision 1":
+            - rowheader "Urine output Measured interval volume":
+              - text: Urine output
+              - generic "Measured interval volume"
+            - cell "No observation recorded":
+              - generic "No observation recorded": —
+            - cell "Chart source fs-IO-output_urine-15 revision 1":
+              - button "Chart source fs-IO-output_urine-15 revision 1":
+                - strong: 35 mL
+                - generic: "Quality: not recorded"
+                - generic: Interval 08:00:00 → 08:15:00 UTC
+            - cell "No observation recorded":
+              - generic "No observation recorded": —
+            - cell "Chart source fs-IO-output_urine-30 revision 1":
+              - button "Chart source fs-IO-output_urine-30 revision 1":
+                - strong: 25 mL
+                - generic: "Quality: not recorded"
+                - generic: Interval 08:15:00 → 08:30:00 UTC
+        - rowgroup "Perfusion observations":
+          - row "Perfusion observations":
+            - rowheader "Perfusion observations"
+          - row "Capillary refill bedside examination · unknown No observation recorded Chart source fs-CRT-15 revision 1 No observation recorded Chart source fs-CRT-30 revision 1":
+            - rowheader "Capillary refill bedside examination · unknown":
+              - text: Capillary refill
+              - generic "bedside examination · unknown"
+            - cell "No observation recorded":
+              - generic "No observation recorded": —
+            - cell "Chart source fs-CRT-15 revision 1":
+              - button "Chart source fs-CRT-15 revision 1":
+                - strong: 3.0 s
+            - cell "No observation recorded":
+              - generic "No observation recorded": —
+            - cell "Chart source fs-CRT-30 revision 1":
+              - button "Chart source fs-CRT-30 revision 1":
+                - strong: 2.5 s
+          - row "Lactate laboratory · arterial No observation recorded Chart source fs-LACTATE-15 revision 1 No observation recorded Chart source fs-LACTATE-30 revision 1":
+            - rowheader "Lactate laboratory · arterial":
+              - text: Lactate
+              - generic "laboratory · arterial"
+            - cell "No observation recorded":
+              - generic "No observation recorded": —
+            - cell "Chart source fs-LACTATE-15 revision 1":
+              - button "Chart source fs-LACTATE-15 revision 1":
+                - strong: 2.4 mmol/L
+            - cell "No observation recorded":
+              - generic "No observation recorded": —
+            - cell "Chart source fs-LACTATE-30 revision 1":
+              - button "Chart source fs-LACTATE-30 revision 1":
+                - strong: 2.2 mmol/L
+    - generic "How to read this chart and fluid records"
+    - generic "Scope and international documentation context"
+    - region "Evidence kept off the time axis":
+      - heading "Evidence kept off the time axis" [level=3]
+      - paragraph: Contextual/unplaced records and source times that this restrictive display cannot place confidently remain inspectable. The source timestamp is preserved.
+      - button "Cardiac output · m7-CONTEXT-CO / 1 ↗"
+      - generic: 2026-10-08T06:00:00+00:00 · contextual
+      - button "Central venous pressure · m7-UNPLACED / 1 ↗"
+      - generic: Time not established · unplaced
+  - complementary "Selected source evidence" [active]:
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "Vasoactive event" [level=2]
+    - paragraph: norepinephrine rate change
+    - paragraph:
+      - code: fs-N-CHANGE / 1
+    - paragraph: Method not supplied
+    - term: Source time
+    - definition: 2026-10-08T08:15:00+00:00
+    - term: Recorded quality
+    - definition: not recorded
+    - term: Source unit mapping
+    - definition:
+      - generic: "Delivered rate: unresolved · mcg/min"
+      - generic: "Delivered concentration: unresolved · mg/mL"
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx.synthetic.demo
+    - region "Recorded infusion event details":
+      - heading "Recorded infusion event" [level=3]
+      - term: Event
+      - definition: rate change
+      - term: Documented event rate
+      - definition: 7 mcg/min
+      - term: Concentration
+      - definition: 0.08 mg/mL
+      - term: Route
+      - definition: Synthetic central venous infusion
+      - term: Dosing weight
+      - definition: 70 kg · source fs-WEIGHT / 1 · recorded
+      - term: Weight basis
+      - definition: actual
+      - term: Pump
+      - definition: fs-pump-norepinephrine
+      - term: Channel
+      - definition: fs-channel-norepinephrine
+      - term: Infusion identity
+      - definition: fs-infusion-norepinephrine
+      - term: Pump volumetric rate
+      - definition: 5.25 mL/h · fs-PUMP-RATE-N-CHANGE / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - paragraph: No continuous exposure, dose conversion or treatment effect is inferred from this event. Orders and preparations do not establish administration.
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.
