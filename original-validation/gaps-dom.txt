@@ -1,0 +1,176 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / PATIENT OVERVIEW
+  - heading "See the fuller picture." [level=1]
+  - paragraph: Cardiac output, echo, pressure and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "API new-execution gate: closed."
+  - region "Recorded-state coverage":
+    - strong: "26"
+    - generic: recorded items
+    - strong: 15 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: without acceptable quality recorded
+    - strong: "2"
+    - generic: contextual or unplaced
+  - region "Guided views":
+    - button "01 / EXPLORE Cardiac output + echo Put measurements beside their methods.":
+      - generic: 01 / EXPLORE
+      - strong: Cardiac output + echo
+      - generic: Put measurements beside their methods.
+    - button "02 / EXPLORE Follow a correction See why the original record matters.":
+      - generic: 02 / EXPLORE
+      - strong: Follow a correction
+      - generic: See why the original record matters.
+    - button "03 / EXPLORE Find the evidence gaps Keep unknowns visible." [active] [pressed]:
+      - generic: 03 / EXPLORE
+      - strong: Find the evidence gaps
+      - generic: Keep unknowns visible.
+  - heading "Find the evidence gaps" [level=2]
+  - paragraph: Find the PiCCO record with unknown quality, earlier contextual cardiac output, unplaced pressure and unavailable waveform samples. Missing evidence does not establish clinical absence.
+  - region "Guided recorded measurements":
+    - button "Inspect Passive leg raise episode m7-PLR":
+      - generic: Passive leg raise episode
+      - strong: Recorded source
+      - generic: Method not supplied
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-PLR / 1
+      - generic: "Quality: not recorded"
+    - button "Inspect Cardiac output m7-PICCO-CO":
+      - generic: Cardiac output
+      - strong: 4.60L/min
+      - generic: pulse contour · PiCCO · PiCCO
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-PICCO-CO / 1
+      - generic: "Quality: unknown"
+    - button "Inspect Position change m7-EVENT":
+      - generic: Position change
+      - strong: Recorded position change
+      - generic: Method not supplied
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-EVENT / 1
+      - generic: "Quality: not recorded"
+    - button "Inspect Arterial pressure signal m7-SIGNAL":
+      - generic: Arterial pressure signal
+      - strong: unavailable
+      - generic: Method not supplied
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-SIGNAL / 1
+      - generic: "Quality: not recorded"
+    - button "Inspect Vasopressor event m7-V":
+      - generic: Vasopressor event
+      - strong: norepinephrineinitiation
+      - generic: Method not supplied
+      - generic: in window · 2026-10-08T08:02:00+00:00
+      - text: m7-V / 1
+      - generic: "Quality: not recorded"
+    - button "Inspect Cardiac output m7-CONTEXT-CO":
+      - generic: Cardiac output
+      - strong: 4.500L/min
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: contextual · 2026-10-08T06:00:00+00:00
+      - text: m7-CONTEXT-CO / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Central venous pressure m7-UNPLACED":
+      - generic: Central venous pressure
+      - strong: Not established
+      - generic: unknown
+      - generic: unplaced · Time not established
+      - text: m7-UNPLACED / 1
+      - generic: "Quality: acceptable"
+  - complementary "Selected source evidence":
+    - text: SOURCE INSPECTOR
+    - heading "Evidence within reach." [level=2]
+    - paragraph: Select any recorded item to inspect its exact source, quality, device context and revision history.
+    - generic: Source
+    - generic: Exact revision
+    - generic: Provenance
+    - generic: Values are shown as recorded. Units are not converted, and quality labels are source assertions.
+  - heading "Explore every evidence family" [level=2]
+  - generic: Missing records do not establish clinical absence.
+  - button "01 Pressure and PAC/RHC 4 recorded items →":
+    - generic: "01"
+    - strong: Pressure and PAC/RHC
+    - generic: 4 recorded items →
+  - button "02 Cardiac output and performance 6 recorded items →":
+    - generic: "02"
+    - strong: Cardiac output and performance
+    - generic: 6 recorded items →
+  - button "03 Volume and lung water 1 recorded item →":
+    - generic: "03"
+    - strong: Volume and lung water
+    - generic: 1 recorded item →
+  - button "04 Dynamic measurements 1 recorded item →":
+    - generic: "04"
+    - strong: Dynamic measurements
+    - generic: 1 recorded item →
+  - button "05 Recorded device predictions 1 recorded item →":
+    - generic: "05"
+    - strong: Recorded device predictions
+    - generic: 1 recorded item →
+  - button "06 Tissue perfusion 1 recorded item →":
+    - generic: "06"
+    - strong: Tissue perfusion
+    - generic: 1 recorded item →
+  - button "07 Oxygen transport 1 recorded item →":
+    - generic: "07"
+    - strong: Oxygen transport
+    - generic: 1 recorded item →
+  - button "08 Lactate 1 recorded item →":
+    - generic: "08"
+    - strong: Lactate
+    - generic: 1 recorded item →
+  - button "09 Echo and POCUS 3 recorded items →":
+    - generic: "09"
+    - strong: Echo and POCUS
+    - generic: 3 recorded items →
+  - button "10 ECG and rhythm 2 recorded items →":
+    - generic: "10"
+    - strong: ECG and rhythm
+    - generic: 2 recorded items →
+  - button "11 Vasoactive events 1 recorded item →":
+    - generic: "11"
+    - strong: Vasoactive events
+    - generic: 1 recorded item →
+  - button "12 Edwards / PiCCO and monitoring context 1 recorded item →":
+    - generic: "12"
+    - strong: Edwards / PiCCO and monitoring context
+    - generic: 1 recorded item →
+  - button "13 Dynamic assessment episodes 1 recorded item →":
+    - generic: "13"
+    - strong: Dynamic assessment episodes
+    - generic: 1 recorded item →
+  - button "14 Recorded circulatory events 1 recorded item →":
+    - generic: "14"
+    - strong: Recorded circulatory events
+    - generic: 1 recorded item →
+  - button "15 Signal manifests 1 recorded item →":
+    - generic: "15"
+    - strong: Signal manifests
+    - generic: 1 recorded item →
+  - generic "Review boundary and repository coverage"
+  - generic: A local evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

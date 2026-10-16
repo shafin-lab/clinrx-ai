@@ -1,0 +1,209 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline" [active]:
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / RECORDING TIMELINE
+  - heading "Recording timeline" [level=1]
+  - paragraph: Cardiac output, echo, pressure and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "API new-execution gate: closed."
+  - region "Recorded-state coverage":
+    - strong: "26"
+    - generic: recorded items
+    - strong: 15 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: without acceptable quality recorded
+    - strong: "2"
+    - generic: contextual or unplaced
+  - heading "How the repository received the evidence" [level=2]
+  - paragraph: Ordered by repository ingestion sequence, not clinical event time. Source times retain their recorded spelling; this display makes no new temporal inference. Open any item to inspect its correction history at this cutoff.
+  - list:
+    - generic: "4"
+    - 'button "Mean arterial pressure m7-P / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.432273Z"':
+      - strong: Mean arterial pressure
+      - generic: m7-P / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.432273Z"
+    - generic: "5"
+    - 'button "Cardiac output m7-CO / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.436335Z"':
+      - strong: Cardiac output
+      - generic: m7-CO / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.436335Z"
+    - generic: "6"
+    - 'button "Global end-diastolic volume m7-GEDV / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.439380Z"':
+      - strong: Global end-diastolic volume
+      - generic: m7-GEDV / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.439380Z"
+    - generic: "7"
+    - 'button "Stroke volume variation m7-SVV / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.442388Z"':
+      - strong: Stroke volume variation
+      - generic: m7-SVV / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.442388Z"
+    - generic: "8"
+    - 'button "Source HPI m7-HPI / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.445308Z"':
+      - strong: Source HPI
+      - generic: m7-HPI / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.445308Z"
+    - generic: "9"
+    - 'button "Capillary refill m7-CRT / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.448100Z"':
+      - strong: Capillary refill
+      - generic: m7-CRT / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.448100Z"
+    - generic: "10"
+    - 'button "Mixed venous oxygen saturation m7-SVO2 / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.450749Z"':
+      - strong: Mixed venous oxygen saturation
+      - generic: m7-SVO2 / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.450749Z"
+    - generic: "11"
+    - 'button "Lactate m7-L / 1 · in window Source: 2026-10-08T08:01:00+00:00 Ingested: 2026-10-16T07:39:47.453692Z"':
+      - strong: Lactate
+      - generic: m7-L / 1 · in window
+      - generic: "Source: 2026-10-08T08:01:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.453692Z"
+    - generic: "12"
+    - 'button "TAPSE m7-ECHO / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.457080Z"':
+      - strong: TAPSE
+      - generic: m7-ECHO / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.457080Z"
+    - generic: "13"
+    - 'button "QTc m7-ECG / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.459930Z"':
+      - strong: QTc
+      - generic: m7-ECG / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.459930Z"
+    - generic: "14"
+    - 'button "Vasopressor event m7-V / 1 · in window Source: 2026-10-08T08:02:00+00:00 Ingested: 2026-10-16T07:39:47.462615Z"':
+      - strong: Vasopressor event
+      - generic: m7-V / 1 · in window
+      - generic: "Source: 2026-10-08T08:02:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.462615Z"
+    - generic: "16"
+    - 'button "Passive leg raise episode m7-PLR / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.467809Z"':
+      - strong: Passive leg raise episode
+      - generic: m7-PLR / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.467809Z"
+    - generic: "17"
+    - 'button "Position change m7-EVENT / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.469993Z"':
+      - strong: Position change
+      - generic: m7-EVENT / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.469993Z"
+    - generic: "18"
+    - 'button "Arterial pressure signal m7-SIGNAL / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.472660Z"':
+      - strong: Arterial pressure signal
+      - generic: m7-SIGNAL / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.472660Z"
+    - generic: "19"
+    - 'button "Central venous pressure m7-UNPLACED / 1 · unplaced Source: Time not established Ingested: 2026-10-16T07:39:47.475463Z"':
+      - strong: Central venous pressure
+      - generic: m7-UNPLACED / 1 · unplaced
+      - generic: "Source: Time not established"
+      - generic: "Ingested: 2026-10-16T07:39:47.475463Z"
+    - generic: "20"
+    - 'button "Cardiac output m7-CONTEXT-CO / 1 · contextual Source: 2026-10-08T06:00:00+00:00 Ingested: 2026-10-16T07:39:47.478077Z"':
+      - strong: Cardiac output
+      - generic: m7-CONTEXT-CO / 1 · contextual
+      - generic: "Source: 2026-10-08T06:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.478077Z"
+    - generic: "21"
+    - 'button "Central venous pressure m7-PAC / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.480762Z"':
+      - strong: Central venous pressure
+      - generic: m7-PAC / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.480762Z"
+    - generic: "22"
+    - 'button "Pulmonary artery wedge pressure m7-RHC / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.483320Z"':
+      - strong: Pulmonary artery wedge pressure
+      - generic: m7-RHC / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.483320Z"
+    - generic: "23"
+    - 'button "Cardiac output m7-PICCO-CO / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.485958Z"':
+      - strong: Cardiac output
+      - generic: m7-PICCO-CO / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.485958Z"
+    - generic: "24"
+    - 'button "Source rhythm m7-RHYTHM / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.488624Z"':
+      - strong: Source rhythm
+      - generic: m7-RHYTHM / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.488624Z"
+    - generic: "25"
+    - 'button "LV ejection fraction m7-EF / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.491702Z"':
+      - strong: LV ejection fraction
+      - generic: m7-EF / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.491702Z"
+    - generic: "26"
+    - 'button "LVOT VTI m7-VTI / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.494454Z"':
+      - strong: LVOT VTI
+      - generic: m7-VTI / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.494454Z"
+    - generic: "27"
+    - 'button "Cardiac index m7-CI / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.497273Z"':
+      - strong: Cardiac index
+      - generic: m7-CI / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.497273Z"
+    - generic: "28"
+    - 'button "Cardiac output m7-FLOTRAC / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.500076Z"':
+      - strong: Cardiac output
+      - generic: m7-FLOTRAC / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.500076Z"
+    - generic: "29"
+    - 'button "Cardiac output m7-VOLUMEVIEW / 1 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:47.502888Z"':
+      - strong: Cardiac output
+      - generic: m7-VOLUMEVIEW / 1 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:47.502888Z"
+    - generic: "32"
+    - 'button "Monitor configuration m7-CAL / 2 · in window Source: 2026-10-08T08:00:00+00:00 Ingested: 2026-10-16T07:39:48.783215Z Corrected source revision · inspect history"':
+      - strong: Monitor configuration
+      - generic: m7-CAL / 2 · in window
+      - generic: "Source: 2026-10-08T08:00:00+00:00"
+      - generic: "Ingested: 2026-10-16T07:39:48.783215Z"
+      - generic: Corrected source revision · inspect history
+  - complementary "Selected source evidence":
+    - text: SOURCE INSPECTOR
+    - heading "Evidence within reach." [level=2]
+    - paragraph: Select any recorded item to inspect its exact source, quality, device context and revision history.
+    - generic: Source
+    - generic: Exact revision
+    - generic: Provenance
+    - generic: Values are shown as recorded. Units are not converted, and quality labels are source assertions.
+  - generic "Review boundary and repository coverage"
+  - generic: A local evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

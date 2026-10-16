@@ -1,0 +1,151 @@
+{
+  "status": "PASS",
+  "sqlite_integrity": "ok",
+  "repository_id": "6781fcbf-3f92-4e9f-b327-9d4bcda9644a",
+  "recorded_items": 26,
+  "families": 15,
+  "retained_receipts": [
+    {
+      "execution_id": "00000000-0000-4000-8000-00000000c901",
+      "outcome": "released",
+      "payload_sha256": "0fd0da7e969b2030d80524ff01e4d075b41c5a421f260fe74744cb750fcd76e5",
+      "cutoffs": [
+        29,
+        30,
+        30
+      ],
+      "witnesses": [
+        {
+          "consumed": {
+            "kind": "circulatory_pressure",
+            "id": "m7-P",
+            "version": "1"
+          },
+          "terminal": {
+            "kind": "circulatory_pressure",
+            "id": "m7-P",
+            "version": "1"
+          },
+          "source_digest": "3c5700caca1cae50a6bb23bcf87927b9577c5a37f44d1e46d66114da2bcba985",
+          "terminal_digest": "3c5700caca1cae50a6bb23bcf87927b9577c5a37f44d1e46d66114da2bcba985"
+        },
+        {
+          "consumed": {
+            "kind": "circulatory_lactate",
+            "id": "m7-L",
+            "version": "1"
+          },
+          "terminal": {
+            "kind": "circulatory_lactate",
+            "id": "m7-L",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429"
+        },
+        {
+          "consumed": {
+            "kind": "circulatory_vasoactive",
+            "id": "m7-V",
+            "version": "1"
+          },
+          "terminal": {
+            "kind": "circulatory_vasoactive",
+            "id": "m7-V",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344"
+        },
+        {
+          "consumed": {
+            "kind": "circulatory_monitoring",
+            "id": "m7-CAL",
+            "version": "1"
+          },
+          "terminal": {
+            "kind": "circulatory_monitoring",
+            "id": "m7-CAL",
+            "version": "1"
+          },
+          "source_digest": "e8e46e2137814d2268e731aeeef8a3d08d254ba67d2606efeecadf89519c5430",
+          "terminal_digest": "e8e46e2137814d2268e731aeeef8a3d08d254ba67d2606efeecadf89519c5430"
+        }
+      ]
+    },
+    {
+      "execution_id": "00000000-0000-4000-8000-00000000c902",
+      "outcome": "withheld",
+      "payload_sha256": "1673654431aa90444fc4cb05b14f6ad347afb2bd4da2e37ef3c4d23540328574",
+      "cutoffs": [
+        30,
+        31,
+        32
+      ],
+      "witnesses": [
+        {
+          "consumed": {
+            "kind": "circulatory_pressure",
+            "id": "m7-P",
+            "version": "1"
+          },
+          "terminal": {
+            "kind": "circulatory_pressure",
+            "id": "m7-P",
+            "version": "1"
+          },
+          "source_digest": "3c5700caca1cae50a6bb23bcf87927b9577c5a37f44d1e46d66114da2bcba985",
+          "terminal_digest": "3c5700caca1cae50a6bb23bcf87927b9577c5a37f44d1e46d66114da2bcba985"
+        },
+        {
+          "consumed": {
+            "kind": "circulatory_lactate",
+            "id": "m7-L",
+            "version": "1"
+          },
+          "terminal": {
+            "kind": "circulatory_lactate",
+            "id": "m7-L",
+            "version": "1"
+          },
+          "source_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429",
+          "terminal_digest": "fdec708df6a29c4d7b802633bf5e1d8e641bf45b08ec931b227f2ba7ede17429"
+        },
+        {
+          "consumed": {
+            "kind": "circulatory_vasoactive",
+            "id": "m7-V",
+            "version": "1"
+          },
+          "terminal": {
+            "kind": "circulatory_vasoactive",
+            "id": "m7-V",
+            "version": "1"
+          },
+          "source_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344",
+          "terminal_digest": "96b3111341811d30e892cf1aa7263992b8087a425402287f050f06c7cff72344"
+        },
+        {
+          "consumed": {
+            "kind": "circulatory_monitoring",
+            "id": "m7-CAL",
+            "version": "1"
+          },
+          "terminal": {
+            "kind": "circulatory_monitoring",
+            "id": "m7-CAL",
+            "version": "2"
+          },
+          "source_digest": "e8e46e2137814d2268e731aeeef8a3d08d254ba67d2606efeecadf89519c5430",
+          "terminal_digest": "d7ea38bac1e3ee6b3f9b55a96f90a846abd89a085790ce98a8a918432b08de94"
+        }
+      ]
+    }
+  ],
+  "new_execution_enabled": false,
+  "new_preparation_http_status": 422,
+  "gate_rows_unchanged": true,
+  "original_gate_commitments_recomputed": true,
+  "original_validation_manifest_verified": true,
+  "final_browser_console_errors": 0
+}

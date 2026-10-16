@@ -1,0 +1,100 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / EVIDENCE LIBRARY
+  - heading "Evidence library" [level=1]
+  - paragraph: Cardiac output, echo, pressure and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "API new-execution gate: closed."
+  - region "Recorded-state coverage":
+    - strong: "26"
+    - generic: recorded items
+    - strong: 15 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: without acceptable quality recorded
+    - strong: "2"
+    - generic: contextual or unplaced
+  - text: Search recorded evidence
+  - searchbox "Search recorded evidence"
+  - text: Evidence family
+  - combobox "Evidence family":
+    - option "All 15 families"
+    - option "Pressure and PAC/RHC (4)"
+    - option "Cardiac output and performance (6)"
+    - option "Volume and lung water (1)"
+    - option "Dynamic measurements (1)"
+    - option "Recorded device predictions (1)"
+    - option "Tissue perfusion (1)"
+    - option "Oxygen transport (1)"
+    - option "Lactate (1)"
+    - option "Echo and POCUS (3)"
+    - option "ECG and rhythm (2)"
+    - option "Vasoactive events (1)"
+    - option "Edwards / PiCCO and monitoring context (1)" [selected]
+    - option "Dynamic assessment episodes (1)"
+    - option "Recorded circulatory events (1)"
+    - option "Signal manifests (1)"
+  - status: 1 recorded item in this view
+  - region "Evidence library results":
+    - heading "Edwards / PiCCO and monitoring context" [level=2]
+    - button "Inspect Monitor configuration m7-CAL":
+      - generic: Monitor configuration
+      - strong: Source device configuration
+      - generic: source other
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-CAL / 2
+      - generic: "Quality: acceptable"
+  - complementary "Selected source evidence":
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "Monitor configuration" [level=2]
+    - paragraph: Source device configuration
+    - paragraph:
+      - code: m7-CAL / 2
+    - paragraph: source other
+    - term: Source time
+    - definition: 2026-10-08T08:00:00+00:00
+    - term: Recorded quality
+    - definition: acceptable
+    - term: Source unit mapping
+    - definition: Not supplied / not applicable
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx.synthetic.demo
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+    - region "Bounded source revision history":
+      - heading "2 retained revisions at this cutoff" [level=3]
+      - strong: m7-CAL / 1
+      - paragraph: Original recorded assertion
+      - generic "Complete revision 1"
+      - strong: m7-CAL / 2
+      - paragraph: Synthetic provenance-only calibration-support correction
+      - generic "Complete revision 2"
+  - generic "Review boundary and repository coverage"
+  - generic: A local evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.
