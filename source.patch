@@ -1,0 +1,99 @@
+diff --git a/frontend/src/demo/ICUFlowsheet.tsx b/frontend/src/demo/ICUFlowsheet.tsx
+index 9d2fcde..a75cb49 100644
+--- a/frontend/src/demo/ICUFlowsheet.tsx
++++ b/frontend/src/demo/ICUFlowsheet.tsx
+@@ -43,7 +43,7 @@ export function ICUFlowsheet({items,onInspect}:Props){
+     <h2>Hemodynamics and infusions over time</h2>
+     <p>Fictional recorded evidence. Open any value for its exact source and history. No prescribing, pump control or execution.</p>
+     <div className="demo-chart-controls"><label>Flowsheet section<select value={section} onChange={event=>setSection(event.target.value as ChartSection|'all'|'overview')}><option value="overview">Combined overview</option><option value="all">All hemodynamic sections</option>{Object.entries(chartSections).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
+-    {compact&&<p className="demo-chart-overview-scope">Together: infusion events, interval urine output, source-reported interval/cumulative chart balance, lactate and capillary refill. Rows without records in these selected times are omitted; they remain available through time navigation. Other measurements, pump context and perfusion observations remain in the detailed sections.</p>}
++    {compact&&<p className="demo-chart-overview-scope">Together: BP/MAP, cardiac output/index, rhythm/heart rate, infusion events, interval urine output, source-reported interval/cumulative chart balance, lactate and capillary refill. Scroll down within the chart to compare all six groups; the time headings stay visible. Rows without records in these selected times are omitted; they remain available through time navigation. Other measurements, pump context and perfusion observations remain in the detailed sections. CO methods and devices stay on separate rows; no preferred output or rhythm diagnosis is inferred.</p>}
+     {compact&&chart.times.length>0&&<div className="demo-chart-time-controls" aria-label="Recorded time navigation">
+       <button disabled={showAllTimes||window.page===window.lastPage} onClick={()=>setPage(window.page+1)}>Earlier times</button>
+       <span role="status">{showAllTimes?'All recorded times':`Recorded times ${window.start+1}–${window.end} of ${chart.times.length}`} · UTC</span>
+diff --git a/frontend/src/demo/evidencePresentation.ts b/frontend/src/demo/evidencePresentation.ts
+index bb1360a..132a86d 100644
+--- a/frontend/src/demo/evidencePresentation.ts
++++ b/frontend/src/demo/evidencePresentation.ts
+@@ -2,7 +2,7 @@ import {chartEntry} from './chartEntries';
+ import type {CirculatoryItem} from '../api/circulatoryTypes';
+ export const record=(v:unknown):Record<string,unknown>=>v!==null&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,unknown>:{};
+ export const words=(v:unknown)=>typeof v==='string'?v.replaceAll('_',' '):'';
+-const concepts:Record<string,string>={co:'Cardiac output',ci:'Cardiac index',systemic_mean:'Mean arterial pressure',lv_ef:'LV ejection fraction',lvot_vti:'LVOT VTI',tapse:'TAPSE',cvp:'Central venous pressure',pawp:'Pulmonary artery wedge pressure',gedv:'Global end-diastolic volume',svv:'Stroke volume variation',qtc:'QTc',svo2:'Mixed venous oxygen saturation',capillary_refill:'Capillary refill',ph:'pH',paco2:'PaCO₂',pao2:'PaO₂',bicarbonate:'Bicarbonate',base_excess:'Base excess',sao2:'Arterial oxygen saturation',hemoglobin:'Haemoglobin',estimated_rvsp:'Estimated RVSP',estimated_pasp:'Estimated PASP',tr_measurement:'TR peak velocity',rv_dimension:'RV basal dimension',rv_function:'RV function',septal_configuration:'Septal configuration',valve_finding:'Valve finding',pericardial_effusion:'Pericardial effusion',structural_finding:'Structural finding',hpi:'Source HPI (optional)',rhythm:'Source rhythm',configuration:'Monitor configuration',plr:'Passive leg raise episode',position_change:'Position change',arterial_pressure:'Arterial pressure signal'};
++const concepts:Record<string,string>={co:'Cardiac output',ci:'Cardiac index',systemic_systolic:'Systolic blood pressure',systemic_diastolic:'Diastolic blood pressure',heart_rate:'Heart rate',systemic_mean:'Mean arterial pressure',lv_ef:'LV ejection fraction',lvot_vti:'LVOT VTI',tapse:'TAPSE',cvp:'Central venous pressure',pawp:'Pulmonary artery wedge pressure',gedv:'Global end-diastolic volume',svv:'Stroke volume variation',qtc:'QTc',svo2:'Mixed venous oxygen saturation',capillary_refill:'Capillary refill',ph:'pH',paco2:'PaCO₂',pao2:'PaO₂',bicarbonate:'Bicarbonate',base_excess:'Base excess',sao2:'Arterial oxygen saturation',hemoglobin:'Haemoglobin',estimated_rvsp:'Estimated RVSP',estimated_pasp:'Estimated PASP',tr_measurement:'TR peak velocity',rv_dimension:'RV basal dimension',rv_function:'RV function',septal_configuration:'Septal configuration',valve_finding:'Valve finding',pericardial_effusion:'Pericardial effusion',structural_finding:'Structural finding',hpi:'Source HPI (optional)',rhythm:'Source rhythm',configuration:'Monitor configuration',plr:'Passive leg raise episode',position_change:'Position change',arterial_pressure:'Arterial pressure signal'};
+ export function title(item:CirculatoryItem){const f=item.fact;const entry=chartEntry(item);if(entry)return entry.label;if(f.id==='m7-PH')return 'Pulmonary hypertension report finding';return concepts[String(f.concept??f.event_type??f.test??f.signal)]??(f.kind==='circulatory_lactate'?'Lactate':f.kind==='circulatory_vasoactive'?'Vasoactive event':words(f.concept??f.event_type??f.test??f.signal)||'Recorded evidence');}
+ export function value(item:CirculatoryItem){
+   const f=item.fact,result=record(f.result),quantity=record(result.quantity??(f.kind==='circulatory_event'?f.recorded_amount:undefined)),unit=record(quantity.unit);
+diff --git a/frontend/src/demo/flowsheetOverview.ts b/frontend/src/demo/flowsheetOverview.ts
+index f267cb0..db0206e 100644
+--- a/frontend/src/demo/flowsheetOverview.ts
++++ b/frontend/src/demo/flowsheetOverview.ts
+@@ -2,10 +2,13 @@ import type {CirculatoryItem} from '../api/circulatoryTypes';
+ import {chartEntry,intervalText} from './chartEntries';
+ import {chartTime,type ChartRow} from './flowsheetPresentation';
+ import {record} from './evidencePresentation';
+-export const overviewGroups=['Infusion events','Fluid records','Perfusion observations'] as const;
++export const overviewGroups=['BP / MAP','Cardiac output / index','Rhythm / heart rate','Infusion events','Fluid records','Perfusion observations'] as const;
+ export function overviewGroup(row:ChartRow):typeof overviewGroups[number]|null{
+  if(row.drug)return 'Infusion events';
+  const items=[...row.cells.values()].flat();
++ if(items.some(i=>i.fact.kind==='circulatory_pressure'&&['systemic_systolic','systemic_diastolic','systemic_mean'].includes(String(i.fact.concept))))return 'BP / MAP';
++ if(items.some(i=>i.fact.kind==='circulatory_cardiac'&&['co','ci'].includes(String(i.fact.concept))))return 'Cardiac output / index';
++ if(items.some(i=>i.fact.kind==='circulatory_ecg'&&['rhythm','heart_rate'].includes(String(i.fact.concept))))return 'Rhythm / heart rate';
+  if(items.some(i=>['output_urine','net_balance_reported','balance_total_reported'].includes(chartEntry(i)?.code??'')))return 'Fluid records';
+  if(items.some(i=>i.fact.kind==='circulatory_lactate'||(i.fact.kind==='circulatory_perfusion'&&i.fact.concept==='capillary_refill')))return 'Perfusion observations';
+  return null;
+diff --git a/frontend/tests/flowsheetOverview.test.tsx b/frontend/tests/flowsheetOverview.test.tsx
+index 4184897..bf93947 100644
+--- a/frontend/tests/flowsheetOverview.test.tsx
++++ b/frontend/tests/flowsheetOverview.test.tsx
+@@ -9,10 +9,10 @@ import {record} from '../src/demo/evidencePresentation';
+ const items=()=>decodeCirculatoryState(structuredClone(fixture)).assembly.snapshot.items;
+ const ids=()=>screen.getAllByRole('button',{name:/^Chart source /}).map(b=>b.getAttribute('aria-label'));
+ afterEach(cleanup);
+-it('defaults to a compact overview with all three groups and exact source selection',()=>{
++it('defaults to a compact overview with all six groups and exact source selection',()=>{
+  const sources=items(),before=JSON.stringify(sources),inspect=vi.fn();render(<ICUFlowsheet items={sources} onInspect={inspect}/>);
+  expect(screen.getByRole('combobox',{name:'Flowsheet section'})).toHaveValue('overview');
+- for(const name of ['Infusion events','Fluid records','Perfusion observations'])expect(screen.getByRole('rowgroup',{name})).toBeInTheDocument();
++ for(const name of ['BP / MAP','Cardiac output / index','Rhythm / heart rate','Infusion events','Fluid records','Perfusion observations'])expect(screen.getByRole('rowgroup',{name})).toBeInTheDocument();
+  expect(screen.getByText('Recorded times 9–12 of 12 · UTC')).toBeInTheDocument();
+  const button=screen.getByRole('button',{name:'Chart source fs-D-CHANGE revision 1'});expect(button).toHaveTextContent('Changed');expect(button).toHaveTextContent('3.0 mcg/kg/min');fireEvent.click(button);
+  expect(inspect).toHaveBeenCalledWith(sources.find(i=>i.fact.id==='fs-D-CHANGE'),button);
+@@ -32,7 +32,8 @@ it('keeps full-detail records and unknown or withdrawn source status available',
+  const sources=items(),lactate=sources.find(i=>i.fact.id==='fs-LACTATE-60')!;record(record(lactate.fact.acquisition).quality).status='unknown';lactate.fact.record_status='withdrawn';
+  render(<ICUFlowsheet items={sources} onInspect={vi.fn()}/>);
+  expect(screen.getByRole('button',{name:'Chart source fs-LACTATE-60 revision 1'})).toHaveTextContent('Quality: unknown');expect(screen.getByRole('button',{name:'Chart source fs-LACTATE-60 revision 1'})).toHaveTextContent('withdrawn');
+- expect(screen.queryByRole('button',{name:'Chart source fs-CO-60 revision 1'})).not.toBeInTheDocument();
++ expect(screen.getByRole('button',{name:'Chart source fs-CO-60 revision 1'})).toHaveTextContent('Quality: suspect');
++ expect(screen.queryByRole('button',{name:'Chart source fs-CVP-60 revision 1'})).not.toBeInTheDocument();
+  fireEvent.change(screen.getByRole('combobox',{name:'Flowsheet section'}),{target:{value:'all'}});
+  expect(screen.getByRole('button',{name:'Chart source fs-CO-60 revision 1'})).toHaveTextContent('Quality: suspect');
+  expect(screen.getAllByRole('button',{name:/^Chart source /})).toHaveLength(150);
+@@ -57,3 +58,26 @@ it('clamps paging safely for shorter or empty datasets without inventing columns
+  expect(overviewTimeWindow(['a','b'],9,false)).toMatchObject({times:['a','b'],page:0,start:0,end:2});
+  expect(overviewTimeWindow(['a','b','c','d','e'],1,false).times).toEqual(['a']);
+ });
++
++it('keeps pressure, method-specific flow and source rhythm on exact times with inspectable uncertainty',()=>{
++ const sources=items(),before=JSON.stringify(sources),inspect=vi.fn();render(<ICUFlowsheet items={sources} onInspect={inspect}/>);
++ for(const id of ['fs-MAP-60','fs-systemic_systolic-60','fs-systemic_diastolic-60','fs-CO-60','fs-CI-60','fs-HR-60','fs-RHYTHM-60']){
++  const source=sources.find(i=>i.fact.id===id)!,button=screen.getByRole('button',{name:'Chart source '+id+' revision 1'});
++  fireEvent.click(button);expect(inspect).toHaveBeenLastCalledWith(source,button);
++  expect(button.closest('td')?.cellIndex).toBe(4);
++ }
++ expect(screen.getByRole('button',{name:'Chart source fs-CO-60 revision 1'})).toHaveTextContent('Quality: suspect');
++ expect(screen.getByText(/No preferred output or rhythm diagnosis/i)).toBeInTheDocument();
++ fireEvent.click(screen.getByRole('checkbox',{name:'Show all recorded times'}));
++ const table=screen.getByRole('table');
++ for(const id of ['m7-CO','m7-FLOTRAC','m7-PICCO-CO','m7-VOLUMEVIEW']){
++  const button=screen.getByRole('button',{name:'Chart source '+id+' revision 1'});
++  expect(button.closest('tr')).toHaveTextContent(id==='m7-CO'?'bolus thermodilution':id==='m7-VOLUMEVIEW'?'transpulmonary thermodilution':'pulse contour');
++ }
++ expect(screen.getByRole('button',{name:'Chart source m7-CO revision 1'}).closest('tr')).not.toBe(screen.getByRole('button',{name:'Chart source m7-FLOTRAC revision 1'}).closest('tr'));
++ expect(screen.getByRole('button',{name:'Chart source m7-FLOTRAC revision 1'}).closest('tr')).not.toBe(screen.getByRole('button',{name:'Chart source m7-PICCO-CO revision 1'}).closest('tr'));
++ expect(table).not.toHaveTextContent('m7-CONTEXT-CO');
++ expect(screen.queryByRole('button',{name:'Chart source m7-ECG revision 1'})).not.toBeInTheDocument();
++ expect(screen.getByRole('button',{name:'Chart source fs-RHYTHM-30 revision 1'})).toHaveTextContent('no arrhythmia classification confirmed');
++ expect(JSON.stringify(sources)).toBe(before);
++});
