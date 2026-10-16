@@ -1,7 +1,9 @@
 # Complete evidence index
 
-- [START-HERE.md](START-HERE.md) (6,424 bytes)
+- [PUBLICATION-NOTE.md](PUBLICATION-NOTE.md) (826 bytes)
+- [START-HERE.md](START-HERE.md) (6,588 bytes)
 - [original/README.md](original/README.md) (2,454 bytes)
+- [original/SHA256SUMS.json](original/SHA256SUMS.json) (1,405 bytes)
 - [original/build.json](original/build.json) (244 bytes)
 - [original/build.log](original/build.log) (780 bytes)
 - [original/diff.json](original/diff.json) (215 bytes)

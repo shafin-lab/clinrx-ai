@@ -8,7 +8,7 @@ sha=lambda data:hashlib.sha256(data).hexdigest()
 canonical=lambda value:json.dumps(value,sort_keys=True,separators=(',',':')).encode()
 if (ROOT/'SHA256SUMS.json').exists():
  entries=load('SHA256SUMS.json')
- assert set(entries)=={p.relative_to(ROOT).as_posix() for p in ROOT.rglob('*') if p.is_file() and p.name!='SHA256SUMS.json'}
+ assert set(entries)=={p.relative_to(ROOT).as_posix() for p in ROOT.rglob('*') if p.is_file() and p!=ROOT/'SHA256SUMS.json'}
  for name,expected in entries.items():assert sha((ROOT/name).read_bytes())==expected,name
 for name,expected in load('original/SHA256SUMS.json').items():assert sha((ROOT/'original'/name).read_bytes())==expected,name
 state=load('publication-state.json');scope=state['assembly']['request']['scope'];cutoff=scope['repository_cutoff'];items=state['assembly']['snapshot']['items']

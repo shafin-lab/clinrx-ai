@@ -71,6 +71,8 @@ placement text, plus stored receipt hashes and the unchanged row commitment.
 Use independent assertions as appropriate; a supplied verifier is not independent
 acceptance by itself.
 
+See [the publication-manifest correction](PUBLICATION-NOTE.md): v2 is the completed evidence handoff; v1 remains retained. Application/tested bytes are unchanged.
+
 ## Evidence timing and honest limits
 
 `original/` preserves the captures and logs unmodified, including their then-true
