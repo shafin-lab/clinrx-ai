@@ -1,0 +1,21 @@
+{
+  "source": "79536d42701e5153acdd94bf04844c353c25190b",
+  "tree": "ad4d5f9c5e1b29a867f24081e1c896753e2c3a04",
+  "parent": "131f3413a664b05ad898518f3ce998715d08b53d",
+  "files": {
+    "frontend/src/demo/overviewEvidenceContext.ts": "45089e0a3e46cd37fb5b500f52adfe6562b95d18f657e6977b27479bf162c62c",
+    "frontend/tests/flowsheetOverview.test.tsx": "6c227d66b68515f13d0e75e486b9b84d7e5059119b9ce4782ca198022e0ebc0f"
+  },
+  "tests": {
+    "command": "npm --prefix frontend test -- tests/flowsheetOverview.test.tsx --maxWorkers=2",
+    "passed": 9,
+    "duration_seconds": 5.47,
+    "exit_code": 0
+  },
+  "build": {
+    "command": "npm --prefix frontend run build",
+    "exit_code": 0
+  },
+  "diff_check_exit_code": 0,
+  "attribution": "Tests preceded commit; both tested-file hashes match committed bytes. No post-commit rerun."
+}
