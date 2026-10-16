@@ -1,0 +1,104 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / EVIDENCE LIBRARY
+  - heading "Evidence library" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "41"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "1"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - text: Search recorded evidence
+  - searchbox "Search recorded evidence" [active]
+  - text: Evidence family
+  - combobox "Evidence family":
+    - option "All 15 families"
+    - option "Pressure and PAC/RHC (4)"
+    - option "Cardiac output and performance (6)"
+    - option "Volume and lung water (1)"
+    - option "Dynamic measurements (1)"
+    - option "Recorded device predictions (0)" [selected]
+    - option "Tissue perfusion (1)"
+    - option "Oxygen transport and blood gases (8)"
+    - option "Lactate (1)"
+    - option "Echo and POCUS (12)"
+    - option "ECG and rhythm (2)"
+    - option "Vasoactive events (1)"
+    - option "Edwards / PiCCO and monitoring context (1)"
+    - option "Dynamic assessment episodes (1)"
+    - option "Recorded circulatory events (1)"
+    - option "Signal manifests (1)"
+  - status: 0 recorded items in this view
+  - region "Evidence library results":
+    - heading "Recorded device predictions" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+  - complementary "Selected source evidence":
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "PaCO₂" [level=2]
+    - paragraph: 48.0 mmHg
+    - paragraph:
+      - code: m7-ABG-PACO2 / 1
+    - paragraph: blood gas
+    - term: Source time
+    - definition: 2026-10-08T08:00:00+00:00
+    - term: Recorded quality
+    - definition: acceptable
+    - term: Source unit mapping
+    - definition: unresolved
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx.synthetic.demo
+    - region "Blood gas sample context":
+      - heading "Blood gas sample context" [level=3]
+      - term: Sample type
+      - definition: arterial
+      - term: Specimen
+      - definition: synthetic-arterial-sample-1
+      - term: Collected
+      - definition: 2026-10-08T08:00:00+00:00
+      - term: Sample-time FiO₂
+      - definition: 40 %
+      - term: Oxygen device
+      - definition: Synthetic invasive ventilation
+      - term: Ventilator mode
+      - definition: Volume assist-control
+      - term: Sample-time PEEP
+      - definition: 5 cmH2O
+      - generic "Sample-time oxygen and ventilation settings"
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

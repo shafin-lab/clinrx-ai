@@ -1,0 +1,64 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / RETAINED EXAMPLES
+  - heading "Retained examples" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "41"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "1"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - heading "What retained review adds" [level=2]
+  - paragraph: These examples were generated during disposable synthetic fixture setup. Opening one reads a stored receipt; it does not prepare or execute a new review. The descriptive inference concerns pressure, lactate and vasopressor timing only. Cardiac output and echo remain recorded source evidence.
+  - button "01 / UNCHANGED SELECTED EVIDENCE Open the released example Inspect exact P/L/V and calibration support.":
+    - generic: 01 / UNCHANGED SELECTED EVIDENCE
+    - strong: Open the released example
+    - generic: Inspect exact P/L/V and calibration support.
+  - button "02 / CORRECTED CALIBRATION SUPPORT Open the withheld example See original evidence and final witnesses side by side.":
+    - generic: 02 / CORRECTED CALIBRATION SUPPORT
+    - strong: Open the withheld example
+    - generic: See original evidence and final witnesses side by side.
+  - region "Retained demonstration receipt":
+    - paragraph: STORED SYNTHETIC RESULT
+    - 'heading "Retained outcome: withheld" [level=2]'
+    - paragraph:
+      - text: "Execution UUID:"
+      - code: 00000000-0000-4000-8000-00000000c902
+    - paragraph: Withheld — no released statement. The selected original evidence remains in this receipt.
+    - heading "Original selected revisions" [level=3]
+    - generic "Original source facts and exact support"
+    - heading "What final review witnessed" [level=3]
+    - generic "Terminal witnesses and correction status"
+    - generic "Complete retained governance and provenance receipt"
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

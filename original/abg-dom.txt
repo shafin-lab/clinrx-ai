@@ -1,0 +1,225 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / PATIENT OVERVIEW
+  - heading "See the fuller picture." [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "41"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "1"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - region "Guided views":
+    - button "01 / EXPLORE Cardiac output + echo Put measurements beside their methods.":
+      - generic: 01 / EXPLORE
+      - strong: Cardiac output + echo
+      - generic: Put measurements beside their methods.
+    - button "02 / EXPLORE ABG + oxygen transport Inspect gases with sample context." [pressed]:
+      - generic: 02 / EXPLORE
+      - strong: ABG + oxygen transport
+      - generic: Inspect gases with sample context.
+    - button "03 / EXPLORE Follow a correction See why the original record matters.":
+      - generic: 03 / EXPLORE
+      - strong: Follow a correction
+      - generic: See why the original record matters.
+    - button "04 / EXPLORE Find the evidence gaps Keep unknowns visible.":
+      - generic: 04 / EXPLORE
+      - strong: Find the evidence gaps
+      - generic: Keep unknowns visible.
+  - heading "ABG + oxygen transport" [level=2]
+  - paragraph: Inspect arterial pH, PaCO₂, PaO₂, bicarbonate, base excess, saturation and haemoglobin with sample-time respiratory settings. Lactate remains a separate recorded result; no acid–base interpretation is generated.
+  - region "Guided recorded measurements":
+    - button "Inspect pH m7-ABG-PH":
+      - generic: pH
+      - strong: "7.31 (unit: 1)"
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-PH / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaCO₂ m7-ABG-PACO2":
+      - generic: PaCO₂
+      - strong: 48.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-PACO2 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaO₂ m7-ABG-PAO2":
+      - generic: PaO₂
+      - strong: 78.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-PAO2 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Bicarbonate m7-ABG-HCO3":
+      - generic: Bicarbonate
+      - strong: 23.0 mmol/L
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-HCO3 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Base excess m7-ABG-BE":
+      - generic: Base excess
+      - strong: "-2.0 mmol/L"
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-BE / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Arterial oxygen saturation m7-ABG-SAO2":
+      - generic: Arterial oxygen saturation
+      - strong: 95.0 %
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-SAO2 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Haemoglobin m7-ABG-HB":
+      - generic: Haemoglobin
+      - strong: 10.2 g/dL
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-HB / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Lactate m7-L":
+      - generic: Lactate
+      - strong: 2.000 mmol/L
+      - generic: laboratory
+      - generic: in window · 2026-10-08T08:01:00+00:00
+      - text: m7-L / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Mixed venous oxygen saturation m7-SVO2":
+      - generic: Mixed venous oxygen saturation
+      - strong: 65.0 %
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-SVO2 / 1
+      - generic: "Quality: acceptable"
+  - complementary "Selected source evidence" [active]:
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "PaCO₂" [level=2]
+    - paragraph: 48.0 mmHg
+    - paragraph:
+      - code: m7-ABG-PACO2 / 1
+    - paragraph: blood gas
+    - term: Source time
+    - definition: 2026-10-08T08:00:00+00:00
+    - term: Recorded quality
+    - definition: acceptable
+    - term: Source unit mapping
+    - definition: unresolved
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx.synthetic.demo
+    - region "Blood gas sample context":
+      - heading "Blood gas sample context" [level=3]
+      - term: Sample type
+      - definition: arterial
+      - term: Specimen
+      - definition: synthetic-arterial-sample-1
+      - term: Collected
+      - definition: 2026-10-08T08:00:00+00:00
+      - term: Sample-time FiO₂
+      - definition: 40 %
+      - term: Oxygen device
+      - definition: Synthetic invasive ventilation
+      - term: Ventilator mode
+      - definition: Volume assist-control
+      - term: Sample-time PEEP
+      - definition: 5 cmH2O
+      - generic "Sample-time oxygen and ventilation settings"
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+  - heading "Explore every evidence family" [level=2]
+  - generic: Missing records do not establish clinical absence.
+  - button "01 Pressure and PAC/RHC 4 recorded items →":
+    - generic: "01"
+    - strong: Pressure and PAC/RHC
+    - generic: 4 recorded items →
+  - button "02 Cardiac output and performance 6 recorded items →":
+    - generic: "02"
+    - strong: Cardiac output and performance
+    - generic: 6 recorded items →
+  - button "03 Volume and lung water 1 recorded item →":
+    - generic: "03"
+    - strong: Volume and lung water
+    - generic: 1 recorded item →
+  - button "04 Dynamic measurements 1 recorded item →":
+    - generic: "04"
+    - strong: Dynamic measurements
+    - generic: 1 recorded item →
+  - button "05 Recorded device predictions 0 recorded items →":
+    - generic: "05"
+    - strong: Recorded device predictions
+    - generic: 0 recorded items →
+  - button "06 Tissue perfusion 1 recorded item →":
+    - generic: "06"
+    - strong: Tissue perfusion
+    - generic: 1 recorded item →
+  - button "07 Oxygen transport and blood gases 8 recorded items →":
+    - generic: "07"
+    - strong: Oxygen transport and blood gases
+    - generic: 8 recorded items →
+  - button "08 Lactate 1 recorded item →":
+    - generic: "08"
+    - strong: Lactate
+    - generic: 1 recorded item →
+  - button "09 Echo and POCUS 12 recorded items →":
+    - generic: "09"
+    - strong: Echo and POCUS
+    - generic: 12 recorded items →
+  - button "10 ECG and rhythm 2 recorded items →":
+    - generic: "10"
+    - strong: ECG and rhythm
+    - generic: 2 recorded items →
+  - button "11 Vasoactive events 1 recorded item →":
+    - generic: "11"
+    - strong: Vasoactive events
+    - generic: 1 recorded item →
+  - button "12 Edwards / PiCCO and monitoring context 1 recorded item →":
+    - generic: "12"
+    - strong: Edwards / PiCCO and monitoring context
+    - generic: 1 recorded item →
+  - button "13 Dynamic assessment episodes 1 recorded item →":
+    - generic: "13"
+    - strong: Dynamic assessment episodes
+    - generic: 1 recorded item →
+  - button "14 Recorded circulatory events 1 recorded item →":
+    - generic: "14"
+    - strong: Recorded circulatory events
+    - generic: 1 recorded item →
+  - button "15 Signal manifests 1 recorded item →":
+    - generic: "15"
+    - strong: Signal manifests
+    - generic: 1 recorded item →
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

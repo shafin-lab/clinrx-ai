@@ -1,0 +1,544 @@
+diff --git a/backend/app/demo/comprehensive.py b/backend/app/demo/comprehensive.py
+index eecc5d4..e1fa15c 100644
+--- a/backend/app/demo/comprehensive.py
++++ b/backend/app/demo/comprehensive.py
+@@ -5,7 +5,7 @@ from pathlib import Path
+ from uuid import UUID
+ from sqlalchemy import inspect
+ from app.demo.patient_state import bootstrap as patient_bootstrap
+-from app.demo.circulatory import facts, manifest, TARGET, SIMULATION_AT, PROV, device
++from app.demo.circulatory import facts, manifest, TARGET, SIMULATION_AT, PROV, device, quantity, code, concept, stamp
+ from app.models.clinical.common import LineageEdge
+ from app.models.clinical import hemodynamics as h
+ from app.persistence.database import create_database
+@@ -21,7 +21,7 @@ WITHHELD_ID=UUID('00000000-0000-4000-8000-00000000c902')
+ 
+ def replace(model,**fields):return type(model).model_validate({**model.model_dump(),**fields})
+ 
+-def demo_facts():
++def demo_facts(*, include_hpi=False):
+     original=list(facts());support=original[11]
+     methods={'circulatory_cardiac':'bolus_thermodilution','circulatory_volume':'transpulmonary_thermodilution',
+         'circulatory_dynamic':'pulse_contour','circulatory_perfusion':'bedside_examination',
+@@ -34,6 +34,7 @@ def demo_facts():
+             if fact.kind=='circulatory_cardiac':fields['device']=device('SwanGanz','HemoSphere')
+             if fact.kind in ('circulatory_volume','circulatory_dynamic'):fields['device']=device()
+             original[n]=replace(fact,acquisition=replace(acq,**fields))
++    if not include_hpi:original=[f for f in original if f.kind!='circulatory_device_prediction']
+     p=original[0]
+     original[0]=replace(p,acquisition=replace(p.acquisition,calibration_provenance=replace(PROV,
+         upstream=(LineageEdge(target=support.reference,relationship='derived_from'),))))
+@@ -42,7 +43,41 @@ def demo_facts():
+         result=replace(template.result,quantity=replace(template.result.quantity,value=value,
+             unit=replace(template.result.quantity.unit,raw=unit)))
+         return replace(template,id=id,concept=concept,result=result,**extra)
+-    return (*original,
++    oxygen=next(f for f in original if f.id=='m7-SVO2')
++    abg_context=h.BloodGasContext(collected=stamp(),fio2=quantity('40','%'),
++        oxygen_device=concept('Synthetic invasive ventilation'),ventilator_mode=concept('Volume assist-control'),
++        peep=quantity('5','cmH2O'),provenance=PROV,
++        limitations=('Synthetic sample-time settings, not current ventilator settings.',))
++    abg=[]
++    for id,analyte,v,u in (
++        ('PH','ph','7.31','1'),('PACO2','paco2','48.0','mmHg'),('PAO2','pao2','78.0','mmHg'),
++        ('HCO3','bicarbonate','23.0','mmol/L'),('BE','base_excess','-2.0','mmol/L'),
++        ('SAO2','sao2','95.0','%'),('HB','hemoglobin','10.2','g/dL')):
++        acq=replace(oxygen.acquisition,quality=h.EvidenceQuality(status='acceptable',provenance=PROV),
++            limitations=(('Source-reported analyzer calculation; not calculated by ClinRx.',)
++                if analyte in ('bicarbonate','base_excess') else ()))
++        abg.append(numeric(oxygen,'m7-ABG-'+id,analyte,v,u,sample_type='arterial',
++            specimen=code('synthetic-arterial-sample-1'),blood_gas_context=abg_context,acquisition=acq,
++            production='source_calculated' if analyte in ('bicarbonate','base_excess') else 'direct_measurement',
++            calculation_method=code('source-analyzer-calculation') if analyte in ('bicarbonate','base_excess') else None))
++    def finding(id,analyte,text):
++        return replace(echo,id=id,concept=analyte,result=h.QualitativeResult(finding=concept(text)))
++    return (*original,*abg,
++        numeric(echo,'m7-RVSP','estimated_rvsp','45.0','mmHg',production='source_calculated',
++            calculation_method=code('echo-report-rvsp-estimate'),
++            disclosures=('Source-reported estimate using TR velocity and estimated RAP 5 mmHg; not recalculated by ClinRx. RVOT obstruction not documented.',)),
++        numeric(echo,'m7-PASP','estimated_pasp','45.0','mmHg',production='source_calculated',
++            calculation_method=code('echo-report-pasp-estimate'),
++            disclosures=('Source-reported PASP estimate; equivalence to RVSP is not established by ClinRx. RVOT obstruction not documented.',)),
++        numeric(echo,'m7-TRV','tr_measurement','3.16','m/s',
++            disclosures=('Source-reported peak TR velocity; envelope adequacy reported acceptable in the synthetic study.',)),
++        numeric(echo,'m7-RVD','rv_dimension','4.3','cm',
++            disclosures=('Source-reported RV basal end-diastolic dimension, apical four-chamber view.',)),
++        finding('m7-RVFUNCTION','rv_function','Synthetic report: mildly reduced RV systolic function.'),
++        finding('m7-SEPTUM','septal_configuration','Synthetic report: systolic septal flattening.'),
++        finding('m7-VALVE','valve_finding','Synthetic report: moderate tricuspid regurgitation.'),
++        finding('m7-EFFUSION','pericardial_effusion','Synthetic report: no pericardial effusion visualized.'),
++        finding('m7-PH','structural_finding','Synthetic report: findings suggest pulmonary hypertension; no invasive confirmation or PAH subtype established.'),
+         numeric(echo,'m7-EF','lv_ef','55.0','%'),
+         numeric(echo,'m7-VTI','lvot_vti','17.5','cm'),
+         numeric(co,'m7-CI','ci','2.60','L/min/m2'),
+@@ -71,10 +106,10 @@ def prepare_example(engine,execution_id):
+         inference_request=request,assembly_request=ar,inference_cutoff=cutoff,
+         expected_inference_digest=digest(inference),requested_at=SIMULATION_AT)
+ 
+-def bootstrap(engine):
++def bootstrap(engine, *, include_hpi=False):
+     if inspect(engine).has_table('fact_revision'):raise ValueError('choose a fresh disposable database')
+     patient_bootstrap(engine)
+-    seeded=demo_facts()
++    seeded=demo_facts(include_hpi=include_hpi)
+     with transaction(engine) as repo:
+         for fact in seeded:repo.append_fact(fact,target=TARGET)
+     released=execute_circulatory_review(engine,prepare_example(engine,RELEASED_ID),clock=lambda:SIMULATION_AT)
+@@ -87,7 +122,8 @@ def bootstrap(engine):
+     withheld=execute_circulatory_review(engine,pending,clock=lambda:SIMULATION_AT)
+     assert released.record.decision.outcome=='released' and withheld.record.decision.outcome=='withheld'
+     return {**manifest(),'released_example':str(RELEASED_ID),'withheld_example':str(WITHHELD_ID),
+-        'dataset':'comprehensive-synthetic-demo/1','recorded_families':15,'execution_enabled':False}
++        'dataset':'comprehensive-synthetic-demo/2','recorded_families':len({f.kind for f in seeded}),
++        'optional_hpi_included':include_hpi,'execution_enabled':False}
+ 
+ def main():
+     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--database',type=Path,required=True)
+diff --git a/backend/app/models/clinical/hemodynamics.py b/backend/app/models/clinical/hemodynamics.py
+index 35ad08c..2f6d6f8 100644
+--- a/backend/app/models/clinical/hemodynamics.py
++++ b/backend/app/models/clinical/hemodynamics.py
+@@ -465,18 +465,33 @@ class PerfusionObservation(Measurement):
+     regional_site: RecordedConcept | None = None
+ 
+ 
++class BloodGasContext(Contract):
++    """Source-recorded respiratory context; no derived ratios or interpretation."""
++    collected: ClinicalInstant
++    fio2: ExactQuantity | None = None
++    oxygen_device: RecordedConcept | None = None
++    ventilator_mode: RecordedConcept | None = None
++    peep: ExactQuantity | None = None
++    provenance: BoundedProvenance
++    limitations: Notes = ()
++
++
+ class OxygenTransport(Measurement):
+     kind: Literal['circulatory_oxygen'] = 'circulatory_oxygen'
+     concept: Literal['sao2', 'spo2', 'scvo2', 'svo2', 'hemoglobin', 'pao2', 'pvo2',
+-        'cao2', 'cvo2', 'do2', 'vo2', 'extraction_ratio']
++        'cao2', 'cvo2', 'do2', 'vo2', 'extraction_ratio',
++        'ph', 'paco2', 'bicarbonate', 'base_excess']
+     sample_type: Literal['arterial', 'central_venous', 'mixed_venous', 'peripheral_venous',
+                          'noninvasive', 'unknown']
+     specimen: SourceCode | None = None
++    blood_gas_context: BloodGasContext | None = Field(default=None, exclude_if=lambda v: v is None)
+ 
+     @model_validator(mode='after')
+     def sample_identity(self):
++        if self.blood_gas_context is not None and (self.acquisition.method != 'blood_gas' or self.sample_type == 'noninvasive'):
++            raise ValueError('blood gas context requires a sampled blood gas acquisition')
+         expected = {'scvo2': 'central_venous', 'svo2': 'mixed_venous',
+-                    'sao2': 'arterial', 'spo2': 'noninvasive'}
++                    'sao2': 'arterial', 'spo2': 'noninvasive', 'paco2': 'arterial'}
+         if self.concept in expected and self.sample_type not in (expected[self.concept], 'unknown'):
+             raise ValueError('oxygen concept contradicts sample context')
+         return self
+diff --git a/docs/SYNTHETIC-DEMO-HOSTING.md b/docs/SYNTHETIC-DEMO-HOSTING.md
+index 7312b67..13bc6bf 100644
+--- a/docs/SYNTHETIC-DEMO-HOSTING.md
++++ b/docs/SYNTHETIC-DEMO-HOSTING.md
+@@ -115,7 +115,7 @@ command recovery and does not replace hosted restart/access acceptance.
+    trigger while publishing review source.
+ 3. Build the container on the intended platform; verify startup, pinned runtime,
+    HTTPS origin behavior and provider access protection, including API fetches.
+-4. At the actual preview URL verify 26 records / all 15 families, CO/CI, echo,
++4. At the actual preview URL verify 41 records / 14 present of 15 supported families (HPI optional and absent by default), CO/CI, ABG, broader echo,
+    device/method evidence, unknowns, exact source details, CAL/1→CAL/2 history,
+    ingestion timeline, and the released/withheld examples. Verify mobile layout.
+ 5. Verify execution_enabled=false; blocked prepare/execute routes cannot write;
+diff --git a/frontend/src/api/circulatorySchemas.json b/frontend/src/api/circulatorySchemas.json
+index 2edf45e..4e388f5 100644
+--- a/frontend/src/api/circulatorySchemas.json
++++ b/frontend/src/api/circulatorySchemas.json
+@@ -681,6 +681,78 @@
+       "title": "Binding",
+       "type": "object"
+     },
++    "BloodGasContext": {
++      "additionalProperties": false,
++      "description": "Source-recorded respiratory context; no derived ratios or interpretation.",
++      "properties": {
++        "collected": {
++          "$ref": "#/$defs/ClinicalInstant"
++        },
++        "fio2": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/ExactQuantity"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null
++        },
++        "oxygen_device": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/RecordedConcept"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null
++        },
++        "ventilator_mode": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/RecordedConcept"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null
++        },
++        "peep": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/ExactQuantity"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null
++        },
++        "provenance": {
++          "$ref": "#/$defs/BoundedProvenance"
++        },
++        "limitations": {
++          "default": [],
++          "items": {
++            "minLength": 1,
++            "type": "string"
++          },
++          "maxItems": 32,
++          "title": "Limitations",
++          "type": "array"
++        }
++      },
++      "required": [
++        "collected",
++        "provenance"
++      ],
++      "title": "BloodGasContext",
++      "type": "object"
++    },
+     "BoundedProvenance": {
+       "additionalProperties": false,
+       "properties": {
+@@ -4297,7 +4369,11 @@
+             "cvo2",
+             "do2",
+             "vo2",
+-            "extraction_ratio"
++            "extraction_ratio",
++            "ph",
++            "paco2",
++            "bicarbonate",
++            "base_excess"
+           ],
+           "title": "Concept",
+           "type": "string"
+@@ -4324,6 +4400,17 @@
+             }
+           ],
+           "default": null
++        },
++        "blood_gas_context": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BloodGasContext"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null
+         }
+       },
+       "required": [
+diff --git a/frontend/src/demo/ComprehensiveDemo.tsx b/frontend/src/demo/ComprehensiveDemo.tsx
+index 06fe025..674c9b9 100644
+--- a/frontend/src/demo/ComprehensiveDemo.tsx
++++ b/frontend/src/demo/ComprehensiveDemo.tsx
+@@ -2,7 +2,7 @@ import {useEffect,useRef,useState} from 'react';
+ import type {CirculatoryClient} from '../api/circulatoryClient';
+ import type {CirculatoryState,CirculatoryItem,CirculatoryHistory,CirculatoryExecution} from '../api/circulatoryTypes';
+ import {families,RecordedDisclosure,reference,refKey} from '../patient/CirculatoryEvidence';
+-import {record,words,title,value,quality,sourceTime,method,lenses,inLens,hasUncertainQuality,type Lens} from './evidencePresentation';
++import {record,words,title,value,quality,sourceTime,method,lenses,inLens,hasUncertainQuality,bloodGasSummary,type Lens} from './evidencePresentation';
+ import './demo.css';
+ type Config={start:string;end:string;releasedExample:string;withheldExample:string;hosted?:boolean};
+ type View='overview'|'library'|'timeline'|'examples';
+@@ -10,7 +10,7 @@ const views:Record<View,string>={overview:'Patient overview',library:'Evidence l
+ function EvidenceCard({item,onInspect}:{item:CirculatoryItem;onInspect:(item:CirculatoryItem,trigger:HTMLButtonElement)=>void}){
+   const result=value(item);
+   return <button className="demo-evidence" onClick={event=>onInspect(item,event.currentTarget)} aria-label={'Inspect '+title(item)+' '+item.fact.id}>
+-    <span className="demo-card-label">{title(item)}</span><strong>{result.text}<small>{result.unit}</small></strong>
++    <span className="demo-card-label">{title(item)}</span><strong>{result.text}{' '}<small>{result.unit==='1'?'(unit: 1)':result.unit}</small></strong>
+     <span className="demo-card-method">{method(item)}</span><span className="demo-card-time">{words(item.inclusion)} · {sourceTime(item)}</span><span className="demo-card-meta">{item.fact.id} / {item.fact.revision}<span className={'demo-quality '+(quality(item)==='acceptable'?'':'demo-uncertain')}>Quality: {quality(item)}</span></span>
+   </button>;
+ }
+@@ -38,9 +38,10 @@ export function ComprehensiveDemo({client,config}:{client:CirculatoryClient;conf
+   const items=state?.assembly.snapshot.items??[];
+   const counts=Object.fromEntries(Object.keys(families).map(kind=>[kind,items.filter(i=>i.fact.kind===kind).length]));
+   // Stable fixture presentation order, never clinical ranking or temporal inference.
+-  const featured=['m7-CO','m7-EF','m7-VTI','m7-ECHO','m7-P','m7-RHYTHM'];
++  const featured=['m7-CO','m7-VTI','m7-RVSP','m7-PH','m7-EF','m7-TRV','m7-PASP','m7-RVFUNCTION','m7-RVD','m7-SEPTUM','m7-VALVE','m7-EFFUSION','m7-ECHO','m7-P','m7-RHYTHM'];
++  const displayOrder=lens==='abg'?['m7-ABG-PH','m7-ABG-PACO2','m7-ABG-PAO2','m7-ABG-HCO3','m7-ABG-BE','m7-ABG-SAO2','m7-ABG-HB','m7-L','m7-SVO2']:featured;
+   const guided=items.filter(i=>inLens(i,lens)).sort((a,b)=>{
+-    const rank=(item:CirculatoryItem)=>lens==='cardiac'&&featured.includes(item.fact.id)?featured.indexOf(item.fact.id):100+(['in_window','contextual','unplaced'].indexOf(item.inclusion));
++    const rank=(item:CirculatoryItem)=>(lens==='cardiac'||lens==='abg')&&displayOrder.includes(item.fact.id)?displayOrder.indexOf(item.fact.id):100+(['in_window','contextual','unplaced'].indexOf(item.inclusion));
+     return rank(a)-rank(b);
+   });
+   const visible=items.filter(item=>(family==='all'||item.fact.kind===family)&&[title(item),method(item),item.fact.id,value(item).text].join(' ').toLowerCase().includes(search.toLowerCase()));
+@@ -66,16 +67,16 @@ export function ComprehensiveDemo({client,config}:{client:CirculatoryClient;conf
+       <div className="demo-sidebar-note"><strong>One case, many sources</strong><p>Compare what was recorded, where it came from, and what changed.</p><small>Recorded evidence and source interpretations are not a ClinRx diagnosis.</small></div>
+       {!config.hosted&&<a className="demo-legacy" href="?workspace=legacy">Existing review tools ↗</a>}
+     </aside>
+-    <main id="demo-main" className="demo-workspace"><div className="demo-page-heading"><div><p className="demo-overline">CIRCULATORY EVIDENCE / {views[view].toUpperCase()}</p><h1>{view==='overview'?'See the fuller picture.':views[view]}</h1><p>Cardiac output, echo, pressure and perfusion — with the source evidence in reach.</p></div><button className="demo-refresh" disabled={loading} onClick={()=>void load()}>Refresh recorded state</button></div>
++    <main id="demo-main" className="demo-workspace"><div className="demo-page-heading"><div><p className="demo-overline">CIRCULATORY EVIDENCE / {views[view].toUpperCase()}</p><h1>{view==='overview'?'See the fuller picture.':views[view]}</h1><p>Cardiac output, ABG, echo and perfusion — with the source evidence in reach.</p></div><button className="demo-refresh" disabled={loading} onClick={()=>void load()}>Refresh recorded state</button></div>
+       <div className="demo-safety">Synthetic exploration only. No treatment recommendations or live device connections. {state&&<span>New reviews: {state.execution_enabled?'permitted by local service; this workspace remains read-only':'disabled'}.</span>}</div>
+       {loading&&<div className="demo-loading" role="status">Loading the bounded evidence view…</div>}
+       {error&&<p className="demo-error" role="alert">{error}</p>}
+       {state&&<>
+-        <section className="demo-stats" aria-label="Recorded-state coverage"><div><strong>{items.length}</strong><span>recorded items</span></div><div><strong>{Object.values(counts).filter(Boolean).length} / 15</strong><span>evidence families present</span></div><div><strong>{items.filter(hasUncertainQuality).length}</strong><span>quality flagged or unknown</span></div><div><strong>{items.filter(i=>i.inclusion!=='in_window').length}</strong><span>contextual or unplaced</span></div></section>
+-        {view==='overview'&&<><section className="demo-guides" aria-label="Guided views">{Object.entries(lenses).map(([key,guide],n)=><button key={key} aria-pressed={lens===key} onClick={()=>setLens(key as Lens)}><span>0{n+1} / EXPLORE</span><strong>{guide.label}</strong><span>{key==='cardiac'?'Put measurements beside their methods.':key==='correction'?'See why the original record matters.':'Keep unknowns visible.'}</span></button>)}</section><section className="demo-guide-intro"><h2>{lenses[lens].label}</h2><p>{lenses[lens].description}</p>{lens==='correction'&&<button onClick={()=>setView('examples')}>Explore retained review examples</button>}</section>
++        <p className="demo-optional">HPI is optional. {counts.circulatory_device_prediction?'A source-reported device prediction is available; it is not required for browsing.':'Not recorded in this case; ABG, echo and other evidence remain available.'}</p><section className="demo-stats" aria-label="Recorded-state coverage"><div><strong>{items.length}</strong><span>recorded items</span></div><div><strong>{Object.values(counts).filter(Boolean).length} / 15</strong><span>evidence families present</span></div><div><strong>{items.filter(hasUncertainQuality).length}</strong><span>quality flagged or unknown</span></div><div><strong>{items.filter(i=>i.inclusion!=='in_window').length}</strong><span>contextual or unplaced</span></div></section>
++        {view==='overview'&&<><section className="demo-guides" aria-label="Guided views">{Object.entries(lenses).map(([key,guide],n)=><button key={key} aria-pressed={lens===key} onClick={()=>setLens(key as Lens)}><span>0{n+1} / EXPLORE</span><strong>{guide.label}</strong><span>{key==='cardiac'?'Put measurements beside their methods.':key==='abg'?'Inspect gases with sample context.':key==='correction'?'See why the original record matters.':'Keep unknowns visible.'}</span></button>)}</section><section className="demo-guide-intro"><h2>{lenses[lens].label}</h2><p>{lenses[lens].description}</p>{lens==='correction'&&<button onClick={()=>setView('examples')}>Explore retained review examples</button>}</section>
+           <div className="demo-inspection-layout"><section aria-label="Guided recorded measurements" className="demo-measurements">{guided.map(item=><EvidenceCard key={refKey(reference(item))} item={item} onInspect={inspect}/>)}</section>{inspector()}</div>
+           <section className="demo-family-overview"><div className="demo-section-title"><h2>Explore every evidence family</h2><span>Missing records do not establish clinical absence.</span></div><div className="demo-family-grid">{Object.entries(families).map(([kind,label],n)=><button key={kind} onClick={()=>{setFamily(kind);setSearch('');setView('library');}}><span>{String(n+1).padStart(2,'0')}</span><strong>{label}</strong><small>{counts[kind]} recorded {counts[kind]===1?'item':'items'} →</small></button>)}</div></section></>}
+-        {view==='library'&&<><div className="demo-library-controls"><label>Search recorded evidence<input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Cardiac output, echo, PiCCO, source ID…"/></label><label>Evidence family<select value={family} onChange={e=>setFamily(e.target.value)}><option value="all">All 15 families</option>{Object.entries(families).map(([kind,label])=><option key={kind} value={kind}>{label} ({counts[kind]})</option>)}</select></label></div><p role="status">{visible.length} recorded {visible.length===1?'item':'items'} in this view</p><div className="demo-inspection-layout"><section aria-label="Evidence library results">{Object.entries(families).filter(([kind])=>family==='all'||kind===family).map(([kind,label])=><section className="demo-library-family" key={kind}><h2>{label}</h2><div className="demo-measurements">{visible.filter(i=>i.fact.kind===kind).map(item=><EvidenceCard key={refKey(reference(item))} item={item} onInspect={inspect}/>)}</div>{!visible.some(i=>i.fact.kind===kind)&&<p className="demo-empty">No matching records in this bounded view. Clinical absence is not established.</p>}</section>)}</section>{inspector()}</div></>}
++        {view==='library'&&<><div className="demo-library-controls"><label>Search recorded evidence<input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="ABG, RVSP, echo, PiCCO, source ID…"/></label><label>Evidence family<select value={family} onChange={e=>setFamily(e.target.value)}><option value="all">All 15 families</option>{Object.entries(families).map(([kind,label])=><option key={kind} value={kind}>{label} ({counts[kind]})</option>)}</select></label></div><p role="status">{visible.length} recorded {visible.length===1?'item':'items'} in this view</p><div className="demo-inspection-layout"><section aria-label="Evidence library results">{Object.entries(families).filter(([kind])=>family==='all'||kind===family).map(([kind,label])=><section className="demo-library-family" key={kind}><h2>{label}</h2><div className="demo-measurements">{visible.filter(i=>i.fact.kind===kind).map(item=><EvidenceCard key={refKey(reference(item))} item={item} onInspect={inspect}/>)}</div>{!visible.some(i=>i.fact.kind===kind)&&<p className="demo-empty">No matching records in this bounded view. Clinical absence is not established.</p>}</section>)}</section>{inspector()}</div></>}
+         {view==='timeline'&&<><div className="demo-guide-intro"><h2>How the repository received the evidence</h2><p>Ordered by repository ingestion sequence, not clinical event time. Source times retain their recorded spelling; this display makes no new temporal inference. Open any item to inspect its correction history at this cutoff.</p></div><div className="demo-inspection-layout"><ol className="demo-timeline">{[...items].sort((a,b)=>a.ingestion.ingestion_sequence-b.ingestion.ingestion_sequence).map(item=><li key={refKey(reference(item))}><span className="demo-sequence">{item.ingestion.ingestion_sequence}</span><button onClick={event=>inspect(item,event.currentTarget)}><strong>{title(item)}</strong><span>{item.fact.id} / {item.fact.revision} · {words(item.inclusion)}</span><span>Source: {sourceTime(item)}</span><small>Ingested: {item.ingestion.ingested_at}</small>{item.fact.supersedes!=null&&<span className="demo-correction">Corrected source revision · inspect history</span>}</button></li>)}</ol>{inspector()}</div></>}
+         {view==='examples'&&<><section className="demo-guide-intro"><h2>What retained review adds</h2><p>These examples were generated during disposable synthetic fixture setup. Opening one reads a stored receipt; it does not prepare or execute a new review. The descriptive inference concerns pressure, lactate and vasopressor timing only. Cardiac output and echo remain recorded source evidence.</p></section><div className="demo-example-buttons"><button disabled={receiptBusy} onClick={()=>void example(config.releasedExample)}><span>01 / UNCHANGED SELECTED EVIDENCE</span><strong>Open the released example</strong><span>Inspect exact P/L/V and calibration support.</span></button><button disabled={receiptBusy} onClick={()=>void example(config.withheldExample)}><span>02 / CORRECTED CALIBRATION SUPPORT</span><strong>Open the withheld example</strong><span>See original evidence and final witnesses side by side.</span></button></div>{receiptBusy&&<p role="status">Reading retained receipt…</p>}{receiptError&&<p className="demo-error" role="alert">{receiptError}</p>}{receipt&&<section className="demo-receipt" aria-label="Retained demonstration receipt"><p className="demo-overline">STORED SYNTHETIC RESULT</p><h2>Retained outcome: {words(decision.outcome)}</h2><p>Execution UUID: <code>{receipt.execution_id}</code></p>{receipt.statement?<p className="demo-statement">{receipt.statement}</p>:<p className="demo-withheld">Withheld — no released statement. The selected original evidence remains in this receipt.</p>}<div className="demo-receipt-columns"><div><h3>Original selected revisions</h3><RecordedDisclosure label="Original source facts and exact support" value={evidence.facts}/></div><div><h3>What final review witnessed</h3><RecordedDisclosure label="Terminal witnesses and correction status" value={recheck.evidence}/></div></div><RecordedDisclosure label="Complete retained governance and provenance receipt" value={receipt.record}/></section>}</>}
+         <details className="demo-coverage"><summary>Review boundary and repository coverage</summary><p>Patient {state.assembly.request.scope.patient_id} · Encounter {state.assembly.request.scope.encounter_id}</p><p>Window: {state.assembly.request.scope.review_start} → {state.assembly.request.scope.review_end}</p><RecordedDisclosure label="Exact cutoff, coverage and recorded-state issues" value={{cutoff:state.assembly.request.scope.repository_cutoff,coverage:state.assembly.snapshot.coverage,issues:state.assembly.snapshot.issues}}/></details>
+@@ -83,5 +84,5 @@ export function ComprehensiveDemo({client,config}:{client:CirculatoryClient;conf
+       <footer className="demo-footer">A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.</footer>
+     </main></div>
+   </div>;
+-  function inspector(){return <aside className="demo-inspector" aria-label="Selected source evidence" tabIndex={-1} ref={sourceInspector}>{selected?<><div className="demo-section-title"><span className="demo-overline">SOURCE INSPECTOR</span><button className="demo-close" onClick={()=>{detailGeneration.current++;setSelected(undefined);setHistory(undefined);setHistoryBusy(false);if(sourceTrigger.current?.isConnected)sourceTrigger.current.focus();}}>Close source</button></div><h2>{title(selected)}</h2><p className="demo-inspector-value">{value(selected).text} <small>{value(selected).unit}</small></p><p><code>{selected.fact.id} / {selected.fact.revision}</code></p><p className="demo-card-method">{method(selected)}</p><dl className="demo-source-summary"><dt>Source time</dt><dd>{sourceTime(selected)}</dd><dt>Recorded quality</dt><dd>{quality(selected)}</dd><dt>Source unit mapping</dt><dd>{words(record(record(record(selected.fact.result).quantity).unit).status)||'Not supplied / not applicable'}</dd><dt>Placement</dt><dd>{words(selected.inclusion)}</dd><dt>Source</dt><dd>{String(record(record(selected.fact.provenance).source).namespace??'Not recorded')}</dd></dl><RecordedDisclosure label="Full source, timing, quality and device context" value={selected.fact}/><RecordedDisclosure label="Exact digest and ingestion metadata" value={{expected_digest:selected.expected_digest,ingestion:selected.ingestion,contextual_for:selected.contextual_for,disclosures:selected.disclosures}}/><button className="demo-history-button" disabled={historyBusy} onClick={()=>void loadHistory()}>{historyBusy?'Reading revisions…':'Inspect revision history'}</button>{detailError&&<p role="alert">{detailError}</p>}{history&&<section aria-label="Bounded source revision history"><h3>{history.revisions.length} retained {history.revisions.length===1?'revision':'revisions'} at this cutoff</h3>{history.revisions.map(entry=><div className="demo-history-entry" key={entry.fact.revision}><strong>{entry.fact.id} / {entry.fact.revision}</strong><p>{typeof entry.fact.correction_reason==='string'?entry.fact.correction_reason:'Original recorded assertion'}</p><RecordedDisclosure label={'Complete revision '+entry.fact.revision} value={entry}/></div>)}</section>}</>:<><span className="demo-overline">SOURCE INSPECTOR</span><h2>Evidence within reach.</h2><p>Select any recorded item to inspect its exact source, quality, device context and revision history.</p><div className="demo-inspector-illustration" aria-hidden="true"><span>Source</span><span>Exact revision</span><span>Provenance</span></div><small>Values are shown as recorded. Units are not converted, and quality labels are source assertions.</small></>}</aside>;}
++  function inspector(){return <aside className="demo-inspector" aria-label="Selected source evidence" tabIndex={-1} ref={sourceInspector}>{selected?<><div className="demo-section-title"><span className="demo-overline">SOURCE INSPECTOR</span><button className="demo-close" onClick={()=>{detailGeneration.current++;setSelected(undefined);setHistory(undefined);setHistoryBusy(false);if(sourceTrigger.current?.isConnected)sourceTrigger.current.focus();}}>Close source</button></div><h2>{title(selected)}</h2><p className="demo-inspector-value">{value(selected).text} <small>{value(selected).unit}</small></p><p><code>{selected.fact.id} / {selected.fact.revision}</code></p><p className="demo-card-method">{method(selected)}</p><dl className="demo-source-summary"><dt>Source time</dt><dd>{sourceTime(selected)}</dd><dt>Recorded quality</dt><dd>{quality(selected)}</dd><dt>Source unit mapping</dt><dd>{words(record(record(record(selected.fact.result).quantity).unit).status)||'Not supplied / not applicable'}</dd><dt>Placement</dt><dd>{words(selected.inclusion)}</dd><dt>Source</dt><dd>{String(record(record(selected.fact.provenance).source).namespace??'Not recorded')}</dd></dl>{selected.fact.kind==='circulatory_oxygen'&&<section aria-label="Blood gas sample context"><h3>Blood gas sample context</h3><dl className="demo-source-summary">{bloodGasSummary(selected).map(([label,text])=><div key={label}><dt>{label}</dt><dd>{text}</dd></div>)}</dl><RecordedDisclosure label="Sample-time oxygen and ventilation settings" value={selected.fact.blood_gas_context??'Not recorded; current settings are not substituted.'}/></section>}{selected.fact.kind==='circulatory_echo'&&<section aria-label="Echo study context"><h3>Echo study context</h3><p>Study: {String(record(selected.fact.study).raw_display??'Not recorded')} · Report: {String(record(selected.fact.report).raw_display??'Not recorded')} · Revision: {String(selected.fact.report_revision??'Not recorded')}</p><p>Source assertion: {words(selected.fact.production)}. Echo estimates remain separate from invasive pressure measurements. No PH diagnosis or PAH subtype is inferred.</p><RecordedDisclosure label="Source limitations and estimate basis" value={selected.fact.disclosures}/></section>}<RecordedDisclosure label="Full source, timing, quality and device context" value={selected.fact}/><RecordedDisclosure label="Exact digest and ingestion metadata" value={{expected_digest:selected.expected_digest,ingestion:selected.ingestion,contextual_for:selected.contextual_for,disclosures:selected.disclosures}}/><button className="demo-history-button" disabled={historyBusy} onClick={()=>void loadHistory()}>{historyBusy?'Reading revisions…':'Inspect revision history'}</button>{detailError&&<p role="alert">{detailError}</p>}{history&&<section aria-label="Bounded source revision history"><h3>{history.revisions.length} retained {history.revisions.length===1?'revision':'revisions'} at this cutoff</h3>{history.revisions.map(entry=><div className="demo-history-entry" key={entry.fact.revision}><strong>{entry.fact.id} / {entry.fact.revision}</strong><p>{typeof entry.fact.correction_reason==='string'?entry.fact.correction_reason:'Original recorded assertion'}</p><RecordedDisclosure label={'Complete revision '+entry.fact.revision} value={entry}/></div>)}</section>}</>:<><span className="demo-overline">SOURCE INSPECTOR</span><h2>Evidence within reach.</h2><p>Select any recorded item to inspect its exact source, quality, device context and revision history.</p><div className="demo-inspector-illustration" aria-hidden="true"><span>Source</span><span>Exact revision</span><span>Provenance</span></div><small>Values are shown as recorded. Units are not converted, and quality labels are source assertions.</small></>}</aside>;}
+ }
+diff --git a/frontend/src/demo/demo.css b/frontend/src/demo/demo.css
+index 3eb06ee..aa6d474 100644
+--- a/frontend/src/demo/demo.css
++++ b/frontend/src/demo/demo.css
+@@ -1,6 +1,8 @@
+-.demo-app{--demo-ink:#19343a;--demo-teal:#236d68;--demo-border:#dbe4df;min-height:100vh;background:#f5f6f2;color:var(--demo-ink)}.demo-app button,.demo-app a,.demo-app select{font:inherit}.demo-skip{position:absolute;left:1rem;top:-5rem;background:white;padding:1rem;z-index:10}.demo-skip:focus{top:1rem}.demo-topbar{height:76px;display:flex;align-items:center;gap:2rem;padding:0 30px;background:#fff;border-bottom:1px solid var(--demo-border)}.demo-brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--demo-ink);font-size:24px;font-weight:750;letter-spacing:-1px}.demo-brand>span:last-child{color:var(--demo-teal)}.demo-mark{display:grid;place-items:center;background:var(--demo-teal);color:white;width:34px;height:34px;border-radius:10px;font-size:22px;letter-spacing:0}.demo-environment{font-size:10px;letter-spacing:.12em;font-weight:750;color:#56736c}.demo-gate{margin-left:auto;font-size:12px;background:#edf2ed;color:#496256;padding:7px 12px;border-radius:30px}.demo-layout{display:grid;grid-template-columns:220px minmax(0,1fr);max-width:1700px;margin:auto}.demo-sidebar{padding:32px 18px;border-right:1px solid var(--demo-border);background:#fafbf8;min-width:0}.demo-overline{font-size:10px;font-weight:750;letter-spacing:.12em;color:#54756c;margin:0 0 12px}.demo-patient{display:flex;gap:10px;align-items:center;margin:24px 0 28px}.demo-avatar{display:grid;place-items:center;flex-shrink:0;width:38px;height:42px;border:1px solid #cad9ce;border-radius:8px;color:var(--demo-teal);background:#eaf0e9;font-size:13px}.demo-patient strong{font-size:13px;display:block}.demo-patient div>span{font-size:10px;color:#62786e;display:block;margin-top:4px}.demo-sidebar nav{display:grid;gap:8px}.demo-sidebar nav button{background:none;color:#50675f;border:1px solid transparent;padding:12px;text-align:left;display:flex;justify-content:space-between;font-size:12px;border-radius:7px}.demo-sidebar nav button[aria-current=page]{background:#e5eee6;border-color:#cfdfd1;color:#1d5a4c;font-weight:700}.demo-sidebar-note{margin-top:55px;border-top:1px solid var(--demo-border);padding:22px 10px;font-size:12px}.demo-sidebar-note small{font-size:10px}.demo-legacy{display:block;color:#496d64;font-size:11px;padding:10px}.demo-workspace{max-width:none;margin:0;padding:34px 30px 20px;min-width:0}.demo-page-heading{display:flex;gap:20px;align-items:center;justify-content:space-between;margin-bottom:20px}.demo-page-heading h1{font-size:32px;letter-spacing:-1px;color:var(--demo-ink);font-weight:650}.demo-page-heading p:not(.demo-overline){font-size:12px;color:#61776e;margin-bottom:0}.demo-refresh{flex-shrink:0;background:#fff;color:#335d51;border:1px solid #cad8ce;font-size:11px!important;padding:9px 12px}.demo-safety{border:1px solid #d9e4d8;border-radius:6px;padding:10px 14px;font-size:11px;color:#516652;background:#edf2e8;display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap}.demo-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#fff;border:1px solid var(--demo-border);border-radius:9px;margin:22px 0}.demo-stats>div{padding:18px 20px;border-right:1px solid var(--demo-border)}.demo-stats>div:last-child{border:0}.demo-stats strong{display:block;font-size:26px;font-weight:600;letter-spacing:-.5px}.demo-stats span{font-size:10px;color:#587267;display:block;margin-top:4px}.demo-guides{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.demo-guides button,.demo-example-buttons button{background:#fff;color:var(--demo-ink);border:1px solid var(--demo-border);padding:17px;text-align:left;display:flex;flex-direction:column;gap:9px;border-radius:8px}.demo-guides button[aria-pressed=true]{background:#e7efe6;border-color:#85ab93;box-shadow:inset 0 3px #568c72}.demo-guides button>span:first-child,.demo-example-buttons button>span:first-child{font-size:9px;font-weight:750;letter-spacing:.1em;color:#5a7c6b}.demo-guides strong{font-size:14px}.demo-guides button>span:last-child,.demo-example-buttons button>span:last-child{font-size:11px;font-weight:400;color:#5d7266}.demo-guide-intro{padding:24px 0 16px;max-width:900px}.demo-guide-intro h2{font-size:18px;font-weight:600}.demo-guide-intro p{font-size:12px;color:#5b7066}.demo-guide-intro button{font-size:11px}.demo-inspection-layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}.demo-measurements{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.demo-evidence{display:flex;flex-direction:column;align-items:start;text-align:left;padding:17px;background:#fff;color:var(--demo-ink);border:1px solid var(--demo-border);border-radius:8px;min-width:0;overflow-wrap:anywhere}.demo-evidence:hover:enabled{border-color:#79a28a;background:#fcfefa;filter:none}.demo-card-label{font-size:12px;color:#4b6a5f}.demo-evidence>strong{font-size:27px;font-weight:550;letter-spacing:-.7px;margin:12px 0 8px;line-height:1.2}.demo-evidence>strong>small{display:inline;font-size:12px;font-weight:400;letter-spacing:0;margin-left:5px;color:#587167}.demo-card-method{font-size:10px;color:#62786e;line-height:1.5}.demo-card-meta{display:flex;width:100%;margin-top:auto;padding-top:12px;gap:7px;justify-content:space-between;align-items:center;font-size:9px;color:#6c8074}.demo-quality{border-radius:3px;padding:3px 5px;background:#eff3ec;color:#496549;font-size:9px;white-space:normal}.demo-quality.demo-uncertain{background:#f6efdc;color:#796125}.demo-inspector{border:1px solid var(--demo-border);background:#eef2eb;border-radius:9px;padding:20px;min-width:0;overflow-wrap:anywhere;position:sticky;top:18px;max-height:85vh;overflow:auto}.demo-inspector h2{font-size:19px;font-weight:550}.demo-inspector p,.demo-inspector small{font-size:11px;color:#587063}.demo-inspector .demo-inspector-value{font-size:30px;color:var(--demo-ink);margin-bottom:0}.demo-inspector-value small{display:inline}.demo-inspector-illustration{margin:30px 0;display:grid;gap:12px}.demo-inspector-illustration span{border:1px solid #cfdbcf;border-radius:5px;background:#f9fbf6;padding:12px;font-size:11px}.demo-inspector-illustration span:nth-child(2){margin-left:18px}.demo-inspector-illustration span:nth-child(3){margin-left:36px}.demo-section-title{display:flex;justify-content:space-between;gap:12px;align-items:center}.demo-section-title>span{font-size:10px;color:#60786a}.demo-close{background:transparent;border:0;padding:0;color:#536d5c;font-size:10px!important;text-decoration:underline}.demo-app .demo-source-summary{display:grid;grid-template-columns:1fr;gap:5px;margin:20px 0}.demo-source-summary dt{font-size:10px;color:#547363}.demo-source-summary dd{font-size:11px;margin:0 0 8px}.demo-app details dl{display:block}.demo-app details dt{margin-top:8px;text-transform:capitalize}.demo-app details dd{margin-left:10px}.demo-app details ol{padding-left:16px}.demo-app summary{font-size:11px}.demo-app .recorded-value{font-size:11px;white-space:pre-wrap}.demo-history-button{width:100%;font-size:11px!important;margin-top:12px}.demo-history-entry{border-top:1px solid #d2ddcf;padding:10px 0;font-size:11px}.demo-family-overview{margin-top:30px}.demo-family-overview h2{font-size:18px;font-weight:600}.demo-family-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:16px}.demo-family-grid button{background:white;color:#294f41;border:1px solid var(--demo-border);display:grid;grid-template-columns:22px 1fr;gap:5px 9px;text-align:left;padding:13px;font-size:11px}.demo-family-grid button>span{grid-row:span 2;font-size:10px;color:#89a18f}.demo-family-grid small{font-size:10px}.demo-library-controls{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.demo-library-controls label{font-size:11px}.demo-library-controls input,.demo-library-controls select{display:block;width:100%;margin-top:7px;background:white;border:1px solid #bdcec2;border-radius:6px;padding:11px;font-size:12px;color:var(--demo-ink)}.demo-library-family{margin:0 0 26px}.demo-library-family h2{font-size:16px;font-weight:600;margin-bottom:13px}.demo-empty{font-size:12px;color:#607769}.demo-timeline{list-style:none;padding:0;margin:0}.demo-timeline li{display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;position:relative;margin:0;padding-bottom:17px}.demo-timeline li:before{content:'';position:absolute;left:15px;top:28px;bottom:0;border-left:1px solid #d1dfd2}.demo-sequence{z-index:1;border-radius:50%;width:30px;height:30px;display:grid;place-items:center;border:1px solid #bed2c2;background:#f5f8f1;font-size:10px;color:#56735e}.demo-timeline button{background:white;border:1px solid var(--demo-border);text-align:left;display:grid;gap:6px;color:var(--demo-ink);padding:15px;border-radius:7px;overflow-wrap:anywhere}.demo-timeline strong{font-size:13px}.demo-timeline button>span,.demo-timeline small{font-size:10px;color:#62756b}.demo-timeline .demo-correction{color:#6d602a}.demo-example-buttons{display:grid;grid-template-columns:1fr 1fr;gap:18px}.demo-example-buttons strong{font-size:16px}.demo-receipt{background:white;border:1px solid var(--demo-border);border-radius:9px;padding:24px;margin-top:24px;overflow-wrap:anywhere}.demo-receipt p{font-size:12px}.demo-statement{border-left:3px solid #82aa90;padding:14px 18px;background:#f1f6ed}.demo-withheld{border-left:3px solid #ae9858;padding:14px;background:#f9f5e8}.demo-receipt-columns{display:grid;grid-template-columns:1fr 1fr;gap:24px}.demo-coverage{margin-top:30px;border-top:1px solid var(--demo-border);padding:14px 0;font-size:11px}.demo-footer{font-size:10px;color:#6a7f70;padding-top:20px}.demo-error{padding:20px;background:#fff1e9;color:#804a32;border:1px solid #e7c3b2;border-radius:7px}.demo-loading{padding:45px;font-size:13px;text-align:center;color:#607967}
++.demo-app{--demo-ink:#19343a;--demo-teal:#236d68;--demo-border:#dbe4df;min-height:100vh;background:#f5f6f2;color:var(--demo-ink)}.demo-app button,.demo-app a,.demo-app select{font:inherit}.demo-skip{position:absolute;left:1rem;top:-5rem;background:white;padding:1rem;z-index:10}.demo-skip:focus{top:1rem}.demo-topbar{height:76px;display:flex;align-items:center;gap:2rem;padding:0 30px;background:#fff;border-bottom:1px solid var(--demo-border)}.demo-brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--demo-ink);font-size:24px;font-weight:750;letter-spacing:-1px}.demo-brand>span:last-child{color:var(--demo-teal)}.demo-mark{display:grid;place-items:center;background:var(--demo-teal);color:white;width:34px;height:34px;border-radius:10px;font-size:22px;letter-spacing:0}.demo-environment{font-size:10px;letter-spacing:.12em;font-weight:750;color:#56736c}.demo-gate{margin-left:auto;font-size:12px;background:#edf2ed;color:#496256;padding:7px 12px;border-radius:30px}.demo-layout{display:grid;grid-template-columns:220px minmax(0,1fr);max-width:1700px;margin:auto}.demo-sidebar{padding:32px 18px;border-right:1px solid var(--demo-border);background:#fafbf8;min-width:0}.demo-overline{font-size:10px;font-weight:750;letter-spacing:.12em;color:#54756c;margin:0 0 12px}.demo-patient{display:flex;gap:10px;align-items:center;margin:24px 0 28px}.demo-avatar{display:grid;place-items:center;flex-shrink:0;width:38px;height:42px;border:1px solid #cad9ce;border-radius:8px;color:var(--demo-teal);background:#eaf0e9;font-size:13px}.demo-patient strong{font-size:13px;display:block}.demo-patient div>span{font-size:10px;color:#62786e;display:block;margin-top:4px}.demo-sidebar nav{display:grid;gap:8px}.demo-sidebar nav button{background:none;color:#50675f;border:1px solid transparent;padding:12px;text-align:left;display:flex;justify-content:space-between;font-size:12px;border-radius:7px}.demo-sidebar nav button[aria-current=page]{background:#e5eee6;border-color:#cfdfd1;color:#1d5a4c;font-weight:700}.demo-sidebar-note{margin-top:55px;border-top:1px solid var(--demo-border);padding:22px 10px;font-size:12px}.demo-sidebar-note small{font-size:10px}.demo-legacy{display:block;color:#496d64;font-size:11px;padding:10px}.demo-workspace{max-width:none;margin:0;padding:34px 30px 20px;min-width:0}.demo-page-heading{display:flex;gap:20px;align-items:center;justify-content:space-between;margin-bottom:20px}.demo-page-heading h1{font-size:32px;letter-spacing:-1px;color:var(--demo-ink);font-weight:650}.demo-page-heading p:not(.demo-overline){font-size:12px;color:#61776e;margin-bottom:0}.demo-refresh{flex-shrink:0;background:#fff;color:#335d51;border:1px solid #cad8ce;font-size:11px!important;padding:9px 12px}.demo-safety{border:1px solid #d9e4d8;border-radius:6px;padding:10px 14px;font-size:11px;color:#516652;background:#edf2e8;display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap}.demo-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#fff;border:1px solid var(--demo-border);border-radius:9px;margin:22px 0}.demo-stats>div{padding:18px 20px;border-right:1px solid var(--demo-border)}.demo-stats>div:last-child{border:0}.demo-stats strong{display:block;font-size:26px;font-weight:600;letter-spacing:-.5px}.demo-stats span{font-size:10px;color:#587267;display:block;margin-top:4px}.demo-guides{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.demo-guides button,.demo-example-buttons button{background:#fff;color:var(--demo-ink);border:1px solid var(--demo-border);padding:17px;text-align:left;display:flex;flex-direction:column;gap:9px;border-radius:8px}.demo-guides button[aria-pressed=true]{background:#e7efe6;border-color:#85ab93;box-shadow:inset 0 3px #568c72}.demo-guides button>span:first-child,.demo-example-buttons button>span:first-child{font-size:9px;font-weight:750;letter-spacing:.1em;color:#5a7c6b}.demo-guides strong{font-size:14px}.demo-guides button>span:last-child,.demo-example-buttons button>span:last-child{font-size:11px;font-weight:400;color:#5d7266}.demo-guide-intro{padding:24px 0 16px;max-width:900px}.demo-guide-intro h2{font-size:18px;font-weight:600}.demo-guide-intro p{font-size:12px;color:#5b7066}.demo-guide-intro button{font-size:11px}.demo-inspection-layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}.demo-measurements{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.demo-evidence{display:flex;flex-direction:column;align-items:start;text-align:left;padding:17px;background:#fff;color:var(--demo-ink);border:1px solid var(--demo-border);border-radius:8px;min-width:0;overflow-wrap:anywhere}.demo-evidence:hover:enabled{border-color:#79a28a;background:#fcfefa;filter:none}.demo-card-label{font-size:12px;color:#4b6a5f}.demo-evidence>strong{font-size:27px;font-weight:550;letter-spacing:-.7px;margin:12px 0 8px;line-height:1.2}.demo-evidence>strong>small{display:inline;font-size:12px;font-weight:400;letter-spacing:0;margin-left:5px;color:#587167}.demo-card-method{font-size:10px;color:#62786e;line-height:1.5}.demo-card-meta{display:flex;width:100%;margin-top:auto;padding-top:12px;gap:7px;justify-content:space-between;align-items:center;font-size:9px;color:#6c8074}.demo-quality{border-radius:3px;padding:3px 5px;background:#eff3ec;color:#496549;font-size:9px;white-space:normal}.demo-quality.demo-uncertain{background:#f6efdc;color:#796125}.demo-inspector{border:1px solid var(--demo-border);background:#eef2eb;border-radius:9px;padding:20px;min-width:0;overflow-wrap:anywhere;position:sticky;top:18px;max-height:85vh;overflow:auto}.demo-inspector h2{font-size:19px;font-weight:550}.demo-inspector p,.demo-inspector small{font-size:11px;color:#587063}.demo-inspector .demo-inspector-value{font-size:30px;color:var(--demo-ink);margin-bottom:0}.demo-inspector-value small{display:inline}.demo-inspector-illustration{margin:30px 0;display:grid;gap:12px}.demo-inspector-illustration span{border:1px solid #cfdbcf;border-radius:5px;background:#f9fbf6;padding:12px;font-size:11px}.demo-inspector-illustration span:nth-child(2){margin-left:18px}.demo-inspector-illustration span:nth-child(3){margin-left:36px}.demo-section-title{display:flex;justify-content:space-between;gap:12px;align-items:center}.demo-section-title>span{font-size:10px;color:#60786a}.demo-close{background:transparent;border:0;padding:0;color:#536d5c;font-size:10px!important;text-decoration:underline}.demo-app .demo-source-summary{display:grid;grid-template-columns:1fr;gap:5px;margin:20px 0}.demo-source-summary dt{font-size:10px;color:#547363}.demo-source-summary dd{font-size:11px;margin:0 0 8px}.demo-app details dl{display:block}.demo-app details dt{margin-top:8px;text-transform:capitalize}.demo-app details dd{margin-left:10px}.demo-app details ol{padding-left:16px}.demo-app summary{font-size:11px}.demo-app .recorded-value{font-size:11px;white-space:pre-wrap}.demo-history-button{width:100%;font-size:11px!important;margin-top:12px}.demo-history-entry{border-top:1px solid #d2ddcf;padding:10px 0;font-size:11px}.demo-family-overview{margin-top:30px}.demo-family-overview h2{font-size:18px;font-weight:600}.demo-family-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:16px}.demo-family-grid button{background:white;color:#294f41;border:1px solid var(--demo-border);display:grid;grid-template-columns:22px 1fr;gap:5px 9px;text-align:left;padding:13px;font-size:11px}.demo-family-grid button>span{grid-row:span 2;font-size:10px;color:#89a18f}.demo-family-grid small{font-size:10px}.demo-library-controls{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.demo-library-controls label{font-size:11px}.demo-library-controls input,.demo-library-controls select{display:block;width:100%;margin-top:7px;background:white;border:1px solid #bdcec2;border-radius:6px;padding:11px;font-size:12px;color:var(--demo-ink)}.demo-library-family{margin:0 0 26px}.demo-library-family h2{font-size:16px;font-weight:600;margin-bottom:13px}.demo-empty{font-size:12px;color:#607769}.demo-timeline{list-style:none;padding:0;margin:0}.demo-timeline li{display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;position:relative;margin:0;padding-bottom:17px}.demo-timeline li:before{content:'';position:absolute;left:15px;top:28px;bottom:0;border-left:1px solid #d1dfd2}.demo-sequence{z-index:1;border-radius:50%;width:30px;height:30px;display:grid;place-items:center;border:1px solid #bed2c2;background:#f5f8f1;font-size:10px;color:#56735e}.demo-timeline button{background:white;border:1px solid var(--demo-border);text-align:left;display:grid;gap:6px;color:var(--demo-ink);padding:15px;border-radius:7px;overflow-wrap:anywhere}.demo-timeline strong{font-size:13px}.demo-timeline button>span,.demo-timeline small{font-size:10px;color:#62756b}.demo-timeline .demo-correction{color:#6d602a}.demo-example-buttons{display:grid;grid-template-columns:1fr 1fr;gap:18px}.demo-example-buttons strong{font-size:16px}.demo-receipt{background:white;border:1px solid var(--demo-border);border-radius:9px;padding:24px;margin-top:24px;overflow-wrap:anywhere}.demo-receipt p{font-size:12px}.demo-statement{border-left:3px solid #82aa90;padding:14px 18px;background:#f1f6ed}.demo-withheld{border-left:3px solid #ae9858;padding:14px;background:#f9f5e8}.demo-receipt-columns{display:grid;grid-template-columns:1fr 1fr;gap:24px}.demo-coverage{margin-top:30px;border-top:1px solid var(--demo-border);padding:14px 0;font-size:11px}.demo-footer{font-size:10px;color:#6a7f70;padding-top:20px}.demo-error{padding:20px;background:#fff1e9;color:#804a32;border:1px solid #e7c3b2;border-radius:7px}.demo-loading{padding:45px;font-size:13px;text-align:center;color:#607967}
+ @media(min-width:1500px){.demo-inspection-layout{grid-template-columns:minmax(0,1fr) 330px}.demo-measurements{grid-template-columns:repeat(3,minmax(0,1fr))}.demo-workspace{padding:38px}}
+ @media(max-width:1100px){.demo-layout{grid-template-columns:180px minmax(0,1fr)}.demo-workspace{padding:25px 20px}.demo-inspection-layout{grid-template-columns:minmax(0,1fr)}.demo-inspector{position:static;max-height:none}.demo-family-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.demo-page-heading{align-items:start}.demo-page-heading h1{font-size:27px}.demo-guides{gap:8px}.demo-guides button{padding:12px}.demo-stats>div{padding:15px}}
+ @media(max-width:720px){.demo-topbar{height:auto;min-height:70px;padding:14px 16px;gap:10px;flex-wrap:wrap}.demo-environment{display:none}.demo-gate{font-size:9px}.demo-layout{display:block}.demo-sidebar{padding:16px;border-right:0;border-bottom:1px solid var(--demo-border)}.demo-sidebar>.demo-overline,.demo-patient,.demo-sidebar-note,.demo-legacy{display:none}.demo-sidebar nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.demo-sidebar nav button{padding:9px;font-size:11px}.demo-workspace{padding:24px 16px}.demo-page-heading{flex-direction:column;gap:12px}.demo-page-heading h1{font-size:29px}.demo-stats{grid-template-columns:1fr 1fr}.demo-stats>div:nth-child(2){border:0}.demo-stats>div:nth-child(-n+2){border-bottom:1px solid var(--demo-border)}.demo-guides{grid-template-columns:1fr}.demo-guides button{display:grid;grid-template-columns:42px 1fr}.demo-guides button>span:first-child{grid-row:span 2}.demo-measurements,.demo-family-grid,.demo-example-buttons,.demo-library-controls,.demo-receipt-columns{grid-template-columns:1fr}.demo-family-overview>.demo-section-title{align-items:start;flex-direction:column}.demo-receipt{padding:18px}}
+ 
+ .demo-card-time{display:block;margin-top:7px;font-size:9px;font-weight:400;color:#60786b;overflow-wrap:anywhere}.demo-card-time:first-letter{text-transform:uppercase}
++
++.demo-optional{font-size:12px;color:#496256;margin:14px 0}.demo-inspector h3{font-size:13px}.demo-inspector section>dl{font-size:11px}
+diff --git a/frontend/src/demo/evidencePresentation.ts b/frontend/src/demo/evidencePresentation.ts
+index 958e88d..6d999df 100644
+--- a/frontend/src/demo/evidencePresentation.ts
++++ b/frontend/src/demo/evidencePresentation.ts
+@@ -1,8 +1,8 @@
+ import type {CirculatoryItem} from '../api/circulatoryTypes';
+ export const record=(v:unknown):Record<string,unknown>=>v!==null&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,unknown>:{};
+ export const words=(v:unknown)=>typeof v==='string'?v.replaceAll('_',' '):'';
+-const concepts:Record<string,string>={co:'Cardiac output',ci:'Cardiac index',systemic_mean:'Mean arterial pressure',lv_ef:'LV ejection fraction',lvot_vti:'LVOT VTI',tapse:'TAPSE',cvp:'Central venous pressure',pawp:'Pulmonary artery wedge pressure',gedv:'Global end-diastolic volume',svv:'Stroke volume variation',qtc:'QTc',svo2:'Mixed venous oxygen saturation',capillary_refill:'Capillary refill',hpi:'Source HPI',rhythm:'Source rhythm',configuration:'Monitor configuration',plr:'Passive leg raise episode',position_change:'Position change',arterial_pressure:'Arterial pressure signal'};
+-export function title(item:CirculatoryItem){const f=item.fact;return concepts[String(f.concept??f.event_type??f.test??f.signal)]??(f.kind==='circulatory_lactate'?'Lactate':f.kind==='circulatory_vasoactive'?'Vasopressor event':words(f.concept??f.event_type??f.test??f.signal)||'Recorded evidence');}
++const concepts:Record<string,string>={co:'Cardiac output',ci:'Cardiac index',systemic_mean:'Mean arterial pressure',lv_ef:'LV ejection fraction',lvot_vti:'LVOT VTI',tapse:'TAPSE',cvp:'Central venous pressure',pawp:'Pulmonary artery wedge pressure',gedv:'Global end-diastolic volume',svv:'Stroke volume variation',qtc:'QTc',svo2:'Mixed venous oxygen saturation',capillary_refill:'Capillary refill',ph:'pH',paco2:'PaCO₂',pao2:'PaO₂',bicarbonate:'Bicarbonate',base_excess:'Base excess',sao2:'Arterial oxygen saturation',hemoglobin:'Haemoglobin',estimated_rvsp:'Estimated RVSP',estimated_pasp:'Estimated PASP',tr_measurement:'TR peak velocity',rv_dimension:'RV basal dimension',rv_function:'RV function',septal_configuration:'Septal configuration',valve_finding:'Valve finding',pericardial_effusion:'Pericardial effusion',structural_finding:'Structural finding',hpi:'Source HPI (optional)',rhythm:'Source rhythm',configuration:'Monitor configuration',plr:'Passive leg raise episode',position_change:'Position change',arterial_pressure:'Arterial pressure signal'};
++export function title(item:CirculatoryItem){const f=item.fact;if(f.id==='m7-PH')return 'Pulmonary hypertension report finding';return concepts[String(f.concept??f.event_type??f.test??f.signal)]??(f.kind==='circulatory_lactate'?'Lactate':f.kind==='circulatory_vasoactive'?'Vasopressor event':words(f.concept??f.event_type??f.test??f.signal)||'Recorded evidence');}
+ export function value(item:CirculatoryItem){
+   const f=item.fact,result=record(f.result),quantity=record(result.quantity),unit=record(quantity.unit);
+   if(typeof quantity.value==='string')return {text:quantity.value,unit:typeof unit.raw==='string'?unit.raw:''};
+@@ -16,10 +16,23 @@ export function sourceTime(item:CirculatoryItem){
+ }
+ export function method(item:CirculatoryItem){const a=record(item.fact.acquisition),device=record(a.device);return [words(a.method),device.technology,device.platform].filter(v=>typeof v==='string'&&v).join(' · ')||'Method not supplied';}
+ export const lenses={
+-  cardiac:{label:'Cardiac output + echo',description:'Compare source measurements from thermodilution, pulse contour and echo. Inspect their methods and quality before treating them as comparable.',kinds:['circulatory_cardiac','circulatory_echo','circulatory_pressure','circulatory_ecg','circulatory_oxygen']},
++  cardiac:{label:'Cardiac output + echo',description:'Compare cardiac output and LVOT VTI alongside RVSP/PASP estimates, TR velocity, RV findings, valves and pericardium. Pulmonary hypertension wording is source-reported, not a ClinRx diagnosis or PAH classification.',kinds:['circulatory_cardiac','circulatory_echo','circulatory_pressure','circulatory_ecg','circulatory_oxygen']},
++  abg:{label:'ABG + oxygen transport',description:'Inspect arterial pH, PaCO₂, PaO₂, bicarbonate, base excess, saturation and haemoglobin with sample-time respiratory settings. Lactate remains a separate recorded result; no acid–base interpretation is generated.',kinds:['circulatory_oxygen','circulatory_lactate']},
+   correction:{label:'Follow a correction',description:'A provenance-only change to calibration support withheld the second prepared example. The original receipt and selected support revision remain available.',kinds:['circulatory_monitoring','circulatory_pressure','circulatory_lactate','circulatory_vasoactive']},
+   gaps:{label:'Find the evidence gaps',description:'Find the PiCCO record with unknown quality, earlier contextual cardiac output, unplaced pressure and unavailable waveform samples. Missing evidence does not establish clinical absence.',kinds:[] as string[]}
+ };
+ export type Lens=keyof typeof lenses;
+ export function hasUncertainQuality(item:CirculatoryItem){return typeof record(record(item.fact.acquisition).quality).status==='string'&&quality(item)!=='acceptable';}
+ export function inLens(item:CirculatoryItem,lens:Lens){return lens==='gaps'?hasUncertainQuality(item)||item.inclusion!=='in_window'||item.fact.availability==='unavailable':lenses[lens].kinds.includes(item.fact.kind);}
++
++/** Display only the sampled source context; never substitute current settings. */
++export function bloodGasSummary(item:CirculatoryItem):[string,string][]{
++  const gas=record(item.fact.blood_gas_context),collected=record(gas.collected);
++  const quantity=(v:unknown)=>{const q=record(v),u=record(q.unit);return typeof q.value==='string'?[q.value,typeof u.raw==='string'?u.raw:''].filter(Boolean).join(' '):'Not recorded';};
++  const finding=(v:unknown)=>typeof record(v).raw_display==='string'?String(record(v).raw_display):'Not recorded';
++  return [['Sample type',words(item.fact.sample_type)||'Not recorded'],
++    ['Specimen',String(record(item.fact.specimen).raw_display??'Not recorded')],
++    ['Collected',typeof collected.source_timestamp==='string'?collected.source_timestamp:typeof record(collected.recorded).value==='string'?String(record(collected.recorded).value):'Not recorded'],
++    ['Sample-time FiO₂',quantity(gas.fio2)],['Oxygen device',finding(gas.oxygen_device)],
++    ['Ventilator mode',finding(gas.ventilator_mode)],['Sample-time PEEP',quantity(gas.peep)]];
++}
+diff --git a/frontend/src/patient/CirculatoryEvidence.tsx b/frontend/src/patient/CirculatoryEvidence.tsx
+index 39ac303..c42a5ae 100644
+--- a/frontend/src/patient/CirculatoryEvidence.tsx
++++ b/frontend/src/patient/CirculatoryEvidence.tsx
+@@ -4,7 +4,7 @@ export const families:Record<string,string>={
+   circulatory_pressure:'Pressure and PAC/RHC',circulatory_cardiac:'Cardiac output and performance',
+   circulatory_volume:'Volume and lung water',circulatory_dynamic:'Dynamic measurements',
+   circulatory_device_prediction:'Recorded device predictions',circulatory_perfusion:'Tissue perfusion',
+-  circulatory_oxygen:'Oxygen transport',circulatory_lactate:'Lactate',circulatory_echo:'Echo and POCUS',
++  circulatory_oxygen:'Oxygen transport and blood gases',circulatory_lactate:'Lactate',circulatory_echo:'Echo and POCUS',
+   circulatory_ecg:'ECG and rhythm',circulatory_vasoactive:'Vasoactive events',circulatory_monitoring:'Edwards / PiCCO and monitoring context',
+   circulatory_assessment:'Dynamic assessment episodes',circulatory_event:'Recorded circulatory events',circulatory_signal:'Signal manifests'};
+ export function reference(item:CirculatoryItem):ExactRef{return {kind:item.fact.kind,id:item.fact.id,version:item.fact.revision};}
+diff --git a/frontend/tests/comprehensiveDemo.test.tsx b/frontend/tests/comprehensiveDemo.test.tsx
+index 5596de1..5f009d3 100644
+--- a/frontend/tests/comprehensiveDemo.test.tsx
++++ b/frontend/tests/comprehensiveDemo.test.tsx
+@@ -1,13 +1,14 @@
+ import {afterEach,describe,it,expect,vi} from 'vitest';
+ import {render,screen,fireEvent,waitFor,cleanup} from '@testing-library/react';
+ import fixtures from './fixtures/circulatory.json';
++import expanded from './fixtures/comprehensive.json';
+ import {ComprehensiveDemo} from '../src/demo/ComprehensiveDemo';
+ import {decodeCirculatoryState,decodeCirculatoryExecution} from '../src/api/circulatoryDecoders';
+ import type {CirculatoryClient} from '../src/api/circulatoryClient';
+-import {value,sourceTime} from '../src/demo/evidencePresentation';
++import {value,sourceTime,bloodGasSummary} from '../src/demo/evidencePresentation';
+ const config={start:'2026-10-08T08:00:00+00:00',end:'2026-10-08T10:00:00+00:00',releasedExample:'released',withheldExample:'withheld'};
+-function setup(hosted=false,executionEnabled=false){
+-  const state=decodeCirculatoryState({...fixtures.state,execution_enabled:executionEnabled});
++function setup(hosted=false,executionEnabled=false,raw:object=fixtures.state){
++  const state=decodeCirculatoryState({...raw,execution_enabled:executionEnabled});
+   const client={circulatoryState:vi.fn().mockResolvedValue({data:state}),circulatoryHistory:vi.fn().mockResolvedValue({data:fixtures.history}),circulatoryLookup:vi.fn().mockResolvedValue({data:decodeCirculatoryExecution(fixtures.released)}),circulatoryPrepare:vi.fn(),circulatoryExecute:vi.fn()};
+   render(<ComprehensiveDemo client={client as unknown as CirculatoryClient} config={{...config,hosted}}/>);return {client,state};
+ }
+@@ -53,3 +54,46 @@ it('hosted presentation identifies the preview and hides legacy execution tools'
+ it('blocks evidence browsing and replaces the disabled badge if the server reports execution enabled',async()=>{const {client}=setup(true,true);await screen.findByRole('alert');expect(screen.getByText('Browsing is blocked: the server did not confirm that new execution is disabled.')).toBeInTheDocument();expect(screen.getByText('Execution configuration unverified — browsing blocked')).toBeInTheDocument();expect(screen.queryByText('New execution disabled in this demo')).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Inspect Cardiac output m7-CO'})).not.toBeInTheDocument();expect(client.circulatoryPrepare).not.toHaveBeenCalled();});
+ 
+ it('moves keyboard focus to selected source details and returns it when closed',async()=>{setup(true);await ready();const trigger=screen.getByRole('button',{name:'Inspect Cardiac output m7-CO'});trigger.focus();fireEvent.click(trigger);expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveFocus();fireEvent.click(screen.getByRole('button',{name:'Close source'}));expect(trigger).toHaveFocus();});
++
++
++it('shows broader source echo evidence and estimate limitations without inferring PH or PAH',async()=>{
++  const {client}=setup(false,false,expanded);await ready();
++  for(const name of ['Inspect LVOT VTI m7-VTI','Inspect Estimated RVSP m7-RVSP','Inspect TR peak velocity m7-TRV','Inspect RV function m7-RVFUNCTION','Inspect Pulmonary hypertension report finding m7-PH'])expect(screen.getByRole('button',{name})).toBeInTheDocument();
++  fireEvent.click(screen.getByRole('button',{name:'Inspect Estimated RVSP m7-RVSP'}));
++  expect(screen.getByRole('region',{name:'Echo study context'})).toHaveTextContent('Echo estimates remain separate from invasive pressure measurements. No PH diagnosis or PAH subtype is inferred.');
++  expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveTextContent('45.0 mmHg');
++  expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
++});
++
++it('browses ABG independently of lactate, retains exact quantities and sample context',async()=>{
++  setup(false,false,expanded);await ready();
++  fireEvent.click(screen.getByRole('button',{name:/ABG \+ oxygen transport/}));
++  for(const name of ['Inspect pH m7-ABG-PH','Inspect PaCO₂ m7-ABG-PACO2','Inspect PaO₂ m7-ABG-PAO2','Inspect Bicarbonate m7-ABG-HCO3','Inspect Base excess m7-ABG-BE','Inspect Haemoglobin m7-ABG-HB','Inspect Lactate m7-L'])expect(screen.getByRole('button',{name})).toBeInTheDocument();
++  expect(screen.getByRole('button',{name:'Inspect pH m7-ABG-PH'})).toHaveTextContent('7.31 (unit: 1)');
++  expect(screen.getByRole('button',{name:'Inspect Base excess m7-ABG-BE'})).toHaveTextContent('-2.0');
++  fireEvent.click(screen.getByRole('button',{name:'Inspect PaCO₂ m7-ABG-PACO2'}));
++  expect(screen.getByRole('region',{name:'Blood gas sample context'})).toHaveTextContent('arterial');
++  expect(screen.getByRole('region',{name:'Blood gas sample context'})).toHaveTextContent('synthetic-arterial-sample-1');
++  expect(screen.getByRole('region',{name:'Blood gas sample context'})).toHaveTextContent('40 %');
++  expect(screen.getByRole('region',{name:'Blood gas sample context'})).toHaveTextContent('5 cmH2O');
++  const summary=screen.getByText('Sample-time oxygen and ventilation settings');fireEvent.click(summary);fireEvent(summary.closest('details')!,new Event('toggle'));
++  await screen.findAllByText('Volume assist-control');expect(screen.getByText('40')).toBeInTheDocument();expect(screen.getByText('cmH2O')).toBeInTheDocument();
++});
++
++it('keeps missing HPI optional and exposes all supported families without inventing a prediction',async()=>{
++  const {client}=setup(true,false,expanded);await ready();
++  expect(screen.getByText('HPI is optional.',{exact:false})).toHaveTextContent('Not recorded in this case');
++  expect(screen.getByRole('region',{name:'Recorded-state coverage'})).toHaveTextContent('14 / 15');
++  fireEvent.click(screen.getByRole('button',{name:'Evidence library'}));
++  fireEvent.change(screen.getByLabelText('Evidence family'),{target:{value:'circulatory_device_prediction'}});
++  expect(screen.getByText('0 recorded items in this view')).toBeInTheDocument();expect(screen.queryByRole('button',{name:/Inspect Source HPI/})).not.toBeInTheDocument();
++  expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
++});
++
++
++it('does not substitute arterial ABG settings into a mixed-venous record lacking sample context',()=>{
++  const state=decodeCirculatoryState(expanded),item=state.assembly.snapshot.items.find(i=>i.fact.id==='m7-SVO2')!;
++  const summary=Object.fromEntries(bloodGasSummary(item));
++  expect(summary['Sample type']).toBe('mixed venous');
++  for(const field of ['Collected','Sample-time FiO₂','Ventilator mode','Sample-time PEEP'])expect(summary[field]).toBe('Not recorded');
++});
+diff --git a/tests/test_comprehensive_demo.py b/tests/test_comprehensive_demo.py
+index faacf2c..c0108c6 100644
+--- a/tests/test_comprehensive_demo.py
++++ b/tests/test_comprehensive_demo.py
+@@ -21,9 +21,11 @@ def test_comprehensive_fixture_browses_all_families_and_retained_examples_while_
+         with TestClient(create_app(config,engine=engine)) as client:
+             state=client.get(P+'/patient-state-v3',params={k:manifest[k] for k in ('review_start','review_end')}).json()
+             assert state['execution_enabled'] is False
+-            items=state['assembly']['snapshot']['items'];assert len(items)==26
+-            assert {i['fact']['kind'] for i in items}==set(M7_FACTS)
++            items=state['assembly']['snapshot']['items'];assert len(items)==41
++            assert {i['fact']['kind'] for i in items}==set(M7_FACTS)-{'circulatory_device_prediction'}
+             by_id={i['fact']['id']:i for i in items}
++            assert 'm7-HPI' not in by_id
++            assert manifest['recorded_families']==14 and manifest['optional_hpi_included'] is False
+             assert by_id['m7-CO']['fact']['result']['quantity']['value']=='4.50'
+             assert by_id['m7-CO']['fact']['acquisition']['method']=='bolus_thermodilution'
+             assert all(by_id[id]['fact']['acquisition']['method']=='echo' for id in ('m7-ECHO','m7-EF','m7-VTI'))
+@@ -57,3 +59,50 @@ def test_comprehensive_bootstrap_refuses_to_replace_existing_data(tmp_path):
+         with pytest.raises(ValueError,match='fresh disposable'):bootstrap(engine)
+         with transaction(engine) as repo:assert repo.capture_cutoff().fact_watermark==before
+     finally:engine.dispose()
++
++
++def test_expanded_abg_echo_records_survive_canonical_roundtrip_and_old_oxygen_is_unchanged():
++    from app.demo.comprehensive import demo_facts, replace
++    from app.demo.circulatory import facts
++    from app.models.clinical import hemodynamics as h
++    from app.persistence.canonical import canonical_payload
++    from pydantic import ValidationError
++    by_id={f.id:f for f in demo_facts()}
++    expected={'PH':('ph','7.31'),'PACO2':('paco2','48.0'),'PAO2':('pao2','78.0'),
++        'HCO3':('bicarbonate','23.0'),'BE':('base_excess','-2.0'),
++        'SAO2':('sao2','95.0'),'HB':('hemoglobin','10.2')}
++    for suffix,(analyte,value) in expected.items():
++        fact=by_id['m7-ABG-'+suffix]
++        decoded=h.OxygenTransport.model_validate_json(fact.model_dump_json())
++        assert canonical_payload(decoded)==canonical_payload(fact)
++        assert decoded.concept==analyte and str(decoded.result.quantity.value)==value
++        assert decoded.sample_type=='arterial'
++        assert decoded.blood_gas_context.collected==decoded.occurred
++        assert str(decoded.blood_gas_context.fio2.value)=='40'
++        assert str(decoded.blood_gas_context.peep.value)=='5'
++        assert decoded.specimen.code=='synthetic-arterial-sample-1'
++    old=next(f for f in facts() if f.id=='m7-SVO2')
++    assert 'blood_gas_context' not in old.model_dump(mode='json')
++    assert canonical_payload(h.OxygenTransport.model_validate_json(old.model_dump_json()))==canonical_payload(old)
++    with pytest.raises(ValidationError):replace(by_id['m7-ABG-PACO2'],sample_type='mixed_venous')
++    with pytest.raises(ValidationError):replace(by_id['m7-ABG-PH'],sample_type='noninvasive')
++    with pytest.raises(ValidationError):
++        h.BloodGasContext.model_validate({**by_id['m7-ABG-PH'].blood_gas_context.model_dump(),
++            'fio2':{'value':0.4,'unit':{'raw':'1','status':'unresolved','limitation':'test'}}})
++    for id in ('m7-RVSP','m7-PASP','m7-TRV','m7-RVD','m7-RVFUNCTION','m7-SEPTUM','m7-VALVE','m7-EFFUSION','m7-PH','m7-VTI'):
++        fact=by_id[id]
++        assert canonical_payload(h.EchoObservation.model_validate_json(fact.model_dump_json()))==canonical_payload(fact)
++    assert by_id['m7-RVSP'].production=='source_calculated'
++    assert 'no invasive confirmation or PAH subtype' in by_id['m7-PH'].result.finding.raw_display
++    with_hpi=demo_facts(include_hpi=True)
++    assert len(with_hpi)==42 and len({f.kind for f in with_hpi})==15
++    assert next(f for f in with_hpi if f.id=='m7-HPI').acquisition.device.technology=='AcumenIQ'
++
++
++def test_bootstrap_with_optional_hpi_keeps_gate_closed_and_receipts_available(tmp_path):
++    engine=create_database(tmp_path/'hpi.sqlite3')
++    try:
++        result=bootstrap(engine,include_hpi=True)
++        assert result['recorded_families']==15 and result['optional_hpi_included'] is True
++        assert result['execution_enabled'] is False
++    finally:engine.dispose()
+diff --git a/tests/test_synthetic_hosting.py b/tests/test_synthetic_hosting.py
+index 4b88be3..27786d1 100644
+--- a/tests/test_synthetic_hosting.py
++++ b/tests/test_synthetic_hosting.py
+@@ -38,7 +38,7 @@ def test_hosted_browsing_real_history_and_retained_receipts_do_not_write(hosted)
+         state=client.get(PREFIX+'/patient-state-v3',params={k:manifest[k] for k in ('review_start','review_end')})
+         assert state.status_code==200 and state.json()['execution_enabled'] is False
+         data=state.json();items=data['assembly']['snapshot']['items']
+-        assert len(items)==26 and len({i['fact']['kind'] for i in items})==15
++        assert len(items)==41 and len({i['fact']['kind'] for i in items})==14
+         for id,outcome in ((RELEASED_ID,'released'),(WITHHELD_ID,'withheld')):
+             result=client.get(PREFIX+'/circulatory-reviews/'+str(id))
+             assert result.status_code==200 and result.json()['record']['decision']['outcome']==outcome
