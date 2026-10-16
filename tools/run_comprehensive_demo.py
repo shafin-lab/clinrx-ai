@@ -9,6 +9,7 @@ def main():
     parser.add_argument('--directory',type=Path)
     parser.add_argument('--api-port',type=int,default=8766)
     parser.add_argument('--web-port',type=int,default=5179)
+    parser.add_argument('--flowsheet',action='store_true',help='use an opt-in fictional ICU sequence in a fresh database')
     args=parser.parse_args()
     if args.api_port==args.web_port or any(p<1024 or p>65535 for p in (args.api_port,args.web_port)):
         parser.error('choose two distinct unprivileged local ports')
@@ -21,7 +22,11 @@ def main():
     directory.mkdir(parents=True,exist_ok=True);database=directory/'synthetic.sqlite3'
     if database.exists():parser.error('database already exists; choose a fresh directory (no files are overwritten)')
     engine=create_database(database)
-    try:manifest=bootstrap(engine)
+    try:
+        if args.flowsheet:
+            from app.demo.icu_flowsheet import bootstrap as flowsheet_bootstrap
+            manifest=flowsheet_bootstrap(engine)
+        else:manifest=bootstrap(engine)
     finally:engine.dispose()
     (directory/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     repo=Path(__file__).resolve().parents[1];origin=f'http://127.0.0.1:{args.web_port}';base=f'http://127.0.0.1:{args.api_port}'

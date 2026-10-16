@@ -643,6 +643,14 @@ class DynamicAssessment(CirculatoryFact):
         return self
 
 
+class RecordedCirculatoryInterval(Contract):
+    """Source-asserted boundaries, not a derived duration or verified ordering."""
+    start: ClinicalInstant
+    end: ClinicalInstant
+    provenance: BoundedProvenance
+    limitations: Notes = ()
+
+
 class CirculatoryEvent(CirculatoryFact):
     kind: Literal['circulatory_event'] = 'circulatory_event'
     event_type: Literal['fluid_bolus', 'fluid_challenge', 'transfusion', 'bleeding',
@@ -652,6 +660,7 @@ class CirculatoryEvent(CirculatoryFact):
     description: RecordedConcept
     external_evidence: Annotated[tuple[SourceCode, ...], Field(max_length=32)] = ()
     recorded_amount: ExactQuantity | None = None
+    recorded_interval: RecordedCirculatoryInterval | None = Field(default=None, exclude_if=lambda v: v is None)
 
 
 class SignalManifest(CirculatoryFact):

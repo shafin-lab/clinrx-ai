@@ -1,3 +1,4 @@
+import {PatientCaseInterpretation} from './PatientCaseInterpretation';
 import {EvidenceExplanation} from './PatientEvidenceExplanation';
 import type {CirculatoryItem} from '../api/circulatoryTypes';
 import {bloodGasSummary,method,quality,record,sourceTime,title,value,words} from './evidencePresentation';
@@ -16,7 +17,8 @@ function context(item:CirculatoryItem){
 }
 export function PatientSummary({items,patientId,encounterId,start,end,onInspect}:Props){
   return <section aria-label="Combined patient evidence summary" className="demo-summary">
-    <div className="demo-summary-intro"><h2>One patient, evidence together</h2><p>Read blood gases and sample-time settings beside recorded flow, pressures and echo findings. Open any source to inspect its exact revision and correction history.</p><p>Patient: {patientId} · Encounter: {encounterId}</p><p><strong>Recorded review window:</strong> {start} → {end}</p><p>These records are grouped for browsing. A shared time or study label does not establish simultaneity or clinical agreement. No combined diagnosis, score, treatment recommendation or new inference is generated.</p></div>
+    <div className="demo-summary-intro"><h2>One patient, evidence together</h2><p>Read blood gases and sample-time settings beside recorded flow, pressures and echo findings. Open any source to inspect its exact revision and correction history.</p><p>Patient: {patientId} · Encounter: {encounterId}</p><p><strong>Recorded review window:</strong> {start} → {end}</p><p>These records are grouped for browsing. A shared time or study label does not establish simultaneity or clinical agreement. No confirmed combined diagnosis, score or treatment recommendation is generated. Patient-specific possibilities are presented separately and remain unconfirmed.</p></div>
+    <PatientCaseInterpretation items={items} patientId={patientId} encounterId={encounterId} start={start} end={end} onInspect={onInspect}/>
     <EvidenceExplanation items={items} onInspect={onInspect}/>
     <div className="demo-summary-panels">{sections.map(section=>{
       const records=items.filter(item=>section.kinds.includes(item.fact.kind));
@@ -34,6 +36,6 @@ export function PatientSummary({items,patientId,encounterId,start,end,onInspect}
         })}</ul>}
       </section>;
     })}</div>
-    <aside className="demo-summary-gaps" aria-label="Summary limitations"><h3>Keep the gaps in view</h3><p>HPI is optional: {items.some(item=>item.fact.kind==='circulatory_device_prediction')?'a source record is available.':'not recorded in this case.'} Missing sample settings are not borrowed from another record. Earlier contextual and unplaced records retain their labels; source quality is not upgraded.</p><p>Echo PH wording is a source report impression; no PH diagnosis or PAH subtype is inferred. This summary does not calculate cardiac output from VTI or interpret acid–base status. Explore the Evidence library for the other evidence families.</p></aside>
+    <aside className="demo-summary-gaps" aria-label="Summary limitations"><h3>Keep the gaps in view</h3><p>HPI is optional: {items.some(item=>item.fact.kind==='circulatory_device_prediction')?'a source record is available.':'not recorded in this case.'} Missing sample settings are not borrowed from another record. Earlier contextual and unplaced records retain their labels; source quality is not upgraded.</p><p>Echo PH wording is a source report impression; no PH diagnosis or PAH subtype is inferred. No cardiac output is calculated from VTI. The separate authored case interpretation discusses a possible acid–base component without confirming a diagnosis. Explore the Evidence library for the other evidence families.</p></aside>
   </section>;
 }

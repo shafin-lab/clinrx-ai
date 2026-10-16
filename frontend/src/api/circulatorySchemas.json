@@ -1250,6 +1250,17 @@
             }
           ],
           "default": null
+        },
+        "recorded_interval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedCirculatoryInterval"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
@@ -5076,6 +5087,38 @@
         "finding"
       ],
       "title": "QualitativeResult",
+      "type": "object"
+    },
+    "RecordedCirculatoryInterval": {
+      "additionalProperties": false,
+      "description": "Source-asserted boundaries, not a derived duration or verified ordering.",
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/ClinicalInstant"
+        },
+        "end": {
+          "$ref": "#/$defs/ClinicalInstant"
+        },
+        "provenance": {
+          "$ref": "#/$defs/BoundedProvenance"
+        },
+        "limitations": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Limitations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "provenance"
+      ],
+      "title": "RecordedCirculatoryInterval",
       "type": "object"
     },
     "RecordedConcept": {

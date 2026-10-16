@@ -1,4 +1,5 @@
 """Export the expanded synthetic read-only state via the actual API, without secrets."""
+import argparse
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -10,12 +11,15 @@ from app.main import create_app
 from app.persistence.database import create_database
 
 
-def fixture():
+def fixture(*,flowsheet=False):
     with TemporaryDirectory() as directory:
         path=Path(directory)/'synthetic.sqlite3'
         engine=create_database(path)
         try:
-            manifest=bootstrap(engine)
+            if flowsheet:
+                from app.demo.icu_flowsheet import bootstrap as flowsheet_bootstrap
+                manifest=flowsheet_bootstrap(engine)
+            else:manifest=bootstrap(engine)
             config=APIConfig(database_path=path,environment='test',envelope_signing_key='b7'*32,
                 clock_mode='historical_simulation',simulation_at=SIMULATION_AT)
             with TestClient(create_app(config,engine=engine)) as client:
@@ -28,5 +32,7 @@ def fixture():
         finally:engine.dispose()
 
 if __name__=='__main__':
-    path=Path(__file__).resolve().parents[1]/'frontend/tests/fixtures/comprehensive.json'
-    path.write_text(json.dumps(fixture(),indent=2)+'\n')
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--flowsheet',action='store_true');args=parser.parse_args()
+    name='icuFlowsheet.json' if args.flowsheet else 'comprehensive.json'
+    path=Path(__file__).resolve().parents[1]/'frontend/tests/fixtures'/name
+    path.write_text(json.dumps(fixture(flowsheet=args.flowsheet),indent=2)+'\n')

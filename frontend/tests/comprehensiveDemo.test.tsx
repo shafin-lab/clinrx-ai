@@ -2,6 +2,7 @@ import {afterEach,describe,it,expect,vi} from 'vitest';
 import {render,screen,fireEvent,waitFor,cleanup,within} from '@testing-library/react';
 import fixtures from './fixtures/circulatory.json';
 import expanded from './fixtures/comprehensive.json';
+import flowsheet from './fixtures/icuFlowsheet.json';
 import {ComprehensiveDemo} from '../src/demo/ComprehensiveDemo';
 import {decodeCirculatoryState,decodeCirculatoryExecution,decodeCirculatoryHistory} from '../src/api/circulatoryDecoders';
 import type {CirculatoryClient} from '../src/api/circulatoryClient';
@@ -27,7 +28,7 @@ describe('comprehensive read-only synthetic demo',()=>{
     fireEvent.change(screen.getByLabelText('Evidence family'),{target:{value:'circulatory_echo'}});expect(screen.getByText('0 recorded items in this view')).toBeInTheDocument();expect(screen.getByText(/No matching records/)).toBeInTheDocument();
   });
   it('guided gaps retain unknown-quality and unplaced evidence',async()=>{
-    setup();await ready();fireEvent.click(screen.getByRole('button',{name:/Find the evidence gaps/}));expect(screen.getByRole('button',{name:'Inspect Cardiac output m7-PICCO-CO'})).toBeInTheDocument();expect(screen.getByRole('button',{name:'Inspect Central venous pressure m7-UNPLACED'})).toBeInTheDocument();expect(screen.queryByRole('button',{name:'Inspect Vasopressor event m7-V'})).not.toBeInTheDocument();
+    setup();await ready();fireEvent.click(screen.getByRole('button',{name:/Find the evidence gaps/}));expect(screen.getByRole('button',{name:'Inspect Cardiac output m7-PICCO-CO'})).toBeInTheDocument();expect(screen.getByRole('button',{name:'Inspect Central venous pressure m7-UNPLACED'})).toBeInTheDocument();expect(screen.queryByRole('button',{name:'Inspect Vasoactive event m7-V'})).not.toBeInTheDocument();
   });
   it('inspects real bounded history using the exact signed context and selected reference',async()=>{
     const {client,state}=setup();await ready();fireEvent.click(screen.getByRole('button',{name:'Inspect Mean arterial pressure m7-P'}));fireEvent.click(screen.getByRole('button',{name:'Inspect revision history'}));await screen.findByText('2 retained revisions at this cutoff');
@@ -198,4 +199,44 @@ it('explanation source links preserve exact value spelling and open the original
 it('explanation is withheld with the rest of summary browsing when execution is enabled',async()=>{
   setup(true,true,expanded);await screen.findByRole('alert');fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
   expect(screen.queryByRole('region',{name:'How the evidence fits together'})).not.toBeInTheDocument();
+  expect(screen.queryByRole('region',{name:'Patient-specific possibilities'})).not.toBeInTheDocument();
+});
+
+
+it('shows case-specific possibilities through read-only browsing and preserves exact source inspection',async()=>{
+  const {client}=setup(false,false,expanded);await ready();fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
+  expect(screen.getByRole('region',{name:'Possible combined interpretation'})).toHaveTextContent('possible RV pressure loading');
+  fireEvent.click(screen.getByRole('button',{name:'Case source Estimated RVSP m7-RVSP'}));
+  expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveTextContent('m7-RVSP / 1');
+  expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
+});
+it('withholds case-specific possibilities on changed records while keeping recorded browsing available',async()=>{
+  const raw=structuredClone(expanded);raw.assembly.snapshot.items.find(i=>i.fact.id==='m7-ABG-PH')!.fact.revision='2';
+  setup(false,false,raw);await ready();fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
+  expect(screen.getByText(/Case interpretation unavailable/)).toBeInTheDocument();
+  expect(screen.queryByRole('region',{name:'Possible combined interpretation'})).not.toBeInTheDocument();
+  expect(screen.getByRole('button',{name:'Open summary source pH m7-ABG-PH'})).toBeInTheDocument();
+});
+
+it('opens the persisted flowsheet with exact infusion inspection without preparing or executing',async()=>{
+ const {client,state}=setup(false,false,flowsheet);await ready();fireEvent.click(screen.getByRole('button',{name:'ICU flowsheet'}));
+ expect(screen.getByRole('region',{name:'Read-only ICU flowsheet'})).toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'Chart source fs-D-CHANGE revision 1'}));
+ expect(screen.getByRole('region',{name:'Recorded infusion event details'})).toHaveTextContent('3.0 mcg/kg/min');
+ expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveTextContent('Vasoactive event');
+ expect(screen.getByRole('complementary',{name:'Selected source evidence'})).not.toHaveTextContent('Vasopressor event');
+ const reference={kind:'circulatory_vasoactive',id:'fs-D-CHANGE',version:'1'},item=state.assembly.snapshot.items.find(i=>i.fact.id==='fs-D-CHANGE')!;
+ client.circulatoryHistory.mockResolvedValueOnce({data:decodeCirculatoryHistory({...fixtures.history,context:{...fixtures.history.context,assembly_request:flowsheet.assembly_request,assembly_digest:flowsheet.assembly_digest},reference,revisions:[{fact:item.fact,ingestion:item.ingestion}]},{reference,patient_id:'synthetic-p1',encounter_id:'synthetic-e1'})});
+ fireEvent.click(screen.getByRole('button',{name:'Inspect revision history'}));await screen.findByText('1 retained revision at this cutoff');
+ expect(screen.getByRole('region',{name:'Bounded source revision history'})).toHaveTextContent('fs-D-CHANGE / 1');
+ expect(client.circulatoryHistory).toHaveBeenCalledWith(state.state_context,reference);
+ expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
+});
+it('blocks flowsheet browsing when execution is enabled',async()=>{
+ setup(true,true,flowsheet);await screen.findByRole('alert');fireEvent.click(screen.getByRole('button',{name:'ICU flowsheet'}));
+ expect(screen.queryByRole('region',{name:'Read-only ICU flowsheet'})).not.toBeInTheDocument();
+});
+it('withholds the old authored case interpretation for the expanded flowsheet source set',async()=>{
+ setup(false,false,flowsheet);await ready();fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
+ expect(screen.queryByRole('region',{name:'Possible combined interpretation'})).not.toBeInTheDocument();expect(screen.getByText(/Case interpretation unavailable/)).toBeInTheDocument();
 });
