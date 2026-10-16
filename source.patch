@@ -1,0 +1,144 @@
+diff --git a/frontend/src/demo/ICUFlowsheet.tsx b/frontend/src/demo/ICUFlowsheet.tsx
+index a75cb49..89e1f54 100644
+--- a/frontend/src/demo/ICUFlowsheet.tsx
++++ b/frontend/src/demo/ICUFlowsheet.tsx
+@@ -4,6 +4,7 @@ import {chartEntry,chartSections,intervalText,type ChartSection} from './chartEn
+ import {deliverySupport,quantityText} from './HemodynamicContext';
+ import type {CirculatoryItem} from '../api/circulatoryTypes';
+ import {buildFlowsheet,infusionText,infusionSeries,sourceTime} from './flowsheetPresentation';
++import {overviewEvidenceContext} from './overviewEvidenceContext';
+ import {record,quality,title,value,words} from './evidencePresentation';
+ type Props={items:CirculatoryItem[];onInspect:(item:CirculatoryItem,trigger:HTMLButtonElement)=>void};
+ function ChartPoint({item,onInspect,prefix='Chart source',compact=false}:{item:CirculatoryItem;onInspect:Props['onInspect'];prefix?:string;compact?:boolean}){
+@@ -17,6 +18,7 @@ function ChartPoint({item,onInspect,prefix='Chart source',compact=false}:{item:C
+     {drug&&(!compact||!interruption)&&<span>{interruption?infusion.reason:infusion.rate}</span>}
+     {compact?<>
+       {!drug&&sourceQuality!=='acceptable'&&<small className="demo-chart-quality">Quality: {sourceQuality}</small>}
++      {overviewEvidenceContext(item).map((note,index)=><small key={index}>{note}</small>)}
+       {status!=='recorded'&&<small className="demo-chart-status">{status}</small>}
+       {interval&&<small>{shortSourceInterval(item)}</small>}
+     </>:<>
+@@ -36,14 +38,14 @@ export function ICUFlowsheet({items,onInspect}:Props){
+   const window=overviewTimeWindow(chart.times,page,!compact||showAllTimes);
+   const times=window.times;
+   const visibleRows=compact&&!showAllTimes?rows.filter(row=>times.some(at=>row.cells.has(at))):rows;
+-  const groups=compact?overviewGroups.map(label=>({label,rows:visibleRows.filter(row=>overviewGroup(row)===label)})):[{label:'Recorded sources',rows}];
++  const groups=compact?overviewGroups.filter(label=>rows.some(row=>overviewGroup(row)===label)).map(label=>({label,rows:visibleRows.filter(row=>overviewGroup(row)===label)})):[{label:'Recorded sources',rows}];
+   const notes=items.filter(item=>chartEntry(item)?.section==='goals');
+   const displayed=rows.flatMap(row=>times.flatMap(at=>row.cells.get(at)??[])).length;
+   return <section className="demo-flowsheet" aria-label="Read-only ICU flowsheet">
+     <h2>Hemodynamics and infusions over time</h2>
+     <p>Fictional recorded evidence. Open any value for its exact source and history. No prescribing, pump control or execution.</p>
+     <div className="demo-chart-controls"><label>Flowsheet section<select value={section} onChange={event=>setSection(event.target.value as ChartSection|'all'|'overview')}><option value="overview">Combined overview</option><option value="all">All hemodynamic sections</option>{Object.entries(chartSections).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
+-    {compact&&<p className="demo-chart-overview-scope">Together: BP/MAP, cardiac output/index, rhythm/heart rate, infusion events, interval urine output, source-reported interval/cumulative chart balance, lactate and capillary refill. Scroll down within the chart to compare all six groups; the time headings stay visible. Rows without records in these selected times are omitted; they remain available through time navigation. Other measurements, pump context and perfusion observations remain in the detailed sections. CO methods and devices stay on separate rows; no preferred output or rhythm diagnosis is inferred.</p>}
++    {compact&&<p className="demo-chart-overview-scope">Together: BP/MAP, cardiac output/index, rhythm/heart rate, ABG/blood gases, echo findings, infusion events, interval urine output, source-reported interval/cumulative chart balance, lactate and capillary refill. Scroll down within the chart to compare all available groups; the time headings stay visible. Rows without records in these selected times are omitted; they remain available through time navigation. Other measurements, pump context and perfusion observations remain in the detailed sections. CO methods and devices stay on separate rows; no preferred output or rhythm diagnosis is inferred. Blood-gas sample types and sample-specific FiO₂ remain explicit. Echo estimates and report findings are source assertions, not diagnoses or current measurements; use earlier/all-times views for older studies.</p>}
+     {compact&&chart.times.length>0&&<div className="demo-chart-time-controls" aria-label="Recorded time navigation">
+       <button disabled={showAllTimes||window.page===window.lastPage} onClick={()=>setPage(window.page+1)}>Earlier times</button>
+       <span role="status">{showAllTimes?'All recorded times':`Recorded times ${window.start+1}–${window.end} of ${chart.times.length}`} · UTC</span>
+@@ -54,8 +56,9 @@ export function ICUFlowsheet({items,onInspect}:Props){
+     <a className="demo-chart-jump" href="#demo-icu-time-chart">Focus chart ↓</a>
+     <p className="demo-chart-count">{displayed} source records shown · {chart.unplaced.length} off-axis · {compact?'Use earlier/later times and detailed sections for remaining records.':'Other evidence remains in the Evidence library.'}</p>
+     {!!notes.length&&(section==='all'||section==='goals')&&<details className="demo-chart-notes"><summary>Recorded goals, review and handover ({notes.length})</summary><p>These are source-recorded clinician notes and targets, not system recommendations, active prescriptions or automatic escalation rules.</p>{notes.map(item=><ChartPoint key={item.fact.id+item.fact.revision} prefix="Note source" item={item} onInspect={onInspect}/>)}</details>}
+-    {times.length>0&&rows.length>0?<div id="demo-icu-time-chart" className={'demo-chart-scroll'+(compact?' demo-chart-scroll-compact':'')} role="region" aria-label="Scrollable ICU time chart" tabIndex={0}><table className={'demo-chart'+(compact?' demo-chart-compact':'')}><caption>Recorded source times in UTC · — means no record, not zero or continued delivery · source intervals stay separate from point measurements</caption><thead><tr><th scope="col">Measurement / infusion</th>{times.map(at=><th scope="col" key={at}><time dateTime={at}>{at.slice(0,10)}<br/>{at.slice(11,19)}</time></th>)}</tr></thead>{groups.filter(group=>group.rows.length>0).map(group=><tbody key={group.label} aria-label={group.label}>
++    {times.length>0&&rows.length>0?<div id="demo-icu-time-chart" className={'demo-chart-scroll'+(compact?' demo-chart-scroll-compact':'')} role="region" aria-label="Scrollable ICU time chart" tabIndex={0}><table className={'demo-chart'+(compact?' demo-chart-compact':'')}><caption>Recorded source times in UTC · — means no record, not zero or continued delivery · source intervals stay separate from point measurements</caption><thead><tr><th scope="col">Measurement / infusion</th>{times.map(at=><th scope="col" key={at}><time dateTime={at}>{at.slice(0,10)}<br/>{at.slice(11,19)}</time></th>)}</tr></thead>{groups.map(group=><tbody key={group.label} aria-label={group.label}>
+       {compact&&<tr className="demo-chart-group"><th scope="rowgroup" colSpan={times.length+1}>{group.label}{group.label==='Fluid records'&&<small>Volumes over recorded intervals · balances are source-reported, not calculated here</small>}</th></tr>}
++      {compact&&group.rows.length===0&&<tr><td colSpan={times.length+1}>No records in these selected times for {group.label}. Use Earlier times or Show all recorded times; older values are not carried forward.</td></tr>}
+       {group.rows.map(row=><tr key={row.key}><th scope="row">{row.label}<small title={row.context}>{compact&&row.drug?(row.context.startsWith('Infusion: ')?row.context.slice(10).replace(' · documented events only',''):'Infusion identity not recorded'):row.context}</small></th>{times.map(at=><td key={at}>{row.cells.get(at)?.map(item=><ChartPoint key={JSON.stringify([item.fact.kind,item.fact.id,item.fact.revision])} item={item} onInspect={onInspect} compact={compact}/>)??<span className="demo-chart-empty" aria-label={row.drug?'No event recorded':'No observation recorded'}>{compact?'—':row.drug?'No event recorded':'No observation recorded'}</span>}</td>)}</tr>)}
+     </tbody>)}</table></div>:<p>No observations can be placed on this time axis for the selected section. No values or infusion intervals are inferred.</p>}
+     <details className="demo-chart-policy"><summary>How to read this chart and fluid records</summary>
+diff --git a/frontend/src/demo/flowsheetOverview.ts b/frontend/src/demo/flowsheetOverview.ts
+index db0206e..2afff60 100644
+--- a/frontend/src/demo/flowsheetOverview.ts
++++ b/frontend/src/demo/flowsheetOverview.ts
+@@ -2,13 +2,15 @@ import type {CirculatoryItem} from '../api/circulatoryTypes';
+ import {chartEntry,intervalText} from './chartEntries';
+ import {chartTime,type ChartRow} from './flowsheetPresentation';
+ import {record} from './evidencePresentation';
+-export const overviewGroups=['BP / MAP','Cardiac output / index','Rhythm / heart rate','Infusion events','Fluid records','Perfusion observations'] as const;
++export const overviewGroups=['BP / MAP','Cardiac output / index','Rhythm / heart rate','ABG / blood gases','Echo findings','Infusion events','Fluid records','Perfusion observations'] as const;
+ export function overviewGroup(row:ChartRow):typeof overviewGroups[number]|null{
+  if(row.drug)return 'Infusion events';
+  const items=[...row.cells.values()].flat();
+  if(items.some(i=>i.fact.kind==='circulatory_pressure'&&['systemic_systolic','systemic_diastolic','systemic_mean'].includes(String(i.fact.concept))))return 'BP / MAP';
+  if(items.some(i=>i.fact.kind==='circulatory_cardiac'&&['co','ci'].includes(String(i.fact.concept))))return 'Cardiac output / index';
+  if(items.some(i=>i.fact.kind==='circulatory_ecg'&&['rhythm','heart_rate'].includes(String(i.fact.concept))))return 'Rhythm / heart rate';
++ if(items.some(i=>i.fact.kind==='circulatory_oxygen'&&record(i.fact.acquisition).method==='blood_gas'))return 'ABG / blood gases';
++ if(items.some(i=>i.fact.kind==='circulatory_echo'))return 'Echo findings';
+  if(items.some(i=>['output_urine','net_balance_reported','balance_total_reported'].includes(chartEntry(i)?.code??'')))return 'Fluid records';
+  if(items.some(i=>i.fact.kind==='circulatory_lactate'||(i.fact.kind==='circulatory_perfusion'&&i.fact.concept==='capillary_refill')))return 'Perfusion observations';
+  return null;
+diff --git a/frontend/src/demo/overviewEvidenceContext.ts b/frontend/src/demo/overviewEvidenceContext.ts
+new file mode 100644
+index 0000000..808d11d
+--- /dev/null
++++ b/frontend/src/demo/overviewEvidenceContext.ts
+@@ -0,0 +1,17 @@
++import type {CirculatoryItem} from '../api/circulatoryTypes';
++import {record,words} from './evidencePresentation';
++import {quantityText} from './HemodynamicContext';
++/** Display only this source's assertions; never borrow sample context or interpret findings. */
++export function overviewEvidenceContext(item:CirculatoryItem):string[]{
++ const f=item.fact,a=record(f.acquisition),gas=f.kind==='circulatory_oxygen'&&a.method==='blood_gas';
++ if(!gas&&f.kind!=='circulatory_echo')return [];
++ const b=record(f.blood_gas_context),q=record(a.quality),notes:string[]=[];
++ if(gas){
++  notes.push('Sample: '+(words(f.sample_type)||'not recorded'));
++  notes.push('Sample FiO₂: '+quantityText(b.fio2));
++ }else notes.push('Source production: '+(words(f.production)||'not recorded'));
++ for(const source of [f.disclosures,f.uncertainty,a.limitations,q.limitations,b.limitations]){
++  if(Array.isArray(source))for(const note of source)if(typeof note==='string'&&note.trim())notes.push('Source caveat: '+note);
++ }
++ return [...new Set(notes)];
++}
+diff --git a/frontend/tests/flowsheetOverview.test.tsx b/frontend/tests/flowsheetOverview.test.tsx
+index bf93947..bc8312a 100644
+--- a/frontend/tests/flowsheetOverview.test.tsx
++++ b/frontend/tests/flowsheetOverview.test.tsx
+@@ -9,10 +9,10 @@ import {record} from '../src/demo/evidencePresentation';
+ const items=()=>decodeCirculatoryState(structuredClone(fixture)).assembly.snapshot.items;
+ const ids=()=>screen.getAllByRole('button',{name:/^Chart source /}).map(b=>b.getAttribute('aria-label'));
+ afterEach(cleanup);
+-it('defaults to a compact overview with all six groups and exact source selection',()=>{
++it('defaults to a compact overview with all eight groups and exact source selection',()=>{
+  const sources=items(),before=JSON.stringify(sources),inspect=vi.fn();render(<ICUFlowsheet items={sources} onInspect={inspect}/>);
+  expect(screen.getByRole('combobox',{name:'Flowsheet section'})).toHaveValue('overview');
+- for(const name of ['BP / MAP','Cardiac output / index','Rhythm / heart rate','Infusion events','Fluid records','Perfusion observations'])expect(screen.getByRole('rowgroup',{name})).toBeInTheDocument();
++ for(const name of ['BP / MAP','Cardiac output / index','Rhythm / heart rate','ABG / blood gases','Echo findings','Infusion events','Fluid records','Perfusion observations'])expect(screen.getByRole('rowgroup',{name})).toBeInTheDocument();
+  expect(screen.getByText('Recorded times 9–12 of 12 · UTC')).toBeInTheDocument();
+  const button=screen.getByRole('button',{name:'Chart source fs-D-CHANGE revision 1'});expect(button).toHaveTextContent('Changed');expect(button).toHaveTextContent('3.0 mcg/kg/min');fireEvent.click(button);
+  expect(inspect).toHaveBeenCalledWith(sources.find(i=>i.fact.id==='fs-D-CHANGE'),button);
+@@ -81,3 +81,34 @@ it('keeps pressure, method-specific flow and source rhythm on exact times with i
+  expect(screen.getByRole('button',{name:'Chart source fs-RHYTHM-30 revision 1'})).toHaveTextContent('no arrhythmia classification confirmed');
+  expect(JSON.stringify(sources)).toBe(before);
+ });
++
++it('keeps ABG samples and older echo at their original columns, with exact inspectors and source caveats',()=>{
++ const sources=items(),before=JSON.stringify(sources),inspect=vi.fn();render(<ICUFlowsheet items={sources} onInspect={inspect}/>);
++ const ph=screen.getByRole('button',{name:'Chart source fs-PH-60 revision 1'});
++ expect(ph).toHaveTextContent('7.35 (unit: 1)');expect(ph).toHaveTextContent('Sample: arterial');expect(ph).toHaveTextContent('Sample FiO₂: 40 %');
++ expect(ph.closest('td')?.cellIndex).toBe(4);fireEvent.click(ph);expect(inspect).toHaveBeenLastCalledWith(sources.find(i=>i.fact.id==='fs-PH-60'),ph);
++ expect(screen.getByText(/No records in these selected times for Echo findings/)).toBeInTheDocument();
++ expect(screen.queryByRole('button',{name:'Chart source m7-RVSP revision 1'})).not.toBeInTheDocument();
++ fireEvent.click(screen.getByRole('checkbox',{name:'Show all recorded times'}));
++ for(const id of ['m7-RVSP','m7-PASP','m7-VTI','m7-PH','m7-EF','m7-ECHO']){
++  const button=screen.getByRole('button',{name:'Chart source '+id+' revision 1'});expect(button.closest('td')?.cellIndex).toBe(1);fireEvent.click(button);expect(inspect).toHaveBeenLastCalledWith(sources.find(i=>i.fact.id===id),button);
++ }
++ expect(screen.getByRole('button',{name:'Chart source m7-RVSP revision 1'})).toHaveTextContent('Source production: source calculated');
++ expect(screen.getByRole('button',{name:'Chart source m7-RVSP revision 1'})).toHaveTextContent('RVOT obstruction not documented');
++ expect(screen.getByRole('button',{name:'Chart source m7-PH revision 1'})).toHaveTextContent('no invasive confirmation or PAH subtype established');
++ for(const [id,sample] of [['fs-SCVO2-30','central venous'],['fs-SVO2-30','mixed venous']]){
++  const button=screen.getByRole('button',{name:'Chart source '+id+' revision 1'});expect(button).toHaveTextContent('Sample: '+sample);expect(button).toHaveTextContent('Sample FiO₂: Not recorded');expect(button).not.toHaveTextContent('40 %');
++ }
++ expect(JSON.stringify(sources)).toBe(before);
++});
++it('does not place ambiguous gas or echo timing on the axis or hide suspect and withdrawn findings',()=>{
++ const sources=items(),echo=sources.find(i=>i.fact.id==='m7-RVSP')!,gas=sources.find(i=>i.fact.id==='fs-PH-60')!;
++ record(echo.fact.occurred).clock='unknown';record(sources.find(i=>i.fact.id==='fs-PH-45')!.fact.collected??sources.find(i=>i.fact.id==='fs-PH-45')!.fact.occurred).clock='unknown';record(record(gas.fact.acquisition).quality).status='suspect';gas.fact.record_status='withdrawn';
++ render(<ICUFlowsheet items={sources} onInspect={vi.fn()}/>);
++ const ph=screen.getByRole('button',{name:'Chart source fs-PH-60 revision 1'});expect(ph).toHaveTextContent('Quality: suspect');expect(ph).toHaveTextContent('withdrawn');
++ fireEvent.click(screen.getByRole('checkbox',{name:'Show all recorded times'}));
++ expect(screen.queryByRole('button',{name:'Chart source m7-RVSP revision 1'})).not.toBeInTheDocument();
++ expect(screen.getByRole('button',{name:'Estimated RVSP · m7-RVSP / 1 ↗'})).toBeInTheDocument();
++ expect(screen.queryByRole('button',{name:'Chart source fs-PH-45 revision 1'})).not.toBeInTheDocument();
++ expect(screen.getByRole('button',{name:'pH · fs-PH-45 / 1 ↗'})).toBeInTheDocument();
++});
