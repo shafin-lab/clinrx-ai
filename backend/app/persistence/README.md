@@ -784,3 +784,13 @@ also propagates through `resolve_lineage` into existing bounded admission. No
 serialized lineage limits or persistence format changes are introduced. Legacy
 unbounded repository methods remain available, but protected new-work reads and
 initial clinical assembly/selection use the bounded operation.
+
+## M7-B: additive recorded circulatory evidence
+
+Schema head `m7_0008` admits 15 explicit circulatory kinds and adds the dedicated
+`circulatory_execution` table. The CHECK extension preserves historical payload
+bytes, revision links, repository identity and allocator state. Existing M6 facts,
+state unions and execution payloads are unchanged. The existing shared transaction
+adds a concrete circulatory adapter without changing lifecycle ownership/poisoning.
+See [M7-B contracts and limits](../execution/M7-B.md) for the supported recorded
+families, synthetic-only eligibility, bounded assembly and exact recovery semantics.

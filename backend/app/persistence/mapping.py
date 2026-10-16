@@ -18,6 +18,8 @@ from app.models.clinical.microbiology import (Specimen, DirectExamination, Cultu
 from app.models.clinical.antimicrobials import (AntimicrobialOrder,
     CompletedAntimicrobialAdministration, AntimicrobialNonDelivery)
 
+from app.models.clinical.hemodynamics import M7_FACTS, CirculatoryRecord
+
 SUPPORTED_FACTS = {
     'observation': ClinicalObservation,
     'medication_order': MedicationOrder,
@@ -39,6 +41,9 @@ SUPPORTED_FACTS = {
 SupportedFact = (ClinicalObservation | MedicationOrder | MedicationAdministration | ClinicalInference
     | Specimen | DirectExamination | CultureFinding | IsolateIdentification | SusceptibilityResult | ResistanceFinding | MolecularResult | BloodCultureSet | BloodCultureBottle | AntimicrobialOrder | CompletedAntimicrobialAdministration | AntimicrobialNonDelivery)
 
+
+SUPPORTED_FACTS = {**SUPPORTED_FACTS, **M7_FACTS}
+SupportedFact = SupportedFact | CirculatoryRecord
 
 @dataclass(frozen=True)
 class StoredFact:

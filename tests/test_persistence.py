@@ -124,7 +124,7 @@ def registered(database):
 
 
 def test_migration_empty_database_and_repeat(database):
-    expected = {'repository_identity', 'patient', 'encounter', 'fact_revision', 'revision_link', 'weight_trend_execution', 'creatinine_trend_execution', 'patient_state_temporal_execution', 'micro_antimicrobial_execution', 'alembic_version'}
+    expected = {'repository_identity', 'patient', 'encounter', 'fact_revision', 'revision_link', 'weight_trend_execution', 'creatinine_trend_execution', 'patient_state_temporal_execution', 'micro_antimicrobial_execution', 'circulatory_execution', 'alembic_version'}
     with database.connect() as connection:
         assert set(inspect(connection).get_table_names()) == expected
         assert connection.execute(text('SELECT version_num FROM alembic_version')).scalar_one() == SCHEMA_REVISION
@@ -509,7 +509,7 @@ def test_concurrent_conflicting_retry_preserves_one_revision(registered):
 
 
 def assert_fact_kind_extension_only(before, after):
-    """M6 permits one CHECK extension, not unrelated legacy DDL changes."""
+    """M6/M7 permit explicit CHECK extensions, not unrelated legacy DDL changes."""
     old, new = dict(before), dict(after)
     for name, ddl in old.items():
         if name != 'fact_revision':
@@ -531,5 +531,9 @@ def assert_fact_kind_extension_only(before, after):
             'microbiology_specimen', 'microbiology_direct_examination', 'microbiology_culture',
             'microbiology_isolate', 'microbiology_susceptibility', 'microbiology_resistance',
             'microbiology_molecular', 'blood_culture_set', 'blood_culture_bottle',
-            'antimicrobial_order', 'antimicrobial_administration', 'antimicrobial_non_delivery'}
+            'antimicrobial_order', 'antimicrobial_administration', 'antimicrobial_non_delivery',
+            'circulatory_pressure', 'circulatory_cardiac', 'circulatory_volume', 'circulatory_dynamic',
+            'circulatory_device_prediction', 'circulatory_perfusion', 'circulatory_oxygen', 'circulatory_lactate',
+            'circulatory_echo', 'circulatory_ecg', 'circulatory_vasoactive', 'circulatory_monitoring',
+            'circulatory_assessment', 'circulatory_event', 'circulatory_signal'}
         assert old_kinds <= new_kinds
