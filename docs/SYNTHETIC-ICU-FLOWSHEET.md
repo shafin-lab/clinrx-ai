@@ -51,3 +51,14 @@ The comparison uses publicly available documentation patterns, not private hospi
 - US, [MIMIC-IV archived ICU infusion structure](https://mimic.mit.edu/docs/iv/modules/icu/inputevents.html), a research representation of historical documentation, not a current EHR specification.
 
 These examples informed separation of source times, fluid intervals, orders/delivery and measurement context. ClinRx does not claim worldwide policy completeness. Units and source clinician goals remain explicit, and no universal dose unit, target, recording frequency or freshness threshold is imposed.
+
+
+## Local combined overview readability increment
+
+A new default Combined overview brings infusion events, measured interval urine, source-reported interval/cumulative chart balance, lactate and capillary refill into three named row groups. Four exact recorded timestamps are displayed at a time, initially the final four source times in the bounded state. Earlier/Later controls reach every timestamp; Show all recorded times exposes the full overview axis. These are display slices, not bins, an interpretation of current clinical state, or a change to timestamp eligibility.
+
+Rows lacking records in the selected time slice are omitted only in this compact overview, with an explicit disclosure. Earlier/Later and all-times mode retain all overview events. All hemodynamic sections and existing section views retain all 150 plotted controls, with the original off-axis records separately inspectable. No source data or evidence family is deleted. Dashes mean no recorded point/event, not zero or continued administration.
+
+Compact cells preserve raw values/units and explicit order/start/change/pause/restart/stop labels. Unknown/suspect/missing quality and non-recorded statuses remain visible; acceptable quality and repeated identifiers/concentration/pump context are available in the exact source inspector. Infusion source identities remain in the row labels, including explicit missing identities. Fluid source-calculation qualifiers remain in row/group labels. Source interval boundaries shorten to time-of-day only when both are exact supported UTC assertions on the displayed source date; ambiguous, fractional, conflicting or foreign-day context is labeled for inspection. No duration is calculated or ordering established.
+
+Focus chart brings the combined table into view. A persistent table caption explains dashes; detailed reading instructions and fluid completeness/double-counting caveats remain expandable. This is a local UI increment after cc8aeca; Director's ongoing review of that immutable source does not cover these new edits. Backend, fixture, schema, policy, execution gates, dependencies and migrations are unchanged by this readability increment. No new backend full-suite, hosted CI or container acceptance is inferred.

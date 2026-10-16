@@ -43,6 +43,7 @@ it('does not carry forward a dose or replace a pause/stop with zero',()=>{
 });
 it('preserves exact drug units, event distinctions and source links',()=>{
  const sources=items(),onInspect=vi.fn();render(<ICUFlowsheet items={sources} onInspect={onInspect}/>);
+ fireEvent.change(screen.getByLabelText('Flowsheet section'),{target:{value:'all'}});
  const button=screen.getByRole('button',{name:'Chart source fs-D-CHANGE revision 1'});expect(button).toHaveTextContent('3.0 mcg/kg/min');fireEvent.click(button);
  expect(onInspect).toHaveBeenCalledWith(sources.find(i=>i.fact.id==='fs-D-CHANGE'),button);
  expect(screen.getByRole('button',{name:'Chart source fs-N-ORDER revision 1'})).toHaveTextContent('order');
@@ -60,6 +61,7 @@ it('labels prescribed rate and missing weight/pump-rate without converting them 
 it('retains withdrawn source status and empty states without inventing observations',()=>{
  const source=items().find(i=>i.fact.id==='fs-CO-15')!;source.fact.record_status='withdrawn';
  const view=render(<ICUFlowsheet items={[source]} onInspect={vi.fn()}/>);
+ fireEvent.change(screen.getByLabelText('Flowsheet section'),{target:{value:'all'}});
  expect(screen.getByRole('button',{name:'Chart source fs-CO-15 revision 1'})).toHaveTextContent('withdrawn');
  view.rerender(<ICUFlowsheet items={[]} onInspect={vi.fn()}/>);expect(screen.getByText(/No observations can be placed/)).toBeInTheDocument();
  expect(screen.queryByRole('table')).not.toBeInTheDocument();
@@ -127,5 +129,6 @@ it('retains top-level assessment and signal quality rather than labeling it miss
   const item=sources.find(i=>i.fact.id===id)!;expect(quality(item)).toBe('unknown');expect(hasUncertainQuality(item)).toBe(true);
  }
  render(<ICUFlowsheet items={sources} onInspect={vi.fn()}/>);
+ fireEvent.change(screen.getByLabelText('Flowsheet section'),{target:{value:'all'}});
  expect(screen.getByRole('button',{name:'Chart source fs-FLUID-ASSESSMENT revision 1'})).toHaveTextContent('Quality: unknown');
 });
