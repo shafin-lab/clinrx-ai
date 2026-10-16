@@ -43,6 +43,10 @@ def measurement(cls=h.PressureObservation, name='p', **kw):
     fields.update(kw)
     if cls is h.PressureObservation:
         fields.setdefault('concept', 'systemic_mean')
+    if cls is h.PressureObservation:
+        ref=h.Reference(kind='circulatory_pressure',id=name,version=fields.get('revision','1'))
+        app=h.AcquisitionApplicability(acquisition=ref,status='applied',available=stamp(),provenance=PROV)
+        fields['acquisition']=change(fields['acquisition'],calibration_application=app,zeroing_application=app)
     return cls(**fields)
 
 

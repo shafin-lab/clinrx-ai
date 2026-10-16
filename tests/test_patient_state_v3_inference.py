@@ -2,7 +2,7 @@
 from datetime import timedelta, timezone
 import pytest
 from app.execution.patient_state_v3_inference import (CirculatoryTimingRequest, EvidencePin,
-    build_circulatory_timing_inference, CirculatoryInferenceError, METHOD)
+    build_circulatory_timing_inference, CirculatoryInferenceError, METHOD, POLICY_VERSION)
 from app.execution.patient_state_v3_assembly import assemble_patient_state_v3
 from app.persistence.repository import transaction
 from app.persistence.lineage import LineageLimits
@@ -25,7 +25,7 @@ def selected(engine, facts=None):
     ar=change(ar,scope=change(ar.scope,review_end=AT+timedelta(minutes=4)))
     assembly=assemble_patient_state_v3(engine,request=ar)
     pins=[EvidencePin(reference=f.reference,expected_digest=f.canonical_digest) for f in facts[:3]]
-    req=CirculatoryTimingRequest(scope=ar.scope,pressure=pins[0],lactate=pins[1],vasopressor=pins[2],
+    req=CirculatoryTimingRequest(eligibility_policy=POLICY_VERSION,scope=ar.scope,pressure=pins[0],lactate=pins[1],vasopressor=pins[2],
         expected_assembly_digest=assembly.canonical_digest,inference_id='synthetic-m7-i',executed_at=AT+timedelta(minutes=5))
     return assembly,req
 
@@ -55,7 +55,7 @@ def test_exact_statement_and_independent_lineage_expectation(registered):
 @pytest.mark.parametrize('concept',['systemic_systolic','systemic_diastolic','systemic_mean'])
 def test_allowed_pressure_concepts_methods(registered,method,concept):
     p,l,v=inputs();a=change(p.acquisition,method=method)
-    if method=='automated_cuff':a=change(a,zeroing='not_applicable',zeroing_provenance=None,calibration='unknown',calibration_provenance=None)
+    if method=='automated_cuff':a=change(a,zeroing='not_applicable',zeroing_provenance=None,calibration='unknown',calibration_provenance=None,calibration_application=change(a.calibration_application,status='not_required'))
     p=change(p,acquisition=a,concept=concept)
     assembly,r=selected(registered,(p,l,v))
     assert build_circulatory_timing_inference(assembly=assembly,request=r).inputs[0]==p.reference

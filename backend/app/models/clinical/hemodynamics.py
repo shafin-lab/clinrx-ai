@@ -299,6 +299,14 @@ class DeviceIdentity(Contract):
     limitations: Notes = ()
 
 
+class AcquisitionApplicability(Contract):
+    """Source assertion covering one exact acquisition, not a freshness heuristic."""
+    acquisition: Reference
+    status: Literal['applied', 'not_required', 'not_applied', 'unknown']
+    available: ClinicalInstant
+    provenance: BoundedProvenance
+
+
 class Acquisition(Contract):
     method: Literal['invasive_arterial', 'automated_cuff', 'pac', 'rhc',
         'bolus_thermodilution', 'continuous_thermodilution', 'pulse_contour',
@@ -321,6 +329,8 @@ class Acquisition(Contract):
     reference_level: RecordedConcept | None = None
     calibration: Literal['adequate', 'inadequate', 'unknown', 'not_applicable'] = 'unknown'
     zeroing: Literal['adequate', 'inadequate', 'unknown', 'not_applicable'] = 'unknown'
+    calibration_application: AcquisitionApplicability | None = Field(default=None, exclude_if=lambda v: v is None)
+    zeroing_application: AcquisitionApplicability | None = Field(default=None, exclude_if=lambda v: v is None)
     calibration_provenance: BoundedProvenance | None = None
     zeroing_provenance: BoundedProvenance | None = None
     interval_start: RecordedTime = Field(default_factory=missing_time)

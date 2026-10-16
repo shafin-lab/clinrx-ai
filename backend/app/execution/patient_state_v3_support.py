@@ -38,6 +38,8 @@ def consumed_provenance_references(fact):
         visit(fact.acquisition.quality.provenance)
         if fact.acquisition.method=='invasive_arterial':
             visit(fact.acquisition.calibration_provenance);visit(fact.acquisition.zeroing_provenance)
+            visit(fact.acquisition.zeroing_application)
+        visit(fact.acquisition.calibration_application)
         if fact.acquisition.device is not None: visit(fact.acquisition.support_provenance)
     if isinstance(fact,h.MonitoringEvent) and fact.event_type in ('calibration','zeroing'):
         visit(getattr(fact.acquisition,fact.event_type+'_provenance'))
