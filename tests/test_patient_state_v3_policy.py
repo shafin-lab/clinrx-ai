@@ -114,3 +114,16 @@ def test_all_actually_consumed_future_attestations_are_unsuitable(registered,rol
     else:p=change(p,occurred=change(p.occurred,clock_basis=future))
     a,r=selected(registered,(p,l,v))
     with pytest.raises(CirculatoryInferenceError,match='future_recording'):build(assembly=a,request=r)
+
+
+@pytest.mark.parametrize('minutes',[4,5,6])
+def test_future_clock_alignment_assessment_cannot_justify_ordering(registered,minutes):
+    from test_patient_state_v3 import code, h
+    p,l,v=inputs()
+    alignment=h.ClockAlignment(source_clock=code('clock'),synchronization='synchronized',
+        assessed={'status':'known','precision':'instant','value':AT+timedelta(minutes=minutes)},provenance=PROV)
+    p=change(p,occurred=change(p.occurred,alignment=alignment))
+    a,r=selected(registered,(p,l,v))
+    if minutes<=5:assert build(assembly=a,request=r).inputs==r.inputs
+    else:
+        with pytest.raises(CirculatoryInferenceError):build(assembly=a,request=r)

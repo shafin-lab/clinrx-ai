@@ -5,7 +5,7 @@ Assembly bounds its graph; selection permits at most 35 explicit exact pins.
 """
 from app.models.clinical import hemodynamics as h
 from app.models.clinical.common import Provenance
-from app.models.clinical.recorded_v2 import ref_key
+from app.models.clinical.recorded_v2 import ref_key, RecordedTime
 
 
 def consumed_binding_roles(fact):
@@ -18,10 +18,10 @@ def consumed_binding_roles(fact):
     return ()
 
 
-def consumed_provenances(fact):
+def _consumed_assertions(fact):
     values = []
     def visit(value):
-        if isinstance(value, Provenance):
+        if isinstance(value, (Provenance,RecordedTime)):
             values.append(value)
         if hasattr(type(value),'model_fields'):
             for name in type(value).model_fields:
@@ -48,6 +48,14 @@ def consumed_provenances(fact):
     if isinstance(fact,h.VasoactiveEvent) and isinstance(fact.action,h.InfusionEvent):
         visit(fact.drug.mapping_provenance);visit(fact.action.delivery.attestation)
     return tuple(values)
+
+
+def consumed_provenances(fact):
+    return tuple(value for value in _consumed_assertions(fact) if isinstance(value,Provenance))
+
+
+def consumed_recorded_times(fact):
+    return tuple(value for value in _consumed_assertions(fact) if isinstance(value,RecordedTime))
 
 
 def consumed_provenance_references(fact):
