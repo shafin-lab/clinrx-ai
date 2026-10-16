@@ -32,6 +32,11 @@ function itemScope(value:unknown,scope:Record<string,unknown>) {
   const cutoff=object(scope.repository_cutoff),meta=object(item.ingestion);
   if(meta.repository_id!==cutoff.repository_id || (meta.ingestion_sequence as number)>(cutoff.fact_watermark as number))reject();
 }
+function ingestionWithin(value:unknown,cutoff:Record<string,unknown>,after=0) {
+  const meta=object(value),sequence=meta.ingestion_sequence as number;
+  if(meta.repository_id!==cutoff.repository_id || sequence<=after || sequence>(cutoff.fact_watermark as number))reject();
+  return meta;
+}
 export function decodeCirculatoryState(value:unknown,expected:ScopeIdentity={}) {
   const v=validate('CirculatoryStateResponse',value),a=object(v.assembly),request=object(a.request),snapshot=object(a.snapshot),scope=object(request.scope);
   scopeIdentity(scope,expected);if(!same(request,v.assembly_request)||!same(scope,snapshot.scope))reject();
@@ -50,20 +55,46 @@ export function decodeCirculatoryExecution(value:unknown,expected:ScopeIdentity&
   if(request.execution_id!==v.execution_id)reject();scopeIdentity(scope,expected);
   scopeIdentity(object(request.target).context,expected);
   const identity={...expected,patient_id:scope.patient_id as string,encounter_id:scope.encounter_id as string};
+  scopeIdentity(object(request.target).context,identity);
   const evidence=object(record.evidence);if(!same(evidence.request,request))reject();
   const inputs=inference(evidence.inference,identity),items=array(evidence.items),facts=array(evidence.facts);
+  if(new Set(items.map(item=>object(object(item).ingestion).ingestion_sequence)).size!==items.length)reject();
   const pins=[ir.pressure,ir.lactate,ir.vasopressor,...array(ir.supporting??[])];
   const recheck=object(record.final_recheck),witnesses=array(recheck.evidence),terminals=array(recheck.terminal_facts);
   if(!same(recheck.scope,scope)||items.length!==inputs.length||facts.length!==inputs.length||pins.length!==inputs.length||witnesses.length!==inputs.length||terminals.length!==inputs.length)reject();
+  const original=object(scope.repository_cutoff),inferenceCutoff=object(request.inference_cutoff),finalCutoff=object(recheck.final_cutoff);
+  if(!same(object(request.assembly_request).scope,scope)||!same(recheck.inference_cutoff,inferenceCutoff)||
+    original.repository_id!==inferenceCutoff.repository_id||original.repository_id!==finalCutoff.repository_id||
+    (original.fact_watermark as number)>=(inferenceCutoff.fact_watermark as number)||
+    (inferenceCutoff.fact_watermark as number)>(finalCutoff.fact_watermark as number))reject();
+  const originalInference=object(evidence.inference),iw=object(recheck.inference);
+  const inferenceRef={kind:'inference',id:ir.inference_id,version:ir.revision};
+  requireRef(factRef(originalInference),inferenceRef);requireRef(iw.reference,inferenceRef);stableRef(iw.reference,iw.terminal);
+  if(iw.expected_digest!==request.expected_inference_digest||iw.observed_digest!==request.expected_inference_digest||
+    iw.reconstruction_digest!==iw.observed_digest||!same(iw.method,originalInference.method)||
+    !same(iw.inputs,inputs)||!same(iw.dependencies,inputs)||!same(iw.declarations,object(originalInference.provenance).upstream)||
+    !same(iw.ingestion,evidence.inference_ingestion))reject();
+  const inferenceIngestion=ingestionWithin(iw.ingestion,inferenceCutoff,original.fact_watermark as number);
+  ingestionWithin(iw.terminal_ingestion,finalCutoff);
+  if(sameRef(iw.reference,iw.terminal)) {
+    if(iw.observed_digest!==iw.terminal_digest||!same(iw.ingestion,iw.terminal_ingestion))reject();
+  } else if((object(iw.terminal_ingestion).ingestion_sequence as number)<=(inferenceIngestion.ingestion_sequence as number))reject();
   for(let n=0;n<inputs.length;n++) {
     const item=object(items[n]),pin=object(pins[n]),w=object(witnesses[n]);
     requireRef(inputs[n],pin.reference);requireRef(inputs[n],factRef(item.fact));requireRef(inputs[n],factRef(facts[n]));requireRef(inputs[n],w.consumed);
     if(w.role!==(n===0?'P':n===1?'L':n===2?'V':'support')||!same(w.original_ingestion,item.ingestion))reject();
     if(!same(item.fact,facts[n]) || item.expected_digest!==pin.expected_digest || w.item_digest!==pin.expected_digest || w.source_digest!==pin.expected_digest)reject();
     itemScope(item,scope);factScope(terminals[n],identity);stableRef(inputs[n],w.terminal);requireRef(w.terminal,factRef(terminals[n]));
+    ingestionWithin(w.terminal_ingestion,finalCutoff);
     if(sameRef(w.consumed,w.terminal)&& (w.source_digest!==w.terminal_source_digest||!same(w.original_ingestion,w.terminal_ingestion)))reject();
+    if(!sameRef(w.consumed,w.terminal)&& (object(w.terminal_ingestion).ingestion_sequence as number)<=(object(w.original_ingestion).ingestion_sequence as number))reject();
   }
-  const decision=object(record.decision),rendering=object(object(object(decision.assessment).review).rendering);
+  const decision=object(record.decision),assessment=object(decision.assessment),state=object(assessment.state);
+  const review=object(assessment.review),candidate=object(review.candidate),snapshot=object(candidate.snapshot),rendering=object(review.rendering);
+  if(decision.actor!==request.actor||!same(assessment.target,request.target)||!same(state.target,request.target)||
+    !same(object(state.authorization).target,request.target)||!same(object(assessment.content_validation).target,request.target)||
+    !same(snapshot.facts,[originalInference])||!same(snapshot.binding,originalInference.binding)||
+    rendering.destination!==object(request.target).destination)reject();
   if(decision.outcome==='released') {if(v.statement!==rendering.content||v.statement!==object(evidence.inference).statement)reject();}
   else if(v.statement!==null)reject();
   return value as CirculatoryExecution;

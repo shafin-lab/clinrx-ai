@@ -1,6 +1,8 @@
 import {describe,it,expect,vi,afterEach} from 'vitest';
 import {render,screen,fireEvent,waitFor,cleanup} from '@testing-library/react';
 import fixtures from './fixtures/circulatory.json';
+import schemaBundle from '../src/api/circulatorySchemas.json';
+import {validateTransportSchema,type Schema} from '../src/api/decoding';
 import {CirculatoryClient} from '../src/api/circulatoryClient';
 import {CirculatoryReview} from '../src/patient/CirculatoryReview';
 import {decodeCirculatoryState as state,decodeCirculatoryPrepared as prepared,decodeCirculatoryExecution as execution,decodeCirculatoryReconciliation as reconciliation,decodeCirculatoryHistory as history} from '../src/api/circulatoryDecoders';
@@ -119,4 +121,52 @@ describe('M7 transport uncertainty',()=>{
     vi.useFakeTimers();const fetcher=vi.fn().mockImplementation(()=>new Promise(()=>{}));const client=new CirculatoryClient('http://127.0.0.1:8000',scope.patient_id,scope.encounter_id,fetcher,10);
     const result=client.circulatoryExecute(prepared(fixtures.prepared,scope));const assertion=expect(result).rejects.toMatchObject({code:'request_timeout'});await vi.advanceTimersByTimeAsync(11);await assertion;expect(fetcher).toHaveBeenCalledTimes(1);
   });
+});
+
+const retainedMutations:Record<string,(v:any)=>void>={
+  final_repository:v=>{v.record.final_recheck.final_cutoff.repository_id='11111111-1111-4111-8111-111111111111';},
+  inference_reference:v=>{v.record.final_recheck.inference.reference.id='foreign';},
+  inference_cutoff:v=>{v.record.final_recheck.inference_cutoff.fact_watermark++;},
+  final_prefix:v=>{v.record.final_recheck.final_cutoff.fact_watermark=v.record.request.inference_cutoff.fact_watermark-1;},
+  request_inference_prefix:v=>{v.record.request.inference_cutoff.fact_watermark=v.record.request.inference_request.scope.repository_cutoff.fact_watermark;},
+  inference_digest:v=>{v.record.final_recheck.inference.observed_digest='0'.repeat(64);},
+  inference_dependencies:v=>{v.record.final_recheck.inference.dependencies[0].id='foreign';},
+  inference_declarations:v=>{v.record.final_recheck.inference.declarations[0].target.id='foreign';},
+  inference_ingestion:v=>{v.record.final_recheck.inference.ingestion.ingestion_sequence++;},
+  terminal_inference_repository:v=>{v.record.final_recheck.inference.terminal_ingestion.repository_id='11111111-1111-4111-8111-111111111111';},
+  terminal_inference_identity:v=>{v.record.final_recheck.inference.terminal.id='foreign';},
+  terminal_inference_digest:v=>{v.record.final_recheck.inference.terminal_digest='0'.repeat(64);},
+  terminal_evidence_prefix:v=>{v.record.final_recheck.evidence[0].terminal_ingestion.ingestion_sequence=v.record.final_recheck.final_cutoff.fact_watermark+1;},
+  governance_target:v=>{v.record.decision.assessment.target.context.patient_id='foreign';},
+  governance_state_target:v=>{v.record.decision.assessment.state.target.recipient='foreign';},
+  authorization_target:v=>{v.record.decision.assessment.state.authorization.target.request_id='foreign';},
+  validation_target:v=>{v.record.decision.assessment.content_validation.target.destination='foreign';},
+};
+describe('PR23 retained provenance correspondence',()=>{
+  it.each(Object.keys(retainedMutations))('rejects schema-valid contradictory %s on all receipt paths',name=>{
+    const v:any=clone(fixtures.released);retainedMutations[name](v);
+    const schema=schemaBundle as unknown as {roots:Record<string,Schema>;definitions:Record<string,Schema>};
+    expect(()=>validateTransportSchema(v,schema.roots.CirculatoryExecutionResponse,schema.definitions)).not.toThrow();
+    expect(()=>execution(v,scope)).toThrow('could not be read safely');
+    expect(()=>reconciliation({status:'committed_match',execution:v},scope)).toThrow('could not be read safely');
+  });
+  it.each(['execution','reconciliation'])('keeps the original identity uncertain after malformed %s',async path=>{
+    const client=mockClient(),bad:any=clone(fixtures.released);retainedMutations.final_repository(bad);
+    const fetcher=vi.fn().mockResolvedValue(new Response(JSON.stringify(path==='execution'?bad:{status:'committed_match',execution:bad}),{status:200}));
+    const real=new CirculatoryClient('http://127.0.0.1:8000',scope.patient_id,scope.encounter_id,fetcher);
+    if(path==='execution')client.circulatoryExecute.mockImplementation(p=>real.circulatoryExecute(p));
+    else {client.circulatoryExecute.mockRejectedValue(new Error('lost'));client.circulatoryReconcile.mockImplementation(p=>real.circulatoryReconcile(p));}
+    await chosen(client);fireEvent.click(screen.getByRole('button',{name:'Execute prepared P/L/V review'}));
+    await screen.findByText(/Completion is uncertain/);
+    if(path==='reconciliation'){
+      fireEvent.click(screen.getByRole('button',{name:'Reconcile original circulatory command'}));
+      await waitFor(()=>expect(fetcher).toHaveBeenCalledTimes(1));await screen.findByText(/Completion is uncertain/);
+      expect(client.circulatoryReconcile.mock.calls[0][0]).toEqual(prepared(fixtures.prepared,scope));
+    }
+    expect(screen.queryByText('Retained decision')).toBeNull();
+    expect(screen.getByRole('button',{name:'Load circulatory evidence'})).toBeDisabled();
+    expect(client.circulatoryExecute).toHaveBeenCalledTimes(1);
+    expect(client.circulatoryExecute.mock.calls[0][0]).toEqual(prepared(fixtures.prepared,scope));
+  });
+
 });
