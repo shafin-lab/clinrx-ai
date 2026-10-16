@@ -10,13 +10,14 @@ const roles=['pressure','lactate','vasopressor'] as const;
 const roleKinds={pressure:'circulatory_pressure',lactate:'circulatory_lactate',vasopressor:'circulatory_vasoactive'};
 export function CirculatoryReview({client,config}:{client:CirculatoryClient;config:{start:string;end:string}}) {
   const [start,setStart]=useState(config.start),[end,setEnd]=useState(config.end),[view,setView]=useState<CirculatoryState>();
+  const [working,setWorking]=useState(false);
   const [phase,setPhase]=useState<Phase>('idle'),[error,setError]=useState<ApiFailure>();
   const [selected,setSelected]=useState({pressure:'',lactate:'',vasopressor:''}),[support,setSupport]=useState<string[]>([]);
   const [prepared,setPrepared]=useState<CirculatoryPrepared>(),[result,setResult]=useState<CirculatoryExecution>();
   const [history,setHistory]=useState<CirculatoryHistory>(),[lookup,setLookup]=useState('');
   const gate=useRef(false),generation=useRef(0);
   useEffect(()=>()=>{generation.current++;},[]);
-  const busy=['loading','preparing','executing','reconciling'].includes(phase);
+  const busy=working||['loading','preparing','executing','reconciling'].includes(phase);
   const unresolved=['executing','completion_unknown','reconciling','preparation_unknown','absent'].includes(phase);
   const locked=!!prepared||unresolved;
   useEffect(()=>{
@@ -25,8 +26,8 @@ export function CirculatoryReview({client,config}:{client:CirculatoryClient;conf
     window.addEventListener('beforeunload',warn);return ()=>window.removeEventListener('beforeunload',warn);
   },[unresolved]);
   async function work(action:(current:()=>boolean)=>Promise<void>){
-    if(gate.current)return;gate.current=true;const token=generation.current;const current=()=>token===generation.current;
-    try{await action(current);}finally{if(current())gate.current=false;}
+    if(gate.current)return;gate.current=true;setWorking(true);const token=generation.current;const current=()=>token===generation.current;
+    try{await action(current);}finally{if(current()){gate.current=false;setWorking(false);}}
   }
   async function load(){if(locked)return;await work(async current=>{
     setPhase('loading');setError(undefined);setView(undefined);setResult(undefined);setHistory(undefined);setSelected({pressure:'',lactate:'',vasopressor:''});setSupport([]);
@@ -66,7 +67,7 @@ export function CirculatoryReview({client,config}:{client:CirculatoryClient;conf
     catch(e){if(current())setError(failure(e));}
   });}
   function reset(){if(unresolved||busy)return;setPrepared(undefined);setResult(undefined);setPhase(view?'ready':'idle');setError(undefined);}
-  return <section className="panel m7-review" aria-label="Comprehensive circulatory evidence">
+  return <section className="panel m7-review" aria-label="Comprehensive circulatory evidence" aria-busy={busy}>
     <h2>Hemodynamic and circulatory evidence</h2><p>Synthetic recorded evidence across 15 families. No shock diagnosis, causal interpretation or treatment advice.</p>
     <form onSubmit={e=>{e.preventDefault();void load();}}><div className="window-fields">
       <label>Circulatory review start<input value={start} disabled={busy||locked} onChange={e=>{setStart(e.target.value);setView(undefined);setSelected({pressure:'',lactate:'',vasopressor:''});setSupport([]);}}/></label>

@@ -93,6 +93,14 @@ describe('M7 explicit review state',()=>{
     const event=new Event('beforeunload',{cancelable:true});window.dispatchEvent(event);expect(event.defaultPrevented).toBe(true);
     mounted.unmount();resolve({data:execution(fixtures.released,scope)});await Promise.resolve();expect(screen.queryByText('Retained decision')).toBeNull();
   });
+  it('locks view changes during delayed retained-history requests',async()=>{
+    const client=mockClient();let resolve!:(v:unknown)=>void;client.circulatoryHistory.mockImplementation(()=>new Promise(done=>{resolve=done;}));await loaded(client);
+    fireEvent.click(screen.getByRole('button',{name:'Inspect corrections for m7-P'}));
+    expect(screen.getByLabelText('Circulatory review start')).toBeDisabled();
+    expect(screen.getByRole('button',{name:'Load circulatory evidence'})).toBeDisabled();
+    resolve({data:history(fixtures.history,scope)});await screen.findByText('Exact revision history: m7-P');
+    expect(screen.getByLabelText('Circulatory review start')).not.toBeDisabled();
+  });
   it('invalidates selections when the window changes',async()=>{const client=mockClient();await loaded(client);fireEvent.change(screen.getByLabelText('Circulatory review start'),{target:{value:'2026-10-08T07:00:00Z'}});expect(screen.queryByLabelText('Select pressure')).toBeNull();expect(client.circulatoryPrepare).not.toHaveBeenCalled();});
 });
 describe('M7 transport uncertainty',()=>{
