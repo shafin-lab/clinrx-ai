@@ -9,7 +9,10 @@ export function overviewEvidenceContext(item:CirculatoryItem):string[]{
  if(gas){
   notes.push('Sample: '+(words(f.sample_type)||'not recorded'));
   notes.push('Sample FiO₂: '+quantityText(b.fio2));
- }else notes.push('Source production: '+(words(f.production)||'not recorded'));
+ }else {
+  notes.push('Recorded production tag: '+(words(f.production)||'not recorded'));
+  if(record(f.result).result_type==='qualitative')notes.push('Qualitative echo findings are source-report assertions, not directly measured diagnoses. The recorded production tag is preserved as supplied.');
+ }
  for(const source of [f.disclosures,f.uncertainty,a.limitations,q.limitations,b.limitations]){
   if(Array.isArray(source))for(const note of source)if(typeof note==='string'&&note.trim())notes.push('Source caveat: '+note);
  }

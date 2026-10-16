@@ -93,9 +93,12 @@ it('keeps ABG samples and older echo at their original columns, with exact inspe
  for(const id of ['m7-RVSP','m7-PASP','m7-VTI','m7-PH','m7-EF','m7-ECHO']){
   const button=screen.getByRole('button',{name:'Chart source '+id+' revision 1'});expect(button.closest('td')?.cellIndex).toBe(1);fireEvent.click(button);expect(inspect).toHaveBeenLastCalledWith(sources.find(i=>i.fact.id===id),button);
  }
- expect(screen.getByRole('button',{name:'Chart source m7-RVSP revision 1'})).toHaveTextContent('Source production: source calculated');
+ expect(screen.getByRole('button',{name:'Chart source m7-RVSP revision 1'})).toHaveTextContent('Recorded production tag: source calculated');
  expect(screen.getByRole('button',{name:'Chart source m7-RVSP revision 1'})).toHaveTextContent('RVOT obstruction not documented');
  expect(screen.getByRole('button',{name:'Chart source m7-PH revision 1'})).toHaveTextContent('no invasive confirmation or PAH subtype established');
+ expect(screen.getByRole('button',{name:'Chart source m7-PH revision 1'})).toHaveTextContent('Recorded production tag: direct measurement');
+ expect(screen.getByRole('button',{name:'Chart source m7-PH revision 1'})).toHaveTextContent('Qualitative echo findings are source-report assertions, not directly measured diagnoses.');
+ expect(screen.getByRole('button',{name:'Chart source m7-RVSP revision 1'})).not.toHaveTextContent('Qualitative echo findings');
  for(const [id,sample] of [['fs-SCVO2-30','central venous'],['fs-SVO2-30','mixed venous']]){
   const button=screen.getByRole('button',{name:'Chart source '+id+' revision 1'});expect(button).toHaveTextContent('Sample: '+sample);expect(button).toHaveTextContent('Sample FiO₂: Not recorded');expect(button).not.toHaveTextContent('40 %');
  }
