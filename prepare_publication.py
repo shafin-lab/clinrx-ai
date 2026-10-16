@@ -84,8 +84,8 @@ The captured database and clinical assertions are fabricated. No runtime signing
 No merge, deployment, release or production activation is authorized by publication or by a future review verdict. Durable browser-session command recovery remains deferred; legacy reload/closure can lose in-memory commands. Clinical validation is not established. Director should return an acceptance-for-preview-preparation or changes-required verdict, distinguishing inspected evidence from a personally rerun browser exercise.
 '''
 (ROOT/'README.md').write_text(readme)
-paths=sorted(p for p in ROOT.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name not in ('INDEX.md','SHA256SUMS.json'))
+paths=sorted(p for p in ROOT.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p not in (ROOT/'INDEX.md',ROOT/'SHA256SUMS.json'))
 (ROOT/'INDEX.md').write_text('# Complete demo evidence index\n\n'+''.join(f'- [{p.relative_to(ROOT).as_posix()}]({p.relative_to(ROOT).as_posix()}) ({p.stat().st_size:,} bytes)\n' for p in paths))
-paths=sorted(p for p in ROOT.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name!='SHA256SUMS.json')
+paths=sorted(p for p in ROOT.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p!=ROOT/'SHA256SUMS.json')
 dump(ROOT/'SHA256SUMS.json',{p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in paths})
 print('Prepared',len(paths)+1,'evidence files; all correspondence checks pass.')
