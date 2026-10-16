@@ -63,7 +63,7 @@ The diagnostic preparation is mapped to its own UUID and inference row; it has n
 | Uncertain completion | [original malformed](original/malformed-uncertain-dom.txt) | [PNG](original/malformed-uncertain.png) |
 | No receipt before explicit retry | [supplemental absence](supplemental-absent/absent-before-retry-dom.txt) | [PNG](supplemental-absent/absent-before-retry.png) |
 | Explicit retry recovery | [recovered](supplemental-absent/recovered-dom.txt) | [PNG](supplemental-absent/recovered.png) |
-| Closed-gate receipt recovery | [closed gate](original/gate-closed-lookup-dom.txt) | [PNG](original/final-closed-gate-recovery.png) |
+| Closed-gate receipt recovery | [closed gate](original/timeout-gate-closed-lookup-dom.txt) | [PNG](original/final-closed-gate-recovery.png) |
 
 ## Limits and reproduction
 

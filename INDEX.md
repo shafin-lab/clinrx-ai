@@ -3,7 +3,7 @@
 Every link below is a file in this immutable evidence snapshot. JSON/TXT body mirrors preserve original bytes.
 
 - [EXCEPTIONAL-ATTEMPTS.md](EXCEPTIONAL-ATTEMPTS.md) (1,900 bytes)
-- [README.md](README.md) (6,763 bytes)
+- [README.md](README.md) (6,771 bytes)
 - [correspondence-verification.json](correspondence-verification.json) (36,583 bytes)
 - [correspondence-verification.log](correspondence-verification.log) (149 bytes)
 - [export_and_verify.py](export_and_verify.py) (12,222 bytes)
@@ -417,7 +417,7 @@ Every link below is a file in this immutable evidence snapshot. JSON/TXT body mi
 - [original/withdrawn-dom.txt](original/withdrawn-dom.txt) (12,830 bytes)
 - [original/withdrawn.png](original/withdrawn.png) (73,570 bytes)
 - [original/withdrawn.sqlite3](original/withdrawn.sqlite3) (327,680 bytes)
-- [prepare_index.py](prepare_index.py) (10,029 bytes)
+- [prepare_index.py](prepare_index.py) (10,037 bytes)
 - [row-exports/original/absent/alembic_version.json](row-exports/original/absent/alembic_version.json) (210 bytes)
 - [row-exports/original/absent/circulatory_execution.json](row-exports/original/absent/circulatory_execution.json) (110,333 bytes)
 - [row-exports/original/absent/creatinine_trend_execution.json](row-exports/original/absent/creatinine_trend_execution.json) (308 bytes)
