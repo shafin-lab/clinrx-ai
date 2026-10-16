@@ -6,10 +6,10 @@ import {decodeCirculatoryState,decodeCirculatoryExecution} from '../src/api/circ
 import type {CirculatoryClient} from '../src/api/circulatoryClient';
 import {value,sourceTime} from '../src/demo/evidencePresentation';
 const config={start:'2026-10-08T08:00:00+00:00',end:'2026-10-08T10:00:00+00:00',releasedExample:'released',withheldExample:'withheld'};
-function setup(){
-  const state=decodeCirculatoryState({...fixtures.state,execution_enabled:false});
+function setup(hosted=false,executionEnabled=false){
+  const state=decodeCirculatoryState({...fixtures.state,execution_enabled:executionEnabled});
   const client={circulatoryState:vi.fn().mockResolvedValue({data:state}),circulatoryHistory:vi.fn().mockResolvedValue({data:fixtures.history}),circulatoryLookup:vi.fn().mockResolvedValue({data:decodeCirculatoryExecution(fixtures.released)}),circulatoryPrepare:vi.fn(),circulatoryExecute:vi.fn()};
-  render(<ComprehensiveDemo client={client as unknown as CirculatoryClient} config={config}/>);return {client,state};
+  render(<ComprehensiveDemo client={client as unknown as CirculatoryClient} config={{...config,hosted}}/>);return {client,state};
 }
 async function ready(){await screen.findByRole('heading',{name:'Cardiac output + echo'});}
 afterEach(cleanup);
@@ -47,3 +47,9 @@ describe('comprehensive read-only synthetic demo',()=>{
     const {client}=setup();await ready();client.circulatoryState.mockRejectedValueOnce(new Error('offline'));fireEvent.click(screen.getByRole('button',{name:'Refresh recorded state'}));await screen.findByRole('alert');expect(screen.queryByRole('button',{name:'Inspect Cardiac output m7-CO'})).not.toBeInTheDocument();
   });
 });
+
+it('hosted presentation identifies the preview and hides legacy execution tools',async()=>{setup(true);await ready();expect(screen.getByText('SYNTHETIC PREVIEW')).toBeInTheDocument();expect(screen.queryByRole('link',{name:/Existing review tools/})).not.toBeInTheDocument();});
+
+it('blocks evidence browsing and replaces the disabled badge if the server reports execution enabled',async()=>{const {client}=setup(true,true);await screen.findByRole('alert');expect(screen.getByText('Browsing is blocked: the server did not confirm that new execution is disabled.')).toBeInTheDocument();expect(screen.getByText('Execution configuration unverified — browsing blocked')).toBeInTheDocument();expect(screen.queryByText('New execution disabled in this demo')).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Inspect Cardiac output m7-CO'})).not.toBeInTheDocument();expect(client.circulatoryPrepare).not.toHaveBeenCalled();});
+
+it('moves keyboard focus to selected source details and returns it when closed',async()=>{setup(true);await ready();const trigger=screen.getByRole('button',{name:'Inspect Cardiac output m7-CO'});trigger.focus();fireEvent.click(trigger);expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveFocus();fireEvent.click(screen.getByRole('button',{name:'Close source'}));expect(trigger).toHaveFocus();});

@@ -1,4 +1,5 @@
 import {it,expect,vi} from 'vitest';
+import {CirculatoryClient} from '../src/api/circulatoryClient';
 import {ReviewClient,ApiFailure} from '../src/api/client';
 import fixture from './fixtures.json';
 const id=fixture.execution.execution_id, command='OPAQUE.DO.NOT.DECODE';
@@ -133,4 +134,30 @@ it('clears deadlines on successful responses and bounded API failures',async()=>
 });
 it.each([0,-1,Infinity,NaN,2_147_483_648])('rejects invalid operational timeout %s',timeout=>{
   expect(()=>new ReviewClient('http://localhost:8000','p','e',fetch,timeout)).toThrow('Configure a valid request timeout.');
+});
+
+it('allows an explicitly opted-in same-origin HTTPS read without changing validation',async()=>{
+  vi.stubGlobal('window',{location:new URL('https://demo.example/')});
+  try {
+    const f=vi.fn<typeof fetch>().mockResolvedValue(reply({}));
+    const client=new CirculatoryClient('https://demo.example',scope.patient_id,scope.encounter_id,f,30_000,'same-origin-read-only');
+    await expect(client.circulatoryLookup(id)).rejects.toMatchObject({code:'invalid_response'});
+    expect(String(f.mock.calls[0][0])).toContain('https://demo.example/api/v1/');
+    expect(f.mock.calls[0][1]).toMatchObject({credentials:'same-origin',cache:'no-store'});
+  } finally {vi.unstubAllGlobals();}
+});
+it.each(['https://foreign.example','http://demo.example','https://demo.example/path','https://user@demo.example','https://demo.example/?q=1'])('hosted mode rejects unrelated or malformed origin %s',base=>{
+  vi.stubGlobal('window',{location:new URL('https://demo.example/')});
+  try {expect(()=>new ReviewClient(base,'p','e',fetch,30_000,'same-origin-read-only')).toThrow();}
+  finally {vi.unstubAllGlobals();}
+});
+it('hosted read-only transport blocks legacy and execution calls before any network request',async()=>{
+  vi.stubGlobal('window',{location:new URL('https://demo.example/')});
+  try {
+    const f=vi.fn<typeof fetch>();
+    const client=new ReviewClient('https://demo.example','p','e',f,30_000,'same-origin-read-only');
+    for(const op of [()=>client.prepare(preparation),()=>client.execute(prepared),()=>client.reconcile(prepared),()=>client.state('start','end')])
+      await expect(op()).rejects.toMatchObject({code:'method_not_allowed'});
+    expect(f).not.toHaveBeenCalled();
+  } finally {vi.unstubAllGlobals();}
 });

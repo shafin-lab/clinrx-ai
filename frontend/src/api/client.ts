@@ -24,14 +24,21 @@ export interface Reply<T> { data: T; mode: string|null }
 export class ReviewClient {
   private path: string;
   protected readonly scope: {patient_id:string;encounter_id:string};
-  constructor(base: string, patient: string, encounter: string, private fetcher: typeof fetch = fetch, private timeoutMs=30_000) {
+  constructor(base: string, patient: string, encounter: string, private fetcher: typeof fetch = fetch, private timeoutMs=30_000, private transport: 'loopback'|'same-origin-read-only' = 'loopback') {
     if(!Number.isSafeInteger(timeoutMs) || timeoutMs<1 || timeoutMs>2_147_483_647)throw new Error('Configure a valid request timeout.');
     this.scope={patient_id:patient,encounter_id:encounter};
     const url = new URL(base);
-    if (!['http:','https:'].includes(url.protocol) || !['127.0.0.1','localhost','[::1]'].includes(url.hostname) || url.username || url.password || url.search || url.hash || url.pathname!=='/') throw new Error('Configure a loopback API origin.');
+    const loopback=['127.0.0.1','localhost','[::1]'].includes(url.hostname);
+    const hosted=transport==='same-origin-read-only' && typeof window!=='undefined' && url.origin===window.location.origin && (url.protocol==='https:' || (url.protocol==='http:' && loopback));
+    if (!['http:','https:'].includes(url.protocol) || (transport==='loopback'?!loopback:!hosted) || url.username || url.password || url.search || url.hash || url.pathname!=='/') throw new Error('Configure a loopback API origin or the explicit same-origin read-only demo.');
     this.path = url.origin+'/api/v1/patients/'+encodeURIComponent(patient)+'/encounters/'+encodeURIComponent(encounter);
   }
   protected async request<T>(suffix: string, decode:(value:unknown)=>T, body?: unknown): Promise<Reply<T>> {
+    if(this.transport==='same-origin-read-only') {
+      const path=suffix.split('?')[0];
+      const permitted=body===undefined ? path==='/patient-state-v3' || /^\/circulatory-reviews\/[0-9a-f-]{36}$/.test(path) : path==='/circulatory-evidence-history';
+      if(!permitted)throw new ApiFailure('method_not_allowed',403);
+    }
     const controller=new AbortController();
     let timer:ReturnType<typeof setTimeout>|undefined;
     const deadline=new Promise<never>((_,reject)=>{
@@ -47,7 +54,7 @@ export class ReviewClient {
   private async receive<T>(suffix:string,decode:(value:unknown)=>T,body:unknown,signal:AbortSignal):Promise<Reply<T>> {
     let response: Response;
     const fetcher = this.fetcher;
-    try { response = await fetcher(this.path+suffix, {method:body===undefined?'GET':'POST', cache:'no-store', credentials:'omit', signal, headers:body===undefined?undefined:{'Content-Type':'application/json'}, body:body===undefined?undefined:JSON.stringify(body)}); }
+    try { response = await fetcher(this.path+suffix, {method:body===undefined?'GET':'POST', cache:'no-store', credentials:this.transport==='same-origin-read-only'?'same-origin':'omit', signal, headers:body===undefined?undefined:{'Content-Type':'application/json'}, body:body===undefined?undefined:JSON.stringify(body)}); }
     catch { throw new ApiFailure('network_error'); }
     let raw: unknown;
     try { raw=await response.json(); } catch { throw new ApiFailure('invalid_response',response.status); }

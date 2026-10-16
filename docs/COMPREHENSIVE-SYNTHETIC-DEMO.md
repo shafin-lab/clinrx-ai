@@ -41,6 +41,12 @@ No clinical policy, inference eligibility, Kernel/M5/M6/H1-D workflow, schema, m
 
 Durable browser-session command recovery remains deferred. The new read-only workspace does not retain an execution command; the legacy interface still has its documented reload/closure limitation. No clinical validation or production activation is implied.
 
+## Hosting preparation
+
+The separately gated, single-origin read-only hosting recipe is documented in
+[SYNTHETIC-DEMO-HOSTING.md](SYNTHETIC-DEMO-HOSTING.md). It requires independent
+review and separate deployment authorization; this local launcher is unchanged.
+
 ## Checks
 
 `tests/test_comprehensive_demo.py` exercises full-family data, device/method assertions, closed-gate API rejection without writes, exact retained release/withhold, support correction history and refusal to overwrite a database. `frontend/tests/comprehensiveDemo.test.tsx` exercises useful overview/browsing, uncertainty visibility, exact source/history requests, late-response isolation, retained lookup failure clearing, source lexemes, read-only behavior and failed loading without invented data. Browser acceptance additionally covers the actual local API and responsive layout. Record exact commands/results in the local validation report; passing tests alone do not authorize merge or deployment.
