@@ -1,5 +1,5 @@
 import {afterEach,describe,it,expect,vi} from 'vitest';
-import {render,screen,fireEvent,waitFor,cleanup} from '@testing-library/react';
+import {render,screen,fireEvent,waitFor,cleanup,within} from '@testing-library/react';
 import fixtures from './fixtures/circulatory.json';
 import expanded from './fixtures/comprehensive.json';
 import {ComprehensiveDemo} from '../src/demo/ComprehensiveDemo';
@@ -96,4 +96,66 @@ it('does not substitute arterial ABG settings into a mixed-venous record lacking
   const summary=Object.fromEntries(bloodGasSummary(item));
   expect(summary['Sample type']).toBe('mixed venous');
   for(const field of ['Collected','Sample-time FiO₂','Ventilator mode','Sample-time PEEP'])expect(summary[field]).toBe('Not recorded');
+});
+
+
+it('combines ABG, cardiac output and echo in one patient summary with exact source inspection',async()=>{
+  const {client,state}=setup(false,false,expanded);await ready();
+  fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
+  const summary=screen.getByRole('region',{name:'Combined patient evidence summary'});
+  for(const name of ['ABG and oxygen transport','Cardiac output and pressures','Echo and right-heart findings','Perfusion and circulatory support'])expect(within(summary).getByRole('region',{name})).toBeInTheDocument();
+  expect(within(summary).getByRole('button',{name:'Open summary source pH m7-ABG-PH'})).toHaveTextContent('7.31 (unit: 1)');
+  expect(within(summary).getByRole('button',{name:'Open summary source Cardiac output m7-CO'})).toHaveTextContent('4.50 L/min');
+  expect(within(summary).getByRole('button',{name:'Open summary source LVOT VTI m7-VTI'})).toHaveTextContent('17.5 cm');
+  fireEvent.click(within(summary).getByRole('button',{name:'Open summary source Estimated RVSP m7-RVSP'}));
+  expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveFocus();
+  fireEvent.click(screen.getByRole('button',{name:'Inspect revision history'}));await screen.findByText('2 retained revisions at this cutoff');
+  expect(client.circulatoryHistory).toHaveBeenCalledWith(state.state_context,{kind:'circulatory_echo',id:'m7-RVSP',version:'1'});
+  expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
+});
+
+it('summary keeps methods, uncertain quality, earlier and unplaced evidence visible without selecting a preferred flow',async()=>{
+  setup(false,false,expanded);await ready();fireEvent.click(screen.getByRole('button',{name:/Open combined patient summary/}));
+  const flow=screen.getByRole('region',{name:'Cardiac output and pressures'});
+  for(const id of ['m7-CO','m7-FLOTRAC','m7-PICCO-CO','m7-VOLUMEVIEW','m7-CONTEXT-CO'])expect(within(flow).getByRole('button',{name:'Open summary source Cardiac output '+id})).toBeInTheDocument();
+  const picco=within(flow).getByRole('button',{name:'Open summary source Cardiac output m7-PICCO-CO'}).closest('li')!;
+  expect(picco).toHaveTextContent('Quality: unknown');expect(picco).toHaveTextContent('pulse contour');
+  expect(within(flow).getByRole('button',{name:'Open summary source Cardiac output m7-CONTEXT-CO'}).closest('li')).toHaveTextContent('contextual');
+  expect(within(flow).getByRole('button',{name:'Open summary source Central venous pressure m7-UNPLACED'}).closest('li')).toHaveTextContent('Time not established');
+});
+
+it('summary preserves sample-specific settings and distinguishes source PH reports from diagnosis',async()=>{
+  setup(false,false,expanded);await ready();fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
+  const gases=screen.getByRole('region',{name:'ABG and oxygen transport'});
+  expect(within(gases).getByRole('button',{name:'Open summary source PaCO₂ m7-ABG-PACO2'}).closest('li')).toHaveTextContent('Sample-time FiO₂: 40 %');
+  expect(within(gases).getByRole('button',{name:'Open summary source Mixed venous oxygen saturation m7-SVO2'}).closest('li')).toHaveTextContent('Sample-time FiO₂: Not recorded');
+  const echo=screen.getByRole('region',{name:'Echo and right-heart findings'});
+  expect(within(echo).getByRole('button',{name:'Open summary source Pulmonary hypertension report finding m7-PH'}).closest('li')).toHaveTextContent('Source report finding');
+  expect(within(echo).getByRole('button',{name:'Open summary source Estimated RVSP m7-RVSP'}).closest('li')).toHaveTextContent('Source-reported estimate; not recalculated by ClinRx.');
+  expect(screen.getByRole('complementary',{name:'Summary limitations'})).toHaveTextContent('no PH diagnosis or PAH subtype is inferred');
+});
+
+it('summary shows empty families without filling absent measurements or requiring HPI',async()=>{
+  const raw=structuredClone(expanded);raw.assembly.snapshot.items=raw.assembly.snapshot.items.filter(i=>i.fact.kind!=='circulatory_echo');
+  raw.assembly.snapshot.coverage.retained_count=raw.assembly.snapshot.items.length;
+  setup(false,false,raw);await ready();fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
+  expect(screen.getByRole('region',{name:'Echo and right-heart findings'})).toHaveTextContent('No records in this bounded view. Clinical absence is not established.');
+  expect(screen.queryByRole('button',{name:/Open summary source Estimated RVSP/})).not.toBeInTheDocument();
+  expect(screen.getByRole('complementary',{name:'Summary limitations'})).toHaveTextContent('HPI is optional: not recorded in this case.');
+});
+
+it('does not render a summary if execution is enabled or the state cannot be trusted',async()=>{
+  setup(true,true,expanded);await screen.findByRole('alert');fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
+  expect(screen.queryByRole('region',{name:'Combined patient evidence summary'})).not.toBeInTheDocument();
+});
+
+
+it('labels qualitative PH source wording without presenting its preserved raw tag as a measured diagnosis',async()=>{
+  setup(false,false,expanded);await ready();
+  fireEvent.click(screen.getByRole('button',{name:'Inspect Pulmonary hypertension report finding m7-PH'}));
+  const inspector=screen.getByRole('complementary',{name:'Selected source evidence'});
+  expect(inspector).toHaveTextContent('Recorded production tag: direct measurement.');
+  expect(inspector).toHaveTextContent('Qualitative echo findings are source-report assertions, not directly measured diagnoses.');
+  expect(inspector).not.toHaveTextContent('Source assertion: direct measurement');
+  expect(inspector).toHaveTextContent('no invasive confirmation or PAH subtype established');
 });
