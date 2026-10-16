@@ -1,0 +1,219 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "ICU flowsheet":
+      - generic: ICU flowsheet
+      - generic: ↗
+    - button "Patient summary":
+      - generic: Patient summary
+      - generic: ↗
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / ICU FLOWSHEET
+  - heading "ICU flowsheet" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "156"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - region "Read-only ICU flowsheet":
+    - heading "Hemodynamics and infusions over time" [level=2]
+    - paragraph: Fictional charted observations and infusion events — not a treatment protocol or dosing advice. No pump control, prescribing or execution is available.
+    - paragraph:
+      - strong: Read each column as a recorded timestamp, not proof of physiological simultaneity or treatment response.
+      - text: Rates are shown only at documented events. Blank cells do not mean zero, unchanged measurements, continued delivery or a stopped infusion. No dose conversion, averaging or carry-forward is performed.
+    - paragraph: Orders and preparations are not administration. Dose units are preserved, including mcg/min, units/h and mcg/kg/min. Pump rates and dosing weights appear only when separately source-recorded and exactly linked; missing context is not filled in. CO methods, oxygen sample types and acquisition sites remain distinct.
+    - paragraph: 152 records from displayed families in the loaded view; 2 are kept off the time axis. Other evidence remains in the Evidence library. HPI is optional.
+    - text: Flowsheet section
+    - combobox "Flowsheet section":
+      - option "All hemodynamic sections"
+      - option "Infusions and delivery context"
+      - option "Pressures, flow and rhythm"
+      - option "Fluid input / output context"
+      - option "Gases and tissue perfusion"
+      - option "Interventions and assessments"
+      - option "Recorded goals and handover" [selected]
+    - paragraph: Fluid volumes are hemodynamic context, not a replacement for renal or nutrition records. Reported net balances and cumulative totals are source assertions, not ClinRx calculations; completeness of all intake/losses is not established. Intervention volumes may already be included in input totals and must not be counted again.
+    - generic "Recorded goals, review and handover (3)"
+    - region "Scrollable ICU time chart":
+      - table "Recorded source times in UTC · separate point observations, no interpolated trends":
+        - caption: Recorded source times in UTC · separate point observations, no interpolated trends
+        - rowgroup:
+          - row "Measurement / infusion 2026-10-08 08:00:00 2026-10-08 08:01:00 2026-10-08 08:02:00 2026-10-08 08:05:00 2026-10-08 08:10:00 2026-10-08 08:15:00 2026-10-08 08:20:00 2026-10-08 08:30:00 2026-10-08 08:45:00 2026-10-08 08:50:00 2026-10-08 08:55:00 2026-10-08 09:00:00":
+            - columnheader "Measurement / infusion"
+            - columnheader "2026-10-08 08:00:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:00:00
+            - columnheader "2026-10-08 08:01:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:01:00
+            - columnheader "2026-10-08 08:02:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:02:00
+            - columnheader "2026-10-08 08:05:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:05:00
+            - columnheader "2026-10-08 08:10:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:10:00
+            - columnheader "2026-10-08 08:15:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:15:00
+            - columnheader "2026-10-08 08:20:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:20:00
+            - columnheader "2026-10-08 08:30:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:30:00
+            - columnheader "2026-10-08 08:45:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:45:00
+            - columnheader "2026-10-08 08:50:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:50:00
+            - columnheader "2026-10-08 08:55:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:55:00
+            - columnheader "2026-10-08 09:00:00":
+              - time:
+                - text: 2026-10-08
+                - text: 09:00:00
+        - rowgroup:
+          - row "Clinician-recorded MAP goal Source plan, not a system target Chart source fs-GOAL revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Clinician-recorded MAP goal Source plan, not a system target":
+              - text: Clinician-recorded MAP goal
+              - generic: Source plan, not a system target
+            - cell "Chart source fs-GOAL revision 1":
+              - button "Chart source fs-GOAL revision 1":
+                - strong: "Fictional clinician-recorded MAP goal: 65–75 mmHg for this review. Rationale: individualized source-chart plan. Review at 09:00 UTC. This is not a ClinRx-recommended target and is not used for automatic alerts or titration."
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source plan, not a system target
+                - generic: fs-GOAL / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Hemodynamic handover Source handover note No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-HANDOVER revision 1":
+            - rowheader "Hemodynamic handover Source handover note":
+              - text: Hemodynamic handover
+              - generic: Source handover note
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-HANDOVER revision 1":
+              - button "Chart source fs-HANDOVER revision 1":
+                - strong: "Fictional hemodynamic handover: retain original infusion identities; CO at 09:00 has suspect source quality; PiCCO quality remains unknown. Review source-chart fluid completeness and source-recorded target. No independent response classification or shock diagnosis established."
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source handover note
+                - generic: fs-HANDOVER / 1
+          - row "Hemodynamic review note Source clinician note No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-REVIEW revision 1 No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Hemodynamic review note Source clinician note":
+              - text: Hemodynamic review note
+              - generic: Source clinician note
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-REVIEW revision 1":
+              - button "Chart source fs-REVIEW revision 1":
+                - strong: "Fictional clinician review: compare recorded pressures, flow method, perfusion and interval urine output. Infusion events and subsequent observations do not establish cause or treatment response. No automated recommendation."
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source clinician note
+                - generic: fs-REVIEW / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+    - generic "Scope and international documentation context"
+    - region "Evidence kept off the time axis":
+      - heading "Evidence kept off the time axis" [level=3]
+      - paragraph: Contextual/unplaced records and source times that this restrictive display cannot place confidently remain inspectable. The source timestamp is preserved.
+      - button "Cardiac output · m7-CONTEXT-CO / 1 ↗"
+      - generic: 2026-10-08T06:00:00+00:00 · contextual
+      - button "Central venous pressure · m7-UNPLACED / 1 ↗"
+      - generic: Time not established · unplaced
+  - complementary "Selected source evidence" [active]:
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "Clinician-recorded MAP goal" [level=2]
+    - paragraph: "Fictional clinician-recorded MAP goal: 65–75 mmHg for this review. Rationale: individualized source-chart plan. Review at 09:00 UTC. This is not a ClinRx-recommended target and is not used for automatic alerts or titration."
+    - paragraph:
+      - code: fs-GOAL / 1
+    - paragraph: Method not supplied
+    - term: Source time
+    - definition: 2026-10-08T08:00:00+00:00
+    - term: Recorded quality
+    - definition: not recorded
+    - term: Source unit mapping
+    - definition: Not supplied / not applicable
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx.synthetic.demo
+    - region "Source chart context":
+      - heading "Source chart context" [level=3]
+      - paragraph: Source plan, not a system target
+      - paragraph: "Fictional clinician-recorded MAP goal: 65–75 mmHg for this review. Rationale: individualized source-chart plan. Review at 09:00 UTC. This is not a ClinRx-recommended target and is not used for automatic alerts or titration."
+      - paragraph: Recorded amounts, reported totals and source notes remain separate. No complete fluid reconciliation, rate calculation or clinical target is inferred.
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

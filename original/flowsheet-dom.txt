@@ -1,0 +1,1898 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "ICU flowsheet":
+      - generic: ICU flowsheet
+      - generic: ↗
+    - button "Patient summary":
+      - generic: Patient summary
+      - generic: ↗
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / ICU FLOWSHEET
+  - heading "ICU flowsheet" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "156"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - region "Read-only ICU flowsheet":
+    - heading "Hemodynamics and infusions over time" [level=2]
+    - paragraph: Fictional charted observations and infusion events — not a treatment protocol or dosing advice. No pump control, prescribing or execution is available.
+    - paragraph:
+      - strong: Read each column as a recorded timestamp, not proof of physiological simultaneity or treatment response.
+      - text: Rates are shown only at documented events. Blank cells do not mean zero, unchanged measurements, continued delivery or a stopped infusion. No dose conversion, averaging or carry-forward is performed.
+    - paragraph: Orders and preparations are not administration. Dose units are preserved, including mcg/min, units/h and mcg/kg/min. Pump rates and dosing weights appear only when separately source-recorded and exactly linked; missing context is not filled in. CO methods, oxygen sample types and acquisition sites remain distinct.
+    - paragraph: 152 records from displayed families in the loaded view; 2 are kept off the time axis. Other evidence remains in the Evidence library. HPI is optional.
+    - text: Flowsheet section
+    - combobox "Flowsheet section":
+      - option "All hemodynamic sections" [selected]
+      - option "Infusions and delivery context"
+      - option "Pressures, flow and rhythm"
+      - option "Fluid input / output context"
+      - option "Gases and tissue perfusion"
+      - option "Interventions and assessments"
+      - option "Recorded goals and handover"
+    - paragraph: Fluid volumes are hemodynamic context, not a replacement for renal or nutrition records. Reported net balances and cumulative totals are source assertions, not ClinRx calculations; completeness of all intake/losses is not established. Intervention volumes may already be included in input totals and must not be counted again.
+    - generic "Recorded goals, review and handover (3)"
+    - region "Scrollable ICU time chart":
+      - table "Recorded source times in UTC · separate point observations, no interpolated trends":
+        - caption: Recorded source times in UTC · separate point observations, no interpolated trends
+        - rowgroup:
+          - row "Measurement / infusion 2026-10-08 08:00:00 2026-10-08 08:01:00 2026-10-08 08:02:00 2026-10-08 08:05:00 2026-10-08 08:10:00 2026-10-08 08:15:00 2026-10-08 08:20:00 2026-10-08 08:30:00 2026-10-08 08:45:00 2026-10-08 08:50:00 2026-10-08 08:55:00 2026-10-08 09:00:00":
+            - columnheader "Measurement / infusion"
+            - columnheader "2026-10-08 08:00:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:00:00
+            - columnheader "2026-10-08 08:01:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:01:00
+            - columnheader "2026-10-08 08:02:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:02:00
+            - columnheader "2026-10-08 08:05:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:05:00
+            - columnheader "2026-10-08 08:10:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:10:00
+            - columnheader "2026-10-08 08:15:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:15:00
+            - columnheader "2026-10-08 08:20:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:20:00
+            - columnheader "2026-10-08 08:30:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:30:00
+            - columnheader "2026-10-08 08:45:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:45:00
+            - columnheader "2026-10-08 08:50:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:50:00
+            - columnheader "2026-10-08 08:55:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:55:00
+            - columnheader "2026-10-08 09:00:00":
+              - time:
+                - text: 2026-10-08
+                - text: 09:00:00
+        - rowgroup:
+          - 'row "Dobutamine · inotrope Infusion: fs-infusion-dobutamine · documented events only No event recorded No event recorded No event recorded No event recorded No event recorded No event recorded Chart source fs-D-ORDER revision 1 Chart source fs-D-START revision 1 Chart source fs-D-CHANGE revision 1 Chart source fs-D-PAUSE revision 1 Chart source fs-D-RESTART revision 1 No event recorded"':
+            - 'rowheader "Dobutamine · inotrope Infusion: fs-infusion-dobutamine · documented events only"':
+              - text: Dobutamine · inotrope
+              - generic: "Infusion: fs-infusion-dobutamine · documented events only"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source fs-D-ORDER revision 1":
+              - button "Chart source fs-D-ORDER revision 1":
+                - strong: order
+                - generic: 2.5 mcg/kg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-D-ORDER / 1
+                - generic: "Concentration: 5 mg/mL · Dosing weight: see source reference"
+            - cell "Chart source fs-D-START revision 1":
+              - button "Chart source fs-D-START revision 1":
+                - strong: initiation
+                - generic: 2.5 mcg/kg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-D-START / 1
+                - generic: "Concentration: 5 mg/mL · Dosing weight: see source reference"
+            - cell "Chart source fs-D-CHANGE revision 1":
+              - button "Chart source fs-D-CHANGE revision 1":
+                - strong: rate change
+                - generic: 3.0 mcg/kg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-D-CHANGE / 1
+                - generic: "Concentration: 5 mg/mL · Dosing weight: see source reference"
+            - cell "Chart source fs-D-PAUSE revision 1":
+              - button "Chart source fs-D-PAUSE revision 1":
+                - strong: pause
+                - generic: Fictional documented interruption; no causal conclusion
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-D-PAUSE / 1
+            - cell "Chart source fs-D-RESTART revision 1":
+              - button "Chart source fs-D-RESTART revision 1":
+                - strong: restart
+                - generic: 2.5 mcg/kg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-D-RESTART / 1
+                - generic: "Concentration: 5 mg/mL · Dosing weight: see source reference"
+            - cell "No event recorded"
+          - row "Noradrenaline (norepinephrine) Infusion identity not recorded · separate event No event recorded No event recorded Chart source m7-V revision 1 No event recorded No event recorded No event recorded No event recorded No event recorded No event recorded No event recorded No event recorded No event recorded":
+            - rowheader "Noradrenaline (norepinephrine) Infusion identity not recorded · separate event":
+              - text: Noradrenaline (norepinephrine)
+              - generic: Infusion identity not recorded · separate event
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source m7-V revision 1":
+              - button "Chart source m7-V revision 1":
+                - strong: initiation
+                - generic: Rate not recorded
+                - generic: "Quality: not assessed here · recorded"
+                - generic: m7-V / 1
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+          - 'row "Noradrenaline (norepinephrine) Infusion: fs-infusion-norepinephrine · documented events only No event recorded No event recorded No event recorded Chart source fs-N-ORDER revision 1 Chart source fs-N-START revision 1 Chart source fs-N-CHANGE revision 1 No event recorded No event recorded Chart source fs-N-REDUCE revision 1 No event recorded No event recorded No event recorded"':
+            - 'rowheader "Noradrenaline (norepinephrine) Infusion: fs-infusion-norepinephrine · documented events only"':
+              - text: Noradrenaline (norepinephrine)
+              - generic: "Infusion: fs-infusion-norepinephrine · documented events only"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source fs-N-ORDER revision 1":
+              - button "Chart source fs-N-ORDER revision 1":
+                - strong: order
+                - generic: 5 mcg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-N-ORDER / 1
+                - generic: "Concentration: 0.08 mg/mL · Dosing weight: see source reference"
+            - cell "Chart source fs-N-START revision 1":
+              - button "Chart source fs-N-START revision 1":
+                - strong: initiation
+                - generic: 5 mcg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-N-START / 1
+                - generic: "Concentration: 0.08 mg/mL · Dosing weight: see source reference"
+            - cell "Chart source fs-N-CHANGE revision 1":
+              - button "Chart source fs-N-CHANGE revision 1":
+                - strong: rate change
+                - generic: 7 mcg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-N-CHANGE / 1
+                - generic: "Concentration: 0.08 mg/mL · Dosing weight: see source reference"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source fs-N-REDUCE revision 1":
+              - button "Chart source fs-N-REDUCE revision 1":
+                - strong: rate change
+                - generic: 6 mcg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-N-REDUCE / 1
+                - generic: "Concentration: 0.08 mg/mL · Dosing weight: see source reference"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+          - 'row "Vasopressin Infusion: fs-infusion-vasopressin · documented events only No event recorded No event recorded No event recorded No event recorded No event recorded Chart source fs-V-START revision 1 No event recorded No event recorded No event recorded No event recorded No event recorded Chart source fs-V-STOP revision 1"':
+            - 'rowheader "Vasopressin Infusion: fs-infusion-vasopressin · documented events only"':
+              - text: Vasopressin
+              - generic: "Infusion: fs-infusion-vasopressin · documented events only"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source fs-V-START revision 1":
+              - button "Chart source fs-V-START revision 1":
+                - strong: initiation
+                - generic: 1.8 units/h
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-V-START / 1
+                - generic: "Concentration: 1 units/mL · Dosing weight: see source reference"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source fs-V-STOP revision 1":
+              - button "Chart source fs-V-STOP revision 1":
+                - strong: permanent stop
+                - generic: Fictional documented interruption; no causal conclusion
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-V-STOP / 1
+          - row "Arterial oxygen saturation blood gas · arterial Chart source m7-ABG-SAO2 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Arterial oxygen saturation blood gas · arterial":
+              - text: Arterial oxygen saturation
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-SAO2 revision 1":
+              - button "Chart source m7-ABG-SAO2 revision 1":
+                - strong: 95.0 %
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-SAO2 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Base excess blood gas · arterial Chart source m7-ABG-BE revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Base excess blood gas · arterial":
+              - text: Base excess
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-BE revision 1":
+              - button "Chart source m7-ABG-BE revision 1":
+                - strong: "-2.0 mmol/L"
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-BE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Bicarbonate blood gas · arterial Chart source m7-ABG-HCO3 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Bicarbonate blood gas · arterial":
+              - text: Bicarbonate
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-HCO3 revision 1":
+              - button "Chart source m7-ABG-HCO3 revision 1":
+                - strong: 23.0 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-HCO3 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Blood-product input Source-recorded interval volume No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-IO-input_blood-15 revision 1 No observation recorded Chart source fs-IO-input_blood-30 revision 1 Chart source fs-IO-input_blood-45 revision 1 No observation recorded No observation recorded Chart source fs-IO-input_blood-60 revision 1":
+            - rowheader "Blood-product input Source-recorded interval volume":
+              - text: Blood-product input
+              - generic: Source-recorded interval volume
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-input_blood-15 revision 1":
+              - button "Chart source fs-IO-input_blood-15 revision 1":
+                - strong: 0 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded interval volume
+                - generic: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-input_blood-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-input_blood-30 revision 1":
+              - button "Chart source fs-IO-input_blood-30 revision 1":
+                - strong: 0 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded interval volume
+                - generic: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-input_blood-30 / 1
+            - cell "Chart source fs-IO-input_blood-45 revision 1":
+              - button "Chart source fs-IO-input_blood-45 revision 1":
+                - strong: 150 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded interval volume
+                - generic: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-input_blood-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-input_blood-60 revision 1":
+              - button "Chart source fs-IO-input_blood-60 revision 1":
+                - strong: 0 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded interval volume
+                - generic: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-input_blood-60 / 1
+          - row "Capillary refill bedside examination · unknown No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-CRT-15 revision 1 No observation recorded Chart source fs-CRT-30 revision 1 Chart source fs-CRT-45 revision 1 No observation recorded No observation recorded Chart source fs-CRT-60 revision 1":
+            - rowheader "Capillary refill bedside examination · unknown":
+              - text: Capillary refill
+              - generic: bedside examination · unknown
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CRT-15 revision 1":
+              - button "Chart source fs-CRT-15 revision 1":
+                - strong: 3.0 s
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CRT-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-CRT-30 revision 1":
+              - button "Chart source fs-CRT-30 revision 1":
+                - strong: 2.5 s
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CRT-30 / 1
+            - cell "Chart source fs-CRT-45 revision 1":
+              - button "Chart source fs-CRT-45 revision 1":
+                - strong: 2.0 s
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CRT-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CRT-60 revision 1":
+              - button "Chart source fs-CRT-60 revision 1":
+                - strong: 2.0 s
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CRT-60 / 1
+          - row "Capillary refill bedside examination · unknown Chart source m7-CRT revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Capillary refill bedside examination · unknown":
+              - text: Capillary refill
+              - generic: bedside examination · unknown
+            - cell "Chart source m7-CRT revision 1":
+              - button "Chart source m7-CRT revision 1":
+                - strong: 2.0 s
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-CRT / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Cardiac index bolus thermodilution · SwanGanz · HemoSphere · unknown Chart source m7-CI revision 1 No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-CI-15 revision 1 No observation recorded Chart source fs-CI-30 revision 1 Chart source fs-CI-45 revision 1 No observation recorded No observation recorded Chart source fs-CI-60 revision 1":
+            - rowheader "Cardiac index bolus thermodilution · SwanGanz · HemoSphere · unknown":
+              - text: Cardiac index
+              - generic: bolus thermodilution · SwanGanz · HemoSphere · unknown
+            - cell "Chart source m7-CI revision 1":
+              - button "Chart source m7-CI revision 1":
+                - strong: 2.60 L/min/m2
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-CI / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CI-15 revision 1":
+              - button "Chart source fs-CI-15 revision 1":
+                - strong: 2.30 L/min/m2
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CI-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-CI-30 revision 1":
+              - button "Chart source fs-CI-30 revision 1":
+                - strong: 2.50 L/min/m2
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CI-30 / 1
+            - cell "Chart source fs-CI-45 revision 1":
+              - button "Chart source fs-CI-45 revision 1":
+                - strong: 2.70 L/min/m2
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CI-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CI-60 revision 1":
+              - button "Chart source fs-CI-60 revision 1":
+                - strong: 2.60 L/min/m2
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CI-60 / 1
+          - row "Cardiac output bolus thermodilution · SwanGanz · HemoSphere · unknown Chart source m7-CO revision 1 No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-CO-15 revision 1 No observation recorded Chart source fs-CO-30 revision 1 Chart source fs-CO-45 revision 1 No observation recorded No observation recorded Chart source fs-CO-60 revision 1":
+            - rowheader "Cardiac output bolus thermodilution · SwanGanz · HemoSphere · unknown":
+              - text: Cardiac output
+              - generic: bolus thermodilution · SwanGanz · HemoSphere · unknown
+            - cell "Chart source m7-CO revision 1":
+              - button "Chart source m7-CO revision 1":
+                - strong: 4.50 L/min
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-CO / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CO-15 revision 1":
+              - button "Chart source fs-CO-15 revision 1":
+                - strong: 4.00 L/min
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CO-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-CO-30 revision 1":
+              - button "Chart source fs-CO-30 revision 1":
+                - strong: 4.40 L/min
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CO-30 / 1
+            - cell "Chart source fs-CO-45 revision 1":
+              - button "Chart source fs-CO-45 revision 1":
+                - strong: 4.70 L/min
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CO-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CO-60 revision 1":
+              - button "Chart source fs-CO-60 revision 1":
+                - strong: 4.60 L/min
+                - generic: "Quality: suspect · recorded"
+                - generic: fs-CO-60 / 1
+          - row "Cardiac output pulse contour · FloTrac · HemoSphere · unknown Chart source m7-FLOTRAC revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Cardiac output pulse contour · FloTrac · HemoSphere · unknown":
+              - text: Cardiac output
+              - generic: pulse contour · FloTrac · HemoSphere · unknown
+            - cell "Chart source m7-FLOTRAC revision 1":
+              - button "Chart source m7-FLOTRAC revision 1":
+                - strong: 4.40 L/min
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-FLOTRAC / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Cardiac output pulse contour · PiCCO · PiCCO · unknown Chart source m7-PICCO-CO revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Cardiac output pulse contour · PiCCO · PiCCO · unknown":
+              - text: Cardiac output
+              - generic: pulse contour · PiCCO · PiCCO · unknown
+            - cell "Chart source m7-PICCO-CO revision 1":
+              - button "Chart source m7-PICCO-CO revision 1":
+                - strong: 4.60 L/min
+                - generic: "Quality: unknown · recorded"
+                - generic: m7-PICCO-CO / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Cardiac output transpulmonary thermodilution · VolumeView · EV1000 · unknown Chart source m7-VOLUMEVIEW revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Cardiac output transpulmonary thermodilution · VolumeView · EV1000 · unknown":
+              - text: Cardiac output
+              - generic: transpulmonary thermodilution · VolumeView · EV1000 · unknown
+            - cell "Chart source m7-VOLUMEVIEW revision 1":
+              - button "Chart source m7-VOLUMEVIEW revision 1":
+                - strong: 4.60 L/min
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-VOLUMEVIEW / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Central venous pressure pac · right atrial Chart source m7-PAC revision 1 No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-CVP-15 revision 1 No observation recorded Chart source fs-CVP-30 revision 1 Chart source fs-CVP-45 revision 1 No observation recorded No observation recorded Chart source fs-CVP-60 revision 1":
+            - rowheader "Central venous pressure pac · right atrial":
+              - text: Central venous pressure
+              - generic: pac · right atrial
+            - cell "Chart source m7-PAC revision 1":
+              - button "Chart source m7-PAC revision 1":
+                - strong: 8.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-PAC / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CVP-15 revision 1":
+              - button "Chart source fs-CVP-15 revision 1":
+                - strong: 9.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CVP-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-CVP-30 revision 1":
+              - button "Chart source fs-CVP-30 revision 1":
+                - strong: 10.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CVP-30 / 1
+            - cell "Chart source fs-CVP-45 revision 1":
+              - button "Chart source fs-CVP-45 revision 1":
+                - strong: 9.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CVP-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CVP-60 revision 1":
+              - button "Chart source fs-CVP-60 revision 1":
+                - strong: 9.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CVP-60 / 1
+          - row "Clinician-recorded MAP goal Source plan, not a system target Chart source fs-GOAL revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Clinician-recorded MAP goal Source plan, not a system target":
+              - text: Clinician-recorded MAP goal
+              - generic: Source plan, not a system target
+            - cell "Chart source fs-GOAL revision 1":
+              - button "Chart source fs-GOAL revision 1":
+                - strong: "Fictional clinician-recorded MAP goal: 65–75 mmHg for this review. Rationale: individualized source-chart plan. Review at 09:00 UTC. This is not a ClinRx-recommended target and is not used for automatic alerts or titration."
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source plan, not a system target
+                - generic: fs-GOAL / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "CRRT fluid-removal context Source chart context; not a renal-management recommendation No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-CRRT-NOTE revision 1 No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "CRRT fluid-removal context Source chart context; not a renal-management recommendation":
+              - text: CRRT fluid-removal context
+              - generic: Source chart context; not a renal-management recommendation
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CRRT-NOTE revision 1":
+              - button "Chart source fs-CRRT-NOTE revision 1":
+                - strong: "Source chart: CRRT fluid-removal context recorded. Interval rows contain source-recorded NET removal, not total effluent. Replacement fluids are not independently reconciled by ClinRx."
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source chart context; not a renal-management recommendation
+                - generic: fs-CRRT-NOTE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "CRRT net fluid removal Source-recorded net removal, not total effluent No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-IO-output_crrt-15 revision 1 No observation recorded Chart source fs-IO-output_crrt-30 revision 1 Chart source fs-IO-output_crrt-45 revision 1 No observation recorded No observation recorded Chart source fs-IO-output_crrt-60 revision 1":
+            - rowheader "CRRT net fluid removal Source-recorded net removal, not total effluent":
+              - text: CRRT net fluid removal
+              - generic: Source-recorded net removal, not total effluent
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-output_crrt-15 revision 1":
+              - button "Chart source fs-IO-output_crrt-15 revision 1":
+                - strong: 0 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded net removal, not total effluent
+                - generic: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_crrt-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-output_crrt-30 revision 1":
+              - button "Chart source fs-IO-output_crrt-30 revision 1":
+                - strong: 50 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded net removal, not total effluent
+                - generic: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_crrt-30 / 1
+            - cell "Chart source fs-IO-output_crrt-45 revision 1":
+              - button "Chart source fs-IO-output_crrt-45 revision 1":
+                - strong: 50 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded net removal, not total effluent
+                - generic: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_crrt-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-output_crrt-60 revision 1":
+              - button "Chart source fs-IO-output_crrt-60 revision 1":
+                - strong: 50 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded net removal, not total effluent
+                - generic: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_crrt-60 / 1
+          - row "Drain output Measured interval volume No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-IO-output_drain-15 revision 1 No observation recorded Chart source fs-IO-output_drain-30 revision 1 Chart source fs-IO-output_drain-45 revision 1 No observation recorded No observation recorded Chart source fs-IO-output_drain-60 revision 1":
+            - rowheader "Drain output Measured interval volume":
+              - text: Drain output
+              - generic: Measured interval volume
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-output_drain-15 revision 1":
+              - button "Chart source fs-IO-output_drain-15 revision 1":
+                - strong: 10 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Measured interval volume
+                - generic: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_drain-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-output_drain-30 revision 1":
+              - button "Chart source fs-IO-output_drain-30 revision 1":
+                - strong: 5 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Measured interval volume
+                - generic: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_drain-30 / 1
+            - cell "Chart source fs-IO-output_drain-45 revision 1":
+              - button "Chart source fs-IO-output_drain-45 revision 1":
+                - strong: 0 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Measured interval volume
+                - generic: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_drain-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-output_drain-60 revision 1":
+              - button "Chart source fs-IO-output_drain-60 revision 1":
+                - strong: 5 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Measured interval volume
+                - generic: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_drain-60 / 1
+          - row "Estimated PASP echo · unknown Chart source m7-PASP revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Estimated PASP echo · unknown":
+              - text: Estimated PASP
+              - generic: echo · unknown
+            - cell "Chart source m7-PASP revision 1":
+              - button "Chart source m7-PASP revision 1":
+                - strong: 45.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-PASP / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Estimated RVSP echo · unknown Chart source m7-RVSP revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Estimated RVSP echo · unknown":
+              - text: Estimated RVSP
+              - generic: echo · unknown
+            - cell "Chart source m7-RVSP revision 1":
+              - button "Chart source m7-RVSP revision 1":
+                - strong: 45.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-RVSP / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "fluid challenge Method not supplied · No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-FLUID-ASSESSMENT revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "fluid challenge Method not supplied ·":
+              - text: fluid challenge
+              - generic: Method not supplied ·
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-FLUID-ASSESSMENT revision 1":
+              - button "Chart source fs-FLUID-ASSESSMENT revision 1":
+                - strong: Recorded source
+                - generic: "Quality: unknown · recorded"
+                - generic: fs-FLUID-ASSESSMENT / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Fluid challenge event Source event; may already be included in input totals No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-FLUID-CHALLENGE revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Fluid challenge event Source event; may already be included in input totals":
+              - text: Fluid challenge event
+              - generic: Source event; may already be included in input totals
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-FLUID-CHALLENGE revision 1":
+              - button "Chart source fs-FLUID-CHALLENGE revision 1":
+                - strong: 250 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source event; may already be included in input totals
+                - generic: fs-FLUID-CHALLENGE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Haemoglobin blood gas · arterial Chart source m7-ABG-HB revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Haemoglobin blood gas · arterial":
+              - text: Haemoglobin
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-HB revision 1":
+              - button "Chart source m7-ABG-HB revision 1":
+                - strong: 10.2 g/dL
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-HB / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "heart rate ecg monitor · unknown No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-HR-15 revision 1 No observation recorded Chart source fs-HR-30 revision 1 Chart source fs-HR-45 revision 1 No observation recorded No observation recorded Chart source fs-HR-60 revision 1":
+            - rowheader "heart rate ecg monitor · unknown":
+              - text: heart rate
+              - generic: ecg monitor · unknown
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-HR-15 revision 1":
+              - button "Chart source fs-HR-15 revision 1":
+                - strong: 104 /min
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-HR-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-HR-30 revision 1":
+              - button "Chart source fs-HR-30 revision 1":
+                - strong: 108 /min
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-HR-30 / 1
+            - cell "Chart source fs-HR-45 revision 1":
+              - button "Chart source fs-HR-45 revision 1":
+                - strong: 102 /min
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-HR-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-HR-60 revision 1":
+              - button "Chart source fs-HR-60 revision 1":
+                - strong: 96 /min
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-HR-60 / 1
+          - row "Hemodynamic handover Source handover note No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-HANDOVER revision 1":
+            - rowheader "Hemodynamic handover Source handover note":
+              - text: Hemodynamic handover
+              - generic: Source handover note
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-HANDOVER revision 1":
+              - button "Chart source fs-HANDOVER revision 1":
+                - strong: "Fictional hemodynamic handover: retain original infusion identities; CO at 09:00 has suspect source quality; PiCCO quality remains unknown. Review source-chart fluid completeness and source-recorded target. No independent response classification or shock diagnosis established."
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source handover note
+                - generic: fs-HANDOVER / 1
+          - row "Hemodynamic review note Source clinician note No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-REVIEW revision 1 No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Hemodynamic review note Source clinician note":
+              - text: Hemodynamic review note
+              - generic: Source clinician note
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-REVIEW revision 1":
+              - button "Chart source fs-REVIEW revision 1":
+                - strong: "Fictional clinician review: compare recorded pressures, flow method, perfusion and interval urine output. Infusion events and subsequent observations do not establish cause or treatment response. No automated recommendation."
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source clinician note
+                - generic: fs-REVIEW / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "IV fluid input Source-recorded interval volume No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-IO-input_iv-15 revision 1 No observation recorded Chart source fs-IO-input_iv-30 revision 1 Chart source fs-IO-input_iv-45 revision 1 No observation recorded No observation recorded Chart source fs-IO-input_iv-60 revision 1":
+            - rowheader "IV fluid input Source-recorded interval volume":
+              - text: IV fluid input
+              - generic: Source-recorded interval volume
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-input_iv-15 revision 1":
+              - button "Chart source fs-IO-input_iv-15 revision 1":
+                - strong: 250 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded interval volume
+                - generic: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-input_iv-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-input_iv-30 revision 1":
+              - button "Chart source fs-IO-input_iv-30 revision 1":
+                - strong: 100 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded interval volume
+                - generic: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-input_iv-30 / 1
+            - cell "Chart source fs-IO-input_iv-45 revision 1":
+              - button "Chart source fs-IO-input_iv-45 revision 1":
+                - strong: 50 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded interval volume
+                - generic: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-input_iv-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-input_iv-60 revision 1":
+              - button "Chart source fs-IO-input_iv-60 revision 1":
+                - strong: 50 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded interval volume
+                - generic: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-input_iv-60 / 1
+          - row "Lactate laboratory · arterial No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-LACTATE-15 revision 1 No observation recorded Chart source fs-LACTATE-30 revision 1 Chart source fs-LACTATE-45 revision 1 No observation recorded No observation recorded Chart source fs-LACTATE-60 revision 1":
+            - rowheader "Lactate laboratory · arterial":
+              - text: Lactate
+              - generic: laboratory · arterial
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-LACTATE-15 revision 1":
+              - button "Chart source fs-LACTATE-15 revision 1":
+                - strong: 2.4 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-LACTATE-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-LACTATE-30 revision 1":
+              - button "Chart source fs-LACTATE-30 revision 1":
+                - strong: 2.2 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-LACTATE-30 / 1
+            - cell "Chart source fs-LACTATE-45 revision 1":
+              - button "Chart source fs-LACTATE-45 revision 1":
+                - strong: 2.1 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-LACTATE-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-LACTATE-60 revision 1":
+              - button "Chart source fs-LACTATE-60 revision 1":
+                - strong: 2.0 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-LACTATE-60 / 1
+          - row "Lactate laboratory · unknown No observation recorded Chart source m7-L revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Lactate laboratory · unknown":
+              - text: Lactate
+              - generic: laboratory · unknown
+            - cell "No observation recorded"
+            - cell "Chart source m7-L revision 1":
+              - button "Chart source m7-L revision 1":
+                - strong: 2.000 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-L / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "LV ejection fraction echo · unknown Chart source m7-EF revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "LV ejection fraction echo · unknown":
+              - text: LV ejection fraction
+              - generic: echo · unknown
+            - cell "Chart source m7-EF revision 1":
+              - button "Chart source m7-EF revision 1":
+                - strong: 55.0 %
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-EF / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "LVOT VTI echo · unknown Chart source m7-VTI revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "LVOT VTI echo · unknown":
+              - text: LVOT VTI
+              - generic: echo · unknown
+            - cell "Chart source m7-VTI revision 1":
+              - button "Chart source m7-VTI revision 1":
+                - strong: 17.5 cm
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-VTI / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Mean arterial pressure invasive arterial · unknown No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-MAP-15 revision 1 No observation recorded Chart source fs-MAP-30 revision 1 Chart source fs-MAP-45 revision 1 No observation recorded No observation recorded Chart source fs-MAP-60 revision 1":
+            - rowheader "Mean arterial pressure invasive arterial · unknown":
+              - text: Mean arterial pressure
+              - generic: invasive arterial · unknown
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-MAP-15 revision 1":
+              - button "Chart source fs-MAP-15 revision 1":
+                - strong: 61 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MAP-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-MAP-30 revision 1":
+              - button "Chart source fs-MAP-30 revision 1":
+                - strong: 68 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MAP-30 / 1
+            - cell "Chart source fs-MAP-45 revision 1":
+              - button "Chart source fs-MAP-45 revision 1":
+                - strong: 72 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MAP-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-MAP-60 revision 1":
+              - button "Chart source fs-MAP-60 revision 1":
+                - strong: 70 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MAP-60 / 1
+          - row "Mean arterial pressure invasive arterial · unknown Chart source m7-P revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Mean arterial pressure invasive arterial · unknown":
+              - text: Mean arterial pressure
+              - generic: invasive arterial · unknown
+            - cell "Chart source m7-P revision 1":
+              - button "Chart source m7-P revision 1":
+                - strong: 65.00 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-P / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Mixed venous oxygen saturation blood gas · mixed venous Chart source m7-SVO2 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-SVO2-30 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Mixed venous oxygen saturation blood gas · mixed venous":
+              - text: Mixed venous oxygen saturation
+              - generic: blood gas · mixed venous
+            - cell "Chart source m7-SVO2 revision 1":
+              - button "Chart source m7-SVO2 revision 1":
+                - strong: 65.0 %
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-SVO2 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-SVO2-30 revision 1":
+              - button "Chart source fs-SVO2-30 revision 1":
+                - strong: 64.0 %
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SVO2-30 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "mottling bedside examination · unknown No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-MOTTLING-15 revision 1 No observation recorded Chart source fs-MOTTLING-30 revision 1 Chart source fs-MOTTLING-45 revision 1 No observation recorded No observation recorded Chart source fs-MOTTLING-60 revision 1":
+            - rowheader "mottling bedside examination · unknown":
+              - text: mottling
+              - generic: bedside examination · unknown
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-MOTTLING-15 revision 1":
+              - button "Chart source fs-MOTTLING-15 revision 1":
+                - strong: "Source chart: mottling recorded around knees."
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MOTTLING-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-MOTTLING-30 revision 1":
+              - button "Chart source fs-MOTTLING-30 revision 1":
+                - strong: "Source chart: mottling still recorded."
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MOTTLING-30 / 1
+            - cell "Chart source fs-MOTTLING-45 revision 1":
+              - button "Chart source fs-MOTTLING-45 revision 1":
+                - strong: "Source chart: mottling not observed at this assessment."
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MOTTLING-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-MOTTLING-60 revision 1":
+              - button "Chart source fs-MOTTLING-60 revision 1":
+                - strong: "Source chart: mottling not observed at this assessment."
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MOTTLING-60 / 1
+          - row "PaCO₂ blood gas · arterial Chart source m7-ABG-PACO2 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PACO2-15 revision 1 No observation recorded Chart source fs-PACO2-30 revision 1 Chart source fs-PACO2-45 revision 1 No observation recorded No observation recorded Chart source fs-PACO2-60 revision 1":
+            - rowheader "PaCO₂ blood gas · arterial":
+              - text: PaCO₂
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-PACO2 revision 1":
+              - button "Chart source m7-ABG-PACO2 revision 1":
+                - strong: 48.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-PACO2 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PACO2-15 revision 1":
+              - button "Chart source fs-PACO2-15 revision 1":
+                - strong: 50.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PACO2-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-PACO2-30 revision 1":
+              - button "Chart source fs-PACO2-30 revision 1":
+                - strong: 47.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PACO2-30 / 1
+            - cell "Chart source fs-PACO2-45 revision 1":
+              - button "Chart source fs-PACO2-45 revision 1":
+                - strong: 45.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PACO2-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PACO2-60 revision 1":
+              - button "Chart source fs-PACO2-60 revision 1":
+                - strong: 44.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PACO2-60 / 1
+          - row "PaO₂ blood gas · arterial Chart source m7-ABG-PAO2 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PAO2-15 revision 1 No observation recorded Chart source fs-PAO2-30 revision 1 Chart source fs-PAO2-45 revision 1 No observation recorded No observation recorded Chart source fs-PAO2-60 revision 1":
+            - rowheader "PaO₂ blood gas · arterial":
+              - text: PaO₂
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-PAO2 revision 1":
+              - button "Chart source m7-ABG-PAO2 revision 1":
+                - strong: 78.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-PAO2 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PAO2-15 revision 1":
+              - button "Chart source fs-PAO2-15 revision 1":
+                - strong: 80.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PAO2-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-PAO2-30 revision 1":
+              - button "Chart source fs-PAO2-30 revision 1":
+                - strong: 84.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PAO2-30 / 1
+            - cell "Chart source fs-PAO2-45 revision 1":
+              - button "Chart source fs-PAO2-45 revision 1":
+                - strong: 86.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PAO2-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PAO2-60 revision 1":
+              - button "Chart source fs-PAO2-60 revision 1":
+                - strong: 88.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PAO2-60 / 1
+          - row "Passive leg raise episode Method not supplied · Chart source m7-PLR revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Passive leg raise episode Method not supplied ·":
+              - text: Passive leg raise episode
+              - generic: Method not supplied ·
+            - cell "Chart source m7-PLR revision 1":
+              - button "Chart source m7-PLR revision 1":
+                - strong: Recorded source
+                - generic: "Quality: unknown · recorded"
+                - generic: m7-PLR / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Pericardial effusion echo · unknown Chart source m7-EFFUSION revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Pericardial effusion echo · unknown":
+              - text: Pericardial effusion
+              - generic: echo · unknown
+            - cell "Chart source m7-EFFUSION revision 1":
+              - button "Chart source m7-EFFUSION revision 1":
+                - strong: "Synthetic report: no pericardial effusion visualized."
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-EFFUSION / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "pH blood gas · arterial Chart source m7-ABG-PH revision 1 No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PH-15 revision 1 No observation recorded Chart source fs-PH-30 revision 1 Chart source fs-PH-45 revision 1 No observation recorded No observation recorded Chart source fs-PH-60 revision 1":
+            - rowheader "pH blood gas · arterial":
+              - text: pH
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-PH revision 1":
+              - button "Chart source m7-ABG-PH revision 1":
+                - strong: "7.31 (unit: 1)"
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-PH / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PH-15 revision 1":
+              - button "Chart source fs-PH-15 revision 1":
+                - strong: "7.30 (unit: 1)"
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PH-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-PH-30 revision 1":
+              - button "Chart source fs-PH-30 revision 1":
+                - strong: "7.32 (unit: 1)"
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PH-30 / 1
+            - cell "Chart source fs-PH-45 revision 1":
+              - button "Chart source fs-PH-45 revision 1":
+                - strong: "7.34 (unit: 1)"
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PH-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PH-60 revision 1":
+              - button "Chart source fs-PH-60 revision 1":
+                - strong: "7.35 (unit: 1)"
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PH-60 / 1
+          - row "Position change Method not supplied · Chart source m7-EVENT revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Position change Method not supplied ·":
+              - text: Position change
+              - generic: Method not supplied ·
+            - cell "Chart source m7-EVENT revision 1":
+              - button "Chart source m7-EVENT revision 1":
+                - strong: Recorded position change
+                - generic: "Quality: not recorded · recorded"
+                - generic: m7-EVENT / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Pulmonary artery wedge pressure rhc · pulmonary arterial Chart source m7-RHC revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Pulmonary artery wedge pressure rhc · pulmonary arterial":
+              - text: Pulmonary artery wedge pressure
+              - generic: rhc · pulmonary arterial
+            - cell "Chart source m7-RHC revision 1":
+              - button "Chart source m7-RHC revision 1":
+                - strong: 12.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-RHC / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Pulmonary hypertension report finding echo · unknown Chart source m7-PH revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Pulmonary hypertension report finding echo · unknown":
+              - text: Pulmonary hypertension report finding
+              - generic: echo · unknown
+            - cell "Chart source m7-PH revision 1":
+              - button "Chart source m7-PH revision 1":
+                - strong: "Synthetic report: findings suggest pulmonary hypertension; no invasive confirmation or PAH subtype established."
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-PH / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-dobutamine No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PUMP-RATE-D-START revision 1 Chart source fs-PUMP-RATE-D-CHANGE revision 1 No observation recorded Chart source fs-PUMP-RATE-D-RESTART revision 1 No observation recorded":
+            - rowheader "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-dobutamine":
+              - text: Pump volumetric rate
+              - generic: Separately recorded pump rate; no dose conversion · fs-infusion-dobutamine
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PUMP-RATE-D-START revision 1":
+              - button "Chart source fs-PUMP-RATE-D-START revision 1":
+                - strong: 2.1 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-D-START / 1
+            - cell "Chart source fs-PUMP-RATE-D-CHANGE revision 1":
+              - button "Chart source fs-PUMP-RATE-D-CHANGE revision 1":
+                - strong: 2.52 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-D-CHANGE / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-PUMP-RATE-D-RESTART revision 1":
+              - button "Chart source fs-PUMP-RATE-D-RESTART revision 1":
+                - strong: 2.1 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-D-RESTART / 1
+            - cell "No observation recorded"
+          - row "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-norepinephrine No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PUMP-RATE-N-START revision 1 Chart source fs-PUMP-RATE-N-CHANGE revision 1 No observation recorded No observation recorded Chart source fs-PUMP-RATE-N-REDUCE revision 1 No observation recorded No observation recorded No observation recorded":
+            - rowheader "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-norepinephrine":
+              - text: Pump volumetric rate
+              - generic: Separately recorded pump rate; no dose conversion · fs-infusion-norepinephrine
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PUMP-RATE-N-START revision 1":
+              - button "Chart source fs-PUMP-RATE-N-START revision 1":
+                - strong: 3.75 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-N-START / 1
+            - cell "Chart source fs-PUMP-RATE-N-CHANGE revision 1":
+              - button "Chart source fs-PUMP-RATE-N-CHANGE revision 1":
+                - strong: 5.25 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-N-CHANGE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PUMP-RATE-N-REDUCE revision 1":
+              - button "Chart source fs-PUMP-RATE-N-REDUCE revision 1":
+                - strong: 4.5 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-N-REDUCE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-vasopressin No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PUMP-RATE-V-START revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-vasopressin":
+              - text: Pump volumetric rate
+              - generic: Separately recorded pump rate; no dose conversion · fs-infusion-vasopressin
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PUMP-RATE-V-START revision 1":
+              - button "Chart source fs-PUMP-RATE-V-START revision 1":
+                - strong: 1.8 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-V-START / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "QTc ecg 12 lead · unknown Chart source m7-ECG revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "QTc ecg 12 lead · unknown":
+              - text: QTc
+              - generic: ecg 12 lead · unknown
+            - cell "Chart source m7-ECG revision 1":
+              - button "Chart source m7-ECG revision 1":
+                - strong: 420 ms
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ECG / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Reported cumulative chart balance Source-reported total of charted categories; completeness unknown No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-BALANCE-TOTAL revision 1":
+            - rowheader "Reported cumulative chart balance Source-reported total of charted categories; completeness unknown":
+              - text: Reported cumulative chart balance
+              - generic: Source-reported total of charted categories; completeness unknown
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-BALANCE-TOTAL revision 1":
+              - button "Chart source fs-BALANCE-TOTAL revision 1":
+                - strong: 285 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-reported total of charted categories; completeness unknown
+                - generic: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-BALANCE-TOTAL / 1
+          - row "Reported cumulative urine volume Source-reported total; not calculated by ClinRx No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-URINE-TOTAL revision 1":
+            - rowheader "Reported cumulative urine volume Source-reported total; not calculated by ClinRx":
+              - text: Reported cumulative urine volume
+              - generic: Source-reported total; not calculated by ClinRx
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-URINE-TOTAL revision 1":
+              - button "Chart source fs-URINE-TOTAL revision 1":
+                - strong: 145 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-reported total; not calculated by ClinRx
+                - generic: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-URINE-TOTAL / 1
+          - row "Reported interval fluid balance Source-reported calculation; not calculated by ClinRx No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-IO-net_balance_reported-15 revision 1 No observation recorded Chart source fs-IO-net_balance_reported-30 revision 1 Chart source fs-IO-net_balance_reported-45 revision 1 No observation recorded No observation recorded Chart source fs-IO-net_balance_reported-60 revision 1":
+            - rowheader "Reported interval fluid balance Source-reported calculation; not calculated by ClinRx":
+              - text: Reported interval fluid balance
+              - generic: Source-reported calculation; not calculated by ClinRx
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-net_balance_reported-15 revision 1":
+              - button "Chart source fs-IO-net_balance_reported-15 revision 1":
+                - strong: 205 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-reported calculation; not calculated by ClinRx
+                - generic: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-net_balance_reported-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-net_balance_reported-30 revision 1":
+              - button "Chart source fs-IO-net_balance_reported-30 revision 1":
+                - strong: 20 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-reported calculation; not calculated by ClinRx
+                - generic: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-net_balance_reported-30 / 1
+            - cell "Chart source fs-IO-net_balance_reported-45 revision 1":
+              - button "Chart source fs-IO-net_balance_reported-45 revision 1":
+                - strong: 110 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-reported calculation; not calculated by ClinRx
+                - generic: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-net_balance_reported-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-net_balance_reported-60 revision 1":
+              - button "Chart source fs-IO-net_balance_reported-60 revision 1":
+                - strong: "-50 mL"
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-reported calculation; not calculated by ClinRx
+                - generic: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-net_balance_reported-60 / 1
+          - row "RV basal dimension echo · unknown Chart source m7-RVD revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "RV basal dimension echo · unknown":
+              - text: RV basal dimension
+              - generic: echo · unknown
+            - cell "Chart source m7-RVD revision 1":
+              - button "Chart source m7-RVD revision 1":
+                - strong: 4.3 cm
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-RVD / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "RV function echo · unknown Chart source m7-RVFUNCTION revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "RV function echo · unknown":
+              - text: RV function
+              - generic: echo · unknown
+            - cell "Chart source m7-RVFUNCTION revision 1":
+              - button "Chart source m7-RVFUNCTION revision 1":
+                - strong: "Synthetic report: mildly reduced RV systolic function."
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-RVFUNCTION / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "scvo2 blood gas · central venous No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-SCVO2-30 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "scvo2 blood gas · central venous":
+              - text: scvo2
+              - generic: blood gas · central venous
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-SCVO2-30 revision 1":
+              - button "Chart source fs-SCVO2-30 revision 1":
+                - strong: 66.0 %
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SCVO2-30 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Septal configuration echo · unknown Chart source m7-SEPTUM revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Septal configuration echo · unknown":
+              - text: Septal configuration
+              - generic: echo · unknown
+            - cell "Chart source m7-SEPTUM revision 1":
+              - button "Chart source m7-SEPTUM revision 1":
+                - strong: "Synthetic report: systolic septal flattening."
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-SEPTUM / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "skin temperature bedside examination · unknown No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-SKIN-TEMP-15 revision 1 No observation recorded Chart source fs-SKIN-TEMP-30 revision 1 Chart source fs-SKIN-TEMP-45 revision 1 No observation recorded No observation recorded Chart source fs-SKIN-TEMP-60 revision 1":
+            - rowheader "skin temperature bedside examination · unknown":
+              - text: skin temperature
+              - generic: bedside examination · unknown
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-SKIN-TEMP-15 revision 1":
+              - button "Chart source fs-SKIN-TEMP-15 revision 1":
+                - strong: 35.5 Cel
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SKIN-TEMP-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-SKIN-TEMP-30 revision 1":
+              - button "Chart source fs-SKIN-TEMP-30 revision 1":
+                - strong: 35.8 Cel
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SKIN-TEMP-30 / 1
+            - cell "Chart source fs-SKIN-TEMP-45 revision 1":
+              - button "Chart source fs-SKIN-TEMP-45 revision 1":
+                - strong: 36.0 Cel
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SKIN-TEMP-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-SKIN-TEMP-60 revision 1":
+              - button "Chart source fs-SKIN-TEMP-60 revision 1":
+                - strong: 36.1 Cel
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SKIN-TEMP-60 / 1
+          - row "Source BSA for indexing Source-reported BSA; not calculated by ClinRx Chart source fs-BSA revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Source BSA for indexing Source-reported BSA; not calculated by ClinRx":
+              - text: Source BSA for indexing
+              - generic: Source-reported BSA; not calculated by ClinRx
+            - cell "Chart source fs-BSA revision 1":
+              - button "Chart source fs-BSA revision 1":
+                - strong: 1.73 m2
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-reported BSA; not calculated by ClinRx
+                - generic: fs-BSA / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Source dosing weight Source-recorded actual weight Chart source fs-WEIGHT revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Source dosing weight Source-recorded actual weight":
+              - text: Source dosing weight
+              - generic: Source-recorded actual weight
+            - cell "Chart source fs-WEIGHT revision 1":
+              - button "Chart source fs-WEIGHT revision 1":
+                - strong: 70 kg
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded actual weight
+                - generic: fs-WEIGHT / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Source rhythm ecg monitor · unknown Chart source m7-RHYTHM revision 1 No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-RHYTHM-15 revision 1 No observation recorded Chart source fs-RHYTHM-30 revision 1 Chart source fs-RHYTHM-45 revision 1 No observation recorded No observation recorded Chart source fs-RHYTHM-60 revision 1":
+            - rowheader "Source rhythm ecg monitor · unknown":
+              - text: Source rhythm
+              - generic: ecg monitor · unknown
+            - cell "Chart source m7-RHYTHM revision 1":
+              - button "Chart source m7-RHYTHM revision 1":
+                - strong: Synthetic source-reported rhythm
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-RHYTHM / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-RHYTHM-15 revision 1":
+              - button "Chart source fs-RHYTHM-15 revision 1":
+                - strong: Source-reported sinus rhythm.
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-RHYTHM-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-RHYTHM-30 revision 1":
+              - button "Chart source fs-RHYTHM-30 revision 1":
+                - strong: Source-reported irregular rhythm; no arrhythmia classification confirmed.
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-RHYTHM-30 / 1
+            - cell "Chart source fs-RHYTHM-45 revision 1":
+              - button "Chart source fs-RHYTHM-45 revision 1":
+                - strong: Source-reported sinus rhythm.
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-RHYTHM-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-RHYTHM-60 revision 1":
+              - button "Chart source fs-RHYTHM-60 revision 1":
+                - strong: Source-reported sinus rhythm.
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-RHYTHM-60 / 1
+          - row "systemic diastolic invasive arterial · unknown No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-systemic_diastolic-15 revision 1 No observation recorded Chart source fs-systemic_diastolic-30 revision 1 Chart source fs-systemic_diastolic-45 revision 1 No observation recorded No observation recorded Chart source fs-systemic_diastolic-60 revision 1":
+            - rowheader "systemic diastolic invasive arterial · unknown":
+              - text: systemic diastolic
+              - generic: invasive arterial · unknown
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-systemic_diastolic-15 revision 1":
+              - button "Chart source fs-systemic_diastolic-15 revision 1":
+                - strong: 47 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-systemic_diastolic-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-systemic_diastolic-30 revision 1":
+              - button "Chart source fs-systemic_diastolic-30 revision 1":
+                - strong: 52 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-systemic_diastolic-30 / 1
+            - cell "Chart source fs-systemic_diastolic-45 revision 1":
+              - button "Chart source fs-systemic_diastolic-45 revision 1":
+                - strong: 55 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-systemic_diastolic-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-systemic_diastolic-60 revision 1":
+              - button "Chart source fs-systemic_diastolic-60 revision 1":
+                - strong: 53 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-systemic_diastolic-60 / 1
+          - row "systemic systolic invasive arterial · unknown No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-systemic_systolic-15 revision 1 No observation recorded Chart source fs-systemic_systolic-30 revision 1 Chart source fs-systemic_systolic-45 revision 1 No observation recorded No observation recorded Chart source fs-systemic_systolic-60 revision 1":
+            - rowheader "systemic systolic invasive arterial · unknown":
+              - text: systemic systolic
+              - generic: invasive arterial · unknown
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-systemic_systolic-15 revision 1":
+              - button "Chart source fs-systemic_systolic-15 revision 1":
+                - strong: 92 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-systemic_systolic-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-systemic_systolic-30 revision 1":
+              - button "Chart source fs-systemic_systolic-30 revision 1":
+                - strong: 101 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-systemic_systolic-30 / 1
+            - cell "Chart source fs-systemic_systolic-45 revision 1":
+              - button "Chart source fs-systemic_systolic-45 revision 1":
+                - strong: 110 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-systemic_systolic-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-systemic_systolic-60 revision 1":
+              - button "Chart source fs-systemic_systolic-60 revision 1":
+                - strong: 106 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-systemic_systolic-60 / 1
+          - row "TAPSE echo · unknown Chart source m7-ECHO revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "TAPSE echo · unknown":
+              - text: TAPSE
+              - generic: echo · unknown
+            - cell "Chart source m7-ECHO revision 1":
+              - button "Chart source m7-ECHO revision 1":
+                - strong: 18 mm
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ECHO / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "TR peak velocity echo · unknown Chart source m7-TRV revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "TR peak velocity echo · unknown":
+              - text: TR peak velocity
+              - generic: echo · unknown
+            - cell "Chart source m7-TRV revision 1":
+              - button "Chart source m7-TRV revision 1":
+                - strong: 3.16 m/s
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-TRV / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Urine output Measured interval volume No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-IO-output_urine-15 revision 1 No observation recorded Chart source fs-IO-output_urine-30 revision 1 Chart source fs-IO-output_urine-45 revision 1 No observation recorded No observation recorded Chart source fs-IO-output_urine-60 revision 1":
+            - rowheader "Urine output Measured interval volume":
+              - text: Urine output
+              - generic: Measured interval volume
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-output_urine-15 revision 1":
+              - button "Chart source fs-IO-output_urine-15 revision 1" [active]:
+                - strong: 35 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Measured interval volume
+                - generic: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_urine-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-output_urine-30 revision 1":
+              - button "Chart source fs-IO-output_urine-30 revision 1":
+                - strong: 25 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Measured interval volume
+                - generic: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_urine-30 / 1
+            - cell "Chart source fs-IO-output_urine-45 revision 1":
+              - button "Chart source fs-IO-output_urine-45 revision 1":
+                - strong: 40 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Measured interval volume
+                - generic: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_urine-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-IO-output_urine-60 revision 1":
+              - button "Chart source fs-IO-output_urine-60 revision 1":
+                - strong: 45 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Measured interval volume
+                - generic: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+                - generic: fs-IO-output_urine-60 / 1
+          - row "Valve finding echo · unknown Chart source m7-VALVE revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Valve finding echo · unknown":
+              - text: Valve finding
+              - generic: echo · unknown
+            - cell "Chart source m7-VALVE revision 1":
+              - button "Chart source m7-VALVE revision 1":
+                - strong: "Synthetic report: moderate tricuspid regurgitation."
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-VALVE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Ventilation context event Source event; settings are not carried forward No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-VENT-CHANGE revision 1 No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Ventilation context event Source event; settings are not carried forward":
+              - text: Ventilation context event
+              - generic: Source event; settings are not carried forward
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-VENT-CHANGE revision 1":
+              - button "Chart source fs-VENT-CHANGE revision 1":
+                - strong: "Source-charted ventilator review: PEEP documented as 5 cmH2O. Refer to sample-time source context; no setting is carried forward to other samples."
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source event; settings are not carried forward
+                - generic: fs-VENT-CHANGE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+    - generic "Scope and international documentation context"
+    - region "Evidence kept off the time axis":
+      - heading "Evidence kept off the time axis" [level=3]
+      - paragraph: Contextual/unplaced records and source times that this restrictive display cannot place confidently remain inspectable. The source timestamp is preserved.
+      - button "Cardiac output · m7-CONTEXT-CO / 1 ↗"
+      - generic: 2026-10-08T06:00:00+00:00 · contextual
+      - button "Central venous pressure · m7-UNPLACED / 1 ↗"
+      - generic: Time not established · unplaced
+  - complementary "Selected source evidence":
+    - text: SOURCE INSPECTOR
+    - heading "Evidence within reach." [level=2]
+    - paragraph: Select any recorded item to inspect its exact source, quality, device context and revision history.
+    - generic: Source
+    - generic: Exact revision
+    - generic: Provenance
+    - generic: Values are shown as recorded. Units are not converted, and quality labels are source assertions.
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

@@ -1,0 +1,294 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "ICU flowsheet":
+      - generic: ICU flowsheet
+      - generic: ↗
+    - button "Patient summary":
+      - generic: Patient summary
+      - generic: ↗
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / ICU FLOWSHEET
+  - heading "ICU flowsheet" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "156"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - region "Read-only ICU flowsheet":
+    - heading "Hemodynamics and infusions over time" [level=2]
+    - paragraph: Fictional charted observations and infusion events — not a treatment protocol or dosing advice. No pump control, prescribing or execution is available.
+    - paragraph:
+      - strong: Read each column as a recorded timestamp, not proof of physiological simultaneity or treatment response.
+      - text: Rates are shown only at documented events. Blank cells do not mean zero, unchanged measurements, continued delivery or a stopped infusion. No dose conversion, averaging or carry-forward is performed.
+    - paragraph: Orders and preparations are not administration. Dose units are preserved, including mcg/min, units/h and mcg/kg/min. Pump rates and dosing weights appear only when separately source-recorded and exactly linked; missing context is not filled in. CO methods, oxygen sample types and acquisition sites remain distinct.
+    - paragraph: 152 records from displayed families in the loaded view; 2 are kept off the time axis. Other evidence remains in the Evidence library. HPI is optional.
+    - text: Flowsheet section
+    - combobox "Flowsheet section":
+      - option "All hemodynamic sections"
+      - option "Infusions and delivery context"
+      - option "Pressures, flow and rhythm"
+      - option "Fluid input / output context"
+      - option "Gases and tissue perfusion"
+      - option "Interventions and assessments" [selected]
+      - option "Recorded goals and handover"
+    - paragraph: Fluid volumes are hemodynamic context, not a replacement for renal or nutrition records. Reported net balances and cumulative totals are source assertions, not ClinRx calculations; completeness of all intake/losses is not established. Intervention volumes may already be included in input totals and must not be counted again.
+    - region "Scrollable ICU time chart":
+      - table "Recorded source times in UTC · separate point observations, no interpolated trends":
+        - caption: Recorded source times in UTC · separate point observations, no interpolated trends
+        - rowgroup:
+          - row "Measurement / infusion 2026-10-08 08:00:00 2026-10-08 08:01:00 2026-10-08 08:02:00 2026-10-08 08:05:00 2026-10-08 08:10:00 2026-10-08 08:15:00 2026-10-08 08:20:00 2026-10-08 08:30:00 2026-10-08 08:45:00 2026-10-08 08:50:00 2026-10-08 08:55:00 2026-10-08 09:00:00":
+            - columnheader "Measurement / infusion"
+            - columnheader "2026-10-08 08:00:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:00:00
+            - columnheader "2026-10-08 08:01:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:01:00
+            - columnheader "2026-10-08 08:02:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:02:00
+            - columnheader "2026-10-08 08:05:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:05:00
+            - columnheader "2026-10-08 08:10:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:10:00
+            - columnheader "2026-10-08 08:15:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:15:00
+            - columnheader "2026-10-08 08:20:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:20:00
+            - columnheader "2026-10-08 08:30:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:30:00
+            - columnheader "2026-10-08 08:45:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:45:00
+            - columnheader "2026-10-08 08:50:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:50:00
+            - columnheader "2026-10-08 08:55:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:55:00
+            - columnheader "2026-10-08 09:00:00":
+              - time:
+                - text: 2026-10-08
+                - text: 09:00:00
+        - rowgroup:
+          - row "CRRT fluid-removal context Source chart context; not a renal-management recommendation No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-CRRT-NOTE revision 1 No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "CRRT fluid-removal context Source chart context; not a renal-management recommendation":
+              - text: CRRT fluid-removal context
+              - generic: Source chart context; not a renal-management recommendation
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CRRT-NOTE revision 1":
+              - button "Chart source fs-CRRT-NOTE revision 1":
+                - strong: "Source chart: CRRT fluid-removal context recorded. Interval rows contain source-recorded NET removal, not total effluent. Replacement fluids are not independently reconciled by ClinRx."
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source chart context; not a renal-management recommendation
+                - generic: fs-CRRT-NOTE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "fluid challenge Method not supplied · No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-FLUID-ASSESSMENT revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "fluid challenge Method not supplied ·":
+              - text: fluid challenge
+              - generic: Method not supplied ·
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-FLUID-ASSESSMENT revision 1":
+              - button "Chart source fs-FLUID-ASSESSMENT revision 1":
+                - strong: Recorded source
+                - generic: "Quality: unknown · recorded"
+                - generic: fs-FLUID-ASSESSMENT / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Fluid challenge event Source event; may already be included in input totals No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-FLUID-CHALLENGE revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Fluid challenge event Source event; may already be included in input totals":
+              - text: Fluid challenge event
+              - generic: Source event; may already be included in input totals
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-FLUID-CHALLENGE revision 1":
+              - button "Chart source fs-FLUID-CHALLENGE revision 1":
+                - strong: 250 mL
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source event; may already be included in input totals
+                - generic: fs-FLUID-CHALLENGE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Passive leg raise episode Method not supplied · Chart source m7-PLR revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Passive leg raise episode Method not supplied ·":
+              - text: Passive leg raise episode
+              - generic: Method not supplied ·
+            - cell "Chart source m7-PLR revision 1":
+              - button "Chart source m7-PLR revision 1":
+                - strong: Recorded source
+                - generic: "Quality: unknown · recorded"
+                - generic: m7-PLR / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Position change Method not supplied · Chart source m7-EVENT revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Position change Method not supplied ·":
+              - text: Position change
+              - generic: Method not supplied ·
+            - cell "Chart source m7-EVENT revision 1":
+              - button "Chart source m7-EVENT revision 1":
+                - strong: Recorded position change
+                - generic: "Quality: not recorded · recorded"
+                - generic: m7-EVENT / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Ventilation context event Source event; settings are not carried forward No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-VENT-CHANGE revision 1 No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Ventilation context event Source event; settings are not carried forward":
+              - text: Ventilation context event
+              - generic: Source event; settings are not carried forward
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-VENT-CHANGE revision 1":
+              - button "Chart source fs-VENT-CHANGE revision 1":
+                - strong: "Source-charted ventilator review: PEEP documented as 5 cmH2O. Refer to sample-time source context; no setting is carried forward to other samples."
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source event; settings are not carried forward
+                - generic: fs-VENT-CHANGE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+    - generic "Scope and international documentation context"
+    - region "Evidence kept off the time axis":
+      - heading "Evidence kept off the time axis" [level=3]
+      - paragraph: Contextual/unplaced records and source times that this restrictive display cannot place confidently remain inspectable. The source timestamp is preserved.
+      - button "Cardiac output · m7-CONTEXT-CO / 1 ↗"
+      - generic: 2026-10-08T06:00:00+00:00 · contextual
+      - button "Central venous pressure · m7-UNPLACED / 1 ↗"
+      - generic: Time not established · unplaced
+  - complementary "Selected source evidence" [active]:
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "Cardiac output" [level=2]
+    - paragraph: 4.00 L/min
+    - paragraph:
+      - code: fs-CO-15 / 1
+    - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+    - term: Source time
+    - definition: 2026-10-08T08:15:00+00:00
+    - term: Recorded quality
+    - definition: acceptable
+    - term: Source unit mapping
+    - definition: unresolved
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx.synthetic.demo
+    - region "Measurement acquisition context":
+      - heading "Measurement context" [level=3]
+      - term: Method
+      - definition: bolus thermodilution · SwanGanz · HemoSphere
+      - term: Recorded production
+      - definition: direct measurement
+      - term: Respiratory phase
+      - definition: Source-charted end expiration
+      - term: Position
+      - definition: Source-charted semi-recumbent position
+      - term: Recorded averaging basis
+      - definition: "3 {injections} · no average calculated here"
+      - term: Calibration status
+      - definition: unknown
+      - term: Zeroing status
+      - definition: unknown
+      - term: Indexing denominator
+      - definition: Not recorded · source-recorded, not derived here
+      - term: Source quality
+      - definition: acceptable
+      - paragraph: Source metadata does not establish measurement validity or dynamic-test applicability.
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

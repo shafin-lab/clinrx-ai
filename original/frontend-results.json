@@ -1,0 +1,52 @@
+[
+  {
+    "name": "frontend-full",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "test"
+    ],
+    "exit_code": 0,
+    "seconds": 16.06481909751892
+  },
+  {
+    "name": "typecheck",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "run",
+      "typecheck"
+    ],
+    "exit_code": 0,
+    "seconds": 0.8548860549926758
+  },
+  {
+    "name": "build-default",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "run",
+      "build"
+    ],
+    "exit_code": 0,
+    "seconds": 1.187479019165039
+  },
+  {
+    "name": "build-hosted",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "run",
+      "build",
+      "--",
+      "--mode",
+      "hosted-demo"
+    ],
+    "exit_code": 0,
+    "seconds": 1.1701529026031494
+  }
+]

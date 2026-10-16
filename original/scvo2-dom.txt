@@ -1,0 +1,588 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "ICU flowsheet":
+      - generic: ICU flowsheet
+      - generic: ↗
+    - button "Patient summary":
+      - generic: Patient summary
+      - generic: ↗
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / ICU FLOWSHEET
+  - heading "ICU flowsheet" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "156"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - region "Read-only ICU flowsheet":
+    - heading "Hemodynamics and infusions over time" [level=2]
+    - paragraph: Fictional charted observations and infusion events — not a treatment protocol or dosing advice. No pump control, prescribing or execution is available.
+    - paragraph:
+      - strong: Read each column as a recorded timestamp, not proof of physiological simultaneity or treatment response.
+      - text: Rates are shown only at documented events. Blank cells do not mean zero, unchanged measurements, continued delivery or a stopped infusion. No dose conversion, averaging or carry-forward is performed.
+    - paragraph: Orders and preparations are not administration. Dose units are preserved, including mcg/min, units/h and mcg/kg/min. Pump rates and dosing weights appear only when separately source-recorded and exactly linked; missing context is not filled in. CO methods, oxygen sample types and acquisition sites remain distinct.
+    - paragraph: 152 records from displayed families in the loaded view; 2 are kept off the time axis. Other evidence remains in the Evidence library. HPI is optional.
+    - text: Flowsheet section
+    - combobox "Flowsheet section":
+      - option "All hemodynamic sections"
+      - option "Infusions and delivery context"
+      - option "Pressures, flow and rhythm"
+      - option "Fluid input / output context"
+      - option "Gases and tissue perfusion" [selected]
+      - option "Interventions and assessments"
+      - option "Recorded goals and handover"
+    - paragraph: Fluid volumes are hemodynamic context, not a replacement for renal or nutrition records. Reported net balances and cumulative totals are source assertions, not ClinRx calculations; completeness of all intake/losses is not established. Intervention volumes may already be included in input totals and must not be counted again.
+    - region "Scrollable ICU time chart":
+      - table "Recorded source times in UTC · separate point observations, no interpolated trends":
+        - caption: Recorded source times in UTC · separate point observations, no interpolated trends
+        - rowgroup:
+          - row "Measurement / infusion 2026-10-08 08:00:00 2026-10-08 08:01:00 2026-10-08 08:02:00 2026-10-08 08:05:00 2026-10-08 08:10:00 2026-10-08 08:15:00 2026-10-08 08:20:00 2026-10-08 08:30:00 2026-10-08 08:45:00 2026-10-08 08:50:00 2026-10-08 08:55:00 2026-10-08 09:00:00":
+            - columnheader "Measurement / infusion"
+            - columnheader "2026-10-08 08:00:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:00:00
+            - columnheader "2026-10-08 08:01:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:01:00
+            - columnheader "2026-10-08 08:02:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:02:00
+            - columnheader "2026-10-08 08:05:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:05:00
+            - columnheader "2026-10-08 08:10:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:10:00
+            - columnheader "2026-10-08 08:15:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:15:00
+            - columnheader "2026-10-08 08:20:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:20:00
+            - columnheader "2026-10-08 08:30:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:30:00
+            - columnheader "2026-10-08 08:45:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:45:00
+            - columnheader "2026-10-08 08:50:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:50:00
+            - columnheader "2026-10-08 08:55:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:55:00
+            - columnheader "2026-10-08 09:00:00":
+              - time:
+                - text: 2026-10-08
+                - text: 09:00:00
+        - rowgroup:
+          - row "Arterial oxygen saturation blood gas · arterial Chart source m7-ABG-SAO2 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Arterial oxygen saturation blood gas · arterial":
+              - text: Arterial oxygen saturation
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-SAO2 revision 1":
+              - button "Chart source m7-ABG-SAO2 revision 1":
+                - strong: 95.0 %
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-SAO2 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Base excess blood gas · arterial Chart source m7-ABG-BE revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Base excess blood gas · arterial":
+              - text: Base excess
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-BE revision 1":
+              - button "Chart source m7-ABG-BE revision 1":
+                - strong: "-2.0 mmol/L"
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-BE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Bicarbonate blood gas · arterial Chart source m7-ABG-HCO3 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Bicarbonate blood gas · arterial":
+              - text: Bicarbonate
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-HCO3 revision 1":
+              - button "Chart source m7-ABG-HCO3 revision 1":
+                - strong: 23.0 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-HCO3 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Capillary refill bedside examination · unknown No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-CRT-15 revision 1 No observation recorded Chart source fs-CRT-30 revision 1 Chart source fs-CRT-45 revision 1 No observation recorded No observation recorded Chart source fs-CRT-60 revision 1":
+            - rowheader "Capillary refill bedside examination · unknown":
+              - text: Capillary refill
+              - generic: bedside examination · unknown
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CRT-15 revision 1":
+              - button "Chart source fs-CRT-15 revision 1":
+                - strong: 3.0 s
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CRT-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-CRT-30 revision 1":
+              - button "Chart source fs-CRT-30 revision 1":
+                - strong: 2.5 s
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CRT-30 / 1
+            - cell "Chart source fs-CRT-45 revision 1":
+              - button "Chart source fs-CRT-45 revision 1":
+                - strong: 2.0 s
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CRT-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-CRT-60 revision 1":
+              - button "Chart source fs-CRT-60 revision 1":
+                - strong: 2.0 s
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-CRT-60 / 1
+          - row "Capillary refill bedside examination · unknown Chart source m7-CRT revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Capillary refill bedside examination · unknown":
+              - text: Capillary refill
+              - generic: bedside examination · unknown
+            - cell "Chart source m7-CRT revision 1":
+              - button "Chart source m7-CRT revision 1":
+                - strong: 2.0 s
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-CRT / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Haemoglobin blood gas · arterial Chart source m7-ABG-HB revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Haemoglobin blood gas · arterial":
+              - text: Haemoglobin
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-HB revision 1":
+              - button "Chart source m7-ABG-HB revision 1":
+                - strong: 10.2 g/dL
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-HB / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Lactate laboratory · arterial No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-LACTATE-15 revision 1 No observation recorded Chart source fs-LACTATE-30 revision 1 Chart source fs-LACTATE-45 revision 1 No observation recorded No observation recorded Chart source fs-LACTATE-60 revision 1":
+            - rowheader "Lactate laboratory · arterial":
+              - text: Lactate
+              - generic: laboratory · arterial
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-LACTATE-15 revision 1":
+              - button "Chart source fs-LACTATE-15 revision 1":
+                - strong: 2.4 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-LACTATE-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-LACTATE-30 revision 1":
+              - button "Chart source fs-LACTATE-30 revision 1":
+                - strong: 2.2 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-LACTATE-30 / 1
+            - cell "Chart source fs-LACTATE-45 revision 1":
+              - button "Chart source fs-LACTATE-45 revision 1":
+                - strong: 2.1 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-LACTATE-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-LACTATE-60 revision 1":
+              - button "Chart source fs-LACTATE-60 revision 1":
+                - strong: 2.0 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-LACTATE-60 / 1
+          - row "Lactate laboratory · unknown No observation recorded Chart source m7-L revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Lactate laboratory · unknown":
+              - text: Lactate
+              - generic: laboratory · unknown
+            - cell "No observation recorded"
+            - cell "Chart source m7-L revision 1":
+              - button "Chart source m7-L revision 1":
+                - strong: 2.000 mmol/L
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-L / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Mixed venous oxygen saturation blood gas · mixed venous Chart source m7-SVO2 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-SVO2-30 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Mixed venous oxygen saturation blood gas · mixed venous":
+              - text: Mixed venous oxygen saturation
+              - generic: blood gas · mixed venous
+            - cell "Chart source m7-SVO2 revision 1":
+              - button "Chart source m7-SVO2 revision 1":
+                - strong: 65.0 %
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-SVO2 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-SVO2-30 revision 1":
+              - button "Chart source fs-SVO2-30 revision 1":
+                - strong: 64.0 %
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SVO2-30 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "mottling bedside examination · unknown No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-MOTTLING-15 revision 1 No observation recorded Chart source fs-MOTTLING-30 revision 1 Chart source fs-MOTTLING-45 revision 1 No observation recorded No observation recorded Chart source fs-MOTTLING-60 revision 1":
+            - rowheader "mottling bedside examination · unknown":
+              - text: mottling
+              - generic: bedside examination · unknown
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-MOTTLING-15 revision 1":
+              - button "Chart source fs-MOTTLING-15 revision 1":
+                - strong: "Source chart: mottling recorded around knees."
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MOTTLING-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-MOTTLING-30 revision 1":
+              - button "Chart source fs-MOTTLING-30 revision 1":
+                - strong: "Source chart: mottling still recorded."
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MOTTLING-30 / 1
+            - cell "Chart source fs-MOTTLING-45 revision 1":
+              - button "Chart source fs-MOTTLING-45 revision 1":
+                - strong: "Source chart: mottling not observed at this assessment."
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MOTTLING-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-MOTTLING-60 revision 1":
+              - button "Chart source fs-MOTTLING-60 revision 1":
+                - strong: "Source chart: mottling not observed at this assessment."
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-MOTTLING-60 / 1
+          - row "PaCO₂ blood gas · arterial Chart source m7-ABG-PACO2 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PACO2-15 revision 1 No observation recorded Chart source fs-PACO2-30 revision 1 Chart source fs-PACO2-45 revision 1 No observation recorded No observation recorded Chart source fs-PACO2-60 revision 1":
+            - rowheader "PaCO₂ blood gas · arterial":
+              - text: PaCO₂
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-PACO2 revision 1":
+              - button "Chart source m7-ABG-PACO2 revision 1":
+                - strong: 48.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-PACO2 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PACO2-15 revision 1":
+              - button "Chart source fs-PACO2-15 revision 1":
+                - strong: 50.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PACO2-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-PACO2-30 revision 1":
+              - button "Chart source fs-PACO2-30 revision 1":
+                - strong: 47.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PACO2-30 / 1
+            - cell "Chart source fs-PACO2-45 revision 1":
+              - button "Chart source fs-PACO2-45 revision 1":
+                - strong: 45.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PACO2-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PACO2-60 revision 1":
+              - button "Chart source fs-PACO2-60 revision 1":
+                - strong: 44.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PACO2-60 / 1
+          - row "PaO₂ blood gas · arterial Chart source m7-ABG-PAO2 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PAO2-15 revision 1 No observation recorded Chart source fs-PAO2-30 revision 1 Chart source fs-PAO2-45 revision 1 No observation recorded No observation recorded Chart source fs-PAO2-60 revision 1":
+            - rowheader "PaO₂ blood gas · arterial":
+              - text: PaO₂
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-PAO2 revision 1":
+              - button "Chart source m7-ABG-PAO2 revision 1":
+                - strong: 78.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-PAO2 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PAO2-15 revision 1":
+              - button "Chart source fs-PAO2-15 revision 1":
+                - strong: 80.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PAO2-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-PAO2-30 revision 1":
+              - button "Chart source fs-PAO2-30 revision 1":
+                - strong: 84.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PAO2-30 / 1
+            - cell "Chart source fs-PAO2-45 revision 1":
+              - button "Chart source fs-PAO2-45 revision 1":
+                - strong: 86.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PAO2-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PAO2-60 revision 1":
+              - button "Chart source fs-PAO2-60 revision 1":
+                - strong: 88.0 mmHg
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PAO2-60 / 1
+          - row "pH blood gas · arterial Chart source m7-ABG-PH revision 1 No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PH-15 revision 1 No observation recorded Chart source fs-PH-30 revision 1 Chart source fs-PH-45 revision 1 No observation recorded No observation recorded Chart source fs-PH-60 revision 1":
+            - rowheader "pH blood gas · arterial":
+              - text: pH
+              - generic: blood gas · arterial
+            - cell "Chart source m7-ABG-PH revision 1":
+              - button "Chart source m7-ABG-PH revision 1":
+                - strong: "7.31 (unit: 1)"
+                - generic: "Quality: acceptable · recorded"
+                - generic: m7-ABG-PH / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PH-15 revision 1":
+              - button "Chart source fs-PH-15 revision 1":
+                - strong: "7.30 (unit: 1)"
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PH-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-PH-30 revision 1":
+              - button "Chart source fs-PH-30 revision 1":
+                - strong: "7.32 (unit: 1)"
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PH-30 / 1
+            - cell "Chart source fs-PH-45 revision 1":
+              - button "Chart source fs-PH-45 revision 1":
+                - strong: "7.34 (unit: 1)"
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PH-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PH-60 revision 1":
+              - button "Chart source fs-PH-60 revision 1":
+                - strong: "7.35 (unit: 1)"
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-PH-60 / 1
+          - row "scvo2 blood gas · central venous No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-SCVO2-30 revision 1 No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "scvo2 blood gas · central venous":
+              - text: scvo2
+              - generic: blood gas · central venous
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-SCVO2-30 revision 1":
+              - button "Chart source fs-SCVO2-30 revision 1":
+                - strong: 66.0 %
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SCVO2-30 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "skin temperature bedside examination · unknown No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-SKIN-TEMP-15 revision 1 No observation recorded Chart source fs-SKIN-TEMP-30 revision 1 Chart source fs-SKIN-TEMP-45 revision 1 No observation recorded No observation recorded Chart source fs-SKIN-TEMP-60 revision 1":
+            - rowheader "skin temperature bedside examination · unknown":
+              - text: skin temperature
+              - generic: bedside examination · unknown
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-SKIN-TEMP-15 revision 1":
+              - button "Chart source fs-SKIN-TEMP-15 revision 1":
+                - strong: 35.5 Cel
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SKIN-TEMP-15 / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-SKIN-TEMP-30 revision 1":
+              - button "Chart source fs-SKIN-TEMP-30 revision 1":
+                - strong: 35.8 Cel
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SKIN-TEMP-30 / 1
+            - cell "Chart source fs-SKIN-TEMP-45 revision 1":
+              - button "Chart source fs-SKIN-TEMP-45 revision 1":
+                - strong: 36.0 Cel
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SKIN-TEMP-45 / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-SKIN-TEMP-60 revision 1":
+              - button "Chart source fs-SKIN-TEMP-60 revision 1":
+                - strong: 36.1 Cel
+                - generic: "Quality: acceptable · recorded"
+                - generic: fs-SKIN-TEMP-60 / 1
+    - generic "Scope and international documentation context"
+    - region "Evidence kept off the time axis":
+      - heading "Evidence kept off the time axis" [level=3]
+      - paragraph: Contextual/unplaced records and source times that this restrictive display cannot place confidently remain inspectable. The source timestamp is preserved.
+      - button "Cardiac output · m7-CONTEXT-CO / 1 ↗"
+      - generic: 2026-10-08T06:00:00+00:00 · contextual
+      - button "Central venous pressure · m7-UNPLACED / 1 ↗"
+      - generic: Time not established · unplaced
+  - complementary "Selected source evidence" [active]:
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "scvo2" [level=2]
+    - paragraph: 66.0 %
+    - paragraph:
+      - code: fs-SCVO2-30 / 1
+    - paragraph: blood gas
+    - term: Source time
+    - definition: 2026-10-08T08:30:00+00:00
+    - term: Recorded quality
+    - definition: acceptable
+    - term: Source unit mapping
+    - definition: unresolved
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx.synthetic.demo
+    - region "Measurement acquisition context":
+      - heading "Measurement context" [level=3]
+      - term: Method
+      - definition: blood gas
+      - term: Recorded production
+      - definition: direct measurement
+      - term: Respiratory phase
+      - definition: Not recorded
+      - term: Position
+      - definition: Not recorded
+      - term: Recorded averaging basis
+      - definition: Not recorded · no average calculated here
+      - term: Calibration status
+      - definition: unknown
+      - term: Zeroing status
+      - definition: unknown
+      - term: Indexing denominator
+      - definition: Not recorded · source-recorded, not derived here
+      - term: Source quality
+      - definition: acceptable
+      - paragraph: Source metadata does not establish measurement validity or dynamic-test applicability.
+    - region "Blood gas sample context":
+      - heading "Blood gas sample context" [level=3]
+      - term: Sample type
+      - definition: central venous
+      - term: Specimen
+      - definition: fs-central_venous-sample
+      - term: Collected
+      - definition: 2026-10-08T08:30:00+00:00
+      - term: Sample-time FiO₂
+      - definition: Not recorded
+      - term: Oxygen device
+      - definition: Not recorded
+      - term: Ventilator mode
+      - definition: Not recorded
+      - term: Sample-time PEEP
+      - definition: Not recorded
+      - generic "Sample-time oxygen and ventilation settings"
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

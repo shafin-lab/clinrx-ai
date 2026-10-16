@@ -1,0 +1,410 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "ICU flowsheet":
+      - generic: ICU flowsheet
+      - generic: ↗
+    - button "Patient summary":
+      - generic: Patient summary
+      - generic: ↗
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / ICU FLOWSHEET
+  - heading "ICU flowsheet" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "156"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - region "Read-only ICU flowsheet":
+    - heading "Hemodynamics and infusions over time" [level=2]
+    - paragraph: Fictional charted observations and infusion events — not a treatment protocol or dosing advice. No pump control, prescribing or execution is available.
+    - paragraph:
+      - strong: Read each column as a recorded timestamp, not proof of physiological simultaneity or treatment response.
+      - text: Rates are shown only at documented events. Blank cells do not mean zero, unchanged measurements, continued delivery or a stopped infusion. No dose conversion, averaging or carry-forward is performed.
+    - paragraph: Orders and preparations are not administration. Dose units are preserved, including mcg/min, units/h and mcg/kg/min. Pump rates and dosing weights appear only when separately source-recorded and exactly linked; missing context is not filled in. CO methods, oxygen sample types and acquisition sites remain distinct.
+    - paragraph: 152 records from displayed families in the loaded view; 2 are kept off the time axis. Other evidence remains in the Evidence library. HPI is optional.
+    - text: Flowsheet section
+    - combobox "Flowsheet section":
+      - option "All hemodynamic sections"
+      - option "Infusions and delivery context" [selected]
+      - option "Pressures, flow and rhythm"
+      - option "Fluid input / output context"
+      - option "Gases and tissue perfusion"
+      - option "Interventions and assessments"
+      - option "Recorded goals and handover"
+    - paragraph: Fluid volumes are hemodynamic context, not a replacement for renal or nutrition records. Reported net balances and cumulative totals are source assertions, not ClinRx calculations; completeness of all intake/losses is not established. Intervention volumes may already be included in input totals and must not be counted again.
+    - region "Scrollable ICU time chart":
+      - table "Recorded source times in UTC · separate point observations, no interpolated trends":
+        - caption: Recorded source times in UTC · separate point observations, no interpolated trends
+        - rowgroup:
+          - row "Measurement / infusion 2026-10-08 08:00:00 2026-10-08 08:01:00 2026-10-08 08:02:00 2026-10-08 08:05:00 2026-10-08 08:10:00 2026-10-08 08:15:00 2026-10-08 08:20:00 2026-10-08 08:30:00 2026-10-08 08:45:00 2026-10-08 08:50:00 2026-10-08 08:55:00 2026-10-08 09:00:00":
+            - columnheader "Measurement / infusion"
+            - columnheader "2026-10-08 08:00:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:00:00
+            - columnheader "2026-10-08 08:01:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:01:00
+            - columnheader "2026-10-08 08:02:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:02:00
+            - columnheader "2026-10-08 08:05:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:05:00
+            - columnheader "2026-10-08 08:10:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:10:00
+            - columnheader "2026-10-08 08:15:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:15:00
+            - columnheader "2026-10-08 08:20:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:20:00
+            - columnheader "2026-10-08 08:30:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:30:00
+            - columnheader "2026-10-08 08:45:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:45:00
+            - columnheader "2026-10-08 08:50:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:50:00
+            - columnheader "2026-10-08 08:55:00":
+              - time:
+                - text: 2026-10-08
+                - text: 08:55:00
+            - columnheader "2026-10-08 09:00:00":
+              - time:
+                - text: 2026-10-08
+                - text: 09:00:00
+        - rowgroup:
+          - 'row "Dobutamine · inotrope Infusion: fs-infusion-dobutamine · documented events only No event recorded No event recorded No event recorded No event recorded No event recorded No event recorded Chart source fs-D-ORDER revision 1 Chart source fs-D-START revision 1 Chart source fs-D-CHANGE revision 1 Chart source fs-D-PAUSE revision 1 Chart source fs-D-RESTART revision 1 No event recorded"':
+            - 'rowheader "Dobutamine · inotrope Infusion: fs-infusion-dobutamine · documented events only"':
+              - text: Dobutamine · inotrope
+              - generic: "Infusion: fs-infusion-dobutamine · documented events only"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source fs-D-ORDER revision 1":
+              - button "Chart source fs-D-ORDER revision 1":
+                - strong: order
+                - generic: 2.5 mcg/kg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-D-ORDER / 1
+                - generic: "Concentration: 5 mg/mL · Dosing weight: see source reference"
+            - cell "Chart source fs-D-START revision 1":
+              - button "Chart source fs-D-START revision 1":
+                - strong: initiation
+                - generic: 2.5 mcg/kg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-D-START / 1
+                - generic: "Concentration: 5 mg/mL · Dosing weight: see source reference"
+            - cell "Chart source fs-D-CHANGE revision 1":
+              - button "Chart source fs-D-CHANGE revision 1":
+                - strong: rate change
+                - generic: 3.0 mcg/kg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-D-CHANGE / 1
+                - generic: "Concentration: 5 mg/mL · Dosing weight: see source reference"
+            - cell "Chart source fs-D-PAUSE revision 1":
+              - button "Chart source fs-D-PAUSE revision 1":
+                - strong: pause
+                - generic: Fictional documented interruption; no causal conclusion
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-D-PAUSE / 1
+            - cell "Chart source fs-D-RESTART revision 1":
+              - button "Chart source fs-D-RESTART revision 1":
+                - strong: restart
+                - generic: 2.5 mcg/kg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-D-RESTART / 1
+                - generic: "Concentration: 5 mg/mL · Dosing weight: see source reference"
+            - cell "No event recorded"
+          - row "Noradrenaline (norepinephrine) Infusion identity not recorded · separate event No event recorded No event recorded Chart source m7-V revision 1 No event recorded No event recorded No event recorded No event recorded No event recorded No event recorded No event recorded No event recorded No event recorded":
+            - rowheader "Noradrenaline (norepinephrine) Infusion identity not recorded · separate event":
+              - text: Noradrenaline (norepinephrine)
+              - generic: Infusion identity not recorded · separate event
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source m7-V revision 1":
+              - button "Chart source m7-V revision 1":
+                - strong: initiation
+                - generic: Rate not recorded
+                - generic: "Quality: not assessed here · recorded"
+                - generic: m7-V / 1
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+          - 'row "Noradrenaline (norepinephrine) Infusion: fs-infusion-norepinephrine · documented events only No event recorded No event recorded No event recorded Chart source fs-N-ORDER revision 1 Chart source fs-N-START revision 1 Chart source fs-N-CHANGE revision 1 No event recorded No event recorded Chart source fs-N-REDUCE revision 1 No event recorded No event recorded No event recorded"':
+            - 'rowheader "Noradrenaline (norepinephrine) Infusion: fs-infusion-norepinephrine · documented events only"':
+              - text: Noradrenaline (norepinephrine)
+              - generic: "Infusion: fs-infusion-norepinephrine · documented events only"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source fs-N-ORDER revision 1":
+              - button "Chart source fs-N-ORDER revision 1":
+                - strong: order
+                - generic: 5 mcg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-N-ORDER / 1
+                - generic: "Concentration: 0.08 mg/mL · Dosing weight: see source reference"
+            - cell "Chart source fs-N-START revision 1":
+              - button "Chart source fs-N-START revision 1":
+                - strong: initiation
+                - generic: 5 mcg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-N-START / 1
+                - generic: "Concentration: 0.08 mg/mL · Dosing weight: see source reference"
+            - cell "Chart source fs-N-CHANGE revision 1":
+              - button "Chart source fs-N-CHANGE revision 1":
+                - strong: rate change
+                - generic: 7 mcg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-N-CHANGE / 1
+                - generic: "Concentration: 0.08 mg/mL · Dosing weight: see source reference"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source fs-N-REDUCE revision 1":
+              - button "Chart source fs-N-REDUCE revision 1":
+                - strong: rate change
+                - generic: 6 mcg/min
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-N-REDUCE / 1
+                - generic: "Concentration: 0.08 mg/mL · Dosing weight: see source reference"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+          - 'row "Vasopressin Infusion: fs-infusion-vasopressin · documented events only No event recorded No event recorded No event recorded No event recorded No event recorded Chart source fs-V-START revision 1 No event recorded No event recorded No event recorded No event recorded No event recorded Chart source fs-V-STOP revision 1"':
+            - 'rowheader "Vasopressin Infusion: fs-infusion-vasopressin · documented events only"':
+              - text: Vasopressin
+              - generic: "Infusion: fs-infusion-vasopressin · documented events only"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source fs-V-START revision 1":
+              - button "Chart source fs-V-START revision 1":
+                - strong: initiation
+                - generic: 1.8 units/h
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-V-START / 1
+                - generic: "Concentration: 1 units/mL · Dosing weight: see source reference"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "No event recorded"
+            - cell "Chart source fs-V-STOP revision 1":
+              - button "Chart source fs-V-STOP revision 1":
+                - strong: permanent stop
+                - generic: Fictional documented interruption; no causal conclusion
+                - generic: "Quality: not assessed here · recorded"
+                - generic: fs-V-STOP / 1
+          - row "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-dobutamine No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PUMP-RATE-D-START revision 1 Chart source fs-PUMP-RATE-D-CHANGE revision 1 No observation recorded Chart source fs-PUMP-RATE-D-RESTART revision 1 No observation recorded":
+            - rowheader "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-dobutamine":
+              - text: Pump volumetric rate
+              - generic: Separately recorded pump rate; no dose conversion · fs-infusion-dobutamine
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PUMP-RATE-D-START revision 1":
+              - button "Chart source fs-PUMP-RATE-D-START revision 1":
+                - strong: 2.1 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-D-START / 1
+            - cell "Chart source fs-PUMP-RATE-D-CHANGE revision 1":
+              - button "Chart source fs-PUMP-RATE-D-CHANGE revision 1":
+                - strong: 2.52 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-D-CHANGE / 1
+            - cell "No observation recorded"
+            - cell "Chart source fs-PUMP-RATE-D-RESTART revision 1":
+              - button "Chart source fs-PUMP-RATE-D-RESTART revision 1":
+                - strong: 2.1 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-D-RESTART / 1
+            - cell "No observation recorded"
+          - row "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-norepinephrine No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PUMP-RATE-N-START revision 1 Chart source fs-PUMP-RATE-N-CHANGE revision 1 No observation recorded No observation recorded Chart source fs-PUMP-RATE-N-REDUCE revision 1 No observation recorded No observation recorded No observation recorded":
+            - rowheader "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-norepinephrine":
+              - text: Pump volumetric rate
+              - generic: Separately recorded pump rate; no dose conversion · fs-infusion-norepinephrine
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PUMP-RATE-N-START revision 1":
+              - button "Chart source fs-PUMP-RATE-N-START revision 1":
+                - strong: 3.75 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-N-START / 1
+            - cell "Chart source fs-PUMP-RATE-N-CHANGE revision 1":
+              - button "Chart source fs-PUMP-RATE-N-CHANGE revision 1":
+                - strong: 5.25 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-N-CHANGE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PUMP-RATE-N-REDUCE revision 1":
+              - button "Chart source fs-PUMP-RATE-N-REDUCE revision 1":
+                - strong: 4.5 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-N-REDUCE / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-vasopressin No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded Chart source fs-PUMP-RATE-V-START revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Pump volumetric rate Separately recorded pump rate; no dose conversion · fs-infusion-vasopressin":
+              - text: Pump volumetric rate
+              - generic: Separately recorded pump rate; no dose conversion · fs-infusion-vasopressin
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "Chart source fs-PUMP-RATE-V-START revision 1":
+              - button "Chart source fs-PUMP-RATE-V-START revision 1":
+                - strong: 1.8 mL/h
+                - generic: "Quality: not recorded · recorded"
+                - generic: Separately recorded pump rate; no dose conversion
+                - generic: fs-PUMP-RATE-V-START / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+          - row "Source dosing weight Source-recorded actual weight Chart source fs-WEIGHT revision 1 No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded No observation recorded":
+            - rowheader "Source dosing weight Source-recorded actual weight":
+              - text: Source dosing weight
+              - generic: Source-recorded actual weight
+            - cell "Chart source fs-WEIGHT revision 1":
+              - button "Chart source fs-WEIGHT revision 1":
+                - strong: 70 kg
+                - generic: "Quality: not recorded · recorded"
+                - generic: Source-recorded actual weight
+                - generic: fs-WEIGHT / 1
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+            - cell "No observation recorded"
+    - generic "Scope and international documentation context"
+    - region "Evidence kept off the time axis":
+      - heading "Evidence kept off the time axis" [level=3]
+      - paragraph: Contextual/unplaced records and source times that this restrictive display cannot place confidently remain inspectable. The source timestamp is preserved.
+      - button "Cardiac output · m7-CONTEXT-CO / 1 ↗"
+      - generic: 2026-10-08T06:00:00+00:00 · contextual
+      - button "Central venous pressure · m7-UNPLACED / 1 ↗"
+      - generic: Time not established · unplaced
+  - complementary "Selected source evidence" [active]:
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "Vasoactive event" [level=2]
+    - paragraph: dobutamine rate change
+    - paragraph:
+      - code: fs-D-CHANGE / 1
+    - paragraph: Method not supplied
+    - term: Source time
+    - definition: 2026-10-08T08:45:00+00:00
+    - term: Recorded quality
+    - definition: not recorded
+    - term: Source unit mapping
+    - definition: Not supplied / not applicable
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx.synthetic.demo
+    - region "Recorded infusion event details":
+      - heading "Recorded infusion event" [level=3]
+      - term: Event
+      - definition: rate change
+      - term: Documented event rate
+      - definition: 3.0 mcg/kg/min
+      - term: Concentration
+      - definition: 5 mg/mL
+      - term: Route
+      - definition: Synthetic central venous infusion
+      - term: Dosing weight
+      - definition: 70 kg · source fs-WEIGHT / 1 · recorded
+      - term: Weight basis
+      - definition: actual
+      - term: Pump
+      - definition: fs-pump-dobutamine
+      - term: Channel
+      - definition: fs-channel-dobutamine
+      - term: Infusion identity
+      - definition: fs-infusion-dobutamine
+      - term: Pump volumetric rate
+      - definition: 2.52 mL/h · fs-PUMP-RATE-D-CHANGE / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - paragraph: No continuous exposure, dose conversion or treatment effect is inferred from this event. Orders and preparations do not establish administration.
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

@@ -1,0 +1,1324 @@
+- link "Skip to evidence workspace":
+  - /url: "#demo-main"
+- banner:
+  - link "ClinRx AI":
+    - /url: /
+    - generic: C
+    - text: ClinRx
+    - generic: AI
+  - generic: New execution disabled in this demo
+- complementary:
+  - navigation "Demo views":
+    - button "ICU flowsheet":
+      - generic: ICU flowsheet
+      - generic: ↗
+    - button "Patient summary" [active]:
+      - generic: Patient summary
+      - generic: ↗
+    - button "Patient overview":
+      - generic: Patient overview
+      - generic: ↗
+    - button "Evidence library":
+      - generic: Evidence library
+      - generic: ↗
+    - button "Recording timeline":
+      - generic: Recording timeline
+      - generic: ↗
+    - button "Retained examples":
+      - generic: Retained examples
+      - generic: ↗
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / PATIENT SUMMARY
+  - heading "Patient summary" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "156"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - region "Combined patient evidence summary":
+    - heading "One patient, evidence together" [level=2]
+    - paragraph: Read blood gases and sample-time settings beside recorded flow, pressures and echo findings. Open any source to inspect its exact revision and correction history.
+    - paragraph: "Patient: synthetic-p1 · Encounter: synthetic-e1"
+    - paragraph:
+      - strong: "Recorded review window:"
+      - text: 2026-10-08T08:00:00Z → 2026-10-08T10:00:00Z
+    - paragraph: These records are grouped for browsing. A shared time or study label does not establish simultaneity or clinical agreement. No confirmed combined diagnosis, score or treatment recommendation is generated. Patient-specific possibilities are presented separately and remain unconfirmed.
+    - region "Patient-specific possibilities":
+      - heading "What might these findings mean together?" [level=3]
+      - generic: Synthetic case interpretation · unconfirmed
+      - paragraph: This section separates recorded source findings from possible clinical meaning. It is an authored explanation for this exact synthetic case, not a general diagnostic engine or a clinically validated result. It creates no execution, inference or receipt.
+      - status: "Case interpretation unavailable: the patient, review window or recorded evidence differs from the authored synthetic case. The previous possibilities are withheld; inspect the current source records below. Nothing is automatically regenerated."
+      - generic "Basis and limits of this case interpretation"
+    - region "How the evidence fits together":
+      - heading "How these records fit together" [level=3]
+      - generic: "Patient-level relationship: not established"
+      - paragraph: 3 of 3 evidence streams have records in this view. Blood sample, measured flow/pressures and echo report provide complementary source information. Their presence together does not prove agreement, simultaneity or cause.
+      - paragraph:
+        - strong: "What this explanation does:"
+        - text: shows what each stream contributes and links its recorded values to their sources. Source quality labels are not confidence in a combined interpretation.
+      - region "Blood sample and oxygen context":
+        - heading "Blood sample and oxygen context" [level=4]
+        - paragraph: This stream can provide recorded blood pH, gas measurements, saturation and haemoglobin when available. Read the listed sources with their own sample type, collection time and respiratory settings; absent measurements are not filled in.
+        - paragraph: Place the blood sample beside the flow and echo records for review. The sample alone does not establish the cause of a circulatory finding.
+        - generic "Recorded sources behind this explanation (22)"
+      - region "Recorded flow and pressures":
+        - heading "Recorded flow and pressures" [level=4]
+        - paragraph: Cardiac-output and pressure records add a separate view of recorded flow and pressures, using their documented measurement methods.
+        - paragraph: Compare these source measurements with the sample context and echo report. A cardiac-output value or pressure alone does not establish oxygen delivery, tissue perfusion or a shock subtype.
+        - generic "Recorded sources behind this explanation (34)"
+      - region "Echo structure, function and estimates":
+        - heading "Echo structure, function and estimates" [level=4]
+        - paragraph: Echo adds source-reported ventricular, valve and pericardial findings, Doppler measurements and pressure estimates. These describe a different evidence stream from the blood sample and monitor measurements.
+        - paragraph: Read LVOT VTI and ventricular findings beside recorded flow, while keeping RVSP/PASP estimates distinct from invasive pressures. The view does not calculate cardiac output from VTI or confirm PH/PAH.
+        - generic "Recorded sources behind this explanation (12)"
+      - region "What remains uncertain":
+        - heading "What remains uncertain" [level=4]
+        - paragraph: These are limited display checks, not an eligibility or full quality assessment. Values and units remain as recorded; unit mapping and calibration applicability are not resolved by this explanation.
+        - list:
+          - listitem: Cross-stream timing and clinical agreement have not been established. The review window is not a claim that these observations describe the same physiological moment.
+          - listitem: 9 cardiac-output records are present. Their separate methods, source times and placement remain visible; no preferred value, equivalence, average or trend is inferred.
+          - listitem: No causal link between the gas results, flow measurements and echo findings is established. No integrated diagnosis, shock subtype, PH/PAH classification or treatment recommendation is generated.
+        - generic "Record-specific uncertainty and source caveats (13 records)"
+        - list:
+          - button "Inspect uncertainty Cardiac output m7-CONTEXT-CO": Cardiac output · m7-CONTEXT-CO / 1 ↗
+          - list:
+            - listitem: "Placement: contextual. It is not treated as an in-window observation."
+          - button "Inspect uncertainty Cardiac output m7-PICCO-CO": Cardiac output · m7-PICCO-CO / 1 ↗
+          - list:
+            - listitem: "Recorded quality: unknown. This is not upgraded by the explanation."
+          - button "Inspect uncertainty Estimated PASP m7-PASP": Estimated PASP · m7-PASP / 1 ↗
+          - list:
+            - listitem: Source-calculated echo estimate; not recalculated or confirmed against invasive pressure here.
+            - listitem: "Source note: Source-reported PASP estimate; equivalence to RVSP is not established by ClinRx. RVOT obstruction not documented."
+          - button "Inspect uncertainty RV basal dimension m7-RVD": RV basal dimension · m7-RVD / 1 ↗
+          - list:
+            - listitem: "Source note: Source-reported RV basal end-diastolic dimension, apical four-chamber view."
+          - button "Inspect uncertainty Estimated RVSP m7-RVSP": Estimated RVSP · m7-RVSP / 1 ↗
+          - list:
+            - listitem: Source-calculated echo estimate; not recalculated or confirmed against invasive pressure here.
+            - listitem: "Source note: Source-reported estimate using TR velocity and estimated RAP 5 mmHg; not recalculated by ClinRx. RVOT obstruction not documented."
+          - button "Inspect uncertainty TR peak velocity m7-TRV": TR peak velocity · m7-TRV / 1 ↗
+          - list:
+            - listitem: "Source note: Source-reported peak TR velocity; envelope adequacy reported acceptable in the synthetic study."
+          - button "Inspect uncertainty Base excess m7-ABG-BE": Base excess · m7-ABG-BE / 1 ↗
+          - list:
+            - listitem: "Source note: Source-reported analyzer calculation; not calculated by ClinRx."
+          - button "Inspect uncertainty Bicarbonate m7-ABG-HCO3": Bicarbonate · m7-ABG-HCO3 / 1 ↗
+          - list:
+            - listitem: "Source note: Source-reported analyzer calculation; not calculated by ClinRx."
+          - button "Inspect uncertainty Mixed venous oxygen saturation m7-SVO2": Mixed venous oxygen saturation · m7-SVO2 / 1 ↗
+          - list:
+            - listitem: "Sample context not recorded: Specimen, Collected, Sample-time FiO₂, Oxygen device, Ventilator mode, Sample-time PEEP. Applicability is not assessed here."
+          - button "Inspect uncertainty scvo2 fs-SCVO2-30": scvo2 · fs-SCVO2-30 / 1 ↗
+          - list:
+            - listitem: "Sample context not recorded: Sample-time FiO₂, Oxygen device, Ventilator mode, Sample-time PEEP. Applicability is not assessed here."
+          - button "Inspect uncertainty Mixed venous oxygen saturation fs-SVO2-30": Mixed venous oxygen saturation · fs-SVO2-30 / 1 ↗
+          - list:
+            - listitem: "Sample context not recorded: Sample-time FiO₂, Oxygen device, Ventilator mode, Sample-time PEEP. Applicability is not assessed here."
+          - button "Inspect uncertainty Cardiac output fs-CO-60": Cardiac output · fs-CO-60 / 1 ↗
+          - list:
+            - listitem: "Recorded quality: suspect. This is not upgraded by the explanation."
+            - listitem: "Source note: Synthetic acquisition quality concern; not corroborating proof."
+          - button "Inspect uncertainty Central venous pressure m7-UNPLACED": Central venous pressure · m7-UNPLACED / 1 ↗
+          - list:
+            - listitem: "Placement: unplaced. It is not treated as an in-window observation."
+            - listitem: "Result unavailable: unknown. Not established"
+      - generic "Recorded-view caveats"
+      - generic "Explanation scope and clinical source context"
+    - region "ABG and oxygen transport":
+      - heading "ABG and oxygen transport" [level=3]
+      - paragraph: Read the gases with each sample’s collection time and respiratory settings.
+      - list:
+        - button "Open summary source Base excess m7-ABG-BE":
+          - generic: Base excess
+          - strong:
+            - text: "-2.0"
+            - generic: mmol/L
+          - generic: Inspect source ↗
+        - paragraph: source calculated · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: synthetic-arterial-sample-1 · Collected: 2026-10-08T08:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: m7-ABG-BE / 1
+        - button "Open summary source Haemoglobin m7-ABG-HB":
+          - generic: Haemoglobin
+          - strong:
+            - text: "10.2"
+            - generic: g/dL
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: synthetic-arterial-sample-1 · Collected: 2026-10-08T08:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: m7-ABG-HB / 1
+        - button "Open summary source Bicarbonate m7-ABG-HCO3":
+          - generic: Bicarbonate
+          - strong:
+            - text: "23.0"
+            - generic: mmol/L
+          - generic: Inspect source ↗
+        - paragraph: source calculated · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: synthetic-arterial-sample-1 · Collected: 2026-10-08T08:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: m7-ABG-HCO3 / 1
+        - button "Open summary source PaCO₂ m7-ABG-PACO2":
+          - generic: PaCO₂
+          - strong:
+            - text: "48.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: synthetic-arterial-sample-1 · Collected: 2026-10-08T08:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: m7-ABG-PACO2 / 1
+        - button "Open summary source PaO₂ m7-ABG-PAO2":
+          - generic: PaO₂
+          - strong:
+            - text: "78.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: synthetic-arterial-sample-1 · Collected: 2026-10-08T08:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: m7-ABG-PAO2 / 1
+        - button "Open summary source pH m7-ABG-PH":
+          - generic: pH
+          - strong:
+            - text: "7.31"
+            - generic: "(unit: 1)"
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: synthetic-arterial-sample-1 · Collected: 2026-10-08T08:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: m7-ABG-PH / 1
+        - button "Open summary source Arterial oxygen saturation m7-ABG-SAO2":
+          - generic: Arterial oxygen saturation
+          - strong:
+            - text: "95.0"
+            - generic: "%"
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: synthetic-arterial-sample-1 · Collected: 2026-10-08T08:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: m7-ABG-SAO2 / 1
+        - button "Open summary source Mixed venous oxygen saturation m7-SVO2":
+          - generic: Mixed venous oxygen saturation
+          - strong:
+            - text: "65.0"
+            - generic: "%"
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: mixed venous · Specimen: Not recorded · Collected: Not recorded · Sample-time FiO₂: Not recorded · Oxygen device: Not recorded · Ventilator mode: Not recorded · Sample-time PEEP: Not recorded"
+        - generic: m7-SVO2 / 1
+        - button "Open summary source PaCO₂ fs-PACO2-15":
+          - generic: PaCO₂
+          - strong:
+            - text: "50.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-15 · Collected: 2026-10-08T08:15:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PACO2-15 / 1
+        - button "Open summary source PaO₂ fs-PAO2-15":
+          - generic: PaO₂
+          - strong:
+            - text: "80.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-15 · Collected: 2026-10-08T08:15:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PAO2-15 / 1
+        - button "Open summary source pH fs-PH-15":
+          - generic: pH
+          - strong:
+            - text: "7.30"
+            - generic: "(unit: 1)"
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-15 · Collected: 2026-10-08T08:15:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PH-15 / 1
+        - button "Open summary source PaCO₂ fs-PACO2-30":
+          - generic: PaCO₂
+          - strong:
+            - text: "47.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-30 · Collected: 2026-10-08T08:30:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PACO2-30 / 1
+        - button "Open summary source PaO₂ fs-PAO2-30":
+          - generic: PaO₂
+          - strong:
+            - text: "84.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-30 · Collected: 2026-10-08T08:30:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PAO2-30 / 1
+        - button "Open summary source pH fs-PH-30":
+          - generic: pH
+          - strong:
+            - text: "7.32"
+            - generic: "(unit: 1)"
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-30 · Collected: 2026-10-08T08:30:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PH-30 / 1
+        - button "Open summary source scvo2 fs-SCVO2-30":
+          - generic: scvo2
+          - strong:
+            - text: "66.0"
+            - generic: "%"
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: central venous · Specimen: fs-central_venous-sample · Collected: 2026-10-08T08:30:00+00:00 · Sample-time FiO₂: Not recorded · Oxygen device: Not recorded · Ventilator mode: Not recorded · Sample-time PEEP: Not recorded"
+        - generic: fs-SCVO2-30 / 1
+        - button "Open summary source Mixed venous oxygen saturation fs-SVO2-30":
+          - generic: Mixed venous oxygen saturation
+          - strong:
+            - text: "64.0"
+            - generic: "%"
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: mixed venous · Specimen: fs-mixed_venous-sample · Collected: 2026-10-08T08:30:00+00:00 · Sample-time FiO₂: Not recorded · Oxygen device: Not recorded · Ventilator mode: Not recorded · Sample-time PEEP: Not recorded"
+        - generic: fs-SVO2-30 / 1
+        - button "Open summary source PaCO₂ fs-PACO2-45":
+          - generic: PaCO₂
+          - strong:
+            - text: "45.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-45 · Collected: 2026-10-08T08:45:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PACO2-45 / 1
+        - button "Open summary source PaO₂ fs-PAO2-45":
+          - generic: PaO₂
+          - strong:
+            - text: "86.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-45 · Collected: 2026-10-08T08:45:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PAO2-45 / 1
+        - button "Open summary source pH fs-PH-45":
+          - generic: pH
+          - strong:
+            - text: "7.34"
+            - generic: "(unit: 1)"
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-45 · Collected: 2026-10-08T08:45:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PH-45 / 1
+        - button "Open summary source PaCO₂ fs-PACO2-60":
+          - generic: PaCO₂
+          - strong:
+            - text: "44.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-60 · Collected: 2026-10-08T09:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PACO2-60 / 1
+        - button "Open summary source PaO₂ fs-PAO2-60":
+          - generic: PaO₂
+          - strong:
+            - text: "88.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-60 · Collected: 2026-10-08T09:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PAO2-60 / 1
+        - button "Open summary source pH fs-PH-60":
+          - generic: pH
+          - strong:
+            - text: "7.35"
+            - generic: "(unit: 1)"
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · blood gas
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Sample type: arterial · Specimen: fs-arterial-sample-60 · Collected: 2026-10-08T09:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O"
+        - generic: fs-PH-60 / 1
+    - region "Cardiac output and pressures":
+      - heading "Cardiac output and pressures" [level=3]
+      - paragraph: Compare recorded methods. No preferred value, average or trend is calculated.
+      - list:
+        - button "Open summary source Cardiac output m7-CONTEXT-CO":
+          - generic: Cardiac output
+          - strong:
+            - text: "4.500"
+            - generic: L/min
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bolus thermodilution · SwanGanz · HemoSphere
+        - paragraph:
+          - strong: contextual
+          - text: "· Source time: 2026-10-08T06:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+        - generic: m7-CONTEXT-CO / 1
+        - button "Open summary source Cardiac index m7-CI":
+          - generic: Cardiac index
+          - strong:
+            - text: "2.60"
+            - generic: L/min/m2
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bolus thermodilution · SwanGanz · HemoSphere
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+        - generic: m7-CI / 1
+        - button "Open summary source Cardiac output m7-CO":
+          - generic: Cardiac output
+          - strong:
+            - text: "4.50"
+            - generic: L/min
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bolus thermodilution · SwanGanz · HemoSphere
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+        - generic: m7-CO / 1
+        - button "Open summary source Cardiac output m7-FLOTRAC":
+          - generic: Cardiac output
+          - strong:
+            - text: "4.40"
+            - generic: L/min
+          - generic: Inspect source ↗
+        - paragraph: monitor derived · pulse contour · FloTrac · HemoSphere
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: pulse contour · FloTrac · HemoSphere
+        - generic: m7-FLOTRAC / 1
+        - button "Open summary source Cardiac output m7-PICCO-CO":
+          - generic: Cardiac output
+          - strong:
+            - text: "4.60"
+            - generic: L/min
+          - generic: Inspect source ↗
+        - paragraph: monitor derived · pulse contour · PiCCO · PiCCO
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: unknown · Record status: recorded"
+        - paragraph: pulse contour · PiCCO · PiCCO
+        - generic: m7-PICCO-CO / 1
+        - button "Open summary source Cardiac output m7-VOLUMEVIEW":
+          - generic: Cardiac output
+          - strong:
+            - text: "4.60"
+            - generic: L/min
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · transpulmonary thermodilution · VolumeView · EV1000
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: transpulmonary thermodilution · VolumeView · EV1000
+        - generic: m7-VOLUMEVIEW / 1
+        - button "Open summary source Mean arterial pressure m7-P":
+          - generic: Mean arterial pressure
+          - strong:
+            - text: "65.00"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: m7-P / 1
+        - button "Open summary source Central venous pressure m7-PAC":
+          - generic: Central venous pressure
+          - strong:
+            - text: "8.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · pac
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: pac
+        - generic: m7-PAC / 1
+        - button "Open summary source Pulmonary artery wedge pressure m7-RHC":
+          - generic: Pulmonary artery wedge pressure
+          - strong:
+            - text: "12.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · rhc
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: rhc
+        - generic: m7-RHC / 1
+        - button "Open summary source Cardiac index fs-CI-15":
+          - generic: Cardiac index
+          - strong:
+            - text: "2.30"
+            - generic: L/min/m2
+          - generic: Inspect source ↗
+        - paragraph: source calculated · bolus thermodilution · SwanGanz · HemoSphere
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+        - generic: fs-CI-15 / 1
+        - button "Open summary source Cardiac output fs-CO-15":
+          - generic: Cardiac output
+          - strong:
+            - text: "4.00"
+            - generic: L/min
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bolus thermodilution · SwanGanz · HemoSphere
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+        - generic: fs-CO-15 / 1
+        - button "Open summary source Central venous pressure fs-CVP-15":
+          - generic: Central venous pressure
+          - strong:
+            - text: "9.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · pac
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: pac
+        - generic: fs-CVP-15 / 1
+        - button "Open summary source Mean arterial pressure fs-MAP-15":
+          - generic: Mean arterial pressure
+          - strong:
+            - text: "61"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-MAP-15 / 1
+        - button "Open summary source systemic diastolic fs-systemic_diastolic-15":
+          - generic: systemic diastolic
+          - strong:
+            - text: "47"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-systemic_diastolic-15 / 1
+        - button "Open summary source systemic systolic fs-systemic_systolic-15":
+          - generic: systemic systolic
+          - strong:
+            - text: "92"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-systemic_systolic-15 / 1
+        - button "Open summary source Cardiac index fs-CI-30":
+          - generic: Cardiac index
+          - strong:
+            - text: "2.50"
+            - generic: L/min/m2
+          - generic: Inspect source ↗
+        - paragraph: source calculated · bolus thermodilution · SwanGanz · HemoSphere
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+        - generic: fs-CI-30 / 1
+        - button "Open summary source Cardiac output fs-CO-30":
+          - generic: Cardiac output
+          - strong:
+            - text: "4.40"
+            - generic: L/min
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bolus thermodilution · SwanGanz · HemoSphere
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+        - generic: fs-CO-30 / 1
+        - button "Open summary source Central venous pressure fs-CVP-30":
+          - generic: Central venous pressure
+          - strong:
+            - text: "10.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · pac
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: pac
+        - generic: fs-CVP-30 / 1
+        - button "Open summary source Mean arterial pressure fs-MAP-30":
+          - generic: Mean arterial pressure
+          - strong:
+            - text: "68"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-MAP-30 / 1
+        - button "Open summary source systemic diastolic fs-systemic_diastolic-30":
+          - generic: systemic diastolic
+          - strong:
+            - text: "52"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-systemic_diastolic-30 / 1
+        - button "Open summary source systemic systolic fs-systemic_systolic-30":
+          - generic: systemic systolic
+          - strong:
+            - text: "101"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-systemic_systolic-30 / 1
+        - button "Open summary source Cardiac index fs-CI-45":
+          - generic: Cardiac index
+          - strong:
+            - text: "2.70"
+            - generic: L/min/m2
+          - generic: Inspect source ↗
+        - paragraph: source calculated · bolus thermodilution · SwanGanz · HemoSphere
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+        - generic: fs-CI-45 / 1
+        - button "Open summary source Cardiac output fs-CO-45":
+          - generic: Cardiac output
+          - strong:
+            - text: "4.70"
+            - generic: L/min
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bolus thermodilution · SwanGanz · HemoSphere
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+        - generic: fs-CO-45 / 1
+        - button "Open summary source Central venous pressure fs-CVP-45":
+          - generic: Central venous pressure
+          - strong:
+            - text: "9.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · pac
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: pac
+        - generic: fs-CVP-45 / 1
+        - button "Open summary source Mean arterial pressure fs-MAP-45":
+          - generic: Mean arterial pressure
+          - strong:
+            - text: "72"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-MAP-45 / 1
+        - button "Open summary source systemic diastolic fs-systemic_diastolic-45":
+          - generic: systemic diastolic
+          - strong:
+            - text: "55"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-systemic_diastolic-45 / 1
+        - button "Open summary source systemic systolic fs-systemic_systolic-45":
+          - generic: systemic systolic
+          - strong:
+            - text: "110"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-systemic_systolic-45 / 1
+        - button "Open summary source Cardiac index fs-CI-60":
+          - generic: Cardiac index
+          - strong:
+            - text: "2.60"
+            - generic: L/min/m2
+          - generic: Inspect source ↗
+        - paragraph: source calculated · bolus thermodilution · SwanGanz · HemoSphere
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+        - generic: fs-CI-60 / 1
+        - button "Open summary source Cardiac output fs-CO-60":
+          - generic: Cardiac output
+          - strong:
+            - text: "4.60"
+            - generic: L/min
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bolus thermodilution · SwanGanz · HemoSphere
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: suspect · Record status: recorded"
+        - paragraph: bolus thermodilution · SwanGanz · HemoSphere
+        - generic: fs-CO-60 / 1
+        - button "Open summary source Central venous pressure fs-CVP-60":
+          - generic: Central venous pressure
+          - strong:
+            - text: "9.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · pac
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: pac
+        - generic: fs-CVP-60 / 1
+        - button "Open summary source Mean arterial pressure fs-MAP-60":
+          - generic: Mean arterial pressure
+          - strong:
+            - text: "70"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-MAP-60 / 1
+        - button "Open summary source systemic diastolic fs-systemic_diastolic-60":
+          - generic: systemic diastolic
+          - strong:
+            - text: "53"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-systemic_diastolic-60 / 1
+        - button "Open summary source systemic systolic fs-systemic_systolic-60":
+          - generic: systemic systolic
+          - strong:
+            - text: "106"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · invasive arterial
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: invasive arterial
+        - generic: fs-systemic_systolic-60 / 1
+        - button "Open summary source Central venous pressure m7-UNPLACED":
+          - generic: Central venous pressure
+          - strong: Not established
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · unknown
+        - paragraph:
+          - strong: unplaced
+          - text: "· Source time: Time not established · Quality: acceptable · Record status: recorded"
+        - paragraph: unknown
+        - generic: m7-UNPLACED / 1
+    - region "Echo and right-heart findings":
+      - heading "Echo and right-heart findings" [level=3]
+      - paragraph: Source estimates and report findings remain distinct from invasive measurements.
+      - list:
+        - button "Open summary source TAPSE m7-ECHO":
+          - generic: TAPSE
+          - strong:
+            - text: "18"
+            - generic: mm
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - generic: m7-ECHO / 1
+        - button "Open summary source LV ejection fraction m7-EF":
+          - generic: LV ejection fraction
+          - strong:
+            - text: "55.0"
+            - generic: "%"
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - generic: m7-EF / 1
+        - button "Open summary source Pericardial effusion m7-EFFUSION":
+          - generic: Pericardial effusion
+          - strong: "Synthetic report: no pericardial effusion visualized."
+          - generic: Inspect source ↗
+        - paragraph: Source report finding · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - generic: m7-EFFUSION / 1
+        - button "Open summary source Estimated PASP m7-PASP":
+          - generic: Estimated PASP
+          - strong:
+            - text: "45.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: source calculated · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - paragraph: Source-reported estimate; not recalculated by ClinRx.
+        - generic: m7-PASP / 1
+        - button "Open summary source Pulmonary hypertension report finding m7-PH":
+          - generic: Pulmonary hypertension report finding
+          - strong: "Synthetic report: findings suggest pulmonary hypertension; no invasive confirmation or PAH subtype established."
+          - generic: Inspect source ↗
+        - paragraph: Source report finding · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - generic: m7-PH / 1
+        - button "Open summary source RV basal dimension m7-RVD":
+          - generic: RV basal dimension
+          - strong:
+            - text: "4.3"
+            - generic: cm
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - generic: m7-RVD / 1
+        - button "Open summary source RV function m7-RVFUNCTION":
+          - generic: RV function
+          - strong: "Synthetic report: mildly reduced RV systolic function."
+          - generic: Inspect source ↗
+        - paragraph: Source report finding · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - generic: m7-RVFUNCTION / 1
+        - button "Open summary source Estimated RVSP m7-RVSP":
+          - generic: Estimated RVSP
+          - strong:
+            - text: "45.0"
+            - generic: mmHg
+          - generic: Inspect source ↗
+        - paragraph: source calculated · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - paragraph: Source-reported estimate; not recalculated by ClinRx.
+        - generic: m7-RVSP / 1
+        - button "Open summary source Septal configuration m7-SEPTUM":
+          - generic: Septal configuration
+          - strong: "Synthetic report: systolic septal flattening."
+          - generic: Inspect source ↗
+        - paragraph: Source report finding · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - generic: m7-SEPTUM / 1
+        - button "Open summary source TR peak velocity m7-TRV":
+          - generic: TR peak velocity
+          - strong:
+            - text: "3.16"
+            - generic: m/s
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - generic: m7-TRV / 1
+        - button "Open summary source Valve finding m7-VALVE":
+          - generic: Valve finding
+          - strong: "Synthetic report: moderate tricuspid regurgitation."
+          - generic: Inspect source ↗
+        - paragraph: Source report finding · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - generic: m7-VALVE / 1
+        - button "Open summary source LVOT VTI m7-VTI":
+          - generic: LVOT VTI
+          - strong:
+            - text: "17.5"
+            - generic: cm
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · echo
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: "Study: study · Report: report · Report revision: 1"
+        - generic: m7-VTI / 1
+    - region "Perfusion and circulatory support":
+      - heading "Perfusion and circulatory support" [level=3]
+      - paragraph: Lactate, bedside perfusion and vasoactive events add their own source context.
+      - list:
+        - button "Open summary source Capillary refill m7-CRT":
+          - generic: Capillary refill
+          - strong:
+            - text: "2.0"
+            - generic: s
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: m7-CRT / 1
+        - button "Open summary source Lactate m7-L":
+          - generic: Lactate
+          - strong:
+            - text: "2.000"
+            - generic: mmol/L
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · laboratory
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:01:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: laboratory
+        - generic: m7-L / 1
+        - button "Open summary source Vasoactive event m7-V":
+          - generic: Vasoactive event
+          - strong:
+            - text: norepinephrine
+            - generic: initiation
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:02:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: m7-V / 1
+        - button "Open summary source Vasoactive event fs-N-ORDER":
+          - generic: Vasoactive event
+          - strong:
+            - text: norepinephrine
+            - generic: order
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:05:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: fs-N-ORDER / 1
+        - button "Open summary source Vasoactive event fs-N-START":
+          - generic: Vasoactive event
+          - strong:
+            - text: norepinephrine
+            - generic: initiation
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:10:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: fs-N-START / 1
+        - button "Open summary source Lactate fs-LACTATE-15":
+          - generic: Lactate
+          - strong:
+            - text: "2.4"
+            - generic: mmol/L
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · laboratory
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: laboratory
+        - generic: fs-LACTATE-15 / 1
+        - button "Open summary source Capillary refill fs-CRT-15":
+          - generic: Capillary refill
+          - strong:
+            - text: "3.0"
+            - generic: s
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-CRT-15 / 1
+        - button "Open summary source mottling fs-MOTTLING-15":
+          - generic: mottling
+          - strong: "Source chart: mottling recorded around knees."
+          - generic: Inspect source ↗
+        - paragraph: Source report finding · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-MOTTLING-15 / 1
+        - button "Open summary source skin temperature fs-SKIN-TEMP-15":
+          - generic: skin temperature
+          - strong:
+            - text: "35.5"
+            - generic: Cel
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-SKIN-TEMP-15 / 1
+        - button "Open summary source Vasoactive event fs-N-CHANGE":
+          - generic: Vasoactive event
+          - strong:
+            - text: norepinephrine
+            - generic: rate change
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: fs-N-CHANGE / 1
+        - button "Open summary source Vasoactive event fs-V-START":
+          - generic: Vasoactive event
+          - strong:
+            - text: vasopressin
+            - generic: initiation
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:15:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: fs-V-START / 1
+        - button "Open summary source Vasoactive event fs-D-ORDER":
+          - generic: Vasoactive event
+          - strong:
+            - text: dobutamine
+            - generic: order
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:20:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: fs-D-ORDER / 1
+        - button "Open summary source Lactate fs-LACTATE-30":
+          - generic: Lactate
+          - strong:
+            - text: "2.2"
+            - generic: mmol/L
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · laboratory
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: laboratory
+        - generic: fs-LACTATE-30 / 1
+        - button "Open summary source Capillary refill fs-CRT-30":
+          - generic: Capillary refill
+          - strong:
+            - text: "2.5"
+            - generic: s
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-CRT-30 / 1
+        - button "Open summary source mottling fs-MOTTLING-30":
+          - generic: mottling
+          - strong: "Source chart: mottling still recorded."
+          - generic: Inspect source ↗
+        - paragraph: Source report finding · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-MOTTLING-30 / 1
+        - button "Open summary source skin temperature fs-SKIN-TEMP-30":
+          - generic: skin temperature
+          - strong:
+            - text: "35.8"
+            - generic: Cel
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-SKIN-TEMP-30 / 1
+        - button "Open summary source Vasoactive event fs-D-START":
+          - generic: Vasoactive event
+          - strong:
+            - text: dobutamine
+            - generic: initiation
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:30:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: fs-D-START / 1
+        - button "Open summary source Lactate fs-LACTATE-45":
+          - generic: Lactate
+          - strong:
+            - text: "2.1"
+            - generic: mmol/L
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · laboratory
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: laboratory
+        - generic: fs-LACTATE-45 / 1
+        - button "Open summary source Capillary refill fs-CRT-45":
+          - generic: Capillary refill
+          - strong:
+            - text: "2.0"
+            - generic: s
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-CRT-45 / 1
+        - button "Open summary source mottling fs-MOTTLING-45":
+          - generic: mottling
+          - strong: "Source chart: mottling not observed at this assessment."
+          - generic: Inspect source ↗
+        - paragraph: Source report finding · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-MOTTLING-45 / 1
+        - button "Open summary source skin temperature fs-SKIN-TEMP-45":
+          - generic: skin temperature
+          - strong:
+            - text: "36.0"
+            - generic: Cel
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-SKIN-TEMP-45 / 1
+        - button "Open summary source Vasoactive event fs-D-CHANGE":
+          - generic: Vasoactive event
+          - strong:
+            - text: dobutamine
+            - generic: rate change
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: fs-D-CHANGE / 1
+        - button "Open summary source Vasoactive event fs-N-REDUCE":
+          - generic: Vasoactive event
+          - strong:
+            - text: norepinephrine
+            - generic: rate change
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:45:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: fs-N-REDUCE / 1
+        - button "Open summary source Vasoactive event fs-D-PAUSE":
+          - generic: Vasoactive event
+          - strong:
+            - text: dobutamine
+            - generic: pause
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:50:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: fs-D-PAUSE / 1
+        - button "Open summary source Vasoactive event fs-D-RESTART":
+          - generic: Vasoactive event
+          - strong:
+            - text: dobutamine
+            - generic: restart
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T08:55:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: fs-D-RESTART / 1
+        - button "Open summary source Lactate fs-LACTATE-60":
+          - generic: Lactate
+          - strong:
+            - text: "2.0"
+            - generic: mmol/L
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · laboratory
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: laboratory
+        - generic: fs-LACTATE-60 / 1
+        - button "Open summary source Capillary refill fs-CRT-60":
+          - generic: Capillary refill
+          - strong:
+            - text: "2.0"
+            - generic: s
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-CRT-60 / 1
+        - button "Open summary source mottling fs-MOTTLING-60":
+          - generic: mottling
+          - strong: "Source chart: mottling not observed at this assessment."
+          - generic: Inspect source ↗
+        - paragraph: Source report finding · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-MOTTLING-60 / 1
+        - button "Open summary source skin temperature fs-SKIN-TEMP-60":
+          - generic: skin temperature
+          - strong:
+            - text: "36.1"
+            - generic: Cel
+          - generic: Inspect source ↗
+        - paragraph: direct measurement · bedside examination
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: acceptable · Record status: recorded"
+        - paragraph: bedside examination
+        - generic: fs-SKIN-TEMP-60 / 1
+        - button "Open summary source Vasoactive event fs-V-STOP":
+          - generic: Vasoactive event
+          - strong:
+            - text: vasopressin
+            - generic: permanent stop
+          - generic: Inspect source ↗
+        - paragraph: Recorded source · Method not supplied
+        - paragraph:
+          - strong: in window
+          - text: "· Source time: 2026-10-08T09:00:00+00:00 · Quality: not recorded · Record status: recorded"
+        - paragraph: Method not supplied
+        - generic: fs-V-STOP / 1
+    - complementary "Summary limitations":
+      - heading "Keep the gaps in view" [level=3]
+      - paragraph: "HPI is optional: not recorded in this case. Missing sample settings are not borrowed from another record. Earlier contextual and unplaced records retain their labels; source quality is not upgraded."
+      - paragraph: Echo PH wording is a source report impression; no PH diagnosis or PAH subtype is inferred. No cardiac output is calculated from VTI. The separate authored case interpretation discusses a possible acid–base component without confirming a diagnosis. Explore the Evidence library for the other evidence families.
+  - complementary "Selected source evidence":
+    - text: SOURCE INSPECTOR
+    - heading "Evidence within reach." [level=2]
+    - paragraph: Select any recorded item to inspect its exact source, quality, device context and revision history.
+    - generic: Source
+    - generic: Exact revision
+    - generic: Provenance
+    - generic: Values are shown as recorded. Units are not converted, and quality labels are source assertions.
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

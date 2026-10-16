@@ -1,0 +1,305 @@
+{
+  "fact": {
+    "kind": "circulatory_oxygen",
+    "id": "fs-PH-60",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "verified",
+        "method": "synthetic-demo",
+        "verifier": "synthetic-system",
+        "assessed_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "ambiguity": null
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx.synthetic.demo",
+        "identifier": "patient-state-v1",
+        "version": "1",
+        "channel": "system"
+      },
+      "actor": "synthetic-demo",
+      "recorded_at": "2026-10-08T08:00:00Z",
+      "upstream": [],
+      "lineage": "unknown",
+      "limitations": [
+        "Synthetic source assertion only."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "timestamp_precision": "M7ExactTimestampInput/v1",
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:00:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:00:00+00:00",
+      "clock": "verified",
+      "clock_basis": {
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "actor": "synthetic-demo",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "upstream": [],
+        "lineage": "unknown",
+        "limitations": [
+          "Synthetic source assertion only."
+        ]
+      },
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "timestamp_precision": "M7ExactTimestampInput/v1",
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:03:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:03:00+00:00",
+      "clock": "verified",
+      "clock_basis": {
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "actor": "synthetic-demo",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "upstream": [],
+        "lineage": "unknown",
+        "limitations": [
+          "Synthetic source assertion only."
+        ]
+      },
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [],
+    "source_identifiers": [],
+    "disclosures": [],
+    "record_status": "recorded",
+    "result": {
+      "result_type": "numeric",
+      "quantity": {
+        "value": "7.35",
+        "unit": {
+          "raw": "1",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Synthetic source unit."
+        }
+      },
+      "comparator": "="
+    },
+    "acquisition": {
+      "method": "blood_gas",
+      "source_method": null,
+      "device": null,
+      "episode": null,
+      "parameter": null,
+      "parameter_concept": null,
+      "algorithm": null,
+      "parameter_support": "unknown",
+      "support_provenance": null,
+      "site": null,
+      "compartment": "unknown",
+      "laterality": "unknown",
+      "respiratory_phase": null,
+      "position": null,
+      "reference_level": null,
+      "calibration": "unknown",
+      "zeroing": "unknown",
+      "calibration_provenance": null,
+      "zeroing_provenance": null,
+      "interval_start": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "interval_end": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "averaging": null,
+      "indexing_denominator": null,
+      "indexing_basis": null,
+      "indicator": null,
+      "injection": null,
+      "quality": {
+        "status": "acceptable",
+        "artifacts": [],
+        "limitations": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx.synthetic.demo",
+            "identifier": "patient-state-v1",
+            "version": "1",
+            "channel": "system"
+          },
+          "actor": "synthetic-demo",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "upstream": [],
+          "lineage": "unknown",
+          "limitations": [
+            "Synthetic source assertion only."
+          ]
+        }
+      },
+      "limitations": []
+    },
+    "production": "direct_measurement",
+    "calculation_method": null,
+    "calculation_inputs": [],
+    "concept": "ph",
+    "sample_type": "arterial",
+    "specimen": {
+      "namespace": "clinrx.synthetic.micro",
+      "code": "fs-arterial-sample-60",
+      "version": "1",
+      "raw_display": "fs-arterial-sample-60"
+    },
+    "blood_gas_context": {
+      "collected": {
+        "timestamp_precision": "M7ExactTimestampInput/v1",
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:00:00Z",
+          "lower": null,
+          "upper": null,
+          "uncertainty": null
+        },
+        "source_timestamp": "2026-10-08T09:00:00+00:00",
+        "clock": "verified",
+        "clock_basis": {
+          "source": {
+            "namespace": "clinrx.synthetic.demo",
+            "identifier": "patient-state-v1",
+            "version": "1",
+            "channel": "system"
+          },
+          "actor": "synthetic-demo",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "upstream": [],
+          "lineage": "unknown",
+          "limitations": [
+            "Synthetic source assertion only."
+          ]
+        },
+        "conflicting": [],
+        "alternative_sources": [],
+        "alignment": null
+      },
+      "fio2": {
+        "value": "40",
+        "unit": {
+          "raw": "%",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Synthetic source unit."
+        }
+      },
+      "oxygen_device": {
+        "raw_display": "Synthetic invasive ventilation",
+        "coding": null
+      },
+      "ventilator_mode": {
+        "raw_display": "Volume assist-control",
+        "coding": null
+      },
+      "peep": {
+        "value": "5",
+        "unit": {
+          "raw": "cmH2O",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Synthetic source unit."
+        }
+      },
+      "provenance": {
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "actor": "synthetic-demo",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "upstream": [],
+        "lineage": "unknown",
+        "limitations": [
+          "Synthetic source assertion only."
+        ]
+      },
+      "limitations": [
+        "Synthetic sample-time settings, not current ventilator settings."
+      ]
+    }
+  },
+  "expected_digest": "4b2b410c1270711493a09b1ca8e368cde6f8a54b6ed74702c03517f434d3b76c",
+  "ingestion": {
+    "repository_id": "7079071b-6cf6-42cf-9450-f4a79c11ec0c",
+    "ingestion_sequence": 138,
+    "ingested_at": "2026-10-16T17:35:36.679591Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}
