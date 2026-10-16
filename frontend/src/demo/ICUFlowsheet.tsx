@@ -4,6 +4,7 @@ import {chartEntry,chartSections,intervalText,type ChartSection} from './chartEn
 import {deliverySupport,quantityText} from './HemodynamicContext';
 import type {CirculatoryItem} from '../api/circulatoryTypes';
 import {buildFlowsheet,infusionText,infusionSeries,sourceTime} from './flowsheetPresentation';
+import {overviewEvidenceContext} from './overviewEvidenceContext';
 import {record,quality,title,value,words} from './evidencePresentation';
 type Props={items:CirculatoryItem[];onInspect:(item:CirculatoryItem,trigger:HTMLButtonElement)=>void};
 function ChartPoint({item,onInspect,prefix='Chart source',compact=false}:{item:CirculatoryItem;onInspect:Props['onInspect'];prefix?:string;compact?:boolean}){
@@ -17,6 +18,7 @@ function ChartPoint({item,onInspect,prefix='Chart source',compact=false}:{item:C
     {drug&&(!compact||!interruption)&&<span>{interruption?infusion.reason:infusion.rate}</span>}
     {compact?<>
       {!drug&&sourceQuality!=='acceptable'&&<small className="demo-chart-quality">Quality: {sourceQuality}</small>}
+      {overviewEvidenceContext(item).map((note,index)=><small key={index}>{note}</small>)}
       {status!=='recorded'&&<small className="demo-chart-status">{status}</small>}
       {interval&&<small>{shortSourceInterval(item)}</small>}
     </>:<>
@@ -36,14 +38,14 @@ export function ICUFlowsheet({items,onInspect}:Props){
   const window=overviewTimeWindow(chart.times,page,!compact||showAllTimes);
   const times=window.times;
   const visibleRows=compact&&!showAllTimes?rows.filter(row=>times.some(at=>row.cells.has(at))):rows;
-  const groups=compact?overviewGroups.map(label=>({label,rows:visibleRows.filter(row=>overviewGroup(row)===label)})):[{label:'Recorded sources',rows}];
+  const groups=compact?overviewGroups.filter(label=>rows.some(row=>overviewGroup(row)===label)).map(label=>({label,rows:visibleRows.filter(row=>overviewGroup(row)===label)})):[{label:'Recorded sources',rows}];
   const notes=items.filter(item=>chartEntry(item)?.section==='goals');
   const displayed=rows.flatMap(row=>times.flatMap(at=>row.cells.get(at)??[])).length;
   return <section className="demo-flowsheet" aria-label="Read-only ICU flowsheet">
     <h2>Hemodynamics and infusions over time</h2>
     <p>Fictional recorded evidence. Open any value for its exact source and history. No prescribing, pump control or execution.</p>
     <div className="demo-chart-controls"><label>Flowsheet section<select value={section} onChange={event=>setSection(event.target.value as ChartSection|'all'|'overview')}><option value="overview">Combined overview</option><option value="all">All hemodynamic sections</option>{Object.entries(chartSections).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label></div>
-    {compact&&<p className="demo-chart-overview-scope">Together: BP/MAP, cardiac output/index, rhythm/heart rate, infusion events, interval urine output, source-reported interval/cumulative chart balance, lactate and capillary refill. Scroll down within the chart to compare all six groups; the time headings stay visible. Rows without records in these selected times are omitted; they remain available through time navigation. Other measurements, pump context and perfusion observations remain in the detailed sections. CO methods and devices stay on separate rows; no preferred output or rhythm diagnosis is inferred.</p>}
+    {compact&&<p className="demo-chart-overview-scope">Together: BP/MAP, cardiac output/index, rhythm/heart rate, ABG/blood gases, echo findings, infusion events, interval urine output, source-reported interval/cumulative chart balance, lactate and capillary refill. Scroll down within the chart to compare all available groups; the time headings stay visible. Rows without records in these selected times are omitted; they remain available through time navigation. Other measurements, pump context and perfusion observations remain in the detailed sections. CO methods and devices stay on separate rows; no preferred output or rhythm diagnosis is inferred. Blood-gas sample types and sample-specific FiO₂ remain explicit. Echo estimates and report findings are source assertions, not diagnoses or current measurements; use earlier/all-times views for older studies.</p>}
     {compact&&chart.times.length>0&&<div className="demo-chart-time-controls" aria-label="Recorded time navigation">
       <button disabled={showAllTimes||window.page===window.lastPage} onClick={()=>setPage(window.page+1)}>Earlier times</button>
       <span role="status">{showAllTimes?'All recorded times':`Recorded times ${window.start+1}–${window.end} of ${chart.times.length}`} · UTC</span>
@@ -54,8 +56,9 @@ export function ICUFlowsheet({items,onInspect}:Props){
     <a className="demo-chart-jump" href="#demo-icu-time-chart">Focus chart ↓</a>
     <p className="demo-chart-count">{displayed} source records shown · {chart.unplaced.length} off-axis · {compact?'Use earlier/later times and detailed sections for remaining records.':'Other evidence remains in the Evidence library.'}</p>
     {!!notes.length&&(section==='all'||section==='goals')&&<details className="demo-chart-notes"><summary>Recorded goals, review and handover ({notes.length})</summary><p>These are source-recorded clinician notes and targets, not system recommendations, active prescriptions or automatic escalation rules.</p>{notes.map(item=><ChartPoint key={item.fact.id+item.fact.revision} prefix="Note source" item={item} onInspect={onInspect}/>)}</details>}
-    {times.length>0&&rows.length>0?<div id="demo-icu-time-chart" className={'demo-chart-scroll'+(compact?' demo-chart-scroll-compact':'')} role="region" aria-label="Scrollable ICU time chart" tabIndex={0}><table className={'demo-chart'+(compact?' demo-chart-compact':'')}><caption>Recorded source times in UTC · — means no record, not zero or continued delivery · source intervals stay separate from point measurements</caption><thead><tr><th scope="col">Measurement / infusion</th>{times.map(at=><th scope="col" key={at}><time dateTime={at}>{at.slice(0,10)}<br/>{at.slice(11,19)}</time></th>)}</tr></thead>{groups.filter(group=>group.rows.length>0).map(group=><tbody key={group.label} aria-label={group.label}>
+    {times.length>0&&rows.length>0?<div id="demo-icu-time-chart" className={'demo-chart-scroll'+(compact?' demo-chart-scroll-compact':'')} role="region" aria-label="Scrollable ICU time chart" tabIndex={0}><table className={'demo-chart'+(compact?' demo-chart-compact':'')}><caption>Recorded source times in UTC · — means no record, not zero or continued delivery · source intervals stay separate from point measurements</caption><thead><tr><th scope="col">Measurement / infusion</th>{times.map(at=><th scope="col" key={at}><time dateTime={at}>{at.slice(0,10)}<br/>{at.slice(11,19)}</time></th>)}</tr></thead>{groups.map(group=><tbody key={group.label} aria-label={group.label}>
       {compact&&<tr className="demo-chart-group"><th scope="rowgroup" colSpan={times.length+1}>{group.label}{group.label==='Fluid records'&&<small>Volumes over recorded intervals · balances are source-reported, not calculated here</small>}</th></tr>}
+      {compact&&group.rows.length===0&&<tr><td colSpan={times.length+1}>No records in these selected times for {group.label}. Use Earlier times or Show all recorded times; older values are not carried forward.</td></tr>}
       {group.rows.map(row=><tr key={row.key}><th scope="row">{row.label}<small title={row.context}>{compact&&row.drug?(row.context.startsWith('Infusion: ')?row.context.slice(10).replace(' · documented events only',''):'Infusion identity not recorded'):row.context}</small></th>{times.map(at=><td key={at}>{row.cells.get(at)?.map(item=><ChartPoint key={JSON.stringify([item.fact.kind,item.fact.id,item.fact.revision])} item={item} onInspect={onInspect} compact={compact}/>)??<span className="demo-chart-empty" aria-label={row.drug?'No event recorded':'No observation recorded'}>{compact?'—':row.drug?'No event recorded':'No observation recorded'}</span>}</td>)}</tr>)}
     </tbody>)}</table></div>:<p>No observations can be placed on this time axis for the selected section. No values or infusion intervals are inferred.</p>}
     <details className="demo-chart-policy"><summary>How to read this chart and fluid records</summary>

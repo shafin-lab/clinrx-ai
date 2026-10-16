@@ -9,10 +9,10 @@ import {record} from '../src/demo/evidencePresentation';
 const items=()=>decodeCirculatoryState(structuredClone(fixture)).assembly.snapshot.items;
 const ids=()=>screen.getAllByRole('button',{name:/^Chart source /}).map(b=>b.getAttribute('aria-label'));
 afterEach(cleanup);
-it('defaults to a compact overview with all six groups and exact source selection',()=>{
+it('defaults to a compact overview with all eight groups and exact source selection',()=>{
  const sources=items(),before=JSON.stringify(sources),inspect=vi.fn();render(<ICUFlowsheet items={sources} onInspect={inspect}/>);
  expect(screen.getByRole('combobox',{name:'Flowsheet section'})).toHaveValue('overview');
- for(const name of ['BP / MAP','Cardiac output / index','Rhythm / heart rate','Infusion events','Fluid records','Perfusion observations'])expect(screen.getByRole('rowgroup',{name})).toBeInTheDocument();
+ for(const name of ['BP / MAP','Cardiac output / index','Rhythm / heart rate','ABG / blood gases','Echo findings','Infusion events','Fluid records','Perfusion observations'])expect(screen.getByRole('rowgroup',{name})).toBeInTheDocument();
  expect(screen.getByText('Recorded times 9–12 of 12 · UTC')).toBeInTheDocument();
  const button=screen.getByRole('button',{name:'Chart source fs-D-CHANGE revision 1'});expect(button).toHaveTextContent('Changed');expect(button).toHaveTextContent('3.0 mcg/kg/min');fireEvent.click(button);
  expect(inspect).toHaveBeenCalledWith(sources.find(i=>i.fact.id==='fs-D-CHANGE'),button);
@@ -80,4 +80,35 @@ it('keeps pressure, method-specific flow and source rhythm on exact times with i
  expect(screen.queryByRole('button',{name:'Chart source m7-ECG revision 1'})).not.toBeInTheDocument();
  expect(screen.getByRole('button',{name:'Chart source fs-RHYTHM-30 revision 1'})).toHaveTextContent('no arrhythmia classification confirmed');
  expect(JSON.stringify(sources)).toBe(before);
+});
+
+it('keeps ABG samples and older echo at their original columns, with exact inspectors and source caveats',()=>{
+ const sources=items(),before=JSON.stringify(sources),inspect=vi.fn();render(<ICUFlowsheet items={sources} onInspect={inspect}/>);
+ const ph=screen.getByRole('button',{name:'Chart source fs-PH-60 revision 1'});
+ expect(ph).toHaveTextContent('7.35 (unit: 1)');expect(ph).toHaveTextContent('Sample: arterial');expect(ph).toHaveTextContent('Sample FiO₂: 40 %');
+ expect(ph.closest('td')?.cellIndex).toBe(4);fireEvent.click(ph);expect(inspect).toHaveBeenLastCalledWith(sources.find(i=>i.fact.id==='fs-PH-60'),ph);
+ expect(screen.getByText(/No records in these selected times for Echo findings/)).toBeInTheDocument();
+ expect(screen.queryByRole('button',{name:'Chart source m7-RVSP revision 1'})).not.toBeInTheDocument();
+ fireEvent.click(screen.getByRole('checkbox',{name:'Show all recorded times'}));
+ for(const id of ['m7-RVSP','m7-PASP','m7-VTI','m7-PH','m7-EF','m7-ECHO']){
+  const button=screen.getByRole('button',{name:'Chart source '+id+' revision 1'});expect(button.closest('td')?.cellIndex).toBe(1);fireEvent.click(button);expect(inspect).toHaveBeenLastCalledWith(sources.find(i=>i.fact.id===id),button);
+ }
+ expect(screen.getByRole('button',{name:'Chart source m7-RVSP revision 1'})).toHaveTextContent('Source production: source calculated');
+ expect(screen.getByRole('button',{name:'Chart source m7-RVSP revision 1'})).toHaveTextContent('RVOT obstruction not documented');
+ expect(screen.getByRole('button',{name:'Chart source m7-PH revision 1'})).toHaveTextContent('no invasive confirmation or PAH subtype established');
+ for(const [id,sample] of [['fs-SCVO2-30','central venous'],['fs-SVO2-30','mixed venous']]){
+  const button=screen.getByRole('button',{name:'Chart source '+id+' revision 1'});expect(button).toHaveTextContent('Sample: '+sample);expect(button).toHaveTextContent('Sample FiO₂: Not recorded');expect(button).not.toHaveTextContent('40 %');
+ }
+ expect(JSON.stringify(sources)).toBe(before);
+});
+it('does not place ambiguous gas or echo timing on the axis or hide suspect and withdrawn findings',()=>{
+ const sources=items(),echo=sources.find(i=>i.fact.id==='m7-RVSP')!,gas=sources.find(i=>i.fact.id==='fs-PH-60')!;
+ record(echo.fact.occurred).clock='unknown';record(sources.find(i=>i.fact.id==='fs-PH-45')!.fact.collected??sources.find(i=>i.fact.id==='fs-PH-45')!.fact.occurred).clock='unknown';record(record(gas.fact.acquisition).quality).status='suspect';gas.fact.record_status='withdrawn';
+ render(<ICUFlowsheet items={sources} onInspect={vi.fn()}/>);
+ const ph=screen.getByRole('button',{name:'Chart source fs-PH-60 revision 1'});expect(ph).toHaveTextContent('Quality: suspect');expect(ph).toHaveTextContent('withdrawn');
+ fireEvent.click(screen.getByRole('checkbox',{name:'Show all recorded times'}));
+ expect(screen.queryByRole('button',{name:'Chart source m7-RVSP revision 1'})).not.toBeInTheDocument();
+ expect(screen.getByRole('button',{name:'Estimated RVSP · m7-RVSP / 1 ↗'})).toBeInTheDocument();
+ expect(screen.queryByRole('button',{name:'Chart source fs-PH-45 revision 1'})).not.toBeInTheDocument();
+ expect(screen.getByRole('button',{name:'pH · fs-PH-45 / 1 ↗'})).toBeInTheDocument();
 });

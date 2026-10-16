@@ -2,13 +2,15 @@ import type {CirculatoryItem} from '../api/circulatoryTypes';
 import {chartEntry,intervalText} from './chartEntries';
 import {chartTime,type ChartRow} from './flowsheetPresentation';
 import {record} from './evidencePresentation';
-export const overviewGroups=['BP / MAP','Cardiac output / index','Rhythm / heart rate','Infusion events','Fluid records','Perfusion observations'] as const;
+export const overviewGroups=['BP / MAP','Cardiac output / index','Rhythm / heart rate','ABG / blood gases','Echo findings','Infusion events','Fluid records','Perfusion observations'] as const;
 export function overviewGroup(row:ChartRow):typeof overviewGroups[number]|null{
  if(row.drug)return 'Infusion events';
  const items=[...row.cells.values()].flat();
  if(items.some(i=>i.fact.kind==='circulatory_pressure'&&['systemic_systolic','systemic_diastolic','systemic_mean'].includes(String(i.fact.concept))))return 'BP / MAP';
  if(items.some(i=>i.fact.kind==='circulatory_cardiac'&&['co','ci'].includes(String(i.fact.concept))))return 'Cardiac output / index';
  if(items.some(i=>i.fact.kind==='circulatory_ecg'&&['rhythm','heart_rate'].includes(String(i.fact.concept))))return 'Rhythm / heart rate';
+ if(items.some(i=>i.fact.kind==='circulatory_oxygen'&&record(i.fact.acquisition).method==='blood_gas'))return 'ABG / blood gases';
+ if(items.some(i=>i.fact.kind==='circulatory_echo'))return 'Echo findings';
  if(items.some(i=>['output_urine','net_balance_reported','balance_total_reported'].includes(chartEntry(i)?.code??'')))return 'Fluid records';
  if(items.some(i=>i.fact.kind==='circulatory_lactate'||(i.fact.kind==='circulatory_perfusion'&&i.fact.concept==='capillary_refill')))return 'Perfusion observations';
  return null;
