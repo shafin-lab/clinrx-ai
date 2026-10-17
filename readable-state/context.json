@@ -1,0 +1,153 @@
+{
+  "assembly_request": {
+    "scope": {
+      "contract_version": "3",
+      "patient_id": "synthetic-p1",
+      "encounter_id": "synthetic-e1",
+      "review_start": "2026-10-08T08:00:00Z",
+      "review_end": "2026-10-08T10:00:00Z",
+      "repository_cutoff": {
+        "repository_id": "2814214e-f014-45de-93ab-5141bae5c6e8",
+        "fact_watermark": 162,
+        "captured_at": "2026-10-17T05:18:58.136929Z"
+      }
+    },
+    "profile_id": "RecordedCirculatoryEvidence",
+    "profile_version": "1",
+    "limits": {
+      "history": {
+        "max_rows": 4096,
+        "max_payload_bytes": 16777216
+      },
+      "max_items": 512,
+      "max_relationships": 2048,
+      "max_contextual": 256,
+      "max_groups": 256,
+      "max_signals": 64,
+      "max_depth": 8,
+      "max_fanout": 64,
+      "max_steps": 8192,
+      "max_issues": 1024,
+      "max_result_bytes": 16777216
+    }
+  },
+  "snapshot_context": {
+    "contract_version": "3",
+    "scope": {
+      "contract_version": "3",
+      "patient_id": "synthetic-p1",
+      "encounter_id": "synthetic-e1",
+      "review_start": "2026-10-08T08:00:00Z",
+      "review_end": "2026-10-08T10:00:00Z",
+      "repository_cutoff": {
+        "repository_id": "2814214e-f014-45de-93ab-5141bae5c6e8",
+        "fact_watermark": 162,
+        "captured_at": "2026-10-17T05:18:58.136929Z"
+      }
+    },
+    "profile_id": "RecordedCirculatoryEvidence",
+    "profile_version": "1",
+    "issues": [
+      {
+        "reference": {
+          "kind": "circulatory_cardiac",
+          "id": "fs-CO-60",
+          "version": "1"
+        },
+        "reason": "uncertain_quality"
+      },
+      {
+        "reference": {
+          "kind": "circulatory_cardiac",
+          "id": "m7-CONTEXT-CO",
+          "version": "1"
+        },
+        "reason": "contextual"
+      },
+      {
+        "reference": {
+          "kind": "circulatory_cardiac",
+          "id": "m7-PICCO-CO",
+          "version": "1"
+        },
+        "reason": "uncertain_quality"
+      },
+      {
+        "reference": {
+          "kind": "circulatory_pressure",
+          "id": "m7-P",
+          "version": "1"
+        },
+        "reason": "historical_association"
+      },
+      {
+        "reference": {
+          "kind": "circulatory_pressure",
+          "id": "m7-UNPLACED",
+          "version": "1"
+        },
+        "reason": "temporal_uncertainty"
+      },
+      {
+        "reference": {
+          "kind": "circulatory_pressure",
+          "id": "m7-UNPLACED",
+          "version": "1"
+        },
+        "reason": "unplaced"
+      },
+      {
+        "reference": {
+          "kind": "inference",
+          "id": "00000000-0000-4000-8000-00000000c901-inference",
+          "version": "1"
+        },
+        "reason": "outside_profile"
+      },
+      {
+        "reference": {
+          "kind": "inference",
+          "id": "00000000-0000-4000-8000-00000000c902-inference",
+          "version": "1"
+        },
+        "reason": "outside_profile"
+      },
+      {
+        "reference": {
+          "kind": "medication_order",
+          "id": "demo-medication-M",
+          "version": "1"
+        },
+        "reason": "outside_profile"
+      },
+      {
+        "reference": {
+          "kind": "observation",
+          "id": "demo-creatinine-A",
+          "version": "1"
+        },
+        "reason": "outside_profile"
+      },
+      {
+        "reference": {
+          "kind": "observation",
+          "id": "demo-creatinine-B",
+          "version": "1"
+        },
+        "reason": "outside_profile"
+      }
+    ],
+    "coverage": {
+      "source_completeness": "unknown",
+      "continuity": "not_established",
+      "candidate_rows": 162,
+      "terminal_count": 161,
+      "retained_count": 156,
+      "limitations": [
+        "Only declared recorded M7 evidence; absence and continuous physiology are not established."
+      ]
+    }
+  },
+  "execution_enabled": false,
+  "assembly_digest": "281e7fb138e53b899c7210d652cc70c9f823be8852b6bc53f09b0d00fea6691b"
+}

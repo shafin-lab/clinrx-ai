@@ -1,0 +1,106 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from synthetic-demo.Dockerfile
+#1 transferring dockerfile: 2.06kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.11.6-slim-bookworm
+#2 ...
+
+#3 [internal] load metadata for docker.io/library/node:22.13.0-bookworm-slim
+#3 DONE 1.7s
+
+#2 [internal] load metadata for docker.io/library/python:3.11.6-slim-bookworm
+#2 DONE 1.7s
+
+#4 [fixture 1/8] FROM docker.io/library/python:3.11.6-slim-bookworm@sha256:cc758519481092eb5a4a5ab0c1b303e288880d59afc601958d19e95b300bc86b
+#4 resolve docker.io/library/python:3.11.6-slim-bookworm@sha256:cc758519481092eb5a4a5ab0c1b303e288880d59afc601958d19e95b300bc86b done
+#4 DONE 0.0s
+
+#5 [frontend 1/6] FROM docker.io/library/node:22.13.0-bookworm-slim@sha256:f5a0871ab03b035c58bdb3007c3d177b001c2145c18e81817b71624dcf7d8bff
+#5 resolve docker.io/library/node:22.13.0-bookworm-slim@sha256:f5a0871ab03b035c58bdb3007c3d177b001c2145c18e81817b71624dcf7d8bff done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 6.33MB 0.1s done
+#6 DONE 0.1s
+
+#7 [fixture 2/8] WORKDIR /app
+#7 CACHED
+
+#8 [fixture 3/8] COPY backend/requirements.txt backend/requirements-migrations.txt ./backend/
+#8 CACHED
+
+#9 [runtime 4/7] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt && useradd --uid 10001 --create-home demo
+#9 CACHED
+
+#10 [fixture 4/8] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt
+#10 CACHED
+
+#11 [fixture 5/8] COPY backend/app ./backend/app
+#11 DONE 0.1s
+
+#12 [frontend 3/6] COPY frontend/package.json frontend/package-lock.json ./
+#12 CACHED
+
+#13 [frontend 2/6] WORKDIR /build
+#13 CACHED
+
+#14 [frontend 4/6] RUN npm ci
+#14 CACHED
+
+#15 [runtime 5/7] COPY backend/app ./backend/app
+#15 DONE 0.1s
+
+#16 [frontend 5/6] COPY frontend/ ./
+#16 DONE 0.1s
+
+#17 [fixture 6/8] COPY backend/alembic.ini ./backend/alembic.ini
+#17 DONE 0.0s
+
+#18 [fixture 7/8] COPY backend/migrations ./backend/migrations
+#18 DONE 0.0s
+
+#19 [fixture 8/8] RUN mkdir /fixture && python -m app.demo.comprehensive --flowsheet --database /fixture/synthetic.sqlite3 > /fixture/manifest.json
+#19 ...
+
+#20 [frontend 6/6] RUN VITE_SYNTHETIC_HOSTED=true npm run build
+#20 0.520 
+#20 0.520 > clinrx-synthetic-review@0.1.0 build
+#20 0.520 > tsc --noEmit && vite build
+#20 0.520 
+#20 3.475 vite v8.3.4 building client environment for production...
+#20 3.491 transforming...
+#20 3.644 ✓ 53 modules transformed.
+#20 3.730 rendering chunks...
+#20 3.813 computing gzip size...
+#20 3.824 dist/index.html                     0.37 kB │ gzip:   0.27 kB
+#20 3.824 dist/assets/index-BgvEC8-o.css     27.75 kB │ gzip:   6.34 kB
+#20 3.824 dist/assets/index-BsOniCc0.js   1,369.87 kB │ gzip: 173.27 kB
+#20 3.824 
+#20 3.824 ✓ built in 347ms
+#20 3.825 [plugin builtin:vite-reporter] 
+#20 3.825 (!) Some chunks are larger than 500 kB after minification. Consider:
+#20 3.825 - Using dynamic import() to code-split the application
+#20 3.825 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+#20 3.825 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#20 DONE 3.9s
+
+#21 [runtime 6/7] COPY --from=frontend /build/dist ./frontend-dist
+#21 DONE 0.0s
+
+#19 [fixture 8/8] RUN mkdir /fixture && python -m app.demo.comprehensive --flowsheet --database /fixture/synthetic.sqlite3 > /fixture/manifest.json
+#19 DONE 5.5s
+
+#22 [runtime 7/7] COPY --from=fixture --chown=10001:10001 /fixture /app/synthetic
+#22 DONE 0.0s
+
+#23 exporting to image
+#23 exporting layers 0.1s done
+#23 exporting manifest sha256:e5ff0db13e4163bec410487fddd5d7d7baee9473f1722176ec3bf597c7878480 done
+#23 exporting config sha256:5e7e70e5bafe649a855acec077bce9c7f25ea7fa9dfd9ecf6999279cc0be1ed6 done
+#23 exporting attestation manifest sha256:98f23b3d926445195e214cccaad9dca16190054fb527f18c43f1848d949559f6 done
+#23 exporting manifest list sha256:ce30c75d0d7ea1ba9cdba43d6c060270449e864a9e30b511f953fb6f17537a78 done
+#23 naming to docker.io/library/clinrx-expanded-demo:d0f94dc-local done
+#23 unpacking to docker.io/library/clinrx-expanded-demo:d0f94dc-local 0.0s done
+#23 DONE 0.2s

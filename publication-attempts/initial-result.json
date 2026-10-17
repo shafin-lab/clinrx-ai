@@ -1,0 +1,7 @@
+{
+  "stage": "new publication data-only verifier; not app, Docker, tests or original validation",
+  "exit_code": 1,
+  "reported_error": "RecursionError: maximum recursion depth exceeded",
+  "cause": "Root directory entries incorrectly treated as their own parent during Git tree reconstruction.",
+  "correction": "Use path.rpartition to obtain the actual parent directory; original container evidence is unchanged."
+}
