@@ -236,7 +236,17 @@ it('blocks flowsheet browsing when execution is enabled',async()=>{
  setup(true,true,flowsheet);await screen.findByRole('alert');fireEvent.click(screen.getByRole('button',{name:'ICU flowsheet'}));
  expect(screen.queryByRole('region',{name:'Read-only ICU flowsheet'})).not.toBeInTheDocument();
 });
-it('withholds the old authored case interpretation for the expanded flowsheet source set',async()=>{
+it('uses the separately authored expanded case rather than reusing the old case',async()=>{
  setup(false,false,flowsheet);await ready();fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
- expect(screen.queryByRole('region',{name:'Possible combined interpretation'})).not.toBeInTheDocument();expect(screen.getByText(/Case interpretation unavailable/)).toBeInTheDocument();
+ expect(screen.getByText(/Expanded ICU · 156 source records/)).toBeInTheDocument();expect(screen.queryByText(/Original comprehensive · 41 source records/)).not.toBeInTheDocument();expect(screen.getByRole('region',{name:'Infusions and perfusion: response is unconfirmed'})).toBeInTheDocument();
+});
+
+it('opens expanded authored possibilities and serial sources without preparing or executing a review',async()=>{
+ const {client}=setup(true,false,flowsheet);await ready();
+ fireEvent.click(screen.getByRole('button',{name:'Patient summary'}));
+ expect(screen.getByText(/Expanded ICU · 156 source records/)).toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'Case source pH fs-PH-60'}));
+ expect(screen.getByRole('region',{name:'Blood gas sample context'})).toHaveTextContent('arterial');
+ expect(screen.getByRole('region',{name:'Blood gas sample context'})).toHaveTextContent('40 %');
+ expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
 });

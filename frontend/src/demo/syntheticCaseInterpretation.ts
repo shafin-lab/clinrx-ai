@@ -1,5 +1,6 @@
 import type {CirculatoryItem} from '../api/circulatoryTypes';
 import pins from './syntheticCasePins.json';
+import expandedPins from './expandedICUCasePins.json';
 
 export type CaseScope={patientId:string;encounterId:string;start:string;end:string};
 /** Compare retained source content without interpreting values or coercing timestamps. */
@@ -10,23 +11,27 @@ function stable(value:unknown):string{
 }
 function pin(item:CirculatoryItem){return {fact:item.fact,expected_digest:item.expected_digest,inclusion:item.inclusion,contextual_for:item.contextual_for,disclosures:item.disclosures};}
 const key=(item:{fact:{kind:string;id:string;revision:string}})=>JSON.stringify([item.fact.kind,item.fact.id,item.fact.revision]);
-const expected=new Map(pins.items.map(item=>[key(item),stable(item)]));
-export function matchesAuthoredCase(items:CirculatoryItem[],scope:CaseScope){
-  if(scope.patientId!==pins.patientId||scope.encounterId!==pins.encounterId)return false;
-  if(!['2026-10-08T08:00:00Z','2026-10-08T08:00:00+00:00'].includes(scope.start)||!['2026-10-08T10:00:00Z','2026-10-08T10:00:00+00:00'].includes(scope.end))return false;
-  // HPI is optional, unconsumed and not a prerequisite for the authored interpretation.
-  if(items.some(i=>i.fact.binding.target.patient_id!==scope.patientId||i.fact.binding.target.encounter_id!==scope.encounterId))return false;
+const profiles=[{id:'baseline',pins},{id:'expanded-icu',pins:expandedPins}].map(profile=>({
+  ...profile,expected:new Map(profile.pins.items.map(item=>[key(item),stable(item)])),
+  pinnedKeys:new Map(profile.pins.items.map(item=>[item.fact.id,key(item)])),
+}));
+function resolveProfile(items:CirculatoryItem[],scope:CaseScope){
+  if(!['2026-10-08T08:00:00Z','2026-10-08T08:00:00+00:00'].includes(scope.start)||!['2026-10-08T10:00:00Z','2026-10-08T10:00:00+00:00'].includes(scope.end))return undefined;
+  // Optional HPI is unconsumed, but foreign patient/encounter records still withhold.
+  if(items.some(i=>i.fact.binding.target.patient_id!==scope.patientId||i.fact.binding.target.encounter_id!==scope.encounterId))return undefined;
   const relevant=items.filter(i=>i.fact.kind!=='circulatory_device_prediction');
-  if(relevant.length!==expected.size||new Set(relevant.map(key)).size!==relevant.length)return false;
-  return relevant.every(i=>expected.get(key(i))===stable(pin(i)));
+  if(new Set(relevant.map(key)).size!==relevant.length)return undefined;
+  return profiles.find(profile=>scope.patientId===profile.pins.patientId&&scope.encounterId===profile.pins.encounterId&&relevant.length===profile.expected.size&&relevant.every(i=>profile.expected.get(key(i))===stable(pin(i))));
 }
-// Narrative labels resolve through immutable authoring pins, never a bare-ID input map.
-const pinnedKeys=new Map(pins.items.map(item=>[item.fact.id,key(item)]));
-export function matchedAuthoredSources(items:CirculatoryItem[],scope:CaseScope){
-  if(!matchesAuthoredCase(items,scope))return null;
+export function matchesAuthoredCase(items:CirculatoryItem[],scope:CaseScope){return resolveProfile(items,scope)!==undefined;}
+/** Only an exact known case can resolve sources; every label uses its immutable full-reference pin. */
+export function matchedAuthoredInterpretation(items:CirculatoryItem[],scope:CaseScope){
+  const profile=resolveProfile(items,scope);if(!profile)return null;
   const byReference=new Map(items.filter(item=>item.fact.kind!=='circulatory_device_prediction').map(item=>[key(item),item]));
-  return (id:string)=>{const reference=pinnedKeys.get(id);return reference?byReference.get(reference):undefined;};
+  const source=(id:string)=>{const reference=profile.pinnedKeys.get(id);return reference?byReference.get(reference):undefined;};
+  return {id:profile.id,version:profile.pins.version,sourceCount:profile.expected.size,source};
 }
+export function matchedAuthoredSources(items:CirculatoryItem[],scope:CaseScope){return matchedAuthoredInterpretation(items,scope)?.source??null;}
 export const casePanels=[
   {id:'abg',title:'ABG: possible respiratory contribution',sources:['m7-ABG-PH','m7-ABG-PACO2','m7-ABG-HCO3','m7-ABG-BE','m7-ABG-PAO2','m7-ABG-SAO2','m7-ABG-HB'],
     possibility:'The pH and PaCO₂ pattern could include a respiratory contribution to acidemia. PaO₂ in the recorded supplemental-oxygen context also raises a possible oxygenation concern.',
