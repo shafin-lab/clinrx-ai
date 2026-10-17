@@ -1,0 +1,797 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2 tests/caseInterpretation.test.tsx tests/comprehensiveDemo.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/caseInterpretation.test.tsx (43 tests | 1 failed) 5396ms
+   × separates expanded recorded findings from possibilities, preserves source times and opens serial gas context 593ms
+ ❯ tests/comprehensiveDemo.test.tsx (30 tests | 1 failed) 6409ms
+   × withholds the old authored case interpretation for the expanded flowsheet source set 514ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/caseInterpretation.test.tsx > separates expanded recorded findings from possibilities, preserves source times and opens serial gas context
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "Case source RVSP m7-RVSP"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Patient-specific possibilities":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Patient-specific possibilities"[39m
+    [33mclass[39m=[32m"demo-case"[39m
+  [36m/>[39m
+
+  Name "Possible combined interpretation":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Possible combined interpretation"[39m
+    [33mclass[39m=[32m"demo-case-combined"[39m
+  [36m/>[39m
+
+  Name "ABG sequence: possible respiratory contribution":
+  [36m<section[39m
+    [33maria-label[39m=[32m"ABG sequence: possible respiratory contribution"[39m
+  [36m/>[39m
+
+  Name "Flow over time: adequacy remains unresolved":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Flow over time: adequacy remains unresolved"[39m
+  [36m/>[39m
+
+  Name "Earlier echo: possible RV pressure loading":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Earlier echo: possible RV pressure loading"[39m
+  [36m/>[39m
+
+  Name "Infusions and perfusion: response is unconfirmed":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Infusions and perfusion: response is unconfirmed"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  heading:
+
+  Name "What might these findings mean together?":
+  [36m<h3 />[39m
+
+  Name "Possible combined interpretation — not a confirmed diagnosis":
+  [36m<h4 />[39m
+
+  Name "ABG sequence: possible respiratory contribution":
+  [36m<h4 />[39m
+
+  Name "Recorded findings — source assertions":
+  [36m<h5 />[39m
+
+  Name "Possible meaning — unconfirmed":
+  [36m<h5 />[39m
+
+  Name "What prevents confirmation":
+  [36m<h5 />[39m
+
+  Name "Flow over time: adequacy remains unresolved":
+  [36m<h4 />[39m
+
+  Name "Recorded findings — source assertions":
+  [36m<h5 />[39m
+
+  Name "Possible meaning — unconfirmed":
+  [36m<h5 />[39m
+
+  Name "What prevents confirmation":
+  [36m<h5 />[39m
+
+  Name "Earlier echo: possible RV pressure loading":
+  [36m<h4 />[39m
+
+  Name "Recorded findings — source assertions":
+  [36m<h5 />[39m
+
+  Name "Possible meaning — unconfirmed":
+  [36m<h5 />[39m
+
+  Name "What prevents confirmation":
+  [36m<h5 />[39m
+
+  Name "Infusions and perfusion: response is unconfirmed":
+  [36m<h4 />[39m
+
+  Name "Recorded findings — source assertions":
+  [36m<h5 />[39m
+
+  Name "Possible meaning — unconfirmed":
+  [36m<h5 />[39m
+
+  Name "What prevents confirmation":
+  [36m<h5 />[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"demo-case-context"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"demo-case-confirmed"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"demo-case-context"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "Case source pH m7-ABG-PH":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source pH m7-ABG-PH"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source PaCO₂ m7-ABG-PACO2":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source PaCO₂ m7-ABG-PACO2"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Bicarbonate m7-ABG-HCO3":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Bicarbonate m7-ABG-HCO3"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Base excess m7-ABG-BE":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Base excess m7-ABG-BE"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source pH fs-PH-15":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source pH fs-PH-15"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source PaCO₂ fs-PACO2-15":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source PaCO₂ fs-PACO2-15"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source pH fs-PH-60":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source pH fs-PH-60"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source PaCO₂ fs-PACO2-60":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source PaCO₂ fs-PACO2-60"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source PaO₂ fs-PAO2-60":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source PaO₂ fs-PAO2-60"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Cardiac output m7-CO":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Cardiac output m7-CO"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Cardiac output m7-FLOTRAC":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Cardiac output m7-FLOTRAC"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Cardiac output m7-PICCO-CO":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Cardiac output m7-PICCO-CO"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Cardiac output m7-VOLUMEVIEW":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Cardiac output m7-VOLUMEVIEW"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Cardiac output fs-CO-15":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Cardiac output fs-CO-15"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Cardiac output fs-CO-30":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Cardiac output fs-CO-30"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Cardiac output fs-CO-45":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Cardiac output fs-CO-45"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Cardiac output fs-CO-60":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Cardiac output fs-CO-60"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Cardiac index fs-CI-15":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Cardiac index fs-CI-15"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Cardiac index fs-CI-60":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Cardiac index fs-CI-60"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source LVOT VTI m7-VTI":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source LVOT VTI m7-VTI"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source LV ejection fraction m7-EF":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source LV ejection fraction m7-EF"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Source rhythm fs-RHYTHM-30":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Source rhythm fs-RHYTHM-30"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Estimated RVSP m7-RVSP":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Estimated RVSP m7-RVSP"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Estimated PASP m7-PASP":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Estimated PASP m7-PASP"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source TR peak velocity m7-TRV":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source TR peak velocity m7-TRV"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source RV basal dimension m7-RVD":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source RV basal dimension m7-RVD"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source RV function m7-RVFUNCTION":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source RV function m7-RVFUNCTION"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Septal configuration m7-SEPTUM":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Septal configuration m7-SEPTUM"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Valve finding m7-VALVE":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Valve finding m7-VALVE"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Pulmonary hypertension report finding m7-PH":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Pulmonary hypertension report finding m7-PH"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Mean arterial pressure fs-MAP-15":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Mean arterial pressure fs-MAP-15"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Mean arterial pressure fs-MAP-60":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Mean arterial pressure fs-MAP-60"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Lactate fs-LACTATE-15":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Lactate fs-LACTATE-15"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Lactate fs-LACTATE-60":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Lactate fs-LACTATE-60"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Capillary refill fs-CRT-15":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Capillary refill fs-CRT-15"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Capillary refill fs-CRT-60":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Capillary refill fs-CRT-60"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Vasoactive event fs-N-CHANGE":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Vasoactive event fs-N-CHANGE"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Vasoactive event fs-D-PAUSE":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Vasoactive event fs-D-PAUSE"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Vasoactive event fs-D-RESTART":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Vasoactive event fs-D-RESTART"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Vasoactive event fs-V-STOP":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Vasoactive event fs-V-STOP"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Urine output fs-IO-output_urine-15":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Urine output fs-IO-output_urine-15"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  Name "Case source Urine output fs-IO-output_urine-60":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Case source Urine output fs-IO-output_urine-60"[39m
+    [33mclass[39m=[32m"demo-explanation-source"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  group:
+
+  Name "":
+  [36m<details />[39m
+
+  --------------------------------------------------
+  link:
+
+  Name "ATS ABG interpretation":
+  [36m<a[39m
+    [33mhref[39m=[32m"https://www.thoracic.org/professionals/clinical-resources/critical-care/clinical-education/abgs.php"[39m
+    [33mrel[39m=[32m"noreferrer"[39m
+    [33mtarget[39m=[32m"_blank"[39m
+  [36m/>[39m
+
+  Name "ASE right-heart/PH guidance":
+  [36m<a[39m
+    [33mhref[39m=[32m"https://www.asecho.org/guideline/right-heart-in-adults-pulmonary-hypertension/"[39m
+    [33mrel[39m=[32m"noreferrer"[39m
+    [33mtarget[39m=[32m"_blank"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Patient-specific possibilities"[39m
+      [33mclass[39m=[32m"demo-case"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"demo-explanation-heading"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0mWhat might these findings mean together?[0m
+        [36m</h3>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"demo-case-status"[39m
+        [36m>[39m
+          [0mSynthetic case interpretation · unconfirmed[0m
+        [36m</span>[39m
+      [36m</div>[39m
+      [36m<p>[39m
+        [0mThis section separates recorded source findings from possible clinical meaning. It is an authored explanation for this exact synthetic case, not a general diagnostic engine or a clinically validated result. It creates no execution, inference or receipt.[0m
+      [36m</p>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"demo-case-context"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0mAuthored case:[0m
+        [36m</strong>[39m
+        [0m [0m
+        [0mExpanded ICU · 156 source records[0m
+        [0m · [0m
+        [0msynthetic-expanded-icu-interpretation/1[0m
+      [36m</p>[39m
+      [36m<section[39m
+        [33maria-label[39m=[32m"Possible combined interpretation"[39m
+        [33mclass[39m=[32m"demo-case-combined"[39m
+      [36m>[39m
+        [36m<h4>[39m
+          [0mPossible combined interpretation — not a confirmed diagnosis[0m
+        [36m</h4>[39m
+        [36m<p>[39m
+          [0mThe earlier arterial gas pattern could include a respiratory contribution to acidemia, while the earlier echo report raises a separate possibility of RV pressure loading. The serial flow, pressure and perfusion records add context around documented vasoactive events, but do not establish whether these possibilities are connected or whether flow meets this patient’s needs. Respiratory-to-RV causation, acute RV failure, low output, shock and treatment response remain unconfirmed.[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [36m<strong>[39m
+            [0mBefore connecting them:[0m
+          [36m</strong>[39m
+          [0m the observation times and acquisition contexts would need to be reconciled. [0m
+          [0mThe echo is recorded at 08:00, while serial gases and flow extend to 09:00; no contemporaneity or persistence of the earlier findings is assumed.[0m
+          [0m A shared review window does not establish one physiological episode.[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"demo-case-confirmed"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0mConfirmed here means only that the source records are present.[0m
+        [36m</strong>[39m
+        [0m It does not confirm their physiological accuracy or any diagnosis. Recorded quality labels and estimates retain their limits.[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"demo-case-panels"[39m
+      [36m>[39m
+        [36m<section[39m
+          [33maria-label[39m=[32m"ABG sequence: possible respiratory contribution"[39m
+        [36m>[39m
+          [36m<h4>[39m
+            [0mABG sequence: possible respiratory contribution[0m
+          [36m</h4>[39m
+          [36m<h5>[39m
+            [0mRecorded findings — source assertions[0m
+          [36m</h5>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"demo-case-source-list"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"Case source pH m7-ABG-PH"[39m
+              [33mclass[39m=[32m"demo-explanation-source"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mpH[0m
+                [0m: [0m
+                [0m7.31[0m
+                [0m [0m
+                [0m(unit: 1)[0m
+              [36m</strong>[39m
+              [36m<span>[39m
+                [0mblood gas[0m
+                [0m · [0m
+                [0m2026-10-08T08:00:00+00:00[0m
+                [0m · [0m
+                [0min window[0m
+                [0m · Quality: [0m
+                [0macceptable[0m
+                [0m · [0m
+                [0mm7-ABG-PH[0m
+                [0m / [0m
+                [0m1[0m
+              [36m</span>[39m
+              [36m<small>[39m
+                [0mSample type: arterial · Specimen: synthetic-arterial-sample-1 · Collected: 2026-10-08T08:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O[0m
+              [36m</small>[39m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"Case source PaCO₂ m7-ABG-PACO2"[39m
+              [33mclass[39m=[32m"demo-explanation-source"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mPaCO₂[0m
+                [0m: [0m
+                [0m48.0[0m
+                [0m [0m
+                [0mmmHg[0m
+              [36m</strong>[39m
+              [36m<span>[39m
+                [0mblood gas[0m
+                [0m · [0m
+                [0m2026-10-08T08:00:00+00:00[0m
+                [0m · [0m
+                [0min window[0m
+                [0m · Quality: [0m
+                [0macceptable[0m
+                [0m · [0m
+                [0mm7-ABG-PACO2[0m
+                [0m / [0m
+                [0m1[0m
+              [36m</span>[39m
+              [36m<small>[39m
+                [0mSample type: arterial · Specimen: synthetic-arterial-sample-1 · Collected: 2026-10-08T08:00:00+00:00 · Sample-time FiO₂: 40 % · Oxygen device: Synthetic invasive ventilation · Ventilator mode: Volume assist-control · Sample-time PEEP: 5 cmH2O[0m
+              [36m</small>[39m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"Case source Bicarbonate m7-ABG-HCO3"[39m
+              [33mclass[39m=[32m"demo-explanation-source"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mBicarbonate[0m
+                [0m: [0m
+                [0m23.0[0m
+                [0m [0m
+                [0mmmol/L[0m
+              [36m</strong>[39m
+              [36m<span>[39m
+                [0mblood gas[0m
+                [0m · [0m
+                [0m2026-10-08T08:00:00+00:00[0m
+                [0m · [0m
+                [0min window[0m
+                [0m · Quality: [0m
+                [0macceptable[0m
+                [0m · [0m
+                [0mm7-ABG-HCO3[0m
+                [0m / [0m
+                [0m1[0m
+              [36m</span>[39m
+              [36m<small>[39m
+                [0mSample type: arterial · Specimen: synthetic-arterial-sample-1 · Collected: 2026-10-08T08:00:00+00:00 · Sample-time FiO₂: 40 % ·...
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/caseInterpretation.test.tsx:138:16
+    136|  fireEvent.click(button);expect(onInspect).toHaveBeenCalledWith(source…
+    137|  expect(screen.getByRole('button',{name:'Case source Cardiac output fs…
+    138|  expect(screen.getByRole('button',{name:'Case source RVSP m7-RVSP'})).…
+       |                ^
+    139|  expect(screen.getByText(/Orders do not establish delivery/)).toBeInTh…
+    140| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/comprehensiveDemo.test.tsx > withholds the old authored case interpretation for the expanded flowsheet source set
+Error: expect(element).not.toBeInTheDocument()
+
+expected document not to contain element, found <section
+  aria-label="Possible combined interpretation"
+  class="demo-case-combined"
+>
+  <h4>
+    Possible combined interpretation — not a confirmed diagnosis
+  </h4>
+  <p>
+    The earlier arterial gas pattern could include a respiratory contribution to acidemia, while the earlier echo report raises a separate possibility of RV pressure loading. The serial flow, pressure and perfusion records add context around documented vasoactive events, but do not establish whether these possibilities are connected or whether flow meets this patient’s needs. Respiratory-to-RV causation, acute RV failure, low output, shock and treatment response remain unconfirmed.
+  </p>
+  <p>
+    <strong>
+      Before connecting them:
+    </strong>
+     the observation times and acquisition contexts would need to be reconciled. 
+    The echo is recorded at 08:00, while serial gases and flow extend to 09:00; no contemporaneity or persistence of the earlier findings is assumed.
+     A shared review window does not establish one physiological episode.
+  </p>
+</section> instead
+ ❯ tests/comprehensiveDemo.test.tsx:241:85
+    239| it('withholds the old authored case interpretation for the expanded fl…
+    240|  setup(false,false,flowsheet);await ready();fireEvent.click(screen.get…
+    241|  expect(screen.queryByRole('region',{name:'Possible combined interpret…
+       |                                                                                     ^
+    242| });
+    243|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 71 passed (73)
+   Start at  10:20:36
+   Duration  8.30s (tests 77%, environment 11%, transform 7%, import 3%, setup 2%)
+

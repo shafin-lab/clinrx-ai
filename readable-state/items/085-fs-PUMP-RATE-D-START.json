@@ -1,0 +1,168 @@
+{
+  "fact": {
+    "kind": "circulatory_event",
+    "id": "fs-PUMP-RATE-D-START",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "verified",
+        "method": "synthetic-demo",
+        "verifier": "synthetic-system",
+        "assessed_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "ambiguity": null
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx.synthetic.demo",
+        "identifier": "patient-state-v1",
+        "version": "1",
+        "channel": "system"
+      },
+      "actor": "synthetic-demo",
+      "recorded_at": "2026-10-08T08:00:00Z",
+      "upstream": [],
+      "lineage": "unknown",
+      "limitations": [
+        "Synthetic source assertion only."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "timestamp_precision": "M7ExactTimestampInput/v1",
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T08:30:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T08:30:00+00:00",
+      "clock": "verified",
+      "clock_basis": {
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "actor": "synthetic-demo",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "upstream": [],
+        "lineage": "unknown",
+        "limitations": [
+          "Synthetic source assertion only."
+        ]
+      },
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "timestamp_precision": "M7ExactTimestampInput/v1",
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T08:30:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T08:30:00+00:00",
+      "clock": "verified",
+      "clock_basis": {
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "actor": "synthetic-demo",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "upstream": [],
+        "lineage": "unknown",
+        "limitations": [
+          "Synthetic source assertion only."
+        ]
+      },
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [],
+    "source_identifiers": [
+      {
+        "namespace": "clinrx.synthetic.infusion-series/v1",
+        "code": "fs-infusion-dobutamine",
+        "version": "1",
+        "raw_display": "fs-infusion-dobutamine"
+      }
+    ],
+    "disclosures": [
+      "Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them."
+    ],
+    "record_status": "recorded",
+    "event_type": "other",
+    "description": {
+      "raw_display": "Source-charted pump volumetric rate, not calculated from the drug dose by ClinRx.",
+      "coding": {
+        "namespace": "clinrx.synthetic.hemodynamic-chart/v1",
+        "code": "pump_rate",
+        "version": "1",
+        "raw_display": "pump_rate"
+      }
+    },
+    "external_evidence": [],
+    "recorded_amount": {
+      "value": "2.1",
+      "unit": {
+        "raw": "mL/h",
+        "status": "unresolved",
+        "system": null,
+        "code": null,
+        "limitation": "Synthetic source unit."
+      }
+    }
+  },
+  "expected_digest": "a0a2305b62e4705d6835fc3e9a0f4f0f56e5c76a85f5bf0a10296e49f159ef2e",
+  "ingestion": {
+    "repository_id": "7079071b-6cf6-42cf-9450-f4a79c11ec0c",
+    "ingestion_sequence": 153,
+    "ingested_at": "2026-10-16T17:35:36.723442Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}

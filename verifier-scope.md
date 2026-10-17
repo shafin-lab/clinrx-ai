@@ -1,0 +1,1 @@
+The portable verifier is data-only. It checks exact bytes, pins, digests, captured source controls, later SQLite snapshots and committed-source identity. It does not execute the app, React tests or supplied API launcher and does not authenticate redacted/omitted read-context signatures. The original report is preserved even where it references the previous local-only state.
