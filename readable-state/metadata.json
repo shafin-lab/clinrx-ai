@@ -1,0 +1,190 @@
+{
+  "transport_version": "m7-c/1",
+  "assembly_request": {
+    "scope": {
+      "contract_version": "3",
+      "patient_id": "synthetic-p1",
+      "encounter_id": "synthetic-e1",
+      "review_start": "2026-10-08T08:00:00Z",
+      "review_end": "2026-10-08T10:00:00Z",
+      "repository_cutoff": {
+        "repository_id": "9c22bae0-7676-41b0-ab13-c73e55b33d76",
+        "fact_watermark": 162,
+        "captured_at": "2026-10-17T04:33:31.670784Z"
+      }
+    },
+    "profile_id": "RecordedCirculatoryEvidence",
+    "profile_version": "1",
+    "limits": {
+      "history": {
+        "max_rows": 4096,
+        "max_payload_bytes": 16777216
+      },
+      "max_items": 512,
+      "max_relationships": 2048,
+      "max_contextual": 256,
+      "max_groups": 256,
+      "max_signals": 64,
+      "max_depth": 8,
+      "max_fanout": 64,
+      "max_steps": 8192,
+      "max_issues": 1024,
+      "max_result_bytes": 16777216
+    }
+  },
+  "assembly_digest": "6f16d91302ff77f97e74ead25f1876f77e57d2af7fccf0b3796c941dcd132bde",
+  "state_context": "m7-circulatory-state-context.v1.eyJhc3NlbWJseV9kaWdlc3QiOiI2ZjE2ZDkxMzAyZmY3N2Y5N2U3NGVhZDI1ZjE4NzZmNzdlNTdkMmFmN2ZjY2YwYjM3OTZjOTQxZGNkMTMyYmRlIiwiYXNzZW1ibHlfcmVxdWVzdCI6eyJsaW1pdHMiOnsiaGlzdG9yeSI6eyJtYXhfcGF5bG9hZF9ieXRlcyI6MTY3NzcyMTYsIm1heF9yb3dzIjo0MDk2fSwibWF4X2NvbnRleHR1YWwiOjI1NiwibWF4X2RlcHRoIjo4LCJtYXhfZmFub3V0Ijo2NCwibWF4X2dyb3VwcyI6MjU2LCJtYXhfaXNzdWVzIjoxMDI0LCJtYXhfaXRlbXMiOjUxMiwibWF4X3JlbGF0aW9uc2hpcHMiOjIwNDgsIm1heF9yZXN1bHRfYnl0ZXMiOjE2Nzc3MjE2LCJtYXhfc2lnbmFscyI6NjQsIm1heF9zdGVwcyI6ODE5Mn0sInByb2ZpbGVfaWQiOiJSZWNvcmRlZENpcmN1bGF0b3J5RXZpZGVuY2UiLCJwcm9maWxlX3ZlcnNpb24iOiIxIiwic2NvcGUiOnsiY29udHJhY3RfdmVyc2lvbiI6IjMiLCJlbmNvdW50ZXJfaWQiOiJzeW50aGV0aWMtZTEiLCJwYXRpZW50X2lkIjoic3ludGhldGljLXAxIiwicmVwb3NpdG9yeV9jdXRvZmYiOnsiY2FwdHVyZWRfYXQiOiIyMDI2LTEwLTE3VDA0OjMzOjMxLjY3MDc4NFoiLCJmYWN0X3dhdGVybWFyayI6MTYyLCJyZXBvc2l0b3J5X2lkIjoiOWMyMmJhZTAtNzY3Ni00MWIwLWFiMTMtYzczZTU1YjMzZDc2In0sInJldmlld19lbmQiOiIyMDI2LTEwLTA4VDEwOjAwOjAwWiIsInJldmlld19zdGFydCI6IjIwMjYtMTAtMDhUMDg6MDA6MDBaIn19LCJ0cmFuc3BvcnRfdmVyc2lvbiI6Im03LWMvMSJ9.zQRuOh5_UhBwa1T4j4W1ReLYzT8aEvDKTxhQ0ZVW2Xc",
+  "execution_enabled": false,
+  "assembly": {
+    "request": {
+      "scope": {
+        "contract_version": "3",
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "review_start": "2026-10-08T08:00:00Z",
+        "review_end": "2026-10-08T10:00:00Z",
+        "repository_cutoff": {
+          "repository_id": "9c22bae0-7676-41b0-ab13-c73e55b33d76",
+          "fact_watermark": 162,
+          "captured_at": "2026-10-17T04:33:31.670784Z"
+        }
+      },
+      "profile_id": "RecordedCirculatoryEvidence",
+      "profile_version": "1",
+      "limits": {
+        "history": {
+          "max_rows": 4096,
+          "max_payload_bytes": 16777216
+        },
+        "max_items": 512,
+        "max_relationships": 2048,
+        "max_contextual": 256,
+        "max_groups": 256,
+        "max_signals": 64,
+        "max_depth": 8,
+        "max_fanout": 64,
+        "max_steps": 8192,
+        "max_issues": 1024,
+        "max_result_bytes": 16777216
+      }
+    },
+    "snapshot": {
+      "contract_version": "3",
+      "scope": {
+        "contract_version": "3",
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "review_start": "2026-10-08T08:00:00Z",
+        "review_end": "2026-10-08T10:00:00Z",
+        "repository_cutoff": {
+          "repository_id": "9c22bae0-7676-41b0-ab13-c73e55b33d76",
+          "fact_watermark": 162,
+          "captured_at": "2026-10-17T04:33:31.670784Z"
+        }
+      },
+      "profile_id": "RecordedCirculatoryEvidence",
+      "profile_version": "1",
+      "items": "See items-index.json; full original bytes retained.",
+      "issues": [
+        {
+          "reference": {
+            "kind": "circulatory_cardiac",
+            "id": "fs-CO-60",
+            "version": "1"
+          },
+          "reason": "uncertain_quality"
+        },
+        {
+          "reference": {
+            "kind": "circulatory_cardiac",
+            "id": "m7-CONTEXT-CO",
+            "version": "1"
+          },
+          "reason": "contextual"
+        },
+        {
+          "reference": {
+            "kind": "circulatory_cardiac",
+            "id": "m7-PICCO-CO",
+            "version": "1"
+          },
+          "reason": "uncertain_quality"
+        },
+        {
+          "reference": {
+            "kind": "circulatory_pressure",
+            "id": "m7-P",
+            "version": "1"
+          },
+          "reason": "historical_association"
+        },
+        {
+          "reference": {
+            "kind": "circulatory_pressure",
+            "id": "m7-UNPLACED",
+            "version": "1"
+          },
+          "reason": "temporal_uncertainty"
+        },
+        {
+          "reference": {
+            "kind": "circulatory_pressure",
+            "id": "m7-UNPLACED",
+            "version": "1"
+          },
+          "reason": "unplaced"
+        },
+        {
+          "reference": {
+            "kind": "inference",
+            "id": "00000000-0000-4000-8000-00000000c901-inference",
+            "version": "1"
+          },
+          "reason": "outside_profile"
+        },
+        {
+          "reference": {
+            "kind": "inference",
+            "id": "00000000-0000-4000-8000-00000000c902-inference",
+            "version": "1"
+          },
+          "reason": "outside_profile"
+        },
+        {
+          "reference": {
+            "kind": "medication_order",
+            "id": "demo-medication-M",
+            "version": "1"
+          },
+          "reason": "outside_profile"
+        },
+        {
+          "reference": {
+            "kind": "observation",
+            "id": "demo-creatinine-A",
+            "version": "1"
+          },
+          "reason": "outside_profile"
+        },
+        {
+          "reference": {
+            "kind": "observation",
+            "id": "demo-creatinine-B",
+            "version": "1"
+          },
+          "reason": "outside_profile"
+        }
+      ],
+      "coverage": {
+        "source_completeness": "unknown",
+        "continuity": "not_established",
+        "candidate_rows": 162,
+        "terminal_count": 161,
+        "retained_count": 156,
+        "limitations": [
+          "Only declared recorded M7 evidence; absence and continuous physiology are not established."
+        ]
+      }
+    }
+  }
+}
