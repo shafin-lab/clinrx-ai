@@ -14,7 +14,7 @@ COPY backend/app ./backend/app
 COPY backend/alembic.ini ./backend/alembic.ini
 COPY backend/migrations ./backend/migrations
 ENV PYTHONPATH=/app/backend PYTHONDONTWRITEBYTECODE=1
-RUN mkdir /fixture && python -m app.demo.comprehensive --database /fixture/synthetic.sqlite3 > /fixture/manifest.json
+RUN mkdir /fixture && python -m app.demo.comprehensive --flowsheet --database /fixture/synthetic.sqlite3 > /fixture/manifest.json
 
 FROM python:3.11.6-slim-bookworm AS runtime
 WORKDIR /app

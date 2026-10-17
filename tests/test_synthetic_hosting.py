@@ -1,5 +1,8 @@
 """The hosted surface reads real synthetic APIs and rejects all other operations."""
 import sqlite3
+import json
+import secrets
+import hashlib
 from pathlib import Path
 import pytest
 from starlette.testclient import TestClient
@@ -14,10 +17,11 @@ def rows(path):
         return {name:db.execute('SELECT * FROM "'+name+'" ORDER BY rowid').fetchall() for name, in tables}
 
 
-@pytest.fixture
-def hosted(tmp_path):
+@pytest.fixture(params=[False,True],ids=['comprehensive-default','expanded-icu'])
+def hosted(tmp_path,request):
     database=tmp_path/'synthetic.sqlite3';engine=create_database(database)
-    try:manifest=bootstrap(engine)
+    from app.demo.icu_flowsheet import bootstrap as flowsheet_bootstrap
+    try:manifest=(flowsheet_bootstrap if request.param else bootstrap)(engine)
     finally:engine.dispose()
     frontend=tmp_path/'dist';(frontend/'assets').mkdir(parents=True)
     (frontend/'index.html').write_text('<html>synthetic workspace</html>')
@@ -38,16 +42,35 @@ def test_hosted_browsing_real_history_and_retained_receipts_do_not_write(hosted)
         state=client.get(PREFIX+'/patient-state-v3',params={k:manifest[k] for k in ('review_start','review_end')})
         assert state.status_code==200 and state.json()['execution_enabled'] is False
         data=state.json();items=data['assembly']['snapshot']['items']
-        assert len(items)==41 and len({i['fact']['kind'] for i in items})==14
+        assert len(items)==(156 if manifest.get('flowsheet_enabled') else 41)
+        from app.models.clinical.hemodynamics import M7_FACTS
+        assert len(M7_FACTS)==15
+        assert {i['fact']['kind'] for i in items}==set(M7_FACTS)-{'circulatory_device_prediction'}
+        assert manifest['optional_hpi_included'] is False
+        from app.demo.comprehensive import demo_facts
+        from app.demo.icu_flowsheet import flowsheet_facts
+        by_id={i['fact']['id']:i for i in items}
+        for fact in (*demo_facts(),*(flowsheet_facts() if manifest.get('flowsheet_enabled') else ())):
+            if fact.id!='m7-CAL':assert by_id[fact.id]['fact']==fact.model_dump(mode='json')
         for id,outcome in ((RELEASED_ID,'released'),(WITHHELD_ID,'withheld')):
             result=client.get(PREFIX+'/circulatory-reviews/'+str(id))
             assert result.status_code==200 and result.json()['record']['decision']['outcome']==outcome
+            record=result.json()['record']
+            verify_retained_evidence(database,result.json())
+            assert record['evidence']['facts'][-1]['id']=='m7-CAL' and record['evidence']['facts'][-1]['revision']=='1'
+            assert record['final_recheck']['evidence'][-1]['terminal']['version']==('1' if outcome=='released' else '2')
+            assert client.get(PREFIX+'/circulatory-reviews/'+str(id)).content==result.content
         support=next(i for i in items if i['fact']['id']=='m7-CAL')
         history=client.post(PREFIX+'/circulatory-evidence-history',json={'state_context':data['state_context'],
             'reference':{'kind':support['fact']['kind'],'id':'m7-CAL','version':'2'}})
         assert history.status_code==200
         assert [r['fact']['revision'] for r in history.json()['revisions']]==['1','2']
+        if manifest.get('flowsheet_enabled'):
+            event=next(i for i in items if i['fact']['id']=='fs-D-CHANGE')
+            h=client.post(PREFIX+'/circulatory-evidence-history',json={'state_context':data['state_context'],'reference':{'kind':event['fact']['kind'],'id':event['fact']['id'],'version':'1'}})
+            assert h.status_code==200 and h.json()['revisions'][0]['fact']==event['fact']
         assert client.post(PREFIX+'/circulatory-evidence-history',json={'state_context':'invalid','reference':{}}).status_code==422
+        assert client.get(PREFIX+'/patient-state-v3',params={'review_start':'bad','review_end':manifest['review_end']}).status_code==422
     assert rows(database)==before
 
 
@@ -82,3 +105,41 @@ def test_hosted_environment_cannot_enable_execution(hosted,monkeypatch):
     monkeypatch.setenv('CLINRX_SYNTHETIC_FRONTEND',str(app.static.directory))
     from app.demo.hosting import from_environment
     assert from_environment().config.circulatory_execution_enabled is False
+
+
+def test_gateway_restart_preserves_receipts_rejects_stale_context_and_does_not_seed(hosted):
+    app,database,manifest=hosted;before=rows(database)
+    query={k:manifest[k] for k in ('review_start','review_end')}
+    with TestClient(app) as client:
+        state=client.get(PREFIX+'/patient-state-v3',params=query).json()
+        receipts={str(id):client.get(PREFIX+'/circulatory-reviews/'+str(id)).content for id in (RELEASED_ID,WITHHELD_ID)}
+    restarted=SyntheticDemoGateway(database,Path(app.static.directory),secrets.token_hex(32))
+    history={'state_context':state['state_context'],'reference':{'kind':'circulatory_monitoring','id':'m7-CAL','version':'2'}}
+    with TestClient(restarted) as client:
+        stale=client.post(PREFIX+'/circulatory-evidence-history',json=history)
+        assert stale.status_code==422 and stale.json()['code']=='invalid_state_context'
+        fresh=client.get(PREFIX+'/patient-state-v3',params=query).json();assert fresh['execution_enabled'] is False
+        history['state_context']=fresh['state_context']
+        result=client.post(PREFIX+'/circulatory-evidence-history',json=history)
+        assert result.status_code==200 and [r['fact']['revision'] for r in result.json()['revisions']]==['1','2']
+        for id,raw in receipts.items():assert client.get(PREFIX+'/circulatory-reviews/'+id).content==raw
+    assert rows(database)==before
+
+
+def verify_retained_evidence(database,receipt):
+    # Compare complete retained originals and terminal witnesses with persisted bytes.
+    with sqlite3.connect(database) as db:
+        db.row_factory=sqlite3.Row
+        stored=db.execute('SELECT * FROM circulatory_execution WHERE execution_id=?',(receipt['record']['request']['execution_id'],)).fetchone()
+        assert json.loads(stored['payload'])==receipt['record']
+        assert hashlib.sha256(stored['payload'].encode()).hexdigest()==stored['payload_digest']
+        facts={(r['kind'],r['fact_id'],r['revision']):r for r in db.execute('SELECT * FROM fact_revision')}
+        record=receipt['record']
+        for fact in record['evidence']['facts']:
+            row=facts[(fact['kind'],fact['id'],fact['revision'])]
+            assert json.loads(row['payload'])==fact
+        assert len(record['final_recheck']['evidence'])==4
+        for witness in record['final_recheck']['evidence']:
+            for refkey,digestkey in [('consumed','source_digest'),('terminal','terminal_source_digest')]:
+                ref=witness[refkey];row=facts[(ref['kind'],ref['id'],ref['version'])]
+                assert hashlib.sha256(row['payload'].encode()).hexdigest()==witness[digestkey]

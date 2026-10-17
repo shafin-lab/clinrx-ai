@@ -44,10 +44,16 @@ Choose fresh absolute paths; bootstrap refuses existing databases. From repo roo
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend backend/venv/bin/python \
-  -m app.demo.comprehensive --database /absolute/new/synthetic.sqlite3
+  -m app.demo.comprehensive --flowsheet --database /absolute/new/synthetic.sqlite3
 cd frontend
 VITE_SYNTHETIC_HOSTED=true npm run build -- --outDir /absolute/new/hosted-dist
 ```
+
+The explicit `--flowsheet` option builds the expanded 156-record ICU fixture,
+with 14 populated families of 15 supported (optional HPI absent), emits its
+manifest to stdout and exits. The database must be a new absolute path; existing
+files, including empty files and symlinks, are refused without replacement.
+Omitting the option preserves the 41-record comprehensive default.
 
 Then, from repo root, serve only on loopback:
 
@@ -60,7 +66,8 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend backend/venv/bin/python \
 ```
 
 The signing key is generated in process memory, not printed or bundled into
-frontend assets. Use one worker; after a restart old state contexts may require
+frontend assets. Use exactly one worker and one replica: each process owns its in-memory signing
+key. After a restart old state contexts may require
 refreshing the recorded state. Durable browser-session recovery remains deferred.
 
 ## Container preparation
@@ -75,7 +82,8 @@ docker run --rm -p 127.0.0.1:5181:8080 clinrx-synthetic-demo:review
 ```
 
 These commands build/run locally; they do not publish an image or website. The
-fixture stage explicitly creates a new disposable database and its two protected
+fixture stage explicitly selects `--flowsheet` to create the expanded database
+and its two protected
 retained examples before runtime. The server never seeds, resets or upgrades a
 database at startup. It runs as a non-root user. The SQLite adapter uses immediate
 transactions even for reads, so its dedicated fixture directory remains writable;
@@ -83,10 +91,12 @@ read-only here describes exposed operations, not a filesystem read-only mount.
 No volume holding real data should be attached. A replacement container starts
 from its packaged synthetic fixture; this demo promises no user-created persistence.
 
-Docker is unavailable on the current Mac command path, so the image build and
-container launch remain unverified. The compiled frontend plus the same gateway
-are exercised directly with the pinned local environment. Do not treat that as
-container or hosting-provider acceptance.
+Container evidence must identify the exact integrated source/tree, resulting
+image ID and tested platform. Older fixture/container acceptance does not prove
+the expanded image contents. Check 156 returned items, optional HPI absence,
+retained receipts and witnesses, calibration/flowsheet history, rejected writes,
+unchanged tables and same-image restart recovery. Local container checks do not
+establish hosting-provider or fresh-visitor acceptance.
 
 ## Director preparation findings
 

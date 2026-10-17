@@ -127,9 +127,19 @@ def bootstrap(engine, *, include_hpi=False):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--database',type=Path,required=True)
+    parser.add_argument('--flowsheet',action='store_true',help='build the expanded ICU fixture offline and exit; never seed on runtime startup')
     args=parser.parse_args()
-    if not args.database.is_absolute() or args.database.exists():parser.error('provide a new absolute disposable database path')
+    if not args.database.is_absolute():parser.error('provide a new absolute disposable database path')
+    # Reserve exclusively, including empty files and symlinks: never replace existing bytes.
+    try:
+        with args.database.open('xb'):pass
+    except OSError:parser.error('provide a new absolute disposable database path in an existing writable directory')
     engine=create_database(args.database)
-    try:print(json.dumps(bootstrap(engine),indent=2))
+    try:
+        if args.flowsheet:
+            from app.demo.icu_flowsheet import bootstrap as flowsheet_bootstrap
+            result=flowsheet_bootstrap(engine)
+        else:result=bootstrap(engine)
+        print(json.dumps(result,indent=2))
     finally:engine.dispose()
 if __name__=='__main__':main()
