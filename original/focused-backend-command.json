@@ -1,0 +1,23 @@
+{
+  "command": [
+    "backend/venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_demo_fixture_cli.py",
+    "tests/test_synthetic_hosting.py",
+    "tests/test_icu_flowsheet_demo.py",
+    "tests/test_comprehensive_demo.py"
+  ],
+  "environment_additions": {
+    "PYTHONPATH": "backend",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "exit_code": 0,
+  "passed": 56,
+  "warning": "existing Starlette/httpx deprecation",
+  "duration_seconds": 179.75,
+  "attribution": "Suite started against unchanged packaging Python/test bytes before commit and completed after commit; no source edits occurred during or after this suite. Documentation changed before commit. Exact image built from clean committed archive."
+}

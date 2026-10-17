@@ -1,0 +1,340 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from synthetic-demo.Dockerfile
+#1 transferring dockerfile: 2.06kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:22.13.0-bookworm-slim
+#2 ...
+
+#3 [internal] load metadata for docker.io/library/python:3.11.6-slim-bookworm
+#3 DONE 1.7s
+
+#2 [internal] load metadata for docker.io/library/node:22.13.0-bookworm-slim
+#2 DONE 1.7s
+
+#4 [frontend 1/6] FROM docker.io/library/node:22.13.0-bookworm-slim@sha256:f5a0871ab03b035c58bdb3007c3d177b001c2145c18e81817b71624dcf7d8bff
+#4 resolve docker.io/library/node:22.13.0-bookworm-slim@sha256:f5a0871ab03b035c58bdb3007c3d177b001c2145c18e81817b71624dcf7d8bff 0.0s done
+#4 DONE 0.0s
+
+#5 [fixture 1/8] FROM docker.io/library/python:3.11.6-slim-bookworm@sha256:cc758519481092eb5a4a5ab0c1b303e288880d59afc601958d19e95b300bc86b
+#5 resolve docker.io/library/python:3.11.6-slim-bookworm@sha256:cc758519481092eb5a4a5ab0c1b303e288880d59afc601958d19e95b300bc86b 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 5.61MB 0.1s done
+#6 DONE 0.1s
+
+#7 [fixture 2/8] WORKDIR /app
+#7 CACHED
+
+#8 [frontend 2/6] WORKDIR /build
+#8 CACHED
+
+#9 [frontend 3/6] COPY frontend/package.json frontend/package-lock.json ./
+#9 DONE 0.0s
+
+#10 [fixture 3/8] COPY backend/requirements.txt backend/requirements-migrations.txt ./backend/
+#10 DONE 0.0s
+
+#11 [runtime 4/7] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt && useradd --uid 10001 --create-home demo
+#11 3.863 Collecting annotated-doc==0.0.5 (from -r backend/requirements.txt (line 1))
+#11 3.863   Obtaining dependency information for annotated-doc==0.0.5 from https://files.pythonhosted.org/packages/3e/30/e900b21425a860e195f32e37657aa1f7c7f2b1bfb26f03ca209b90933c06/annotated_doc-0.0.5-py3-none-any.whl.metadata
+#11 4.244   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+#11 4.645 Collecting annotated-types==0.8.0 (from -r backend/requirements.txt (line 2))
+#11 4.646   Obtaining dependency information for annotated-types==0.8.0 from https://files.pythonhosted.org/packages/99/91/8acff4f5e50511b911bbccb72b8628a49c68ce14148cd9f6431094859a90/annotated_types-0.8.0-py3-none-any.whl.metadata
+#11 4.884   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#11 5.442 Collecting anyio==4.14.2 (from -r backend/requirements.txt (line 3))
+#11 5.442   Obtaining dependency information for anyio==4.14.2 from https://files.pythonhosted.org/packages/da/35/f2287558c17e29fafc8ef3daf819bb9834061cfa43bff8014f7df7f63bdc/anyio-4.14.2-py3-none-any.whl.metadata
+#11 5.523   Downloading anyio-4.14.2-py3-none-any.whl.metadata (4.6 kB)
+#11 5.843 Collecting click==8.4.2 (from -r backend/requirements.txt (line 4))
+#11 5.844   Obtaining dependency information for click==8.4.2 from https://files.pythonhosted.org/packages/fb/e2/79c688af8b210d232694e31e59da9f6ec747bae31c3f5946e4e9b98860d5/click-8.4.2-py3-none-any.whl.metadata
+#11 5.922   Downloading click-8.4.2-py3-none-any.whl.metadata (2.6 kB)
+#11 7.199 Collecting fastapi==0.141.1 (from -r backend/requirements.txt (line 5))
+#11 7.199   Obtaining dependency information for fastapi==0.141.1 from https://files.pythonhosted.org/packages/cb/03/10388a42375ee7e4ac9b94eb2c5c569c8b5795e377e701c9ac3ad63de890/fastapi-0.141.1-py3-none-any.whl.metadata
+#11 7.279   Downloading fastapi-0.141.1-py3-none-any.whl.metadata (27 kB)
+#11 ...
+
+#12 [fixture 4/8] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt
+#12 3.113 Collecting annotated-doc==0.0.5 (from -r backend/requirements.txt (line 1))
+#12 3.113   Obtaining dependency information for annotated-doc==0.0.5 from https://files.pythonhosted.org/packages/3e/30/e900b21425a860e195f32e37657aa1f7c7f2b1bfb26f03ca209b90933c06/annotated_doc-0.0.5-py3-none-any.whl.metadata
+#12 3.636   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+#12 4.452 Collecting annotated-types==0.8.0 (from -r backend/requirements.txt (line 2))
+#12 4.453   Obtaining dependency information for annotated-types==0.8.0 from https://files.pythonhosted.org/packages/99/91/8acff4f5e50511b911bbccb72b8628a49c68ce14148cd9f6431094859a90/annotated_types-0.8.0-py3-none-any.whl.metadata
+#12 5.346   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#12 5.850 Collecting anyio==4.14.2 (from -r backend/requirements.txt (line 3))
+#12 5.851   Obtaining dependency information for anyio==4.14.2 from https://files.pythonhosted.org/packages/da/35/f2287558c17e29fafc8ef3daf819bb9834061cfa43bff8014f7df7f63bdc/anyio-4.14.2-py3-none-any.whl.metadata
+#12 5.891   Downloading anyio-4.14.2-py3-none-any.whl.metadata (4.6 kB)
+#12 6.240 Collecting click==8.4.2 (from -r backend/requirements.txt (line 4))
+#12 6.241   Obtaining dependency information for click==8.4.2 from https://files.pythonhosted.org/packages/fb/e2/79c688af8b210d232694e31e59da9f6ec747bae31c3f5946e4e9b98860d5/click-8.4.2-py3-none-any.whl.metadata
+#12 6.281   Downloading click-8.4.2-py3-none-any.whl.metadata (2.6 kB)
+#12 7.320 Collecting fastapi==0.141.1 (from -r backend/requirements.txt (line 5))
+#12 7.320   Obtaining dependency information for fastapi==0.141.1 from https://files.pythonhosted.org/packages/cb/03/10388a42375ee7e4ac9b94eb2c5c569c8b5795e377e701c9ac3ad63de890/fastapi-0.141.1-py3-none-any.whl.metadata
+#12 7.371   Downloading fastapi-0.141.1-py3-none-any.whl.metadata (27 kB)
+#12 8.325 Collecting h11==0.16.0 (from -r backend/requirements.txt (line 6))
+#12 8.325   Obtaining dependency information for h11==0.16.0 from https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl.metadata
+#12 8.398   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#12 8.746 Collecting idna==3.18 (from -r backend/requirements.txt (line 7))
+#12 8.747   Obtaining dependency information for idna==3.18 from https://files.pythonhosted.org/packages/1e/5e/d4e9f1a599fb8e573b7b87160658329fbf28d19eac2718f51fc3def3aa5a/idna-3.18-py3-none-any.whl.metadata
+#12 8.994   Downloading idna-3.18-py3-none-any.whl.metadata (6.1 kB)
+#12 ...
+
+#11 [runtime 4/7] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt && useradd --uid 10001 --create-home demo
+#11 9.055 Collecting h11==0.16.0 (from -r backend/requirements.txt (line 6))
+#11 9.056   Obtaining dependency information for h11==0.16.0 from https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl.metadata
+#11 9.137   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#11 9.528 Collecting idna==3.18 (from -r backend/requirements.txt (line 7))
+#11 9.528   Obtaining dependency information for idna==3.18 from https://files.pythonhosted.org/packages/1e/5e/d4e9f1a599fb8e573b7b87160658329fbf28d19eac2718f51fc3def3aa5a/idna-3.18-py3-none-any.whl.metadata
+#11 9.609   Downloading idna-3.18-py3-none-any.whl.metadata (6.1 kB)
+#11 ...
+
+#13 [frontend 4/6] RUN npm ci
+#13 ...
+
+#11 [runtime 4/7] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt && useradd --uid 10001 --create-home demo
+#11 11.28 Collecting pydantic==2.13.4 (from -r backend/requirements.txt (line 8))
+#11 11.29   Obtaining dependency information for pydantic==2.13.4 from https://files.pythonhosted.org/packages/fd/7b/122376b1fd3c62c1ed9dc80c931ace4844b3c55407b6fb2d199377c9736f/pydantic-2.13.4-py3-none-any.whl.metadata
+#11 11.37   Downloading pydantic-2.13.4-py3-none-any.whl.metadata (109 kB)
+#11 12.20      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 109.4/109.4 kB 147.6 kB/s eta 0:00:00
+#11 ...
+
+#13 [frontend 4/6] RUN npm ci
+#13 13.20 
+#13 13.20 added 108 packages, and audited 109 packages in 12s
+#13 13.20 
+#13 13.20 22 packages are looking for funding
+#13 13.20   run `npm fund` for details
+#13 13.20 
+#13 13.20 found 0 vulnerabilities
+#13 13.20 npm notice
+#13 13.20 npm notice New major version of npm available! 10.9.2 -> 12.2.0
+#13 13.20 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+#13 13.20 npm notice To update run: npm install -g npm@12.2.0
+#13 13.20 npm notice
+#13 DONE 13.3s
+
+#14 [frontend 5/6] COPY frontend/ ./
+#14 DONE 0.1s
+
+#15 [frontend 6/6] RUN VITE_SYNTHETIC_HOSTED=true npm run build
+#15 0.232 
+#15 0.232 > clinrx-synthetic-review@0.1.0 build
+#15 0.232 > tsc --noEmit && vite build
+#15 0.232 
+#15 2.529 vite v8.3.4 building client environment for production...
+#15 2.568 transforming...
+#15 2.854 ✓ 51 modules transformed.
+#15 3.024 rendering chunks...
+#15 3.202 computing gzip size...
+#15 3.237 dist/index.html                   0.37 kB │ gzip:   0.27 kB
+#15 3.237 dist/assets/index-BgvEC8-o.css   27.75 kB │ gzip:   6.34 kB
+#15 3.237 dist/assets/index-CDDgzpH7.js   719.17 kB │ gzip: 139.72 kB
+#15 3.237 
+#15 3.239 [plugin builtin:vite-reporter] 
+#15 3.239 (!) Some chunks are larger than 500 kB after minification. Consider:
+#15 3.239 - Using dynamic import() to code-split the application
+#15 3.239 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+#15 3.239 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#15 3.244 ✓ built in 706ms
+#15 DONE 3.3s
+
+#12 [fixture 4/8] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt
+#12 11.49 Collecting pydantic==2.13.4 (from -r backend/requirements.txt (line 8))
+#12 11.49   Obtaining dependency information for pydantic==2.13.4 from https://files.pythonhosted.org/packages/fd/7b/122376b1fd3c62c1ed9dc80c931ace4844b3c55407b6fb2d199377c9736f/pydantic-2.13.4-py3-none-any.whl.metadata
+#12 11.55   Downloading pydantic-2.13.4-py3-none-any.whl.metadata (109 kB)
+#12 12.91      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 109.4/109.4 kB 90.3 kB/s eta 0:00:00
+#12 ...
+
+#11 [runtime 4/7] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt && useradd --uid 10001 --create-home demo
+#11 17.41 Collecting pydantic_core==2.46.4 (from -r backend/requirements.txt (line 9))
+#11 17.41   Obtaining dependency information for pydantic_core==2.46.4 from https://files.pythonhosted.org/packages/43/3a/41114a9f7569b84b4d84e7a018c57c56347dac30c0d4a872946ec4e36c46/pydantic_core-2.46.4-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata
+#11 17.49   Downloading pydantic_core-2.46.4-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (6.6 kB)
+#11 17.62 Collecting starlette==1.6.0 (from -r backend/requirements.txt (line 10))
+#11 17.62   Obtaining dependency information for starlette==1.6.0 from https://files.pythonhosted.org/packages/c8/cb/6a6a47d5b464bd08695d254f3da6e7986cc70c9fa5d778eda57538edfe56/starlette-1.6.0-py3-none-any.whl.metadata
+#11 17.70   Downloading starlette-1.6.0-py3-none-any.whl.metadata (6.4 kB)
+#11 17.78 Collecting typing-inspection==0.4.4 (from -r backend/requirements.txt (line 11))
+#11 17.78   Obtaining dependency information for typing-inspection==0.4.4 from https://files.pythonhosted.org/packages/67/81/4add07e5172b7ac40d8ed5ff580409a7801a4fe26d529bdd915401dabfbe/typing_inspection-0.4.4-py3-none-any.whl.metadata
+#11 17.86   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+#11 17.94 Collecting typing_extensions==4.16.0 (from -r backend/requirements.txt (line 12))
+#11 17.94   Obtaining dependency information for typing_extensions==4.16.0 from https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl.metadata
+#11 18.02   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#11 18.13 Collecting uvicorn==0.52.3 (from -r backend/requirements.txt (line 13))
+#11 18.13   Obtaining dependency information for uvicorn==0.52.3 from https://files.pythonhosted.org/packages/dc/2b/ebd108734a8204c6b4b93c681c9a38c5273b3ccd5d129fee4ffc1d97772c/uvicorn-0.52.3-py3-none-any.whl.metadata
+#11 18.21   Downloading uvicorn-0.52.3-py3-none-any.whl.metadata (6.6 kB)
+#11 19.37 Collecting SQLAlchemy==2.0.54 (from -r backend/requirements.txt (line 14))
+#11 19.37   Obtaining dependency information for SQLAlchemy==2.0.54 from https://files.pythonhosted.org/packages/9b/bb/3b6f5f3f51582d63af4c88b1e70da7888e936dee6b86a237b7633fb3f216/sqlalchemy-2.0.54-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata
+#11 19.45   Downloading sqlalchemy-2.0.54-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (9.7 kB)
+#11 20.10 Collecting greenlet==3.5.6 (from -r backend/requirements.txt (line 15))
+#11 20.10   Obtaining dependency information for greenlet==3.5.6 from https://files.pythonhosted.org/packages/f8/7b/b509624970909294cd064ff7346148ca9941c21bec9026d7873dd254e9fa/greenlet-3.5.6-cp311-cp311-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl.metadata
+#11 20.18   Downloading greenlet-3.5.6-cp311-cp311-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl.metadata (3.8 kB)
+#11 20.25 Collecting itsdangerous==2.2.0 (from -r backend/requirements.txt (line 16))
+#11 20.25   Obtaining dependency information for itsdangerous==2.2.0 from https://files.pythonhosted.org/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl.metadata
+#11 20.34   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+#11 20.42 Collecting alembic==1.20.0 (from -r backend/requirements-migrations.txt (line 2))
+#11 20.42   Obtaining dependency information for alembic==1.20.0 from https://files.pythonhosted.org/packages/3f/27/78a89b55b0904d222183164e079b4ca56208e94eff1d35ad1f1ad5be9b06/alembic-1.20.0-py3-none-any.whl.metadata
+#11 20.50   Downloading alembic-1.20.0-py3-none-any.whl.metadata (7.3 kB)
+#11 20.59 Collecting Mako==1.4.3 (from -r backend/requirements-migrations.txt (line 3))
+#11 20.59   Obtaining dependency information for Mako==1.4.3 from https://files.pythonhosted.org/packages/6d/a0/053d6af3e8f871e0073b4a36732d9e65be77a72e5434c31b94f6af78a6bb/mako-1.4.3-py3-none-any.whl.metadata
+#11 20.67   Downloading mako-1.4.3-py3-none-any.whl.metadata (2.9 kB)
+#11 20.87 Collecting MarkupSafe==3.0.3 (from -r backend/requirements-migrations.txt (line 4))
+#11 20.87   Obtaining dependency information for MarkupSafe==3.0.3 from https://files.pythonhosted.org/packages/1d/09/adf2df3699d87d1d8184038df46a9c80d78c0148492323f4693df54e17bb/markupsafe-3.0.3-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata
+#11 20.95   Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.7 kB)
+#11 21.27 Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+#11 21.36 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#11 21.54 Downloading anyio-4.14.2-py3-none-any.whl (125 kB)
+#11 22.31    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 125.8/125.8 kB 175.2 kB/s eta 0:00:00
+#11 22.38 Downloading click-8.4.2-py3-none-any.whl (119 kB)
+#11 22.89    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 119.2/119.2 kB 253.4 kB/s eta 0:00:00
+#11 22.97 Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
+#11 23.42    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 132.0/132.0 kB 303.1 kB/s eta 0:00:00
+#11 23.50 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#11 23.68 Downloading idna-3.18-py3-none-any.whl (65 kB)
+#11 23.85    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 65.5/65.5 kB 404.0 kB/s eta 0:00:00
+#11 23.93 Downloading pydantic-2.13.4-py3-none-any.whl (472 kB)
+#11 25.08    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 472.3/472.3 kB 413.9 kB/s eta 0:00:00
+#11 25.16 Downloading pydantic_core-2.46.4-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (2.0 MB)
+#11 ...
+
+#12 [fixture 4/8] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt
+#12 17.51 Collecting pydantic_core==2.46.4 (from -r backend/requirements.txt (line 9))
+#12 17.51   Obtaining dependency information for pydantic_core==2.46.4 from https://files.pythonhosted.org/packages/43/3a/41114a9f7569b84b4d84e7a018c57c56347dac30c0d4a872946ec4e36c46/pydantic_core-2.46.4-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata
+#12 17.55   Downloading pydantic_core-2.46.4-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (6.6 kB)
+#12 17.68 Collecting starlette==1.6.0 (from -r backend/requirements.txt (line 10))
+#12 17.68   Obtaining dependency information for starlette==1.6.0 from https://files.pythonhosted.org/packages/c8/cb/6a6a47d5b464bd08695d254f3da6e7986cc70c9fa5d778eda57538edfe56/starlette-1.6.0-py3-none-any.whl.metadata
+#12 17.71   Downloading starlette-1.6.0-py3-none-any.whl.metadata (6.4 kB)
+#12 17.78 Collecting typing-inspection==0.4.4 (from -r backend/requirements.txt (line 11))
+#12 17.78   Obtaining dependency information for typing-inspection==0.4.4 from https://files.pythonhosted.org/packages/67/81/4add07e5172b7ac40d8ed5ff580409a7801a4fe26d529bdd915401dabfbe/typing_inspection-0.4.4-py3-none-any.whl.metadata
+#12 17.82   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+#12 17.89 Collecting typing_extensions==4.16.0 (from -r backend/requirements.txt (line 12))
+#12 17.89   Obtaining dependency information for typing_extensions==4.16.0 from https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl.metadata
+#12 17.93   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#12 18.04 Collecting uvicorn==0.52.3 (from -r backend/requirements.txt (line 13))
+#12 18.04   Obtaining dependency information for uvicorn==0.52.3 from https://files.pythonhosted.org/packages/dc/2b/ebd108734a8204c6b4b93c681c9a38c5273b3ccd5d129fee4ffc1d97772c/uvicorn-0.52.3-py3-none-any.whl.metadata
+#12 18.07   Downloading uvicorn-0.52.3-py3-none-any.whl.metadata (6.6 kB)
+#12 19.25 Collecting SQLAlchemy==2.0.54 (from -r backend/requirements.txt (line 14))
+#12 19.25   Obtaining dependency information for SQLAlchemy==2.0.54 from https://files.pythonhosted.org/packages/9b/bb/3b6f5f3f51582d63af4c88b1e70da7888e936dee6b86a237b7633fb3f216/sqlalchemy-2.0.54-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata
+#12 19.29   Downloading sqlalchemy-2.0.54-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (9.7 kB)
+#12 19.83 Collecting greenlet==3.5.6 (from -r backend/requirements.txt (line 15))
+#12 19.83   Obtaining dependency information for greenlet==3.5.6 from https://files.pythonhosted.org/packages/f8/7b/b509624970909294cd064ff7346148ca9941c21bec9026d7873dd254e9fa/greenlet-3.5.6-cp311-cp311-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl.metadata
+#12 19.87   Downloading greenlet-3.5.6-cp311-cp311-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl.metadata (3.8 kB)
+#12 19.93 Collecting itsdangerous==2.2.0 (from -r backend/requirements.txt (line 16))
+#12 19.93   Obtaining dependency information for itsdangerous==2.2.0 from https://files.pythonhosted.org/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl.metadata
+#12 19.97   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+#12 20.06 Collecting alembic==1.20.0 (from -r backend/requirements-migrations.txt (line 2))
+#12 20.06   Obtaining dependency information for alembic==1.20.0 from https://files.pythonhosted.org/packages/3f/27/78a89b55b0904d222183164e079b4ca56208e94eff1d35ad1f1ad5be9b06/alembic-1.20.0-py3-none-any.whl.metadata
+#12 20.10   Downloading alembic-1.20.0-py3-none-any.whl.metadata (7.3 kB)
+#12 20.18 Collecting Mako==1.4.3 (from -r backend/requirements-migrations.txt (line 3))
+#12 20.18   Obtaining dependency information for Mako==1.4.3 from https://files.pythonhosted.org/packages/6d/a0/053d6af3e8f871e0073b4a36732d9e65be77a72e5434c31b94f6af78a6bb/mako-1.4.3-py3-none-any.whl.metadata
+#12 20.21   Downloading mako-1.4.3-py3-none-any.whl.metadata (2.9 kB)
+#12 20.41 Collecting MarkupSafe==3.0.3 (from -r backend/requirements-migrations.txt (line 4))
+#12 20.41   Obtaining dependency information for MarkupSafe==3.0.3 from https://files.pythonhosted.org/packages/1d/09/adf2df3699d87d1d8184038df46a9c80d78c0148492323f4693df54e17bb/markupsafe-3.0.3-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata
+#12 20.44   Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.7 kB)
+#12 20.71 Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+#12 20.76 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#12 20.84 Downloading anyio-4.14.2-py3-none-any.whl (125 kB)
+#12 21.14    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 125.8/125.8 kB 447.4 kB/s eta 0:00:00
+#12 21.18 Downloading click-8.4.2-py3-none-any.whl (119 kB)
+#12 21.38    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 119.2/119.2 kB 661.7 kB/s eta 0:00:00
+#12 21.42 Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
+#12 21.59    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 132.0/132.0 kB 794.3 kB/s eta 0:00:00
+#12 21.63 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#12 21.70 Downloading idna-3.18-py3-none-any.whl (65 kB)
+#12 21.77    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 65.5/65.5 kB 1.1 MB/s eta 0:00:00
+#12 21.80 Downloading pydantic-2.13.4-py3-none-any.whl (472 kB)
+#12 22.17    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 472.3/472.3 kB 1.3 MB/s eta 0:00:00
+#12 22.21 Downloading pydantic_core-2.46.4-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (2.0 MB)
+#12 22.91    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 2.8 MB/s eta 0:00:00
+#12 22.95 Downloading starlette-1.6.0-py3-none-any.whl (75 kB)
+#12 22.97    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76.0/76.0 kB 5.6 MB/s eta 0:00:00
+#12 23.00 Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+#12 23.04 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#12 23.05    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 kB 7.7 MB/s eta 0:00:00
+#12 23.09 Downloading uvicorn-0.52.3-py3-none-any.whl (79 kB)
+#12 23.10    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.9/79.9 kB 6.3 MB/s eta 0:00:00
+#12 23.14 Downloading sqlalchemy-2.0.54-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (3.4 MB)
+#12 23.70    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 6.2 MB/s eta 0:00:00
+#12 23.74 Downloading greenlet-3.5.6-cp311-cp311-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl (613 kB)
+#12 23.81    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 613.4/613.4 kB 8.4 MB/s eta 0:00:00
+#12 23.86 Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+#12 23.90 Downloading alembic-1.20.0-py3-none-any.whl (268 kB)
+#12 23.96    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 268.7/268.7 kB 5.0 MB/s eta 0:00:00
+#12 24.00 Downloading mako-1.4.3-py3-none-any.whl (80 kB)
+#12 24.01    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 80.2/80.2 kB 5.8 MB/s eta 0:00:00
+#12 24.05 Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (24 kB)
+#12 24.22 Installing collected packages: typing_extensions, MarkupSafe, itsdangerous, idna, h11, greenlet, click, annotated-types, annotated-doc, uvicorn, typing-inspection, SQLAlchemy, pydantic_core, Mako, anyio, starlette, pydantic, alembic, fastapi
+#12 26.08 Successfully installed Mako-1.4.3 MarkupSafe-3.0.3 SQLAlchemy-2.0.54 alembic-1.20.0 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.14.2 click-8.4.2 fastapi-0.141.1 greenlet-3.5.6 h11-0.16.0 idna-3.18 itsdangerous-2.2.0 pydantic-2.13.4 pydantic_core-2.46.4 starlette-1.6.0 typing-inspection-0.4.4 typing_extensions-4.16.0 uvicorn-0.52.3
+#12 26.08 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#12 26.37 
+#12 26.37 [notice] A new release of pip is available: 23.2.1 -> 26.2.1
+#12 26.37 [notice] To update, run: pip install --upgrade pip
+#12 DONE 27.0s
+
+#11 [runtime 4/7] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt && useradd --uid 10001 --create-home demo
+#11 ...
+
+#16 [fixture 5/8] COPY backend/app ./backend/app
+#16 DONE 0.1s
+
+#17 [fixture 6/8] COPY backend/alembic.ini ./backend/alembic.ini
+#17 DONE 0.0s
+
+#18 [fixture 7/8] COPY backend/migrations ./backend/migrations
+#18 DONE 0.0s
+
+#19 [fixture 8/8] RUN mkdir /fixture && python -m app.demo.comprehensive --flowsheet --database /fixture/synthetic.sqlite3 > /fixture/manifest.json
+#19 ...
+
+#11 [runtime 4/7] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt && useradd --uid 10001 --create-home demo
+#11 28.15    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 662.1 kB/s eta 0:00:00
+#11 28.23 Downloading starlette-1.6.0-py3-none-any.whl (75 kB)
+#11 28.31    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76.0/76.0 kB 932.1 kB/s eta 0:00:00
+#11 28.40 Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+#11 28.52 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#11 28.56    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 kB 1.3 MB/s eta 0:00:00
+#11 28.64 Downloading uvicorn-0.52.3-py3-none-any.whl (79 kB)
+#11 28.72    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.9/79.9 kB 1.0 MB/s eta 0:00:00
+#11 28.80 Downloading sqlalchemy-2.0.54-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (3.4 MB)
+#11 30.95    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 1.6 MB/s eta 0:00:00
+#11 31.03 Downloading greenlet-3.5.6-cp311-cp311-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl (613 kB)
+#11 31.26    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 613.4/613.4 kB 2.6 MB/s eta 0:00:00
+#11 31.34 Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+#11 31.42 Downloading alembic-1.20.0-py3-none-any.whl (268 kB)
+#11 31.56    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 268.7/268.7 kB 2.6 MB/s eta 0:00:00
+#11 31.68 Downloading mako-1.4.3-py3-none-any.whl (80 kB)
+#11 31.77    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 80.2/80.2 kB 1.0 MB/s eta 0:00:00
+#11 31.90 Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (24 kB)
+#11 32.49 Installing collected packages: typing_extensions, MarkupSafe, itsdangerous, idna, h11, greenlet, click, annotated-types, annotated-doc, uvicorn, typing-inspection, SQLAlchemy, pydantic_core, Mako, anyio, starlette, pydantic, alembic, fastapi
+#11 ...
+
+#19 [fixture 8/8] RUN mkdir /fixture && python -m app.demo.comprehensive --flowsheet --database /fixture/synthetic.sqlite3 > /fixture/manifest.json
+#19 DONE 5.7s
+
+#11 [runtime 4/7] RUN pip install --no-cache-dir -r backend/requirements-migrations.txt && useradd --uid 10001 --create-home demo
+#11 34.41 Successfully installed Mako-1.4.3 MarkupSafe-3.0.3 SQLAlchemy-2.0.54 alembic-1.20.0 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.14.2 click-8.4.2 fastapi-0.141.1 greenlet-3.5.6 h11-0.16.0 idna-3.18 itsdangerous-2.2.0 pydantic-2.13.4 pydantic_core-2.46.4 starlette-1.6.0 typing-inspection-0.4.4 typing_extensions-4.16.0 uvicorn-0.52.3
+#11 34.41 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#11 34.65 
+#11 34.65 [notice] A new release of pip is available: 23.2.1 -> 26.2.1
+#11 34.65 [notice] To update, run: pip install --upgrade pip
+#11 DONE 35.3s
+
+#20 [runtime 5/7] COPY backend/app ./backend/app
+#20 DONE 0.0s
+
+#21 [runtime 6/7] COPY --from=frontend /build/dist ./frontend-dist
+#21 DONE 0.0s
+
+#22 [runtime 7/7] COPY --from=fixture --chown=10001:10001 /fixture /app/synthetic
+#22 DONE 0.0s
+
+#23 exporting to image
+#23 exporting layers
+#23 exporting layers 2.1s done
+#23 exporting manifest sha256:12520f907433dc4f2b1ec0d43ebed0a7f7680ff046b9f41a828803125bfd801d
+#23 exporting manifest sha256:12520f907433dc4f2b1ec0d43ebed0a7f7680ff046b9f41a828803125bfd801d done
+#23 exporting config sha256:abdc22ef9f2cca178d49d8716f0020a818ed6e4b4bde9fc0ae247c9f0cff414e done
+#23 exporting attestation manifest sha256:b7c26864a264cde56ece5fe12d85e62be736fa3fbd7a40015bb74b20e0c12952 done
+#23 exporting manifest list sha256:612977c31212cec5adcf9eb6fcd6dc8946808ac3998bd434aaadd4b7e696db0a done
+#23 naming to docker.io/library/clinrx-expanded-demo:2539eb6-local done
+#23 unpacking to docker.io/library/clinrx-expanded-demo:2539eb6-local
+#23 unpacking to docker.io/library/clinrx-expanded-demo:2539eb6-local 0.4s done
+#23 DONE 2.6s

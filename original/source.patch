@@ -1,0 +1,266 @@
+diff --git a/backend/app/demo/comprehensive.py b/backend/app/demo/comprehensive.py
+index e1fa15c..32ccba6 100644
+--- a/backend/app/demo/comprehensive.py
++++ b/backend/app/demo/comprehensive.py
+@@ -127,9 +127,19 @@ def bootstrap(engine, *, include_hpi=False):
+ 
+ def main():
+     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--database',type=Path,required=True)
++    parser.add_argument('--flowsheet',action='store_true',help='build the expanded ICU fixture offline and exit; never seed on runtime startup')
+     args=parser.parse_args()
+-    if not args.database.is_absolute() or args.database.exists():parser.error('provide a new absolute disposable database path')
++    if not args.database.is_absolute():parser.error('provide a new absolute disposable database path')
++    # Reserve exclusively, including empty files and symlinks: never replace existing bytes.
++    try:
++        with args.database.open('xb'):pass
++    except OSError:parser.error('provide a new absolute disposable database path in an existing writable directory')
+     engine=create_database(args.database)
+-    try:print(json.dumps(bootstrap(engine),indent=2))
++    try:
++        if args.flowsheet:
++            from app.demo.icu_flowsheet import bootstrap as flowsheet_bootstrap
++            result=flowsheet_bootstrap(engine)
++        else:result=bootstrap(engine)
++        print(json.dumps(result,indent=2))
+     finally:engine.dispose()
+ if __name__=='__main__':main()
+diff --git a/deploy/synthetic-demo.Dockerfile b/deploy/synthetic-demo.Dockerfile
+index 5e3fba6..feacf11 100644
+--- a/deploy/synthetic-demo.Dockerfile
++++ b/deploy/synthetic-demo.Dockerfile
+@@ -14,7 +14,7 @@ COPY backend/app ./backend/app
+ COPY backend/alembic.ini ./backend/alembic.ini
+ COPY backend/migrations ./backend/migrations
+ ENV PYTHONPATH=/app/backend PYTHONDONTWRITEBYTECODE=1
+-RUN mkdir /fixture && python -m app.demo.comprehensive --database /fixture/synthetic.sqlite3 > /fixture/manifest.json
++RUN mkdir /fixture && python -m app.demo.comprehensive --flowsheet --database /fixture/synthetic.sqlite3 > /fixture/manifest.json
+ 
+ FROM python:3.11.6-slim-bookworm AS runtime
+ WORKDIR /app
+diff --git a/docs/SYNTHETIC-DEMO-HOSTING.md b/docs/SYNTHETIC-DEMO-HOSTING.md
+index 13bc6bf..bd3dbde 100644
+--- a/docs/SYNTHETIC-DEMO-HOSTING.md
++++ b/docs/SYNTHETIC-DEMO-HOSTING.md
+@@ -44,11 +44,17 @@ Choose fresh absolute paths; bootstrap refuses existing databases. From repo roo
+ 
+ ```sh
+ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend backend/venv/bin/python \
+-  -m app.demo.comprehensive --database /absolute/new/synthetic.sqlite3
++  -m app.demo.comprehensive --flowsheet --database /absolute/new/synthetic.sqlite3
+ cd frontend
+ VITE_SYNTHETIC_HOSTED=true npm run build -- --outDir /absolute/new/hosted-dist
+ ```
+ 
++The explicit `--flowsheet` option builds the expanded 156-record ICU fixture,
++with 14 populated families of 15 supported (optional HPI absent), emits its
++manifest to stdout and exits. The database must be a new absolute path; existing
++files, including empty files and symlinks, are refused without replacement.
++Omitting the option preserves the 41-record comprehensive default.
++
+ Then, from repo root, serve only on loopback:
+ 
+ ```sh
+@@ -60,7 +66,8 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend backend/venv/bin/python \
+ ```
+ 
+ The signing key is generated in process memory, not printed or bundled into
+-frontend assets. Use one worker; after a restart old state contexts may require
++frontend assets. Use exactly one worker and one replica: each process owns its in-memory signing
++key. After a restart old state contexts may require
+ refreshing the recorded state. Durable browser-session recovery remains deferred.
+ 
+ ## Container preparation
+@@ -75,7 +82,8 @@ docker run --rm -p 127.0.0.1:5181:8080 clinrx-synthetic-demo:review
+ ```
+ 
+ These commands build/run locally; they do not publish an image or website. The
+-fixture stage explicitly creates a new disposable database and its two protected
++fixture stage explicitly selects `--flowsheet` to create the expanded database
++and its two protected
+ retained examples before runtime. The server never seeds, resets or upgrades a
+ database at startup. It runs as a non-root user. The SQLite adapter uses immediate
+ transactions even for reads, so its dedicated fixture directory remains writable;
+@@ -83,10 +91,12 @@ read-only here describes exposed operations, not a filesystem read-only mount.
+ No volume holding real data should be attached. A replacement container starts
+ from its packaged synthetic fixture; this demo promises no user-created persistence.
+ 
+-Docker is unavailable on the current Mac command path, so the image build and
+-container launch remain unverified. The compiled frontend plus the same gateway
+-are exercised directly with the pinned local environment. Do not treat that as
+-container or hosting-provider acceptance.
++Container evidence must identify the exact integrated source/tree, resulting
++image ID and tested platform. Older fixture/container acceptance does not prove
++the expanded image contents. Check 156 returned items, optional HPI absence,
++retained receipts and witnesses, calibration/flowsheet history, rejected writes,
++unchanged tables and same-image restart recovery. Local container checks do not
++establish hosting-provider or fresh-visitor acceptance.
+ 
+ ## Director preparation findings
+ 
+diff --git a/tests/test_demo_fixture_cli.py b/tests/test_demo_fixture_cli.py
+new file mode 100644
+index 0000000..1f63337
+--- /dev/null
++++ b/tests/test_demo_fixture_cli.py
+@@ -0,0 +1,54 @@
++"""Offline fixture packaging exits cleanly and never replaces an existing database."""
++import json
++import os
++from pathlib import Path
++import sqlite3
++import subprocess
++import sys
++import pytest
++from starlette.testclient import TestClient
++from app.demo.hosting import SyntheticDemoGateway, PREFIX
++
++
++def build(path,*options):
++    return subprocess.run([sys.executable,'-m','app.demo.comprehensive','--database',str(path),*options],
++        cwd=Path(__file__).resolve().parents[1],env={**os.environ,'PYTHONPATH':'backend','PYTHONDONTWRITEBYTECODE':'1'},
++        capture_output=True,text=True,timeout=60)
++
++
++@pytest.mark.parametrize('expanded,count',[pytest.param(False,41,id='unchanged-default'),pytest.param(True,156,id='docker-flowsheet')])
++def test_offline_cli_retains_database_emits_manifest_and_browses_actual_fixture(tmp_path,expanded,count):
++    path=tmp_path/'fixture.sqlite3';result=build(path,*(['--flowsheet'] if expanded else []))
++    assert result.returncode==0,result.stderr
++    manifest=json.loads(result.stdout)
++    assert manifest['dataset']==('synthetic-icu-flowsheet/2' if expanded else 'comprehensive-synthetic-demo/2')
++    assert manifest['execution_enabled'] is False and manifest['optional_hpi_included'] is False
++    assert manifest['recorded_families']==14
++    with sqlite3.connect(path) as db:assert db.execute('PRAGMA integrity_check').fetchone()[0]=='ok'
++    frontend=tmp_path/'dist';(frontend/'assets').mkdir(parents=True);(frontend/'index.html').write_text('demo')
++    with TestClient(SyntheticDemoGateway(path,frontend,'a7'*32)) as client:
++        response=client.get(PREFIX+'/patient-state-v3',params={k:manifest[k] for k in ('review_start','review_end')})
++        assert response.status_code==200 and response.json()['execution_enabled'] is False
++        assert len(response.json()['assembly']['snapshot']['items'])==count
++    before=path.read_bytes();refused=build(path,'--flowsheet')
++    assert refused.returncode==2 and path.read_bytes()==before
++
++
++@pytest.mark.parametrize('kind',['empty','sentinel','symlink','dangling'])
++def test_offline_cli_refuses_every_existing_path_without_modification(tmp_path,kind):
++    path=tmp_path/'existing.sqlite3';target=tmp_path/'target'
++    if kind in ('symlink','dangling'):
++        if kind=='symlink':target.write_bytes(b'preserved-target')
++        path.symlink_to(target)
++    else:path.write_bytes(b'' if kind=='empty' else b'preserved-bytes')
++    before=target.read_bytes() if target.exists() else (path.read_bytes() if not path.is_symlink() else None)
++    result=build(path,'--flowsheet');assert result.returncode==2
++    if path.is_symlink():
++        assert path.readlink()==target
++        assert (target.read_bytes() if target.exists() else None)==before
++    else:assert path.read_bytes()==before
++
++
++def test_cli_rejects_relative_path_without_creating_file():
++    result=build('never-created-relative.sqlite3','--flowsheet')
++    assert result.returncode==2 and not Path('never-created-relative.sqlite3').exists()
+diff --git a/tests/test_synthetic_hosting.py b/tests/test_synthetic_hosting.py
+index 27786d1..6cb7274 100644
+--- a/tests/test_synthetic_hosting.py
++++ b/tests/test_synthetic_hosting.py
+@@ -1,5 +1,8 @@
+ """The hosted surface reads real synthetic APIs and rejects all other operations."""
+ import sqlite3
++import json
++import secrets
++import hashlib
+ from pathlib import Path
+ import pytest
+ from starlette.testclient import TestClient
+@@ -14,10 +17,11 @@ def rows(path):
+         return {name:db.execute('SELECT * FROM "'+name+'" ORDER BY rowid').fetchall() for name, in tables}
+ 
+ 
+-@pytest.fixture
+-def hosted(tmp_path):
++@pytest.fixture(params=[False,True],ids=['comprehensive-default','expanded-icu'])
++def hosted(tmp_path,request):
+     database=tmp_path/'synthetic.sqlite3';engine=create_database(database)
+-    try:manifest=bootstrap(engine)
++    from app.demo.icu_flowsheet import bootstrap as flowsheet_bootstrap
++    try:manifest=(flowsheet_bootstrap if request.param else bootstrap)(engine)
+     finally:engine.dispose()
+     frontend=tmp_path/'dist';(frontend/'assets').mkdir(parents=True)
+     (frontend/'index.html').write_text('<html>synthetic workspace</html>')
+@@ -38,16 +42,35 @@ def test_hosted_browsing_real_history_and_retained_receipts_do_not_write(hosted)
+         state=client.get(PREFIX+'/patient-state-v3',params={k:manifest[k] for k in ('review_start','review_end')})
+         assert state.status_code==200 and state.json()['execution_enabled'] is False
+         data=state.json();items=data['assembly']['snapshot']['items']
+-        assert len(items)==41 and len({i['fact']['kind'] for i in items})==14
++        assert len(items)==(156 if manifest.get('flowsheet_enabled') else 41)
++        from app.models.clinical.hemodynamics import M7_FACTS
++        assert len(M7_FACTS)==15
++        assert {i['fact']['kind'] for i in items}==set(M7_FACTS)-{'circulatory_device_prediction'}
++        assert manifest['optional_hpi_included'] is False
++        from app.demo.comprehensive import demo_facts
++        from app.demo.icu_flowsheet import flowsheet_facts
++        by_id={i['fact']['id']:i for i in items}
++        for fact in (*demo_facts(),*(flowsheet_facts() if manifest.get('flowsheet_enabled') else ())):
++            if fact.id!='m7-CAL':assert by_id[fact.id]['fact']==fact.model_dump(mode='json')
+         for id,outcome in ((RELEASED_ID,'released'),(WITHHELD_ID,'withheld')):
+             result=client.get(PREFIX+'/circulatory-reviews/'+str(id))
+             assert result.status_code==200 and result.json()['record']['decision']['outcome']==outcome
++            record=result.json()['record']
++            verify_retained_evidence(database,result.json())
++            assert record['evidence']['facts'][-1]['id']=='m7-CAL' and record['evidence']['facts'][-1]['revision']=='1'
++            assert record['final_recheck']['evidence'][-1]['terminal']['version']==('1' if outcome=='released' else '2')
++            assert client.get(PREFIX+'/circulatory-reviews/'+str(id)).content==result.content
+         support=next(i for i in items if i['fact']['id']=='m7-CAL')
+         history=client.post(PREFIX+'/circulatory-evidence-history',json={'state_context':data['state_context'],
+             'reference':{'kind':support['fact']['kind'],'id':'m7-CAL','version':'2'}})
+         assert history.status_code==200
+         assert [r['fact']['revision'] for r in history.json()['revisions']]==['1','2']
++        if manifest.get('flowsheet_enabled'):
++            event=next(i for i in items if i['fact']['id']=='fs-D-CHANGE')
++            h=client.post(PREFIX+'/circulatory-evidence-history',json={'state_context':data['state_context'],'reference':{'kind':event['fact']['kind'],'id':event['fact']['id'],'version':'1'}})
++            assert h.status_code==200 and h.json()['revisions'][0]['fact']==event['fact']
+         assert client.post(PREFIX+'/circulatory-evidence-history',json={'state_context':'invalid','reference':{}}).status_code==422
++        assert client.get(PREFIX+'/patient-state-v3',params={'review_start':'bad','review_end':manifest['review_end']}).status_code==422
+     assert rows(database)==before
+ 
+ 
+@@ -82,3 +105,41 @@ def test_hosted_environment_cannot_enable_execution(hosted,monkeypatch):
+     monkeypatch.setenv('CLINRX_SYNTHETIC_FRONTEND',str(app.static.directory))
+     from app.demo.hosting import from_environment
+     assert from_environment().config.circulatory_execution_enabled is False
++
++
++def test_gateway_restart_preserves_receipts_rejects_stale_context_and_does_not_seed(hosted):
++    app,database,manifest=hosted;before=rows(database)
++    query={k:manifest[k] for k in ('review_start','review_end')}
++    with TestClient(app) as client:
++        state=client.get(PREFIX+'/patient-state-v3',params=query).json()
++        receipts={str(id):client.get(PREFIX+'/circulatory-reviews/'+str(id)).content for id in (RELEASED_ID,WITHHELD_ID)}
++    restarted=SyntheticDemoGateway(database,Path(app.static.directory),secrets.token_hex(32))
++    history={'state_context':state['state_context'],'reference':{'kind':'circulatory_monitoring','id':'m7-CAL','version':'2'}}
++    with TestClient(restarted) as client:
++        stale=client.post(PREFIX+'/circulatory-evidence-history',json=history)
++        assert stale.status_code==422 and stale.json()['code']=='invalid_state_context'
++        fresh=client.get(PREFIX+'/patient-state-v3',params=query).json();assert fresh['execution_enabled'] is False
++        history['state_context']=fresh['state_context']
++        result=client.post(PREFIX+'/circulatory-evidence-history',json=history)
++        assert result.status_code==200 and [r['fact']['revision'] for r in result.json()['revisions']]==['1','2']
++        for id,raw in receipts.items():assert client.get(PREFIX+'/circulatory-reviews/'+id).content==raw
++    assert rows(database)==before
++
++
++def verify_retained_evidence(database,receipt):
++    # Compare complete retained originals and terminal witnesses with persisted bytes.
++    with sqlite3.connect(database) as db:
++        db.row_factory=sqlite3.Row
++        stored=db.execute('SELECT * FROM circulatory_execution WHERE execution_id=?',(receipt['record']['request']['execution_id'],)).fetchone()
++        assert json.loads(stored['payload'])==receipt['record']
++        assert hashlib.sha256(stored['payload'].encode()).hexdigest()==stored['payload_digest']
++        facts={(r['kind'],r['fact_id'],r['revision']):r for r in db.execute('SELECT * FROM fact_revision')}
++        record=receipt['record']
++        for fact in record['evidence']['facts']:
++            row=facts[(fact['kind'],fact['id'],fact['revision'])]
++            assert json.loads(row['payload'])==fact
++        assert len(record['final_recheck']['evidence'])==4
++        for witness in record['final_recheck']['evidence']:
++            for refkey,digestkey in [('consumed','source_digest'),('terminal','terminal_source_digest')]:
++                ref=witness[refkey];row=facts[(ref['kind'],ref['id'],ref['version'])]
++                assert hashlib.sha256(row['payload'].encode()).hexdigest()==witness[digestkey]

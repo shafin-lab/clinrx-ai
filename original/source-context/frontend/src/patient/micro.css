@@ -1,0 +1,15 @@
+.micro-review { margin-block:2rem; overflow-wrap:anywhere; }
+.micro-group { margin:1rem 0; padding:1rem; border:1px solid #cbd8db; border-radius:.5rem; }
+.micro-group .micro-group { margin-left:.5rem; background:#f6faf9; }
+.micro-fact { padding:.75rem; border-left:3px solid #698f8a; margin-block:.75rem; }
+.micro-fact h5,.micro-witness h5 { font-size:1rem; margin:.5rem 0; }
+.micro-fact p { margin:.45rem 0; }
+.micro-selectors,.micro-columns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:1rem 0; }
+.micro-selectors label { display:flex; flex-direction:column; gap:.5rem; }
+.micro-selectors select { width:100%; padding:.7rem; border:1px solid #839b9a; border-radius:.4rem; background:white; font:inherit; }
+.micro-witness { border-top:1px solid #cbd8db; margin-top:1rem; }
+.micro-result { margin-top:1.5rem; padding:1rem; background:#f4f8f7; border:1px solid #cbd8db; border-radius:.5rem; }
+.digest { overflow-wrap:anywhere; font-family:monospace; font-size:.85rem; }
+.micro-review summary { cursor:pointer; font-weight:600; }
+.micro-review :focus-visible { outline:3px solid #175e60; outline-offset:3px; }
+@media(max-width:700px) { .micro-selectors,.micro-columns {grid-template-columns:1fr;} .micro-group {padding:.6rem;} }

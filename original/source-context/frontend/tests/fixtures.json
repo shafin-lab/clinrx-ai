@@ -1,0 +1,692 @@
+{
+  "state": {
+    "transport_version": "1",
+    "scope": {
+      "patient_id": "synthetic-p1",
+      "encounter_id": "synthetic-e1",
+      "review_start": "2026-10-08T08:00:00Z",
+      "review_end": "2026-10-08T10:00:00Z",
+      "repository_cutoff": {
+        "repository_id": "c144b2a9-e26e-4fed-bf65-f0acf7f41f6e",
+        "fact_watermark": 3,
+        "captured_at": "2026-10-12T04:24:44.926315Z"
+      }
+    },
+    "state_context": "opaque-state-context",
+    "profile_id": "SyntheticLaboratoryMedicationState",
+    "profile_version": "1",
+    "laboratory": [
+      {
+        "reference": {
+          "kind": "observation",
+          "id": "demo-creatinine-A",
+          "version": "1"
+        },
+        "selection_digest": "ac8a4c97c58fbcf4930886989ac8b38f40cc13339993dd7069ec9d37381352a4",
+        "time": {
+          "event": "2026-10-08T08:00:00Z",
+          "effective_start": null,
+          "effective_end": null,
+          "recorded": "2026-10-08T08:00:00Z",
+          "retrieved": null,
+          "processed": null,
+          "precision": "instant",
+          "uncertainty": null
+        },
+        "source": {
+          "namespace": "clinrx.synthetic.serum-creatinine",
+          "identifier": "demo-sample-A",
+          "version": "1",
+          "channel": "measurement"
+        },
+        "origin": "reported",
+        "verification": "verified",
+        "conflict": "none_known",
+        "temporal_status": "historical",
+        "provenance_recorded_at": "2026-10-08T08:00:00Z",
+        "provenance_actor": "synthetic-demo",
+        "provenance_limitations": [
+          "Synthetic demonstration only; no clinical feed."
+        ],
+        "provenance_completeness": "unknown",
+        "ingested_at": "2026-10-12T04:24:44.901165Z",
+        "disclosures": [
+          "Source uncertainty: Synthetic recorded evidence only.",
+          "Dedicated specimen identity and result status are not represented by this durable observation model."
+        ],
+        "domain": "laboratory",
+        "concept_id": "synthetic-serum-creatinine",
+        "quantity": {
+          "value": "1.00",
+          "unit_raw": "mg/dL",
+          "unit_code": "mg/dL",
+          "unit_system": "UCUM",
+          "unit_status": "assessed"
+        }
+      },
+      {
+        "reference": {
+          "kind": "observation",
+          "id": "demo-creatinine-B",
+          "version": "1"
+        },
+        "selection_digest": "092e9a21a47f766f7c6fe8072da6990bc4fe3d986353e07808956eeb95ee3480",
+        "time": {
+          "event": "2026-10-08T10:00:00Z",
+          "effective_start": null,
+          "effective_end": null,
+          "recorded": "2026-10-08T10:00:00Z",
+          "retrieved": null,
+          "processed": null,
+          "precision": "instant",
+          "uncertainty": null
+        },
+        "source": {
+          "namespace": "clinrx.synthetic.serum-creatinine",
+          "identifier": "demo-sample-B",
+          "version": "1",
+          "channel": "measurement"
+        },
+        "origin": "reported",
+        "verification": "verified",
+        "conflict": "none_known",
+        "temporal_status": "historical",
+        "provenance_recorded_at": "2026-10-08T10:00:00Z",
+        "provenance_actor": "synthetic-demo",
+        "provenance_limitations": [
+          "Synthetic demonstration only; no clinical feed."
+        ],
+        "provenance_completeness": "unknown",
+        "ingested_at": "2026-10-12T04:24:44.904752Z",
+        "disclosures": [
+          "Source uncertainty: Synthetic recorded evidence only.",
+          "Dedicated specimen identity and result status are not represented by this durable observation model."
+        ],
+        "domain": "laboratory",
+        "concept_id": "synthetic-serum-creatinine",
+        "quantity": {
+          "value": "2.000",
+          "unit_raw": "mg/dL",
+          "unit_code": "mg/dL",
+          "unit_system": "UCUM",
+          "unit_status": "assessed"
+        }
+      }
+    ],
+    "medication": [
+      {
+        "reference": {
+          "kind": "medication_order",
+          "id": "demo-medication-M",
+          "version": "1"
+        },
+        "selection_digest": "5514060244eb084463aa4695b74b34ad99cccf91478db57cc5a35efb6031646f",
+        "time": {
+          "event": "2026-10-08T09:00:00Z",
+          "effective_start": null,
+          "effective_end": null,
+          "recorded": "2026-10-08T09:00:00Z",
+          "retrieved": null,
+          "processed": null,
+          "precision": "instant",
+          "uncertainty": null
+        },
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "origin": "reported",
+        "verification": "verified",
+        "conflict": "none_known",
+        "temporal_status": "historical",
+        "provenance_recorded_at": "2026-10-08T09:00:00Z",
+        "provenance_actor": "synthetic-demo",
+        "provenance_limitations": [
+          "Synthetic demonstration only; no clinical feed."
+        ],
+        "provenance_completeness": "unknown",
+        "ingested_at": "2026-10-12T04:24:44.903284Z",
+        "disclosures": [
+          "Source uncertainty: Synthetic recorded evidence only."
+        ],
+        "domain": "medication",
+        "event_type": "medication_order",
+        "product_id": "synthetic-product",
+        "ingredient_ids": [
+          "synthetic-ingredient"
+        ],
+        "formulation": null,
+        "status": "active",
+        "dose": {
+          "value": "1.0",
+          "unit_raw": "mg",
+          "unit_code": "mg",
+          "unit_system": "UCUM",
+          "unit_status": "assessed"
+        },
+        "dose_basis": "per_dose",
+        "route": "synthetic route",
+        "schedule_text": "synthetic single event",
+        "frequency_occurrences": null,
+        "frequency_interval": null
+      }
+    ],
+    "coverage": [
+      {
+        "domain": "laboratory",
+        "mapping_support": "partial",
+        "retrieval": "completed",
+        "candidate_count": 2,
+        "retained_count": 2,
+        "unsuitable_count": 0,
+        "source_completeness": "unknown",
+        "limitations": [
+          "source_completeness_unknown",
+          "availability_by_clinical_time_not_established",
+          "narrow_laboratory_source_profile"
+        ]
+      },
+      {
+        "domain": "medication",
+        "mapping_support": "supported",
+        "retrieval": "completed",
+        "candidate_count": 1,
+        "retained_count": 1,
+        "unsuitable_count": 0,
+        "source_completeness": "unknown",
+        "limitations": [
+          "source_completeness_unknown",
+          "availability_by_clinical_time_not_established"
+        ]
+      },
+      {
+        "domain": "antimicrobial",
+        "mapping_support": "unsupported",
+        "retrieval": "not_attempted",
+        "candidate_count": null,
+        "retained_count": null,
+        "unsuitable_count": null,
+        "source_completeness": "unknown",
+        "limitations": [
+          "source_completeness_unknown",
+          "availability_by_clinical_time_not_established",
+          "mapping_unsupported"
+        ]
+      },
+      {
+        "domain": "hemodynamic_support",
+        "mapping_support": "unsupported",
+        "retrieval": "not_attempted",
+        "candidate_count": null,
+        "retained_count": null,
+        "unsuitable_count": null,
+        "source_completeness": "unknown",
+        "limitations": [
+          "source_completeness_unknown",
+          "availability_by_clinical_time_not_established",
+          "mapping_unsupported"
+        ]
+      },
+      {
+        "domain": "respiratory_support",
+        "mapping_support": "unsupported",
+        "retrieval": "not_attempted",
+        "candidate_count": null,
+        "retained_count": null,
+        "unsuitable_count": null,
+        "source_completeness": "unknown",
+        "limitations": [
+          "source_completeness_unknown",
+          "availability_by_clinical_time_not_established",
+          "mapping_unsupported"
+        ]
+      },
+      {
+        "domain": "renal_support",
+        "mapping_support": "unsupported",
+        "retrieval": "not_attempted",
+        "candidate_count": null,
+        "retained_count": null,
+        "unsuitable_count": null,
+        "source_completeness": "unknown",
+        "limitations": [
+          "source_completeness_unknown",
+          "availability_by_clinical_time_not_established",
+          "mapping_unsupported"
+        ]
+      },
+      {
+        "domain": "fluid_output",
+        "mapping_support": "unsupported",
+        "retrieval": "not_attempted",
+        "candidate_count": null,
+        "retained_count": null,
+        "unsuitable_count": null,
+        "source_completeness": "unknown",
+        "limitations": [
+          "source_completeness_unknown",
+          "availability_by_clinical_time_not_established",
+          "mapping_unsupported"
+        ]
+      },
+      {
+        "domain": "microbiology",
+        "mapping_support": "unsupported",
+        "retrieval": "not_attempted",
+        "candidate_count": null,
+        "retained_count": null,
+        "unsuitable_count": null,
+        "source_completeness": "unknown",
+        "limitations": [
+          "source_completeness_unknown",
+          "availability_by_clinical_time_not_established",
+          "mapping_unsupported"
+        ]
+      },
+      {
+        "domain": "procedure",
+        "mapping_support": "unsupported",
+        "retrieval": "not_attempted",
+        "candidate_count": null,
+        "retained_count": null,
+        "unsuitable_count": null,
+        "source_completeness": "unknown",
+        "limitations": [
+          "source_completeness_unknown",
+          "availability_by_clinical_time_not_established",
+          "mapping_unsupported"
+        ]
+      },
+      {
+        "domain": "history_event",
+        "mapping_support": "unsupported",
+        "retrieval": "not_attempted",
+        "candidate_count": null,
+        "retained_count": null,
+        "unsuitable_count": null,
+        "source_completeness": "unknown",
+        "limitations": [
+          "source_completeness_unknown",
+          "availability_by_clinical_time_not_established",
+          "mapping_unsupported"
+        ]
+      }
+    ],
+    "issues": [],
+    "disclosures": [
+      "Only the versioned synthetic laboratory source profile and durable medication orders/administrations are mapped.",
+      "Unsupported domains may contain real-world evidence; an empty bucket does not establish clinical absence.",
+      "Source completeness is unknown, including for completed retrieval.",
+      "Availability by clinical time is not established; the repository prefix is not an availability timestamp."
+    ]
+  },
+  "execution": {
+    "transport_version": "1",
+    "execution_id": "11111111-1111-4111-8111-111111111111",
+    "status": "completed",
+    "finalized_at": "2026-10-08T12:01:00Z",
+    "ingested_at": "2026-10-12T04:24:45.114313Z",
+    "context": {
+      "reference": {
+        "kind": "snapshot",
+        "id": "protected-patient-state-11111111-1111-4111-8111-111111111111-context",
+        "version": "1"
+      },
+      "completeness": "partial",
+      "evidence_references": [
+        {
+          "kind": "observation",
+          "id": "demo-creatinine-A",
+          "version": "1"
+        },
+        {
+          "kind": "observation",
+          "id": "demo-creatinine-B",
+          "version": "1"
+        },
+        {
+          "kind": "medication_order",
+          "id": "demo-medication-M",
+          "version": "1"
+        },
+        {
+          "kind": "inference",
+          "id": "1105c53f-6659-4c59-9ca1-3a8912be798e",
+          "version": "1"
+        }
+      ],
+      "limitations": [
+        "Synthetic explicit-subset temporal review only; no patient-care authorization or delivery.",
+        "Only exact selected A/B/M evidence is assessed; unsupported domains do not establish clinical absence.",
+        "Source completeness and authenticity are not established; availability by review end is not asserted.",
+        "No diagnosis, causal attribution, medication-effect assessment or treatment recommendation.",
+        "Direct selected dependencies only; complete upstream ancestry is not established."
+      ]
+    },
+    "governance": {
+      "outcome": "released",
+      "decision_reference": {
+        "kind": "release_decision",
+        "id": "protected-patient-state-11111111-1111-4111-8111-111111111111",
+        "version": "1"
+      },
+      "decided_at": "2026-10-08T12:01:00Z",
+      "assessed_at": "2026-10-08T12:01:00Z",
+      "reasons": [],
+      "safety_status": "no_detected_violation",
+      "fidelity_status": "matched",
+      "freshness_status": "fresh",
+      "authority_status": "allow",
+      "limitations": [
+        "Synthetic explicit-subset temporal review only; no patient-care authorization or delivery.",
+        "Only exact selected A/B/M evidence is assessed; unsupported domains do not establish clinical absence.",
+        "Source completeness and authenticity are not established; availability by review end is not asserted.",
+        "No diagnosis, causal attribution, medication-effect assessment or treatment recommendation.",
+        "Direct selected dependencies only; complete upstream ancestry is not established.",
+        "Descriptive comparison of two explicitly selected recorded serum-creatinine observations and one selected medication event within the supplied patient/encounter snapshot only.",
+        "Not clinically validated; no diagnosis, causal attribution, medication-effect assessment or treatment recommendation.",
+        "Direct selected dependencies only; source authenticity and complete ancestry are not established.",
+        "Recorded and explicitly selected evidence only; this is not a patient-wide summary.",
+        "Source completeness is unknown; additional evidence may exist in unsupported or unmapped domains.",
+        "Mapping omissions are not evaluated as evidence of clinical absence.",
+        "Availability by review end is not established.",
+        "Temporal ordering does not establish clinical significance or cause.",
+        "Source authenticity and specimen independence are not independently established.",
+        "Source uncertainty: Synthetic recorded evidence only.",
+        "Dedicated specimen identity and result status are not represented by this durable observation model.",
+        "Synthetic demonstration only; no clinical feed.",
+        "Selected A verification: verified.",
+        "Selected A conflict: none_known.",
+        "Selected A provenance completeness: unknown.",
+        "Selected A binding verification: verified.",
+        "Selected B verification: verified.",
+        "Selected B conflict: none_known.",
+        "Selected B provenance completeness: unknown.",
+        "Selected B binding verification: verified.",
+        "Selected M verification: verified.",
+        "Selected M conflict: none_known.",
+        "Selected M provenance completeness: unknown.",
+        "Selected M binding verification: verified."
+      ]
+    },
+    "provenance": {
+      "inference": {
+        "reference": {
+          "kind": "inference",
+          "id": "1105c53f-6659-4c59-9ca1-3a8912be798e",
+          "version": "1"
+        },
+        "method": {
+          "kind": "inference_method",
+          "id": "RecordedPatientStateTemporalRelation",
+          "version": "1"
+        },
+        "statement": "Recorded serum creatinine increased from 1.00 mg/dL to 2.000 mg/dL between the selected laboratory observations at 2026-10-08T08:00:00+00:00 and 2026-10-08T10:00:00+00:00. The selected medication order has a recorded event time of 2026-10-08T09:00:00+00:00, strictly between those observations. Temporal ordering does not establish clinical significance or cause. Synthetic evaluation only.",
+        "applicability": "Descriptive comparison of two explicitly selected recorded serum-creatinine observations and one selected medication event within the supplied patient/encounter snapshot only.",
+        "uncertainty": [
+          "Recorded and explicitly selected evidence only; this is not a patient-wide summary.",
+          "Source completeness is unknown; additional evidence may exist in unsupported or unmapped domains.",
+          "Mapping omissions are not evaluated as evidence of clinical absence.",
+          "Availability by review end is not established.",
+          "Temporal ordering does not establish clinical significance or cause.",
+          "Source authenticity and specimen independence are not independently established.",
+          "Source uncertainty: Synthetic recorded evidence only.",
+          "Dedicated specimen identity and result status are not represented by this durable observation model.",
+          "Synthetic demonstration only; no clinical feed.",
+          "Selected A verification: verified.",
+          "Selected A conflict: none_known.",
+          "Selected A provenance completeness: unknown.",
+          "Selected A binding verification: verified.",
+          "Selected B verification: verified.",
+          "Selected B conflict: none_known.",
+          "Selected B provenance completeness: unknown.",
+          "Selected B binding verification: verified.",
+          "Selected M verification: verified.",
+          "Selected M conflict: none_known.",
+          "Selected M provenance completeness: unknown.",
+          "Selected M binding verification: verified."
+        ],
+        "limitations": [
+          "Not clinically validated; no diagnosis, causal attribution, medication-effect assessment or treatment recommendation.",
+          "Direct selected dependencies only; source authenticity and complete ancestry are not established."
+        ],
+        "inputs": [
+          {
+            "kind": "observation",
+            "id": "demo-creatinine-A",
+            "version": "1"
+          },
+          {
+            "kind": "observation",
+            "id": "demo-creatinine-B",
+            "version": "1"
+          },
+          {
+            "kind": "medication_order",
+            "id": "demo-medication-M",
+            "version": "1"
+          }
+        ]
+      },
+      "earlier_laboratory": {
+        "reference": {
+          "kind": "observation",
+          "id": "demo-creatinine-A",
+          "version": "1"
+        },
+        "selection_digest": "ac8a4c97c58fbcf4930886989ac8b38f40cc13339993dd7069ec9d37381352a4",
+        "time": {
+          "event": "2026-10-08T08:00:00Z",
+          "effective_start": null,
+          "effective_end": null,
+          "recorded": "2026-10-08T08:00:00Z",
+          "retrieved": null,
+          "processed": null,
+          "precision": "instant",
+          "uncertainty": null
+        },
+        "source": {
+          "namespace": "clinrx.synthetic.serum-creatinine",
+          "identifier": "demo-sample-A",
+          "version": "1",
+          "channel": "measurement"
+        },
+        "origin": "reported",
+        "verification": "verified",
+        "conflict": "none_known",
+        "temporal_status": "historical",
+        "provenance_recorded_at": "2026-10-08T08:00:00Z",
+        "provenance_actor": "synthetic-demo",
+        "provenance_limitations": [
+          "Synthetic demonstration only; no clinical feed."
+        ],
+        "provenance_completeness": "unknown",
+        "ingested_at": "2026-10-12T04:24:44.901165Z",
+        "disclosures": [
+          "Retained synthetic audit evidence; consumed and terminal revisions are distinct fields. Complete ancestry is not established."
+        ],
+        "domain": "laboratory",
+        "concept_id": "synthetic-serum-creatinine",
+        "quantity": {
+          "value": "1.00",
+          "unit_raw": "mg/dL",
+          "unit_code": "mg/dL",
+          "unit_system": "UCUM",
+          "unit_status": "assessed"
+        }
+      },
+      "later_laboratory": {
+        "reference": {
+          "kind": "observation",
+          "id": "demo-creatinine-B",
+          "version": "1"
+        },
+        "selection_digest": "092e9a21a47f766f7c6fe8072da6990bc4fe3d986353e07808956eeb95ee3480",
+        "time": {
+          "event": "2026-10-08T10:00:00Z",
+          "effective_start": null,
+          "effective_end": null,
+          "recorded": "2026-10-08T10:00:00Z",
+          "retrieved": null,
+          "processed": null,
+          "precision": "instant",
+          "uncertainty": null
+        },
+        "source": {
+          "namespace": "clinrx.synthetic.serum-creatinine",
+          "identifier": "demo-sample-B",
+          "version": "1",
+          "channel": "measurement"
+        },
+        "origin": "reported",
+        "verification": "verified",
+        "conflict": "none_known",
+        "temporal_status": "historical",
+        "provenance_recorded_at": "2026-10-08T10:00:00Z",
+        "provenance_actor": "synthetic-demo",
+        "provenance_limitations": [
+          "Synthetic demonstration only; no clinical feed."
+        ],
+        "provenance_completeness": "unknown",
+        "ingested_at": "2026-10-12T04:24:44.904752Z",
+        "disclosures": [
+          "Retained synthetic audit evidence; consumed and terminal revisions are distinct fields. Complete ancestry is not established."
+        ],
+        "domain": "laboratory",
+        "concept_id": "synthetic-serum-creatinine",
+        "quantity": {
+          "value": "2.000",
+          "unit_raw": "mg/dL",
+          "unit_code": "mg/dL",
+          "unit_system": "UCUM",
+          "unit_status": "assessed"
+        }
+      },
+      "medication": {
+        "reference": {
+          "kind": "medication_order",
+          "id": "demo-medication-M",
+          "version": "1"
+        },
+        "selection_digest": "5514060244eb084463aa4695b74b34ad99cccf91478db57cc5a35efb6031646f",
+        "time": {
+          "event": "2026-10-08T09:00:00Z",
+          "effective_start": null,
+          "effective_end": null,
+          "recorded": "2026-10-08T09:00:00Z",
+          "retrieved": null,
+          "processed": null,
+          "precision": "instant",
+          "uncertainty": null
+        },
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "origin": "reported",
+        "verification": "verified",
+        "conflict": "none_known",
+        "temporal_status": "historical",
+        "provenance_recorded_at": "2026-10-08T09:00:00Z",
+        "provenance_actor": "synthetic-demo",
+        "provenance_limitations": [
+          "Synthetic demonstration only; no clinical feed."
+        ],
+        "provenance_completeness": "unknown",
+        "ingested_at": "2026-10-12T04:24:44.903284Z",
+        "disclosures": [
+          "Retained synthetic audit evidence; consumed and terminal revisions are distinct fields. Complete ancestry is not established."
+        ],
+        "domain": "medication",
+        "event_type": "medication_order",
+        "product_id": "synthetic-product",
+        "ingredient_ids": [
+          "synthetic-ingredient"
+        ],
+        "formulation": null,
+        "status": "active",
+        "dose": {
+          "value": "1.0",
+          "unit_raw": "mg",
+          "unit_code": "mg",
+          "unit_system": "UCUM",
+          "unit_status": "assessed"
+        },
+        "dose_basis": "per_dose",
+        "route": "synthetic route",
+        "schedule_text": "synthetic single event",
+        "frequency_occurrences": null,
+        "frequency_interval": null
+      },
+      "terminal_references": [
+        {
+          "kind": "observation",
+          "id": "demo-creatinine-A",
+          "version": "1"
+        },
+        {
+          "kind": "observation",
+          "id": "demo-creatinine-B",
+          "version": "1"
+        },
+        {
+          "kind": "medication_order",
+          "id": "demo-medication-M",
+          "version": "1"
+        }
+      ],
+      "inference_terminal_reference": {
+        "kind": "inference",
+        "id": "1105c53f-6659-4c59-9ca1-3a8912be798e",
+        "version": "1"
+      },
+      "direct_dependencies": [
+        {
+          "target": {
+            "kind": "observation",
+            "id": "demo-creatinine-A",
+            "version": "1"
+          },
+          "relationship": "derived_from"
+        },
+        {
+          "target": {
+            "kind": "observation",
+            "id": "demo-creatinine-B",
+            "version": "1"
+          },
+          "relationship": "derived_from"
+        },
+        {
+          "target": {
+            "kind": "medication_order",
+            "id": "demo-medication-M",
+            "version": "1"
+          },
+          "relationship": "derived_from"
+        }
+      ],
+      "input_cutoff": {
+        "repository_id": "c144b2a9-e26e-4fed-bf65-f0acf7f41f6e",
+        "fact_watermark": 3,
+        "captured_at": "2026-10-12T04:24:44.926315Z"
+      },
+      "inference_cutoff": {
+        "repository_id": "c144b2a9-e26e-4fed-bf65-f0acf7f41f6e",
+        "fact_watermark": 4,
+        "captured_at": "2026-10-12T04:24:45.009760Z"
+      },
+      "final_cutoff": {
+        "repository_id": "c144b2a9-e26e-4fed-bf65-f0acf7f41f6e",
+        "fact_watermark": 4,
+        "captured_at": "2026-10-12T04:24:45.016970Z"
+      },
+      "final_recheck": "unchanged",
+      "recheck_reasons": []
+    }
+  }
+}

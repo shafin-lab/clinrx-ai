@@ -1,0 +1,173 @@
+{
+  "table": "fact_revision",
+  "row_index": 96,
+  "raw_row": [
+    97,
+    "circulatory_event",
+    "fs-FLUID-CHALLENGE",
+    "1",
+    "synthetic-p1",
+    "synthetic-e1",
+    1,
+    "{\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:10:00Z\"},\"source_timestamp\":\"2026-10-08T08:10:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"fluid_challenge\",\"namespace\":\"clinrx.synthetic.hemodynamic-chart/v1\",\"raw_display\":\"fluid_challenge\",\"version\":\"1\"},\"raw_display\":\"Source-charted fluid challenge. The same administration may be included in interval input; do not add its event volume again to the fluid chart. Baseline and subsequent measurements are linked without a response or causality claim.\"},\"disclosures\":[\"Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them.\"],\"event_type\":\"fluid_challenge\",\"external_evidence\":[],\"id\":\"fs-FLUID-CHALLENGE\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:10:00Z\"},\"source_timestamp\":\"2026-10-08T08:10:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":{\"unit\":{\"code\":null,\"limitation\":\"Synthetic source unit.\",\"raw\":\"mL\",\"status\":\"unresolved\",\"system\":null},\"value\":\"250\"},\"revision\":\"1\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[],\"verification\":\"unverified\"}",
+    "2026-10-17T04:15:11.723703+00:00"
+  ],
+  "named_columns": {
+    "ingestion_sequence": 97,
+    "kind": "circulatory_event",
+    "fact_id": "fs-FLUID-CHALLENGE",
+    "revision": "1",
+    "patient_id": "synthetic-p1",
+    "encounter_id": "synthetic-e1",
+    "payload_version": 1,
+    "payload": "{\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:10:00Z\"},\"source_timestamp\":\"2026-10-08T08:10:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"fluid_challenge\",\"namespace\":\"clinrx.synthetic.hemodynamic-chart/v1\",\"raw_display\":\"fluid_challenge\",\"version\":\"1\"},\"raw_display\":\"Source-charted fluid challenge. The same administration may be included in interval input; do not add its event volume again to the fluid chart. Baseline and subsequent measurements are linked without a response or causality claim.\"},\"disclosures\":[\"Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them.\"],\"event_type\":\"fluid_challenge\",\"external_evidence\":[],\"id\":\"fs-FLUID-CHALLENGE\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:10:00Z\"},\"source_timestamp\":\"2026-10-08T08:10:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":{\"unit\":{\"code\":null,\"limitation\":\"Synthetic source unit.\",\"raw\":\"mL\",\"status\":\"unresolved\",\"system\":null},\"value\":\"250\"},\"revision\":\"1\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[],\"verification\":\"unverified\"}",
+    "ingested_at": "2026-10-17T04:15:11.723703+00:00"
+  },
+  "parsed_payload": {
+    "associations": [],
+    "available": {
+      "alignment": null,
+      "alternative_sources": [],
+      "clock": "verified",
+      "clock_basis": {
+        "actor": "synthetic-demo",
+        "limitations": [
+          "Synthetic source assertion only."
+        ],
+        "lineage": "unknown",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "channel": "system",
+          "identifier": "patient-state-v1",
+          "namespace": "clinrx.synthetic.demo",
+          "version": "1"
+        },
+        "upstream": []
+      },
+      "conflicting": [],
+      "recorded": {
+        "lower": null,
+        "precision": "instant",
+        "status": "known",
+        "uncertainty": null,
+        "upper": null,
+        "value": "2026-10-08T08:10:00Z"
+      },
+      "source_timestamp": "2026-10-08T08:10:00+00:00",
+      "timestamp_precision": "M7ExactTimestampInput/v1"
+    },
+    "binding": {
+      "target": {
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null,
+        "patient_id": "synthetic-p1"
+      },
+      "verification": {
+        "ambiguity": null,
+        "assessed_at": "2026-10-08T08:00:00Z",
+        "method": "synthetic-demo",
+        "source": {
+          "channel": "system",
+          "identifier": "patient-state-v1",
+          "namespace": "clinrx.synthetic.demo",
+          "version": "1"
+        },
+        "status": "verified",
+        "verifier": "synthetic-system"
+      }
+    },
+    "conflict": "unknown",
+    "contract_version": "3",
+    "correction_reason": null,
+    "description": {
+      "coding": {
+        "code": "fluid_challenge",
+        "namespace": "clinrx.synthetic.hemodynamic-chart/v1",
+        "raw_display": "fluid_challenge",
+        "version": "1"
+      },
+      "raw_display": "Source-charted fluid challenge. The same administration may be included in interval input; do not add its event volume again to the fluid chart. Baseline and subsequent measurements are linked without a response or causality claim."
+    },
+    "disclosures": [
+      "Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them."
+    ],
+    "event_type": "fluid_challenge",
+    "external_evidence": [],
+    "id": "fs-FLUID-CHALLENGE",
+    "kind": "circulatory_event",
+    "occurred": {
+      "alignment": null,
+      "alternative_sources": [],
+      "clock": "verified",
+      "clock_basis": {
+        "actor": "synthetic-demo",
+        "limitations": [
+          "Synthetic source assertion only."
+        ],
+        "lineage": "unknown",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "channel": "system",
+          "identifier": "patient-state-v1",
+          "namespace": "clinrx.synthetic.demo",
+          "version": "1"
+        },
+        "upstream": []
+      },
+      "conflicting": [],
+      "recorded": {
+        "lower": null,
+        "precision": "instant",
+        "status": "known",
+        "uncertainty": null,
+        "upper": null,
+        "value": "2026-10-08T08:10:00Z"
+      },
+      "source_timestamp": "2026-10-08T08:10:00+00:00",
+      "timestamp_precision": "M7ExactTimestampInput/v1"
+    },
+    "origin": "reported",
+    "provenance": {
+      "actor": "synthetic-demo",
+      "limitations": [
+        "Synthetic source assertion only."
+      ],
+      "lineage": "unknown",
+      "recorded_at": "2026-10-08T08:00:00Z",
+      "source": {
+        "channel": "system",
+        "identifier": "patient-state-v1",
+        "namespace": "clinrx.synthetic.demo",
+        "version": "1"
+      },
+      "upstream": []
+    },
+    "record_status": "recorded",
+    "recorded_amount": {
+      "unit": {
+        "code": null,
+        "limitation": "Synthetic source unit.",
+        "raw": "mL",
+        "status": "unresolved",
+        "system": null
+      },
+      "value": "250"
+    },
+    "revision": "1",
+    "source_identifiers": [],
+    "supersedes": null,
+    "temporal_status": "unknown",
+    "time": {
+      "effective_end": null,
+      "effective_start": null,
+      "event": null,
+      "precision": "unknown",
+      "processed": null,
+      "recorded": null,
+      "retrieved": null,
+      "uncertainty": null
+    },
+    "uncertainty": [],
+    "verification": "unverified"
+  }
+}
