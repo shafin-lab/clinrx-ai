@@ -6,8 +6,9 @@ import type {CirculatoryClient} from '../src/api/circulatoryClient';
 import {EvidenceEntryWorkspace} from '../src/demo/EvidenceEntryWorkspace';
 import {EvidenceEntryClient,type Draft,type Evidence} from '../src/api/evidenceEntryClient';
 afterEach(cleanup);
-function setup(enabled=false){
+function setup(enabled=false, change?:(state:ReturnType<typeof decodeCirculatoryState>)=>void){
  const state=decodeCirculatoryState({...structuredClone(fixture),execution_enabled:enabled});
+ change?.(state);
  const client={circulatoryState:vi.fn().mockResolvedValue({data:state}),circulatoryHistory:vi.fn().mockResolvedValue({data:{revisions:[]}})};
  const entry={validate:vi.fn(async(body:Draft)=>({repository_id:body.repository_id,fact:body.fact,expected_digest:'a'.repeat(64),canonical_fact:JSON.stringify(body.fact),ingestion:null} as Evidence)),save:vi.fn(),lookup:vi.fn()};
  render(<EvidenceEntryWorkspace client={client as unknown as CirculatoryClient} entry={entry as unknown as EvidenceEntryClient} config={{start:'2026-10-08T08:00:00Z',end:'2026-10-08T10:00:00Z'}}/>);
@@ -56,4 +57,95 @@ it('keeps a stale conflict in review without automatic replacement or retry',asy
  fireEvent.click(screen.getByRole('button',{name:'Confirm append to local database'}));await screen.findByRole('alert');
  await waitFor(()=>expect(screen.getByRole('button',{name:'Discard draft and reload'})).toBeEnabled());
  expect(entry.save).toHaveBeenCalledTimes(1);expect(entry.lookup).not.toHaveBeenCalled();
+});
+
+it('keeps JSON-only and interleaved shortcut edits in the single authoritative draft',async()=>{
+ const {entry}=setup();
+ fireEvent.change(await screen.findByRole('textbox',{name:'Find evidence'}),{target:{value:'fs-PH-60'}});
+ fireEvent.click(await screen.findByRole('button',{name:/pH.*fs-PH-60/}));
+ fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Reviewer'}});
+ fireEvent.change(screen.getByLabelText('Reason for correction or withdrawal'),{target:{value:'Source correction'}});
+ const editor=screen.getByLabelText('Complete source record (JSON)') as HTMLTextAreaElement;
+ const fact=JSON.parse(editor.value);fact.result.quantity.value='7.3600';
+ fireEvent.change(editor,{target:{value:JSON.stringify(fact)}});
+ expect(screen.getByLabelText('Recorded numeric value (raw unit preserved)')).toHaveValue('7.3600');
+ fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
+ await screen.findByRole('button',{name:'Confirm append to local database'});
+ expect(entry.validate.mock.calls[0][0].fact.result).toMatchObject({quantity:{value:'7.3600'}});
+ fireEvent.click(screen.getByRole('button',{name:'Edit draft'}));
+ fireEvent.change(screen.getByLabelText('Recorded numeric value (raw unit preserved)'),{target:{value:'7.37'}});
+ const revised=JSON.parse(editor.value);revised.result.quantity.value='7.38';
+ fireEvent.change(screen.getByLabelText('Complete source record (JSON)'),{target:{value:JSON.stringify(revised)}});
+ fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
+ await screen.findByRole('button',{name:'Confirm append to local database'});
+ expect(entry.validate.mock.calls[1][0].fact.result).toMatchObject({quantity:{value:'7.38'}});
+ entry.save.mockResolvedValue({fact:entry.validate.mock.calls[1][0].fact,ingestion:{ingestion_sequence:164}});
+ fireEvent.click(screen.getByRole('button',{name:'Confirm append to local database'}));await screen.findByText(/Exact revision saved and confirmed/);
+ expect(entry.save.mock.calls[0][0].fact.result).toMatchObject({quantity:{value:'7.38'}});
+});
+it.each(['correct','withdraw'])('retains exact calculation inputs and declared lineage for %s',async action=>{
+ const ref={kind:'circulatory_pressure',id:'m7-P',version:'1'};
+ const edge={target:ref,relationship:'calculated_from',basis:[],rationale:'Recorded dependency'};
+ const {entry}=setup(false,state=>{const fact=state.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!.fact;fact.production='source_calculated';fact.calculation_inputs=[ref];fact.provenance={...Object(fact.provenance),upstream:[edge]};});
+ await draft();fireEvent.click(screen.getByRole('button',{name:'Edit draft'}));
+ fireEvent.change(screen.getByLabelText('Action'),{target:{value:action}});
+ fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));await screen.findByRole('button',{name:'Confirm append to local database'});
+ const fact=entry.validate.mock.calls[1][0].fact;
+ expect(fact.calculation_inputs).toEqual([ref]);expect(fact.provenance).toMatchObject({actor:'Synthetic reviewer',upstream:[edge],lineage:'incomplete'});
+ expect(fact.record_status).toBe(action==='withdraw'?'withdrawn':'recorded');
+});
+it('blocks stale actionable state after a failed gate refresh and makes the header conditional',async()=>{
+ const {client,entry}=setup();await draft();
+ fireEvent.click(screen.getByRole('button',{name:'Edit draft'}));
+ client.circulatoryState.mockResolvedValueOnce({data:{execution_enabled:true}} as never);
+ fireEvent.click(screen.getByRole('button',{name:'Refresh evidence'}));
+ await screen.findByText('Execution gate not confirmed — new writes blocked.');
+ expect(screen.getByRole('button',{name:'Validate and review draft'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'New source entry'})).toBeDisabled();expect(entry.save).not.toHaveBeenCalled();
+});
+it('ignores an older refresh result after a newer response and selects exact revisions only',async()=>{
+ const {client,state}=setup();await screen.findByRole('textbox',{name:'Find evidence'});
+ let resolve!:(value:{data:typeof state})=>void;
+ client.circulatoryState.mockImplementationOnce(()=>new Promise(done=>{resolve=done;}));
+ fireEvent.click(screen.getByRole('button',{name:'Refresh evidence'}));
+ const newer=structuredClone(state);newer.assembly.snapshot.items=[];
+ client.circulatoryState.mockResolvedValueOnce({data:newer});
+ fireEvent.click(screen.getByRole('button',{name:'Refresh evidence'}));
+ await screen.findByText(/0 source records in this snapshot/);
+ resolve({data:state});await waitFor(()=>expect(screen.getByText(/0 source records in this snapshot/)).toBeInTheDocument());
+});
+
+it('creates a guided BP source without JSON editing and reviews exact context before append',async()=>{
+ const {entry}=setup();await screen.findByRole('textbox',{name:'Find evidence'});
+ fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Reviewer'}});
+ fireEvent.change(screen.getByLabelText('Source observation / event time (ISO with offset; optional)'),{target:{value:'2026-10-08T09:15:00.123456Z'}});
+ fireEvent.change(screen.getByLabelText('Recorded value (exact decimal text)'),{target:{value:'71.00'}});
+ fireEvent.change(screen.getByLabelText('Raw unit as recorded'),{target:{value:'mmHg'}});
+ fireEvent.change(screen.getByLabelText('Source limitations / uncertainty (required)'),{target:{value:'Cuff context incomplete'}});
+ fireEvent.click(screen.getByRole('button',{name:'Use guided record for validation'}));
+ fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
+ await screen.findByRole('button',{name:'Confirm append to local database'});
+ expect(entry.validate.mock.calls[0][0].fact.result).toMatchObject({quantity:{value:'71.00'}});
+ expect(screen.getByText('Cuff context incomplete')).toBeInTheDocument();
+ expect(screen.getByText('2026-10-08T09:15:00.123456Z')).toBeInTheDocument();
+ expect(entry.save).not.toHaveBeenCalled();
+});
+it('prepares a clinician-authored reassessment with exact linked revisions and no automatic conclusion',async()=>{
+ const {entry}=setup();await screen.findByRole('textbox',{name:'Find evidence'});
+ fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Reviewer'}});
+ fireEvent.change(screen.getByLabelText('Entry family'),{target:{value:'reassessment'}});
+ for(const [label,text] of [['Reassessment question','Review recorded intervention'],['Recorded findings (your assessment)','Distinct times and methods'],['Unconfirmed possibilities (your assessment)','No causal relationship established'],['Source limitations / uncertainty (required)','Sample context incomplete']])fireEvent.change(screen.getByLabelText(label),{target:{value:text}});
+ for(const [label,ref] of [['Baseline evidence','circulatory_pressure/fs-MAP-15/1'],['Documented intervention','circulatory_vasoactive/fs-N-CHANGE/1'],['Follow-up evidence','circulatory_cardiac/fs-CO-60/1']])fireEvent.change(screen.getByLabelText(label),{target:{value:ref}});
+ fireEvent.click(screen.getByRole('button',{name:'Use guided record for validation'}));fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
+ await screen.findByRole('button',{name:'Confirm append to local database'});
+ expect(entry.validate.mock.calls[0][0].fact.associations).toHaveLength(3);
+ expect(screen.getByText(/Unconfirmed possibilities: No causal relationship established/)).toBeInTheDocument();expect(entry.save).not.toHaveBeenCalled();
+});
+it('does not mark a refreshed successor selected when the original revision remains the correction target',async()=>{
+ const {entry,client,state}=setup();await draft();
+ const newer=structuredClone(state),item=newer.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!;item.fact.revision='successor';
+ client.circulatoryState.mockResolvedValueOnce({data:newer});entry.save.mockResolvedValue({fact:entry.validate.mock.calls[0][0].fact,ingestion:{ingestion_sequence:164}});
+ fireEvent.click(screen.getByRole('button',{name:'Confirm append to local database'}));await screen.findByText(/Exact revision saved and confirmed/);
+ expect(screen.getByRole('button',{name:/pH.*fs-PH-60/})).toHaveAttribute('aria-pressed','false');
+ expect(screen.getByText(/Original retained: circulatory_oxygen \/ fs-PH-60 \/ 1/)).toBeInTheDocument();
 });
