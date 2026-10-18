@@ -54,3 +54,54 @@ it('retains full exact identities when delimiters collide and source order chang
  const {state,a,b}=data();a.fact.id='note/x';a.fact.revision='y';b.fact.id='note';b.fact.revision='x/y';state.assembly.snapshot.items=[b,a];render(<ReassessmentComparison state={state}/>);select(a,b);
  expect(screen.getByRole('combobox',{name:'Note A'})).toHaveValue('["circulatory_event","note/x","y"]');expect(screen.getByRole('combobox',{name:'Note B'})).toHaveValue('["circulatory_event","note","x/y"]');
 });
+
+const duplicateMembers=[
+ ['kind','"kind"'],['id','"id"'],['version','"version"'],
+ ['kind',String.raw`"\u006bind"`],['id',String.raw`"\u0069d"`],['version',String.raw`"ver\u0073ion"`],
+] as const;
+it.each(duplicateMembers)('C1: withholds conflicting duplicate %s member with spelling %s and renders the warning',(field,spelling)=>{
+ const {state,a,b}=data();const entries=b.fact.external_evidence as Record<string,unknown>[];
+ const ref=JSON.parse(String(entries[2].code)) as Record<string,string>;
+ const code='{'+JSON.stringify(field)+':"foreign",'+Object.entries(ref).map(([k,v])=>(k===field?spelling:JSON.stringify(k))+':'+JSON.stringify(v)).join(',')+'}';
+ // Establish the dangerous old last-member-wins path with matching exact support.
+ expect(JSON.parse(code)).toEqual(ref);entries[2].code=code;
+ const before=JSON.stringify(state);expect(reassessmentReference(b,'followup')).toBeUndefined();
+ render(<ReassessmentComparison state={state}/>);select(a,b);
+ const row=screen.getAllByRole('row').find(r=>r.textContent?.includes('Follow-up ABG / evidence reference'))!;
+ const cells=within(row).getAllByRole('cell');expect(cells[0]).toHaveTextContent('Revision: 1');
+ expect(cells[1]).toHaveTextContent('Reference missing, ambiguous or inconsistent');expect(cells[1]).not.toHaveTextContent('corrected/revision');expect(JSON.stringify(state)).toBe(before);
+});
+it.each(['kind','id','version'])('C1: rejects identical repeated %s members too',field=>{
+ const {b}=data(),entries=b.fact.external_evidence as Record<string,unknown>[],ref=JSON.parse(String(entries[2].code));
+ entries[2].code='{'+JSON.stringify(field)+':'+JSON.stringify(ref[field])+','+JSON.stringify(ref).slice(1);
+ expect(reassessmentReference(b,'followup')).toBeUndefined();
+});
+it.each([
+ ' \t\r\n{ "version" : "corrected/revision", "id" : "fs-PH-60", "kind" : "circulatory_oxygen" }\r\n',
+ String.raw`{"\u006bind":"circulatory_oxygen","\u0069d":"fs-PH-60","ver\u0073ion":"corrected\u002frevision"}`,
+ String.raw`{"version":"corrected\/revision","kind":"circulatory_oxygen","id":"fs-PH-60"}`,
+])('C1: preserves valid member order, whitespace and string escapes: %s',code=>{
+ const {b}=data(),entries=b.fact.external_evidence as Record<string,unknown>[];entries[2].code=code;
+ expect(reassessmentReference(b,'followup')).toEqual({kind:'circulatory_oxygen',id:'fs-PH-60',version:'corrected/revision'});
+});
+it('C1: accepts escaped punctuation inside values without treating it as object structure',()=>{
+ const {b}=data(),entries=b.fact.external_evidence as Record<string,unknown>[],associations=b.fact.associations as Record<string,unknown>[];
+ const ref={kind:'circulatory_oxygen',id:'record/"id",}\\\n\tΩ',version:'revision/"quoted"'};
+ entries[2].code=JSON.stringify(ref);associations[2].exact=ref;
+ expect(reassessmentReference(b,'followup')).toEqual(ref);
+});
+it.each([
+ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":1}',
+ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":null}',
+ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":{}}',
+ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":[]}',
+ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":""}',
+ '{"kind":"circulatory_oxygen","id":"fs-PH-60"}',
+ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":"corrected/revision",}',
+ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":"corrected/revision"}garbage',
+ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":"corrected/revision","extra":"x"}',
+ String.raw`{"kind":"circulatory_oxygen","id":"fs-PH-60","version":"bad\x20escape"}`,
+])('C1: rejects invalid flat reference grammar: %s',code=>{
+ const {b}=data();(b.fact.external_evidence as Record<string,unknown>[])[2].code=code;
+ expect(reassessmentReference(b,'followup')).toBeUndefined();
+});

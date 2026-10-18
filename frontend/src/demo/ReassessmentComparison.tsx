@@ -1,3 +1,4 @@
+import {retainedReassessmentReference} from './retainedReassessmentReference';
 import {useState} from 'react';
 import type {CirculatoryItem,CirculatoryState,ExactRef} from '../api/circulatoryTypes';
 import {evidenceKey,resolveEvidenceKey} from './evidenceIdentity';
@@ -13,11 +14,10 @@ export function isReassessment(item:CirculatoryItem){
 export function reassessmentReference(item:CirculatoryItem,stage:typeof stages[number]):ExactRef|undefined{
  const entries=Array.isArray(item.fact.external_evidence)?item.fact.external_evidence.filter(v=>record(v).namespace==='clinrx.local.reassessment.'+stage+'/v1'):[];
  if(entries.length!==1)return undefined;
- let ref:Record<string,unknown>;try{ref=record(JSON.parse(String(record(entries[0]).code)));}catch{return undefined;}
- if(Object.keys(ref).sort().join(',')!=='id,kind,version'||![ref.kind,ref.id,ref.version].every(x=>typeof x==='string'&&x.length>0))return undefined;
+ const ref=retainedReassessmentReference(record(entries[0]).code);if(!ref)return undefined;
  const associations=Array.isArray(item.fact.associations)?item.fact.associations:[];
  const matched=associations.filter(v=>{const a=record(v),exact=record(a.exact),scope=record(a.scope);return a.role==='context'&&a.status==='resolved'&&exact.kind===ref.kind&&exact.id===ref.id&&exact.version===ref.version&&scope.patient_id===item.fact.binding.target.patient_id&&scope.encounter_id===item.fact.binding.target.encounter_id;});
- return matched.length===1?ref as unknown as ExactRef:undefined;
+ return matched.length===1?ref:undefined;
 }
 export function ReassessmentComparison({state}:{state:CirculatoryState}){
  const [left,setLeft]=useState(''),[right,setRight]=useState('');
