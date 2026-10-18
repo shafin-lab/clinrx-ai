@@ -1,0 +1,62 @@
+- main:
+  - heading "Synthetic patient evidence entry" [level=1]
+  - paragraph: Separate disposable local workspace · synthetic-p1 / synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.
+  - paragraph: Guided source entry and clinician-authored reassessment are available for common hemodynamic records. Advanced source entry preserves access to all 15 families. This remains a local synthetic prototype.
+  - paragraph: "166 source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: 2026-10-08T08:00:00+00:00 to 2026-10-08T10:00:00+00:00; source times may be contextual or unplaced."
+  - region "Recorded evidence":
+    - heading "Select evidence to correct" [level=2]
+    - button "New source entry"
+    - button "Refresh evidence"
+    - text: Evidence family
+    - combobox "Evidence family":
+      - option "All 15 families" [selected]
+      - option "Pressure and PAC/RHC"
+      - option "Cardiac output and performance"
+      - option "Volume and lung water"
+      - option "Dynamic measurements"
+      - option "Recorded device predictions"
+      - option "Tissue perfusion"
+      - option "Oxygen transport and blood gases"
+      - option "Lactate"
+      - option "Echo and POCUS"
+      - option "ECG and rhythm"
+      - option "Vasoactive events"
+      - option "Edwards / PiCCO and monitoring context"
+      - option "Dynamic assessment episodes"
+      - option "Recorded circulatory events"
+      - option "Signal manifests"
+    - text: Find evidence
+    - textbox "Find evidence": 1c1f16d9
+    - list:
+      - button "pH · 7.3300 1 1c1f16d9-33d7-40fb-a94f-013a383c9bfc / 1 · 2026-10-08T09:45:00Z · recorded" [pressed]:
+        - text: pH · 7.3300 1
+        - generic: 1c1f16d9-33d7-40fb-a94f-013a383c9bfc / 1 · 2026-10-08T09:45:00Z · recorded
+      - button:
+        - text: "other · Clinician-authored synthetic reassessment; not a computed response or causal conclusion. Question: Review the separately recorded arterial samples around a documented infusion event. baseline: {\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"} intervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"} followup: {\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"1\"} Recorded findings: Earlier arterial pH is recorded as 7.3400 at 09:20:00.123456 UTC. The new arterial pH is 7.3300 at 09:45 UTC with its own specimen, FiO2 40% and PEEP 5 cmH2O. A dobutamine rate change is documented at 09:30 UTC. These are separate source records. Unconfirmed possibilities: Patient-level relationship is not established. Whether the differing results reflect physiological change, sample variability or another factor is unconfirmed. No treatment effect or diagnosis is established. Confirmation gaps: Fictional walkthrough note, not clinician sign-off. Source quality and clock verification are unknown; samples are distinct. No calculated delta, responder classification or treatment recommendation. Next review (recorded plan, not a scheduled action): Review the full ABG results, specimen quality, source acquisition context and earlier echo report. This is a recorded plan, not a scheduled task."
+        - generic: abae4ef7-74c4-48cc-bb50-f50e9fb151cd / 1 · 2026-10-08T09:50:00Z · recorded
+  - region "Evidence draft":
+    - heading "Correct selected evidence" [level=2]
+    - paragraph: "Original retained: circulatory_oxygen / 1c1f16d9-33d7-40fb-a94f-013a383c9bfc / 1"
+    - paragraph: "Original recorded value: 7.3300 1 · 2026-10-08T09:45:00Z"
+    - paragraph: Correction keeps the original observation time and context unless explicitly changed in the source record. It is not a new measurement or evidence of ongoing administration.
+    - button "Load exact revision history"
+    - generic "Original source record"
+    - 'generic "History: 1 retained revisions"'
+    - text: Actor name
+    - textbox "Actor name": Synthetic corrected-workflow reviewer
+    - text: Action
+    - combobox "Action":
+      - option "Append correction" [selected]
+      - option "Append withdrawal"
+    - text: Reason for correction or withdrawal
+    - textbox "Reason for correction or withdrawal"
+    - text: Recorded numeric value (raw unit preserved)
+    - textbox "Recorded numeric value (raw unit preserved)": "7.3300"
+    - paragraph: One authoritative source draft. The numeric shortcut and complete record editor update the same value.
+    - generic "Edit complete source record (advanced)"
+    - paragraph: Preserve exact Decimal strings, sample type, units, method, quality, timing and support references. Nothing is converted or inferred. For a new entry supply a new ID/revision, full binding and provenance; copied source assertions must be reviewed.
+    - button "Validate and review draft"
+    - paragraph: Pending drafts exist only in this page’s memory. Reloading or closing can lose them. Keep this page open while completion is unknown.
