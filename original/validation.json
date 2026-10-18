@@ -1,0 +1,54 @@
+{
+  "source": "db56f7e8164a7a3c46c6c8e17a56c0d9088c2de5",
+  "tree": "a60dedfbb8e4f7ecfb82ad8467e3895cde36372b",
+  "parent": "ebbab2955109884169ae7ceef4a87d0f12af4ebf",
+  "source_files": [
+    {
+      "path": "frontend/src/demo/ReassessmentComparison.tsx",
+      "sha256": "8a1304fc38f3c321130340b8b7d62220faa7b4ded382d86c3b6ea43adacb1290"
+    },
+    {
+      "path": "frontend/src/demo/retainedReassessmentReference.ts",
+      "sha256": "08ad893f8d12c31bb9175e708f2f70a2226fb797e69297b1793b858a36c312d8"
+    },
+    {
+      "path": "frontend/tests/reassessmentComparison.test.tsx",
+      "sha256": "0b37c68cc782bbf4da1b5c7c22a91ea01e1e58fd444a5b9372a280bbabaa4ab8"
+    }
+  ],
+  "node": "24.12.0",
+  "npm": "11.6.2",
+  "commands": [
+    {
+      "command": "npm test -- --maxWorkers=2 tests/reassessmentComparison.test.tsx -t 'C1: withholds conflicting duplicate'",
+      "source": "ebbab29 implementation plus new regression tests",
+      "exit_code": 1,
+      "result": "6 expected failures; 26 skipped",
+      "log": "old-code-negative-control.log"
+    },
+    {
+      "command": "npm test -- --maxWorkers=2 tests/reassessmentComparison.test.tsx tests/evidenceEntry.test.tsx",
+      "exit_code": 0,
+      "result": "49 passed; 8.64 seconds",
+      "log": "focused-tests.log"
+    },
+    {
+      "command": "npm run build",
+      "exit_code": 0,
+      "log": "default-build.log"
+    },
+    {
+      "command": "VITE_SYNTHETIC_HOSTED=true VITE_SYNTHETIC_AUTHORING=true npm run build -- --outDir <validation>/authoring-build",
+      "exit_code": 0,
+      "log": "authoring-build.log"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "production_execution_configuration_changed": false,
+  "running_workspace_updated": false,
+  "full_suite_rerun": false,
+  "pushed": false
+}

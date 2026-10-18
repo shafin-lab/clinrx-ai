@@ -1,0 +1,122 @@
+diff --git a/frontend/src/demo/ReassessmentComparison.tsx b/frontend/src/demo/ReassessmentComparison.tsx
+index 3debd8c..6f56886 100644
+--- a/frontend/src/demo/ReassessmentComparison.tsx
++++ b/frontend/src/demo/ReassessmentComparison.tsx
+@@ -1,3 +1,4 @@
++import {retainedReassessmentReference} from './retainedReassessmentReference';
+ import {useState} from 'react';
+ import type {CirculatoryItem,CirculatoryState,ExactRef} from '../api/circulatoryTypes';
+ import {evidenceKey,resolveEvidenceKey} from './evidenceIdentity';
+@@ -13,11 +14,10 @@ export function isReassessment(item:CirculatoryItem){
+ export function reassessmentReference(item:CirculatoryItem,stage:typeof stages[number]):ExactRef|undefined{
+  const entries=Array.isArray(item.fact.external_evidence)?item.fact.external_evidence.filter(v=>record(v).namespace==='clinrx.local.reassessment.'+stage+'/v1'):[];
+  if(entries.length!==1)return undefined;
+- let ref:Record<string,unknown>;try{ref=record(JSON.parse(String(record(entries[0]).code)));}catch{return undefined;}
+- if(Object.keys(ref).sort().join(',')!=='id,kind,version'||![ref.kind,ref.id,ref.version].every(x=>typeof x==='string'&&x.length>0))return undefined;
++ const ref=retainedReassessmentReference(record(entries[0]).code);if(!ref)return undefined;
+  const associations=Array.isArray(item.fact.associations)?item.fact.associations:[];
+  const matched=associations.filter(v=>{const a=record(v),exact=record(a.exact),scope=record(a.scope);return a.role==='context'&&a.status==='resolved'&&exact.kind===ref.kind&&exact.id===ref.id&&exact.version===ref.version&&scope.patient_id===item.fact.binding.target.patient_id&&scope.encounter_id===item.fact.binding.target.encounter_id;});
+- return matched.length===1?ref as unknown as ExactRef:undefined;
++ return matched.length===1?ref:undefined;
+ }
+ export function ReassessmentComparison({state}:{state:CirculatoryState}){
+  const [left,setLeft]=useState(''),[right,setRight]=useState('');
+diff --git a/frontend/src/demo/retainedReassessmentReference.ts b/frontend/src/demo/retainedReassessmentReference.ts
+new file mode 100644
+index 0000000..834cafa
+--- /dev/null
++++ b/frontend/src/demo/retainedReassessmentReference.ts
+@@ -0,0 +1,34 @@
++import type {ExactRef} from '../api/circulatoryTypes';
++
++/** Parse this flat, string-only contract before duplicates can be discarded.
++ * JSON.parse is used only on individual string tokens, never on the object.
++ * Decoded member names make escaped equivalents duplicates as well.
++ */
++export function retainedReassessmentReference(input:unknown):ExactRef|undefined{
++ if(typeof input!=='string')return undefined;
++ let offset=0;
++ const whitespace=()=>{while(offset<input.length&&/[\x20\t\r\n]/.test(input[offset]))offset++;};
++ const consume=(char:string)=>{whitespace();if(input[offset]!==char)return false;offset++;return true;};
++ const string=():string|undefined=>{
++  whitespace();
++  const token=input.slice(offset).match(/^"(?:[^"\\\u0000-\u001f]|\\(?:["\\/bfnrt]|u[0-9a-fA-F]{4}))*"/);
++  if(!token)return undefined;
++  offset+=token[0].length;
++  return JSON.parse(token[0]) as string;
++ };
++ if(!consume('{'))return undefined;
++ const members=new Map<string,string>();
++ for(let count=0;count<3;count++){
++  const name=string();
++  if(name===undefined||!['kind','id','version'].includes(name)||members.has(name)||!consume(':'))return undefined;
++  const value=string();if(value===undefined||value.length===0)return undefined;
++  members.set(name,value);
++  if(consume('}')){
++   whitespace();
++   if(offset!==input.length||members.size!==3)return undefined;
++   return {kind:members.get('kind')!,id:members.get('id')!,version:members.get('version')!};
++  }
++  if(!consume(','))return undefined;
++ }
++ return undefined;
++}
+diff --git a/frontend/tests/reassessmentComparison.test.tsx b/frontend/tests/reassessmentComparison.test.tsx
+index ec5bb3c..bf40a36 100644
+--- a/frontend/tests/reassessmentComparison.test.tsx
++++ b/frontend/tests/reassessmentComparison.test.tsx
+@@ -54,3 +54,54 @@ it('retains full exact identities when delimiters collide and source order chang
+  const {state,a,b}=data();a.fact.id='note/x';a.fact.revision='y';b.fact.id='note';b.fact.revision='x/y';state.assembly.snapshot.items=[b,a];render(<ReassessmentComparison state={state}/>);select(a,b);
+  expect(screen.getByRole('combobox',{name:'Note A'})).toHaveValue('["circulatory_event","note/x","y"]');expect(screen.getByRole('combobox',{name:'Note B'})).toHaveValue('["circulatory_event","note","x/y"]');
+ });
++
++const duplicateMembers=[
++ ['kind','"kind"'],['id','"id"'],['version','"version"'],
++ ['kind',String.raw`"\u006bind"`],['id',String.raw`"\u0069d"`],['version',String.raw`"ver\u0073ion"`],
++] as const;
++it.each(duplicateMembers)('C1: withholds conflicting duplicate %s member with spelling %s and renders the warning',(field,spelling)=>{
++ const {state,a,b}=data();const entries=b.fact.external_evidence as Record<string,unknown>[];
++ const ref=JSON.parse(String(entries[2].code)) as Record<string,string>;
++ const code='{'+JSON.stringify(field)+':"foreign",'+Object.entries(ref).map(([k,v])=>(k===field?spelling:JSON.stringify(k))+':'+JSON.stringify(v)).join(',')+'}';
++ // Establish the dangerous old last-member-wins path with matching exact support.
++ expect(JSON.parse(code)).toEqual(ref);entries[2].code=code;
++ const before=JSON.stringify(state);expect(reassessmentReference(b,'followup')).toBeUndefined();
++ render(<ReassessmentComparison state={state}/>);select(a,b);
++ const row=screen.getAllByRole('row').find(r=>r.textContent?.includes('Follow-up ABG / evidence reference'))!;
++ const cells=within(row).getAllByRole('cell');expect(cells[0]).toHaveTextContent('Revision: 1');
++ expect(cells[1]).toHaveTextContent('Reference missing, ambiguous or inconsistent');expect(cells[1]).not.toHaveTextContent('corrected/revision');expect(JSON.stringify(state)).toBe(before);
++});
++it.each(['kind','id','version'])('C1: rejects identical repeated %s members too',field=>{
++ const {b}=data(),entries=b.fact.external_evidence as Record<string,unknown>[],ref=JSON.parse(String(entries[2].code));
++ entries[2].code='{'+JSON.stringify(field)+':'+JSON.stringify(ref[field])+','+JSON.stringify(ref).slice(1);
++ expect(reassessmentReference(b,'followup')).toBeUndefined();
++});
++it.each([
++ ' \t\r\n{ "version" : "corrected/revision", "id" : "fs-PH-60", "kind" : "circulatory_oxygen" }\r\n',
++ String.raw`{"\u006bind":"circulatory_oxygen","\u0069d":"fs-PH-60","ver\u0073ion":"corrected\u002frevision"}`,
++ String.raw`{"version":"corrected\/revision","kind":"circulatory_oxygen","id":"fs-PH-60"}`,
++])('C1: preserves valid member order, whitespace and string escapes: %s',code=>{
++ const {b}=data(),entries=b.fact.external_evidence as Record<string,unknown>[];entries[2].code=code;
++ expect(reassessmentReference(b,'followup')).toEqual({kind:'circulatory_oxygen',id:'fs-PH-60',version:'corrected/revision'});
++});
++it('C1: accepts escaped punctuation inside values without treating it as object structure',()=>{
++ const {b}=data(),entries=b.fact.external_evidence as Record<string,unknown>[],associations=b.fact.associations as Record<string,unknown>[];
++ const ref={kind:'circulatory_oxygen',id:'record/"id",}\\\n\tΩ',version:'revision/"quoted"'};
++ entries[2].code=JSON.stringify(ref);associations[2].exact=ref;
++ expect(reassessmentReference(b,'followup')).toEqual(ref);
++});
++it.each([
++ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":1}',
++ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":null}',
++ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":{}}',
++ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":[]}',
++ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":""}',
++ '{"kind":"circulatory_oxygen","id":"fs-PH-60"}',
++ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":"corrected/revision",}',
++ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":"corrected/revision"}garbage',
++ '{"kind":"circulatory_oxygen","id":"fs-PH-60","version":"corrected/revision","extra":"x"}',
++ String.raw`{"kind":"circulatory_oxygen","id":"fs-PH-60","version":"bad\x20escape"}`,
++])('C1: rejects invalid flat reference grammar: %s',code=>{
++ const {b}=data();(b.fact.external_evidence as Record<string,unknown>[])[2].code=code;
++ expect(reassessmentReference(b,'followup')).toBeUndefined();
++});

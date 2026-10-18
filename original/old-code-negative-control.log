@@ -1,0 +1,95 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2 tests/reassessmentComparison.test.tsx -t C1: withholds conflicting duplicate
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/reassessmentComparison.test.tsx (32 tests | 6 failed | 26 skipped) 772ms
+   × C1: withholds conflicting duplicate kind member with spelling "kind" and renders the warning 136ms
+   × C1: withholds conflicting duplicate id member with spelling "id" and renders the warning 130ms
+   × C1: withholds conflicting duplicate version member with spelling "version" and renders the warning 127ms
+   × C1: withholds conflicting duplicate kind member with spelling "\u006bind" and renders the warning 128ms
+   × C1: withholds conflicting duplicate id member with spelling "\u0069d" and renders the warning 125ms
+   × C1: withholds conflicting duplicate version member with spelling "ver\u0073ion" and renders the warning 126ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/reassessmentComparison.test.tsx > C1: withholds conflicting duplicate kind member with spelling "kind" and renders the warning
+ FAIL  tests/reassessmentComparison.test.tsx > C1: withholds conflicting duplicate kind member with spelling "\u006bind" and renders the warning
+AssertionError: expected { kind: 'circulatory_oxygen', …(2) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "id": "fs-PH-60",
+  "kind": "circulatory_oxygen",
+  "version": "corrected/revision",
+}
+
+ ❯ tests/reassessmentComparison.test.tsx:68:81
+     66|  // Establish the dangerous old last-member-wins path with matching ex…
+     67|  expect(JSON.parse(code)).toEqual(ref);entries[2].code=code;
+     68|  const before=JSON.stringify(state);expect(reassessmentReference(b,'fo…
+       |                                                                                 ^
+     69|  render(<ReassessmentComparison state={state}/>);select(a,b);
+     70|  const row=screen.getAllByRole('row').find(r=>r.textContent?.includes(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/reassessmentComparison.test.tsx > C1: withholds conflicting duplicate id member with spelling "id" and renders the warning
+ FAIL  tests/reassessmentComparison.test.tsx > C1: withholds conflicting duplicate id member with spelling "\u0069d" and renders the warning
+AssertionError: expected { id: 'fs-PH-60', …(2) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "id": "fs-PH-60",
+  "kind": "circulatory_oxygen",
+  "version": "corrected/revision",
+}
+
+ ❯ tests/reassessmentComparison.test.tsx:68:81
+     66|  // Establish the dangerous old last-member-wins path with matching ex…
+     67|  expect(JSON.parse(code)).toEqual(ref);entries[2].code=code;
+     68|  const before=JSON.stringify(state);expect(reassessmentReference(b,'fo…
+       |                                                                                 ^
+     69|  render(<ReassessmentComparison state={state}/>);select(a,b);
+     70|  const row=screen.getAllByRole('row').find(r=>r.textContent?.includes(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/reassessmentComparison.test.tsx > C1: withholds conflicting duplicate version member with spelling "version" and renders the warning
+ FAIL  tests/reassessmentComparison.test.tsx > C1: withholds conflicting duplicate version member with spelling "ver\u0073ion" and renders the warning
+AssertionError: expected { version: 'corrected/revision', …(2) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "id": "fs-PH-60",
+  "kind": "circulatory_oxygen",
+  "version": "corrected/revision",
+}
+
+ ❯ tests/reassessmentComparison.test.tsx:68:81
+     66|  // Establish the dangerous old last-member-wins path with matching ex…
+     67|  expect(JSON.parse(code)).toEqual(ref);entries[2].code=code;
+     68|  const before=JSON.stringify(state);expect(reassessmentReference(b,'fo…
+       |                                                                                 ^
+     69|  render(<ReassessmentComparison state={state}/>);select(a,b);
+     70|  const row=screen.getAllByRole('row').find(r=>r.textContent?.includes(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 26 skipped (32)
+   Start at  22:22:34
+   Duration  2.11s (tests 39%, environment 37%, transform 12%, setup 7%, import 5%)
+
