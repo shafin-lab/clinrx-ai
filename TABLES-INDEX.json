@@ -1,0 +1,652 @@
+{
+  "before": {
+    "alembic_version": {
+      "columns": [
+        "version_num"
+      ],
+      "count": 1,
+      "files": [
+        "readable/before/alembic_version/0000.json"
+      ]
+    },
+    "repository_identity": {
+      "columns": [
+        "singleton",
+        "repository_id"
+      ],
+      "count": 1,
+      "files": [
+        "readable/before/repository_identity/0000.json"
+      ]
+    },
+    "patient": {
+      "columns": [
+        "patient_id",
+        "payload_version",
+        "payload",
+        "ingested_at"
+      ],
+      "count": 1,
+      "files": [
+        "readable/before/patient/0000.json"
+      ]
+    },
+    "encounter": {
+      "columns": [
+        "encounter_id",
+        "patient_id",
+        "payload_version",
+        "payload",
+        "ingested_at"
+      ],
+      "count": 1,
+      "files": [
+        "readable/before/encounter/0000.json"
+      ]
+    },
+    "sqlite_sequence": {
+      "columns": [
+        "name",
+        "seq"
+      ],
+      "count": 1,
+      "files": [
+        "readable/before/sqlite_sequence/0000.json"
+      ]
+    },
+    "weight_trend_execution": {
+      "columns": [
+        "execution_id",
+        "patient_id",
+        "encounter_id",
+        "payload_version",
+        "payload",
+        "payload_digest",
+        "ingested_at"
+      ],
+      "count": 0,
+      "files": []
+    },
+    "creatinine_trend_execution": {
+      "columns": [
+        "execution_id",
+        "patient_id",
+        "encounter_id",
+        "payload_version",
+        "payload",
+        "payload_digest",
+        "ingested_at"
+      ],
+      "count": 0,
+      "files": []
+    },
+    "patient_state_temporal_execution": {
+      "columns": [
+        "execution_id",
+        "patient_id",
+        "encounter_id",
+        "payload_version",
+        "payload",
+        "payload_digest",
+        "ingested_at"
+      ],
+      "count": 0,
+      "files": []
+    },
+    "micro_antimicrobial_execution": {
+      "columns": [
+        "execution_id",
+        "patient_id",
+        "encounter_id",
+        "payload_version",
+        "payload",
+        "payload_digest",
+        "ingested_at"
+      ],
+      "count": 0,
+      "files": []
+    },
+    "fact_revision": {
+      "columns": [
+        "ingestion_sequence",
+        "kind",
+        "fact_id",
+        "revision",
+        "patient_id",
+        "encounter_id",
+        "payload_version",
+        "payload",
+        "ingested_at"
+      ],
+      "count": 174,
+      "files": [
+        "readable/before/fact_revision/0000.json",
+        "readable/before/fact_revision/0001.json",
+        "readable/before/fact_revision/0002.json",
+        "readable/before/fact_revision/0003.json",
+        "readable/before/fact_revision/0004.json",
+        "readable/before/fact_revision/0005.json",
+        "readable/before/fact_revision/0006.json",
+        "readable/before/fact_revision/0007.json",
+        "readable/before/fact_revision/0008.json",
+        "readable/before/fact_revision/0009.json",
+        "readable/before/fact_revision/0010.json",
+        "readable/before/fact_revision/0011.json",
+        "readable/before/fact_revision/0012.json",
+        "readable/before/fact_revision/0013.json",
+        "readable/before/fact_revision/0014.json",
+        "readable/before/fact_revision/0015.json",
+        "readable/before/fact_revision/0016.json",
+        "readable/before/fact_revision/0017.json",
+        "readable/before/fact_revision/0018.json",
+        "readable/before/fact_revision/0019.json",
+        "readable/before/fact_revision/0020.json",
+        "readable/before/fact_revision/0021.json",
+        "readable/before/fact_revision/0022.json",
+        "readable/before/fact_revision/0023.json",
+        "readable/before/fact_revision/0024.json",
+        "readable/before/fact_revision/0025.json",
+        "readable/before/fact_revision/0026.json",
+        "readable/before/fact_revision/0027.json",
+        "readable/before/fact_revision/0028.json",
+        "readable/before/fact_revision/0029.json",
+        "readable/before/fact_revision/0030.json",
+        "readable/before/fact_revision/0031.json",
+        "readable/before/fact_revision/0032.json",
+        "readable/before/fact_revision/0033.json",
+        "readable/before/fact_revision/0034.json",
+        "readable/before/fact_revision/0035.json",
+        "readable/before/fact_revision/0036.json",
+        "readable/before/fact_revision/0037.json",
+        "readable/before/fact_revision/0038.json",
+        "readable/before/fact_revision/0039.json",
+        "readable/before/fact_revision/0040.json",
+        "readable/before/fact_revision/0041.json",
+        "readable/before/fact_revision/0042.json",
+        "readable/before/fact_revision/0043.json",
+        "readable/before/fact_revision/0044.json",
+        "readable/before/fact_revision/0045.json",
+        "readable/before/fact_revision/0046.json",
+        "readable/before/fact_revision/0047.json",
+        "readable/before/fact_revision/0048.json",
+        "readable/before/fact_revision/0049.json",
+        "readable/before/fact_revision/0050.json",
+        "readable/before/fact_revision/0051.json",
+        "readable/before/fact_revision/0052.json",
+        "readable/before/fact_revision/0053.json",
+        "readable/before/fact_revision/0054.json",
+        "readable/before/fact_revision/0055.json",
+        "readable/before/fact_revision/0056.json",
+        "readable/before/fact_revision/0057.json",
+        "readable/before/fact_revision/0058.json",
+        "readable/before/fact_revision/0059.json",
+        "readable/before/fact_revision/0060.json",
+        "readable/before/fact_revision/0061.json",
+        "readable/before/fact_revision/0062.json",
+        "readable/before/fact_revision/0063.json",
+        "readable/before/fact_revision/0064.json",
+        "readable/before/fact_revision/0065.json",
+        "readable/before/fact_revision/0066.json",
+        "readable/before/fact_revision/0067.json",
+        "readable/before/fact_revision/0068.json",
+        "readable/before/fact_revision/0069.json",
+        "readable/before/fact_revision/0070.json",
+        "readable/before/fact_revision/0071.json",
+        "readable/before/fact_revision/0072.json",
+        "readable/before/fact_revision/0073.json",
+        "readable/before/fact_revision/0074.json",
+        "readable/before/fact_revision/0075.json",
+        "readable/before/fact_revision/0076.json",
+        "readable/before/fact_revision/0077.json",
+        "readable/before/fact_revision/0078.json",
+        "readable/before/fact_revision/0079.json",
+        "readable/before/fact_revision/0080.json",
+        "readable/before/fact_revision/0081.json",
+        "readable/before/fact_revision/0082.json",
+        "readable/before/fact_revision/0083.json",
+        "readable/before/fact_revision/0084.json",
+        "readable/before/fact_revision/0085.json",
+        "readable/before/fact_revision/0086.json",
+        "readable/before/fact_revision/0087.json",
+        "readable/before/fact_revision/0088.json",
+        "readable/before/fact_revision/0089.json",
+        "readable/before/fact_revision/0090.json",
+        "readable/before/fact_revision/0091.json",
+        "readable/before/fact_revision/0092.json",
+        "readable/before/fact_revision/0093.json",
+        "readable/before/fact_revision/0094.json",
+        "readable/before/fact_revision/0095.json",
+        "readable/before/fact_revision/0096.json",
+        "readable/before/fact_revision/0097.json",
+        "readable/before/fact_revision/0098.json",
+        "readable/before/fact_revision/0099.json",
+        "readable/before/fact_revision/0100.json",
+        "readable/before/fact_revision/0101.json",
+        "readable/before/fact_revision/0102.json",
+        "readable/before/fact_revision/0103.json",
+        "readable/before/fact_revision/0104.json",
+        "readable/before/fact_revision/0105.json",
+        "readable/before/fact_revision/0106.json",
+        "readable/before/fact_revision/0107.json",
+        "readable/before/fact_revision/0108.json",
+        "readable/before/fact_revision/0109.json",
+        "readable/before/fact_revision/0110.json",
+        "readable/before/fact_revision/0111.json",
+        "readable/before/fact_revision/0112.json",
+        "readable/before/fact_revision/0113.json",
+        "readable/before/fact_revision/0114.json",
+        "readable/before/fact_revision/0115.json",
+        "readable/before/fact_revision/0116.json",
+        "readable/before/fact_revision/0117.json",
+        "readable/before/fact_revision/0118.json",
+        "readable/before/fact_revision/0119.json",
+        "readable/before/fact_revision/0120.json",
+        "readable/before/fact_revision/0121.json",
+        "readable/before/fact_revision/0122.json",
+        "readable/before/fact_revision/0123.json",
+        "readable/before/fact_revision/0124.json",
+        "readable/before/fact_revision/0125.json",
+        "readable/before/fact_revision/0126.json",
+        "readable/before/fact_revision/0127.json",
+        "readable/before/fact_revision/0128.json",
+        "readable/before/fact_revision/0129.json",
+        "readable/before/fact_revision/0130.json",
+        "readable/before/fact_revision/0131.json",
+        "readable/before/fact_revision/0132.json",
+        "readable/before/fact_revision/0133.json",
+        "readable/before/fact_revision/0134.json",
+        "readable/before/fact_revision/0135.json",
+        "readable/before/fact_revision/0136.json",
+        "readable/before/fact_revision/0137.json",
+        "readable/before/fact_revision/0138.json",
+        "readable/before/fact_revision/0139.json",
+        "readable/before/fact_revision/0140.json",
+        "readable/before/fact_revision/0141.json",
+        "readable/before/fact_revision/0142.json",
+        "readable/before/fact_revision/0143.json",
+        "readable/before/fact_revision/0144.json",
+        "readable/before/fact_revision/0145.json",
+        "readable/before/fact_revision/0146.json",
+        "readable/before/fact_revision/0147.json",
+        "readable/before/fact_revision/0148.json",
+        "readable/before/fact_revision/0149.json",
+        "readable/before/fact_revision/0150.json",
+        "readable/before/fact_revision/0151.json",
+        "readable/before/fact_revision/0152.json",
+        "readable/before/fact_revision/0153.json",
+        "readable/before/fact_revision/0154.json",
+        "readable/before/fact_revision/0155.json",
+        "readable/before/fact_revision/0156.json",
+        "readable/before/fact_revision/0157.json",
+        "readable/before/fact_revision/0158.json",
+        "readable/before/fact_revision/0159.json",
+        "readable/before/fact_revision/0160.json",
+        "readable/before/fact_revision/0161.json",
+        "readable/before/fact_revision/0162.json",
+        "readable/before/fact_revision/0163.json",
+        "readable/before/fact_revision/0164.json",
+        "readable/before/fact_revision/0165.json",
+        "readable/before/fact_revision/0166.json",
+        "readable/before/fact_revision/0167.json",
+        "readable/before/fact_revision/0168.json",
+        "readable/before/fact_revision/0169.json",
+        "readable/before/fact_revision/0170.json",
+        "readable/before/fact_revision/0171.json",
+        "readable/before/fact_revision/0172.json",
+        "readable/before/fact_revision/0173.json"
+      ]
+    },
+    "revision_link": {
+      "columns": [
+        "successor_sequence",
+        "predecessor_sequence"
+      ],
+      "count": 2,
+      "files": [
+        "readable/before/revision_link/0000.json",
+        "readable/before/revision_link/0001.json"
+      ]
+    },
+    "circulatory_execution": {
+      "columns": [
+        "execution_id",
+        "patient_id",
+        "encounter_id",
+        "payload_digest",
+        "payload_version",
+        "payload",
+        "ingested_at"
+      ],
+      "count": 2,
+      "files": [
+        "readable/before/circulatory_execution/0000.json",
+        "readable/before/circulatory_execution/0001.json"
+      ]
+    }
+  },
+  "after": {
+    "alembic_version": {
+      "columns": [
+        "version_num"
+      ],
+      "count": 1,
+      "files": [
+        "readable/after/alembic_version/0000.json"
+      ]
+    },
+    "repository_identity": {
+      "columns": [
+        "singleton",
+        "repository_id"
+      ],
+      "count": 1,
+      "files": [
+        "readable/after/repository_identity/0000.json"
+      ]
+    },
+    "patient": {
+      "columns": [
+        "patient_id",
+        "payload_version",
+        "payload",
+        "ingested_at"
+      ],
+      "count": 1,
+      "files": [
+        "readable/after/patient/0000.json"
+      ]
+    },
+    "encounter": {
+      "columns": [
+        "encounter_id",
+        "patient_id",
+        "payload_version",
+        "payload",
+        "ingested_at"
+      ],
+      "count": 1,
+      "files": [
+        "readable/after/encounter/0000.json"
+      ]
+    },
+    "sqlite_sequence": {
+      "columns": [
+        "name",
+        "seq"
+      ],
+      "count": 1,
+      "files": [
+        "readable/after/sqlite_sequence/0000.json"
+      ]
+    },
+    "weight_trend_execution": {
+      "columns": [
+        "execution_id",
+        "patient_id",
+        "encounter_id",
+        "payload_version",
+        "payload",
+        "payload_digest",
+        "ingested_at"
+      ],
+      "count": 0,
+      "files": []
+    },
+    "creatinine_trend_execution": {
+      "columns": [
+        "execution_id",
+        "patient_id",
+        "encounter_id",
+        "payload_version",
+        "payload",
+        "payload_digest",
+        "ingested_at"
+      ],
+      "count": 0,
+      "files": []
+    },
+    "patient_state_temporal_execution": {
+      "columns": [
+        "execution_id",
+        "patient_id",
+        "encounter_id",
+        "payload_version",
+        "payload",
+        "payload_digest",
+        "ingested_at"
+      ],
+      "count": 0,
+      "files": []
+    },
+    "micro_antimicrobial_execution": {
+      "columns": [
+        "execution_id",
+        "patient_id",
+        "encounter_id",
+        "payload_version",
+        "payload",
+        "payload_digest",
+        "ingested_at"
+      ],
+      "count": 0,
+      "files": []
+    },
+    "fact_revision": {
+      "columns": [
+        "ingestion_sequence",
+        "kind",
+        "fact_id",
+        "revision",
+        "patient_id",
+        "encounter_id",
+        "payload_version",
+        "payload",
+        "ingested_at"
+      ],
+      "count": 174,
+      "files": [
+        "readable/after/fact_revision/0000.json",
+        "readable/after/fact_revision/0001.json",
+        "readable/after/fact_revision/0002.json",
+        "readable/after/fact_revision/0003.json",
+        "readable/after/fact_revision/0004.json",
+        "readable/after/fact_revision/0005.json",
+        "readable/after/fact_revision/0006.json",
+        "readable/after/fact_revision/0007.json",
+        "readable/after/fact_revision/0008.json",
+        "readable/after/fact_revision/0009.json",
+        "readable/after/fact_revision/0010.json",
+        "readable/after/fact_revision/0011.json",
+        "readable/after/fact_revision/0012.json",
+        "readable/after/fact_revision/0013.json",
+        "readable/after/fact_revision/0014.json",
+        "readable/after/fact_revision/0015.json",
+        "readable/after/fact_revision/0016.json",
+        "readable/after/fact_revision/0017.json",
+        "readable/after/fact_revision/0018.json",
+        "readable/after/fact_revision/0019.json",
+        "readable/after/fact_revision/0020.json",
+        "readable/after/fact_revision/0021.json",
+        "readable/after/fact_revision/0022.json",
+        "readable/after/fact_revision/0023.json",
+        "readable/after/fact_revision/0024.json",
+        "readable/after/fact_revision/0025.json",
+        "readable/after/fact_revision/0026.json",
+        "readable/after/fact_revision/0027.json",
+        "readable/after/fact_revision/0028.json",
+        "readable/after/fact_revision/0029.json",
+        "readable/after/fact_revision/0030.json",
+        "readable/after/fact_revision/0031.json",
+        "readable/after/fact_revision/0032.json",
+        "readable/after/fact_revision/0033.json",
+        "readable/after/fact_revision/0034.json",
+        "readable/after/fact_revision/0035.json",
+        "readable/after/fact_revision/0036.json",
+        "readable/after/fact_revision/0037.json",
+        "readable/after/fact_revision/0038.json",
+        "readable/after/fact_revision/0039.json",
+        "readable/after/fact_revision/0040.json",
+        "readable/after/fact_revision/0041.json",
+        "readable/after/fact_revision/0042.json",
+        "readable/after/fact_revision/0043.json",
+        "readable/after/fact_revision/0044.json",
+        "readable/after/fact_revision/0045.json",
+        "readable/after/fact_revision/0046.json",
+        "readable/after/fact_revision/0047.json",
+        "readable/after/fact_revision/0048.json",
+        "readable/after/fact_revision/0049.json",
+        "readable/after/fact_revision/0050.json",
+        "readable/after/fact_revision/0051.json",
+        "readable/after/fact_revision/0052.json",
+        "readable/after/fact_revision/0053.json",
+        "readable/after/fact_revision/0054.json",
+        "readable/after/fact_revision/0055.json",
+        "readable/after/fact_revision/0056.json",
+        "readable/after/fact_revision/0057.json",
+        "readable/after/fact_revision/0058.json",
+        "readable/after/fact_revision/0059.json",
+        "readable/after/fact_revision/0060.json",
+        "readable/after/fact_revision/0061.json",
+        "readable/after/fact_revision/0062.json",
+        "readable/after/fact_revision/0063.json",
+        "readable/after/fact_revision/0064.json",
+        "readable/after/fact_revision/0065.json",
+        "readable/after/fact_revision/0066.json",
+        "readable/after/fact_revision/0067.json",
+        "readable/after/fact_revision/0068.json",
+        "readable/after/fact_revision/0069.json",
+        "readable/after/fact_revision/0070.json",
+        "readable/after/fact_revision/0071.json",
+        "readable/after/fact_revision/0072.json",
+        "readable/after/fact_revision/0073.json",
+        "readable/after/fact_revision/0074.json",
+        "readable/after/fact_revision/0075.json",
+        "readable/after/fact_revision/0076.json",
+        "readable/after/fact_revision/0077.json",
+        "readable/after/fact_revision/0078.json",
+        "readable/after/fact_revision/0079.json",
+        "readable/after/fact_revision/0080.json",
+        "readable/after/fact_revision/0081.json",
+        "readable/after/fact_revision/0082.json",
+        "readable/after/fact_revision/0083.json",
+        "readable/after/fact_revision/0084.json",
+        "readable/after/fact_revision/0085.json",
+        "readable/after/fact_revision/0086.json",
+        "readable/after/fact_revision/0087.json",
+        "readable/after/fact_revision/0088.json",
+        "readable/after/fact_revision/0089.json",
+        "readable/after/fact_revision/0090.json",
+        "readable/after/fact_revision/0091.json",
+        "readable/after/fact_revision/0092.json",
+        "readable/after/fact_revision/0093.json",
+        "readable/after/fact_revision/0094.json",
+        "readable/after/fact_revision/0095.json",
+        "readable/after/fact_revision/0096.json",
+        "readable/after/fact_revision/0097.json",
+        "readable/after/fact_revision/0098.json",
+        "readable/after/fact_revision/0099.json",
+        "readable/after/fact_revision/0100.json",
+        "readable/after/fact_revision/0101.json",
+        "readable/after/fact_revision/0102.json",
+        "readable/after/fact_revision/0103.json",
+        "readable/after/fact_revision/0104.json",
+        "readable/after/fact_revision/0105.json",
+        "readable/after/fact_revision/0106.json",
+        "readable/after/fact_revision/0107.json",
+        "readable/after/fact_revision/0108.json",
+        "readable/after/fact_revision/0109.json",
+        "readable/after/fact_revision/0110.json",
+        "readable/after/fact_revision/0111.json",
+        "readable/after/fact_revision/0112.json",
+        "readable/after/fact_revision/0113.json",
+        "readable/after/fact_revision/0114.json",
+        "readable/after/fact_revision/0115.json",
+        "readable/after/fact_revision/0116.json",
+        "readable/after/fact_revision/0117.json",
+        "readable/after/fact_revision/0118.json",
+        "readable/after/fact_revision/0119.json",
+        "readable/after/fact_revision/0120.json",
+        "readable/after/fact_revision/0121.json",
+        "readable/after/fact_revision/0122.json",
+        "readable/after/fact_revision/0123.json",
+        "readable/after/fact_revision/0124.json",
+        "readable/after/fact_revision/0125.json",
+        "readable/after/fact_revision/0126.json",
+        "readable/after/fact_revision/0127.json",
+        "readable/after/fact_revision/0128.json",
+        "readable/after/fact_revision/0129.json",
+        "readable/after/fact_revision/0130.json",
+        "readable/after/fact_revision/0131.json",
+        "readable/after/fact_revision/0132.json",
+        "readable/after/fact_revision/0133.json",
+        "readable/after/fact_revision/0134.json",
+        "readable/after/fact_revision/0135.json",
+        "readable/after/fact_revision/0136.json",
+        "readable/after/fact_revision/0137.json",
+        "readable/after/fact_revision/0138.json",
+        "readable/after/fact_revision/0139.json",
+        "readable/after/fact_revision/0140.json",
+        "readable/after/fact_revision/0141.json",
+        "readable/after/fact_revision/0142.json",
+        "readable/after/fact_revision/0143.json",
+        "readable/after/fact_revision/0144.json",
+        "readable/after/fact_revision/0145.json",
+        "readable/after/fact_revision/0146.json",
+        "readable/after/fact_revision/0147.json",
+        "readable/after/fact_revision/0148.json",
+        "readable/after/fact_revision/0149.json",
+        "readable/after/fact_revision/0150.json",
+        "readable/after/fact_revision/0151.json",
+        "readable/after/fact_revision/0152.json",
+        "readable/after/fact_revision/0153.json",
+        "readable/after/fact_revision/0154.json",
+        "readable/after/fact_revision/0155.json",
+        "readable/after/fact_revision/0156.json",
+        "readable/after/fact_revision/0157.json",
+        "readable/after/fact_revision/0158.json",
+        "readable/after/fact_revision/0159.json",
+        "readable/after/fact_revision/0160.json",
+        "readable/after/fact_revision/0161.json",
+        "readable/after/fact_revision/0162.json",
+        "readable/after/fact_revision/0163.json",
+        "readable/after/fact_revision/0164.json",
+        "readable/after/fact_revision/0165.json",
+        "readable/after/fact_revision/0166.json",
+        "readable/after/fact_revision/0167.json",
+        "readable/after/fact_revision/0168.json",
+        "readable/after/fact_revision/0169.json",
+        "readable/after/fact_revision/0170.json",
+        "readable/after/fact_revision/0171.json",
+        "readable/after/fact_revision/0172.json",
+        "readable/after/fact_revision/0173.json"
+      ]
+    },
+    "revision_link": {
+      "columns": [
+        "successor_sequence",
+        "predecessor_sequence"
+      ],
+      "count": 2,
+      "files": [
+        "readable/after/revision_link/0000.json",
+        "readable/after/revision_link/0001.json"
+      ]
+    },
+    "circulatory_execution": {
+      "columns": [
+        "execution_id",
+        "patient_id",
+        "encounter_id",
+        "payload_digest",
+        "payload_version",
+        "payload",
+        "ingested_at"
+      ],
+      "count": 2,
+      "files": [
+        "readable/after/circulatory_execution/0000.json",
+        "readable/after/circulatory_execution/0001.json"
+      ]
+    }
+  }
+}
