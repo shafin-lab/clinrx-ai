@@ -1,0 +1,237 @@
+{
+  "fact": {
+    "kind": "circulatory_event",
+    "id": "4e4fc4b1-d51d-429b-b227-90092ca74e20",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "unresolved",
+        "method": "Local synthetic encounter selection",
+        "verifier": "Synthetic validation reviewer",
+        "assessed_at": "2026-10-18T14:52:38.671000Z",
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "4e4fc4b1-d51d-429b-b227-90092ca74e20",
+          "version": null,
+          "channel": "clinician"
+        },
+        "ambiguity": "Fictional patient identity only; not independently verified."
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "identifier": "4e4fc4b1-d51d-429b-b227-90092ca74e20",
+        "version": null,
+        "channel": "clinician"
+      },
+      "actor": "Synthetic validation reviewer",
+      "recorded_at": "2026-10-18T14:52:38.671000Z",
+      "upstream": [],
+      "lineage": "incomplete",
+      "limitations": [
+        "Fictional local entry; actor and source assertions are not independently authenticated."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [
+      "Fictional clinician-authored note. Clock verification and dosing weight are unknown; no automated response calculation or recommendation."
+    ],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:40:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:40:00Z",
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "recorded": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": null,
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [
+      {
+        "role": "context",
+        "scope": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null
+        },
+        "status": "resolved",
+        "exact": {
+          "kind": "circulatory_cardiac",
+          "id": "98bda243-a9f5-494d-8733-8b575b75bf65",
+          "version": "1"
+        },
+        "candidates": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "4e4fc4b1-d51d-429b-b227-90092ca74e20",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Synthetic validation reviewer",
+          "recorded_at": "2026-10-18T14:52:38.671000Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        },
+        "limitation": null
+      },
+      {
+        "role": "context",
+        "scope": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null
+        },
+        "status": "resolved",
+        "exact": {
+          "kind": "circulatory_vasoactive",
+          "id": "99a26724-026c-4ccc-ac63-c22ddada2664",
+          "version": "1"
+        },
+        "candidates": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "4e4fc4b1-d51d-429b-b227-90092ca74e20",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Synthetic validation reviewer",
+          "recorded_at": "2026-10-18T14:52:38.671000Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        },
+        "limitation": null
+      },
+      {
+        "role": "context",
+        "scope": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null
+        },
+        "status": "resolved",
+        "exact": {
+          "kind": "circulatory_perfusion",
+          "id": "33b64610-60af-4c43-b9ee-393ff63d2e96",
+          "version": "1"
+        },
+        "candidates": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "4e4fc4b1-d51d-429b-b227-90092ca74e20",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Synthetic validation reviewer",
+          "recorded_at": "2026-10-18T14:52:38.671000Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        },
+        "limitation": null
+      }
+    ],
+    "source_identifiers": [
+      {
+        "namespace": "clinrx.local.chart-entry/v1",
+        "code": "reassessment",
+        "version": null,
+        "raw_display": "reassessment"
+      }
+    ],
+    "disclosures": [],
+    "record_status": "recorded",
+    "event_type": "other",
+    "description": {
+      "raw_display": "Clinician-authored synthetic reassessment; not a computed response or causal conclusion.\nQuestion: Review a documented infusion event alongside separately recorded hemodynamic evidence.\nbaseline: {\"kind\":\"circulatory_cardiac\",\"id\":\"98bda243-a9f5-494d-8733-8b575b75bf65\",\"version\":\"1\"}\nintervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}\nfollowup: {\"kind\":\"circulatory_perfusion\",\"id\":\"33b64610-60af-4c43-b9ee-393ff63d2e96\",\"version\":\"1\"}\nRecorded findings: CO 4.700 L/min at 09:25 has suspect source quality. A dobutamine rate change is documented at 09:30. Capillary refill 3.00 s at 09:35 has unknown quality. These are different measurements and source times.\nUnconfirmed possibilities: Patient-level relationship is not established. These records do not demonstrate treatment response, causation or a shock diagnosis.\nConfirmation gaps: Fictional clinician-authored note. Clock verification and dosing weight are unknown; no automated response calculation or recommendation.\nNext review (recorded plan, not a scheduled action): Review sample context, source acquisition quality and the earlier echo report.",
+      "coding": null
+    },
+    "external_evidence": [
+      {
+        "namespace": "clinrx.local.reassessment.baseline/v1",
+        "code": "{\"kind\":\"circulatory_cardiac\",\"id\":\"98bda243-a9f5-494d-8733-8b575b75bf65\",\"version\":\"1\"}",
+        "version": null,
+        "raw_display": "{\"kind\":\"circulatory_cardiac\",\"id\":\"98bda243-a9f5-494d-8733-8b575b75bf65\",\"version\":\"1\"}"
+      },
+      {
+        "namespace": "clinrx.local.reassessment.intervention/v1",
+        "code": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}",
+        "version": null,
+        "raw_display": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}"
+      },
+      {
+        "namespace": "clinrx.local.reassessment.followup/v1",
+        "code": "{\"kind\":\"circulatory_perfusion\",\"id\":\"33b64610-60af-4c43-b9ee-393ff63d2e96\",\"version\":\"1\"}",
+        "version": null,
+        "raw_display": "{\"kind\":\"circulatory_perfusion\",\"id\":\"33b64610-60af-4c43-b9ee-393ff63d2e96\",\"version\":\"1\"}"
+      }
+    ],
+    "recorded_amount": null
+  },
+  "expected_digest": "0ba8f69ebd5991ac5cf7e53c5db7db2e2999d09ff30aab0398996123aae66387",
+  "ingestion": {
+    "repository_id": "e85880e5-85aa-413d-92d1-0e909546dcbd",
+    "ingestion_sequence": 169,
+    "ingested_at": "2026-10-18T14:52:50.065486Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}

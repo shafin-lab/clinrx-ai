@@ -1,0 +1,206 @@
+{
+  "fact": {
+    "kind": "circulatory_vasoactive",
+    "id": "99a26724-026c-4ccc-ac63-c22ddada2664",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "unresolved",
+        "method": "Local synthetic encounter selection",
+        "verifier": "Synthetic validation reviewer",
+        "assessed_at": "2026-10-18T14:51:29.020000Z",
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "99a26724-026c-4ccc-ac63-c22ddada2664",
+          "version": null,
+          "channel": "clinician"
+        },
+        "ambiguity": "Fictional patient identity only; not independently verified."
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "identifier": "99a26724-026c-4ccc-ac63-c22ddada2664",
+        "version": null,
+        "channel": "clinician"
+      },
+      "actor": "Synthetic validation reviewer",
+      "recorded_at": "2026-10-18T14:51:29.020000Z",
+      "upstream": [],
+      "lineage": "incomplete",
+      "limitations": [
+        "Fictional local entry; actor and source assertions are not independently authenticated."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [
+      "Fictional documented event. Dosing weight not established; no dose conversion, continuous exposure or treatment effect."
+    ],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:30:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:30:00Z",
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "recorded": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": null,
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [],
+    "source_identifiers": [
+      {
+        "namespace": "clinrx.local.infusion-series/v1",
+        "code": "guided-dobutamine-series",
+        "version": null,
+        "raw_display": "guided-dobutamine-series"
+      }
+    ],
+    "disclosures": [
+      "Orders and preparations do not establish administration. Documented delivery is a source assertion, not continuous exposure, a conversion, or proof of treatment effect. Weight-dependent doses require separately reviewed weight support; this guided form does not calculate doses or pump rates."
+    ],
+    "record_status": "recorded",
+    "drug": {
+      "identity_version": "1",
+      "source": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "code": "dobutamine",
+        "version": null,
+        "raw_display": "dobutamine"
+      },
+      "canonical_id": null,
+      "mapping": "unknown",
+      "mapping_provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "99a26724-026c-4ccc-ac63-c22ddada2664",
+          "version": null,
+          "channel": "clinician"
+        },
+        "actor": "Synthetic validation reviewer",
+        "recorded_at": "2026-10-18T14:51:29.020000Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "formulation": null,
+      "limitation": "Raw agent identity recorded; no terminology mapping asserted."
+    },
+    "action": {
+      "event_type": "rate_change",
+      "delivery": {
+        "route": {
+          "raw_display": "Source central venous route",
+          "coding": null
+        },
+        "concentration": {
+          "value": "5.0",
+          "unit": {
+            "raw": "mg/mL",
+            "status": "unresolved",
+            "system": null,
+            "code": null,
+            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+          }
+        },
+        "rate": {
+          "value": "2.50",
+          "unit": {
+            "raw": "mcg/kg/min",
+            "status": "unresolved",
+            "system": null,
+            "code": null,
+            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+          }
+        },
+        "amount": null,
+        "dosing_weight_basis": "unknown",
+        "dosing_weight": null,
+        "pump": null,
+        "channel": null,
+        "infusion": {
+          "namespace": "clinrx.local.infusion-series/v1",
+          "code": "guided-dobutamine-series",
+          "version": null,
+          "raw_display": "guided-dobutamine-series"
+        },
+        "attestation": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "99a26724-026c-4ccc-ac63-c22ddada2664",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Synthetic validation reviewer",
+          "recorded_at": "2026-10-18T14:51:29.020000Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        }
+      }
+    },
+    "source_status": {
+      "raw_display": "Fictional documented rate change, not an order",
+      "coding": null
+    }
+  },
+  "expected_digest": "372e8fae2ff466ffff160d10ca287b19e54bc2569af5a472e009256402ccf863",
+  "ingestion": {
+    "repository_id": "e85880e5-85aa-413d-92d1-0e909546dcbd",
+    "ingestion_sequence": 167,
+    "ingested_at": "2026-10-18T14:51:35.895200Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "fact": {
+    "kind": "circulatory_perfusion",
+    "id": "33b64610-60af-4c43-b9ee-393ff63d2e96",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "unresolved",
+        "method": "Local synthetic encounter selection",
+        "verifier": "Synthetic validation reviewer",
+        "assessed_at": "2026-10-18T14:51:52.187000Z",
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "33b64610-60af-4c43-b9ee-393ff63d2e96",
+          "version": null,
+          "channel": "clinician"
+        },
+        "ambiguity": "Fictional patient identity only; not independently verified."
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "identifier": "33b64610-60af-4c43-b9ee-393ff63d2e96",
+        "version": null,
+        "channel": "clinician"
+      },
+      "actor": "Synthetic validation reviewer",
+      "recorded_at": "2026-10-18T14:51:52.187000Z",
+      "upstream": [],
+      "lineage": "incomplete",
+      "limitations": [
+        "Fictional local entry; actor and source assertions are not independently authenticated."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [
+      "Fictional bedside capillary refill observation; method context incomplete; no shock diagnosis inferred."
+    ],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:35:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:35:00Z",
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "recorded": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": null,
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [],
+    "source_identifiers": [],
+    "disclosures": [],
+    "record_status": "recorded",
+    "result": {
+      "result_type": "numeric",
+      "quantity": {
+        "value": "3.00",
+        "unit": {
+          "raw": "s",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+        }
+      },
+      "comparator": "="
+    },
+    "acquisition": {
+      "method": "bedside_examination",
+      "source_method": null,
+      "device": null,
+      "episode": null,
+      "parameter": null,
+      "parameter_concept": null,
+      "algorithm": null,
+      "parameter_support": "unknown",
+      "support_provenance": null,
+      "site": null,
+      "compartment": "unknown",
+      "laterality": "unknown",
+      "respiratory_phase": null,
+      "position": null,
+      "reference_level": null,
+      "calibration": "unknown",
+      "zeroing": "unknown",
+      "calibration_provenance": null,
+      "zeroing_provenance": null,
+      "interval_start": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "interval_end": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "averaging": null,
+      "indexing_denominator": null,
+      "indexing_basis": null,
+      "indicator": null,
+      "injection": null,
+      "quality": {
+        "status": "unknown",
+        "artifacts": [],
+        "limitations": [],
+        "provenance": null
+      },
+      "limitations": []
+    },
+    "production": "direct_measurement",
+    "calculation_method": null,
+    "calculation_inputs": [],
+    "concept": "capillary_refill",
+    "regional_site": null
+  },
+  "expected_digest": "382ec5ff3f9dff107abe25fa304e8db39207f05925ddd8f7794db35d6a734eda",
+  "ingestion": {
+    "repository_id": "e85880e5-85aa-413d-92d1-0e909546dcbd",
+    "ingestion_sequence": 168,
+    "ingested_at": "2026-10-18T14:51:58.313646Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "fact": {
+    "kind": "circulatory_cardiac",
+    "id": "98bda243-a9f5-494d-8733-8b575b75bf65",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "unresolved",
+        "method": "Local synthetic encounter selection",
+        "verifier": "Synthetic validation reviewer",
+        "assessed_at": "2026-10-18T14:50:23.960000Z",
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "98bda243-a9f5-494d-8733-8b575b75bf65",
+          "version": null,
+          "channel": "clinician"
+        },
+        "ambiguity": "Fictional patient identity only; not independently verified."
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "identifier": "98bda243-a9f5-494d-8733-8b575b75bf65",
+        "version": null,
+        "channel": "clinician"
+      },
+      "actor": "Synthetic validation reviewer",
+      "recorded_at": "2026-10-18T14:50:23.960000Z",
+      "upstream": [],
+      "lineage": "incomplete",
+      "limitations": [
+        "Fictional local entry; actor and source assertions are not independently authenticated."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [
+      "Fictional CO; suspect acquisition; calibration and clock verification unknown."
+    ],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:25:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:25:00Z",
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "recorded": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": null,
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [],
+    "source_identifiers": [],
+    "disclosures": [],
+    "record_status": "recorded",
+    "result": {
+      "result_type": "numeric",
+      "quantity": {
+        "value": "4.700",
+        "unit": {
+          "raw": "L/min",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+        }
+      },
+      "comparator": "="
+    },
+    "acquisition": {
+      "method": "bolus_thermodilution",
+      "source_method": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "code": "Source PAC bolus thermodilution; three source-recorded injections, no ClinRx averaging.",
+        "version": null,
+        "raw_display": "Source PAC bolus thermodilution; three source-recorded injections, no ClinRx averaging."
+      },
+      "device": null,
+      "episode": null,
+      "parameter": null,
+      "parameter_concept": null,
+      "algorithm": null,
+      "parameter_support": "unknown",
+      "support_provenance": null,
+      "site": null,
+      "compartment": "unknown",
+      "laterality": "unknown",
+      "respiratory_phase": null,
+      "position": null,
+      "reference_level": null,
+      "calibration": "unknown",
+      "zeroing": "unknown",
+      "calibration_provenance": null,
+      "zeroing_provenance": null,
+      "interval_start": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "interval_end": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "averaging": null,
+      "indexing_denominator": null,
+      "indexing_basis": null,
+      "indicator": null,
+      "injection": null,
+      "quality": {
+        "status": "suspect",
+        "artifacts": [],
+        "limitations": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "98bda243-a9f5-494d-8733-8b575b75bf65",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Synthetic validation reviewer",
+          "recorded_at": "2026-10-18T14:50:23.960000Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        }
+      },
+      "limitations": []
+    },
+    "production": "direct_measurement",
+    "calculation_method": null,
+    "calculation_inputs": [],
+    "concept": "co"
+  },
+  "expected_digest": "c84eace8b624d44f11957380c856992e66ded80a4e1616c4072a5aec10a50623",
+  "ingestion": {
+    "repository_id": "e85880e5-85aa-413d-92d1-0e909546dcbd",
+    "ingestion_sequence": 165,
+    "ingested_at": "2026-10-18T14:50:30.735440Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}

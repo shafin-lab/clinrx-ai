@@ -1,0 +1,177 @@
+{
+  "fact": {
+    "kind": "circulatory_pressure",
+    "id": "d633e316-d6a9-4502-bc30-73b72cd6aa6f",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "unresolved",
+        "method": "Local synthetic encounter selection",
+        "verifier": "Synthetic validation reviewer",
+        "assessed_at": "2026-10-18T14:48:38.456000Z",
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "d633e316-d6a9-4502-bc30-73b72cd6aa6f",
+          "version": null,
+          "channel": "clinician"
+        },
+        "ambiguity": "Fictional patient identity only; not independently verified."
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "identifier": "d633e316-d6a9-4502-bc30-73b72cd6aa6f",
+        "version": null,
+        "channel": "clinician"
+      },
+      "actor": "Synthetic validation reviewer",
+      "recorded_at": "2026-10-18T14:48:38.456000Z",
+      "upstream": [],
+      "lineage": "incomplete",
+      "limitations": [
+        "Fictional local entry; actor and source assertions are not independently authenticated."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [
+      "Fictional cuff observation; calibration and clock verification are unknown."
+    ],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:15:00.123456Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:15:00.123456Z",
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "recorded": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": null,
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [],
+    "source_identifiers": [],
+    "disclosures": [],
+    "record_status": "recorded",
+    "result": {
+      "result_type": "numeric",
+      "quantity": {
+        "value": "71.00",
+        "unit": {
+          "raw": "mmHg",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+        }
+      },
+      "comparator": "="
+    },
+    "acquisition": {
+      "method": "automated_cuff",
+      "source_method": null,
+      "device": null,
+      "episode": null,
+      "parameter": null,
+      "parameter_concept": null,
+      "algorithm": null,
+      "parameter_support": "unknown",
+      "support_provenance": null,
+      "site": null,
+      "compartment": "unknown",
+      "laterality": "unknown",
+      "respiratory_phase": null,
+      "position": null,
+      "reference_level": null,
+      "calibration": "unknown",
+      "zeroing": "unknown",
+      "calibration_provenance": null,
+      "zeroing_provenance": null,
+      "interval_start": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "interval_end": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "averaging": null,
+      "indexing_denominator": null,
+      "indexing_basis": null,
+      "indicator": null,
+      "injection": null,
+      "quality": {
+        "status": "unknown",
+        "artifacts": [],
+        "limitations": [],
+        "provenance": null
+      },
+      "limitations": []
+    },
+    "production": "direct_measurement",
+    "calculation_method": null,
+    "calculation_inputs": [],
+    "concept": "systemic_mean"
+  },
+  "expected_digest": "e539b8588f8f8fdf57ecdb9069a083b16885beeb510f1c67a71f78d3aae50c76",
+  "ingestion": {
+    "repository_id": "e85880e5-85aa-413d-92d1-0e909546dcbd",
+    "ingestion_sequence": 163,
+    "ingested_at": "2026-10-18T14:49:12.778034Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}

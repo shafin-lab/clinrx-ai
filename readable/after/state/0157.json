@@ -1,0 +1,242 @@
+{
+  "fact": {
+    "kind": "circulatory_oxygen",
+    "id": "a02f88e1-db04-48a0-89e6-f236016a38a8",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "unresolved",
+        "method": "Local synthetic encounter selection",
+        "verifier": "Synthetic validation reviewer",
+        "assessed_at": "2026-10-18T14:49:48.353000Z",
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "a02f88e1-db04-48a0-89e6-f236016a38a8",
+          "version": null,
+          "channel": "clinician"
+        },
+        "ambiguity": "Fictional patient identity only; not independently verified."
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "identifier": "a02f88e1-db04-48a0-89e6-f236016a38a8",
+        "version": null,
+        "channel": "clinician"
+      },
+      "actor": "Synthetic validation reviewer",
+      "recorded_at": "2026-10-18T14:49:48.353000Z",
+      "upstream": [],
+      "lineage": "incomplete",
+      "limitations": [
+        "Fictional local entry; actor and source assertions are not independently authenticated."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [
+      "Fictional arterial sample only; clock and quality unknown. No settings borrowed from other samples."
+    ],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:20:00.123456Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:20:00.123456Z",
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "recorded": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": null,
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [],
+    "source_identifiers": [],
+    "disclosures": [],
+    "record_status": "recorded",
+    "result": {
+      "result_type": "numeric",
+      "quantity": {
+        "value": "7.3400",
+        "unit": {
+          "raw": "1",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+        }
+      },
+      "comparator": "="
+    },
+    "acquisition": {
+      "method": "blood_gas",
+      "source_method": null,
+      "device": null,
+      "episode": null,
+      "parameter": null,
+      "parameter_concept": null,
+      "algorithm": null,
+      "parameter_support": "unknown",
+      "support_provenance": null,
+      "site": null,
+      "compartment": "unknown",
+      "laterality": "unknown",
+      "respiratory_phase": null,
+      "position": null,
+      "reference_level": null,
+      "calibration": "unknown",
+      "zeroing": "unknown",
+      "calibration_provenance": null,
+      "zeroing_provenance": null,
+      "interval_start": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "interval_end": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "averaging": null,
+      "indexing_denominator": null,
+      "indexing_basis": null,
+      "indicator": null,
+      "injection": null,
+      "quality": {
+        "status": "unknown",
+        "artifacts": [],
+        "limitations": [],
+        "provenance": null
+      },
+      "limitations": []
+    },
+    "production": "direct_measurement",
+    "calculation_method": null,
+    "calculation_inputs": [],
+    "concept": "ph",
+    "sample_type": "arterial",
+    "specimen": {
+      "namespace": "clinrx-local-synthetic-entry",
+      "code": "guided-arterial-sample",
+      "version": null,
+      "raw_display": "guided-arterial-sample"
+    },
+    "blood_gas_context": {
+      "collected": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:20:00.123456Z",
+          "lower": null,
+          "upper": null,
+          "uncertainty": null
+        },
+        "source_timestamp": "2026-10-08T09:20:00.123456Z",
+        "clock": "unknown",
+        "clock_basis": null,
+        "conflicting": [],
+        "alternative_sources": [],
+        "alignment": null
+      },
+      "fio2": {
+        "value": "40",
+        "unit": {
+          "raw": "%",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+        }
+      },
+      "oxygen_device": null,
+      "ventilator_mode": null,
+      "peep": {
+        "value": "5",
+        "unit": {
+          "raw": "cmH2O",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+        }
+      },
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "a02f88e1-db04-48a0-89e6-f236016a38a8",
+          "version": null,
+          "channel": "clinician"
+        },
+        "actor": "Synthetic validation reviewer",
+        "recorded_at": "2026-10-18T14:49:48.353000Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "limitations": [
+        "Context applies only to this recorded specimen."
+      ]
+    }
+  },
+  "expected_digest": "841ae7824dc697b9ee076909052d483301e51b5359326e0025e2429d5da33cb1",
+  "ingestion": {
+    "repository_id": "e85880e5-85aa-413d-92d1-0e909546dcbd",
+    "ingestion_sequence": 164,
+    "ingested_at": "2026-10-18T14:49:55.830200Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}

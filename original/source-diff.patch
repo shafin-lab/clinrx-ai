@@ -1,0 +1,2157 @@
+diff --git a/docs/SYNTHETIC-EVIDENCE-ENTRY.md b/docs/SYNTHETIC-EVIDENCE-ENTRY.md
+index 5edbeac..8f6e314 100644
+--- a/docs/SYNTHETIC-EVIDENCE-ENTRY.md
++++ b/docs/SYNTHETIC-EVIDENCE-ENTRY.md
+@@ -15,8 +15,12 @@ The launcher creates a fresh directory and expanded 156-record synthetic databas
+ ## Workflow
+ 
+ - Filter the source list by family or source ID. Select an exact record to correct or withdraw, and inspect its original content and bounded revision history.
+-- A numeric-result correction offers a raw-value field. Other fields and source context remain available in the complete structured record. A correction preserves the clinical source times unless explicitly changed; it is not a newly acquired measurement. Supersession keeps the same kind/ID and pins the selected predecessor digest. A reason and local actor attribution are required in the UI. Original nested source provenance remains visible; new top-level provenance marks the local synthetic correction and incomplete lineage. This actor name is an assertion, not authenticated clinician identity.
+-- New source entries use a complete JSON record under the existing contracts for all 15 evidence families. Supply full patient/encounter binding, a new stable ID/revision, timing, units, acquisition/sample context and provenance. The source provenance actor must match the entered actor name. There is no automatic copying of a selected record into a new measurement. HPI is optional. Friendly new-measurement forms remain future work.
++- A numeric-result correction offers a raw-value field. Other fields and source context remain available in the complete structured record. A correction preserves the clinical source times unless explicitly changed; it is not a newly acquired measurement. Supersession keeps the same kind/ID and pins the selected predecessor digest. A reason and local actor attribution are required in the UI. Exact reviewed calculation-input references and upstream dependency edges are retained, including for withdrawal. The numeric shortcut and JSON editor share one authoritative draft; neither silently overrides the other. Original nested source provenance remains visible; new top-level provenance marks the local synthetic correction and incomplete lineage. This actor name is an assertion, not authenticated clinician identity.
++- Guided new source entry covers BP/MAP, ABG/oxygen transport and lactate, CO/CI, broader echo, infusion events and perfusion. Enter one observation/event per append. Measurement values and raw units are exact text. Source/availability times are optional explicit ISO text with offsets; blank times remain not recorded and clocks remain unknown. Quality defaults to unknown. New identities are local UUIDs; encounter identity remains an unresolved fictional assertion, not verified patient identity. No previous measurement or respiratory context is automatically copied.
++- ABG respiratory fields belong only to the recorded sample. Each analyte saves separately, not as an atomic multi-analyte bundle. Lactate has separate sample/report-status fields. Echo requires study/report/revision; RVSP/PASP must be entered as source-calculated estimates with a reported basis, retaining PH/PAH and timing limitations. HPI and TAPSE are optional.
++- Infusion forms distinguish prescribed orders, preparations, documented starts/changes/restarts/boluses and interruptions. Agent mapping and raw-unit mapping remain unresolved; no weight-based calculation, pump conversion, continuous exposure or treatment effect is generated. Exact dosing-weight and separate pump-rate support, detailed calibration/indexing and explicit calculation-input edges use the advanced source editor. Guided method/device context is a recorded source description, not a resolved device identity.
++- The reassessment panel records a clinician-authored question, exact baseline/intervention/follow-up references, findings, unconfirmed possibilities, uncertainty and optional next-review plan. Intervention selection is restricted to event/infusion/monitoring records. It persists as a descriptive `circulatory_event/other` with stage-labelled source references and exact context associations under existing contracts; it is not a `DynamicAssessment` or a protected inference. It does not calculate changes, compare different properties, classify responders, schedule a review or establish causation. Selection menus display source times, quality and record status; those remain source assertions. No validity/currentness is promoted by selection.
++- Advanced new entry preserves complete JSON import across all 15 families. Supply full binding/provenance and a matching actor. Guided records can be inspected or refined in this editor before validation; after validation, Edit draft returns to this authoritative record (it does not reconstruct guided fields).
+ - Validate, inspect the complete normalized record, then explicitly confirm append. Validation does not write. Decimal strings, clock uncertainty, quality, raw units and support associations retain the existing model rules. No unit conversion, inference or treatment recommendation is added.
+ - The repository compares the exact predecessor within the same write transaction, rejects stale corrections and conflicting exact revisions, and appends immutably. An exact canonical retry returns its original ingestion metadata even after a later successor. Old facts and clinical receipts remain unchanged.
+ - After a lost, malformed or unconfirmed save response, the pending draft and proposed revision remain locked in memory. Exact lookup is read-only. A committed match confirms the stored canonical content, digest, scope, repository and revision. An absent lookup does not prove rollback or trigger a write: explicit retry reuses the same submitted draft/revision. No automatic replacement or retry occurs. Reload/closure can lose this in-memory draft; durable browser recovery is not implemented.
+@@ -25,4 +29,4 @@ The launcher creates a fresh directory and expanded 156-record synthetic databas
+ 
+ Only the separate `app.demo.authoring:from_environment` factory installs these routes. Neither the normal API nor the accepted read-only gateway exposes them. The loopback gateway fixes patient/encounter scope, rejects foreign Host/Origin, remote peers and cross-site POSTs, bounds bodies with the existing middleware, and has no execution/preparation/reconciliation write routes. Its independent configuration hardcodes execution disabled and uses an ephemeral key. Local processes are inside this development trust boundary; this is not production access control.
+ 
+-The existing read-only summary's exact-case withholding continues to apply if its source set changes. This workspace does not generate a new patient explanation or upgrade the accepted authored explanation for edited evidence. Clinical readiness, production authorization, terminology review, friendly domain-specific entry forms and durable browser recovery remain separate work.
++The existing read-only summary's exact-case withholding continues to apply if its source set changes. This workspace does not generate a new patient explanation or upgrade the accepted authored explanation for edited evidence. Clinical readiness, production authorization, terminology approval, additional guided acquisition/support editors and durable browser recovery remain separate work. Latest-response guards prevent an older refresh replacing a newer snapshot. Failed gate confirmation blocks new writes, retains the snapshot only for reference and leaves exact recovery read-only; the disabled-execution header is conditional on confirmation. Selection highlights compare exact revisions.
+diff --git a/frontend/src/demo/EvidenceDraftSummary.tsx b/frontend/src/demo/EvidenceDraftSummary.tsx
+new file mode 100644
+index 0000000..501b774
+--- /dev/null
++++ b/frontend/src/demo/EvidenceDraftSummary.tsx
+@@ -0,0 +1,11 @@
++import type {CirculatoryItem} from '../api/circulatoryTypes';
++import {record} from './evidencePresentation';
++const quantity=(v:unknown)=>{const q=record(v);return q.value===undefined?'Not recorded':`${String(q.value)} ${String(record(q.unit).raw??'unit not recorded')} · mapping ${String(record(q.unit).status??'not recorded')}`;};
++export function EvidenceDraftSummary({fact}:{fact:CirculatoryItem['fact']}){
++ const occurred=record(fact.collected??fact.occurred),acquisition=record(fact.acquisition),gas=record(fact.blood_gas_context),action=record(fact.action),delivery=record(action.delivery??action.prescribed??action.prepared);
++ const rows:[string,string][]=[['Source time',String(occurred.source_timestamp??record(occurred.recorded).value??'Not recorded')],['Clock verification',String(occurred.clock??'unknown')],['Quality',String(record(acquisition.quality).status??'Not recorded')],['Method',String(acquisition.method??'Not recorded')],['Recorded production tag',String(fact.production??'Not applicable to this event')]];
++ if(fact.kind==='circulatory_oxygen'){rows.push(['Sample type',String(fact.sample_type)],['Specimen',String(record(fact.specimen).raw_display??'Not recorded')],['This sample’s FiO₂',quantity(gas.fio2)],['This sample’s PEEP',quantity(gas.peep)]);}
++ if(fact.kind==='circulatory_echo')rows.push(['Study / report / revision',[record(fact.study).raw_display,record(fact.report).raw_display,fact.report_revision].join(' / ')],['Source estimate basis',String(record(fact.calculation_method).raw_display??'Not recorded')]);
++ if(fact.kind==='circulatory_vasoactive')rows.push(['Agent / mapping',`${String(record(record(fact.drug).source).raw_display??'Not recorded')} · ${String(record(fact.drug).mapping??'unknown')}`],['Event',String(action.event_type)],['Source dose / rate',quantity(delivery.rate)],['Source concentration',quantity(delivery.concentration)],['Dosing weight basis',String(delivery.dosing_weight_basis??'unknown')]);
++ return <section aria-label="Proposed source context"><h4>Source context to review</h4><dl>{rows.map(([label,text])=><div key={label}><dt>{label}</dt><dd>{text}</dd></div>)}</dl>{fact.description!==undefined&&<p className="entry-note">{String(record(fact.description).raw_display)}</p>}<h4>Uncertainty and source caveats</h4>{[fact.uncertainty,fact.disclosures,record(acquisition.quality).limitations].flatMap(v=>Array.isArray(v)?v:[]).map((text,n)=><p key={n}>{String(text)}</p>)}<p>Unknown fields remain unknown. These are recorded source assertions and clinician-authored notes, not a generated diagnosis or treatment recommendation.</p></section>;
++}
+diff --git a/frontend/src/demo/EvidenceEntryWorkspace.tsx b/frontend/src/demo/EvidenceEntryWorkspace.tsx
+index d411311..235f735 100644
+--- a/frontend/src/demo/EvidenceEntryWorkspace.tsx
++++ b/frontend/src/demo/EvidenceEntryWorkspace.tsx
+@@ -1,27 +1,41 @@
+-import {useEffect,useState} from 'react';
++import {useCallback,useEffect,useRef,useState} from 'react';
+ import type {CirculatoryClient} from '../api/circulatoryClient';
+ import type {CirculatoryItem,CirculatoryState,CirculatoryHistory} from '../api/circulatoryTypes';
+ import {EvidenceEntryClient,type Draft,type Evidence} from '../api/evidenceEntryClient';
+ import {families,reference,RecordedDisclosure} from '../patient/CirculatoryEvidence';
+ import {title,value,sourceTime,record} from './evidencePresentation';
++import {EvidenceDraftSummary} from './EvidenceDraftSummary';
++import {GuidedEvidenceForm} from './GuidedEvidenceForm';
++import {shortcutValue} from './guidedEvidence';
+ import './demo.css';
+ import './evidenceEntry.css';
+ type Phase='editing'|'review'|'saving'|'uncertain'|'absent'|'saved';
+ export function EvidenceEntryWorkspace({client,entry,config}:{client:CirculatoryClient;entry:EvidenceEntryClient;config:{start:string;end:string}}){
+   const [state,setState]=useState<CirculatoryState>(),[selected,setSelected]=useState<CirculatoryItem>();
+   const [text,setText]=useState(''),[mode,setMode]=useState<'new'|'correct'|'withdraw'>('new');
+-  const [actor,setActor]=useState(''),[reason,setReason]=useState(''),[numeric,setNumeric]=useState('');
++  const [actor,setActor]=useState(''),[reason,setReason]=useState('');
++  const [editor,setEditor]=useState<'guided'|'source'>('guided');
+   const [search,setSearch]=useState(''),[family,setFamily]=useState('all');
+   const [phase,setPhase]=useState<Phase>('editing'),[busy,setBusy]=useState(false),[error,setError]=useState('');
+   const [review,setReview]=useState<Evidence>(),[pending,setPending]=useState<Draft>(),[history,setHistory]=useState<CirculatoryHistory>();
+-  async function refresh(){const reply=await client.circulatoryState(config.start,config.end);if(reply.data.execution_enabled!==false)throw Error('gate_open');setState(reply.data);}
+-  useEffect(()=>{let active=true;void client.circulatoryState(config.start,config.end).then(reply=>{if(active&&reply.data.execution_enabled===false)setState(reply.data);else if(active)setError('Evidence entry blocked: disabled execution was not confirmed.');}).catch(()=>{if(active)setError('The isolated evidence service is unavailable.');});return()=>{active=false;};},[client,config.start,config.end]);
++  const generation=useRef(0),[gateConfirmed,setGateConfirmed]=useState(false);
++  const refresh=useCallback(async()=>{
++    const request=++generation.current;setGateConfirmed(false);
++    try{const reply=await client.circulatoryState(config.start,config.end);
++      if(request!==generation.current)return;
++      if(reply.data.execution_enabled!==false)throw Error('gate_open');
++      setState(reply.data);setGateConfirmed(true);
++    }catch(error){if(request!==generation.current)return;setGateConfirmed(false);setError('Evidence entry blocked: disabled execution could not be confirmed. Refresh to check again.');throw error;}
++  },[client,config.start,config.end]);
++  useEffect(()=>{void refresh().catch(()=>{});return()=>{generation.current++;};},[refresh]);
++  let numeric='';try{numeric=String(record(record(JSON.parse(text).result).quantity).value??'');}catch{/* Invalid JSON must be repaired; never replace it with a shortcut. */}
++  function editNumeric(next:string){try{setText(shortcutValue(text,next));}catch{setError('Repair the source JSON before editing its numeric value.');}}
+   const proposedQuantity=record(record(review?.fact.result).quantity);
+   const proposedFinding=record(record(review?.fact.result).finding);
+   const locked=phase==='saving'||phase==='uncertain'||phase==='absent';
+-  function choose(item?:CirculatoryItem){if(locked)return;setSelected(item);setMode(item?'correct':'new');setText(item?JSON.stringify(item.fact,null,2):'');setNumeric(item?String(record(record(item.fact.result).quantity).value??''):'');setReason('');setHistory(undefined);setReview(undefined);setPending(undefined);setPhase('editing');setError('');}
++  function choose(item?:CirculatoryItem){if(locked||!gateConfirmed)return;setSelected(item);setMode(item?'correct':'new');setEditor(item?'source':'guided');setText(item?JSON.stringify(item.fact,null,2):'');setReason('');setHistory(undefined);setReview(undefined);setPending(undefined);setPhase('editing');setError('');}
+   async function validate(){
+-    if(!state||busy||locked)return;setBusy(true);setError('');
++    if(!state||!gateConfirmed||busy||locked)return;setBusy(true);setError('');
+     try{
+       if(!actor.trim()||(mode!=='new'&&!reason.trim()))throw Error('required');
+       const fact=JSON.parse(text) as CirculatoryItem['fact'];
+@@ -30,9 +44,8 @@ export function EvidenceEntryWorkspace({client,entry,config}:{client:Circulatory
+         fact.kind=selected.fact.kind;fact.id=selected.fact.id;fact.revision=crypto.randomUUID();
+         fact.supersedes=reference(selected);fact.correction_reason=reason.trim();
+         if(mode==='withdraw')fact.record_status='withdrawn';
+-        if(numeric!==''&&record(record(fact.result).quantity).value!==undefined){const result=record(fact.result);fact.result={...result,quantity:{...record(result.quantity),value:numeric}};}
+         if(fact.kind==='circulatory_lactate')fact.change='corrected';
+-        fact.provenance={source:{namespace:'clinrx-local-synthetic-entry',identifier:fact.revision,channel:'clinician',version:null},actor:actor.trim(),recorded_at:new Date().toISOString(),upstream:[],lineage:'incomplete',limitations:['Local synthetic correction; copied source context requires explicit review.']};
++        fact.provenance={source:{namespace:'clinrx-local-synthetic-entry',identifier:fact.revision,channel:'clinician',version:null},actor:actor.trim(),recorded_at:new Date().toISOString(),upstream:record(fact.provenance).upstream??[],lineage:'incomplete',limitations:['Local synthetic correction; copied source context requires explicit review.']};
+       }else{
+         if(fact.supersedes)throw Error('new_requires_root');
+         // Complete source provenance remains user-authored on new imports.
+@@ -44,23 +57,23 @@ export function EvidenceEntryWorkspace({client,entry,config}:{client:Circulatory
+     }catch{setError('Draft not accepted. Supply your actor name, a correction reason where needed, and a complete valid source record. New-entry provenance.actor must match the actor name. No evidence was saved.');}
+     finally{setBusy(false);}
+   }
+-  async function save(){if(!pending||busy)return;setPhase('saving');setBusy(true);setError('');
++  async function save(){if(!pending||busy||!gateConfirmed)return;setPhase('saving');setBusy(true);setError('');
+     try{setReview(await entry.save(pending));setPhase('saved');try{await refresh();}catch{setError('Saved revision confirmed; the evidence list could not be refreshed.');}}
+     catch(error){if(error instanceof Error&&['conflict','invalid_draft'].includes(error.message)){setPhase('review');setError('Save rejected. The selection may be stale or the revision conflicts. Reload the evidence and create a reviewed draft; no automatic retry occurred.');}else{setPhase('uncertain');setError('Save completion is unknown. Keep this page open and check the exact revision. No automatic retry or replacement will occur.');}}
+     finally{setBusy(false);}
+   }
+   async function recover(){if(!pending||busy)return;setBusy(true);setError('');try{const reply=await entry.lookup(pending);if(reply.status==='absent'){setPhase('absent');}else{setReview(reply.evidence);setPhase('saved');try{await refresh();}catch{setError('Exact revision recovered; refresh unavailable.');}}}catch{setError('The exact revision could not be confirmed. Keep the original draft; no retry occurred.');}finally{setBusy(false);}}
+   async function revisions(){if(!selected||!state)return;setBusy(true);setError('');try{setHistory((await client.circulatoryHistory(state.state_context,reference(selected))).data);}catch{setError('History could not be loaded. Refresh the recorded evidence first.');}finally{setBusy(false);}}
+-  return <main className="demo-shell entry-workspace"><header><h1>Synthetic patient evidence entry</h1><p>Separate disposable local workspace · synthetic-p1 / synthetic-e1</p><p><strong>Clinical execution disabled.</strong> Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.</p><p>This first entry workflow accepts complete structured source records across all 15 evidence families. It is a development tool, not a clinician-ready charting form.</p></header>
+-    {error&&<p role="alert">{error}</p>}
+-    {!state?<p>Loading the isolated evidence snapshot…</p>:<><p>{state.assembly.snapshot.items.length} source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: {config.start} to {config.end}; source times may be contextual or unplaced.</p><div className="entry-columns"><section aria-label="Recorded evidence"><h2>Select evidence to correct</h2><button disabled={busy||locked} onClick={()=>choose()}>New source entry</button><button disabled={busy||locked} onClick={()=>void refresh().catch(()=>setError('Refresh failed.'))}>Refresh evidence</button><label>Evidence family<select value={family} onChange={e=>setFamily(e.target.value)} disabled={busy||locked}><option value="all">All 15 families</option>{Object.entries(families).map(([kind,label])=><option key={kind} value={kind}>{label}</option>)}</select></label><label>Find evidence<input value={search} onChange={e=>setSearch(e.target.value)} disabled={busy||locked}/></label><ul className="entry-list">{state.assembly.snapshot.items.filter(item=>(family==='all'||item.fact.kind===family)&&[title(item),item.fact.id,value(item).text].join(' ').toLowerCase().includes(search.toLowerCase())).map(item=><li key={[item.fact.kind,item.fact.id,item.fact.revision].join('/')}><button disabled={busy||locked} onClick={()=>choose(item)} aria-pressed={selected?.fact.id===item.fact.id&&selected?.fact.kind===item.fact.kind}>{title(item)} · {value(item).text} {value(item).unit}<small>{item.fact.id} / {item.fact.revision} · {sourceTime(item)} · {String(item.fact.record_status)}</small></button></li>)}</ul></section>
++  return <main className="demo-shell entry-workspace"><header><h1>Synthetic patient evidence entry</h1><p>Separate disposable local workspace · synthetic-p1 / synthetic-e1</p><p><strong>{gateConfirmed?'Clinical execution disabled.':'Execution gate not confirmed — new writes blocked.'}</strong> Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.</p><p>Guided source entry and clinician-authored reassessment are available for common hemodynamic records. Advanced source entry preserves access to all 15 families. This remains a local synthetic prototype.</p></header>
++    {error&&<p role="alert">{error}</p>}{!gateConfirmed&&<><p role="status">Any retained snapshot is for reference only. New writes are blocked until the disabled gate is confirmed.</p><button disabled={busy} onClick={()=>void refresh().catch(()=>{})}>Check service and execution gate</button></>}
++    {!state?<p>Loading the isolated evidence snapshot…</p>:<><p>{state.assembly.snapshot.items.length} source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: {config.start} to {config.end}; source times may be contextual or unplaced.</p><div className="entry-columns"><section aria-label="Recorded evidence"><h2>Select evidence to correct</h2><button disabled={busy||locked||!gateConfirmed} onClick={()=>choose()}>New source entry</button><button disabled={busy||locked} onClick={()=>void refresh().catch(()=>setError('Refresh failed.'))}>Refresh evidence</button><label>Evidence family<select value={family} onChange={e=>setFamily(e.target.value)} disabled={busy||locked||!gateConfirmed}><option value="all">All 15 families</option>{Object.entries(families).map(([kind,label])=><option key={kind} value={kind}>{label}</option>)}</select></label><label>Find evidence<input value={search} onChange={e=>setSearch(e.target.value)} disabled={busy||locked||!gateConfirmed}/></label><ul className="entry-list">{state.assembly.snapshot.items.filter(item=>(family==='all'||item.fact.kind===family)&&[title(item),item.fact.id,value(item).text].join(' ').toLowerCase().includes(search.toLowerCase())).map(item=><li key={[item.fact.kind,item.fact.id,item.fact.revision].join('/')}><button disabled={busy||locked||!gateConfirmed} onClick={()=>choose(item)} aria-pressed={selected?.fact.id===item.fact.id&&selected?.fact.kind===item.fact.kind&&selected?.fact.revision===item.fact.revision}>{title(item)} · {value(item).text} {value(item).unit}<small>{item.fact.id} / {item.fact.revision} · {sourceTime(item)} · {String(item.fact.record_status)}</small></button></li>)}</ul></section>
+     <section aria-label="Evidence draft"><h2>{mode==='new'?'New source entry':mode==='withdraw'?'Withdraw selected evidence':'Correct selected evidence'}</h2>
+-    {selected&&<><p>Original retained: {selected.fact.kind} / {selected.fact.id} / {selected.fact.revision}</p><p>Correction keeps the original observation time and context unless explicitly changed in the source record. It is not a new measurement or evidence of ongoing administration.</p><button disabled={busy||locked} onClick={()=>void revisions()}>Load exact revision history</button><RecordedDisclosure label="Original source record" value={selected.fact}/>{history&&<RecordedDisclosure label={'History: '+history.revisions.length+' retained revisions'} value={history.revisions}/>}</>}
+-    {phase==='editing'?<><label>Actor name<input value={actor} onChange={e=>setActor(e.target.value)} disabled={busy}/></label>{selected&&<><label>Action<select value={mode} onChange={e=>setMode(e.target.value as 'correct'|'withdraw')} disabled={busy}><option value="correct">Append correction</option><option value="withdraw">Append withdrawal</option></select></label><label>Reason for correction or withdrawal<textarea value={reason} onChange={e=>setReason(e.target.value)} disabled={busy}/></label>{record(record(selected.fact.result).quantity).value!==undefined&&<label>Recorded numeric value (raw unit preserved)<input value={numeric} onChange={e=>setNumeric(e.target.value)} disabled={busy}/></label>}</>}
+-    <label>Complete source record (JSON)<textarea className="entry-json" value={text} onChange={e=>setText(e.target.value)} disabled={busy} spellCheck={false}/></label><p>Preserve exact Decimal strings, sample type, units, method, quality, timing and support references. Nothing is converted or inferred. For a new entry supply a new ID/revision, full binding and provenance; copied source assertions must be reviewed.</p><button disabled={busy} onClick={()=>void validate()}>Validate and review draft</button></>:<>
+-    <h3>Review before append</h3><p>{families[review?.fact.kind??'']} · {review?.fact.id} / {review?.fact.revision}</p>{proposedQuantity.value!==undefined&&<p>Proposed recorded result: {String(proposedQuantity.value)} {String(record(proposedQuantity.unit).raw??'Unit not recorded')}</p>}{proposedFinding.raw_display!==undefined&&<p>Proposed source finding: {String(proposedFinding.raw_display)}</p>}<p>Proposed status: {String(review?.fact.record_status)}</p><p>Actor: {String(record(review?.fact.provenance).actor??'Not recorded')}</p><p>Reason: {String(review?.fact.correction_reason??'New source entry; no predecessor')}</p><p>Digest: {review?.expected_digest}</p><RecordedDisclosure label="Complete validated record and source caveats" value={review?.fact}/><p>Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.</p>
+-    {phase==='review'&&<><button disabled={busy} onClick={()=>void save()}>Confirm append to local database</button><button disabled={busy} onClick={()=>{setPhase('editing');setPending(undefined);setReview(undefined);}}>Edit draft</button><button disabled={busy} onClick={()=>{choose();void refresh().catch(()=>setError('Refresh failed.'));}}>Discard draft and reload</button></>}
+-    {(phase==='uncertain'||phase==='absent')&&<><p>Original pending revision: {pending?.fact.id} / {pending?.fact.revision}</p><button disabled={busy} onClick={()=>void recover()}>Check exact saved revision</button>{phase==='absent'&&<><p>The exact revision is absent in this lookup. This is not proof that an earlier request rolled back. An explicit retry reuses this same reviewed draft and revision.</p><button disabled={busy} onClick={()=>void save()}>Explicitly retry the same revision</button></>}</>}
++    {selected&&<><p>Original retained: {selected.fact.kind} / {selected.fact.id} / {selected.fact.revision}</p><p>Original recorded value: {value(selected).text} {value(selected).unit} · {sourceTime(selected)}</p><p>Correction keeps the original observation time and context unless explicitly changed in the source record. It is not a new measurement or evidence of ongoing administration.</p><button disabled={busy||locked||!gateConfirmed} onClick={()=>void revisions()}>Load exact revision history</button><RecordedDisclosure label="Original source record" value={selected.fact}/>{history&&<RecordedDisclosure label={'History: '+history.revisions.length+' retained revisions'} value={history.revisions}/>}</>}
++    {phase==='editing'?<fieldset disabled={busy||!gateConfirmed}><label>Actor name<input value={actor} onChange={e=>setActor(e.target.value)} disabled={busy}/></label>{selected&&<><label>Action<select value={mode} onChange={e=>setMode(e.target.value as 'correct'|'withdraw')} disabled={busy}><option value="correct">Append correction</option><option value="withdraw">Append withdrawal</option></select></label><label>Reason for correction or withdrawal<textarea value={reason} onChange={e=>setReason(e.target.value)} disabled={busy}/></label>{record(record(selected.fact.result).quantity).value!==undefined&&<label>Recorded numeric value (raw unit preserved)<input value={numeric} onChange={e=>editNumeric(e.target.value)} disabled={busy}/></label>}</>}
++    {mode==='new'&&editor==='guided'?<><GuidedEvidenceForm actor={actor} items={state.assembly.snapshot.items} onDraft={fact=>{setText(JSON.stringify(fact,null,2));setEditor('source');setError('');}}/><button onClick={()=>{setText('');setEditor('source');}}>Advanced source entry</button></>:<><p>One authoritative source draft. The numeric shortcut and complete record editor update the same value.</p><details><summary>Edit complete source record (advanced)</summary><label>Complete source record (JSON)<textarea className="entry-json" value={text} onChange={e=>setText(e.target.value)} disabled={busy} spellCheck={false}/></label></details><p>Preserve exact Decimal strings, sample type, units, method, quality, timing and support references. Nothing is converted or inferred. For a new entry supply a new ID/revision, full binding and provenance; copied source assertions must be reviewed.</p><button disabled={busy} onClick={()=>void validate()}>Validate and review draft</button>{mode==='new'&&<button onClick={()=>{setText('');setEditor('guided');}}>Start a different guided record</button>}</>}</fieldset>:<>
++    <h3>Review before append</h3><p>{families[review?.fact.kind??'']} · {review?.fact.id} / {review?.fact.revision}</p>{proposedQuantity.value!==undefined&&<p>Proposed recorded result: {String(proposedQuantity.value)} {String(record(proposedQuantity.unit).raw??'Unit not recorded')}</p>}{proposedFinding.raw_display!==undefined&&<p>Proposed source finding: {String(proposedFinding.raw_display)}</p>}<p>Proposed status: {String(review?.fact.record_status)}</p><p>Actor: {String(record(review?.fact.provenance).actor??'Not recorded')}</p><p>Reason: {String(review?.fact.correction_reason??'New source entry; no predecessor')}</p>{review&&<EvidenceDraftSummary fact={review.fact}/>}<p>Digest: {review?.expected_digest}</p><RecordedDisclosure label="Complete validated record and source caveats" value={review?.fact}/><p>Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.</p>
++    {phase==='review'&&<><button disabled={busy||!gateConfirmed} onClick={()=>void save()}>Confirm append to local database</button><button disabled={busy} onClick={()=>{setPhase('editing');setPending(undefined);setReview(undefined);}}>Edit draft</button><button disabled={busy} onClick={()=>{choose();void refresh().catch(()=>setError('Refresh failed.'));}}>Discard draft and reload</button></>}
++    {(phase==='uncertain'||phase==='absent')&&<><p>Original pending revision: {pending?.fact.id} / {pending?.fact.revision}</p><button disabled={busy} onClick={()=>void recover()}>Check exact saved revision</button>{phase==='absent'&&<><p>The exact revision is absent in this lookup. This is not proof that an earlier request rolled back. An explicit retry reuses this same reviewed draft and revision.</p><button disabled={busy||!gateConfirmed} onClick={()=>void save()}>Explicitly retry the same revision</button></>}</>}
+     {phase==='saving'&&<p role="status">Appending the exact reviewed revision…</p>}
+     {phase==='saved'&&<><p role="status">Exact revision saved and confirmed. Ingestion sequence {review?.ingestion?.ingestion_sequence}.</p><button disabled={busy} onClick={()=>choose()}>Start another entry</button></>}
+     </>}
+diff --git a/frontend/src/demo/GuidedEvidenceForm.tsx b/frontend/src/demo/GuidedEvidenceForm.tsx
+new file mode 100644
+index 0000000..d3978bb
+--- /dev/null
++++ b/frontend/src/demo/GuidedEvidenceForm.tsx
+@@ -0,0 +1,33 @@
++import {useState} from 'react';
++import type {CirculatoryItem} from '../api/circulatoryTypes';
++import {title,value,sourceTime,quality} from './evidencePresentation';
++import {buildGuided,concepts,emptyFields,guidedFamilies,type Fields,type GuidedFamily} from './guidedEvidence';
++export function GuidedEvidenceForm({actor,items,onDraft}:{actor:string;items:CirculatoryItem[];onDraft:(fact:CirculatoryItem['fact'])=>void}){
++ const [family,setFamily]=useState<GuidedFamily>('pressure'),[f,setFields]=useState<Fields>(emptyFields),[error,setError]=useState('');
++ const set=(key:string,value:string)=>setFields(old=>({...old,[key]:value}));
++ const input=(key:string,label:string)=><label key={key}>{label}<input value={f[key]??''} onChange={e=>set(key,e.target.value)}/></label>;
++ const area=(key:string,label:string)=><label key={key}>{label}<textarea value={f[key]??''} onChange={e=>set(key,e.target.value)}/></label>;
++ const select=(key:string,label:string,options:Record<string,string>)=><label key={key}>{label}<select value={f[key]??''} onChange={e=>set(key,e.target.value)}>{Object.entries(options).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>;
++ function prepare(){try{onDraft(buildGuided(family,f,actor,items,crypto.randomUUID(),new Date().toISOString()));setError('');}catch(e){setError(e instanceof Error?e.message:'Check the required fields.');}}
++ const interrupted=['pause','permanent_stop','non_delivery'].includes(f.action);
++ return <section aria-label="Guided evidence entry"><h3>Guided source entry</h3><p>One source observation or event per append. No values are copied from earlier measurements. Blank source times remain not recorded; clock, calibration and zeroing remain unknown. HPI is optional.</p>
++ <label>Entry family<select value={family} onChange={e=>{const next=e.target.value as GuidedFamily;setFamily(next);setFields({...emptyFields(),concept:Object.keys(concepts[next])[0]??''});setError('');}}>{Object.entries(guidedFamilies).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
++ {input('time','Source observation / event time (ISO with offset; optional)')}{input('available','Source availability time (ISO with offset; optional)')}
++ {family==='reassessment'?<>
++ {area('question','Reassessment question')}
++ {(['baseline','intervention','followup'] as const).map(stage=><div key={stage}><label>{stage==='followup'?'Follow-up evidence':stage==='baseline'?'Baseline evidence':'Documented intervention'}<select value={f[stage]??''} onChange={e=>set(stage,e.target.value)}><option value="">Select an exact source revision</option>{items.filter(item=>stage!=='intervention'||['circulatory_event','circulatory_vasoactive','circulatory_monitoring'].includes(item.fact.kind)).map(item=><option key={[item.fact.kind,item.fact.id,item.fact.revision].join('/')} value={[item.fact.kind,item.fact.id,item.fact.revision].join('/')}>{title(item)} · {item.fact.id}/{item.fact.revision} · {value(item).text} {value(item).unit} · {sourceTime(item)} · quality {quality(item)} · {String(item.fact.record_status)}</option>)}</select></label></div>)}
++ {area('findings','Recorded findings (your assessment)')}{area('possibilities','Unconfirmed possibilities (your assessment)')}{input('nextReview','Next review plan (optional; no scheduling)')}
++ <p>Selections are retained as exact references, never replaced by successors. No responder classification, physiological delta, diagnosis or causal response is generated.</p>
++ </>:family==='infusion'?<>
++ {input('drug','Agent name as recorded')}{select('action','Recorded infusion event',{order:'Prescribed order',preparation:'Preparation',initiation:'Documented start',rate_change:'Documented rate change',restart:'Documented restart',bolus:'Documented bolus',pause:'Pause',permanent_stop:'Stop',non_delivery:'Non-delivery'})}{input('sourceStatus','Source event status / documentation')}{input('series','Infusion series identifier')}
++ {interrupted?area('interruption','Recorded interruption reason'):<>{input('rate','Recorded dose / rate (optional)')}{input('rateUnit','Dose / rate raw unit')}{input('concentration','Recorded concentration (optional)')}{input('concentrationUnit','Concentration raw unit')}{input('route','Recorded route (optional)')}{input('pump','Pump identifier (optional)')}{input('channel','Channel identifier (optional)')}</>}
++ <p>Prescribed, prepared and documented delivery remain distinct. No conversion, continuous exposure or treatment effect is inferred. Use the complete-source editor for exact dosing-weight or separate pump-rate support.</p>
++ </>:<>
++ {select('concept','Recorded parameter',concepts[family])}{select('resultType','Result type',{numeric:'Numeric source result',qualitative:'Qualitative source finding'})}
++ {f.resultType==='numeric'?<>{input('value','Recorded value (exact decimal text)')}{input('unit','Raw unit as recorded')}</>:area('finding','Source finding (verbatim)')}
++ {family==='gas'?<>{select('sample','Sample type',{unknown:'Unknown',arterial:'Arterial',central_venous:'Central venous',mixed_venous:'Mixed venous',peripheral_venous:'Peripheral venous'})}{input('specimen','Specimen identifier (optional)')}{f.concept==='lactate'?select('reportStatus','Lactate report status',{'':'Unknown',final:'Final',preliminary:'Preliminary',pending:'Pending'}):<>{input('fio2','This sample’s FiO₂ (optional)')}{input('fio2Unit','FiO₂ raw unit')}{input('peep','This sample’s PEEP (optional)')}{input('peepUnit','PEEP raw unit')}</>}<p>Respiratory context belongs only to this sample. Enter each analyte separately; no multi-analyte atomic save is claimed.</p></>:family==='echo'?<>{input('study','Echo study identifier')}{input('report','Echo report identifier')}{input('reportRevision','Echo report revision')}<p>Record RVSP/PASP as source-calculated estimates with the reported basis. PH wording is a source finding, not confirmation of PAH.</p></>:select('method','Acquisition method',{unknown:'Unknown',invasive_arterial:'Invasive arterial',automated_cuff:'Automated cuff',pac:'PAC',rhc:'RHC',bolus_thermodilution:'Bolus thermodilution',continuous_thermodilution:'Continuous thermodilution',pulse_contour:'Pulse contour',transpulmonary_thermodilution:'Transpulmonary thermodilution',direct_fick:'Direct Fick',indirect_fick:'Indirect Fick',echo:'Echo',bioreactance:'Bioreactance',bedside_examination:'Bedside examination'})}
++ {input('methodContext','Recorded method / device context (optional)')}{select('quality','Source quality',{unknown:'Unknown',acceptable:'Acceptable (source assertion)',suspect:'Suspect',invalid:'Invalid'})}{select('production','Recorded production tag',{direct_measurement:'Direct measurement',monitor_derived:'Monitor-derived',source_calculated:'Source-calculated'})}{f.production!=='direct_measurement'&&input('productionBasis','Reported calculation / estimate basis')}
++ <p>Use the complete-source editor for explicit calculation inputs, calibration, indexing and additional acquisition context. Existing model checks remain authoritative.</p>
++ </>}
++ {area('uncertainty','Source limitations / uncertainty (required)')}{error&&<p role="alert">{error}</p>}<button onClick={prepare}>Use guided record for validation</button></section>;
++}
+diff --git a/frontend/src/demo/evidenceEntry.css b/frontend/src/demo/evidenceEntry.css
+index adc9cd9..2fa0d16 100644
+--- a/frontend/src/demo/evidenceEntry.css
++++ b/frontend/src/demo/evidenceEntry.css
+@@ -1,3 +1,5 @@
+ .entry-workspace{max-width:1400px;margin:auto;padding:24px}.entry-columns{display:grid;grid-template-columns:minmax(230px,1fr) minmax(300px,2fr);gap:24px}.entry-workspace label{display:block;margin:14px 0}.entry-workspace input,.entry-workspace textarea,.entry-workspace select{display:block;width:100%;max-width:100%;box-sizing:border-box;padding:9px;margin-top:6px}.entry-json{min-height:320px;font-family:monospace}.entry-list{list-style:none;padding:0;max-height:65vh;overflow:auto}.entry-list button{width:100%;text-align:left;padding:10px;margin:3px 0}.entry-list small{display:block}.entry-workspace button{margin:5px;padding:8px}.entry-workspace [role=alert]{border:2px solid #9d4614;padding:12px}.entry-workspace details{overflow-wrap:anywhere;max-height:65vh;overflow:auto}@media(max-width:720px){.entry-columns{grid-template-columns:1fr}.entry-list{max-height:32vh}}
+ 
+ .entry-list button small{color:#eef6f7;line-height:1.5}.entry-workspace p{overflow-wrap:anywhere}
++
++.entry-workspace fieldset{border:0;padding:0;margin:0;min-width:0}.entry-workspace section{min-width:0}.entry-workspace dd{margin:0 0 12px;overflow-wrap:anywhere}.entry-workspace dt{font-weight:600}.entry-note{white-space:pre-wrap}.entry-workspace select{min-width:0}
+diff --git a/frontend/src/demo/guidedEvidence.ts b/frontend/src/demo/guidedEvidence.ts
+new file mode 100644
+index 0000000..d77f564
+--- /dev/null
++++ b/frontend/src/demo/guidedEvidence.ts
+@@ -0,0 +1,68 @@
++import type {CirculatoryItem} from '../api/circulatoryTypes';
++import {record} from './evidencePresentation';
++export const guidedFamilies={pressure:'BP / MAP',gas:'ABG / oxygen transport',cardiac:'Cardiac output / index',echo:'Echo',infusion:'Infusions',perfusion:'Perfusion',reassessment:'Reassessment'};
++export type GuidedFamily=keyof typeof guidedFamilies;
++export const concepts:Record<GuidedFamily,Record<string,string>>={
++ pressure:{systemic_systolic:'Systolic BP',systemic_diastolic:'Diastolic BP',systemic_mean:'MAP',cvp:'CVP',pawp:'PAWP'},
++ gas:{ph:'pH',paco2:'PaCO₂',pao2:'PaO₂',bicarbonate:'Bicarbonate',base_excess:'Base excess',sao2:'SaO₂',scvo2:'ScvO₂',svo2:'SvO₂',hemoglobin:'Haemoglobin',lactate:'Lactate'},
++ cardiac:{co:'Cardiac output',ci:'Cardiac index',sv:'Stroke volume',svi:'Stroke volume index'},
++ echo:{lvot_vti:'LVOT VTI',estimated_rvsp:'Estimated RVSP',estimated_pasp:'Estimated PASP',lv_ef:'LV ejection fraction',rv_function:'RV function',rv_dimension:'RV dimension',tr_measurement:'TR velocity',septal_configuration:'Septal configuration',diastolic_function:'Diastolic function',wall_motion:'Wall motion',valve_finding:'Valve finding',pericardial_effusion:'Pericardial effusion',ivc_dimension:'IVC dimension',ivc_variation:'IVC variation',structural_finding:'Other source-reported finding (including PH)',tapse:'TAPSE (optional)'},
++ infusion:{},perfusion:{capillary_refill:'Capillary refill',skin_temperature:'Skin temperature',mottling:'Mottling',perfusion_index:'Perfusion index',regional_perfusion:'Regional perfusion'},reassessment:{}};
++export type Fields=Record<string,string>;
++export const emptyFields=():Fields=>({concept:'systemic_mean',resultType:'numeric',method:'unknown',quality:'unknown',sample:'unknown',production:'direct_measurement',action:'order',drug:'noradrenaline'});
++const target={patient_id:'synthetic-p1',encounter_id:'synthetic-e1'};
++const code=(text:string,namespace='clinrx-local-synthetic-entry')=>({namespace,code:text,raw_display:text,version:null});
++const concept=(text:string)=>({raw_display:text});
++const required=(value:string|undefined)=>{if(!value?.trim())throw Error('Complete the required fields.');return value;};
++const quantity=(value:string,unit:string)=>({value:required(value),unit:{raw:required(unit),status:'unresolved',limitation:'Locally recorded raw unit; terminology and conversion not assessed.'}});
++const stamp=(text:string|undefined)=>text?{recorded:{status:'known',precision:'instant',value:text},source_timestamp:text,clock:'unknown'}:{recorded:{status:'not_recorded'},clock:'unknown'};
++export function localProvenance(actor:string,id:string,at:string){return {source:{namespace:'clinrx-local-synthetic-entry',identifier:id,channel:'clinician',version:null},actor:required(actor).trim(),recorded_at:at,upstream:[],lineage:'incomplete',limitations:['Fictional local entry; actor and source assertions are not independently authenticated.']};}
++export function buildGuided(family:GuidedFamily,f:Fields,actor:string,items:CirculatoryItem[],id:string,at:string):CirculatoryItem['fact']{
++ const provenance=localProvenance(actor,id,at);
++ const fact:Record<string,unknown>={id,revision:'1',contract_version:'3',binding:{target,verification:{status:'unresolved',method:'Local synthetic encounter selection',verifier:actor.trim(),assessed_at:at,source:provenance.source,ambiguity:'Fictional patient identity only; not independently verified.'}},origin:'reported',provenance,time:{precision:'unknown'},temporal_status:'unknown',verification:'unverified',record_status:'recorded',occurred:stamp(f.time),available:stamp(f.available),uncertainty:[required(f.uncertainty)]};
++ if(family==='reassessment'){
++  const stages=['baseline','intervention','followup'];
++  const selected=stages.map(stage=>{const item=items.find(i=>[i.fact.kind,i.fact.id,i.fact.revision].join('/')===f[stage]);if(!item||item.fact.binding.target.patient_id!==target.patient_id||item.fact.binding.target.encounter_id!==target.encounter_id)throw Error('Select an exact record in this encounter for each reassessment stage.');return item;});
++  if(!['circulatory_event','circulatory_vasoactive','circulatory_monitoring'].includes(selected[1].fact.kind))throw Error('Choose a documented intervention event, not a measurement.');
++  const refs=selected.map(i=>({kind:i.fact.kind,id:i.fact.id,version:i.fact.revision}));
++  fact.kind='circulatory_event';fact.event_type='other';
++  fact.description=concept(['Clinician-authored synthetic reassessment; not a computed response or causal conclusion.','Question: '+required(f.question),...stages.map((stage,n)=>stage+': '+JSON.stringify(refs[n])),'Recorded findings: '+required(f.findings),'Unconfirmed possibilities: '+required(f.possibilities),'Confirmation gaps: '+f.uncertainty,'Next review (recorded plan, not a scheduled action): '+(f.nextReview||'Not recorded')].join('\n'));
++  fact.source_identifiers=[code('reassessment','clinrx.local.chart-entry/v1')];
++  fact.external_evidence=stages.map((stage,n)=>code(JSON.stringify(refs[n]),'clinrx.local.reassessment.'+stage+'/v1'));
++  fact.associations=[...new Map(refs.map(ref=>[JSON.stringify(ref),{role:'context',scope:target,status:'resolved',exact:ref,provenance}])).values()];
++  return fact as CirculatoryItem['fact'];
++ }
++ if(family==='infusion'){
++  fact.kind='circulatory_vasoactive';fact.drug={source:code(required(f.drug)),mapping:'unknown',limitation:'Raw agent identity recorded; no terminology mapping asserted.',mapping_provenance:provenance};
++  fact.source_status=concept(required(f.sourceStatus));
++  const delivery:Record<string,unknown>={infusion:code(required(f.series),'clinrx.local.infusion-series/v1'),route:f.route?concept(f.route):null};
++  if(f.rate||f.rateUnit)delivery.rate=quantity(f.rate,f.rateUnit);
++  if(f.concentration||f.concentrationUnit)delivery.concentration=quantity(f.concentration,f.concentrationUnit);
++  if(f.pump)delivery.pump=code(f.pump);
++  if(f.channel)delivery.channel=code(f.channel);
++  fact.source_identifiers=[delivery.infusion];
++  if(['pause','permanent_stop','non_delivery'].includes(f.action))fact.action={event_type:f.action,reason:concept(required(f.interruption)),attestation:provenance};
++  else if(f.action==='order')fact.action={event_type:'order',prescribed:delivery,status:concept(required(f.sourceStatus))};
++  else if(f.action==='preparation')fact.action={event_type:'preparation',prepared:delivery};
++  else fact.action={event_type:f.action,delivery:{...delivery,attestation:provenance}};
++  fact.disclosures=['Orders and preparations do not establish administration. Documented delivery is a source assertion, not continuous exposure, a conversion, or proof of treatment effect. Weight-dependent doses require separately reviewed weight support; this guided form does not calculate doses or pump rates.'];
++  return fact as CirculatoryItem['fact'];
++ }
++ fact.kind=({pressure:'circulatory_pressure',gas:f.concept==='lactate'?'circulatory_lactate':'circulatory_oxygen',cardiac:'circulatory_cardiac',echo:'circulatory_echo',perfusion:'circulatory_perfusion'} as Record<string,string>)[family];
++ if(f.concept!=='lactate')fact.concept=required(f.concept);
++ if(family==='echo'&&['estimated_rvsp','estimated_pasp'].includes(f.concept)&&f.production!=='source_calculated')throw Error('Record RVSP/PASP as a source-calculated estimate and supply its reported basis.');
++ fact.result=f.resultType==='qualitative'?{result_type:'qualitative',finding:concept(required(f.finding))}:{result_type:'numeric',quantity:quantity(f.value,f.unit)};
++ fact.production=f.production;fact.acquisition={method:family==='gas'?'blood_gas':family==='echo'?'echo':f.method,quality:{status:f.quality,provenance:f.quality==='unknown'?null:provenance},calibration:'unknown',zeroing:'unknown',...(f.methodContext?{source_method:code(f.methodContext)}:{})};
++ if(f.production!=='direct_measurement')fact.calculation_method=code(required(f.productionBasis));
++ if(family==='gas'){
++  fact.specimen=f.specimen?code(f.specimen):null;
++  if(f.concept==='lactate'){fact.blood_source=f.sample;fact.collected=stamp(f.time);fact.collection_assertion=provenance;fact.report_status=f.reportStatus||'unknown';}
++  else{fact.sample_type=f.sample;fact.blood_gas_context={collected:stamp(f.time),provenance,limitations:['Context applies only to this recorded specimen.'],...(f.fio2||f.fio2Unit?{fio2:quantity(f.fio2,f.fio2Unit)}:{}),...(f.peep||f.peepUnit?{peep:quantity(f.peep,f.peepUnit)}:{})};}
++ }
++ if(family==='echo'){
++  fact.study=code(required(f.study));fact.report=code(required(f.report));fact.report_revision=required(f.reportRevision);
++  fact.disclosures=['Echo assertions and estimates are source-reported; no PH/PAH diagnosis, invasive confirmation or simultaneous later measurement is inferred.'];
++ }
++ return fact as CirculatoryItem['fact'];
++}
++export function shortcutValue(text:string,next:string){const fact=JSON.parse(text),result=record(fact.result);fact.result={...result,quantity:{...record(result.quantity),value:next}};return JSON.stringify(fact,null,2);}
+diff --git a/frontend/tests/evidenceEntry.test.tsx b/frontend/tests/evidenceEntry.test.tsx
+index 39a0c0f..e99291a 100644
+--- a/frontend/tests/evidenceEntry.test.tsx
++++ b/frontend/tests/evidenceEntry.test.tsx
+@@ -6,8 +6,9 @@ import type {CirculatoryClient} from '../src/api/circulatoryClient';
+ import {EvidenceEntryWorkspace} from '../src/demo/EvidenceEntryWorkspace';
+ import {EvidenceEntryClient,type Draft,type Evidence} from '../src/api/evidenceEntryClient';
+ afterEach(cleanup);
+-function setup(enabled=false){
++function setup(enabled=false, change?:(state:ReturnType<typeof decodeCirculatoryState>)=>void){
+  const state=decodeCirculatoryState({...structuredClone(fixture),execution_enabled:enabled});
++ change?.(state);
+  const client={circulatoryState:vi.fn().mockResolvedValue({data:state}),circulatoryHistory:vi.fn().mockResolvedValue({data:{revisions:[]}})};
+  const entry={validate:vi.fn(async(body:Draft)=>({repository_id:body.repository_id,fact:body.fact,expected_digest:'a'.repeat(64),canonical_fact:JSON.stringify(body.fact),ingestion:null} as Evidence)),save:vi.fn(),lookup:vi.fn()};
+  render(<EvidenceEntryWorkspace client={client as unknown as CirculatoryClient} entry={entry as unknown as EvidenceEntryClient} config={{start:'2026-10-08T08:00:00Z',end:'2026-10-08T10:00:00Z'}}/>);
+@@ -57,3 +58,94 @@ it('keeps a stale conflict in review without automatic replacement or retry',asy
+  await waitFor(()=>expect(screen.getByRole('button',{name:'Discard draft and reload'})).toBeEnabled());
+  expect(entry.save).toHaveBeenCalledTimes(1);expect(entry.lookup).not.toHaveBeenCalled();
+ });
++
++it('keeps JSON-only and interleaved shortcut edits in the single authoritative draft',async()=>{
++ const {entry}=setup();
++ fireEvent.change(await screen.findByRole('textbox',{name:'Find evidence'}),{target:{value:'fs-PH-60'}});
++ fireEvent.click(await screen.findByRole('button',{name:/pH.*fs-PH-60/}));
++ fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Reviewer'}});
++ fireEvent.change(screen.getByLabelText('Reason for correction or withdrawal'),{target:{value:'Source correction'}});
++ const editor=screen.getByLabelText('Complete source record (JSON)') as HTMLTextAreaElement;
++ const fact=JSON.parse(editor.value);fact.result.quantity.value='7.3600';
++ fireEvent.change(editor,{target:{value:JSON.stringify(fact)}});
++ expect(screen.getByLabelText('Recorded numeric value (raw unit preserved)')).toHaveValue('7.3600');
++ fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
++ await screen.findByRole('button',{name:'Confirm append to local database'});
++ expect(entry.validate.mock.calls[0][0].fact.result).toMatchObject({quantity:{value:'7.3600'}});
++ fireEvent.click(screen.getByRole('button',{name:'Edit draft'}));
++ fireEvent.change(screen.getByLabelText('Recorded numeric value (raw unit preserved)'),{target:{value:'7.37'}});
++ const revised=JSON.parse(editor.value);revised.result.quantity.value='7.38';
++ fireEvent.change(screen.getByLabelText('Complete source record (JSON)'),{target:{value:JSON.stringify(revised)}});
++ fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
++ await screen.findByRole('button',{name:'Confirm append to local database'});
++ expect(entry.validate.mock.calls[1][0].fact.result).toMatchObject({quantity:{value:'7.38'}});
++ entry.save.mockResolvedValue({fact:entry.validate.mock.calls[1][0].fact,ingestion:{ingestion_sequence:164}});
++ fireEvent.click(screen.getByRole('button',{name:'Confirm append to local database'}));await screen.findByText(/Exact revision saved and confirmed/);
++ expect(entry.save.mock.calls[0][0].fact.result).toMatchObject({quantity:{value:'7.38'}});
++});
++it.each(['correct','withdraw'])('retains exact calculation inputs and declared lineage for %s',async action=>{
++ const ref={kind:'circulatory_pressure',id:'m7-P',version:'1'};
++ const edge={target:ref,relationship:'calculated_from',basis:[],rationale:'Recorded dependency'};
++ const {entry}=setup(false,state=>{const fact=state.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!.fact;fact.production='source_calculated';fact.calculation_inputs=[ref];fact.provenance={...Object(fact.provenance),upstream:[edge]};});
++ await draft();fireEvent.click(screen.getByRole('button',{name:'Edit draft'}));
++ fireEvent.change(screen.getByLabelText('Action'),{target:{value:action}});
++ fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));await screen.findByRole('button',{name:'Confirm append to local database'});
++ const fact=entry.validate.mock.calls[1][0].fact;
++ expect(fact.calculation_inputs).toEqual([ref]);expect(fact.provenance).toMatchObject({actor:'Synthetic reviewer',upstream:[edge],lineage:'incomplete'});
++ expect(fact.record_status).toBe(action==='withdraw'?'withdrawn':'recorded');
++});
++it('blocks stale actionable state after a failed gate refresh and makes the header conditional',async()=>{
++ const {client,entry}=setup();await draft();
++ fireEvent.click(screen.getByRole('button',{name:'Edit draft'}));
++ client.circulatoryState.mockResolvedValueOnce({data:{execution_enabled:true}} as never);
++ fireEvent.click(screen.getByRole('button',{name:'Refresh evidence'}));
++ await screen.findByText('Execution gate not confirmed — new writes blocked.');
++ expect(screen.getByRole('button',{name:'Validate and review draft'})).toBeDisabled();
++ expect(screen.getByRole('button',{name:'New source entry'})).toBeDisabled();expect(entry.save).not.toHaveBeenCalled();
++});
++it('ignores an older refresh result after a newer response and selects exact revisions only',async()=>{
++ const {client,state}=setup();await screen.findByRole('textbox',{name:'Find evidence'});
++ let resolve!:(value:{data:typeof state})=>void;
++ client.circulatoryState.mockImplementationOnce(()=>new Promise(done=>{resolve=done;}));
++ fireEvent.click(screen.getByRole('button',{name:'Refresh evidence'}));
++ const newer=structuredClone(state);newer.assembly.snapshot.items=[];
++ client.circulatoryState.mockResolvedValueOnce({data:newer});
++ fireEvent.click(screen.getByRole('button',{name:'Refresh evidence'}));
++ await screen.findByText(/0 source records in this snapshot/);
++ resolve({data:state});await waitFor(()=>expect(screen.getByText(/0 source records in this snapshot/)).toBeInTheDocument());
++});
++
++it('creates a guided BP source without JSON editing and reviews exact context before append',async()=>{
++ const {entry}=setup();await screen.findByRole('textbox',{name:'Find evidence'});
++ fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Reviewer'}});
++ fireEvent.change(screen.getByLabelText('Source observation / event time (ISO with offset; optional)'),{target:{value:'2026-10-08T09:15:00.123456Z'}});
++ fireEvent.change(screen.getByLabelText('Recorded value (exact decimal text)'),{target:{value:'71.00'}});
++ fireEvent.change(screen.getByLabelText('Raw unit as recorded'),{target:{value:'mmHg'}});
++ fireEvent.change(screen.getByLabelText('Source limitations / uncertainty (required)'),{target:{value:'Cuff context incomplete'}});
++ fireEvent.click(screen.getByRole('button',{name:'Use guided record for validation'}));
++ fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
++ await screen.findByRole('button',{name:'Confirm append to local database'});
++ expect(entry.validate.mock.calls[0][0].fact.result).toMatchObject({quantity:{value:'71.00'}});
++ expect(screen.getByText('Cuff context incomplete')).toBeInTheDocument();
++ expect(screen.getByText('2026-10-08T09:15:00.123456Z')).toBeInTheDocument();
++ expect(entry.save).not.toHaveBeenCalled();
++});
++it('prepares a clinician-authored reassessment with exact linked revisions and no automatic conclusion',async()=>{
++ const {entry}=setup();await screen.findByRole('textbox',{name:'Find evidence'});
++ fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Reviewer'}});
++ fireEvent.change(screen.getByLabelText('Entry family'),{target:{value:'reassessment'}});
++ for(const [label,text] of [['Reassessment question','Review recorded intervention'],['Recorded findings (your assessment)','Distinct times and methods'],['Unconfirmed possibilities (your assessment)','No causal relationship established'],['Source limitations / uncertainty (required)','Sample context incomplete']])fireEvent.change(screen.getByLabelText(label),{target:{value:text}});
++ for(const [label,ref] of [['Baseline evidence','circulatory_pressure/fs-MAP-15/1'],['Documented intervention','circulatory_vasoactive/fs-N-CHANGE/1'],['Follow-up evidence','circulatory_cardiac/fs-CO-60/1']])fireEvent.change(screen.getByLabelText(label),{target:{value:ref}});
++ fireEvent.click(screen.getByRole('button',{name:'Use guided record for validation'}));fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
++ await screen.findByRole('button',{name:'Confirm append to local database'});
++ expect(entry.validate.mock.calls[0][0].fact.associations).toHaveLength(3);
++ expect(screen.getByText(/Unconfirmed possibilities: No causal relationship established/)).toBeInTheDocument();expect(entry.save).not.toHaveBeenCalled();
++});
++it('does not mark a refreshed successor selected when the original revision remains the correction target',async()=>{
++ const {entry,client,state}=setup();await draft();
++ const newer=structuredClone(state),item=newer.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!;item.fact.revision='successor';
++ client.circulatoryState.mockResolvedValueOnce({data:newer});entry.save.mockResolvedValue({fact:entry.validate.mock.calls[0][0].fact,ingestion:{ingestion_sequence:164}});
++ fireEvent.click(screen.getByRole('button',{name:'Confirm append to local database'}));await screen.findByText(/Exact revision saved and confirmed/);
++ expect(screen.getByRole('button',{name:/pH.*fs-PH-60/})).toHaveAttribute('aria-pressed','false');
++ expect(screen.getByText(/Original retained: circulatory_oxygen \/ fs-PH-60 \/ 1/)).toBeInTheDocument();
++});
+diff --git a/frontend/tests/fixtures/guidedEntries.json b/frontend/tests/fixtures/guidedEntries.json
+new file mode 100644
+index 0000000..989392b
+--- /dev/null
++++ b/frontend/tests/fixtures/guidedEntries.json
+@@ -0,0 +1,1662 @@
++[
++  {
++    "family": "pressure",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "71.00",
++      "unit": "mmHg",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "direct_measurement",
++      "quality": "unknown",
++      "method": "automated_cuff",
++      "resultType": "numeric",
++      "concept": "systemic_mean"
++    },
++    "fact": {
++      "id": "guided-validation-0",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-0",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-0",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_pressure",
++      "concept": "systemic_mean",
++      "result": {
++        "result_type": "numeric",
++        "quantity": {
++          "value": "71.00",
++          "unit": {
++            "raw": "mmHg",
++            "status": "unresolved",
++            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++          }
++        }
++      },
++      "production": "direct_measurement",
++      "acquisition": {
++        "method": "automated_cuff",
++        "quality": {
++          "status": "unknown",
++          "provenance": null
++        },
++        "calibration": "unknown",
++        "zeroing": "unknown"
++      }
++    }
++  },
++  {
++    "family": "gas",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "7.3600",
++      "unit": "1",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "direct_measurement",
++      "quality": "unknown",
++      "method": "unknown",
++      "resultType": "numeric",
++      "concept": "ph",
++      "sample": "arterial",
++      "specimen": "local-sample",
++      "fio2": "40",
++      "fio2Unit": "%",
++      "peep": "5",
++      "peepUnit": "cmH2O"
++    },
++    "fact": {
++      "id": "guided-validation-1",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-1",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-1",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_oxygen",
++      "concept": "ph",
++      "result": {
++        "result_type": "numeric",
++        "quantity": {
++          "value": "7.3600",
++          "unit": {
++            "raw": "1",
++            "status": "unresolved",
++            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++          }
++        }
++      },
++      "production": "direct_measurement",
++      "acquisition": {
++        "method": "blood_gas",
++        "quality": {
++          "status": "unknown",
++          "provenance": null
++        },
++        "calibration": "unknown",
++        "zeroing": "unknown"
++      },
++      "specimen": {
++        "namespace": "clinrx-local-synthetic-entry",
++        "code": "local-sample",
++        "raw_display": "local-sample",
++        "version": null
++      },
++      "sample_type": "arterial",
++      "blood_gas_context": {
++        "collected": {
++          "recorded": {
++            "status": "known",
++            "precision": "instant",
++            "value": "2026-10-08T09:15:00.123456Z"
++          },
++          "source_timestamp": "2026-10-08T09:15:00.123456Z",
++          "clock": "unknown"
++        },
++        "provenance": {
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-1",
++            "channel": "clinician",
++            "version": null
++          },
++          "actor": "Synthetic reviewer",
++          "recorded_at": "2026-10-18T06:00:00Z",
++          "upstream": [],
++          "lineage": "incomplete",
++          "limitations": [
++            "Fictional local entry; actor and source assertions are not independently authenticated."
++          ]
++        },
++        "limitations": [
++          "Context applies only to this recorded specimen."
++        ],
++        "fio2": {
++          "value": "40",
++          "unit": {
++            "raw": "%",
++            "status": "unresolved",
++            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++          }
++        },
++        "peep": {
++          "value": "5",
++          "unit": {
++            "raw": "cmH2O",
++            "status": "unresolved",
++            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++          }
++        }
++      }
++    }
++  },
++  {
++    "family": "gas",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "62.0",
++      "unit": "%",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "direct_measurement",
++      "quality": "unknown",
++      "method": "unknown",
++      "resultType": "numeric",
++      "concept": "svo2",
++      "sample": "mixed_venous"
++    },
++    "fact": {
++      "id": "guided-validation-2",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-2",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-2",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_oxygen",
++      "concept": "svo2",
++      "result": {
++        "result_type": "numeric",
++        "quantity": {
++          "value": "62.0",
++          "unit": {
++            "raw": "%",
++            "status": "unresolved",
++            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++          }
++        }
++      },
++      "production": "direct_measurement",
++      "acquisition": {
++        "method": "blood_gas",
++        "quality": {
++          "status": "unknown",
++          "provenance": null
++        },
++        "calibration": "unknown",
++        "zeroing": "unknown"
++      },
++      "specimen": null,
++      "sample_type": "mixed_venous",
++      "blood_gas_context": {
++        "collected": {
++          "recorded": {
++            "status": "known",
++            "precision": "instant",
++            "value": "2026-10-08T09:15:00.123456Z"
++          },
++          "source_timestamp": "2026-10-08T09:15:00.123456Z",
++          "clock": "unknown"
++        },
++        "provenance": {
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-2",
++            "channel": "clinician",
++            "version": null
++          },
++          "actor": "Synthetic reviewer",
++          "recorded_at": "2026-10-18T06:00:00Z",
++          "upstream": [],
++          "lineage": "incomplete",
++          "limitations": [
++            "Fictional local entry; actor and source assertions are not independently authenticated."
++          ]
++        },
++        "limitations": [
++          "Context applies only to this recorded specimen."
++        ]
++      }
++    }
++  },
++  {
++    "family": "gas",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "2.10",
++      "unit": "mmol/L",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "direct_measurement",
++      "quality": "unknown",
++      "method": "unknown",
++      "resultType": "numeric",
++      "concept": "lactate",
++      "sample": "arterial",
++      "reportStatus": "final"
++    },
++    "fact": {
++      "id": "guided-validation-3",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-3",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-3",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_lactate",
++      "result": {
++        "result_type": "numeric",
++        "quantity": {
++          "value": "2.10",
++          "unit": {
++            "raw": "mmol/L",
++            "status": "unresolved",
++            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++          }
++        }
++      },
++      "production": "direct_measurement",
++      "acquisition": {
++        "method": "blood_gas",
++        "quality": {
++          "status": "unknown",
++          "provenance": null
++        },
++        "calibration": "unknown",
++        "zeroing": "unknown"
++      },
++      "specimen": null,
++      "blood_source": "arterial",
++      "collected": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "collection_assertion": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-3",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "report_status": "final"
++    }
++  },
++  {
++    "family": "cardiac",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "4.70",
++      "unit": "L/min",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "direct_measurement",
++      "quality": "suspect",
++      "method": "bolus_thermodilution",
++      "resultType": "numeric",
++      "concept": "co",
++      "methodContext": "PAC source-recorded three-injection basis; no ClinRx averaging"
++    },
++    "fact": {
++      "id": "guided-validation-4",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-4",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-4",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_cardiac",
++      "concept": "co",
++      "result": {
++        "result_type": "numeric",
++        "quantity": {
++          "value": "4.70",
++          "unit": {
++            "raw": "L/min",
++            "status": "unresolved",
++            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++          }
++        }
++      },
++      "production": "direct_measurement",
++      "acquisition": {
++        "method": "bolus_thermodilution",
++        "quality": {
++          "status": "suspect",
++          "provenance": {
++            "source": {
++              "namespace": "clinrx-local-synthetic-entry",
++              "identifier": "guided-validation-4",
++              "channel": "clinician",
++              "version": null
++            },
++            "actor": "Synthetic reviewer",
++            "recorded_at": "2026-10-18T06:00:00Z",
++            "upstream": [],
++            "lineage": "incomplete",
++            "limitations": [
++              "Fictional local entry; actor and source assertions are not independently authenticated."
++            ]
++          }
++        },
++        "calibration": "unknown",
++        "zeroing": "unknown",
++        "source_method": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "code": "PAC source-recorded three-injection basis; no ClinRx averaging",
++          "raw_display": "PAC source-recorded three-injection basis; no ClinRx averaging",
++          "version": null
++        }
++      }
++    }
++  },
++  {
++    "family": "echo",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "45.0",
++      "unit": "mmHg",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "source_calculated",
++      "quality": "unknown",
++      "method": "unknown",
++      "resultType": "numeric",
++      "concept": "estimated_rvsp",
++      "productionBasis": "Source TR velocity / estimated RAP; RVOT obstruction context unknown",
++      "study": "study-local",
++      "report": "report-local",
++      "reportRevision": "1"
++    },
++    "fact": {
++      "id": "guided-validation-5",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-5",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-5",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_echo",
++      "concept": "estimated_rvsp",
++      "result": {
++        "result_type": "numeric",
++        "quantity": {
++          "value": "45.0",
++          "unit": {
++            "raw": "mmHg",
++            "status": "unresolved",
++            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++          }
++        }
++      },
++      "production": "source_calculated",
++      "acquisition": {
++        "method": "echo",
++        "quality": {
++          "status": "unknown",
++          "provenance": null
++        },
++        "calibration": "unknown",
++        "zeroing": "unknown"
++      },
++      "calculation_method": {
++        "namespace": "clinrx-local-synthetic-entry",
++        "code": "Source TR velocity / estimated RAP; RVOT obstruction context unknown",
++        "raw_display": "Source TR velocity / estimated RAP; RVOT obstruction context unknown",
++        "version": null
++      },
++      "study": {
++        "namespace": "clinrx-local-synthetic-entry",
++        "code": "study-local",
++        "raw_display": "study-local",
++        "version": null
++      },
++      "report": {
++        "namespace": "clinrx-local-synthetic-entry",
++        "code": "report-local",
++        "raw_display": "report-local",
++        "version": null
++      },
++      "report_revision": "1",
++      "disclosures": [
++        "Echo assertions and estimates are source-reported; no PH/PAH diagnosis, invasive confirmation or simultaneous later measurement is inferred."
++      ]
++    }
++  },
++  {
++    "family": "echo",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "7.3600",
++      "unit": "1",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "direct_measurement",
++      "quality": "unknown",
++      "method": "unknown",
++      "resultType": "qualitative",
++      "concept": "rv_function",
++      "finding": "Source-reported reduced RV function",
++      "study": "study-local",
++      "report": "report-local",
++      "reportRevision": "1"
++    },
++    "fact": {
++      "id": "guided-validation-6",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-6",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-6",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_echo",
++      "concept": "rv_function",
++      "result": {
++        "result_type": "qualitative",
++        "finding": {
++          "raw_display": "Source-reported reduced RV function"
++        }
++      },
++      "production": "direct_measurement",
++      "acquisition": {
++        "method": "echo",
++        "quality": {
++          "status": "unknown",
++          "provenance": null
++        },
++        "calibration": "unknown",
++        "zeroing": "unknown"
++      },
++      "study": {
++        "namespace": "clinrx-local-synthetic-entry",
++        "code": "study-local",
++        "raw_display": "study-local",
++        "version": null
++      },
++      "report": {
++        "namespace": "clinrx-local-synthetic-entry",
++        "code": "report-local",
++        "raw_display": "report-local",
++        "version": null
++      },
++      "report_revision": "1",
++      "disclosures": [
++        "Echo assertions and estimates are source-reported; no PH/PAH diagnosis, invasive confirmation or simultaneous later measurement is inferred."
++      ]
++    }
++  },
++  {
++    "family": "infusion",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "7.3600",
++      "unit": "1",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "direct_measurement",
++      "quality": "unknown",
++      "method": "unknown",
++      "resultType": "numeric",
++      "drug": "noradrenaline",
++      "action": "order",
++      "sourceStatus": "Source prescribed order; no administration",
++      "series": "local-N",
++      "rate": "7.00",
++      "rateUnit": "mcg/min",
++      "concentration": "0.08",
++      "concentrationUnit": "mg/mL"
++    },
++    "fact": {
++      "id": "guided-validation-7",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-7",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-7",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_vasoactive",
++      "drug": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "code": "noradrenaline",
++          "raw_display": "noradrenaline",
++          "version": null
++        },
++        "mapping": "unknown",
++        "limitation": "Raw agent identity recorded; no terminology mapping asserted.",
++        "mapping_provenance": {
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-7",
++            "channel": "clinician",
++            "version": null
++          },
++          "actor": "Synthetic reviewer",
++          "recorded_at": "2026-10-18T06:00:00Z",
++          "upstream": [],
++          "lineage": "incomplete",
++          "limitations": [
++            "Fictional local entry; actor and source assertions are not independently authenticated."
++          ]
++        }
++      },
++      "source_status": {
++        "raw_display": "Source prescribed order; no administration"
++      },
++      "source_identifiers": [
++        {
++          "namespace": "clinrx.local.infusion-series/v1",
++          "code": "local-N",
++          "raw_display": "local-N",
++          "version": null
++        }
++      ],
++      "action": {
++        "event_type": "order",
++        "prescribed": {
++          "infusion": {
++            "namespace": "clinrx.local.infusion-series/v1",
++            "code": "local-N",
++            "raw_display": "local-N",
++            "version": null
++          },
++          "route": null,
++          "rate": {
++            "value": "7.00",
++            "unit": {
++              "raw": "mcg/min",
++              "status": "unresolved",
++              "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++            }
++          },
++          "concentration": {
++            "value": "0.08",
++            "unit": {
++              "raw": "mg/mL",
++              "status": "unresolved",
++              "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++            }
++          }
++        },
++        "status": {
++          "raw_display": "Source prescribed order; no administration"
++        }
++      },
++      "disclosures": [
++        "Orders and preparations do not establish administration. Documented delivery is a source assertion, not continuous exposure, a conversion, or proof of treatment effect. Weight-dependent doses require separately reviewed weight support; this guided form does not calculate doses or pump rates."
++      ]
++    }
++  },
++  {
++    "family": "infusion",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "7.3600",
++      "unit": "1",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "direct_measurement",
++      "quality": "unknown",
++      "method": "unknown",
++      "resultType": "numeric",
++      "drug": "vasopressin",
++      "action": "initiation",
++      "sourceStatus": "Source documented start",
++      "series": "local-V",
++      "rate": "1.8",
++      "rateUnit": "units/h"
++    },
++    "fact": {
++      "id": "guided-validation-8",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-8",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-8",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_vasoactive",
++      "drug": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "code": "vasopressin",
++          "raw_display": "vasopressin",
++          "version": null
++        },
++        "mapping": "unknown",
++        "limitation": "Raw agent identity recorded; no terminology mapping asserted.",
++        "mapping_provenance": {
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-8",
++            "channel": "clinician",
++            "version": null
++          },
++          "actor": "Synthetic reviewer",
++          "recorded_at": "2026-10-18T06:00:00Z",
++          "upstream": [],
++          "lineage": "incomplete",
++          "limitations": [
++            "Fictional local entry; actor and source assertions are not independently authenticated."
++          ]
++        }
++      },
++      "source_status": {
++        "raw_display": "Source documented start"
++      },
++      "source_identifiers": [
++        {
++          "namespace": "clinrx.local.infusion-series/v1",
++          "code": "local-V",
++          "raw_display": "local-V",
++          "version": null
++        }
++      ],
++      "action": {
++        "event_type": "initiation",
++        "delivery": {
++          "infusion": {
++            "namespace": "clinrx.local.infusion-series/v1",
++            "code": "local-V",
++            "raw_display": "local-V",
++            "version": null
++          },
++          "route": null,
++          "rate": {
++            "value": "1.8",
++            "unit": {
++              "raw": "units/h",
++              "status": "unresolved",
++              "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++            }
++          },
++          "attestation": {
++            "source": {
++              "namespace": "clinrx-local-synthetic-entry",
++              "identifier": "guided-validation-8",
++              "channel": "clinician",
++              "version": null
++            },
++            "actor": "Synthetic reviewer",
++            "recorded_at": "2026-10-18T06:00:00Z",
++            "upstream": [],
++            "lineage": "incomplete",
++            "limitations": [
++              "Fictional local entry; actor and source assertions are not independently authenticated."
++            ]
++          }
++        }
++      },
++      "disclosures": [
++        "Orders and preparations do not establish administration. Documented delivery is a source assertion, not continuous exposure, a conversion, or proof of treatment effect. Weight-dependent doses require separately reviewed weight support; this guided form does not calculate doses or pump rates."
++      ]
++    }
++  },
++  {
++    "family": "infusion",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "7.3600",
++      "unit": "1",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "direct_measurement",
++      "quality": "unknown",
++      "method": "unknown",
++      "resultType": "numeric",
++      "drug": "dobutamine",
++      "action": "pause",
++      "sourceStatus": "Source documented pause",
++      "series": "local-D",
++      "interruption": "Source recorded reason"
++    },
++    "fact": {
++      "id": "guided-validation-9",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-9",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-9",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_vasoactive",
++      "drug": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "code": "dobutamine",
++          "raw_display": "dobutamine",
++          "version": null
++        },
++        "mapping": "unknown",
++        "limitation": "Raw agent identity recorded; no terminology mapping asserted.",
++        "mapping_provenance": {
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-9",
++            "channel": "clinician",
++            "version": null
++          },
++          "actor": "Synthetic reviewer",
++          "recorded_at": "2026-10-18T06:00:00Z",
++          "upstream": [],
++          "lineage": "incomplete",
++          "limitations": [
++            "Fictional local entry; actor and source assertions are not independently authenticated."
++          ]
++        }
++      },
++      "source_status": {
++        "raw_display": "Source documented pause"
++      },
++      "source_identifiers": [
++        {
++          "namespace": "clinrx.local.infusion-series/v1",
++          "code": "local-D",
++          "raw_display": "local-D",
++          "version": null
++        }
++      ],
++      "action": {
++        "event_type": "pause",
++        "reason": {
++          "raw_display": "Source recorded reason"
++        },
++        "attestation": {
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-9",
++            "channel": "clinician",
++            "version": null
++          },
++          "actor": "Synthetic reviewer",
++          "recorded_at": "2026-10-18T06:00:00Z",
++          "upstream": [],
++          "lineage": "incomplete",
++          "limitations": [
++            "Fictional local entry; actor and source assertions are not independently authenticated."
++          ]
++        }
++      },
++      "disclosures": [
++        "Orders and preparations do not establish administration. Documented delivery is a source assertion, not continuous exposure, a conversion, or proof of treatment effect. Weight-dependent doses require separately reviewed weight support; this guided form does not calculate doses or pump rates."
++      ]
++    }
++  },
++  {
++    "family": "perfusion",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "3.0",
++      "unit": "s",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "direct_measurement",
++      "quality": "unknown",
++      "method": "bedside_examination",
++      "resultType": "numeric",
++      "concept": "capillary_refill"
++    },
++    "fact": {
++      "id": "guided-validation-10",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-10",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-10",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_perfusion",
++      "concept": "capillary_refill",
++      "result": {
++        "result_type": "numeric",
++        "quantity": {
++          "value": "3.0",
++          "unit": {
++            "raw": "s",
++            "status": "unresolved",
++            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
++          }
++        }
++      },
++      "production": "direct_measurement",
++      "acquisition": {
++        "method": "bedside_examination",
++        "quality": {
++          "status": "unknown",
++          "provenance": null
++        },
++        "calibration": "unknown",
++        "zeroing": "unknown"
++      }
++    }
++  },
++  {
++    "family": "reassessment",
++    "fields": {
++      "time": "2026-10-08T09:15:00.123456Z",
++      "available": "",
++      "value": "7.3600",
++      "unit": "1",
++      "uncertainty": "Fictional source; context requires review",
++      "production": "direct_measurement",
++      "quality": "unknown",
++      "method": "unknown",
++      "resultType": "numeric",
++      "question": "Review documented intervention and separately recorded findings",
++      "baseline": "circulatory_pressure/fs-MAP-15/1",
++      "intervention": "circulatory_vasoactive/fs-N-CHANGE/1",
++      "followup": "circulatory_cardiac/fs-CO-60/1",
++      "findings": "Recorded MAP and CO have distinct times and methods.",
++      "possibilities": "Relationship unconfirmed; no causal attribution",
++      "nextReview": "Clinician to review sample and echo context"
++    },
++    "fact": {
++      "id": "guided-validation-11",
++      "revision": "1",
++      "contract_version": "3",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1"
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Local synthetic encounter selection",
++          "verifier": "Synthetic reviewer",
++          "assessed_at": "2026-10-18T06:00:00Z",
++          "source": {
++            "namespace": "clinrx-local-synthetic-entry",
++            "identifier": "guided-validation-11",
++            "channel": "clinician",
++            "version": null
++          },
++          "ambiguity": "Fictional patient identity only; not independently verified."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx-local-synthetic-entry",
++          "identifier": "guided-validation-11",
++          "channel": "clinician",
++          "version": null
++        },
++        "actor": "Synthetic reviewer",
++        "recorded_at": "2026-10-18T06:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Fictional local entry; actor and source assertions are not independently authenticated."
++        ]
++      },
++      "time": {
++        "precision": "unknown"
++      },
++      "temporal_status": "unknown",
++      "verification": "unverified",
++      "record_status": "recorded",
++      "occurred": {
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T09:15:00.123456Z"
++        },
++        "source_timestamp": "2026-10-08T09:15:00.123456Z",
++        "clock": "unknown"
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded"
++        },
++        "clock": "unknown"
++      },
++      "uncertainty": [
++        "Fictional source; context requires review"
++      ],
++      "kind": "circulatory_event",
++      "event_type": "other",
++      "description": {
++        "raw_display": "Clinician-authored synthetic reassessment; not a computed response or causal conclusion.\nQuestion: Review documented intervention and separately recorded findings\nbaseline: {\"kind\":\"circulatory_pressure\",\"id\":\"fs-MAP-15\",\"version\":\"1\"}\nintervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"fs-N-CHANGE\",\"version\":\"1\"}\nfollowup: {\"kind\":\"circulatory_cardiac\",\"id\":\"fs-CO-60\",\"version\":\"1\"}\nRecorded findings: Recorded MAP and CO have distinct times and methods.\nUnconfirmed possibilities: Relationship unconfirmed; no causal attribution\nConfirmation gaps: Fictional source; context requires review\nNext review (recorded plan, not a scheduled action): Clinician to review sample and echo context"
++      },
++      "source_identifiers": [
++        {
++          "namespace": "clinrx.local.chart-entry/v1",
++          "code": "reassessment",
++          "raw_display": "reassessment",
++          "version": null
++        }
++      ],
++      "external_evidence": [
++        {
++          "namespace": "clinrx.local.reassessment.baseline/v1",
++          "code": "{\"kind\":\"circulatory_pressure\",\"id\":\"fs-MAP-15\",\"version\":\"1\"}",
++          "raw_display": "{\"kind\":\"circulatory_pressure\",\"id\":\"fs-MAP-15\",\"version\":\"1\"}",
++          "version": null
++        },
++        {
++          "namespace": "clinrx.local.reassessment.intervention/v1",
++          "code": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"fs-N-CHANGE\",\"version\":\"1\"}",
++          "raw_display": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"fs-N-CHANGE\",\"version\":\"1\"}",
++          "version": null
++        },
++        {
++          "namespace": "clinrx.local.reassessment.followup/v1",
++          "code": "{\"kind\":\"circulatory_cardiac\",\"id\":\"fs-CO-60\",\"version\":\"1\"}",
++          "raw_display": "{\"kind\":\"circulatory_cardiac\",\"id\":\"fs-CO-60\",\"version\":\"1\"}",
++          "version": null
++        }
++      ],
++      "associations": [
++        {
++          "role": "context",
++          "scope": {
++            "patient_id": "synthetic-p1",
++            "encounter_id": "synthetic-e1"
++          },
++          "status": "resolved",
++          "exact": {
++            "kind": "circulatory_pressure",
++            "id": "fs-MAP-15",
++            "version": "1"
++          },
++          "provenance": {
++            "source": {
++              "namespace": "clinrx-local-synthetic-entry",
++              "identifier": "guided-validation-11",
++              "channel": "clinician",
++              "version": null
++            },
++            "actor": "Synthetic reviewer",
++            "recorded_at": "2026-10-18T06:00:00Z",
++            "upstream": [],
++            "lineage": "incomplete",
++            "limitations": [
++              "Fictional local entry; actor and source assertions are not independently authenticated."
++            ]
++          }
++        },
++        {
++          "role": "context",
++          "scope": {
++            "patient_id": "synthetic-p1",
++            "encounter_id": "synthetic-e1"
++          },
++          "status": "resolved",
++          "exact": {
++            "kind": "circulatory_vasoactive",
++            "id": "fs-N-CHANGE",
++            "version": "1"
++          },
++          "provenance": {
++            "source": {
++              "namespace": "clinrx-local-synthetic-entry",
++              "identifier": "guided-validation-11",
++              "channel": "clinician",
++              "version": null
++            },
++            "actor": "Synthetic reviewer",
++            "recorded_at": "2026-10-18T06:00:00Z",
++            "upstream": [],
++            "lineage": "incomplete",
++            "limitations": [
++              "Fictional local entry; actor and source assertions are not independently authenticated."
++            ]
++          }
++        },
++        {
++          "role": "context",
++          "scope": {
++            "patient_id": "synthetic-p1",
++            "encounter_id": "synthetic-e1"
++          },
++          "status": "resolved",
++          "exact": {
++            "kind": "circulatory_cardiac",
++            "id": "fs-CO-60",
++            "version": "1"
++          },
++          "provenance": {
++            "source": {
++              "namespace": "clinrx-local-synthetic-entry",
++              "identifier": "guided-validation-11",
++              "channel": "clinician",
++              "version": null
++            },
++            "actor": "Synthetic reviewer",
++            "recorded_at": "2026-10-18T06:00:00Z",
++            "upstream": [],
++            "lineage": "incomplete",
++            "limitations": [
++              "Fictional local entry; actor and source assertions are not independently authenticated."
++            ]
++          }
++        }
++      ]
++    }
++  }
++]
+\ No newline at end of file
+diff --git a/frontend/tests/guidedEvidence.test.ts b/frontend/tests/guidedEvidence.test.ts
+new file mode 100644
+index 0000000..62c08e6
+--- /dev/null
++++ b/frontend/tests/guidedEvidence.test.ts
+@@ -0,0 +1,52 @@
++import {it,expect} from 'vitest';
++import {buildGuided,type GuidedFamily,type Fields} from '../src/demo/guidedEvidence';
++import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
++import fixture from './fixtures/icuFlowsheet.json';
++import admittedExamples from './fixtures/guidedEntries.json';
++import {record} from '../src/demo/evidencePresentation';
++const items=decodeCirculatoryState(structuredClone(fixture)).assembly.snapshot.items;
++const defaults:Fields={time:'2026-10-08T09:15:00.123456Z',available:'',value:'7.3600',unit:'1',uncertainty:'Fictional source; context requires review',production:'direct_measurement',quality:'unknown',method:'unknown',resultType:'numeric'};
++const cases:[GuidedFamily,Fields][]=[['pressure',{concept:'systemic_mean',value:'71.00',unit:'mmHg',method:'automated_cuff'}],['gas',{concept:'ph',sample:'arterial',specimen:'local-sample',fio2:'40',fio2Unit:'%',peep:'5',peepUnit:'cmH2O'}],['gas',{concept:'svo2',sample:'mixed_venous',value:'62.0',unit:'%'}],['gas',{concept:'lactate',sample:'arterial',value:'2.10',unit:'mmol/L',reportStatus:'final'}],['cardiac',{concept:'co',value:'4.70',unit:'L/min',method:'bolus_thermodilution',quality:'suspect',methodContext:'PAC source-recorded three-injection basis; no ClinRx averaging'}],['echo',{concept:'estimated_rvsp',value:'45.0',unit:'mmHg',production:'source_calculated',productionBasis:'Source TR velocity / estimated RAP; RVOT obstruction context unknown',study:'study-local',report:'report-local',reportRevision:'1'}],['echo',{concept:'rv_function',resultType:'qualitative',finding:'Source-reported reduced RV function',study:'study-local',report:'report-local',reportRevision:'1'}],['infusion',{drug:'noradrenaline',action:'order',sourceStatus:'Source prescribed order; no administration',series:'local-N',rate:'7.00',rateUnit:'mcg/min',concentration:'0.08',concentrationUnit:'mg/mL'}],['infusion',{drug:'vasopressin',action:'initiation',sourceStatus:'Source documented start',series:'local-V',rate:'1.8',rateUnit:'units/h'}],['infusion',{drug:'dobutamine',action:'pause',sourceStatus:'Source documented pause',series:'local-D',interruption:'Source recorded reason'}],['perfusion',{concept:'capillary_refill',value:'3.0',unit:'s',method:'bedside_examination'}],['reassessment',{question:'Review documented intervention and separately recorded findings',baseline:'circulatory_pressure/fs-MAP-15/1',intervention:'circulatory_vasoactive/fs-N-CHANGE/1',followup:'circulatory_cardiac/fs-CO-60/1',findings:'Recorded MAP and CO have distinct times and methods.',possibilities:'Relationship unconfirmed; no causal attribution',nextReview:'Clinician to review sample and echo context'}]];
++
++const vectors=cases.map(([family,fields],n)=>({family,fields:{...defaults,...fields},fact:buildGuided(family,{...defaults,...fields},'Synthetic reviewer',items,'guided-validation-'+n,'2026-10-18T06:00:00Z')}));
++it.each(vectors)('constructs $family with exact source time, unverified binding and disclosed uncertainty',({fact})=>{
++ expect(fact.occurred).toMatchObject({source_timestamp:defaults.time,clock:'unknown'});
++ expect(fact.available).toMatchObject({recorded:{status:'not_recorded'}});
++ expect(record(fact.binding).verification).toMatchObject({status:'unresolved'});
++ expect(record(fact.provenance).actor).toBe('Synthetic reviewer');
++ expect(fact.uncertainty).toEqual([defaults.uncertainty]);
++});
++it('preserves decimal text and does not transfer arterial respiratory context to mixed venous results',()=>{
++ const arterial=vectors[1].fact,venous=vectors[2].fact;
++ expect(arterial.result).toMatchObject({quantity:{value:'7.3600',unit:{status:'unresolved'}}});
++ expect(arterial.blood_gas_context).toMatchObject({fio2:{value:'40'},peep:{value:'5'}});
++ expect(venous.blood_gas_context).not.toHaveProperty('fio2');
++ expect(venous.blood_gas_context).not.toHaveProperty('peep');
++});
++it('retains distinct prescribed/delivered/pause events and unresolved drug mappings without conversion',()=>{
++ expect(vectors[7].fact.action).toMatchObject({event_type:'order',prescribed:{rate:{value:'7.00',unit:{raw:'mcg/min'}},concentration:{value:'0.08'}}});
++ expect(vectors[8].fact.action).toMatchObject({event_type:'initiation',delivery:{rate:{value:'1.8'}}});
++ expect(vectors[9].fact.action).toMatchObject({event_type:'pause'});
++ expect(vectors[7].fact.drug).toMatchObject({mapping:'unknown'});
++});
++it('keeps source estimate basis and qualitative echo findings distinct',()=>{
++ expect(vectors[5].fact.production).toBe('source_calculated');
++ expect(vectors[5].fact.calculation_method).toMatchObject({raw_display:expect.stringContaining('RVOT')});
++ expect(vectors[6].fact.result).toMatchObject({result_type:'qualitative',finding:{raw_display:'Source-reported reduced RV function'}});
++});
++it('retains stage-labelled exact reassessment references without replacing revisions or generating conclusions',()=>{
++ const fact=vectors[11].fact;
++ expect(fact.kind).toBe('circulatory_event');expect(fact.associations).toHaveLength(3);
++ expect(fact.external_evidence).toEqual(expect.arrayContaining([expect.objectContaining({namespace:'clinrx.local.reassessment.followup/v1',code:JSON.stringify({kind:'circulatory_cardiac',id:'fs-CO-60',version:'1'})})]));
++ expect(record(fact.description).raw_display).toContain('Unconfirmed possibilities: Relationship unconfirmed; no causal attribution');
++ expect(()=>buildGuided('reassessment',{...vectors[11].fields,baseline:'circulatory_pressure/fs-MAP-15/2'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow();
++});
++it('rejects incomplete required fields and does not invent an actor, echo report or raw unit',()=>{
++ for(const field of ['study','report','reportRevision','unit','uncertainty'])expect(()=>buildGuided('echo',{...vectors[5].fields,[field]:''},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow();
++ expect(()=>buildGuided('pressure',vectors[0].fields,'',items,'bad','2026-10-18T06:00:00Z')).toThrow();
++});
++it('matches the exact generated form records exercised by real API admission tests',()=>{expect(vectors).toEqual(admittedExamples);});
++it('rejects promoting RVSP to a direct measurement or using a measurement as an intervention',()=>{
++ expect(()=>buildGuided('echo',{...vectors[5].fields,production:'direct_measurement'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow(/estimate/);
++ expect(()=>buildGuided('reassessment',{...vectors[11].fields,intervention:'circulatory_cardiac/fs-CO-60/1'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow(/intervention/);
++});
+diff --git a/tests/test_guided_authoring.py b/tests/test_guided_authoring.py
+new file mode 100644
+index 0000000..fb69bbe
+--- /dev/null
++++ b/tests/test_guided_authoring.py
+@@ -0,0 +1,52 @@
++"""Generated frontend form records through real admission, serialized append and lookup."""
++import copy,json
++from pathlib import Path
++import pytest
++from tests.test_synthetic_authoring import workspace,seeded,ENTRY,rows
++
++VECTORS=json.loads((Path(__file__).resolve().parents[1]/'frontend/tests/fixtures/guidedEntries.json').read_text())
++
++@pytest.mark.parametrize('vector',VECTORS,ids=lambda v:v['fact']['id'])
++def test_guided_record_real_admission_append_exact_lookup_and_retained_receipts(workspace,vector):
++    client,db,body,*_=workspace
++    before=rows(db)
++    body.update(fact=vector['fact'],predecessor_digest=None)
++    preview=client.post(ENTRY+'/validate',json=body)
++    assert preview.status_code==200,preview.text
++    assert rows(db)==before
++    saved=client.post(ENTRY,json=body)
++    assert saved.status_code==200,saved.text
++    payload=saved.json()
++    assert payload['fact']==preview.json()['fact']
++    assert payload['fact']['occurred']['source_timestamp']=='2026-10-08T09:15:00.123456Z'
++    assert payload['fact']['binding']['verification']['status']=='unresolved'
++    assert payload['fact']['available']['recorded']['status']=='not_recorded'
++    after=rows(db)
++    assert len(after['fact_revision'])==len(before['fact_revision'])+1
++    assert after['fact_revision'][:-1]==before['fact_revision']
++    for table in before:
++        if table not in ('fact_revision','revision_link','sqlite_sequence'):
++            assert after[table]==before[table]
++    assert client.post(ENTRY+'/lookup',json=body).json()=={'status':'committed_match','evidence':payload}
++    assert client.post(ENTRY,json=body).json()==payload
++    assert rows(db)==after
++
++@pytest.mark.parametrize('withdraw',[False,True])
++def test_dependency_bearing_correction_and_withdrawal_preserve_inputs(workspace,withdraw):
++    client,db,body,*_=workspace
++    ref={'kind':'circulatory_pressure','id':'m7-P','version':'1'}
++    edge={'target':ref,'relationship':'calculated_from','basis':[],'rationale':'Recorded dependency'}
++    body['fact'].update(production='source_calculated',calculation_inputs=[ref])
++    body['fact']['provenance'].update(upstream=[edge],lineage='incomplete',limitations=['Synthetic local correction; retained exact dependency'])
++    if withdraw:body['fact']['record_status']='withdrawn'
++    assert client.post(ENTRY+'/validate',json=body).status_code==200
++    saved=client.post(ENTRY,json=body)
++    assert saved.status_code==200,saved.text
++    assert saved.json()['fact']['calculation_inputs']==[ref]
++    assert saved.json()['fact']['provenance']['upstream']==[edge]
++    before=rows(db)
++    for upstream in ([],[{**edge,'target':{**ref,'version':'foreign'}}]):
++        bad=copy.deepcopy(body);bad['fact']['revision']='invalid-dependency';bad['fact']['provenance']['upstream']=upstream
++        assert client.post(ENTRY+'/validate',json=bad).status_code==422
++        assert client.post(ENTRY,json=bad).status_code==422
++        assert rows(db)==before

@@ -1,0 +1,73 @@
+- main:
+  - heading "Synthetic patient evidence entry" [level=1]
+  - paragraph: Separate disposable local workspace · synthetic-p1 / synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.
+  - paragraph: Guided source entry and clinician-authored reassessment are available for common hemodynamic records. Advanced source entry preserves access to all 15 families. This remains a local synthetic prototype.
+  - paragraph: "158 source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: 2026-10-08T08:00:00Z to 2026-10-08T10:00:00Z; source times may be contextual or unplaced."
+  - region "Recorded evidence":
+    - heading "Select evidence to correct" [level=2]
+    - button "New source entry"
+    - button "Refresh evidence"
+    - text: Evidence family
+    - combobox "Evidence family":
+      - option "All 15 families"
+      - option "Pressure and PAC/RHC"
+      - option "Cardiac output and performance"
+      - option "Volume and lung water"
+      - option "Dynamic measurements"
+      - option "Recorded device predictions"
+      - option "Tissue perfusion"
+      - option "Oxygen transport and blood gases"
+      - option "Lactate"
+      - option "Echo and POCUS"
+      - option "ECG and rhythm"
+      - option "Vasoactive events"
+      - option "Edwards / PiCCO and monitoring context"
+      - option "Dynamic assessment episodes"
+      - option "Recorded circulatory events"
+      - option "Signal manifests" [selected]
+    - text: Find evidence
+    - textbox "Find evidence"
+    - list:
+      - button "Arterial pressure signal · unavailable m7-SIGNAL / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Arterial pressure signal · unavailable
+        - generic: m7-SIGNAL / 1 · 2026-10-08T08:00:00+00:00 · recorded
+  - region "Evidence draft":
+    - heading "New source entry" [level=2]
+    - heading "Review before append" [level=3]
+    - paragraph: Oxygen transport and blood gases · a02f88e1-db04-48a0-89e6-f236016a38a8 / 1
+    - paragraph: "Proposed recorded result: 7.3400 1"
+    - paragraph: "Proposed status: recorded"
+    - paragraph: "Actor: Synthetic validation reviewer"
+    - paragraph: "Reason: New source entry; no predecessor"
+    - region "Proposed source context":
+      - heading "Source context to review" [level=4]
+      - term: Source time
+      - definition: 2026-10-08T09:20:00.123456Z
+      - term: Clock verification
+      - definition: unknown
+      - term: Quality
+      - definition: unknown
+      - term: Method
+      - definition: blood_gas
+      - term: Recorded production tag
+      - definition: direct_measurement
+      - term: Sample type
+      - definition: arterial
+      - term: Specimen
+      - definition: guided-arterial-sample
+      - term: This sample’s FiO₂
+      - definition: 40 % · mapping unresolved
+      - term: This sample’s PEEP
+      - definition: 5 cmH2O · mapping unresolved
+      - heading "Uncertainty and source caveats" [level=4]
+      - paragraph: Fictional arterial sample only; clock and quality unknown. No settings borrowed from other samples.
+      - paragraph: Unknown fields remain unknown. These are recorded source assertions and clinician-authored notes, not a generated diagnosis or treatment recommendation.
+    - paragraph: "Digest: 841ae7824dc697b9ee076909052d483301e51b5359326e0025e2429d5da33cb1"
+    - generic "Complete validated record and source caveats"
+    - paragraph: Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.
+    - status: Exact revision saved and confirmed. Ingestion sequence 164.
+    - button "Start another entry"
+    - paragraph: Pending drafts exist only in this page’s memory. Reloading or closing can lose them. Keep this page open while completion is unknown.

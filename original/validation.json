@@ -1,0 +1,49 @@
+{
+  "source": "fa8ce7dfba52af169c6f474dbd0826d747884945",
+  "tree": "cda06aecf68da72b64e998fc446eadbf2881d64e",
+  "parent": "5e204af79c370bf61e8676b2c6191e5d08cd7d9b",
+  "checks": {
+    "backend_targeted": {
+      "passed": 65,
+      "exit_code": 0,
+      "seconds": 237.84
+    },
+    "frontend_exact_head": {
+      "passed": 588,
+      "files": 17,
+      "exit_code": 0,
+      "seconds": 34.99
+    },
+    "frontend_focused_final": {
+      "passed": 32,
+      "exit_code": 0,
+      "seconds": 7.24
+    },
+    "typecheck": {
+      "exit_code": 0
+    },
+    "normal_build": {
+      "exit_code": 0
+    },
+    "authoring_build": {
+      "exit_code": 0
+    },
+    "whitespace": {
+      "exit_code": 0
+    },
+    "browser_verifier": {
+      "exit_code": 0
+    }
+  },
+  "environment": {
+    "python": "3.11.6",
+    "node": "22.13.0",
+    "npm": "10.9.2"
+  },
+  "production_execution_enabled": false,
+  "published": false,
+  "merged": false,
+  "deployed": false,
+  "live_log_excluded_from_manifest": "server.log; use frozen server-checkpoint.log",
+  "director_re_review_pending": true
+}

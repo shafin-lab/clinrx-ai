@@ -1,0 +1,76 @@
+- main:
+  - heading "Synthetic patient evidence entry" [level=1]
+  - paragraph: Separate disposable local workspace · synthetic-p1 / synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.
+  - paragraph: Guided source entry and clinician-authored reassessment are available for common hemodynamic records. Advanced source entry preserves access to all 15 families. This remains a local synthetic prototype.
+  - paragraph: "160 source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: 2026-10-08T08:00:00Z to 2026-10-08T10:00:00Z; source times may be contextual or unplaced."
+  - region "Recorded evidence":
+    - heading "Select evidence to correct" [level=2]
+    - button "New source entry"
+    - button "Refresh evidence"
+    - text: Evidence family
+    - combobox "Evidence family":
+      - option "All 15 families"
+      - option "Pressure and PAC/RHC"
+      - option "Cardiac output and performance"
+      - option "Volume and lung water"
+      - option "Dynamic measurements"
+      - option "Recorded device predictions"
+      - option "Tissue perfusion"
+      - option "Oxygen transport and blood gases"
+      - option "Lactate"
+      - option "Echo and POCUS"
+      - option "ECG and rhythm"
+      - option "Vasoactive events"
+      - option "Edwards / PiCCO and monitoring context"
+      - option "Dynamic assessment episodes"
+      - option "Recorded circulatory events"
+      - option "Signal manifests" [selected]
+    - text: Find evidence
+    - textbox "Find evidence"
+    - list:
+      - button "Arterial pressure signal · unavailable m7-SIGNAL / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Arterial pressure signal · unavailable
+        - generic: m7-SIGNAL / 1 · 2026-10-08T08:00:00+00:00 · recorded
+  - region "Evidence draft":
+    - heading "New source entry" [level=2]
+    - heading "Review before append" [level=3]
+    - paragraph: Vasoactive events · 99a26724-026c-4ccc-ac63-c22ddada2664 / 1
+    - paragraph: "Proposed status: recorded"
+    - paragraph: "Actor: Synthetic validation reviewer"
+    - paragraph: "Reason: New source entry; no predecessor"
+    - region "Proposed source context":
+      - heading "Source context to review" [level=4]
+      - term: Source time
+      - definition: 2026-10-08T09:30:00Z
+      - term: Clock verification
+      - definition: unknown
+      - term: Quality
+      - definition: Not recorded
+      - term: Method
+      - definition: Not recorded
+      - term: Recorded production tag
+      - definition: Not applicable to this event
+      - term: Agent / mapping
+      - definition: dobutamine · unknown
+      - term: Event
+      - definition: rate_change
+      - term: Source dose / rate
+      - definition: 2.50 mcg/kg/min · mapping unresolved
+      - term: Source concentration
+      - definition: 5.0 mg/mL · mapping unresolved
+      - term: Dosing weight basis
+      - definition: unknown
+      - heading "Uncertainty and source caveats" [level=4]
+      - paragraph: Fictional documented event. Dosing weight not established; no dose conversion, continuous exposure or treatment effect.
+      - paragraph: Orders and preparations do not establish administration. Documented delivery is a source assertion, not continuous exposure, a conversion, or proof of treatment effect. Weight-dependent doses require separately reviewed weight support; this guided form does not calculate doses or pump rates.
+      - paragraph: Unknown fields remain unknown. These are recorded source assertions and clinician-authored notes, not a generated diagnosis or treatment recommendation.
+    - paragraph: "Digest: 372e8fae2ff466ffff160d10ca287b19e54bc2569af5a472e009256402ccf863"
+    - generic "Complete validated record and source caveats"
+    - paragraph: Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.
+    - button "Confirm append to local database"
+    - button "Edit draft"
+    - button "Discard draft and reload"
+    - paragraph: Pending drafts exist only in this page’s memory. Reloading or closing can lose them. Keep this page open while completion is unknown.

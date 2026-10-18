@@ -1,0 +1,201 @@
+{
+  "fact": {
+    "kind": "circulatory_echo",
+    "id": "750b5d44-acbc-4e2f-a870-abb1d1a2ebc3",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "unresolved",
+        "method": "Local synthetic encounter selection",
+        "verifier": "Synthetic validation reviewer",
+        "assessed_at": "2026-10-18T14:50:53.620000Z",
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "750b5d44-acbc-4e2f-a870-abb1d1a2ebc3",
+          "version": null,
+          "channel": "clinician"
+        },
+        "ambiguity": "Fictional patient identity only; not independently verified."
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "identifier": "750b5d44-acbc-4e2f-a870-abb1d1a2ebc3",
+        "version": null,
+        "channel": "clinician"
+      },
+      "actor": "Synthetic validation reviewer",
+      "recorded_at": "2026-10-18T14:50:53.620000Z",
+      "upstream": [],
+      "lineage": "incomplete",
+      "limitations": [
+        "Fictional local entry; actor and source assertions are not independently authenticated."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [
+      "Fictional source estimate; no invasive confirmation, PH/PAH diagnosis or later contemporaneity established."
+    ],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T08:00:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T08:00:00Z",
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "recorded": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": null,
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [],
+    "source_identifiers": [],
+    "disclosures": [
+      "Echo assertions and estimates are source-reported; no PH/PAH diagnosis, invasive confirmation or simultaneous later measurement is inferred."
+    ],
+    "record_status": "recorded",
+    "result": {
+      "result_type": "numeric",
+      "quantity": {
+        "value": "45.00",
+        "unit": {
+          "raw": "mmHg",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+        }
+      },
+      "comparator": "="
+    },
+    "acquisition": {
+      "method": "echo",
+      "source_method": null,
+      "device": null,
+      "episode": null,
+      "parameter": null,
+      "parameter_concept": null,
+      "algorithm": null,
+      "parameter_support": "unknown",
+      "support_provenance": null,
+      "site": null,
+      "compartment": "unknown",
+      "laterality": "unknown",
+      "respiratory_phase": null,
+      "position": null,
+      "reference_level": null,
+      "calibration": "unknown",
+      "zeroing": "unknown",
+      "calibration_provenance": null,
+      "zeroing_provenance": null,
+      "interval_start": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "interval_end": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "averaging": null,
+      "indexing_denominator": null,
+      "indexing_basis": null,
+      "indicator": null,
+      "injection": null,
+      "quality": {
+        "status": "unknown",
+        "artifacts": [],
+        "limitations": [],
+        "provenance": null
+      },
+      "limitations": []
+    },
+    "production": "source_calculated",
+    "calculation_method": {
+      "namespace": "clinrx-local-synthetic-entry",
+      "code": "Source TR velocity / estimated RAP. RVOT obstruction not documented.",
+      "version": null,
+      "raw_display": "Source TR velocity / estimated RAP. RVOT obstruction not documented."
+    },
+    "calculation_inputs": [],
+    "concept": "estimated_rvsp",
+    "study": {
+      "namespace": "clinrx-local-synthetic-entry",
+      "code": "guided-study",
+      "version": null,
+      "raw_display": "guided-study"
+    },
+    "report": {
+      "namespace": "clinrx-local-synthetic-entry",
+      "code": "guided-report",
+      "version": null,
+      "raw_display": "guided-report"
+    },
+    "report_revision": "1",
+    "view": null,
+    "operator": null,
+    "reader": null,
+    "image_references": []
+  },
+  "expected_digest": "e15ef93306399dec2c5f313453a3254a39e81ceae57df9bb6f8a2d0d242c5edb",
+  "ingestion": {
+    "repository_id": "e85880e5-85aa-413d-92d1-0e909546dcbd",
+    "ingestion_sequence": 166,
+    "ingested_at": "2026-10-18T14:51:01.012871Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}

@@ -1,0 +1,288 @@
+{
+  "fact": {
+    "kind": "circulatory_cardiac",
+    "id": "fs-CI-60",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "verified",
+        "method": "synthetic-demo",
+        "verifier": "synthetic-system",
+        "assessed_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "ambiguity": null
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx.synthetic.demo",
+        "identifier": "patient-state-v1",
+        "version": "1",
+        "channel": "system"
+      },
+      "actor": "synthetic-demo",
+      "recorded_at": "2026-10-08T08:00:00Z",
+      "upstream": [],
+      "lineage": "unknown",
+      "limitations": [
+        "Synthetic source assertion only."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "timestamp_precision": "M7ExactTimestampInput/v1",
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:00:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:00:00+00:00",
+      "clock": "verified",
+      "clock_basis": {
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "actor": "synthetic-demo",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "upstream": [],
+        "lineage": "unknown",
+        "limitations": [
+          "Synthetic source assertion only."
+        ]
+      },
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "timestamp_precision": "M7ExactTimestampInput/v1",
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:03:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:03:00+00:00",
+      "clock": "verified",
+      "clock_basis": {
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "actor": "synthetic-demo",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "upstream": [],
+        "lineage": "unknown",
+        "limitations": [
+          "Synthetic source assertion only."
+        ]
+      },
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [],
+    "source_identifiers": [],
+    "disclosures": [],
+    "record_status": "recorded",
+    "result": {
+      "result_type": "numeric",
+      "quantity": {
+        "value": "2.60",
+        "unit": {
+          "raw": "L/min/m2",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Synthetic source unit."
+        }
+      },
+      "comparator": "="
+    },
+    "acquisition": {
+      "method": "bolus_thermodilution",
+      "source_method": null,
+      "device": {
+        "identity_version": "1",
+        "manufacturer": {
+          "namespace": "clinrx.synthetic.micro",
+          "code": "manufacturer",
+          "version": "1",
+          "raw_display": "manufacturer"
+        },
+        "platform": "HemoSphere",
+        "product": {
+          "namespace": "clinrx.synthetic.micro",
+          "code": "monitor",
+          "version": "1",
+          "raw_display": "monitor"
+        },
+        "sensor": {
+          "namespace": "clinrx.synthetic.micro",
+          "code": "sensor",
+          "version": "1",
+          "raw_display": "sensor"
+        },
+        "catheter": null,
+        "technology": "SwanGanz",
+        "software": null,
+        "serial_identity": null,
+        "limitations": []
+      },
+      "episode": null,
+      "parameter": null,
+      "parameter_concept": null,
+      "algorithm": null,
+      "parameter_support": "unknown",
+      "support_provenance": null,
+      "site": null,
+      "compartment": "unknown",
+      "laterality": "unknown",
+      "respiratory_phase": {
+        "raw_display": "Source-charted end expiration",
+        "coding": null
+      },
+      "position": {
+        "raw_display": "Source-charted semi-recumbent position",
+        "coding": null
+      },
+      "reference_level": null,
+      "calibration": "unknown",
+      "zeroing": "unknown",
+      "calibration_provenance": null,
+      "zeroing_provenance": null,
+      "interval_start": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "interval_end": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "averaging": {
+        "value": "3",
+        "unit": {
+          "raw": "{injections}",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Synthetic source unit."
+        }
+      },
+      "indexing_denominator": {
+        "value": "1.73",
+        "unit": {
+          "raw": "m2",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Synthetic source unit."
+        }
+      },
+      "indexing_basis": {
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "actor": "synthetic-demo",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "upstream": [],
+        "lineage": "unknown",
+        "limitations": [
+          "Synthetic source assertion only."
+        ]
+      },
+      "indicator": null,
+      "injection": null,
+      "quality": {
+        "status": "acceptable",
+        "artifacts": [],
+        "limitations": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx.synthetic.demo",
+            "identifier": "patient-state-v1",
+            "version": "1",
+            "channel": "system"
+          },
+          "actor": "synthetic-demo",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "upstream": [],
+          "lineage": "unknown",
+          "limitations": [
+            "Synthetic source assertion only."
+          ]
+        }
+      },
+      "limitations": []
+    },
+    "production": "source_calculated",
+    "calculation_method": {
+      "namespace": "clinrx.synthetic.micro",
+      "code": "source-chart-reported-cardiac-index",
+      "version": "1",
+      "raw_display": "source-chart-reported-cardiac-index"
+    },
+    "calculation_inputs": [],
+    "concept": "ci"
+  },
+  "expected_digest": "784869c25d3b2ca24e43a75bb7b8626cca28adbbf30291c639fb808c1f638477",
+  "ingestion": {
+    "repository_id": "e85880e5-85aa-413d-92d1-0e909546dcbd",
+    "ingestion_sequence": 136,
+    "ingested_at": "2026-10-18T14:46:29.540877Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}

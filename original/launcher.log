@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/mohammedshafiqshajahan/Documents/clinrx-ai/tools/run_evidence_entry.py", line 33, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/mohammedshafiqshajahan/Documents/clinrx-ai/tools/run_evidence_entry.py", line 13, in main
+    with socket.socket() as probe:probe.bind(('127.0.0.1',args.port))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 48] Address already in use

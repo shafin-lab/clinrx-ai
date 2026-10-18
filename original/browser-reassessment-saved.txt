@@ -1,0 +1,65 @@
+- main:
+  - heading "Synthetic patient evidence entry" [level=1]
+  - paragraph: Separate disposable local workspace · synthetic-p1 / synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.
+  - paragraph: Guided source entry and clinician-authored reassessment are available for common hemodynamic records. Advanced source entry preserves access to all 15 families. This remains a local synthetic prototype.
+  - paragraph: "163 source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: 2026-10-08T08:00:00Z to 2026-10-08T10:00:00Z; source times may be contextual or unplaced."
+  - region "Recorded evidence":
+    - heading "Select evidence to correct" [level=2]
+    - button "New source entry"
+    - button "Refresh evidence"
+    - text: Evidence family
+    - combobox "Evidence family":
+      - option "All 15 families"
+      - option "Pressure and PAC/RHC"
+      - option "Cardiac output and performance"
+      - option "Volume and lung water"
+      - option "Dynamic measurements"
+      - option "Recorded device predictions"
+      - option "Tissue perfusion"
+      - option "Oxygen transport and blood gases"
+      - option "Lactate"
+      - option "Echo and POCUS"
+      - option "ECG and rhythm"
+      - option "Vasoactive events"
+      - option "Edwards / PiCCO and monitoring context"
+      - option "Dynamic assessment episodes"
+      - option "Recorded circulatory events"
+      - option "Signal manifests" [selected]
+    - text: Find evidence
+    - textbox "Find evidence"
+    - list:
+      - button "Arterial pressure signal · unavailable m7-SIGNAL / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Arterial pressure signal · unavailable
+        - generic: m7-SIGNAL / 1 · 2026-10-08T08:00:00+00:00 · recorded
+  - region "Evidence draft":
+    - heading "New source entry" [level=2]
+    - heading "Review before append" [level=3]
+    - paragraph: Recorded circulatory events · 4e4fc4b1-d51d-429b-b227-90092ca74e20 / 1
+    - paragraph: "Proposed status: recorded"
+    - paragraph: "Actor: Synthetic validation reviewer"
+    - paragraph: "Reason: New source entry; no predecessor"
+    - region "Proposed source context":
+      - heading "Source context to review" [level=4]
+      - term: Source time
+      - definition: 2026-10-08T09:40:00Z
+      - term: Clock verification
+      - definition: unknown
+      - term: Quality
+      - definition: Not recorded
+      - term: Method
+      - definition: Not recorded
+      - term: Recorded production tag
+      - definition: Not applicable to this event
+      - paragraph: "Clinician-authored synthetic reassessment; not a computed response or causal conclusion. Question: Review a documented infusion event alongside separately recorded hemodynamic evidence. baseline: {\"kind\":\"circulatory_cardiac\",\"id\":\"98bda243-a9f5-494d-8733-8b575b75bf65\",\"version\":\"1\"} intervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"} followup: {\"kind\":\"circulatory_perfusion\",\"id\":\"33b64610-60af-4c43-b9ee-393ff63d2e96\",\"version\":\"1\"} Recorded findings: CO 4.700 L/min at 09:25 has suspect source quality. A dobutamine rate change is documented at 09:30. Capillary refill 3.00 s at 09:35 has unknown quality. These are different measurements and source times. Unconfirmed possibilities: Patient-level relationship is not established. These records do not demonstrate treatment response, causation or a shock diagnosis. Confirmation gaps: Fictional clinician-authored note. Clock verification and dosing weight are unknown; no automated response calculation or recommendation. Next review (recorded plan, not a scheduled action): Review sample context, source acquisition quality and the earlier echo report."
+      - heading "Uncertainty and source caveats" [level=4]
+      - paragraph: Fictional clinician-authored note. Clock verification and dosing weight are unknown; no automated response calculation or recommendation.
+      - paragraph: Unknown fields remain unknown. These are recorded source assertions and clinician-authored notes, not a generated diagnosis or treatment recommendation.
+    - paragraph: "Digest: 0ba8f69ebd5991ac5cf7e53c5db7db2e2999d09ff30aab0398996123aae66387"
+    - generic "Complete validated record and source caveats"
+    - paragraph: Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.
+    - status: Exact revision saved and confirmed. Ingestion sequence 169.
+    - button "Start another entry"
+    - paragraph: Pending drafts exist only in this page’s memory. Reloading or closing can lose them. Keep this page open while completion is unknown.
