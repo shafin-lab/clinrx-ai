@@ -1,6 +1,9 @@
 import {it,expect,vi,afterEach} from 'vitest';
 import {render,screen,fireEvent,cleanup,waitFor} from '@testing-library/react';
 import fixture from './fixtures/icuFlowsheet.json';
+import collisionFixture from './fixtures/reassessmentCollision.json';
+import type {CirculatoryItem} from '../src/api/circulatoryTypes';
+import {evidenceKey} from '../src/demo/evidenceIdentity';
 import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
 import type {CirculatoryClient} from '../src/api/circulatoryClient';
 import {EvidenceEntryWorkspace} from '../src/demo/EvidenceEntryWorkspace';
@@ -74,7 +77,15 @@ it('keeps JSON-only and interleaved shortcut edits in the single authoritative d
  expect(entry.validate.mock.calls[0][0].fact.result).toMatchObject({quantity:{value:'7.3600'}});
  fireEvent.click(screen.getByRole('button',{name:'Edit draft'}));
  fireEvent.change(screen.getByLabelText('Recorded numeric value (raw unit preserved)'),{target:{value:'7.37'}});
- const revised=JSON.parse(editor.value);revised.result.quantity.value='7.38';
+ const currentEditor=screen.getByLabelText('Complete source record (JSON)') as HTMLTextAreaElement;
+ expect(currentEditor).not.toBe(editor);
+ const revised=JSON.parse(currentEditor.value);
+ expect(revised.result.quantity.value).toBe('7.37');
+ const original=JSON.parse(editor.value);
+ expect({...revised,result:original.result}).toEqual(original);
+ expect({...revised.result,quantity:original.result.quantity}).toEqual(original.result);
+ expect({...revised.result.quantity,value:original.result.quantity.value}).toEqual(original.result.quantity);
+ revised.result.quantity.value='7.38';
  fireEvent.change(screen.getByLabelText('Complete source record (JSON)'),{target:{value:JSON.stringify(revised)}});
  fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
  await screen.findByRole('button',{name:'Confirm append to local database'});
@@ -135,7 +146,7 @@ it('prepares a clinician-authored reassessment with exact linked revisions and n
  fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Reviewer'}});
  fireEvent.change(screen.getByLabelText('Entry family'),{target:{value:'reassessment'}});
  for(const [label,text] of [['Reassessment question','Review recorded intervention'],['Recorded findings (your assessment)','Distinct times and methods'],['Unconfirmed possibilities (your assessment)','No causal relationship established'],['Source limitations / uncertainty (required)','Sample context incomplete']])fireEvent.change(screen.getByLabelText(label),{target:{value:text}});
- for(const [label,ref] of [['Baseline evidence','circulatory_pressure/fs-MAP-15/1'],['Documented intervention','circulatory_vasoactive/fs-N-CHANGE/1'],['Follow-up evidence','circulatory_cardiac/fs-CO-60/1']])fireEvent.change(screen.getByLabelText(label),{target:{value:ref}});
+ for(const [label,ref] of [['Baseline evidence','["circulatory_pressure","fs-MAP-15","1"]'],['Documented intervention','["circulatory_vasoactive","fs-N-CHANGE","1"]'],['Follow-up evidence','["circulatory_cardiac","fs-CO-60","1"]']])fireEvent.change(screen.getByLabelText(label),{target:{value:ref}});
  fireEvent.click(screen.getByRole('button',{name:'Use guided record for validation'}));fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
  await screen.findByRole('button',{name:'Confirm append to local database'});
  expect(entry.validate.mock.calls[0][0].fact.associations).toHaveLength(3);
@@ -148,4 +159,36 @@ it('does not mark a refreshed successor selected when the original revision rema
  fireEvent.click(screen.getByRole('button',{name:'Confirm append to local database'}));await screen.findByText(/Exact revision saved and confirmed/);
  expect(screen.getByRole('button',{name:/pH.*fs-PH-60/})).toHaveAttribute('aria-pressed','false');
  expect(screen.getByText(/Original retained: circulatory_oxygen \/ fs-PH-60 \/ 1/)).toBeInTheDocument();
+});
+
+it.each([{reverse:false,selected:0},{reverse:false,selected:1},{reverse:true,selected:0},{reverse:true,selected:1}])('preserves admitted colliding stage selections through preview and submission: $reverse / $selected',async({reverse,selected})=>{
+ const all=structuredClone(collisionFixture) as CirculatoryItem[];
+ const ordered=reverse?[...all].reverse():all;
+ const chosen=all[selected],follow=all[1-selected],intervention=all[2+selected];
+ const {entry}=setup(false,state=>{state.assembly.snapshot.items=ordered;});
+ await screen.findByRole('textbox',{name:'Find evidence'});
+ fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Collision reviewer'}});
+ fireEvent.change(screen.getByLabelText('Entry family'),{target:{value:'reassessment'}});
+ for(const [label,text] of [['Reassessment question','Review exact colliding records'],['Recorded findings (your assessment)','Distinct admitted source assertions'],['Unconfirmed possibilities (your assessment)','Relationship not established'],['Source limitations / uncertainty (required)','Fictional source assertions; no causal conclusion']])fireEvent.change(screen.getByLabelText(label),{target:{value:text}});
+ for(const [label,item] of [['Baseline evidence',chosen],['Documented intervention',intervention],['Follow-up evidence',follow]] as const){
+  const select=screen.getByLabelText(label) as HTMLSelectElement;
+  const values=[...select.options].map(option=>option.value);
+  expect(new Set(values).size).toBe(values.length);
+  fireEvent.change(select,{target:{value:evidenceKey(item.fact)}});
+  expect(select).toHaveValue(evidenceKey(item.fact));
+ }
+ fireEvent.click(screen.getByRole('button',{name:'Use guided record for validation'}));fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
+ await screen.findByRole('button',{name:'Confirm append to local database'});
+ const expected=[chosen,intervention,follow].map(item=>({kind:item.fact.kind,id:item.fact.id,version:item.fact.revision}));
+ function check(fact:CirculatoryItem['fact']){
+  expect(fact.associations).toEqual(expected.map(exact=>expect.objectContaining({exact})));
+  for(const [n,stage] of ['baseline','intervention','followup'].entries()){
+   expect(fact.external_evidence).toEqual(expect.arrayContaining([expect.objectContaining({namespace:'clinrx.local.reassessment.'+stage+'/v1',code:JSON.stringify(expected[n])})]));
+   expect(String((fact.description as {raw_display:string}).raw_display)).toContain(stage+': '+JSON.stringify(expected[n]));
+  }
+ }
+ check(entry.validate.mock.calls[0][0].fact);
+ entry.save.mockResolvedValue({fact:entry.validate.mock.calls[0][0].fact,ingestion:{ingestion_sequence:170}});
+ fireEvent.click(screen.getByRole('button',{name:'Confirm append to local database'}));await screen.findByText(/Exact revision saved and confirmed/);
+ check(entry.save.mock.calls[0][0].fact);
 });

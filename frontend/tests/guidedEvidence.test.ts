@@ -3,10 +3,13 @@ import {buildGuided,type GuidedFamily,type Fields} from '../src/demo/guidedEvide
 import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
 import fixture from './fixtures/icuFlowsheet.json';
 import admittedExamples from './fixtures/guidedEntries.json';
+import {evidenceKey,resolveEvidenceKey} from '../src/demo/evidenceIdentity';
+import collisionFixture from './fixtures/reassessmentCollision.json';
+import type {CirculatoryItem} from '../src/api/circulatoryTypes';
 import {record} from '../src/demo/evidencePresentation';
 const items=decodeCirculatoryState(structuredClone(fixture)).assembly.snapshot.items;
 const defaults:Fields={time:'2026-10-08T09:15:00.123456Z',available:'',value:'7.3600',unit:'1',uncertainty:'Fictional source; context requires review',production:'direct_measurement',quality:'unknown',method:'unknown',resultType:'numeric'};
-const cases:[GuidedFamily,Fields][]=[['pressure',{concept:'systemic_mean',value:'71.00',unit:'mmHg',method:'automated_cuff'}],['gas',{concept:'ph',sample:'arterial',specimen:'local-sample',fio2:'40',fio2Unit:'%',peep:'5',peepUnit:'cmH2O'}],['gas',{concept:'svo2',sample:'mixed_venous',value:'62.0',unit:'%'}],['gas',{concept:'lactate',sample:'arterial',value:'2.10',unit:'mmol/L',reportStatus:'final'}],['cardiac',{concept:'co',value:'4.70',unit:'L/min',method:'bolus_thermodilution',quality:'suspect',methodContext:'PAC source-recorded three-injection basis; no ClinRx averaging'}],['echo',{concept:'estimated_rvsp',value:'45.0',unit:'mmHg',production:'source_calculated',productionBasis:'Source TR velocity / estimated RAP; RVOT obstruction context unknown',study:'study-local',report:'report-local',reportRevision:'1'}],['echo',{concept:'rv_function',resultType:'qualitative',finding:'Source-reported reduced RV function',study:'study-local',report:'report-local',reportRevision:'1'}],['infusion',{drug:'noradrenaline',action:'order',sourceStatus:'Source prescribed order; no administration',series:'local-N',rate:'7.00',rateUnit:'mcg/min',concentration:'0.08',concentrationUnit:'mg/mL'}],['infusion',{drug:'vasopressin',action:'initiation',sourceStatus:'Source documented start',series:'local-V',rate:'1.8',rateUnit:'units/h'}],['infusion',{drug:'dobutamine',action:'pause',sourceStatus:'Source documented pause',series:'local-D',interruption:'Source recorded reason'}],['perfusion',{concept:'capillary_refill',value:'3.0',unit:'s',method:'bedside_examination'}],['reassessment',{question:'Review documented intervention and separately recorded findings',baseline:'circulatory_pressure/fs-MAP-15/1',intervention:'circulatory_vasoactive/fs-N-CHANGE/1',followup:'circulatory_cardiac/fs-CO-60/1',findings:'Recorded MAP and CO have distinct times and methods.',possibilities:'Relationship unconfirmed; no causal attribution',nextReview:'Clinician to review sample and echo context'}]];
+const cases:[GuidedFamily,Fields][]=[['pressure',{concept:'systemic_mean',value:'71.00',unit:'mmHg',method:'automated_cuff'}],['gas',{concept:'ph',sample:'arterial',specimen:'local-sample',fio2:'40',fio2Unit:'%',peep:'5',peepUnit:'cmH2O'}],['gas',{concept:'svo2',sample:'mixed_venous',value:'62.0',unit:'%'}],['gas',{concept:'lactate',sample:'arterial',value:'2.10',unit:'mmol/L',reportStatus:'final'}],['cardiac',{concept:'co',value:'4.70',unit:'L/min',method:'bolus_thermodilution',quality:'suspect',methodContext:'PAC source-recorded three-injection basis; no ClinRx averaging'}],['echo',{concept:'estimated_rvsp',value:'45.0',unit:'mmHg',production:'source_calculated',productionBasis:'Source TR velocity / estimated RAP; RVOT obstruction context unknown',study:'study-local',report:'report-local',reportRevision:'1'}],['echo',{concept:'rv_function',resultType:'qualitative',finding:'Source-reported reduced RV function',study:'study-local',report:'report-local',reportRevision:'1'}],['infusion',{drug:'noradrenaline',action:'order',sourceStatus:'Source prescribed order; no administration',series:'local-N',rate:'7.00',rateUnit:'mcg/min',concentration:'0.08',concentrationUnit:'mg/mL'}],['infusion',{drug:'vasopressin',action:'initiation',sourceStatus:'Source documented start',series:'local-V',rate:'1.8',rateUnit:'units/h'}],['infusion',{drug:'dobutamine',action:'pause',sourceStatus:'Source documented pause',series:'local-D',interruption:'Source recorded reason'}],['perfusion',{concept:'capillary_refill',value:'3.0',unit:'s',method:'bedside_examination'}],['reassessment',{question:'Review documented intervention and separately recorded findings',baseline:'["circulatory_pressure","fs-MAP-15","1"]',intervention:'["circulatory_vasoactive","fs-N-CHANGE","1"]',followup:'["circulatory_cardiac","fs-CO-60","1"]',findings:'Recorded MAP and CO have distinct times and methods.',possibilities:'Relationship unconfirmed; no causal attribution',nextReview:'Clinician to review sample and echo context'}]];
 
 const vectors=cases.map(([family,fields],n)=>({family,fields:{...defaults,...fields},fact:buildGuided(family,{...defaults,...fields},'Synthetic reviewer',items,'guided-validation-'+n,'2026-10-18T06:00:00Z')}));
 it.each(vectors)('constructs $family with exact source time, unverified binding and disclosed uncertainty',({fact})=>{
@@ -39,7 +42,7 @@ it('retains stage-labelled exact reassessment references without replacing revis
  expect(fact.kind).toBe('circulatory_event');expect(fact.associations).toHaveLength(3);
  expect(fact.external_evidence).toEqual(expect.arrayContaining([expect.objectContaining({namespace:'clinrx.local.reassessment.followup/v1',code:JSON.stringify({kind:'circulatory_cardiac',id:'fs-CO-60',version:'1'})})]));
  expect(record(fact.description).raw_display).toContain('Unconfirmed possibilities: Relationship unconfirmed; no causal attribution');
- expect(()=>buildGuided('reassessment',{...vectors[11].fields,baseline:'circulatory_pressure/fs-MAP-15/2'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow();
+ expect(()=>buildGuided('reassessment',{...vectors[11].fields,baseline:'["circulatory_pressure","fs-MAP-15","2"]'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow();
 });
 it('rejects incomplete required fields and does not invent an actor, echo report or raw unit',()=>{
  for(const field of ['study','report','reportRevision','unit','uncertainty'])expect(()=>buildGuided('echo',{...vectors[5].fields,[field]:''},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow();
@@ -48,5 +51,16 @@ it('rejects incomplete required fields and does not invent an actor, echo report
 it('matches the exact generated form records exercised by real API admission tests',()=>{expect(vectors).toEqual(admittedExamples);});
 it('rejects promoting RVSP to a direct measurement or using a measurement as an intervention',()=>{
  expect(()=>buildGuided('echo',{...vectors[5].fields,production:'direct_measurement'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow(/estimate/);
- expect(()=>buildGuided('reassessment',{...vectors[11].fields,intervention:'circulatory_cardiac/fs-CO-60/1'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow(/intervention/);
+ expect(()=>buildGuided('reassessment',{...vectors[11].fields,intervention:'["circulatory_cardiac","fs-CO-60","1"]'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow(/intervention/);
+});
+
+it('reproduces the old delimiter collision while tuple keys resolve exact components in either order',()=>{
+ const [a,b]=collisionFixture as CirculatoryItem[];
+ const legacy=(item:CirculatoryItem)=>[item.fact.kind,item.fact.id,item.fact.revision].join('/');
+ expect(legacy(a)).toBe(legacy(b));
+ expect([a,b].find(item=>legacy(item)===legacy(b))).toBe(a);
+ expect([b,a].find(item=>legacy(item)===legacy(a))).toBe(b);
+ expect(evidenceKey(a.fact)).not.toBe(evidenceKey(b.fact));
+ for(const order of [[a,b],[b,a]])for(const chosen of [a,b])expect(resolveEvidenceKey(order,evidenceKey(chosen.fact))).toBe(chosen);
+ for(const malformed of [legacy(a),'null','[]','["circulatory_pressure","a"]','["circulatory_pressure","a",1]','["circulatory_pressure","a","missing"]'])expect(resolveEvidenceKey([a,b],malformed)).toBeUndefined();
 });

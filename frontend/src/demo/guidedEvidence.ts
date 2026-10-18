@@ -1,4 +1,5 @@
 import type {CirculatoryItem} from '../api/circulatoryTypes';
+import {resolveEvidenceKey} from './evidenceIdentity';
 import {record} from './evidencePresentation';
 export const guidedFamilies={pressure:'BP / MAP',gas:'ABG / oxygen transport',cardiac:'Cardiac output / index',echo:'Echo',infusion:'Infusions',perfusion:'Perfusion',reassessment:'Reassessment'};
 export type GuidedFamily=keyof typeof guidedFamilies;
@@ -22,7 +23,7 @@ export function buildGuided(family:GuidedFamily,f:Fields,actor:string,items:Circ
  const fact:Record<string,unknown>={id,revision:'1',contract_version:'3',binding:{target,verification:{status:'unresolved',method:'Local synthetic encounter selection',verifier:actor.trim(),assessed_at:at,source:provenance.source,ambiguity:'Fictional patient identity only; not independently verified.'}},origin:'reported',provenance,time:{precision:'unknown'},temporal_status:'unknown',verification:'unverified',record_status:'recorded',occurred:stamp(f.time),available:stamp(f.available),uncertainty:[required(f.uncertainty)]};
  if(family==='reassessment'){
   const stages=['baseline','intervention','followup'];
-  const selected=stages.map(stage=>{const item=items.find(i=>[i.fact.kind,i.fact.id,i.fact.revision].join('/')===f[stage]);if(!item||item.fact.binding.target.patient_id!==target.patient_id||item.fact.binding.target.encounter_id!==target.encounter_id)throw Error('Select an exact record in this encounter for each reassessment stage.');return item;});
+  const selected=stages.map(stage=>{const item=resolveEvidenceKey(items,f[stage]);if(!item||item.fact.binding.target.patient_id!==target.patient_id||item.fact.binding.target.encounter_id!==target.encounter_id)throw Error('Select an exact record in this encounter for each reassessment stage.');return item;});
   if(!['circulatory_event','circulatory_vasoactive','circulatory_monitoring'].includes(selected[1].fact.kind))throw Error('Choose a documented intervention event, not a measurement.');
   const refs=selected.map(i=>({kind:i.fact.kind,id:i.fact.id,version:i.fact.revision}));
   fact.kind='circulatory_event';fact.event_type='other';

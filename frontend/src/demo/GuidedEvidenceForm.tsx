@@ -1,3 +1,4 @@
+import {evidenceKey} from './evidenceIdentity';
 import {useState} from 'react';
 import type {CirculatoryItem} from '../api/circulatoryTypes';
 import {title,value,sourceTime,quality} from './evidencePresentation';
@@ -15,7 +16,7 @@ export function GuidedEvidenceForm({actor,items,onDraft}:{actor:string;items:Cir
  {input('time','Source observation / event time (ISO with offset; optional)')}{input('available','Source availability time (ISO with offset; optional)')}
  {family==='reassessment'?<>
  {area('question','Reassessment question')}
- {(['baseline','intervention','followup'] as const).map(stage=><div key={stage}><label>{stage==='followup'?'Follow-up evidence':stage==='baseline'?'Baseline evidence':'Documented intervention'}<select value={f[stage]??''} onChange={e=>set(stage,e.target.value)}><option value="">Select an exact source revision</option>{items.filter(item=>stage!=='intervention'||['circulatory_event','circulatory_vasoactive','circulatory_monitoring'].includes(item.fact.kind)).map(item=><option key={[item.fact.kind,item.fact.id,item.fact.revision].join('/')} value={[item.fact.kind,item.fact.id,item.fact.revision].join('/')}>{title(item)} · {item.fact.id}/{item.fact.revision} · {value(item).text} {value(item).unit} · {sourceTime(item)} · quality {quality(item)} · {String(item.fact.record_status)}</option>)}</select></label></div>)}
+ {(['baseline','intervention','followup'] as const).map(stage=><div key={stage}><label>{stage==='followup'?'Follow-up evidence':stage==='baseline'?'Baseline evidence':'Documented intervention'}<select value={f[stage]??''} onChange={e=>set(stage,e.target.value)}><option value="">Select an exact source revision</option>{items.filter(item=>stage!=='intervention'||['circulatory_event','circulatory_vasoactive','circulatory_monitoring'].includes(item.fact.kind)).map(item=><option key={evidenceKey(item.fact)} value={evidenceKey(item.fact)}>{title(item)} · {item.fact.id}/{item.fact.revision} · {value(item).text} {value(item).unit} · {sourceTime(item)} · quality {quality(item)} · {String(item.fact.record_status)}</option>)}</select></label></div>)}
  {area('findings','Recorded findings (your assessment)')}{area('possibilities','Unconfirmed possibilities (your assessment)')}{input('nextReview','Next review plan (optional; no scheduling)')}
  <p>Selections are retained as exact references, never replaced by successors. No responder classification, physiological delta, diagnosis or causal response is generated.</p>
  </>:family==='infusion'?<>
