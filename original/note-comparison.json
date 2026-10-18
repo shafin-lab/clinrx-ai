@@ -1,0 +1,448 @@
+{
+  "original_note": {
+    "associations": [
+      {
+        "candidates": [],
+        "exact": {
+          "id": "a02f88e1-db04-48a0-89e6-f236016a38a8",
+          "kind": "circulatory_oxygen",
+          "version": "1"
+        },
+        "limitation": null,
+        "provenance": {
+          "actor": "Synthetic walkthrough reviewer",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ],
+          "lineage": "incomplete",
+          "recorded_at": "2026-10-18T15:29:14.359000Z",
+          "source": {
+            "channel": "clinician",
+            "identifier": "abae4ef7-74c4-48cc-bb50-f50e9fb151cd",
+            "namespace": "clinrx-local-synthetic-entry",
+            "version": null
+          },
+          "upstream": []
+        },
+        "role": "context",
+        "scope": {
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null,
+          "patient_id": "synthetic-p1"
+        },
+        "status": "resolved"
+      },
+      {
+        "candidates": [],
+        "exact": {
+          "id": "99a26724-026c-4ccc-ac63-c22ddada2664",
+          "kind": "circulatory_vasoactive",
+          "version": "1"
+        },
+        "limitation": null,
+        "provenance": {
+          "actor": "Synthetic walkthrough reviewer",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ],
+          "lineage": "incomplete",
+          "recorded_at": "2026-10-18T15:29:14.359000Z",
+          "source": {
+            "channel": "clinician",
+            "identifier": "abae4ef7-74c4-48cc-bb50-f50e9fb151cd",
+            "namespace": "clinrx-local-synthetic-entry",
+            "version": null
+          },
+          "upstream": []
+        },
+        "role": "context",
+        "scope": {
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null,
+          "patient_id": "synthetic-p1"
+        },
+        "status": "resolved"
+      },
+      {
+        "candidates": [],
+        "exact": {
+          "id": "1c1f16d9-33d7-40fb-a94f-013a383c9bfc",
+          "kind": "circulatory_oxygen",
+          "version": "1"
+        },
+        "limitation": null,
+        "provenance": {
+          "actor": "Synthetic walkthrough reviewer",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ],
+          "lineage": "incomplete",
+          "recorded_at": "2026-10-18T15:29:14.359000Z",
+          "source": {
+            "channel": "clinician",
+            "identifier": "abae4ef7-74c4-48cc-bb50-f50e9fb151cd",
+            "namespace": "clinrx-local-synthetic-entry",
+            "version": null
+          },
+          "upstream": []
+        },
+        "role": "context",
+        "scope": {
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null,
+          "patient_id": "synthetic-p1"
+        },
+        "status": "resolved"
+      }
+    ],
+    "available": {
+      "alignment": null,
+      "alternative_sources": [],
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "recorded": {
+        "lower": null,
+        "precision": "unknown",
+        "status": "not_recorded",
+        "uncertainty": null,
+        "upper": null,
+        "value": null
+      },
+      "source_timestamp": null
+    },
+    "binding": {
+      "target": {
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null,
+        "patient_id": "synthetic-p1"
+      },
+      "verification": {
+        "ambiguity": "Fictional patient identity only; not independently verified.",
+        "assessed_at": "2026-10-18T15:29:14.359000Z",
+        "method": "Local synthetic encounter selection",
+        "source": {
+          "channel": "clinician",
+          "identifier": "abae4ef7-74c4-48cc-bb50-f50e9fb151cd",
+          "namespace": "clinrx-local-synthetic-entry",
+          "version": null
+        },
+        "status": "unresolved",
+        "verifier": "Synthetic walkthrough reviewer"
+      }
+    },
+    "conflict": "unknown",
+    "contract_version": "3",
+    "correction_reason": null,
+    "description": {
+      "coding": null,
+      "raw_display": "Clinician-authored synthetic reassessment; not a computed response or causal conclusion.\nQuestion: Review the separately recorded arterial samples around a documented infusion event.\nbaseline: {\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"}\nintervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}\nfollowup: {\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"1\"}\nRecorded findings: Earlier arterial pH is recorded as 7.3400 at 09:20:00.123456 UTC. The new arterial pH is 7.3300 at 09:45 UTC with its own specimen, FiO2 40% and PEEP 5 cmH2O. A dobutamine rate change is documented at 09:30 UTC. These are separate source records.\nUnconfirmed possibilities: Patient-level relationship is not established. Whether the differing results reflect physiological change, sample variability or another factor is unconfirmed. No treatment effect or diagnosis is established.\nConfirmation gaps: Fictional walkthrough note, not clinician sign-off. Source quality and clock verification are unknown; samples are distinct. No calculated delta, responder classification or treatment recommendation.\nNext review (recorded plan, not a scheduled action): Review the full ABG results, specimen quality, source acquisition context and earlier echo report. This is a recorded plan, not a scheduled task."
+    },
+    "disclosures": [],
+    "event_type": "other",
+    "external_evidence": [
+      {
+        "code": "{\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"}",
+        "namespace": "clinrx.local.reassessment.baseline/v1",
+        "raw_display": "{\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"}",
+        "version": null
+      },
+      {
+        "code": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}",
+        "namespace": "clinrx.local.reassessment.intervention/v1",
+        "raw_display": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}",
+        "version": null
+      },
+      {
+        "code": "{\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"1\"}",
+        "namespace": "clinrx.local.reassessment.followup/v1",
+        "raw_display": "{\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"1\"}",
+        "version": null
+      }
+    ],
+    "id": "abae4ef7-74c4-48cc-bb50-f50e9fb151cd",
+    "kind": "circulatory_event",
+    "occurred": {
+      "alignment": null,
+      "alternative_sources": [],
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "recorded": {
+        "lower": null,
+        "precision": "instant",
+        "status": "known",
+        "uncertainty": null,
+        "upper": null,
+        "value": "2026-10-08T09:50:00Z"
+      },
+      "source_timestamp": "2026-10-08T09:50:00Z"
+    },
+    "origin": "reported",
+    "provenance": {
+      "actor": "Synthetic walkthrough reviewer",
+      "limitations": [
+        "Fictional local entry; actor and source assertions are not independently authenticated."
+      ],
+      "lineage": "incomplete",
+      "recorded_at": "2026-10-18T15:29:14.359000Z",
+      "source": {
+        "channel": "clinician",
+        "identifier": "abae4ef7-74c4-48cc-bb50-f50e9fb151cd",
+        "namespace": "clinrx-local-synthetic-entry",
+        "version": null
+      },
+      "upstream": []
+    },
+    "record_status": "recorded",
+    "recorded_amount": null,
+    "revision": "1",
+    "source_identifiers": [
+      {
+        "code": "reassessment",
+        "namespace": "clinrx.local.chart-entry/v1",
+        "raw_display": "reassessment",
+        "version": null
+      }
+    ],
+    "supersedes": null,
+    "temporal_status": "unknown",
+    "time": {
+      "effective_end": null,
+      "effective_start": null,
+      "event": null,
+      "precision": "unknown",
+      "processed": null,
+      "recorded": null,
+      "retrieved": null,
+      "uncertainty": null
+    },
+    "uncertainty": [
+      "Fictional walkthrough note, not clinician sign-off. Source quality and clock verification are unknown; samples are distinct. No calculated delta, responder classification or treatment recommendation."
+    ],
+    "verification": "unverified"
+  },
+  "new_note": {
+    "associations": [
+      {
+        "candidates": [],
+        "exact": {
+          "id": "a02f88e1-db04-48a0-89e6-f236016a38a8",
+          "kind": "circulatory_oxygen",
+          "version": "1"
+        },
+        "limitation": null,
+        "provenance": {
+          "actor": "Synthetic corrected-ABG reassessment reviewer",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ],
+          "lineage": "incomplete",
+          "recorded_at": "2026-10-18T16:19:03.510000Z",
+          "source": {
+            "channel": "clinician",
+            "identifier": "90c89b62-1f3a-4903-b10d-eb8c6711e921",
+            "namespace": "clinrx-local-synthetic-entry",
+            "version": null
+          },
+          "upstream": []
+        },
+        "role": "context",
+        "scope": {
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null,
+          "patient_id": "synthetic-p1"
+        },
+        "status": "resolved"
+      },
+      {
+        "candidates": [],
+        "exact": {
+          "id": "99a26724-026c-4ccc-ac63-c22ddada2664",
+          "kind": "circulatory_vasoactive",
+          "version": "1"
+        },
+        "limitation": null,
+        "provenance": {
+          "actor": "Synthetic corrected-ABG reassessment reviewer",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ],
+          "lineage": "incomplete",
+          "recorded_at": "2026-10-18T16:19:03.510000Z",
+          "source": {
+            "channel": "clinician",
+            "identifier": "90c89b62-1f3a-4903-b10d-eb8c6711e921",
+            "namespace": "clinrx-local-synthetic-entry",
+            "version": null
+          },
+          "upstream": []
+        },
+        "role": "context",
+        "scope": {
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null,
+          "patient_id": "synthetic-p1"
+        },
+        "status": "resolved"
+      },
+      {
+        "candidates": [],
+        "exact": {
+          "id": "1c1f16d9-33d7-40fb-a94f-013a383c9bfc",
+          "kind": "circulatory_oxygen",
+          "version": "aeaca128-a674-4dfa-859a-9ab11d2a9368"
+        },
+        "limitation": null,
+        "provenance": {
+          "actor": "Synthetic corrected-ABG reassessment reviewer",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ],
+          "lineage": "incomplete",
+          "recorded_at": "2026-10-18T16:19:03.510000Z",
+          "source": {
+            "channel": "clinician",
+            "identifier": "90c89b62-1f3a-4903-b10d-eb8c6711e921",
+            "namespace": "clinrx-local-synthetic-entry",
+            "version": null
+          },
+          "upstream": []
+        },
+        "role": "context",
+        "scope": {
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null,
+          "patient_id": "synthetic-p1"
+        },
+        "status": "resolved"
+      }
+    ],
+    "available": {
+      "alignment": null,
+      "alternative_sources": [],
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "recorded": {
+        "lower": null,
+        "precision": "unknown",
+        "status": "not_recorded",
+        "uncertainty": null,
+        "upper": null,
+        "value": null
+      },
+      "source_timestamp": null
+    },
+    "binding": {
+      "target": {
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null,
+        "patient_id": "synthetic-p1"
+      },
+      "verification": {
+        "ambiguity": "Fictional patient identity only; not independently verified.",
+        "assessed_at": "2026-10-18T16:19:03.510000Z",
+        "method": "Local synthetic encounter selection",
+        "source": {
+          "channel": "clinician",
+          "identifier": "90c89b62-1f3a-4903-b10d-eb8c6711e921",
+          "namespace": "clinrx-local-synthetic-entry",
+          "version": null
+        },
+        "status": "unresolved",
+        "verifier": "Synthetic corrected-ABG reassessment reviewer"
+      }
+    },
+    "conflict": "unknown",
+    "contract_version": "3",
+    "correction_reason": null,
+    "description": {
+      "coding": null,
+      "raw_display": "Clinician-authored synthetic reassessment; not a computed response or causal conclusion.\nQuestion: Review the arterial sample using its explicitly corrected pH revision while preserving the earlier reassessment.\nbaseline: {\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"}\nintervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}\nfollowup: {\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"aeaca128-a674-4dfa-859a-9ab11d2a9368\"}\nRecorded findings: Synthetic reassessment after source correction. Earlier arterial pH 7.3400 is recorded at 09:20:00.123456 UTC; a dobutamine rate change is documented at 09:30 UTC. The 09:45 arterial specimen walkthrough-arterial-0945 has corrected pH 7.3500, superseding transcription value 7.3300 for the same specimen and observation time. Its own FiO2 is 40% and PEEP 5 cmH2O. The earlier reassessment is retained unchanged and still references original ABG revision 1; this new note explicitly references correction aeaca128-a674-4dfa-859a-9ab11d2a9368.\nUnconfirmed possibilities: Patient-level relationship is not established. The transcription correction is not a new measurement, physiological improvement or evidence of an infusion effect. No diagnosis, responder classification or causal conclusion is established.\nConfirmation gaps: Fictional local demonstration, not clinician sign-off. Source quality and clock verification remain unknown. Samples are distinct; timestamps do not establish causation. Earlier notes and exact references remain unchanged.\nNext review (recorded plan, not a scheduled action): Review the complete source ABG and specimen context alongside the original and corrected revisions. This is an authored review plan, not a scheduled action or treatment recommendation."
+    },
+    "disclosures": [],
+    "event_type": "other",
+    "external_evidence": [
+      {
+        "code": "{\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"}",
+        "namespace": "clinrx.local.reassessment.baseline/v1",
+        "raw_display": "{\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"}",
+        "version": null
+      },
+      {
+        "code": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}",
+        "namespace": "clinrx.local.reassessment.intervention/v1",
+        "raw_display": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}",
+        "version": null
+      },
+      {
+        "code": "{\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"aeaca128-a674-4dfa-859a-9ab11d2a9368\"}",
+        "namespace": "clinrx.local.reassessment.followup/v1",
+        "raw_display": "{\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"aeaca128-a674-4dfa-859a-9ab11d2a9368\"}",
+        "version": null
+      }
+    ],
+    "id": "90c89b62-1f3a-4903-b10d-eb8c6711e921",
+    "kind": "circulatory_event",
+    "occurred": {
+      "alignment": null,
+      "alternative_sources": [],
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "recorded": {
+        "lower": null,
+        "precision": "instant",
+        "status": "known",
+        "uncertainty": null,
+        "upper": null,
+        "value": "2026-10-08T09:55:00Z"
+      },
+      "source_timestamp": "2026-10-08T09:55:00Z"
+    },
+    "origin": "reported",
+    "provenance": {
+      "actor": "Synthetic corrected-ABG reassessment reviewer",
+      "limitations": [
+        "Fictional local entry; actor and source assertions are not independently authenticated."
+      ],
+      "lineage": "incomplete",
+      "recorded_at": "2026-10-18T16:19:03.510000Z",
+      "source": {
+        "channel": "clinician",
+        "identifier": "90c89b62-1f3a-4903-b10d-eb8c6711e921",
+        "namespace": "clinrx-local-synthetic-entry",
+        "version": null
+      },
+      "upstream": []
+    },
+    "record_status": "recorded",
+    "recorded_amount": null,
+    "revision": "1",
+    "source_identifiers": [
+      {
+        "code": "reassessment",
+        "namespace": "clinrx.local.chart-entry/v1",
+        "raw_display": "reassessment",
+        "version": null
+      }
+    ],
+    "supersedes": null,
+    "temporal_status": "unknown",
+    "time": {
+      "effective_end": null,
+      "effective_start": null,
+      "event": null,
+      "precision": "unknown",
+      "processed": null,
+      "recorded": null,
+      "retrieved": null,
+      "uncertainty": null
+    },
+    "uncertainty": [
+      "Fictional local demonstration, not clinician sign-off. Source quality and clock verification remain unknown. Samples are distinct; timestamps do not establish causation. Earlier notes and exact references remain unchanged."
+    ],
+    "verification": "unverified"
+  }
+}
