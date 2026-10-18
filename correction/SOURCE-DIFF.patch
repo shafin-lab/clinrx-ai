@@ -1,0 +1,1306 @@
+diff --git a/frontend/src/demo/EvidenceEntryWorkspace.tsx b/frontend/src/demo/EvidenceEntryWorkspace.tsx
+index 235f735..c52392e 100644
+--- a/frontend/src/demo/EvidenceEntryWorkspace.tsx
++++ b/frontend/src/demo/EvidenceEntryWorkspace.tsx
+@@ -1,3 +1,4 @@
++import {evidenceKey} from './evidenceIdentity';
+ import {useCallback,useEffect,useRef,useState} from 'react';
+ import type {CirculatoryClient} from '../api/circulatoryClient';
+ import type {CirculatoryItem,CirculatoryState,CirculatoryHistory} from '../api/circulatoryTypes';
+@@ -66,7 +67,7 @@ export function EvidenceEntryWorkspace({client,entry,config}:{client:Circulatory
+   async function revisions(){if(!selected||!state)return;setBusy(true);setError('');try{setHistory((await client.circulatoryHistory(state.state_context,reference(selected))).data);}catch{setError('History could not be loaded. Refresh the recorded evidence first.');}finally{setBusy(false);}}
+   return <main className="demo-shell entry-workspace"><header><h1>Synthetic patient evidence entry</h1><p>Separate disposable local workspace · synthetic-p1 / synthetic-e1</p><p><strong>{gateConfirmed?'Clinical execution disabled.':'Execution gate not confirmed — new writes blocked.'}</strong> Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.</p><p>Guided source entry and clinician-authored reassessment are available for common hemodynamic records. Advanced source entry preserves access to all 15 families. This remains a local synthetic prototype.</p></header>
+     {error&&<p role="alert">{error}</p>}{!gateConfirmed&&<><p role="status">Any retained snapshot is for reference only. New writes are blocked until the disabled gate is confirmed.</p><button disabled={busy} onClick={()=>void refresh().catch(()=>{})}>Check service and execution gate</button></>}
+-    {!state?<p>Loading the isolated evidence snapshot…</p>:<><p>{state.assembly.snapshot.items.length} source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: {config.start} to {config.end}; source times may be contextual or unplaced.</p><div className="entry-columns"><section aria-label="Recorded evidence"><h2>Select evidence to correct</h2><button disabled={busy||locked||!gateConfirmed} onClick={()=>choose()}>New source entry</button><button disabled={busy||locked} onClick={()=>void refresh().catch(()=>setError('Refresh failed.'))}>Refresh evidence</button><label>Evidence family<select value={family} onChange={e=>setFamily(e.target.value)} disabled={busy||locked||!gateConfirmed}><option value="all">All 15 families</option>{Object.entries(families).map(([kind,label])=><option key={kind} value={kind}>{label}</option>)}</select></label><label>Find evidence<input value={search} onChange={e=>setSearch(e.target.value)} disabled={busy||locked||!gateConfirmed}/></label><ul className="entry-list">{state.assembly.snapshot.items.filter(item=>(family==='all'||item.fact.kind===family)&&[title(item),item.fact.id,value(item).text].join(' ').toLowerCase().includes(search.toLowerCase())).map(item=><li key={[item.fact.kind,item.fact.id,item.fact.revision].join('/')}><button disabled={busy||locked||!gateConfirmed} onClick={()=>choose(item)} aria-pressed={selected?.fact.id===item.fact.id&&selected?.fact.kind===item.fact.kind&&selected?.fact.revision===item.fact.revision}>{title(item)} · {value(item).text} {value(item).unit}<small>{item.fact.id} / {item.fact.revision} · {sourceTime(item)} · {String(item.fact.record_status)}</small></button></li>)}</ul></section>
++    {!state?<p>Loading the isolated evidence snapshot…</p>:<><p>{state.assembly.snapshot.items.length} source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: {config.start} to {config.end}; source times may be contextual or unplaced.</p><div className="entry-columns"><section aria-label="Recorded evidence"><h2>Select evidence to correct</h2><button disabled={busy||locked||!gateConfirmed} onClick={()=>choose()}>New source entry</button><button disabled={busy||locked} onClick={()=>void refresh().catch(()=>setError('Refresh failed.'))}>Refresh evidence</button><label>Evidence family<select value={family} onChange={e=>setFamily(e.target.value)} disabled={busy||locked||!gateConfirmed}><option value="all">All 15 families</option>{Object.entries(families).map(([kind,label])=><option key={kind} value={kind}>{label}</option>)}</select></label><label>Find evidence<input value={search} onChange={e=>setSearch(e.target.value)} disabled={busy||locked||!gateConfirmed}/></label><ul className="entry-list">{state.assembly.snapshot.items.filter(item=>(family==='all'||item.fact.kind===family)&&[title(item),item.fact.id,value(item).text].join(' ').toLowerCase().includes(search.toLowerCase())).map(item=><li key={evidenceKey(item.fact)}><button disabled={busy||locked||!gateConfirmed} onClick={()=>choose(item)} aria-pressed={selected?.fact.id===item.fact.id&&selected?.fact.kind===item.fact.kind&&selected?.fact.revision===item.fact.revision}>{title(item)} · {value(item).text} {value(item).unit}<small>{item.fact.id} / {item.fact.revision} · {sourceTime(item)} · {String(item.fact.record_status)}</small></button></li>)}</ul></section>
+     <section aria-label="Evidence draft"><h2>{mode==='new'?'New source entry':mode==='withdraw'?'Withdraw selected evidence':'Correct selected evidence'}</h2>
+     {selected&&<><p>Original retained: {selected.fact.kind} / {selected.fact.id} / {selected.fact.revision}</p><p>Original recorded value: {value(selected).text} {value(selected).unit} · {sourceTime(selected)}</p><p>Correction keeps the original observation time and context unless explicitly changed in the source record. It is not a new measurement or evidence of ongoing administration.</p><button disabled={busy||locked||!gateConfirmed} onClick={()=>void revisions()}>Load exact revision history</button><RecordedDisclosure label="Original source record" value={selected.fact}/>{history&&<RecordedDisclosure label={'History: '+history.revisions.length+' retained revisions'} value={history.revisions}/>}</>}
+     {phase==='editing'?<fieldset disabled={busy||!gateConfirmed}><label>Actor name<input value={actor} onChange={e=>setActor(e.target.value)} disabled={busy}/></label>{selected&&<><label>Action<select value={mode} onChange={e=>setMode(e.target.value as 'correct'|'withdraw')} disabled={busy}><option value="correct">Append correction</option><option value="withdraw">Append withdrawal</option></select></label><label>Reason for correction or withdrawal<textarea value={reason} onChange={e=>setReason(e.target.value)} disabled={busy}/></label>{record(record(selected.fact.result).quantity).value!==undefined&&<label>Recorded numeric value (raw unit preserved)<input value={numeric} onChange={e=>editNumeric(e.target.value)} disabled={busy}/></label>}</>}
+diff --git a/frontend/src/demo/GuidedEvidenceForm.tsx b/frontend/src/demo/GuidedEvidenceForm.tsx
+index d3978bb..ba2293d 100644
+--- a/frontend/src/demo/GuidedEvidenceForm.tsx
++++ b/frontend/src/demo/GuidedEvidenceForm.tsx
+@@ -1,3 +1,4 @@
++import {evidenceKey} from './evidenceIdentity';
+ import {useState} from 'react';
+ import type {CirculatoryItem} from '../api/circulatoryTypes';
+ import {title,value,sourceTime,quality} from './evidencePresentation';
+@@ -15,7 +16,7 @@ export function GuidedEvidenceForm({actor,items,onDraft}:{actor:string;items:Cir
+  {input('time','Source observation / event time (ISO with offset; optional)')}{input('available','Source availability time (ISO with offset; optional)')}
+  {family==='reassessment'?<>
+  {area('question','Reassessment question')}
+- {(['baseline','intervention','followup'] as const).map(stage=><div key={stage}><label>{stage==='followup'?'Follow-up evidence':stage==='baseline'?'Baseline evidence':'Documented intervention'}<select value={f[stage]??''} onChange={e=>set(stage,e.target.value)}><option value="">Select an exact source revision</option>{items.filter(item=>stage!=='intervention'||['circulatory_event','circulatory_vasoactive','circulatory_monitoring'].includes(item.fact.kind)).map(item=><option key={[item.fact.kind,item.fact.id,item.fact.revision].join('/')} value={[item.fact.kind,item.fact.id,item.fact.revision].join('/')}>{title(item)} · {item.fact.id}/{item.fact.revision} · {value(item).text} {value(item).unit} · {sourceTime(item)} · quality {quality(item)} · {String(item.fact.record_status)}</option>)}</select></label></div>)}
++ {(['baseline','intervention','followup'] as const).map(stage=><div key={stage}><label>{stage==='followup'?'Follow-up evidence':stage==='baseline'?'Baseline evidence':'Documented intervention'}<select value={f[stage]??''} onChange={e=>set(stage,e.target.value)}><option value="">Select an exact source revision</option>{items.filter(item=>stage!=='intervention'||['circulatory_event','circulatory_vasoactive','circulatory_monitoring'].includes(item.fact.kind)).map(item=><option key={evidenceKey(item.fact)} value={evidenceKey(item.fact)}>{title(item)} · {item.fact.id}/{item.fact.revision} · {value(item).text} {value(item).unit} · {sourceTime(item)} · quality {quality(item)} · {String(item.fact.record_status)}</option>)}</select></label></div>)}
+  {area('findings','Recorded findings (your assessment)')}{area('possibilities','Unconfirmed possibilities (your assessment)')}{input('nextReview','Next review plan (optional; no scheduling)')}
+  <p>Selections are retained as exact references, never replaced by successors. No responder classification, physiological delta, diagnosis or causal response is generated.</p>
+  </>:family==='infusion'?<>
+diff --git a/frontend/src/demo/evidenceIdentity.ts b/frontend/src/demo/evidenceIdentity.ts
+new file mode 100644
+index 0000000..e299d9a
+--- /dev/null
++++ b/frontend/src/demo/evidenceIdentity.ts
+@@ -0,0 +1,9 @@
++import type {CirculatoryItem} from '../api/circulatoryTypes';
++/** IDs and revisions may contain slashes; encode components without delimiters. */
++export const evidenceKey=(fact:Pick<CirculatoryItem['fact'],'kind'|'id'|'revision'>)=>JSON.stringify([fact.kind,fact.id,fact.revision]);
++export function resolveEvidenceKey(items:CirculatoryItem[],value:string):CirculatoryItem|undefined{
++ let tuple:unknown;try{tuple=JSON.parse(value);}catch{return undefined;}
++ if(!Array.isArray(tuple)||tuple.length!==3||!tuple.every(part=>typeof part==='string'))return undefined;
++ const [kind,id,revision]=tuple;
++ return items.find(item=>item.fact.kind===kind&&item.fact.id===id&&item.fact.revision===revision);
++}
+diff --git a/frontend/src/demo/guidedEvidence.ts b/frontend/src/demo/guidedEvidence.ts
+index d77f564..24e376d 100644
+--- a/frontend/src/demo/guidedEvidence.ts
++++ b/frontend/src/demo/guidedEvidence.ts
+@@ -1,4 +1,5 @@
+ import type {CirculatoryItem} from '../api/circulatoryTypes';
++import {resolveEvidenceKey} from './evidenceIdentity';
+ import {record} from './evidencePresentation';
+ export const guidedFamilies={pressure:'BP / MAP',gas:'ABG / oxygen transport',cardiac:'Cardiac output / index',echo:'Echo',infusion:'Infusions',perfusion:'Perfusion',reassessment:'Reassessment'};
+ export type GuidedFamily=keyof typeof guidedFamilies;
+@@ -22,7 +23,7 @@ export function buildGuided(family:GuidedFamily,f:Fields,actor:string,items:Circ
+  const fact:Record<string,unknown>={id,revision:'1',contract_version:'3',binding:{target,verification:{status:'unresolved',method:'Local synthetic encounter selection',verifier:actor.trim(),assessed_at:at,source:provenance.source,ambiguity:'Fictional patient identity only; not independently verified.'}},origin:'reported',provenance,time:{precision:'unknown'},temporal_status:'unknown',verification:'unverified',record_status:'recorded',occurred:stamp(f.time),available:stamp(f.available),uncertainty:[required(f.uncertainty)]};
+  if(family==='reassessment'){
+   const stages=['baseline','intervention','followup'];
+-  const selected=stages.map(stage=>{const item=items.find(i=>[i.fact.kind,i.fact.id,i.fact.revision].join('/')===f[stage]);if(!item||item.fact.binding.target.patient_id!==target.patient_id||item.fact.binding.target.encounter_id!==target.encounter_id)throw Error('Select an exact record in this encounter for each reassessment stage.');return item;});
++  const selected=stages.map(stage=>{const item=resolveEvidenceKey(items,f[stage]);if(!item||item.fact.binding.target.patient_id!==target.patient_id||item.fact.binding.target.encounter_id!==target.encounter_id)throw Error('Select an exact record in this encounter for each reassessment stage.');return item;});
+   if(!['circulatory_event','circulatory_vasoactive','circulatory_monitoring'].includes(selected[1].fact.kind))throw Error('Choose a documented intervention event, not a measurement.');
+   const refs=selected.map(i=>({kind:i.fact.kind,id:i.fact.id,version:i.fact.revision}));
+   fact.kind='circulatory_event';fact.event_type='other';
+diff --git a/frontend/tests/evidenceEntry.test.tsx b/frontend/tests/evidenceEntry.test.tsx
+index e99291a..db09f38 100644
+--- a/frontend/tests/evidenceEntry.test.tsx
++++ b/frontend/tests/evidenceEntry.test.tsx
+@@ -1,6 +1,9 @@
+ import {it,expect,vi,afterEach} from 'vitest';
+ import {render,screen,fireEvent,cleanup,waitFor} from '@testing-library/react';
+ import fixture from './fixtures/icuFlowsheet.json';
++import collisionFixture from './fixtures/reassessmentCollision.json';
++import type {CirculatoryItem} from '../src/api/circulatoryTypes';
++import {evidenceKey} from '../src/demo/evidenceIdentity';
+ import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
+ import type {CirculatoryClient} from '../src/api/circulatoryClient';
+ import {EvidenceEntryWorkspace} from '../src/demo/EvidenceEntryWorkspace';
+@@ -74,7 +77,15 @@ it('keeps JSON-only and interleaved shortcut edits in the single authoritative d
+  expect(entry.validate.mock.calls[0][0].fact.result).toMatchObject({quantity:{value:'7.3600'}});
+  fireEvent.click(screen.getByRole('button',{name:'Edit draft'}));
+  fireEvent.change(screen.getByLabelText('Recorded numeric value (raw unit preserved)'),{target:{value:'7.37'}});
+- const revised=JSON.parse(editor.value);revised.result.quantity.value='7.38';
++ const currentEditor=screen.getByLabelText('Complete source record (JSON)') as HTMLTextAreaElement;
++ expect(currentEditor).not.toBe(editor);
++ const revised=JSON.parse(currentEditor.value);
++ expect(revised.result.quantity.value).toBe('7.37');
++ const original=JSON.parse(editor.value);
++ expect({...revised,result:original.result}).toEqual(original);
++ expect({...revised.result,quantity:original.result.quantity}).toEqual(original.result);
++ expect({...revised.result.quantity,value:original.result.quantity.value}).toEqual(original.result.quantity);
++ revised.result.quantity.value='7.38';
+  fireEvent.change(screen.getByLabelText('Complete source record (JSON)'),{target:{value:JSON.stringify(revised)}});
+  fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
+  await screen.findByRole('button',{name:'Confirm append to local database'});
+@@ -135,7 +146,7 @@ it('prepares a clinician-authored reassessment with exact linked revisions and n
+  fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Reviewer'}});
+  fireEvent.change(screen.getByLabelText('Entry family'),{target:{value:'reassessment'}});
+  for(const [label,text] of [['Reassessment question','Review recorded intervention'],['Recorded findings (your assessment)','Distinct times and methods'],['Unconfirmed possibilities (your assessment)','No causal relationship established'],['Source limitations / uncertainty (required)','Sample context incomplete']])fireEvent.change(screen.getByLabelText(label),{target:{value:text}});
+- for(const [label,ref] of [['Baseline evidence','circulatory_pressure/fs-MAP-15/1'],['Documented intervention','circulatory_vasoactive/fs-N-CHANGE/1'],['Follow-up evidence','circulatory_cardiac/fs-CO-60/1']])fireEvent.change(screen.getByLabelText(label),{target:{value:ref}});
++ for(const [label,ref] of [['Baseline evidence','["circulatory_pressure","fs-MAP-15","1"]'],['Documented intervention','["circulatory_vasoactive","fs-N-CHANGE","1"]'],['Follow-up evidence','["circulatory_cardiac","fs-CO-60","1"]']])fireEvent.change(screen.getByLabelText(label),{target:{value:ref}});
+  fireEvent.click(screen.getByRole('button',{name:'Use guided record for validation'}));fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
+  await screen.findByRole('button',{name:'Confirm append to local database'});
+  expect(entry.validate.mock.calls[0][0].fact.associations).toHaveLength(3);
+@@ -149,3 +160,35 @@ it('does not mark a refreshed successor selected when the original revision rema
+  expect(screen.getByRole('button',{name:/pH.*fs-PH-60/})).toHaveAttribute('aria-pressed','false');
+  expect(screen.getByText(/Original retained: circulatory_oxygen \/ fs-PH-60 \/ 1/)).toBeInTheDocument();
+ });
++
++it.each([{reverse:false,selected:0},{reverse:false,selected:1},{reverse:true,selected:0},{reverse:true,selected:1}])('preserves admitted colliding stage selections through preview and submission: $reverse / $selected',async({reverse,selected})=>{
++ const all=structuredClone(collisionFixture) as CirculatoryItem[];
++ const ordered=reverse?[...all].reverse():all;
++ const chosen=all[selected],follow=all[1-selected],intervention=all[2+selected];
++ const {entry}=setup(false,state=>{state.assembly.snapshot.items=ordered;});
++ await screen.findByRole('textbox',{name:'Find evidence'});
++ fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Collision reviewer'}});
++ fireEvent.change(screen.getByLabelText('Entry family'),{target:{value:'reassessment'}});
++ for(const [label,text] of [['Reassessment question','Review exact colliding records'],['Recorded findings (your assessment)','Distinct admitted source assertions'],['Unconfirmed possibilities (your assessment)','Relationship not established'],['Source limitations / uncertainty (required)','Fictional source assertions; no causal conclusion']])fireEvent.change(screen.getByLabelText(label),{target:{value:text}});
++ for(const [label,item] of [['Baseline evidence',chosen],['Documented intervention',intervention],['Follow-up evidence',follow]] as const){
++  const select=screen.getByLabelText(label) as HTMLSelectElement;
++  const values=[...select.options].map(option=>option.value);
++  expect(new Set(values).size).toBe(values.length);
++  fireEvent.change(select,{target:{value:evidenceKey(item.fact)}});
++  expect(select).toHaveValue(evidenceKey(item.fact));
++ }
++ fireEvent.click(screen.getByRole('button',{name:'Use guided record for validation'}));fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
++ await screen.findByRole('button',{name:'Confirm append to local database'});
++ const expected=[chosen,intervention,follow].map(item=>({kind:item.fact.kind,id:item.fact.id,version:item.fact.revision}));
++ function check(fact:CirculatoryItem['fact']){
++  expect(fact.associations).toEqual(expected.map(exact=>expect.objectContaining({exact})));
++  for(const [n,stage] of ['baseline','intervention','followup'].entries()){
++   expect(fact.external_evidence).toEqual(expect.arrayContaining([expect.objectContaining({namespace:'clinrx.local.reassessment.'+stage+'/v1',code:JSON.stringify(expected[n])})]));
++   expect(String((fact.description as {raw_display:string}).raw_display)).toContain(stage+': '+JSON.stringify(expected[n]));
++  }
++ }
++ check(entry.validate.mock.calls[0][0].fact);
++ entry.save.mockResolvedValue({fact:entry.validate.mock.calls[0][0].fact,ingestion:{ingestion_sequence:170}});
++ fireEvent.click(screen.getByRole('button',{name:'Confirm append to local database'}));await screen.findByText(/Exact revision saved and confirmed/);
++ check(entry.save.mock.calls[0][0].fact);
++});
+diff --git a/frontend/tests/fixtures/guidedEntries.json b/frontend/tests/fixtures/guidedEntries.json
+index 989392b..ba20dc8 100644
+--- a/frontend/tests/fixtures/guidedEntries.json
++++ b/frontend/tests/fixtures/guidedEntries.json
+@@ -1468,9 +1468,9 @@
+       "method": "unknown",
+       "resultType": "numeric",
+       "question": "Review documented intervention and separately recorded findings",
+-      "baseline": "circulatory_pressure/fs-MAP-15/1",
+-      "intervention": "circulatory_vasoactive/fs-N-CHANGE/1",
+-      "followup": "circulatory_cardiac/fs-CO-60/1",
++      "baseline": "[\"circulatory_pressure\",\"fs-MAP-15\",\"1\"]",
++      "intervention": "[\"circulatory_vasoactive\",\"fs-N-CHANGE\",\"1\"]",
++      "followup": "[\"circulatory_cardiac\",\"fs-CO-60\",\"1\"]",
+       "findings": "Recorded MAP and CO have distinct times and methods.",
+       "possibilities": "Relationship unconfirmed; no causal attribution",
+       "nextReview": "Clinician to review sample and echo context"
+@@ -1659,4 +1659,4 @@
+       ]
+     }
+   }
+-]
+\ No newline at end of file
++]
+diff --git a/frontend/tests/fixtures/reassessmentCollision.json b/frontend/tests/fixtures/reassessmentCollision.json
+new file mode 100644
+index 0000000..84b3f24
+--- /dev/null
++++ b/frontend/tests/fixtures/reassessmentCollision.json
+@@ -0,0 +1,1056 @@
++[
++  {
++    "fact": {
++      "kind": "circulatory_pressure",
++      "id": "a/b",
++      "revision": "c",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1",
++          "longitudinal_context_id": null
++        },
++        "verification": {
++          "status": "verified",
++          "method": "synthetic-demo",
++          "verifier": "synthetic-system",
++          "assessed_at": "2026-10-08T08:00:00Z",
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "ambiguity": null
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx.synthetic.demo",
++          "identifier": "patient-state-v1",
++          "version": "1",
++          "channel": "system"
++        },
++        "actor": "synthetic-demo",
++        "recorded_at": "2026-10-08T08:00:00Z",
++        "upstream": [],
++        "lineage": "unknown",
++        "limitations": [
++          "Synthetic source assertion only."
++        ]
++      },
++      "time": {
++        "event": null,
++        "recorded": null,
++        "effective_start": null,
++        "effective_end": null,
++        "retrieved": null,
++        "processed": null,
++        "precision": "unknown",
++        "uncertainty": null
++      },
++      "verification": "unverified",
++      "conflict": "unknown",
++      "temporal_status": "unknown",
++      "uncertainty": [],
++      "supersedes": null,
++      "correction_reason": null,
++      "contract_version": "3",
++      "occurred": {
++        "timestamp_precision": "M7ExactTimestampInput/v1",
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T08:00:00Z",
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "source_timestamp": "2026-10-08T08:00:00+00:00",
++        "clock": "verified",
++        "clock_basis": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "conflicting": [],
++        "alternative_sources": [],
++        "alignment": null
++      },
++      "available": {
++        "timestamp_precision": "M7ExactTimestampInput/v1",
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T08:00:00Z",
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "source_timestamp": "2026-10-08T08:00:00+00:00",
++        "clock": "verified",
++        "clock_basis": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "conflicting": [],
++        "alternative_sources": [],
++        "alignment": null
++      },
++      "associations": [],
++      "source_identifiers": [],
++      "disclosures": [],
++      "record_status": "recorded",
++      "result": {
++        "result_type": "numeric",
++        "quantity": {
++          "value": "61.00",
++          "unit": {
++            "raw": "mmHg",
++            "status": "unresolved",
++            "system": null,
++            "code": null,
++            "limitation": "Synthetic source unit."
++          }
++        },
++        "comparator": "="
++      },
++      "acquisition": {
++        "method": "invasive_arterial",
++        "source_method": null,
++        "device": null,
++        "episode": null,
++        "parameter": null,
++        "parameter_concept": null,
++        "algorithm": null,
++        "parameter_support": "unknown",
++        "support_provenance": null,
++        "site": null,
++        "compartment": "unknown",
++        "laterality": "unknown",
++        "respiratory_phase": null,
++        "position": null,
++        "reference_level": null,
++        "calibration": "adequate",
++        "zeroing": "adequate",
++        "calibration_application": {
++          "acquisition": {
++            "kind": "circulatory_pressure",
++            "id": "m7-P",
++            "version": "1"
++          },
++          "status": "applied",
++          "available": {
++            "timestamp_precision": "M7ExactTimestampInput/v1",
++            "recorded": {
++              "status": "known",
++              "precision": "instant",
++              "value": "2026-10-08T08:00:00Z",
++              "lower": null,
++              "upper": null,
++              "uncertainty": null
++            },
++            "source_timestamp": "2026-10-08T08:00:00+00:00",
++            "clock": "verified",
++            "clock_basis": {
++              "source": {
++                "namespace": "clinrx.synthetic.demo",
++                "identifier": "patient-state-v1",
++                "version": "1",
++                "channel": "system"
++              },
++              "actor": "synthetic-demo",
++              "recorded_at": "2026-10-08T08:00:00Z",
++              "upstream": [],
++              "lineage": "unknown",
++              "limitations": [
++                "Synthetic source assertion only."
++              ]
++            },
++            "conflicting": [],
++            "alternative_sources": [],
++            "alignment": null
++          },
++          "provenance": {
++            "source": {
++              "namespace": "clinrx.synthetic.demo",
++              "identifier": "patient-state-v1",
++              "version": "1",
++              "channel": "system"
++            },
++            "actor": "synthetic-demo",
++            "recorded_at": "2026-10-08T08:00:00Z",
++            "upstream": [],
++            "lineage": "unknown",
++            "limitations": [
++              "Synthetic source assertion only."
++            ]
++          }
++        },
++        "zeroing_application": {
++          "acquisition": {
++            "kind": "circulatory_pressure",
++            "id": "m7-P",
++            "version": "1"
++          },
++          "status": "applied",
++          "available": {
++            "timestamp_precision": "M7ExactTimestampInput/v1",
++            "recorded": {
++              "status": "known",
++              "precision": "instant",
++              "value": "2026-10-08T08:00:00Z",
++              "lower": null,
++              "upper": null,
++              "uncertainty": null
++            },
++            "source_timestamp": "2026-10-08T08:00:00+00:00",
++            "clock": "verified",
++            "clock_basis": {
++              "source": {
++                "namespace": "clinrx.synthetic.demo",
++                "identifier": "patient-state-v1",
++                "version": "1",
++                "channel": "system"
++              },
++              "actor": "synthetic-demo",
++              "recorded_at": "2026-10-08T08:00:00Z",
++              "upstream": [],
++              "lineage": "unknown",
++              "limitations": [
++                "Synthetic source assertion only."
++              ]
++            },
++            "conflicting": [],
++            "alternative_sources": [],
++            "alignment": null
++          },
++          "provenance": {
++            "source": {
++              "namespace": "clinrx.synthetic.demo",
++              "identifier": "patient-state-v1",
++              "version": "1",
++              "channel": "system"
++            },
++            "actor": "synthetic-demo",
++            "recorded_at": "2026-10-08T08:00:00Z",
++            "upstream": [],
++            "lineage": "unknown",
++            "limitations": [
++              "Synthetic source assertion only."
++            ]
++          }
++        },
++        "calibration_provenance": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [
++            {
++              "target": {
++                "kind": "circulatory_monitoring",
++                "id": "m7-CAL",
++                "version": "1"
++              },
++              "relationship": "derived_from",
++              "basis": [],
++              "rationale": null
++            }
++          ],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "zeroing_provenance": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "interval_start": {
++          "status": "not_recorded",
++          "precision": "unknown",
++          "value": null,
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "interval_end": {
++          "status": "not_recorded",
++          "precision": "unknown",
++          "value": null,
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "averaging": null,
++        "indexing_denominator": null,
++        "indexing_basis": null,
++        "indicator": null,
++        "injection": null,
++        "quality": {
++          "status": "acceptable",
++          "artifacts": [],
++          "limitations": [],
++          "provenance": {
++            "source": {
++              "namespace": "clinrx.synthetic.demo",
++              "identifier": "patient-state-v1",
++              "version": "1",
++              "channel": "system"
++            },
++            "actor": "synthetic-demo",
++            "recorded_at": "2026-10-08T08:00:00Z",
++            "upstream": [],
++            "lineage": "unknown",
++            "limitations": [
++              "Synthetic source assertion only."
++            ]
++          }
++        },
++        "limitations": []
++      },
++      "production": "direct_measurement",
++      "calculation_method": null,
++      "calculation_inputs": [],
++      "concept": "systemic_mean"
++    },
++    "expected_digest": "6b3b088be21401bb78866df90078df2a57ab075a7a921eeae0ec0f8f0e175ade",
++    "ingestion": {
++      "repository_id": "0689fc82-e802-4664-b72a-509b022717f7",
++      "ingestion_sequence": 4,
++      "ingested_at": "2026-10-16T17:33:57.766997Z",
++      "payload_version": 1
++    },
++    "inclusion": "in_window",
++    "contextual_for": [],
++    "disclosures": [
++      "Recorded evidence only; source availability, continuity and completeness require separate assessment."
++    ]
++  },
++  {
++    "fact": {
++      "kind": "circulatory_pressure",
++      "id": "a",
++      "revision": "b/c",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1",
++          "longitudinal_context_id": null
++        },
++        "verification": {
++          "status": "verified",
++          "method": "synthetic-demo",
++          "verifier": "synthetic-system",
++          "assessed_at": "2026-10-08T08:00:00Z",
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "ambiguity": null
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx.synthetic.demo",
++          "identifier": "patient-state-v1",
++          "version": "1",
++          "channel": "system"
++        },
++        "actor": "synthetic-demo",
++        "recorded_at": "2026-10-08T08:00:00Z",
++        "upstream": [],
++        "lineage": "unknown",
++        "limitations": [
++          "Synthetic source assertion only."
++        ]
++      },
++      "time": {
++        "event": null,
++        "recorded": null,
++        "effective_start": null,
++        "effective_end": null,
++        "retrieved": null,
++        "processed": null,
++        "precision": "unknown",
++        "uncertainty": null
++      },
++      "verification": "unverified",
++      "conflict": "unknown",
++      "temporal_status": "unknown",
++      "uncertainty": [],
++      "supersedes": null,
++      "correction_reason": null,
++      "contract_version": "3",
++      "occurred": {
++        "timestamp_precision": "M7ExactTimestampInput/v1",
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T08:00:00Z",
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "source_timestamp": "2026-10-08T08:00:00+00:00",
++        "clock": "verified",
++        "clock_basis": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "conflicting": [],
++        "alternative_sources": [],
++        "alignment": null
++      },
++      "available": {
++        "timestamp_precision": "M7ExactTimestampInput/v1",
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T08:00:00Z",
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "source_timestamp": "2026-10-08T08:00:00+00:00",
++        "clock": "verified",
++        "clock_basis": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "conflicting": [],
++        "alternative_sources": [],
++        "alignment": null
++      },
++      "associations": [],
++      "source_identifiers": [],
++      "disclosures": [],
++      "record_status": "recorded",
++      "result": {
++        "result_type": "numeric",
++        "quantity": {
++          "value": "73.00",
++          "unit": {
++            "raw": "mmHg",
++            "status": "unresolved",
++            "system": null,
++            "code": null,
++            "limitation": "Synthetic source unit."
++          }
++        },
++        "comparator": "="
++      },
++      "acquisition": {
++        "method": "invasive_arterial",
++        "source_method": null,
++        "device": null,
++        "episode": null,
++        "parameter": null,
++        "parameter_concept": null,
++        "algorithm": null,
++        "parameter_support": "unknown",
++        "support_provenance": null,
++        "site": null,
++        "compartment": "unknown",
++        "laterality": "unknown",
++        "respiratory_phase": null,
++        "position": null,
++        "reference_level": null,
++        "calibration": "adequate",
++        "zeroing": "adequate",
++        "calibration_application": {
++          "acquisition": {
++            "kind": "circulatory_pressure",
++            "id": "m7-P",
++            "version": "1"
++          },
++          "status": "applied",
++          "available": {
++            "timestamp_precision": "M7ExactTimestampInput/v1",
++            "recorded": {
++              "status": "known",
++              "precision": "instant",
++              "value": "2026-10-08T08:00:00Z",
++              "lower": null,
++              "upper": null,
++              "uncertainty": null
++            },
++            "source_timestamp": "2026-10-08T08:00:00+00:00",
++            "clock": "verified",
++            "clock_basis": {
++              "source": {
++                "namespace": "clinrx.synthetic.demo",
++                "identifier": "patient-state-v1",
++                "version": "1",
++                "channel": "system"
++              },
++              "actor": "synthetic-demo",
++              "recorded_at": "2026-10-08T08:00:00Z",
++              "upstream": [],
++              "lineage": "unknown",
++              "limitations": [
++                "Synthetic source assertion only."
++              ]
++            },
++            "conflicting": [],
++            "alternative_sources": [],
++            "alignment": null
++          },
++          "provenance": {
++            "source": {
++              "namespace": "clinrx.synthetic.demo",
++              "identifier": "patient-state-v1",
++              "version": "1",
++              "channel": "system"
++            },
++            "actor": "synthetic-demo",
++            "recorded_at": "2026-10-08T08:00:00Z",
++            "upstream": [],
++            "lineage": "unknown",
++            "limitations": [
++              "Synthetic source assertion only."
++            ]
++          }
++        },
++        "zeroing_application": {
++          "acquisition": {
++            "kind": "circulatory_pressure",
++            "id": "m7-P",
++            "version": "1"
++          },
++          "status": "applied",
++          "available": {
++            "timestamp_precision": "M7ExactTimestampInput/v1",
++            "recorded": {
++              "status": "known",
++              "precision": "instant",
++              "value": "2026-10-08T08:00:00Z",
++              "lower": null,
++              "upper": null,
++              "uncertainty": null
++            },
++            "source_timestamp": "2026-10-08T08:00:00+00:00",
++            "clock": "verified",
++            "clock_basis": {
++              "source": {
++                "namespace": "clinrx.synthetic.demo",
++                "identifier": "patient-state-v1",
++                "version": "1",
++                "channel": "system"
++              },
++              "actor": "synthetic-demo",
++              "recorded_at": "2026-10-08T08:00:00Z",
++              "upstream": [],
++              "lineage": "unknown",
++              "limitations": [
++                "Synthetic source assertion only."
++              ]
++            },
++            "conflicting": [],
++            "alternative_sources": [],
++            "alignment": null
++          },
++          "provenance": {
++            "source": {
++              "namespace": "clinrx.synthetic.demo",
++              "identifier": "patient-state-v1",
++              "version": "1",
++              "channel": "system"
++            },
++            "actor": "synthetic-demo",
++            "recorded_at": "2026-10-08T08:00:00Z",
++            "upstream": [],
++            "lineage": "unknown",
++            "limitations": [
++              "Synthetic source assertion only."
++            ]
++          }
++        },
++        "calibration_provenance": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [
++            {
++              "target": {
++                "kind": "circulatory_monitoring",
++                "id": "m7-CAL",
++                "version": "1"
++              },
++              "relationship": "derived_from",
++              "basis": [],
++              "rationale": null
++            }
++          ],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "zeroing_provenance": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "interval_start": {
++          "status": "not_recorded",
++          "precision": "unknown",
++          "value": null,
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "interval_end": {
++          "status": "not_recorded",
++          "precision": "unknown",
++          "value": null,
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "averaging": null,
++        "indexing_denominator": null,
++        "indexing_basis": null,
++        "indicator": null,
++        "injection": null,
++        "quality": {
++          "status": "acceptable",
++          "artifacts": [],
++          "limitations": [],
++          "provenance": {
++            "source": {
++              "namespace": "clinrx.synthetic.demo",
++              "identifier": "patient-state-v1",
++              "version": "1",
++              "channel": "system"
++            },
++            "actor": "synthetic-demo",
++            "recorded_at": "2026-10-08T08:00:00Z",
++            "upstream": [],
++            "lineage": "unknown",
++            "limitations": [
++              "Synthetic source assertion only."
++            ]
++          }
++        },
++        "limitations": []
++      },
++      "production": "direct_measurement",
++      "calculation_method": null,
++      "calculation_inputs": [],
++      "concept": "systemic_mean"
++    },
++    "expected_digest": "37f0f95fc1f3d3ab879bda1e96378a6ea3601deb4daeccd7dad2a26382645770",
++    "ingestion": {
++      "repository_id": "0689fc82-e802-4664-b72a-509b022717f7",
++      "ingestion_sequence": 4,
++      "ingested_at": "2026-10-16T17:33:57.766997Z",
++      "payload_version": 1
++    },
++    "inclusion": "in_window",
++    "contextual_for": [],
++    "disclosures": [
++      "Recorded evidence only; source availability, continuity and completeness require separate assessment."
++    ]
++  },
++  {
++    "fact": {
++      "kind": "circulatory_event",
++      "id": "event/a/b",
++      "revision": "c",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1",
++          "longitudinal_context_id": null
++        },
++        "verification": {
++          "status": "verified",
++          "method": "synthetic-demo",
++          "verifier": "synthetic-system",
++          "assessed_at": "2026-10-08T08:00:00Z",
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "ambiguity": null
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx.synthetic.demo",
++          "identifier": "patient-state-v1",
++          "version": "1",
++          "channel": "system"
++        },
++        "actor": "synthetic-demo",
++        "recorded_at": "2026-10-08T08:00:00Z",
++        "upstream": [],
++        "lineage": "unknown",
++        "limitations": [
++          "Synthetic source assertion only."
++        ]
++      },
++      "time": {
++        "event": null,
++        "recorded": null,
++        "effective_start": null,
++        "effective_end": null,
++        "retrieved": null,
++        "processed": null,
++        "precision": "unknown",
++        "uncertainty": null
++      },
++      "verification": "unverified",
++      "conflict": "unknown",
++      "temporal_status": "unknown",
++      "uncertainty": [],
++      "supersedes": null,
++      "correction_reason": null,
++      "contract_version": "3",
++      "occurred": {
++        "timestamp_precision": "M7ExactTimestampInput/v1",
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T08:00:00Z",
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "source_timestamp": "2026-10-08T08:00:00+00:00",
++        "clock": "verified",
++        "clock_basis": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "conflicting": [],
++        "alternative_sources": [],
++        "alignment": null
++      },
++      "available": {
++        "timestamp_precision": "M7ExactTimestampInput/v1",
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T08:00:00Z",
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "source_timestamp": "2026-10-08T08:00:00+00:00",
++        "clock": "verified",
++        "clock_basis": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "conflicting": [],
++        "alternative_sources": [],
++        "alignment": null
++      },
++      "associations": [],
++      "source_identifiers": [],
++      "disclosures": [
++        "Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them."
++      ],
++      "record_status": "recorded",
++      "event_type": "other",
++      "description": {
++        "raw_display": "Fictional intervention event/a/b revision c",
++        "coding": {
++          "namespace": "clinrx.synthetic.hemodynamic-chart/v1",
++          "code": "body_surface_area",
++          "version": "1",
++          "raw_display": "body_surface_area"
++        }
++      },
++      "external_evidence": [],
++      "recorded_amount": {
++        "value": "1.73",
++        "unit": {
++          "raw": "m2",
++          "status": "unresolved",
++          "system": null,
++          "code": null,
++          "limitation": "Synthetic source unit."
++        }
++      }
++    },
++    "expected_digest": "53a964996c7060beb55aae8435156933eed2244424ca344f7bf44628fc01b209",
++    "ingestion": {
++      "repository_id": "0689fc82-e802-4664-b72a-509b022717f7",
++      "ingestion_sequence": 49,
++      "ingested_at": "2026-10-16T17:34:00.718473Z",
++      "payload_version": 1
++    },
++    "inclusion": "in_window",
++    "contextual_for": [],
++    "disclosures": [
++      "Recorded evidence only; source availability, continuity and completeness require separate assessment."
++    ]
++  },
++  {
++    "fact": {
++      "kind": "circulatory_event",
++      "id": "event/a",
++      "revision": "b/c",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1",
++          "longitudinal_context_id": null
++        },
++        "verification": {
++          "status": "verified",
++          "method": "synthetic-demo",
++          "verifier": "synthetic-system",
++          "assessed_at": "2026-10-08T08:00:00Z",
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "ambiguity": null
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx.synthetic.demo",
++          "identifier": "patient-state-v1",
++          "version": "1",
++          "channel": "system"
++        },
++        "actor": "synthetic-demo",
++        "recorded_at": "2026-10-08T08:00:00Z",
++        "upstream": [],
++        "lineage": "unknown",
++        "limitations": [
++          "Synthetic source assertion only."
++        ]
++      },
++      "time": {
++        "event": null,
++        "recorded": null,
++        "effective_start": null,
++        "effective_end": null,
++        "retrieved": null,
++        "processed": null,
++        "precision": "unknown",
++        "uncertainty": null
++      },
++      "verification": "unverified",
++      "conflict": "unknown",
++      "temporal_status": "unknown",
++      "uncertainty": [],
++      "supersedes": null,
++      "correction_reason": null,
++      "contract_version": "3",
++      "occurred": {
++        "timestamp_precision": "M7ExactTimestampInput/v1",
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T08:00:00Z",
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "source_timestamp": "2026-10-08T08:00:00+00:00",
++        "clock": "verified",
++        "clock_basis": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "conflicting": [],
++        "alternative_sources": [],
++        "alignment": null
++      },
++      "available": {
++        "timestamp_precision": "M7ExactTimestampInput/v1",
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T08:00:00Z",
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "source_timestamp": "2026-10-08T08:00:00+00:00",
++        "clock": "verified",
++        "clock_basis": {
++          "source": {
++            "namespace": "clinrx.synthetic.demo",
++            "identifier": "patient-state-v1",
++            "version": "1",
++            "channel": "system"
++          },
++          "actor": "synthetic-demo",
++          "recorded_at": "2026-10-08T08:00:00Z",
++          "upstream": [],
++          "lineage": "unknown",
++          "limitations": [
++            "Synthetic source assertion only."
++          ]
++        },
++        "conflicting": [],
++        "alternative_sources": [],
++        "alignment": null
++      },
++      "associations": [],
++      "source_identifiers": [],
++      "disclosures": [
++        "Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them."
++      ],
++      "record_status": "recorded",
++      "event_type": "other",
++      "description": {
++        "raw_display": "Fictional intervention event/a revision b/c",
++        "coding": {
++          "namespace": "clinrx.synthetic.hemodynamic-chart/v1",
++          "code": "body_surface_area",
++          "version": "1",
++          "raw_display": "body_surface_area"
++        }
++      },
++      "external_evidence": [],
++      "recorded_amount": {
++        "value": "1.73",
++        "unit": {
++          "raw": "m2",
++          "status": "unresolved",
++          "system": null,
++          "code": null,
++          "limitation": "Synthetic source unit."
++        }
++      }
++    },
++    "expected_digest": "942bbd3ba226da09b4671226d6311d6d660d04dd858ad3a0c71146dbde588524",
++    "ingestion": {
++      "repository_id": "0689fc82-e802-4664-b72a-509b022717f7",
++      "ingestion_sequence": 49,
++      "ingested_at": "2026-10-16T17:34:00.718473Z",
++      "payload_version": 1
++    },
++    "inclusion": "in_window",
++    "contextual_for": [],
++    "disclosures": [
++      "Recorded evidence only; source availability, continuity and completeness require separate assessment."
++    ]
++  }
++]
+diff --git a/frontend/tests/guidedEvidence.test.ts b/frontend/tests/guidedEvidence.test.ts
+index 62c08e6..73d3a18 100644
+--- a/frontend/tests/guidedEvidence.test.ts
++++ b/frontend/tests/guidedEvidence.test.ts
+@@ -3,10 +3,13 @@ import {buildGuided,type GuidedFamily,type Fields} from '../src/demo/guidedEvide
+ import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
+ import fixture from './fixtures/icuFlowsheet.json';
+ import admittedExamples from './fixtures/guidedEntries.json';
++import {evidenceKey,resolveEvidenceKey} from '../src/demo/evidenceIdentity';
++import collisionFixture from './fixtures/reassessmentCollision.json';
++import type {CirculatoryItem} from '../src/api/circulatoryTypes';
+ import {record} from '../src/demo/evidencePresentation';
+ const items=decodeCirculatoryState(structuredClone(fixture)).assembly.snapshot.items;
+ const defaults:Fields={time:'2026-10-08T09:15:00.123456Z',available:'',value:'7.3600',unit:'1',uncertainty:'Fictional source; context requires review',production:'direct_measurement',quality:'unknown',method:'unknown',resultType:'numeric'};
+-const cases:[GuidedFamily,Fields][]=[['pressure',{concept:'systemic_mean',value:'71.00',unit:'mmHg',method:'automated_cuff'}],['gas',{concept:'ph',sample:'arterial',specimen:'local-sample',fio2:'40',fio2Unit:'%',peep:'5',peepUnit:'cmH2O'}],['gas',{concept:'svo2',sample:'mixed_venous',value:'62.0',unit:'%'}],['gas',{concept:'lactate',sample:'arterial',value:'2.10',unit:'mmol/L',reportStatus:'final'}],['cardiac',{concept:'co',value:'4.70',unit:'L/min',method:'bolus_thermodilution',quality:'suspect',methodContext:'PAC source-recorded three-injection basis; no ClinRx averaging'}],['echo',{concept:'estimated_rvsp',value:'45.0',unit:'mmHg',production:'source_calculated',productionBasis:'Source TR velocity / estimated RAP; RVOT obstruction context unknown',study:'study-local',report:'report-local',reportRevision:'1'}],['echo',{concept:'rv_function',resultType:'qualitative',finding:'Source-reported reduced RV function',study:'study-local',report:'report-local',reportRevision:'1'}],['infusion',{drug:'noradrenaline',action:'order',sourceStatus:'Source prescribed order; no administration',series:'local-N',rate:'7.00',rateUnit:'mcg/min',concentration:'0.08',concentrationUnit:'mg/mL'}],['infusion',{drug:'vasopressin',action:'initiation',sourceStatus:'Source documented start',series:'local-V',rate:'1.8',rateUnit:'units/h'}],['infusion',{drug:'dobutamine',action:'pause',sourceStatus:'Source documented pause',series:'local-D',interruption:'Source recorded reason'}],['perfusion',{concept:'capillary_refill',value:'3.0',unit:'s',method:'bedside_examination'}],['reassessment',{question:'Review documented intervention and separately recorded findings',baseline:'circulatory_pressure/fs-MAP-15/1',intervention:'circulatory_vasoactive/fs-N-CHANGE/1',followup:'circulatory_cardiac/fs-CO-60/1',findings:'Recorded MAP and CO have distinct times and methods.',possibilities:'Relationship unconfirmed; no causal attribution',nextReview:'Clinician to review sample and echo context'}]];
++const cases:[GuidedFamily,Fields][]=[['pressure',{concept:'systemic_mean',value:'71.00',unit:'mmHg',method:'automated_cuff'}],['gas',{concept:'ph',sample:'arterial',specimen:'local-sample',fio2:'40',fio2Unit:'%',peep:'5',peepUnit:'cmH2O'}],['gas',{concept:'svo2',sample:'mixed_venous',value:'62.0',unit:'%'}],['gas',{concept:'lactate',sample:'arterial',value:'2.10',unit:'mmol/L',reportStatus:'final'}],['cardiac',{concept:'co',value:'4.70',unit:'L/min',method:'bolus_thermodilution',quality:'suspect',methodContext:'PAC source-recorded three-injection basis; no ClinRx averaging'}],['echo',{concept:'estimated_rvsp',value:'45.0',unit:'mmHg',production:'source_calculated',productionBasis:'Source TR velocity / estimated RAP; RVOT obstruction context unknown',study:'study-local',report:'report-local',reportRevision:'1'}],['echo',{concept:'rv_function',resultType:'qualitative',finding:'Source-reported reduced RV function',study:'study-local',report:'report-local',reportRevision:'1'}],['infusion',{drug:'noradrenaline',action:'order',sourceStatus:'Source prescribed order; no administration',series:'local-N',rate:'7.00',rateUnit:'mcg/min',concentration:'0.08',concentrationUnit:'mg/mL'}],['infusion',{drug:'vasopressin',action:'initiation',sourceStatus:'Source documented start',series:'local-V',rate:'1.8',rateUnit:'units/h'}],['infusion',{drug:'dobutamine',action:'pause',sourceStatus:'Source documented pause',series:'local-D',interruption:'Source recorded reason'}],['perfusion',{concept:'capillary_refill',value:'3.0',unit:'s',method:'bedside_examination'}],['reassessment',{question:'Review documented intervention and separately recorded findings',baseline:'["circulatory_pressure","fs-MAP-15","1"]',intervention:'["circulatory_vasoactive","fs-N-CHANGE","1"]',followup:'["circulatory_cardiac","fs-CO-60","1"]',findings:'Recorded MAP and CO have distinct times and methods.',possibilities:'Relationship unconfirmed; no causal attribution',nextReview:'Clinician to review sample and echo context'}]];
+ 
+ const vectors=cases.map(([family,fields],n)=>({family,fields:{...defaults,...fields},fact:buildGuided(family,{...defaults,...fields},'Synthetic reviewer',items,'guided-validation-'+n,'2026-10-18T06:00:00Z')}));
+ it.each(vectors)('constructs $family with exact source time, unverified binding and disclosed uncertainty',({fact})=>{
+@@ -39,7 +42,7 @@ it('retains stage-labelled exact reassessment references without replacing revis
+  expect(fact.kind).toBe('circulatory_event');expect(fact.associations).toHaveLength(3);
+  expect(fact.external_evidence).toEqual(expect.arrayContaining([expect.objectContaining({namespace:'clinrx.local.reassessment.followup/v1',code:JSON.stringify({kind:'circulatory_cardiac',id:'fs-CO-60',version:'1'})})]));
+  expect(record(fact.description).raw_display).toContain('Unconfirmed possibilities: Relationship unconfirmed; no causal attribution');
+- expect(()=>buildGuided('reassessment',{...vectors[11].fields,baseline:'circulatory_pressure/fs-MAP-15/2'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow();
++ expect(()=>buildGuided('reassessment',{...vectors[11].fields,baseline:'["circulatory_pressure","fs-MAP-15","2"]'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow();
+ });
+ it('rejects incomplete required fields and does not invent an actor, echo report or raw unit',()=>{
+  for(const field of ['study','report','reportRevision','unit','uncertainty'])expect(()=>buildGuided('echo',{...vectors[5].fields,[field]:''},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow();
+@@ -48,5 +51,16 @@ it('rejects incomplete required fields and does not invent an actor, echo report
+ it('matches the exact generated form records exercised by real API admission tests',()=>{expect(vectors).toEqual(admittedExamples);});
+ it('rejects promoting RVSP to a direct measurement or using a measurement as an intervention',()=>{
+  expect(()=>buildGuided('echo',{...vectors[5].fields,production:'direct_measurement'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow(/estimate/);
+- expect(()=>buildGuided('reassessment',{...vectors[11].fields,intervention:'circulatory_cardiac/fs-CO-60/1'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow(/intervention/);
++ expect(()=>buildGuided('reassessment',{...vectors[11].fields,intervention:'["circulatory_cardiac","fs-CO-60","1"]'},'Reviewer',items,'bad','2026-10-18T06:00:00Z')).toThrow(/intervention/);
++});
++
++it('reproduces the old delimiter collision while tuple keys resolve exact components in either order',()=>{
++ const [a,b]=collisionFixture as CirculatoryItem[];
++ const legacy=(item:CirculatoryItem)=>[item.fact.kind,item.fact.id,item.fact.revision].join('/');
++ expect(legacy(a)).toBe(legacy(b));
++ expect([a,b].find(item=>legacy(item)===legacy(b))).toBe(a);
++ expect([b,a].find(item=>legacy(item)===legacy(a))).toBe(b);
++ expect(evidenceKey(a.fact)).not.toBe(evidenceKey(b.fact));
++ for(const order of [[a,b],[b,a]])for(const chosen of [a,b])expect(resolveEvidenceKey(order,evidenceKey(chosen.fact))).toBe(chosen);
++ for(const malformed of [legacy(a),'null','[]','["circulatory_pressure","a"]','["circulatory_pressure","a",1]','["circulatory_pressure","a","missing"]'])expect(resolveEvidenceKey([a,b],malformed)).toBeUndefined();
+ });
+diff --git a/tests/test_guided_authoring.py b/tests/test_guided_authoring.py
+index fb69bbe..02a6294 100644
+--- a/tests/test_guided_authoring.py
++++ b/tests/test_guided_authoring.py
+@@ -50,3 +50,23 @@ def test_dependency_bearing_correction_and_withdrawal_preserve_inputs(workspace,
+         assert client.post(ENTRY+'/validate',json=bad).status_code==422
+         assert client.post(ENTRY,json=bad).status_code==422
+         assert rows(db)==before
++
++
++def test_colliding_identifiers_are_admitted_unchanged_and_remain_distinct(workspace):
++    client,db,body,*_=workspace
++    items=json.loads((Path(__file__).resolve().parents[1]/'frontend/tests/fixtures/reassessmentCollision.json').read_text())
++    before=rows(db)
++    for item in items:
++        command={'repository_id':body['repository_id'],'predecessor_digest':None,'fact':item['fact']}
++        preview=client.post(ENTRY+'/validate',json=command)
++        assert preview.status_code==200,preview.text
++        saved=client.post(ENTRY,json=command)
++        assert saved.status_code==200,saved.text
++        assert saved.json()['fact']==item['fact']
++        assert saved.json()['expected_digest']==item['expected_digest']
++        assert client.post(ENTRY+'/lookup',json=command).json()=={'status':'committed_match','evidence':saved.json()}
++    after=rows(db)
++    assert after['fact_revision'][:-4]==before['fact_revision']
++    assert len(after['fact_revision'])==len(before['fact_revision'])+4
++    for table in before:
++        if table not in ('fact_revision','sqlite_sequence'):assert after[table]==before[table]

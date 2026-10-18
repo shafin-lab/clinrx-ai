@@ -1,0 +1,24 @@
+{
+  "columns": [
+    "ingestion_sequence",
+    "kind",
+    "fact_id",
+    "revision",
+    "patient_id",
+    "encounter_id",
+    "payload_version",
+    "payload",
+    "ingested_at"
+  ],
+  "row": [
+    85,
+    "circulatory_perfusion",
+    "fs-CRT-60",
+    "1",
+    "synthetic-p1",
+    "synthetic-e1",
+    1,
+    "{\"acquisition\":{\"algorithm\":null,\"averaging\":null,\"calibration\":\"unknown\",\"calibration_provenance\":null,\"compartment\":\"unknown\",\"device\":null,\"episode\":null,\"indexing_basis\":null,\"indexing_denominator\":null,\"indicator\":null,\"injection\":null,\"interval_end\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"interval_start\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"laterality\":\"unknown\",\"limitations\":[],\"method\":\"bedside_examination\",\"parameter\":null,\"parameter_concept\":null,\"parameter_support\":\"unknown\",\"position\":null,\"quality\":{\"artifacts\":[],\"limitations\":[],\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"status\":\"acceptable\"},\"reference_level\":null,\"respiratory_phase\":null,\"site\":null,\"source_method\":null,\"support_provenance\":null,\"zeroing\":\"unknown\",\"zeroing_provenance\":null},\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:00:00Z\"},\"source_timestamp\":\"2026-10-08T09:00:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"calculation_inputs\":[],\"calculation_method\":null,\"concept\":\"capillary_refill\",\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"disclosures\":[],\"id\":\"fs-CRT-60\",\"kind\":\"circulatory_perfusion\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:00:00Z\"},\"source_timestamp\":\"2026-10-08T09:00:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"production\":\"direct_measurement\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"record_status\":\"recorded\",\"regional_site\":{\"coding\":null,\"raw_display\":\"Source-charted fingertip\"},\"result\":{\"comparator\":\"=\",\"quantity\":{\"unit\":{\"code\":null,\"limitation\":\"Synthetic source unit.\",\"raw\":\"s\",\"status\":\"unresolved\",\"system\":null},\"value\":\"2.0\"},\"result_type\":\"numeric\"},\"revision\":\"1\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[],\"verification\":\"unverified\"}",
+    "2026-10-18T14:46:29.396780+00:00"
+  ]
+}

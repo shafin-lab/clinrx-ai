@@ -1,0 +1,66 @@
+- main:
+  - heading "Synthetic patient evidence entry" [level=1]
+  - paragraph: Separate disposable local workspace · synthetic-p1 / synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.
+  - paragraph: Guided source entry and clinician-authored reassessment are available for common hemodynamic records. Advanced source entry preserves access to all 15 families. This remains a local synthetic prototype.
+  - paragraph: "164 source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: 2026-10-08T08:00:00Z to 2026-10-08T10:00:00Z; source times may be contextual or unplaced."
+  - region "Recorded evidence":
+    - heading "Select evidence to correct" [level=2]
+    - button "New source entry"
+    - button "Refresh evidence"
+    - text: Evidence family
+    - combobox "Evidence family":
+      - option "All 15 families" [selected]
+      - option "Pressure and PAC/RHC"
+      - option "Cardiac output and performance"
+      - option "Volume and lung water"
+      - option "Dynamic measurements"
+      - option "Recorded device predictions"
+      - option "Tissue perfusion"
+      - option "Oxygen transport and blood gases"
+      - option "Lactate"
+      - option "Echo and POCUS"
+      - option "ECG and rhythm"
+      - option "Vasoactive events"
+      - option "Edwards / PiCCO and monitoring context"
+      - option "Dynamic assessment episodes"
+      - option "Recorded circulatory events"
+      - option "Signal manifests"
+    - text: Find evidence
+    - textbox "Find evidence": 1c1f16d9
+    - list:
+      - button "pH · 7.3300 1 1c1f16d9-33d7-40fb-a94f-013a383c9bfc / 1 · 2026-10-08T09:45:00Z · recorded":
+        - text: pH · 7.3300 1
+        - generic: 1c1f16d9-33d7-40fb-a94f-013a383c9bfc / 1 · 2026-10-08T09:45:00Z · recorded
+  - region "Evidence draft":
+    - heading "New source entry" [level=2]
+    - heading "Review before append" [level=3]
+    - paragraph: Recorded circulatory events · abae4ef7-74c4-48cc-bb50-f50e9fb151cd / 1
+    - paragraph: "Proposed status: recorded"
+    - paragraph: "Actor: Synthetic walkthrough reviewer"
+    - paragraph: "Reason: New source entry; no predecessor"
+    - region "Proposed source context":
+      - heading "Source context to review" [level=4]
+      - term: Source time
+      - definition: 2026-10-08T09:50:00Z
+      - term: Clock verification
+      - definition: unknown
+      - term: Quality
+      - definition: Not recorded
+      - term: Method
+      - definition: Not recorded
+      - term: Recorded production tag
+      - definition: Not applicable to this event
+      - paragraph: "Clinician-authored synthetic reassessment; not a computed response or causal conclusion. Question: Review the separately recorded arterial samples around a documented infusion event. baseline: {\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"} intervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"} followup: {\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"1\"} Recorded findings: Earlier arterial pH is recorded as 7.3400 at 09:20:00.123456 UTC. The new arterial pH is 7.3300 at 09:45 UTC with its own specimen, FiO2 40% and PEEP 5 cmH2O. A dobutamine rate change is documented at 09:30 UTC. These are separate source records. Unconfirmed possibilities: Patient-level relationship is not established. Whether the differing results reflect physiological change, sample variability or another factor is unconfirmed. No treatment effect or diagnosis is established. Confirmation gaps: Fictional walkthrough note, not clinician sign-off. Source quality and clock verification are unknown; samples are distinct. No calculated delta, responder classification or treatment recommendation. Next review (recorded plan, not a scheduled action): Review the full ABG results, specimen quality, source acquisition context and earlier echo report. This is a recorded plan, not a scheduled task."
+      - heading "Uncertainty and source caveats" [level=4]
+      - paragraph: Fictional walkthrough note, not clinician sign-off. Source quality and clock verification are unknown; samples are distinct. No calculated delta, responder classification or treatment recommendation.
+      - paragraph: Unknown fields remain unknown. These are recorded source assertions and clinician-authored notes, not a generated diagnosis or treatment recommendation.
+    - paragraph: "Digest: 86a72fa69fb9b44f11f44a7769501ec89b4ffd37bb102329e4f4d5d9a0755c4c"
+    - generic "Complete validated record and source caveats"
+    - paragraph: Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.
+    - button "Confirm append to local database"
+    - button "Edit draft"
+    - button "Discard draft and reload"
+    - paragraph: Pending drafts exist only in this page’s memory. Reloading or closing can lose them. Keep this page open while completion is unknown.
