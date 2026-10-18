@@ -28,6 +28,6 @@ def main():
         'CLINRX_AUTHORING_ORIGIN':origin}
     with (root/'build.log').open('w') as log:
         subprocess.run(['npm','run','build','--','--outDir',str(root/'frontend')],cwd=repo/'frontend',env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
-    print(f'Local synthetic entry: {origin}\nClinical execution: DISABLED\nDisposable database and logs: {root}\nAccepted read-only Docker demo is unchanged.',flush=True)
+    print(f'Local consolidated patient workspace: {origin}\nClinical execution: DISABLED\nDisposable database and logs: {root}\nAccepted read-only Docker demo is unchanged.',flush=True)
     subprocess.run([sys.executable,'-m','uvicorn','app.demo.authoring:from_environment','--factory','--host','127.0.0.1','--port',str(args.port),'--workers','1'],cwd=repo,env=env,check=True)
 if __name__=='__main__':main()

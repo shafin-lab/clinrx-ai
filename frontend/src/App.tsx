@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {EvidenceEntryWorkspace} from './demo/EvidenceEntryWorkspace';
+import {PatientWorkspace} from './demo/PatientWorkspace';
 import {EvidenceEntryClient} from './api/evidenceEntryClient';
 import {ComprehensiveDemo} from './demo/ComprehensiveDemo';
 import { CirculatoryClient } from './api/circulatoryClient';
@@ -14,7 +14,7 @@ export default function App() {
   if(!clients)return <main><h1>ClinRx AI</h1><p role="alert">The synthetic demo connection is unavailable.</p></main>;
   if(import.meta.env.VITE_SYNTHETIC_AUTHORING==='true'){
     if(!hostedSyntheticDemo||window.location.hostname!=='127.0.0.1')return <main><h1>Local authoring unavailable</h1></main>;
-    return <EvidenceEntryWorkspace client={clients.circulatory} entry={entry} config={demo}/>;
+    return <PatientWorkspace client={clients.circulatory} entry={entry} config={demo}/>;
   }
   if(hostedSyntheticDemo && new URLSearchParams(window.location.search).get('workspace')==='legacy')return <main><h1>Read-only synthetic demo</h1><p>The legacy workspace is unavailable in this hosted preview.</p><a href="/">Open the comprehensive demo</a></main>;
   if(new URLSearchParams(window.location.search).get('workspace')==='legacy')return <><PatientReviewPage client={clients.patient} config={demo} microClient={clients.micro}/><div className="m7-shell"><CirculatoryReview client={clients.circulatory} config={demo}/></div></>;
