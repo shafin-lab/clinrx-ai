@@ -1,0 +1,55 @@
+- main:
+  - heading "Synthetic patient evidence entry" [level=1]
+  - paragraph: Separate disposable local workspace · synthetic-p1 / synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.
+  - paragraph: This first entry workflow accepts complete structured source records across all 15 evidence families. It is a development tool, not a clinician-ready charting form.
+  - paragraph: "157 source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: 2026-10-08T08:00:00+00:00 to 2026-10-08T10:00:00+00:00; source times may be contextual or unplaced."
+  - region "Recorded evidence":
+    - heading "Select evidence to correct" [level=2]
+    - button "New source entry"
+    - button "Refresh evidence"
+    - text: Evidence family
+    - combobox "Evidence family":
+      - option "All 15 families" [selected]
+      - option "Pressure and PAC/RHC"
+      - option "Cardiac output and performance"
+      - option "Volume and lung water"
+      - option "Dynamic measurements"
+      - option "Recorded device predictions"
+      - option "Tissue perfusion"
+      - option "Oxygen transport and blood gases"
+      - option "Lactate"
+      - option "Echo and POCUS"
+      - option "ECG and rhythm"
+      - option "Vasoactive events"
+      - option "Edwards / PiCCO and monitoring context"
+      - option "Dynamic assessment episodes"
+      - option "Recorded circulatory events"
+      - option "Signal manifests"
+    - text: Find evidence
+    - textbox "Find evidence": fs-CO-60
+    - list:
+      - button "Cardiac output · 4.61 L/min fs-CO-60 / 2a002ae6-f941-4339-b7df-97e14613cf57 · 2026-10-08T09:00:00+00:00 · recorded" [pressed]:
+        - text: Cardiac output · 4.61 L/min
+        - generic: fs-CO-60 / 2a002ae6-f941-4339-b7df-97e14613cf57 · 2026-10-08T09:00:00+00:00 · recorded
+  - region "Evidence draft":
+    - heading "Correct selected evidence" [level=2]
+    - paragraph: "Original retained: circulatory_cardiac / fs-CO-60 / 1"
+    - paragraph: Correction keeps the original observation time and context unless explicitly changed in the source record. It is not a new measurement or evidence of ongoing administration.
+    - button "Load exact revision history"
+    - generic "Original source record"
+    - 'generic "History: 2 retained revisions"'
+    - heading "Review before append" [level=3]
+    - paragraph: Cardiac output and performance · fs-CO-60 / 2a002ae6-f941-4339-b7df-97e14613cf57
+    - paragraph: "Proposed recorded result: 4.61 L/min"
+    - paragraph: "Proposed status: recorded"
+    - paragraph: "Actor: Synthetic reviewer"
+    - paragraph: "Reason: Fictional final-build correction: source transcription 4.60 to 4.61; not a new measurement."
+    - paragraph: "Digest: 6ad4fff0128be2daa6dbbb2d8159bfee45163e53b9cee97e0de645e99949f957"
+    - generic "Complete validated record and source caveats"
+    - paragraph: Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.
+    - status: Exact revision saved and confirmed. Ingestion sequence 166.
+    - button "Start another entry"
+    - paragraph: Pending drafts exist only in this page’s memory. Reloading or closing can lose them. Keep this page open while completion is unknown.

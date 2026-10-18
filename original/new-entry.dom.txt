@@ -1,0 +1,46 @@
+- main:
+  - heading "Synthetic patient evidence entry" [level=1]
+  - paragraph: Separate disposable local workspace · synthetic-p1 / synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.
+  - paragraph: This first entry workflow accepts complete structured source records across all 15 evidence families. It is a development tool, not a clinician-ready charting form.
+  - paragraph: 156 current source records. Originals remain in revision history. HPI is optional.
+  - region "Recorded evidence":
+    - heading "Select evidence to correct" [level=2]
+    - button "New source entry" [disabled]
+    - button "Refresh evidence" [disabled]
+    - text: Evidence family
+    - combobox "Evidence family" [disabled]:
+      - option "All 15 families" [selected]
+      - option "Pressure and PAC/RHC"
+      - option "Cardiac output and performance"
+      - option "Volume and lung water"
+      - option "Dynamic measurements"
+      - option "Recorded device predictions"
+      - option "Tissue perfusion"
+      - option "Oxygen transport and blood gases"
+      - option "Lactate"
+      - option "Echo and POCUS"
+      - option "ECG and rhythm"
+      - option "Vasoactive events"
+      - option "Edwards / PiCCO and monitoring context"
+      - option "Dynamic assessment episodes"
+      - option "Recorded circulatory events"
+      - option "Signal manifests"
+    - text: Find evidence
+    - textbox "Find evidence" [disabled]: fs-PH-60
+    - list:
+      - button "pH · 7.36 1 fs-PH-60 / 0477b2b8-0453-4857-8bbb-6ffb2c2626c6 · 2026-10-08T09:00:00+00:00 · recorded" [disabled]:
+        - text: pH · 7.36 1
+        - generic: fs-PH-60 / 0477b2b8-0453-4857-8bbb-6ffb2c2626c6 · 2026-10-08T09:00:00+00:00 · recorded
+  - region "Evidence draft":
+    - heading "New source entry" [level=2]
+    - heading "Review before append" [level=3]
+    - paragraph: Oxygen transport and blood gases · local-browser-entry-abg / 1
+    - paragraph: "Digest: 6afd9c164047b88516f234e2f409016fa8640a9b0ddb66dfa384d39a0c26eaaa"
+    - generic "Complete validated record and source caveats"
+    - paragraph: Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.
+    - status: Exact revision saved and confirmed. Ingestion sequence 164.
+    - button "Start another entry" [disabled]
+    - paragraph: Pending drafts exist only in this page’s memory. Reloading or closing can lose them. Keep this page open while completion is unknown.

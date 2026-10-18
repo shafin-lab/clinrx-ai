@@ -1,0 +1,17 @@
+{
+  "table": "encounter",
+  "columns": [
+    "encounter_id",
+    "patient_id",
+    "payload_version",
+    "payload",
+    "ingested_at"
+  ],
+  "row": [
+    "synthetic-e1",
+    "synthetic-p1",
+    1,
+    "{\"encounter_id\":\"synthetic-e1\",\"patient_id\":\"synthetic-p1\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null}}",
+    "2026-10-18T13:34:52.029819+00:00"
+  ]
+}

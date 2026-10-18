@@ -1,0 +1,23 @@
+
+> clinrx-synthetic-review@0.1.0 build
+> tsc --noEmit && vite build --outDir /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/evidence-entry-local-run/frontend
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 56 modules transformed.
+
+(!) outDir /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/evidence-entry-local-run/frontend is not inside project root and will not be emptied.
+Use --emptyOutDir to override.
+
+rendering chunks...
+computing gzip size...
+../../../.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/evidence-entry-local-run/frontend/index.html                     0.37 kB │ gzip:   0.27 kB
+../../../.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/evidence-entry-local-run/frontend/assets/index-3CIeRaCR.css     28.72 kB │ gzip:   6.55 kB
+../../../.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/evidence-entry-local-run/frontend/assets/index-D7P07zwq.js   1,261.30 kB │ gzip: 146.05 kB
+
+✓ built in 307ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

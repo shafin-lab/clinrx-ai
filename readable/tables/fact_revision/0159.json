@@ -1,0 +1,25 @@
+{
+  "table": "fact_revision",
+  "columns": [
+    "ingestion_sequence",
+    "kind",
+    "fact_id",
+    "revision",
+    "patient_id",
+    "encounter_id",
+    "payload_version",
+    "payload",
+    "ingested_at"
+  ],
+  "row": [
+    160,
+    "circulatory_event",
+    "fs-PUMP-RATE-D-RESTART",
+    "1",
+    "synthetic-p1",
+    "synthetic-e1",
+    1,
+    "{\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:55:00Z\"},\"source_timestamp\":\"2026-10-08T08:55:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"pump_rate\",\"namespace\":\"clinrx.synthetic.hemodynamic-chart/v1\",\"raw_display\":\"pump_rate\",\"version\":\"1\"},\"raw_display\":\"Source-charted pump volumetric rate, not calculated from the drug dose by ClinRx.\"},\"disclosures\":[\"Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them.\"],\"event_type\":\"other\",\"external_evidence\":[],\"id\":\"fs-PUMP-RATE-D-RESTART\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:55:00Z\"},\"source_timestamp\":\"2026-10-08T08:55:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":{\"unit\":{\"code\":null,\"limitation\":\"Synthetic source unit.\",\"raw\":\"mL/h\",\"status\":\"unresolved\",\"system\":null},\"value\":\"2.1\"},\"revision\":\"1\",\"source_identifiers\":[{\"code\":\"fs-infusion-dobutamine\",\"namespace\":\"clinrx.synthetic.infusion-series/v1\",\"raw_display\":\"fs-infusion-dobutamine\",\"version\":\"1\"}],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[],\"verification\":\"unverified\"}",
+    "2026-10-18T13:34:56.909965+00:00"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "table": "fact_revision",
+  "columns": [
+    "ingestion_sequence",
+    "kind",
+    "fact_id",
+    "revision",
+    "patient_id",
+    "encounter_id",
+    "payload_version",
+    "payload",
+    "ingested_at"
+  ],
+  "row": [
+    2,
+    "medication_order",
+    "demo-medication-M",
+    "1",
+    "synthetic-p1",
+    "synthetic-e1",
+    1,
+    "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-medication-M\",\"kind\":\"medication_order\",\"medication\":{\"formulation\":null,\"ingredient_ids\":[\"synthetic-ingredient\"],\"product_id\":\"synthetic-product\"},\"order_status\":\"active\",\"origin\":\"reported\",\"prescribed_dose\":{\"amount\":{\"unit\":{\"code\":\"mg\",\"limitation\":null,\"raw\":\"mg\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.0\"},\"basis\":\"per_dose\",\"basis_detail\":null,\"concentration\":null,\"duration\":null,\"frequency\":null,\"rate\":null,\"volume\":null},\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T09:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"route\":\"synthetic route\",\"schedule_text\":\"synthetic single event\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T09:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T09:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"verification\":\"verified\"}",
+    "2026-10-18T13:34:52.040568+00:00"
+  ]
+}

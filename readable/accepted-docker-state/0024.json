@@ -1,0 +1,161 @@
+{
+  "fact": {
+    "kind": "circulatory_event",
+    "id": "fs-WEIGHT",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "verified",
+        "method": "synthetic-demo",
+        "verifier": "synthetic-system",
+        "assessed_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "ambiguity": null
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx.synthetic.demo",
+        "identifier": "patient-state-v1",
+        "version": "1",
+        "channel": "system"
+      },
+      "actor": "synthetic-demo",
+      "recorded_at": "2026-10-08T08:00:00Z",
+      "upstream": [],
+      "lineage": "unknown",
+      "limitations": [
+        "Synthetic source assertion only."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "timestamp_precision": "M7ExactTimestampInput/v1",
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T08:00:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T08:00:00+00:00",
+      "clock": "verified",
+      "clock_basis": {
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "actor": "synthetic-demo",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "upstream": [],
+        "lineage": "unknown",
+        "limitations": [
+          "Synthetic source assertion only."
+        ]
+      },
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "timestamp_precision": "M7ExactTimestampInput/v1",
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T08:00:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T08:00:00+00:00",
+      "clock": "verified",
+      "clock_basis": {
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "actor": "synthetic-demo",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "upstream": [],
+        "lineage": "unknown",
+        "limitations": [
+          "Synthetic source assertion only."
+        ]
+      },
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [],
+    "source_identifiers": [],
+    "disclosures": [
+      "Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them."
+    ],
+    "record_status": "recorded",
+    "event_type": "other",
+    "description": {
+      "raw_display": "Source-charted actual dosing weight; not a calculated ideal or adjusted weight.",
+      "coding": {
+        "namespace": "clinrx.synthetic.hemodynamic-chart/v1",
+        "code": "dosing_weight",
+        "version": "1",
+        "raw_display": "dosing_weight"
+      }
+    },
+    "external_evidence": [],
+    "recorded_amount": {
+      "value": "70",
+      "unit": {
+        "raw": "kg",
+        "status": "unresolved",
+        "system": null,
+        "code": null,
+        "limitation": "Synthetic source unit."
+      }
+    }
+  },
+  "expected_digest": "6ec7766be3c51e1c2010a605ef3122f50dad94c2acac6d5b1d614d6bb0462a32",
+  "ingestion": {
+    "repository_id": "2814214e-f014-45de-93ab-5141bae5c6e8",
+    "ingestion_sequence": 48,
+    "ingested_at": "2026-10-17T05:18:12.622489Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}

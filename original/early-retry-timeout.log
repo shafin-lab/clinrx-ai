@@ -1,0 +1,31 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2 tests/evidenceEntry.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/evidenceEntry.test.tsx (5 tests | 1 failed) 864905ms
+   × retains the exact reviewed draft after a lost response and requires explicit absent-case retry 858278ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/evidenceEntry.test.tsx > retains the exact reviewed draft after a lost response and requires explicit absent-case retry
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/evidenceEntry.test.tsx:32:1
+     30|  expect(JSON.stringify(original.fact)).toContain('7.35');expect(JSON.s…
+     31| });
+     32| it('retains the exact reviewed draft after a lost response and require…
+       | ^
+     33|  const {entry}=setup();await draft();entry.save.mockRejectedValueOnce(…
+     34|  fireEvent.click(screen.getByRole('button',{name:'Confirm append to lo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  01:36:33
+   Duration  867.40s (tests 100%)
+

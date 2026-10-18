@@ -1,0 +1,496 @@
+- main:
+  - heading "Synthetic patient evidence entry" [level=1]
+  - paragraph: Separate disposable local workspace · synthetic-p1 / synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.
+  - paragraph: This first entry workflow accepts complete structured source records across all 15 evidence families. It is a development tool, not a clinician-ready charting form.
+  - paragraph: 156 current source records. Originals remain in revision history. HPI is optional.
+  - region "Recorded evidence":
+    - heading "Select evidence to correct" [level=2]
+    - button "New source entry"
+    - button "Refresh evidence"
+    - list:
+      - button "Cardiac output · 4.500 L/min m7-CONTEXT-CO / 1 · 2026-10-08T06:00:00+00:00 · recorded":
+        - text: Cardiac output · 4.500 L/min
+        - generic: m7-CONTEXT-CO / 1 · 2026-10-08T06:00:00+00:00 · recorded
+      - button "Passive leg raise episode · Recorded source m7-PLR / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Passive leg raise episode · Recorded source
+        - generic: m7-PLR / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Cardiac index · 2.60 L/min/m2 m7-CI / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Cardiac index · 2.60 L/min/m2
+        - generic: m7-CI / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Cardiac output · 4.50 L/min m7-CO / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Cardiac output · 4.50 L/min
+        - generic: m7-CO / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Cardiac output · 4.40 L/min m7-FLOTRAC / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Cardiac output · 4.40 L/min
+        - generic: m7-FLOTRAC / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Cardiac output · 4.60 L/min m7-PICCO-CO / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Cardiac output · 4.60 L/min
+        - generic: m7-PICCO-CO / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Cardiac output · 4.60 L/min m7-VOLUMEVIEW / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Cardiac output · 4.60 L/min
+        - generic: m7-VOLUMEVIEW / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Stroke volume variation · 12.0 % m7-SVV / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Stroke volume variation · 12.0 %
+        - generic: m7-SVV / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "QTc · 420 ms m7-ECG / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: QTc · 420 ms
+        - generic: m7-ECG / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Source rhythm · Synthetic source-reported rhythm m7-RHYTHM / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Source rhythm · Synthetic source-reported rhythm
+        - generic: m7-RHYTHM / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "TAPSE · 18 mm m7-ECHO / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: TAPSE · 18 mm
+        - generic: m7-ECHO / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "LV ejection fraction · 55.0 % m7-EF / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: LV ejection fraction · 55.0 %
+        - generic: m7-EF / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - 'button "Pericardial effusion · Synthetic report: no pericardial effusion visualized. m7-EFFUSION / 1 · 2026-10-08T08:00:00+00:00 · recorded"':
+        - text: "Pericardial effusion · Synthetic report: no pericardial effusion visualized."
+        - generic: m7-EFFUSION / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Estimated PASP · 45.0 mmHg m7-PASP / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Estimated PASP · 45.0 mmHg
+        - generic: m7-PASP / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - 'button "Pulmonary hypertension report finding · Synthetic report: findings suggest pulmonary hypertension; no invasive confirmation or PAH subtype established. m7-PH / 1 · 2026-10-08T08:00:00+00:00 · recorded"':
+        - text: "Pulmonary hypertension report finding · Synthetic report: findings suggest pulmonary hypertension; no invasive confirmation or PAH subtype established."
+        - generic: m7-PH / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "RV basal dimension · 4.3 cm m7-RVD / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: RV basal dimension · 4.3 cm
+        - generic: m7-RVD / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - 'button "RV function · Synthetic report: mildly reduced RV systolic function. m7-RVFUNCTION / 1 · 2026-10-08T08:00:00+00:00 · recorded"':
+        - text: "RV function · Synthetic report: mildly reduced RV systolic function."
+        - generic: m7-RVFUNCTION / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Estimated RVSP · 45.0 mmHg m7-RVSP / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Estimated RVSP · 45.0 mmHg
+        - generic: m7-RVSP / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - 'button "Septal configuration · Synthetic report: systolic septal flattening. m7-SEPTUM / 1 · 2026-10-08T08:00:00+00:00 · recorded"':
+        - text: "Septal configuration · Synthetic report: systolic septal flattening."
+        - generic: m7-SEPTUM / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "TR peak velocity · 3.16 m/s m7-TRV / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: TR peak velocity · 3.16 m/s
+        - generic: m7-TRV / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - 'button "Valve finding · Synthetic report: moderate tricuspid regurgitation. m7-VALVE / 1 · 2026-10-08T08:00:00+00:00 · recorded"':
+        - text: "Valve finding · Synthetic report: moderate tricuspid regurgitation."
+        - generic: m7-VALVE / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "LVOT VTI · 17.5 cm m7-VTI / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: LVOT VTI · 17.5 cm
+        - generic: m7-VTI / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Source BSA for indexing · 1.73 m2 fs-BSA / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Source BSA for indexing · 1.73 m2
+        - generic: fs-BSA / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - 'button "Clinician-recorded MAP goal · Fictional clinician-recorded MAP goal: 65–75 mmHg for this review. Rationale: individualized source-chart plan. Review at 09:00 UTC. This is not a ClinRx-recommended target and is not used for automatic alerts or titration. fs-GOAL / 1 · 2026-10-08T08:00:00+00:00 · recorded"':
+        - text: "Clinician-recorded MAP goal · Fictional clinician-recorded MAP goal: 65–75 mmHg for this review. Rationale: individualized source-chart plan. Review at 09:00 UTC. This is not a ClinRx-recommended target and is not used for automatic alerts or titration."
+        - generic: fs-GOAL / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Source dosing weight · 70 kg fs-WEIGHT / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Source dosing weight · 70 kg
+        - generic: fs-WEIGHT / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Position change · Recorded position change m7-EVENT / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Position change · Recorded position change
+        - generic: m7-EVENT / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Monitor configuration · Source device configuration m7-CAL / 2 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Monitor configuration · Source device configuration
+        - generic: m7-CAL / 2 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Base excess · -2.0 mmol/L m7-ABG-BE / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Base excess · -2.0 mmol/L
+        - generic: m7-ABG-BE / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Haemoglobin · 10.2 g/dL m7-ABG-HB / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Haemoglobin · 10.2 g/dL
+        - generic: m7-ABG-HB / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Bicarbonate · 23.0 mmol/L m7-ABG-HCO3 / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Bicarbonate · 23.0 mmol/L
+        - generic: m7-ABG-HCO3 / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "PaCO₂ · 48.0 mmHg m7-ABG-PACO2 / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: PaCO₂ · 48.0 mmHg
+        - generic: m7-ABG-PACO2 / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "PaO₂ · 78.0 mmHg m7-ABG-PAO2 / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: PaO₂ · 78.0 mmHg
+        - generic: m7-ABG-PAO2 / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "pH · 7.31 1 m7-ABG-PH / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: pH · 7.31 1
+        - generic: m7-ABG-PH / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Arterial oxygen saturation · 95.0 % m7-ABG-SAO2 / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Arterial oxygen saturation · 95.0 %
+        - generic: m7-ABG-SAO2 / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Mixed venous oxygen saturation · 65.0 % m7-SVO2 / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Mixed venous oxygen saturation · 65.0 %
+        - generic: m7-SVO2 / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Capillary refill · 2.0 s m7-CRT / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Capillary refill · 2.0 s
+        - generic: m7-CRT / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Mean arterial pressure · 65.00 mmHg m7-P / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Mean arterial pressure · 65.00 mmHg
+        - generic: m7-P / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Central venous pressure · 8.0 mmHg m7-PAC / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Central venous pressure · 8.0 mmHg
+        - generic: m7-PAC / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Pulmonary artery wedge pressure · 12.0 mmHg m7-RHC / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Pulmonary artery wedge pressure · 12.0 mmHg
+        - generic: m7-RHC / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Arterial pressure signal · unavailable m7-SIGNAL / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Arterial pressure signal · unavailable
+        - generic: m7-SIGNAL / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Global end-diastolic volume · 700 mL m7-GEDV / 1 · 2026-10-08T08:00:00+00:00 · recorded":
+        - text: Global end-diastolic volume · 700 mL
+        - generic: m7-GEDV / 1 · 2026-10-08T08:00:00+00:00 · recorded
+      - button "Lactate · 2.000 mmol/L m7-L / 1 · 2026-10-08T08:01:00+00:00 · recorded":
+        - text: Lactate · 2.000 mmol/L
+        - generic: m7-L / 1 · 2026-10-08T08:01:00+00:00 · recorded
+      - button "Vasoactive event · norepinephrine initiation m7-V / 1 · 2026-10-08T08:02:00+00:00 · recorded":
+        - text: Vasoactive event · norepinephrine initiation
+        - generic: m7-V / 1 · 2026-10-08T08:02:00+00:00 · recorded
+      - button "Vasoactive event · norepinephrine order fs-N-ORDER / 1 · 2026-10-08T08:05:00+00:00 · recorded":
+        - text: Vasoactive event · norepinephrine order
+        - generic: fs-N-ORDER / 1 · 2026-10-08T08:05:00+00:00 · recorded
+      - button "Fluid challenge event · 250 mL fs-FLUID-CHALLENGE / 1 · 2026-10-08T08:10:00+00:00 · recorded":
+        - text: Fluid challenge event · 250 mL
+        - generic: fs-FLUID-CHALLENGE / 1 · 2026-10-08T08:10:00+00:00 · recorded
+      - button "Pump volumetric rate · 3.75 mL/h fs-PUMP-RATE-N-START / 1 · 2026-10-08T08:10:00+00:00 · recorded":
+        - text: Pump volumetric rate · 3.75 mL/h
+        - generic: fs-PUMP-RATE-N-START / 1 · 2026-10-08T08:10:00+00:00 · recorded
+      - button "Vasoactive event · norepinephrine initiation fs-N-START / 1 · 2026-10-08T08:10:00+00:00 · recorded":
+        - text: Vasoactive event · norepinephrine initiation
+        - generic: fs-N-START / 1 · 2026-10-08T08:10:00+00:00 · recorded
+      - button "fluid challenge · Recorded source fs-FLUID-ASSESSMENT / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: fluid challenge · Recorded source
+        - generic: fs-FLUID-ASSESSMENT / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Cardiac index · 2.30 L/min/m2 fs-CI-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Cardiac index · 2.30 L/min/m2
+        - generic: fs-CI-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Cardiac output · 4.00 L/min fs-CO-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Cardiac output · 4.00 L/min
+        - generic: fs-CO-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Heart rate · 104 /min fs-HR-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Heart rate · 104 /min
+        - generic: fs-HR-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Source rhythm · Source-reported sinus rhythm. fs-RHYTHM-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Source rhythm · Source-reported sinus rhythm.
+        - generic: fs-RHYTHM-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Blood-product input · 0 mL fs-IO-input_blood-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Blood-product input · 0 mL
+        - generic: fs-IO-input_blood-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "IV fluid input · 250 mL fs-IO-input_iv-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: IV fluid input · 250 mL
+        - generic: fs-IO-input_iv-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Reported interval fluid balance · 205 mL fs-IO-net_balance_reported-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Reported interval fluid balance · 205 mL
+        - generic: fs-IO-net_balance_reported-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "CRRT net fluid removal · 0 mL fs-IO-output_crrt-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: CRRT net fluid removal · 0 mL
+        - generic: fs-IO-output_crrt-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Drain output · 10 mL fs-IO-output_drain-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Drain output · 10 mL
+        - generic: fs-IO-output_drain-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Urine output · 35 mL fs-IO-output_urine-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Urine output · 35 mL
+        - generic: fs-IO-output_urine-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Pump volumetric rate · 5.25 mL/h fs-PUMP-RATE-N-CHANGE / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Pump volumetric rate · 5.25 mL/h
+        - generic: fs-PUMP-RATE-N-CHANGE / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Pump volumetric rate · 1.8 mL/h fs-PUMP-RATE-V-START / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Pump volumetric rate · 1.8 mL/h
+        - generic: fs-PUMP-RATE-V-START / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Lactate · 2.4 mmol/L fs-LACTATE-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Lactate · 2.4 mmol/L
+        - generic: fs-LACTATE-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "PaCO₂ · 50.0 mmHg fs-PACO2-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: PaCO₂ · 50.0 mmHg
+        - generic: fs-PACO2-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "PaO₂ · 80.0 mmHg fs-PAO2-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: PaO₂ · 80.0 mmHg
+        - generic: fs-PAO2-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "pH · 7.30 1 fs-PH-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: pH · 7.30 1
+        - generic: fs-PH-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Capillary refill · 3.0 s fs-CRT-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Capillary refill · 3.0 s
+        - generic: fs-CRT-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - 'button "mottling · Source chart: mottling recorded around knees. fs-MOTTLING-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded"':
+        - text: "mottling · Source chart: mottling recorded around knees."
+        - generic: fs-MOTTLING-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "skin temperature · 35.5 Cel fs-SKIN-TEMP-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: skin temperature · 35.5 Cel
+        - generic: fs-SKIN-TEMP-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Central venous pressure · 9.0 mmHg fs-CVP-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Central venous pressure · 9.0 mmHg
+        - generic: fs-CVP-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Mean arterial pressure · 61 mmHg fs-MAP-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Mean arterial pressure · 61 mmHg
+        - generic: fs-MAP-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Diastolic blood pressure · 47 mmHg fs-systemic_diastolic-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Diastolic blood pressure · 47 mmHg
+        - generic: fs-systemic_diastolic-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Systolic blood pressure · 92 mmHg fs-systemic_systolic-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Systolic blood pressure · 92 mmHg
+        - generic: fs-systemic_systolic-15 / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Vasoactive event · norepinephrine rate change fs-N-CHANGE / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Vasoactive event · norepinephrine rate change
+        - generic: fs-N-CHANGE / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Vasoactive event · vasopressin initiation fs-V-START / 1 · 2026-10-08T08:15:00+00:00 · recorded":
+        - text: Vasoactive event · vasopressin initiation
+        - generic: fs-V-START / 1 · 2026-10-08T08:15:00+00:00 · recorded
+      - button "Vasoactive event · dobutamine order fs-D-ORDER / 1 · 2026-10-08T08:20:00+00:00 · recorded":
+        - text: Vasoactive event · dobutamine order
+        - generic: fs-D-ORDER / 1 · 2026-10-08T08:20:00+00:00 · recorded
+      - button "Cardiac index · 2.50 L/min/m2 fs-CI-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Cardiac index · 2.50 L/min/m2
+        - generic: fs-CI-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Cardiac output · 4.40 L/min fs-CO-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Cardiac output · 4.40 L/min
+        - generic: fs-CO-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Heart rate · 108 /min fs-HR-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Heart rate · 108 /min
+        - generic: fs-HR-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Source rhythm · Source-reported irregular rhythm; no arrhythmia classification confirmed. fs-RHYTHM-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Source rhythm · Source-reported irregular rhythm; no arrhythmia classification confirmed.
+        - generic: fs-RHYTHM-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - 'button "CRRT fluid-removal context · Source chart: CRRT fluid-removal context recorded. Interval rows contain source-recorded NET removal, not total effluent. Replacement fluids are not independently reconciled by ClinRx. fs-CRRT-NOTE / 1 · 2026-10-08T08:30:00+00:00 · recorded"':
+        - text: "CRRT fluid-removal context · Source chart: CRRT fluid-removal context recorded. Interval rows contain source-recorded NET removal, not total effluent. Replacement fluids are not independently reconciled by ClinRx."
+        - generic: fs-CRRT-NOTE / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Blood-product input · 0 mL fs-IO-input_blood-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Blood-product input · 0 mL
+        - generic: fs-IO-input_blood-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "IV fluid input · 100 mL fs-IO-input_iv-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: IV fluid input · 100 mL
+        - generic: fs-IO-input_iv-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Reported interval fluid balance · 20 mL fs-IO-net_balance_reported-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Reported interval fluid balance · 20 mL
+        - generic: fs-IO-net_balance_reported-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "CRRT net fluid removal · 50 mL fs-IO-output_crrt-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: CRRT net fluid removal · 50 mL
+        - generic: fs-IO-output_crrt-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Drain output · 5 mL fs-IO-output_drain-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Drain output · 5 mL
+        - generic: fs-IO-output_drain-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Urine output · 25 mL fs-IO-output_urine-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Urine output · 25 mL
+        - generic: fs-IO-output_urine-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Pump volumetric rate · 2.1 mL/h fs-PUMP-RATE-D-START / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Pump volumetric rate · 2.1 mL/h
+        - generic: fs-PUMP-RATE-D-START / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - 'button "Hemodynamic review note · Fictional clinician review: compare recorded pressures, flow method, perfusion and interval urine output. Infusion events and subsequent observations do not establish cause or treatment response. No automated recommendation. fs-REVIEW / 1 · 2026-10-08T08:30:00+00:00 · recorded"':
+        - text: "Hemodynamic review note · Fictional clinician review: compare recorded pressures, flow method, perfusion and interval urine output. Infusion events and subsequent observations do not establish cause or treatment response. No automated recommendation."
+        - generic: fs-REVIEW / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - 'button "Ventilation context event · Source-charted ventilator review: PEEP documented as 5 cmH2O. Refer to sample-time source context; no setting is carried forward to other samples. fs-VENT-CHANGE / 1 · 2026-10-08T08:30:00+00:00 · recorded"':
+        - text: "Ventilation context event · Source-charted ventilator review: PEEP documented as 5 cmH2O. Refer to sample-time source context; no setting is carried forward to other samples."
+        - generic: fs-VENT-CHANGE / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Lactate · 2.2 mmol/L fs-LACTATE-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Lactate · 2.2 mmol/L
+        - generic: fs-LACTATE-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "PaCO₂ · 47.0 mmHg fs-PACO2-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: PaCO₂ · 47.0 mmHg
+        - generic: fs-PACO2-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "PaO₂ · 84.0 mmHg fs-PAO2-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: PaO₂ · 84.0 mmHg
+        - generic: fs-PAO2-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "pH · 7.32 1 fs-PH-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: pH · 7.32 1
+        - generic: fs-PH-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "scvo2 · 66.0 % fs-SCVO2-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: scvo2 · 66.0 %
+        - generic: fs-SCVO2-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Mixed venous oxygen saturation · 64.0 % fs-SVO2-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Mixed venous oxygen saturation · 64.0 %
+        - generic: fs-SVO2-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Capillary refill · 2.5 s fs-CRT-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Capillary refill · 2.5 s
+        - generic: fs-CRT-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - 'button "mottling · Source chart: mottling still recorded. fs-MOTTLING-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded"':
+        - text: "mottling · Source chart: mottling still recorded."
+        - generic: fs-MOTTLING-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "skin temperature · 35.8 Cel fs-SKIN-TEMP-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: skin temperature · 35.8 Cel
+        - generic: fs-SKIN-TEMP-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Central venous pressure · 10.0 mmHg fs-CVP-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Central venous pressure · 10.0 mmHg
+        - generic: fs-CVP-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Mean arterial pressure · 68 mmHg fs-MAP-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Mean arterial pressure · 68 mmHg
+        - generic: fs-MAP-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Diastolic blood pressure · 52 mmHg fs-systemic_diastolic-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Diastolic blood pressure · 52 mmHg
+        - generic: fs-systemic_diastolic-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Systolic blood pressure · 101 mmHg fs-systemic_systolic-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Systolic blood pressure · 101 mmHg
+        - generic: fs-systemic_systolic-30 / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Vasoactive event · dobutamine initiation fs-D-START / 1 · 2026-10-08T08:30:00+00:00 · recorded":
+        - text: Vasoactive event · dobutamine initiation
+        - generic: fs-D-START / 1 · 2026-10-08T08:30:00+00:00 · recorded
+      - button "Cardiac index · 2.70 L/min/m2 fs-CI-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Cardiac index · 2.70 L/min/m2
+        - generic: fs-CI-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Cardiac output · 4.70 L/min fs-CO-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Cardiac output · 4.70 L/min
+        - generic: fs-CO-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Heart rate · 102 /min fs-HR-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Heart rate · 102 /min
+        - generic: fs-HR-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Source rhythm · Source-reported sinus rhythm. fs-RHYTHM-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Source rhythm · Source-reported sinus rhythm.
+        - generic: fs-RHYTHM-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Blood-product input · 150 mL fs-IO-input_blood-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Blood-product input · 150 mL
+        - generic: fs-IO-input_blood-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "IV fluid input · 50 mL fs-IO-input_iv-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: IV fluid input · 50 mL
+        - generic: fs-IO-input_iv-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Reported interval fluid balance · 110 mL fs-IO-net_balance_reported-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Reported interval fluid balance · 110 mL
+        - generic: fs-IO-net_balance_reported-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "CRRT net fluid removal · 50 mL fs-IO-output_crrt-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: CRRT net fluid removal · 50 mL
+        - generic: fs-IO-output_crrt-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Drain output · 0 mL fs-IO-output_drain-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Drain output · 0 mL
+        - generic: fs-IO-output_drain-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Urine output · 40 mL fs-IO-output_urine-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Urine output · 40 mL
+        - generic: fs-IO-output_urine-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Pump volumetric rate · 2.52 mL/h fs-PUMP-RATE-D-CHANGE / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Pump volumetric rate · 2.52 mL/h
+        - generic: fs-PUMP-RATE-D-CHANGE / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Pump volumetric rate · 4.5 mL/h fs-PUMP-RATE-N-REDUCE / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Pump volumetric rate · 4.5 mL/h
+        - generic: fs-PUMP-RATE-N-REDUCE / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Lactate · 2.1 mmol/L fs-LACTATE-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Lactate · 2.1 mmol/L
+        - generic: fs-LACTATE-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "PaCO₂ · 45.0 mmHg fs-PACO2-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: PaCO₂ · 45.0 mmHg
+        - generic: fs-PACO2-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "PaO₂ · 86.0 mmHg fs-PAO2-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: PaO₂ · 86.0 mmHg
+        - generic: fs-PAO2-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "pH · 7.34 1 fs-PH-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: pH · 7.34 1
+        - generic: fs-PH-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Capillary refill · 2.0 s fs-CRT-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Capillary refill · 2.0 s
+        - generic: fs-CRT-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - 'button "mottling · Source chart: mottling not observed at this assessment. fs-MOTTLING-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded"':
+        - text: "mottling · Source chart: mottling not observed at this assessment."
+        - generic: fs-MOTTLING-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "skin temperature · 36.0 Cel fs-SKIN-TEMP-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: skin temperature · 36.0 Cel
+        - generic: fs-SKIN-TEMP-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Central venous pressure · 9.0 mmHg fs-CVP-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Central venous pressure · 9.0 mmHg
+        - generic: fs-CVP-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Mean arterial pressure · 72 mmHg fs-MAP-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Mean arterial pressure · 72 mmHg
+        - generic: fs-MAP-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Diastolic blood pressure · 55 mmHg fs-systemic_diastolic-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Diastolic blood pressure · 55 mmHg
+        - generic: fs-systemic_diastolic-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Systolic blood pressure · 110 mmHg fs-systemic_systolic-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Systolic blood pressure · 110 mmHg
+        - generic: fs-systemic_systolic-45 / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Vasoactive event · dobutamine rate change fs-D-CHANGE / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Vasoactive event · dobutamine rate change
+        - generic: fs-D-CHANGE / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Vasoactive event · norepinephrine rate change fs-N-REDUCE / 1 · 2026-10-08T08:45:00+00:00 · recorded":
+        - text: Vasoactive event · norepinephrine rate change
+        - generic: fs-N-REDUCE / 1 · 2026-10-08T08:45:00+00:00 · recorded
+      - button "Vasoactive event · dobutamine pause fs-D-PAUSE / 1 · 2026-10-08T08:50:00+00:00 · recorded":
+        - text: Vasoactive event · dobutamine pause
+        - generic: fs-D-PAUSE / 1 · 2026-10-08T08:50:00+00:00 · recorded
+      - button "Pump volumetric rate · 2.1 mL/h fs-PUMP-RATE-D-RESTART / 1 · 2026-10-08T08:55:00+00:00 · recorded":
+        - text: Pump volumetric rate · 2.1 mL/h
+        - generic: fs-PUMP-RATE-D-RESTART / 1 · 2026-10-08T08:55:00+00:00 · recorded
+      - button "Vasoactive event · dobutamine restart fs-D-RESTART / 1 · 2026-10-08T08:55:00+00:00 · recorded":
+        - text: Vasoactive event · dobutamine restart
+        - generic: fs-D-RESTART / 1 · 2026-10-08T08:55:00+00:00 · recorded
+      - button "Cardiac index · 2.60 L/min/m2 fs-CI-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Cardiac index · 2.60 L/min/m2
+        - generic: fs-CI-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Cardiac output · 4.60 L/min fs-CO-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Cardiac output · 4.60 L/min
+        - generic: fs-CO-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Heart rate · 96 /min fs-HR-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Heart rate · 96 /min
+        - generic: fs-HR-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Source rhythm · Source-reported sinus rhythm. fs-RHYTHM-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Source rhythm · Source-reported sinus rhythm.
+        - generic: fs-RHYTHM-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Reported cumulative chart balance · 285 mL fs-BALANCE-TOTAL / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Reported cumulative chart balance · 285 mL
+        - generic: fs-BALANCE-TOTAL / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - 'button "Hemodynamic handover · Fictional hemodynamic handover: retain original infusion identities; CO at 09:00 has suspect source quality; PiCCO quality remains unknown. Review source-chart fluid completeness and source-recorded target. No independent response classification or shock diagnosis established. fs-HANDOVER / 1 · 2026-10-08T09:00:00+00:00 · recorded"':
+        - text: "Hemodynamic handover · Fictional hemodynamic handover: retain original infusion identities; CO at 09:00 has suspect source quality; PiCCO quality remains unknown. Review source-chart fluid completeness and source-recorded target. No independent response classification or shock diagnosis established."
+        - generic: fs-HANDOVER / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Blood-product input · 0 mL fs-IO-input_blood-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Blood-product input · 0 mL
+        - generic: fs-IO-input_blood-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "IV fluid input · 50 mL fs-IO-input_iv-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: IV fluid input · 50 mL
+        - generic: fs-IO-input_iv-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Reported interval fluid balance · -50 mL fs-IO-net_balance_reported-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Reported interval fluid balance · -50 mL
+        - generic: fs-IO-net_balance_reported-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "CRRT net fluid removal · 50 mL fs-IO-output_crrt-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: CRRT net fluid removal · 50 mL
+        - generic: fs-IO-output_crrt-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Drain output · 5 mL fs-IO-output_drain-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Drain output · 5 mL
+        - generic: fs-IO-output_drain-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Urine output · 45 mL fs-IO-output_urine-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Urine output · 45 mL
+        - generic: fs-IO-output_urine-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Reported cumulative urine volume · 145 mL fs-URINE-TOTAL / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Reported cumulative urine volume · 145 mL
+        - generic: fs-URINE-TOTAL / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Lactate · 2.0 mmol/L fs-LACTATE-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Lactate · 2.0 mmol/L
+        - generic: fs-LACTATE-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "PaCO₂ · 44.0 mmHg fs-PACO2-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: PaCO₂ · 44.0 mmHg
+        - generic: fs-PACO2-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "PaO₂ · 88.0 mmHg fs-PAO2-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: PaO₂ · 88.0 mmHg
+        - generic: fs-PAO2-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "pH · 7.36 1 fs-PH-60 / 0477b2b8-0453-4857-8bbb-6ffb2c2626c6 · 2026-10-08T09:00:00+00:00 · recorded" [pressed]:
+        - text: pH · 7.36 1
+        - generic: fs-PH-60 / 0477b2b8-0453-4857-8bbb-6ffb2c2626c6 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Capillary refill · 2.0 s fs-CRT-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Capillary refill · 2.0 s
+        - generic: fs-CRT-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - 'button "mottling · Source chart: mottling not observed at this assessment. fs-MOTTLING-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded"':
+        - text: "mottling · Source chart: mottling not observed at this assessment."
+        - generic: fs-MOTTLING-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "skin temperature · 36.1 Cel fs-SKIN-TEMP-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: skin temperature · 36.1 Cel
+        - generic: fs-SKIN-TEMP-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Central venous pressure · 9.0 mmHg fs-CVP-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Central venous pressure · 9.0 mmHg
+        - generic: fs-CVP-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Mean arterial pressure · 70 mmHg fs-MAP-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Mean arterial pressure · 70 mmHg
+        - generic: fs-MAP-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Diastolic blood pressure · 53 mmHg fs-systemic_diastolic-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Diastolic blood pressure · 53 mmHg
+        - generic: fs-systemic_diastolic-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Systolic blood pressure · 106 mmHg fs-systemic_systolic-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Systolic blood pressure · 106 mmHg
+        - generic: fs-systemic_systolic-60 / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Vasoactive event · vasopressin permanent stop fs-V-STOP / 1 · 2026-10-08T09:00:00+00:00 · recorded":
+        - text: Vasoactive event · vasopressin permanent stop
+        - generic: fs-V-STOP / 1 · 2026-10-08T09:00:00+00:00 · recorded
+      - button "Central venous pressure · Not established m7-UNPLACED / 1 · Time not established · recorded":
+        - text: Central venous pressure · Not established
+        - generic: m7-UNPLACED / 1 · Time not established · recorded
+  - region "Evidence draft":
+    - heading "Correct selected evidence" [level=2]
+    - paragraph: "Original retained: circulatory_oxygen / fs-PH-60 / 1"
+    - paragraph: Correction keeps the original observation time and context unless explicitly changed in the source record. It is not a new measurement or evidence of ongoing administration.
+    - button "Load exact revision history"
+    - generic "Original source record"
+    - 'generic "History: 2 retained revisions"'
+    - heading "Review before append" [level=3]
+    - paragraph: Oxygen transport and blood gases · fs-PH-60 / 0477b2b8-0453-4857-8bbb-6ffb2c2626c6
+    - paragraph: "Digest: 93b0816df8ec605a12eab2bff02f46e483b39aa8d56e314517b95684a618837e"
+    - generic "Complete validated record and source caveats"
+    - paragraph: Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.
+    - status: Exact revision saved and confirmed. Ingestion sequence 163.
+    - button "Start another entry"
+    - paragraph: Pending drafts exist only in this page’s memory. Reloading or closing can lose them. Keep this page open while completion is unknown.

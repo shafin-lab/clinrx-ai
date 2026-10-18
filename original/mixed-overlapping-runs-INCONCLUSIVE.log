@@ -1,0 +1,37 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+
+ Test Files  16 passed (16)
+      Tests  561 passed (561)
+   Start at  19:16:40
+   Duration  58.92s (tests 77%, environment 17%, setup 2%, import 2%, transform 2%)
+
+    Isolate  16 workers spawned · ~1.41s startup each (spawn + environment, per file)
+             at least ~9.84s faster with isolate: false — reuses workers across files instead of one per file
+
+rror: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/evidenceEntry.test.tsx:32:1
+     30|  expect(JSON.stringify(original.fact)).toContain('7.35');expect(JSON.s…
+     31| });
+     32| it('retains the exact reviewed draft after a lost response and require…
+       | ^
+     33|  const {entry}=setup();await draft();entry.save.mockRejectedValueOnce(…
+     34|  fireEvent.click(screen.getByRole('button',{name:'Confirm append to lo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 15 passed (16)
+      Tests  1 failed | 560 passed (561)
+   Start at  19:15:52
+   Duration  70.56s (tests 79%, environment 14%, setup 3%, transform 2%, import 2%)
+
+    Isolate  16 workers spawned · ~1.49s startup each (spawn + environment, per file)
+             at least ~10.43s faster with isolate: false — reuses workers across files instead of one per file
+
