@@ -1,0 +1,13 @@
+# Corrected local workspace walkthrough — 18 October 2026
+
+Application 008034ea12275406d8f5aede8ceb3aa5142570b6; tree f9e626c1e4f3a478644a079cba9cf1437c04b2d7. Local URL http://127.0.0.1:5191/.
+
+The browser was first checked for pending work: its prior note was confirmed saved at ingestion 171. A fresh authoring build used the same patient/encounter/review configuration and passed typecheck/build. The previous fa8ce7d frontend remains preserved in guided-entry-local-run/frontend-fa8ce7d-before-008034e. The backend was not restarted, and no database was reseeded. All tables/rows matched immediately before/after the frontend replacement. Health reported execution_enabled=false. The browser was reloaded only after that check; the DOM script path matches the new built asset and its recorded hash.
+
+On the corrected UI, the baseline CO 4.700 L/min at 09:25 (suspect quality), documented dobutamine change at 09:30 and capillary refill 3.00 s at 09:35 (unknown quality) were selected. selected-options.json captures the actual DOM menu values, now distinct JSON tuples rather than ambiguous delimiter strings. The clinician-authored fictional note separates findings, unconfirmed possibilities, gaps and an unscheduled review plan. No treatment effect, diagnosis or response classification is established.
+
+The explicit review/append completed at ingestion 172, note b19580df-dfcb-4494-a076-9a806be2c187 / 1. Its persisted payload SHA-256 is 7e91409555cf2fc9693c8baece95a1d5253b1df3b70697525ff7e55927d2948d. Exact associations and narrative references match all three selected tuples. All prior 171 fact rows and both retained receipt rows remained unchanged; every other table except the sequence counter also matched. before.sqlite3 and after.sqlite3 are actual captured checkpoints. See verification.json and stored-reassessment.json.
+
+This is an implementation-operated live normal-flow selection/review/save on the corrected source. It is not a live exercise of slash-colliding IDs; those cases remain in the 37 focused frontend / 15 API-storage regression evidence previously published. No new full suite, hosted CI, Docker validation, complete network trace, browser recovery fault injection, independent review or clinical validation is claimed. Screenshot extensions match their bytes. Existing signed-token and durable pending-browser recovery limitations remain unchanged.
+
+Production execution stays disabled. No source changes, push, merge, deployment, external hosting or publication occurred during this walkthrough. Reviewed GitHub evidence and the accepted read-only Docker demo remain unchanged.

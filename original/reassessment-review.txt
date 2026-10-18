@@ -1,0 +1,69 @@
+- main:
+  - heading "Synthetic patient evidence entry" [level=1]
+  - paragraph: Separate disposable local workspace · synthetic-p1 / synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Source entry does not execute an inference or issue treatment advice. The accepted read-only Docker demo is separate.
+  - paragraph: Guided source entry and clinician-authored reassessment are available for common hemodynamic records. Advanced source entry preserves access to all 15 families. This remains a local synthetic prototype.
+  - paragraph: "165 source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: 2026-10-08T08:00:00+00:00 to 2026-10-08T10:00:00+00:00; source times may be contextual or unplaced."
+  - region "Recorded evidence":
+    - heading "Select evidence to correct" [level=2]
+    - button "New source entry"
+    - button "Refresh evidence"
+    - text: Evidence family
+    - combobox "Evidence family":
+      - option "All 15 families" [selected]
+      - option "Pressure and PAC/RHC"
+      - option "Cardiac output and performance"
+      - option "Volume and lung water"
+      - option "Dynamic measurements"
+      - option "Recorded device predictions"
+      - option "Tissue perfusion"
+      - option "Oxygen transport and blood gases"
+      - option "Lactate"
+      - option "Echo and POCUS"
+      - option "ECG and rhythm"
+      - option "Vasoactive events"
+      - option "Edwards / PiCCO and monitoring context"
+      - option "Dynamic assessment episodes"
+      - option "Recorded circulatory events"
+      - option "Signal manifests"
+    - text: Find evidence
+    - textbox "Find evidence": 98bda243
+    - list:
+      - button "Cardiac output · 4.700 L/min 98bda243-a9f5-494d-8733-8b575b75bf65 / 1 · 2026-10-08T09:25:00Z · recorded":
+        - text: Cardiac output · 4.700 L/min
+        - generic: 98bda243-a9f5-494d-8733-8b575b75bf65 / 1 · 2026-10-08T09:25:00Z · recorded
+      - button:
+        - text: "other · Clinician-authored synthetic reassessment; not a computed response or causal conclusion. Question: Review a documented infusion event alongside separately recorded hemodynamic evidence. baseline: {\"kind\":\"circulatory_cardiac\",\"id\":\"98bda243-a9f5-494d-8733-8b575b75bf65\",\"version\":\"1\"} intervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"} followup: {\"kind\":\"circulatory_perfusion\",\"id\":\"33b64610-60af-4c43-b9ee-393ff63d2e96\",\"version\":\"1\"} Recorded findings: CO 4.700 L/min at 09:25 has suspect source quality. A dobutamine rate change is documented at 09:30. Capillary refill 3.00 s at 09:35 has unknown quality. These are different measurements and source times. Unconfirmed possibilities: Patient-level relationship is not established. These records do not demonstrate treatment response, causation or a shock diagnosis. Confirmation gaps: Fictional clinician-authored note. Clock verification and dosing weight are unknown; no automated response calculation or recommendation. Next review (recorded plan, not a scheduled action): Review sample context, source acquisition quality and the earlier echo report."
+        - generic: 4e4fc4b1-d51d-429b-b227-90092ca74e20 / 1 · 2026-10-08T09:40:00Z · recorded
+  - region "Evidence draft":
+    - heading "New source entry" [level=2]
+    - heading "Review before append" [level=3]
+    - paragraph: Recorded circulatory events · b19580df-dfcb-4494-a076-9a806be2c187 / 1
+    - paragraph: "Proposed status: recorded"
+    - paragraph: "Actor: Synthetic corrected-workflow reviewer"
+    - paragraph: "Reason: New source entry; no predecessor"
+    - region "Proposed source context":
+      - heading "Source context to review" [level=4]
+      - term: Source time
+      - definition: 2026-10-08T09:55:00Z
+      - term: Clock verification
+      - definition: unknown
+      - term: Quality
+      - definition: Not recorded
+      - term: Method
+      - definition: Not recorded
+      - term: Recorded production tag
+      - definition: Not applicable to this event
+      - paragraph: "Clinician-authored synthetic reassessment; not a computed response or causal conclusion. Question: Review exact baseline, documented intervention and follow-up evidence without inferring a response. baseline: {\"kind\":\"circulatory_cardiac\",\"id\":\"98bda243-a9f5-494d-8733-8b575b75bf65\",\"version\":\"1\"} intervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"} followup: {\"kind\":\"circulatory_perfusion\",\"id\":\"33b64610-60af-4c43-b9ee-393ff63d2e96\",\"version\":\"1\"} Recorded findings: CO is recorded as 4.700 L/min at 09:25 UTC with suspect source quality. A dobutamine rate change is documented at 09:30 UTC. Capillary refill is recorded as 3.00 s at 09:35 UTC with unknown quality. These records measure different properties at distinct source times. Unconfirmed possibilities: Patient-level relationship is not established. No causal treatment effect, shock diagnosis or responder classification is confirmed by these selections. Confirmation gaps: Fictional authored demonstration on the corrected workspace. Unknown clocks and dosing weight; suspect CO quality. No calculation, conversion, simultaneous-measurement claim or treatment recommendation. Next review (recorded plan, not a scheduled action): Review source acquisition quality, the ABG specimen context and earlier echo report. This plan does not schedule a task."
+      - heading "Uncertainty and source caveats" [level=4]
+      - paragraph: Fictional authored demonstration on the corrected workspace. Unknown clocks and dosing weight; suspect CO quality. No calculation, conversion, simultaneous-measurement claim or treatment recommendation.
+      - paragraph: Unknown fields remain unknown. These are recorded source assertions and clinician-authored notes, not a generated diagnosis or treatment recommendation.
+    - paragraph: "Digest: 7e91409555cf2fc9693c8baece95a1d5253b1df3b70697525ff7e55927d2948d"
+    - generic "Complete validated record and source caveats"
+    - paragraph: Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.
+    - button "Confirm append to local database"
+    - button "Edit draft"
+    - button "Discard draft and reload"
+    - paragraph: Pending drafts exist only in this page’s memory. Reloading or closing can lose them. Keep this page open while completion is unknown.
