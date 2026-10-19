@@ -1,0 +1,31 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=1 tests/evidenceEntry.test.tsx -t creates a guided BP source|prepares a clinician-authored reassessment
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/evidenceEntry.test.tsx (17 tests | 1 failed | 15 skipped) 10174ms
+   × prepares a clinician-authored reassessment with exact linked revisions and no automatic conclusion 6382ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/evidenceEntry.test.tsx > prepares a clinician-authored reassessment with exact linked revisions and no automatic conclusion
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/evidenceEntry.test.tsx:144:1
+    142|  expect(entry.save).not.toHaveBeenCalled();
+    143| });
+    144| it('prepares a clinician-authored reassessment with exact linked revis…
+       | ^
+    145|  const {entry}=setup();await screen.findByRole('textbox',{name:'Find e…
+    146|  fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 15 skipped (17)
+   Start at  09:36:19
+   Duration  12.46s (tests 83%, environment 9%, transform 4%, setup 3%, import 1%)
+

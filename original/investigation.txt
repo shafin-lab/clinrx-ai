@@ -1,0 +1,69 @@
+Evidence-entry timeout investigation — 19 October 2026
+
+Scope
+Only frontend/tests/evidenceEntry.test.tsx changes. Application code, fixtures,
+assertions, default 5,000 ms test timeout, runner configuration, dependencies,
+backend and execution configuration are unchanged. No clinical data was written,
+no server was reconfigured, and no merge, push, deployment or hosting was done.
+
+Reproduction and measured cause
+baseline.log: full 156-record fixture; BP passed but reassessment timed out at
+6,382 ms against the default 5,000 ms limit. Exit 1.
+profile-before.log: first instrumented probe passed. Exit 0; console timings
+were not retained by the runner reporter.
+profile-before-repeat.log: instrumented repeat failed at 6,562 ms. Exit 1.
+profile-before.jsonl contains synchronous per-step wall-clock measurements;
+profiling-test.tsx.txt preserves the temporary instrumentation (removed from
+repository before final checks). Measurements include instrumentation overhead.
+
+The recorded label queries individually took 328–792 ms; corresponding changes
+completed in 23–31 ms. Initial setup took 272 ms. The installed Testing Library
+label query iterates container.querySelectorAll('*'), then resolves labels.
+The full evidence page and multiple full-record revision menus substantially
+increase query work. Whole-page button queries added further query overhead.
+This establishes a test-query cost in these reproduced failures; it does not
+establish the cause of every earlier unrelated parallel timeout.
+
+Correction
+Use within(the accessible Evidence draft region), querying textbox, combobox and
+button roles by their accessible names. Keep the same 156-record snapshot,
+field inputs, real component events, preview assertions, linked-reference count
+and no-save assertion. No hidden-element shortcuts, mocks of the form, smaller
+fixture, fake timers, retries, sleeps or relaxed timeout were introduced.
+
+Checks and attribution
+focused-corrected.log: original two cases pass; exit 0.
+evidence-entry-final.log: all 17 pass; exit 0. BP 300 ms, reassessment 486 ms.
+The first typecheck exposed unsupported `exact` options on role queries;
+typecheck.log retains that failure (exit 2). Role/name matching needs no such
+option. Those options were removed before final-source validation.
+typecheck-final.log: passed; exit 0.
+evidence-entry-final-source.log: all 17 pass against final bytes; exit 0,
+15.21 seconds overall. This is the final focused source attribution.
+frontend-pre-final-typecheck-cleanup.log: 663 pass across 21 files, 87.55 seconds;
+exit 0. Run began before the type-option cleanup; retained separately.
+frontend-final.log: 663 passed across 21 files against final bytes; exit 0,
+84.54 seconds overall.
+Default timeout remains 5,000 ms throughout. Node 24.12.0 / npm 11.6.2.
+Whitespace check passed. tested-file.sha256 records final test-file bytes.
+
+Commands (repository /Users/mohammedshafiqshajahan/Documents/clinrx-ai)
+1. npm --prefix frontend test -- --maxWorkers=1 tests/evidenceEntry.test.tsx -t 'creates a guided BP source|prepares a clinician-authored reassessment'
+2. npm --prefix frontend test -- --maxWorkers=1 tests/entryProfile.test.tsx -t 'prepares a clinician-authored reassessment'
+3. npm --prefix frontend test -- --maxWorkers=1 --reporter=verbose tests/evidenceEntry.test.tsx
+4. npm --prefix frontend test -- --maxWorkers=2
+5. npm --prefix frontend run typecheck
+6. git diff --check
+
+Relevant coverage includes exact corrections, save uncertainty, absent lookup and
+explicit same-revision retry, committed lookup recovery, gate rejection, stale
+refresh rejection, authoritative JSON edits, successor selection, and admitted
+identity collisions in both orders. Full suite also covers handover restoration.
+
+No backend suite, production build, browser exercise, new gate probe, hosted CI
+or container validation is claimed for this test-only correction. The production
+execution gate was not changed. Previous reviewed evidence remains untouched.
+
+Local checkpoint: 8c7fedc6db110747966488fbe52bd5815c7c5713
+Tree: e7574339576d3167abc356d0bf651b18a55dbfa3
+Working tree: clean. Nothing pushed.

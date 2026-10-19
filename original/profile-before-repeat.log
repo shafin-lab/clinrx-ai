@@ -1,0 +1,26 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=1 tests/entryProfile.test.tsx -t prepares a clinician-authored reassessment
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/entryProfile.test.tsx (17 tests | 1 failed | 16 skipped) 6564ms
+   × prepares a clinician-authored reassessment with exact linked revisions and no automatic conclusion 6562ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/entryProfile.test.tsx > prepares a clinician-authored reassessment with exact linked revisions and no automatic conclusion
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/entryProfile.test.tsx:145:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 skipped (17)
+   Start at  09:37:09
+   Duration  8.69s (tests 77%, environment 12%, transform 7%, setup 3%, import 2%)
+

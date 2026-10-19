@@ -1,0 +1,30 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=1 --reporter=verbose tests/evidenceEntry.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ✓ tests/evidenceEntry.test.tsx > reviews a reasoned exact correction before any append and preserves original time and sample context 1381ms
+ ✓ tests/evidenceEntry.test.tsx > retains the exact reviewed draft after a lost response and requires explicit absent-case retry 2189ms
+ ✓ tests/evidenceEntry.test.tsx > recovers a committed exact revision without another save 1073ms
+ ✓ tests/evidenceEntry.test.tsx > does not append an invalid draft or offer entry with an unconfirmed execution gate 168ms
+ ✓ tests/evidenceEntry.test.tsx > keeps a stale conflict in review without automatic replacement or retry 1028ms
+ ✓ tests/evidenceEntry.test.tsx > keeps JSON-only and interleaved shortcut edits in the single authoritative draft 732ms
+ ✓ tests/evidenceEntry.test.tsx > retains exact calculation inputs and declared lineage for correct 556ms
+ ✓ tests/evidenceEntry.test.tsx > retains exact calculation inputs and declared lineage for withdraw 477ms
+ ✓ tests/evidenceEntry.test.tsx > blocks stale actionable state after a failed gate refresh and makes the header conditional 251ms
+ ✓ tests/evidenceEntry.test.tsx > ignores an older refresh result after a newer response and selects exact revisions only 449ms
+ ✓ tests/evidenceEntry.test.tsx > creates a guided BP source without JSON editing and reviews exact context before append 300ms
+ ✓ tests/evidenceEntry.test.tsx > prepares a clinician-authored reassessment with exact linked revisions and no automatic conclusion 486ms
+ ✓ tests/evidenceEntry.test.tsx > does not mark a refreshed successor selected when the original revision remains the correction target 205ms
+ ✓ tests/evidenceEntry.test.tsx > preserves admitted colliding stage selections through preview and submission: false / 0 216ms
+ ✓ tests/evidenceEntry.test.tsx > preserves admitted colliding stage selections through preview and submission: false / 1 223ms
+ ✓ tests/evidenceEntry.test.tsx > preserves admitted colliding stage selections through preview and submission: true / 0 224ms
+ ✓ tests/evidenceEntry.test.tsx > preserves admitted colliding stage selections through preview and submission: true / 1 238ms
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  09:38:06
+   Duration  14.20s (tests 73%, environment 10%, transform 7%, setup 7%, import 3%)
+
