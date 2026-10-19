@@ -1,11 +1,19 @@
-# Hemodynamics completion and bounded renal/fluid planning review
+# RF1-S1 focused specification correction
 
-Documentation only, 19 October 2026. Application baseline: b4194447829f060387b816437694af9f6c0cb60e (tree eb6ed9d3f53727ccf186c1cb3ee5b5ba9f2677df).
+Documentation only. Application baseline: b4194447829f060387b816437694af9f6c0cb60e, tree eb6ed9d3f53727ccf186c1cb3ee5b5ba9f2677df.
 
-Read HEMODYNAMICS-COMPLETION.md, then RENAL-FLUID-WORKFLOW-SPEC.md. These are status and proposed-scope documents, not renal implementation or clinical approval.
+Previous document commit: 1338ade349dd33c341dde6dfc8c6470beb151790. That revision and its artifacts remain preserved. It was NOT approved for implementation. This revision requests focused RF1-S1 closure, not retrospective approval of the original.
 
-The completion summary links the exact-candidate hosted CI and existing M1/journey evidence on PR #23. No raw evidence is replaced or relabelled by this publication. Director acceptance retains its original bounded scope; uncoached usability remains open.
+Read RENAL-FLUID-WORKFLOW-SPEC.md, One synthetic episode and test fixture. The sole specification change distinguishes supported generic ClinicalObservation/ClinicalValue examples from typed withdrawn/suspect-quality circulatory records. It prohibits inferring withdrawal from historical status, promoting retained source text into typed facts or extending the legacy contract. HEMODYNAMICS-COMPLETION.md is unchanged.
 
-Review RF1 for a bounded read-only review of recorded creatinine alongside existing fluid, urine, weight and renal-support context, using one repository/patient/encounter/cutoff. RF2 renal authoring and mixed-kind notes/handover are deferred. No new calculation, interpretation, clinical threshold or renal prescribing is approved.
+Retain all six Director implementation conditions:
+1. Include bounded original observations, not only v1 projections that omit missing/unplaced records.
+2. Share aggregate retrieval accounting and enforce combined response-size limits.
+3. Fail closed on mismatched scope, cutoff, context, digest or references.
+4. Preserve terminal/history semantics without successor substitution or resurrection of older values.
+5. Demonstrate no fact/receipt writes during the real-API read-only journey.
+6. Keep renal authoring, mixed-kind notes/handover and clinical calculations deferred.
 
-SHA256SUMS covers the three Markdown documents. Application files and execution settings are unchanged. This separate documentation publication does not advance PR #23's application branch. Keep execution disabled. No implementation, merge, deployment, external hosting or activation is authorized.
+SHA256SUMS covers these three Markdown documents. No application tests or walkthroughs were rerun for this wording correction. Existing evidence and acceptances retain their original scopes. Uncoached usability remains open.
+
+Implementation remains unapproved pending Director's exact-revision verdict. Application code, configuration and PR #23's application branch remain unchanged. Keep execution disabled and additions frozen. No implementation, merge, deployment, external hosting or activation is authorized.

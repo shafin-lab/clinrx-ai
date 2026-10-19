@@ -120,9 +120,14 @@ modify the current user's database while preparing RF1. Do not create a separate
 renal database with a competing patient history.
 
 The new disposable fixture contains two distinct creatinine samples and a correction
-of one sample, preserving the original. Supplement with missing sample context,
-an unplaced time, unlike raw units and a withdrawn/suspect/conflicting example for
-browsing tests. Existing urine/input/output/weight/CRRT chart entries are referenced
+of one sample, preserving the original. Generic creatinine examples use only fields
+supported by ClinicalObservation and ClinicalValue, including missing/unknown values,
+conflict, uncertainty, unplaced time and unlike raw units. Typed withdrawn or
+suspect-quality examples use existing circulatory records. Unsupported specimen,
+collection-time, quality or withdrawal information remains explicitly unavailable.
+Withdrawal is not inferred from historical status. Retained source text is not
+promoted into a new typed fact. No legacy clinical contract is extended in RF1.
+Existing urine/input/output/weight/CRRT chart entries are referenced
 in place. A clearly marked gap/overlap example may be added as a separate synthetic
 source record, not a generated balance. Exact values are fixture data, not clinical
 thresholds or an approved inference policy.
