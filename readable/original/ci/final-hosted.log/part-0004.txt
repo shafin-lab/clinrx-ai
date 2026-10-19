@@ -1,0 +1,182 @@
+99801Z ........................................................................ [ 43%]
+backend	Full backend suite	2026-10-19T19:03:11.2016992Z ........................................................................ [ 44%]
+backend	Full backend suite	2026-10-19T19:03:11.8396645Z ........................................................................ [ 46%]
+backend	Full backend suite	2026-10-19T19:03:16.0690262Z ........................................................................ [ 48%]
+backend	Full backend suite	2026-10-19T19:03:16.4574031Z ........................................................................ [ 49%]
+backend	Full backend suite	2026-10-19T19:03:17.8780023Z ........................................................................ [ 51%]
+backend	Full backend suite	2026-10-19T19:03:24.0768956Z ........................................................................ [ 53%]
+backend	Full backend suite	2026-10-19T19:03:25.9781058Z ........................................................................ [ 54%]
+backend	Full backend suite	2026-10-19T19:03:31.9837488Z ........................................................................ [ 56%]
+backend	Full backend suite	2026-10-19T19:04:00.0301100Z ........................................................................ [ 58%]
+backend	Full backend suite	2026-10-19T19:04:04.4986030Z ........................................................................ [ 59%]
+backend	Full backend suite	2026-10-19T19:04:04.6043085Z ........................................................................ [ 61%]
+backend	Full backend suite	2026-10-19T19:05:13.2670389Z ........................................................................ [ 63%]
+backend	Full backend suite	2026-10-19T19:05:38.6566063Z ........................................................................ [ 64%]
+backend	Full backend suite	2026-10-19T19:05:47.0913713Z ........................................................................ [ 66%]
+backend	Full backend suite	2026-10-19T19:05:55.7068182Z ........................................................................ [ 68%]
+backend	Full backend suite	2026-10-19T19:06:14.0464239Z ........................................................................ [ 69%]
+backend	Full backend suite	2026-10-19T19:06:32.9766171Z ........................................................................ [ 71%]
+backend	Full backend suite	2026-10-19T19:06:56.6109649Z ........................................................................ [ 73%]
+backend	Full backend suite	2026-10-19T19:07:07.6985112Z ........................................................................ [ 74%]
+backend	Full backend suite	2026-10-19T19:07:13.3315663Z ........................................................................ [ 76%]
+backend	Full backend suite	2026-10-19T19:07:20.9375945Z ........................................................................ [ 78%]
+backend	Full backend suite	2026-10-19T19:09:05.3758247Z ........................................................................ [ 79%]
+backend	Full backend suite	2026-10-19T19:10:08.8246985Z ........................................................................ [ 81%]
+backend	Full backend suite	2026-10-19T19:12:40.7206797Z ........................................................................ [ 82%]
+backend	Full backend suite	2026-10-19T19:12:44.2925753Z ........................................................................ [ 84%]
+backend	Full backend suite	2026-10-19T19:12:49.0907996Z ........................................................................ [ 86%]
+backend	Full backend suite	2026-10-19T19:13:03.1925919Z ........................................................................ [ 87%]
+backend	Full backend suite	2026-10-19T19:13:12.8815726Z ........................................................................ [ 89%]
+backend	Full backend suite	2026-10-19T19:13:28.1365965Z ........................................................................ [ 91%]
+backend	Full backend suite	2026-10-19T19:13:39.6197450Z ........................................................................ [ 92%]
+backend	Full backend suite	2026-10-19T19:13:53.8521431Z ........................................................................ [ 94%]
+backend	Full backend suite	2026-10-19T19:14:10.3277727Z ........................................................................ [ 96%]
+backend	Full backend suite	2026-10-19T19:14:23.8124761Z ........................................................................ [ 97%]
+backend	Full backend suite	2026-10-19T19:14:44.1308655Z ........................................................................ [ 99%]
+backend	Full backend suite	2026-10-19T19:14:50.1412469Z ..................                                                       [100%]
+backend	Full backend suite	2026-10-19T19:14:50.1413005Z =============================== warnings summary ===============================
+backend	Full backend suite	2026-10-19T19:14:50.1413512Z ../../_temp/clinrx-backend/lib/python3.11/site-packages/fastapi/testclient.py:1
+backend	Full backend suite	2026-10-19T19:14:50.1414862Z   /home/runner/work/_temp/clinrx-backend/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+backend	Full backend suite	2026-10-19T19:14:50.1415793Z     from starlette.testclient import TestClient as TestClient  # noqa
+backend	Full backend suite	2026-10-19T19:14:50.1416259Z 
+backend	Full backend suite	2026-10-19T19:14:50.1416476Z -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+backend	Full backend suite	2026-10-19T19:14:50.1416914Z 4338 passed, 1 warning in 1083.08s (0:18:03)
+backend	Bound synthetic validation evidence	﻿2026-10-19T19:14:52.6232784Z ##[group]Run mkdir -p "$RUNNER_TEMP/clinrx-backend-evidence"
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6233274Z ^[[36;1mmkdir -p "$RUNNER_TEMP/clinrx-backend-evidence"^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6233802Z ^[[36;1mprintf 'job_status=%s\n' "$VALIDATION_STATUS" > "$RUNNER_TEMP/clinrx-backend-evidence/status.txt"^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6234472Z ^[[36;1m# Four allowlisted files, at most 64 KiB each; preserve failure summaries at the tail.^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6235078Z ^[[36;1mfor name in environment dependencies schema-head pytest; do^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6235512Z ^[[36;1m  source="$RUNNER_TEMP/clinrx-backend-logs/$name.txt"^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6235855Z ^[[36;1m  if test -f "$source"; then^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6236242Z ^[[36;1m    tail -c 65536 "$source" > "$RUNNER_TEMP/clinrx-backend-evidence/$name.txt"^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6236624Z ^[[36;1m  fi^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6236821Z ^[[36;1mdone^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6306285Z shell: /usr/bin/bash -e {0}
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6306563Z env:
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6306771Z   PYTHONPATH: backend
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6307056Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6307374Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6307802Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib/pkgconfig
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6308216Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6308588Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6308967Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6309333Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6309663Z   VALIDATION_STATUS: success
+backend	Bound synthetic validation evidence	2026-10-19T19:14:52.6309900Z ##[endgroup]
+backend	Upload bounded synthetic validation evidence	﻿2026-10-19T19:14:52.6547234Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6547651Z with:
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6547909Z   name: synthetic-backend-validation-39306712460-1
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6548316Z   path: /home/runner/work/_temp/clinrx-backend-evidence/*.txt
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6548656Z   retention-days: 7
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6548876Z   compression-level: 9
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6549103Z   if-no-files-found: error
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6549344Z   include-hidden-files: false
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6549585Z   overwrite: false
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6549786Z env:
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6549978Z   PYTHONPATH: backend
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6550211Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6550776Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6551211Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib/pkgconfig
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6551617Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6552000Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6552405Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6552775Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.6553096Z ##[endgroup]
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.8255172Z (node:3355) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.8255942Z (Use `node --trace-deprecation ...` to show where the warning was created)
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.8331112Z With the provided path, there will be 5 files uploaded
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.8337240Z Artifact name is valid!
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:52.8337723Z Root directory input is valid!
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:53.0905916Z Beginning upload of artifact content to blob storage
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:53.1150686Z (node:3355) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:53.2017620Z Uploaded bytes 2052
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:53.2321184Z Finished uploading artifact content to blob storage!
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:53.2322684Z SHA256 digest of uploaded artifact zip is 6cef78335f65d9e9bf016787c680ed2930068d33464fe7d69f51b2120680fb18
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:53.2323852Z Finalizing artifact upload
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:53.4687383Z Artifact synthetic-backend-validation-39306712460-1.zip successfully finalized. Artifact ID 12214428706
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:53.4688713Z Artifact synthetic-backend-validation-39306712460-1 has been successfully uploaded! Final size is 2052 bytes. Artifact ID is 12214428706
+backend	Upload bounded synthetic validation evidence	2026-10-19T19:14:53.4693852Z Artifact download URL: https://github.com/shafin-lab/clinrx-ai/actions/runs/39306712460/artifacts/12214428706
+backend	Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	﻿2026-10-19T19:14:53.4876297Z Post job cleanup.
+backend	Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T19:14:53.6094191Z (node:3367) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+backend	Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T19:14:53.6095387Z (Use `node --trace-deprecation ...` to show where the warning was created)
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-10-19T19:14:53.6285234Z Post job cleanup.
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T19:14:53.7254109Z [command]/usr/bin/git version
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T19:14:53.7319349Z git version 2.55.0
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T19:14:53.7376281Z Temporarily overriding HOME='/home/runner/work/_temp/33b10bc0-8dec-4b44-89af-c49dcde8cff4' before making global git config changes
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T19:14:53.7396671Z Adding repository directory to the temporary git global config as a safe directory
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T19:14:53.7397978Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/clinrx-ai/clinrx-ai
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T19:14:53.7449945Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T19:14:53.7506630Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T19:14:53.7817654Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T19:14:53.7862346Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+backend	Complete job	﻿2026-10-19T19:14:53.8316486Z Cleaning up orphan processes
+backend	Complete job	2026-10-19T19:14:53.8646491Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+frontend	Set up job	﻿2026-10-19T18:56:15.9129803Z Current runner version: '2.337.0'
+frontend	Set up job	2026-10-19T18:56:15.9151272Z ##[group]Runner Image Provisioner
+frontend	Set up job	2026-10-19T18:56:15.9151962Z Hosted Compute Agent
+frontend	Set up job	2026-10-19T18:56:15.9152349Z Version: 20261015.610
+frontend	Set up job	2026-10-19T18:56:15.9152793Z Commit: 267fdb4e8bbec4ab5ea31367f3a00d5c480c7656
+frontend	Set up job	2026-10-19T18:56:15.9153296Z Build Date: 2026-10-14T17:06:54Z
+frontend	Set up job	2026-10-19T18:56:15.9153787Z Worker ID: {6909c48b-94ca-433a-9ce7-b0e983b60dde}
+frontend	Set up job	2026-10-19T18:56:15.9154247Z Region: centralus
+frontend	Set up job	2026-10-19T18:56:15.9154607Z Cloud: Azure
+frontend	Set up job	2026-10-19T18:56:15.9154995Z ##[endgroup]
+frontend	Set up job	2026-10-19T18:56:15.9155906Z ##[group]Operating System
+frontend	Set up job	2026-10-19T18:56:15.9156278Z Ubuntu
+frontend	Set up job	2026-10-19T18:56:15.9156677Z 24.04.5
+frontend	Set up job	2026-10-19T18:56:15.9157021Z LTS
+frontend	Set up job	2026-10-19T18:56:15.9157385Z ##[endgroup]
+frontend	Set up job	2026-10-19T18:56:15.9157787Z ##[group]Runner Image
+frontend	Set up job	2026-10-19T18:56:15.9158206Z Image: ubuntu-24.04
+frontend	Set up job	2026-10-19T18:56:15.9158627Z Version: 20261018.339.1
+frontend	Set up job	2026-10-19T18:56:15.9159288Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261018.339/images/ubuntu/Ubuntu2404-Readme.md
+frontend	Set up job	2026-10-19T18:56:15.9161006Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261018.339
+frontend	Set up job	2026-10-19T18:56:15.9161585Z ##[endgroup]
+frontend	Set up job	2026-10-19T18:56:15.9162370Z ##[group]GITHUB_TOKEN Permissions
+frontend	Set up job	2026-10-19T18:56:15.9163939Z Contents: read
+frontend	Set up job	2026-10-19T18:56:15.9164428Z Metadata: read
+frontend	Set up job	2026-10-19T18:56:15.9164793Z ##[endgroup]
+frontend	Set up job	2026-10-19T18:56:15.9166400Z Secret source: Actions
+frontend	Set up job	2026-10-19T18:56:15.9167035Z Cache mode: write
+frontend	Set up job	2026-10-19T18:56:15.9167686Z Prepare workflow directory
+frontend	Set up job	2026-10-19T18:56:15.9489103Z Prepare all required actions
+frontend	Set up job	2026-10-19T18:56:15.9523208Z Getting action download info
+frontend	Set up job	2026-10-19T18:56:16.1922777Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+frontend	Set up job	2026-10-19T18:56:16.2882021Z Download action repository 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+frontend	Set up job	2026-10-19T18:56:16.4146361Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+frontend	Set up job	2026-10-19T18:56:16.8730957Z Complete job name: frontend
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-10-19T18:56:16.9827699Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9828447Z with:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9828721Z   persist-credentials: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9829096Z   repository: shafin-lab/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9831631Z   token: ***
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9831892Z   ssh-strict: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9832160Z   ssh-user: git
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9832429Z   clean: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9832702Z   sparse-checkout-cone-mode: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9833016Z   fetch-depth: 1
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9833275Z   fetch-tags: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9833546Z   show-progress: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9833824Z   lfs: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9834082Z   submodules: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9834378Z   set-safe-directory: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:16.9834770Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0582537Z Syncing repository: shafin-lab/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0584691Z ##[group]Getting Git version info
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0585416Z Working directory is '/home/runner/work/clinrx-ai/clinrx-ai'
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0586218Z [command]/usr/bin/git version
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0636673Z git version 2.55.0
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0651833Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0664388Z Temporarily overriding HOME='/home/runner/work/_temp/d0294111-c5a5-4a95-b22b-0e517128ec19' before making global git config changes
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0665973Z Adding repository directory to the temporary git global config as a safe directory
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0668680Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/clinrx-ai/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0978818Z Deleting the contents of '/home/runner/work/clinrx-ai/clinrx-ai'
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0981226Z ##[group]Initializing the repository
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.0982147Z [command]/usr/bin/git init /home/runner/work/clinrx-ai/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.2184554Z hint: Using 'master' as the name for the initial branch. This default branch name
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.2185918Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.2186969Z hint: to use in all of your new repositories, which will suppress this warning,
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.2187616Z hint: call:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.2187875Z hint:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T18:56:17.2188242Z hint: 	git config --global init.defaultBranch <name>
+frontend	Run actions/checkout@11bd7

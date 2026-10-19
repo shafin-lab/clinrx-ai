@@ -1,0 +1,228 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend
+
+ ❯ tests/rf2.test.tsx (27 tests | 1 failed) 1530ms
+   × compares two persisted renal notes with original and corrected weight revision references 54ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/rf2.test.tsx > compares two persisted renal notes with original and corrected weight revision references
+TestingLibraryElementError: Found multiple elements with the text: 54259128-a22c-4e16-acb1-6cbcdee22e96 / 90085171-1b8f-405f-bbf8-4261c41cd59f
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<option[39m
+  [33mvalue[39m=[32m"[\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\",\"circulatory_event\",\"54259128-a22c-4e16-acb1-6cbcdee22e96\",\"90085171-1b8f-405f-bbf8-4261c41cd59f\"]"[39m
+[36m>[39m
+  [0m54259128-a22c-4e16-acb1-6cbcdee22e96[0m
+  [0m / [0m
+  [0m90085171-1b8f-405f-bbf8-4261c41cd59f[0m
+[36m</option>[39m
+
+Ignored nodes: comments, script, style
+[36m<option[39m
+  [33mvalue[39m=[32m"[\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\",\"circulatory_event\",\"54259128-a22c-4e16-acb1-6cbcdee22e96\",\"90085171-1b8f-405f-bbf8-4261c41cd59f\"]"[39m
+[36m>[39m
+  [0m54259128-a22c-4e16-acb1-6cbcdee22e96[0m
+  [0m / [0m
+  [0m90085171-1b8f-405f-bbf8-4261c41cd59f[0m
+[36m</option>[39m
+
+Ignored nodes: comments, script, style
+[36m<p>[39m
+  [0m54259128-a22c-4e16-acb1-6cbcdee22e96[0m
+  [0m / [0m
+  [0m90085171-1b8f-405f-bbf8-4261c41cd59f[0m
+[36m</p>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<section[39m
+  [33maria-label[39m=[32m"Compare renal reassessments"[39m
+[36m>[39m
+  [36m<h3>[39m
+    [0mCompare retained renal notes[0m
+  [36m</h3>[39m
+  [36m<label>[39m
+    [0mNote [0m
+    [0mA[0m
+    [36m<select>[39m
+      [36m<option[39m
+        [33mvalue[39m=[32m""[39m
+      [36m>[39m
+        [0mChoose an exact note[0m
+      [36m</option>[39m
+      [36m<option[39m
+        [33mvalue[39m=[32m"[\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\",\"circulatory_event\",\"54259128-a22c-4e16-acb1-6cbcdee22e96\",\"90085171-1b8f-405f-bbf8-4261c41cd59f\"]"[39m
+      [36m>[39m
+        [0m54259128-a22c-4e16-acb1-6cbcdee22e96[0m
+        [0m / [0m
+        [0m90085171-1b8f-405f-bbf8-4261c41cd59f[0m
+      [36m</option>[39m
+      [36m<option[39m
+        [33mvalue[39m=[32m"[\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\",\"circulatory_event\",\"7419f52b-92b8-4515-ad7a-44cfb78a7e6c\",\"f2b7871d-23ab-461c-8c90-b17a7e801eff\"]"[39m
+      [36m>[39m
+        [0m7419f52b-92b8-4515-ad7a-44cfb78a7e6c[0m
+        [0m / [0m
+        [0mf2b7871d-23ab-461c-8c90-b17a7e801eff[0m
+      [36m</option>[39m
+    [36m</select>[39m
+  [36m</label>[39m
+  [36m<label>[39m
+    [0mNote [0m
+    [0mB[0m
+    [36m<select>[39m
+      [36m<option[39m
+        [33mvalue[39m=[32m""[39m
+      [36m>[39m
+        [0mChoose an exact note[0m
+      [36m</option>[39m
+      [36m<option[39m
+        [33mvalue[39m=[32m"[\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\",\"circulatory_event\",\"54259128-a22c-4e16-acb1-6cbcdee22e96\",\"90085171-1b8f-405f-bbf8-4261c41cd59f\"]"[39m
+      [36m>[39m
+        [0m54259128-a22c-4e16-acb1-6cbcdee22e96[0m
+        [0m / [0m
+        [0m90085171-1b8f-405f-bbf8-4261c41cd59f[0m
+      [36m</option>[39m
+      [36m<option[39m
+        [33mvalue[39m=[32m"[\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\",\"circulatory_event\",\"7419f52b-92b8-4515-ad7a-44cfb78a7e6c\",\"f2b7871d-23ab-461c-8c90-b17a7e801eff\"]"[39m
+      [36m>[39m
+        [0m7419f52b-92b8-4515-ad7a-44cfb78a7e6c[0m
+        [0m / [0m
+        [0mf2b7871d-23ab-461c-8c90-b17a7e801eff[0m
+      [36m</option>[39m
+    [36m</select>[39m
+  [36m</label>[39m
+  [36m<div[39m
+    [33mclass[39m=[32m"rf2-compare"[39m
+  [36m>[39m
+    [36m<article>[39m
+      [36m<h4>[39m
+        [0mNote [0m
+        [0mA[0m
+      [36m</h4>[39m
+      [36m<p>[39m
+        [0m54259128-a22c-4e16-acb1-6cbcdee22e96[0m
+        [0m / [0m
+        [0m90085171-1b8f-405f-bbf8-4261c41cd59f[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mClinician-authored; not a validated clinical conclusion.[0m
+      [36m</p>[39m
+      [36m<pre>[39m
+        [0m{
+  "findings": "Recorded observations only",
+  "gaps": "Source quality remains unknown",
+  "pins": [
+    {
+      "cutoff": 4,
+      "digest": "4d31b977aa662a2cdfd32f08c09794beff1dfdb3b4c98a7b107c2f30ae7f9534",
+      "ingestion": 4,
+      "reference": {
+        "id": "9a9281f7-d7d5-4315-a6f6-ee516801d354",
+        "kind": "circulatory_event",
+        "version": "d97b3a2b-d285-4021-92ae-c319506d41c0"
+      },
+      "repository": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7"
+    },
+    {
+      "cutoff": 5,
+      "digest": "f072460d4f7eaf5cc3294179d4962f52090db6bdd8ffbde85576688ca645f402",
+      "ingestion": 5,
+      "reference": {
+        "id": "de0f05cf-bb25-4f0a-952b-5934743a9b83",
+        "kind": "circulatory_event",
+        "version": "5b3081f9-ad8f-4389-b968-68e701e95256"
+      },
+      "repository": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7"
+    }
+  ],
+  "plan": "Unscheduled review",
+  "possibilities": "Patient-level relationship not established",
+  "question": "Review kidney and fluid evidence"
+}[0m
+      [36m</pre>[39m
+      [36m<button>[39m
+        [0mInspect exact evidence retained by this note[0m
+      [36m</button>[39m
+    [36m</article>[39m
+    [36m<article>[39m
+      [36m<h4>[39m
+        [0mNote [0m
+        [0mB[0m
+      [36m</h4>[39m
+      [36m<p>[39m
+        [0m7419f52b-92b8-4515-ad7a-44cfb78a7e6c[0m
+        [0m / [0m
+        [0mf2b7871d-23ab-461c-8c90-b17a7e801eff[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mClinician-authored; not a validated clinical conclusion.[0m
+      [36m</p>[39m
+      [36m<pre>[39m
+        [0m{
+  "findings": "Recorded observations only",
+  "gaps": "Source quality remains unknown",
+  "pins": [
+    {
+      "cutoff": 7,
+      "digest": "d0863df3dd67ca262c816f2624280916ed5edc1c7f7abe865cb716eb225b7d8b",
+      "ingestion": 7,
+      "reference": {
+        "id": "9a9281f7-d7d5-4315-a6f6-ee516801d354",
+        "kind": "circulatory_event",
+        "version": "953bc03f-1113-46cd-860d-1e1b9b092fac"
+      },
+      "repository": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7"
+    },
+    {
+      "cutoff": 5,
+      "digest": "f072460d4f7eaf5cc3294179d4962f52090db6bdd8ffbde85576688ca645f402",
+      "ingestion": 5,
+      "reference": {
+        "id": "de0f05cf-bb25-4f0a-952b-5934743a9b83",
+        "kind": "circulatory_event",
+        "version": "5b3081f9-ad8f-4389-b968-68e701e95256"
+      },
+      "repository": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7"
+    }
+  ],
+  "plan": "Unscheduled review",
+  "possibilities": "Patient-level relationship not established",
+  "question": "Review corrected weight"
+}[0m
+      [36m</pre>[39m
+      [36m<button>[39m
+        [0mInspect exact evidence retained by this note[0m
+      [36m</button>[39m
+    [36m</article>[39m
+  [36m</div>[39m
+  [36m<p>[39m
+    [0mEach note retains its original references. No source successor or calculated change is substituted.[0m
+  [36m</p>[39m
+[36m</section>[39m
+ ❯ Object.getElementError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getElementError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:20:35
+ ❯ getMultipleElementsFoundError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:23:10
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:55:13
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/rf2.test.tsx:35:719
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 24 passed (25)
+      Tests  1 failed | 737 passed (738)
+   Start at  00:06:58
+   Duration  59.78s (tests 79%, environment 14%, import 3%, setup 2%, transform 2%)
+
+    Isolate  25 workers spawned · ~744ms startup each (spawn + environment, per file)
+             at least ~8.55s faster with isolate: false — reuses workers across files instead of one per file
+

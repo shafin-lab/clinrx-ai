@@ -1,0 +1,212 @@
+('history family limit')
++        return self.bounded_dict({'repository':str(body.repository),'selected':p.model_dump(mode='json'),'items':[self.evidence(repo,x,cutoff,a) for x in rows],'execution_enabled':False})
++    def bounded_dict(self,v):
++        if len(json.dumps(v,ensure_ascii=False).encode())>self.dependencies.config.max_response_bytes:raise QueryLimitExceeded('response budget exceeded')
++        return v
++    def catalog(self,repo,start=None,end=None):
++        self.require_closed();cutoff=repo.capture_cutoff();a=self.accounting();rows=self.history_rows(repo,cutoff,a)
++        terminals={}
++        for s in rows:terminals[(s.fact.kind,s.fact.id)]=s
++        from datetime import datetime
++        from app.execution.patient_state_v3 import PatientStateScopeV3
++        start=start or datetime.fromisoformat('2026-10-08T08:00:00+00:00');end=end or datetime.fromisoformat('2026-10-08T10:00:00+00:00')
++        self.window(start,end)
++        scope=PatientStateScopeV3(patient_id=TARGET.patient_id,encounter_id=TARGET.encounter_id,review_start=start,review_end=end,repository_cutoff=cutoff)
++        base=self.build(repo,scope,a)
++        # Source ownership remains explicit; generic weights are read-only.
++        selected=[s for s in terminals.values() if category(s.fact) or s.fact.kind in ('circulatory_pressure','circulatory_cardiac','circulatory_lactate','circulatory_oxygen','circulatory_perfusion','circulatory_vasoactive') or (isinstance(s.fact,ClinicalObservation) and s.fact.concept_id in ('body-weight','synthetic-serum-creatinine'))]
++        base_keys={(i.fact.kind,i.fact.id,i.fact.revision) for i in base.circulatory.assembly.snapshot.items}|{(i.fact.kind,i.fact.id,i.fact.revision) for i in base.laboratory.observations}
++        extras=[s for s in selected if (s.fact.kind,s.fact.id,s.fact.revision) not in base_keys]
++        return self.bounded_dict({'repository':str(cutoff.repository_id),'cutoff':cutoff.model_dump(mode='json'),'combined':base.model_dump(mode='json'),'items':[self.evidence(repo,s,cutoff,a) for s in extras],'execution_enabled':False})
++    def build_fact(self,repo,body,a):
++        self.require_repo(repo,body.repository)
++        predecessor=self.pin_record(repo,body.predecessor,a) if body.predecessor else None
++        if predecessor and predecessor.fact.record_status!='recorded':raise UnsupportedOperation('withdrawn/invalid correction requires original owner')
++        if body.note:
++            for pin in body.note.pins:self.pin_record(repo,pin,a)
++        at=body.recorded_at
++        prov={'source':{'namespace':'clinrx.local.synthetic.rf2','identifier':str(body.id),'channel':'clinician'},'actor':body.actor,'recorded_at':at,'lineage':'incomplete','limitations':['Unauthenticated local synthetic source assertion.']}
++        data=predecessor.fact.model_dump(mode='json') if predecessor else {'kind':'circulatory_event','id':str(body.id),'revision':str(body.revision),'contract_version':'3','binding':{'target':TARGET.model_dump(),'verification':{'status':'unresolved','method':'Synthetic scope selection','verifier':body.actor,'assessed_at':at,'source':prov['source'],'ambiguity':'Local synthetic patient only.'}},'origin':'reported','time':{'precision':'unknown'},'verification':'unverified','conflict':'unknown','temporal_status':'unknown','record_status':'recorded','event_type':'other'}
++        if predecessor:
++            oldcat=category(predecessor.fact)
++            if (body.note is not None)!=(oldcat=='note') or (body.chart and body.chart.category!=('weight' if oldcat=='dosing_weight' else oldcat)):raise EvidenceConflict()
++        data.update(id=str(body.id),revision=str(body.revision),provenance=prov,supersedes=body.predecessor.reference.model_dump() if predecessor else None,correction_reason=body.reason)
++        entries=[x for x in getattr(predecessor.fact,'external_evidence',()) if x.namespace not in (META,PIN)] if predecessor else []
++        if body.chart:
++            c=body.chart;prior=metadata(predecessor.fact) if predecessor else None
++            if prior and prior['chart']['source_record']!=c.model_dump(mode='json')['source_record']:raise EvidenceConflict()
++            if predecessor and not prior and c.source_record is not None:raise UnsupportedOperation('cannot assign upstream identity to historical record')
++            data.update(recorded_amount=ExactQuantity(value=Decimal(c.amount),unit={'raw':c.unit,'status':'unresolved','limitation':'Raw source unit; no conversion.'}).model_dump(mode='json') if c.amount is not None else None,occurred=time(c.point).model_dump(mode='json'),available=time(None).model_dump(mode='json'))
++            if c.start is not None or c.end is not None:data['recorded_interval']=RecordedCirculatoryInterval(start=time(c.start),end=time(c.end),provenance=prov,limitations=('Source bounds only; no calculated rate or duration.',)).model_dump(mode='json')
++            else:data.pop('recorded_interval',None)
++            if not predecessor:data['description']=RecordedConcept(raw_display=c.source_context,coding=SourceCode(namespace=META,code=c.category,version='1',raw_display=c.category)).model_dump(mode='json')
++            data['uncertainty']=[c.uncertainty]
++        else:
++            n=body.note
++            narrative='Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\n'+'\n'.join(k+': '+getattr(n,k) for k in ('question','findings','possibilities','gaps','plan'))
++            data['description']=RecordedConcept(raw_display=narrative,coding=SourceCode(namespace=META,code='note',version='1',raw_display='Authored renal review')).model_dump(mode='json')
++            entries.extend(encoded(PIN,p.model_dump(mode='json'),'Exact reviewed evidence') for p in n.pins)
++            data['associations']=[EvidenceBinding(role='context',scope=TARGET,status='resolved',exact=p.reference,provenance=prov).model_dump(mode='json') for p in n.pins]
++            data['uncertainty']=[n.gaps];data['occurred']=time(at).model_dump(mode='json')
++        meta={'version':1,'chart':body.chart.model_dump(mode='json') if body.chart else None,'note':body.note.model_dump(mode='json') if body.note else None}
++        if body.note:meta['note']['pins']=[]
++        entries.append(encoded(META,meta,'Structured RF2 source assertions'))
++        data['external_evidence']=[e.model_dump(mode='json') for e in entries]
++        return CirculatoryEvent.model_validate(data)
++    def replay(self,repo,body,a):
++        if not body.chart or not body.chart.source_record or body.predecessor:return None
++        target=body.chart.source_record.model_dump(mode='json');rows=self.history_rows(repo,repo.capture_cutoff(),a)
++        matches=[];owners=set()
++        for s in rows:
++            m=metadata(s.fact)
++            if m and m['chart'] and m['chart']['source_record']==target:
++                owners.add((s.fact.kind,s.fact.id))
++                if material(Chart.model_validate(m['chart']))==material(body.chart):matches.append(s)
++        if len(owners)>1:raise EvidenceConflict()
++        if not owners:return None
++        if len(matches)!=1:raise EvidenceConflict()
++        return matches[0]
++    def save(self,repo,body):
++        a=self.accounting();fact=self.build_fact(repo,body,a)
++        # Exact original-command idempotency is checked independently of source replay.
++        retained=self.history_rows(repo,repo.capture_cutoff(),a,fact.reference)
++        old=next((s for s in retained if s.fact.reference==fact.reference),None)
++        if old:
++            if canonical_payload(old.fact)!=canonical_payload(fact):raise EvidenceConflict()
++            return self.result(repo,body,old,a,'saved')
++        replay=self.replay(repo,body,a)
++        if replay:return self.result(repo,body,replay,a,'source_replay')
++        stored=repo.append_revision(fact,target=TARGET) if fact.supersedes else repo.append_fact(fact,target=TARGET)
++        return self.result(repo,body,stored,a,'saved')
++    def result(self,repo,body,stored,a,status):
++        return self.bounded_dict({'status':status,'request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'request_canonical':canonical_payload(body),'evidence':self.evidence(repo,stored,repo.capture_cutoff(),a),'execution_enabled':False})
++    def validate(self,repo,body):
++        a=self.accounting();fact=self.build_fact(repo,body,a);replay=self.replay(repo,body,a)
++        return self.bounded_dict({'status':'validated','request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'request_canonical':canonical_payload(body),'fact':fact.model_dump(mode='json'),'replay_reference':replay.fact.reference.model_dump() if replay else None,'execution_enabled':False})
++    def lookup(self,repo,body):
++        a=self.accounting();fact=self.build_fact(repo,body,a)
++        retained=self.history_rows(repo,repo.capture_cutoff(),a,fact.reference)
++        stored=next((s for s in retained if s.fact.reference==fact.reference),None)
++        if stored is None:
++            replay=self.replay(repo,body,a)
++            return self.result(repo,body,replay,a,'source_replay') if replay else {'status':'absent','request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'request_canonical':canonical_payload(body),'execution_enabled':False}
++        if canonical_payload(stored.fact)!=canonical_payload(fact):raise EvidenceConflict()
++        return self.result(repo,body,stored,a,'saved')
+diff --git a/docs/rf2/OWNERSHIP-AND-CARRIERS.md b/docs/rf2/OWNERSHIP-AND-CARRIERS.md
+new file mode 100644
+index 0000000..1853da9
+--- /dev/null
++++ b/docs/rf2/OWNERSHIP-AND-CARRIERS.md
+@@ -0,0 +1,27 @@
++# RF2 implementation prerequisites
++
++Approved specification a4547e215a8c4c20bd04e807d0287c5e1d575c39; application baseline 5cb73212ae6104b02bad361886cd9507795d88bf.
++
++## Concrete ownership map
++
++- Creatinine: ClinicalObservation, concept synthetic-serum-creatinine; RF1 owns the raw composite/history read. RF2 references these exact originals and never writes creatinine or invokes its trend engine.
++- Generic body weight: ClinicalObservation, allowlisted concept body-weight (existing recorded-weight test policy). Read/resolve only in RF2. No generic weight writer is added; corrections stay with the original owner. The current ICU episode has no populated generic body-weight observation. Existing generic weight cannot be cloned to CirculatoryEvent.
++- Existing dosing weight: circulatory_event/fs-WEIGHT/1, amount 70 kg. Existing infusion delivery references retain this exact source. Acquisition is unavailable, independently of dosing purpose. Reuse adds a pin, not a quantity.
++- Existing fluids: CirculatoryEvent entries under clinrx.synthetic.hemodynamic-chart/v1; categories input_iv/input_blood/output_urine/output_drain/output_crrt/net_balance_reported/urine_total_reported/balance_total_reported. Original event/interval ownership and corrections use existing repository revision admission; no copies for RF2.
++- New local chart collections: CirculatoryEvent under clinrx.local.rf2/v1; categories input_oral/input_enteral/input_iv/input_blood/output_urine/output_drain/output_other/output_crrt/weight and source-reported totals/balance. Acquisition, method and intended purpose are separate metadata assertions. This is unverified synthetic source entry, not hospital interoperability.
++- Renal note: CirculatoryEvent with clinrx.local.rf2/v1 category note and independently encoded exact evidence pins. Existing hemodynamic notes and saved v1 remain unchanged.
++- Medication/antimicrobial/vasoactive facts remain owned by M5/M6/M7. RF2 does not recreate orders/administrations or infer medication carrier volumes.
++
++## Source-record replay
++
++Within the repository/patient/encounter, source key = issuer_namespace + issuer + record_namespace + record_id + component. A concrete component is mandatory. No whole-record issuer profile is configured in this bounded local implementation; whole-record/collection/series/context component assertions are rejected rather than treated as record identity. Series/context namespaces are not allowed as record namespaces; infusion series/pump/channel identifiers are never extracted as record IDs. No real issuer integration is asserted. Optional source_version remains material content, not permission to create another measurement chain.
++
++Material projection is the complete validated chart DTO: category, exact decimal string/raw unit or missing reason, point and interval assertions, acquisition/method/purpose, collection/site context, source key/version and uncertainty. Only generated local fact/revision/request identity, local actor/registration time and correction bookkeeping are outside this projection. No numeric tolerance or conversion. Provenance originating in the source must be placed in source_context, which is included. Original source replay resolves historical material content; returns that exact retained revision with current terminal reference/supersession disclosure. Different content requires explicit correction. Ambiguity or any history/aggregate budget failure never permits insertion.
++
++No-key manual entry requires a new_collection_reason and visible possible-duplicate disclosure; it cannot override a conflict on a claimed key. Uncertain command lookup/retry always preserves the full original draft separately from source replay.
++
++## Existing carrier proof before application changes
++
++Existing CirculatoryEvent admits 32 external_evidence entries and 32 associations. Use one RF2 metadata entry plus at most twelve separate pin entries (13/32); pins have twelve associations (12/32). Enforce each encoded metadata/pin <=4096 UTF-8 bytes, narrative <=4096 characters, incoming DTO <=65536 bytes, shared response cap unchanged at 2097152 bytes. Strict schemas further restrict identifier/text lengths. The pre-implementation probe built a maximal 4096-character narrative with twelve conservatively sized pins and source identity metadata through the unchanged model: 31156 serialized bytes, largest metadata entry 988 bytes. No model, migration or limit changes are needed. Runtime admission and shared history accounting still reject over-budget responses; this proof does not waive those checks.
++
++Historical source records outside the local entry profile remain inspectable and cannot be silently converted by the guided form. Corrections of original legacy event amounts preserve other fields and do not promote prose into typed acquisition context. No generic clinical contract, production route or execution policy is extended.
+diff --git a/docs/rf2/README.md b/docs/rf2/README.md
+new file mode 100644
+index 0000000..47529a7
+--- /dev/null
++++ b/docs/rf2/README.md
+@@ -0,0 +1,35 @@
++# Bounded local RF2 workflow
++
++Specification a4547e215a8c4c20bd04e807d0287c5e1d575c39; baseline 5cb73212ae6104b02bad361886cd9507795d88bf. See OWNERSHIP-AND-CARRIERS.md for the completed capability/issuer/component mapping and carrier proof.
++
++RF2 is opt-in local synthetic charting: reuse existing evidence, record genuinely new urine/fluid/weight assertions, append corrections, inspect exact history, author separate renal notes, compare their retained pins, and explicitly save/restore version 2 handover selections. Generic creatinine/body-weight observations are read-only. Existing correction owners remain in place; no observation is cloned into another fact kind.
++
++The UI keeps source time/interval, unavailable collection metadata, clock/quality limitations and acquisition versus purpose distinct. No balance/rate/AKI calculation, diagnosis, prescription, treatment recommendation or clinical execution is added. Retained examples and original hemodynamic routes/contracts remain unchanged.
++
++## Local build and runtime
++
++Use the existing pinned dependencies. Build frontend with VITE_SYNTHETIC_HOSTED=true VITE_SYNTHETIC_AUTHORING=true VITE_SYNTHETIC_RF1=true VITE_SYNTHETIC_RF2=true. The RF2 flag is off by default.
++
++Run app.demo.renal_fluid_entry_gateway:from_environment with one worker bound to 127.0.0.1. Provide CLINRX_RF2_DATABASE as an existing absolute disposable synthetic database copy, CLINRX_RF2_FRONTEND as the absolute built frontend and CLINRX_RF2_ORIGIN as the exact loopback origin. Startup never seeds/resets. Do not point this at a real-patient database. The gateway permits only fixed-scope synthetic operations; new clinical execution remains unavailable. Existing production and Docker entry points are unchanged.
++
++## Protocol and limits
++
++- Source-record replay uses scoped issuer/record/component identity and exact validated chart material independently of generated local IDs. Context/series namespaces are excluded. Same-key changed content requires correction; ambiguous/multiple matches or exhausted budgets cannot insert. Replaying an original after correction returns it with supersession disclosed, not resurrection.
++- In the opt-in RF2 gateway, advanced legacy entry cannot create or amend an RF2-owned record. Exact already-retained requests and read-only lookup remain available first, preserving original recovery and the legacy request-size limit. Other legacy source records retain their original owner.
++- Request retry/lookup instead retains the exact pending draft. Validation is separate from save. After uncertainty, lookup first; absence is not rollback proof and only an explicit identical retry is offered. General durable pending-command recovery after closure remains deferred.
++- Existing metadata carriers hold one bounded RF2 entry and up to twelve separately encoded note pins, with matching context associations. Strict source metadata, canonical/digest and exact-history correspondence fail closed. No clinical model or database schema was changed.
++- New entry accepts exact ordinary decimal strings such as 35.0000 or 0.50. Historical values/units outside this local entry profile remain inspectable; no implicit conversion or number extraction from source text is performed.
++- A single repository cutoff and shared history accounting feed both RF1 and RF2 views. Facts already in the composite travel once, then are adapted for display. Existing response/history caps stay unchanged; duplicate payloads are not used to evade caps.
++- Handover v1 remains byte-preserved. An explicit copy to the working v2 set does not save it automatically or overwrite v1. Version 2 stores bounded exact pins, never raw commands or signed contexts. Historical resolution retains originals, visible unavailable pins and repository scope. Source deletion, automatic successor substitution and cross-device synchronisation are excluded.
++
++## Validation and attribution
++
++Tests cover real API/storage admission, scoped source replay, component/issuer distinctions, zero/missing/interval cases, corrections, twelve-pin fit, aggregate exhaustion and a separate full-episode preservation case. Small API fixtures reduce repeated setup overhead while preserving assertions; a full ICU episode remains explicitly exercised. Frontend checks cover strict decoding, duplicate JSON members, complete reviewed-result correspondence, retained request identity, repository replacement, exact note references, shared loader, storage conflicts and v1 preservation.
++
++The API/component fixture was generated through the actual API on a small synthetic database. It is not a browser capture and signed contexts are redacted. Existing hemodynamics regression assertions and test timeout thresholds are unchanged.
++
++The explicit tools/validate_rf2_journey.py runner works against an already running isolated loopback RF2 server and disposable database. It records the seven-row write ledger, historical replay, exact request hashes and before/after SQLite checkpoints. It uses successful-response discard after the actual API returns and pre-dispatch absence; it does not claim socket-loss behavior or a browser exercise.
++
++One combined validation report/evidence package is maintained outside the source checkout. Browser access was denied by the available browser tool policy; no alternative browser or headless workaround was used. API/component validation does not establish live browser, narrow-layout, pointer/accessibility, uncoached usability or clinical acceptance. Independent Director review remains required.
++
++No merge, deployment, external hosting or execution activation is part of this milestone.
+diff --git a/docs/rf2/carrier_probe.py b/docs/rf2/carrier_probe.py
+new file mode 100644
+index 0000000..d9de80b
+--- /dev/null
++++ b/docs/rf2/carrier_probe.py
+@@ -0,0 +1,12 @@
++import json
++from app.models.clinical.hemodynamics import CirculatoryEvent, EvidenceBinding
++from app.models.clinical.recorded_v2 import SourceCode
++from app.models.clinical.common import Reference
++from app.demo.circulatory import fields, concept, PROV, TARGET
++pins=[{'reference':{'kind':'circulatory_event','id':str(n)*256,'version':'v'*256},'digest':'a'*64,'ingestion':100,'cutoff':200,'repository':'f'*36} for n in range(12)]
++entries=[SourceCode(namespace='clinrx.local.rf2.pin/v1',code=json.dumps(p,separators=(',',':')),raw_display='Exact selected evidence pin') for p in pins]
++meta={'version':1,'category':'weight','acquisition':'unknown','purpose':'dosing','method':None,'source_record':{'issuer_namespace':'x'*128,'issuer':'y'*128,'record_namespace':'z'*128,'record_id':'r'*128,'component':'c'*128},'missing_reason':None}
++entries.append(SourceCode(namespace='clinrx.local.rf2/v1',code=json.dumps(meta,separators=(',',':')),raw_display='Structured local source assertions'))
++note=CirculatoryEvent(**fields('rf2-carrier-proof'),event_type='other',description=concept('x'*4096),external_evidence=tuple(entries),associations=tuple(EvidenceBinding(role='context',scope=TARGET,status='resolved',exact=Reference.model_validate(p['reference']),provenance=PROV) for p in pins))
++size=len(note.model_dump_json().encode());assert len(entries)==13<=32 and len(note.associations)==12<=32 and max(len(e.code.encode()) for e in entries)<=4096 and size<65536
++print(json.dumps({'status':'PASS','pins':12,'carrier_entries':13,'max_entry_bytes':max(len(e.code.encode()) for e in entries),'fact_bytes':size,'local_body_budget':65536,'existing_response_limit':2097152,'no_model_or_limit_changes':True},indent=2))
+diff --git a/docs/rf2/generate_test_fixture.py b/docs/rf2/generate_test_fixture.py
+new file mode 100644
+index 0000000..2803fd6
+--- /dev/null
++++ b/docs/rf2/generate_test_fixture.py
+@@ -0,0 +1,26 @@
++from pathlib import Path
++from tempfile import TemporaryDirectory
++import json
++from fastapi.testclient import TestClient
++from app.demo.patient_state import bootstrap
++from app.persistence.database import create_database
++from app.demo.renal_fluid_entry_gateway import SyntheticRF2Gateway,RF2
++from tests.test_renal_fluid_entry import draft,saved,pin,ORIGIN,post
++
++def redact(v):
++ if isinstance(v,dict):return {k:'TEST_REDACTED_CONTEXT' if k=='state_context' else redact(x) for k,x in v.items()}
++ if isinstance(v,list):return [redact(x) for x in v]
++ return v
++with TemporaryDirectory() as t:
++ p=Path(t);db=p/'db.sqlite3';e=create_database(db);bootstrap(e);e.dispose();f=p/'front';(f/'assets').mkdir(parents=True);(f/'index.html').write_text('synthetic')
++ app=SyntheticRF2Gateway(db,f,'ac'*32,ORIGIN)
++ with TestClient(app,base_url=ORIGIN,client=('127.0.0.1',5000),headers={'Origin':ORIGIN}) as c:
++  b=draft(c,'weight');w=saved(c,b);urine=draft(c);u=saved(c,urine);cat=c.get(RF2).json()
++  note=draft(c);note['chart']=None;note['note']={'question':'Review kidney and fluid evidence','findings':'Recorded observations only','possibilities':'Patient-level relationship not established','gaps':'Source quality remains unknown','plan':'Unscheduled review','pins':[pin(w),pin(u)]};n=saved(c,note)
++  cat=c.get(RF2).json();data=redact({'attribution':'Small synthetic real-API fixture for client/component tests, not a runtime acceptance capture; signed contexts redacted','catalog':cat,'weight_draft':b,'weight':w,'urine

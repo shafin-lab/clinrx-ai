@@ -1,0 +1,127 @@
+d.circulatory.assembly.snapshot.items.length+c.combined.laboratory.observations.length);expect(new Set(c.items.map(x=>JSON.stringify(pin(x).reference))).size).toBe(c.items.length);expect(c.items.find(x=>x.fact.id===fixture.weight.fact.id)?.metadata?.chart?.acquisition).toBe('measured');});
++it.each(['repository','digest','ingestion','terminal','metadata'])('rejects contradictory exact evidence: %s',async fault=>{const e=structuredClone(fixture.weight) as Evidence;if(fault==='repository')e.repository=crypto.randomUUID();if(fault==='digest')e.digest='a'.repeat(64);if(fault==='ingestion')e.ingestion.ingestion_sequence=e.cutoff+1;if(fault==='terminal')e.terminal_reference.id='foreign';if(fault==='metadata')e.metadata!.chart!.amount='999';await expect(decodeEvidence(e,fixture.weight.repository)).rejects.toThrow();});
++it('rejects duplicate JSON members in retained RF2 metadata even with a matching digest',async()=>{const e=structuredClone(fixture.weight) as Evidence;const entries=e.fact.external_evidence as {namespace:string;code:string}[];const m=entries.find(x=>x.namespace==='clinrx.local.rf2/v1')!;m.code=m.code.replace('"version":1','"version":1,"version":1');e.canonical_fact=stable(e.fact);e.digest=await hash(e.canonical_fact);await expect(decodeEvidence(e,e.repository)).rejects.toThrow();});
++it('validates save correspondence against the complete reviewed fact',async()=>{const b=body(),e=structuredClone(fixture.weight) as Evidence;const send=vi.fn<typeof fetch>().mockResolvedValueOnce(new Response(JSON.stringify(await result(b,'validated',e)))).mockResolvedValueOnce(new Response(JSON.stringify(await result(b,'saved',e))));const api=new RF2Client(send);await api.action('validate',b);expect((await api.action('save',b)).evidence?.fact).toEqual(e.fact);expect(send.mock.calls[0][1]?.body).toBe(send.mock.calls[1][1]?.body);});
++it('withholds a self-consistent changed save response after review',async()=>{const b=body(),e=structuredClone(fixture.weight) as Evidence;const send=vi.fn<typeof fetch>().mockResolvedValueOnce(new Response(JSON.stringify(await result(b,'validated',e))));const api=new RF2Client(send);await api.action('validate',b);(e.fact.provenance as Record<string,unknown>).actor='different actor';e.canonical_fact=stable(e.fact);e.digest=await hash(e.canonical_fact);send.mockResolvedValueOnce(new Response(JSON.stringify(await result(b,'saved',e))));await expect(api.action('save',b)).rejects.toThrow();});
++it('distinguishes source replay with fresh local identity from a saved-command response',async()=>{const b=body();b.id=crypto.randomUUID();b.revision=crypto.randomUUID();const api=new RF2Client(sender(await result(b,'source_replay',fixture.weight as Evidence)));expect((await api.action('save',b)).status).toBe('source_replay');});
++it('keeps acquisition separate when reusing measured weight in an authored dosing review',async()=>{const c=await load(),t=apiMock(),rendered=mount(c,t);const row=screen.getByText(fixture.weight.fact.id+' / '+fixture.weight.fact.revision).closest('tr')!;fireEvent.click(within(row).getByRole('button',{name:'Reuse for reassessment'}));fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Synthetic clinician'}});for(const k of ['question','findings','possibilities','gaps','plan'])fireEvent.change(screen.getByLabelText(k),{target:{value:k==='findings'?'Existing measured weight referenced for dosing context':k}});vi.mocked(t.action).mockImplementation(async(_action,b)=>({status:'validated',fact:fixture.note.fact,execution_enabled:false} as never));fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));await waitFor(()=>expect(t.action).toHaveBeenCalled());const b=vi.mocked(t.action).mock.calls[0][1];expect(b.chart).toBeNull();expect(b.note?.pins).toEqual([pin(c.items.find(x=>x.fact.id===fixture.weight.fact.id)!)]);expect(c.items.find(x=>x.fact.id===fixture.weight.fact.id)?.metadata?.chart?.acquisition).toBe('measured');expect(t.action).toHaveBeenCalledTimes(1);rendered.unmount();});
++it('correction preserves original owning identity and unrelated chart context',async()=>{const c=await load(),t=apiMock();mount(c,t);const e=c.items.find(x=>x.fact.id===fixture.weight.fact.id)!;const row=screen.getByText(e.fact.id+' / '+e.fact.revision).closest('tr')!;fireEvent.click(within(row).getByRole('button',{name:'Correct original record'}));fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Recorder'}});fireEvent.change(screen.getByLabelText('Recorded amount'),{target:{value:'71.0000'}});fireEvent.change(screen.getByLabelText('Reason for correction'),{target:{value:'Transcription correction'}});vi.mocked(t.action).mockResolvedValue({status:'validated',fact:e.fact,execution_enabled:false} as never);fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));await waitFor(()=>expect(t.action).toHaveBeenCalled());const b=vi.mocked(t.action).mock.calls[0][1];expect(b.id).toBe(e.fact.id);expect(b.predecessor).toEqual(pin(e));expect(b.chart?.amount).toBe('71.0000');expect(b.chart?.acquisition).toBe('measured');expect(b.chart?.source_context).toBe(e.metadata!.chart!.source_context);expect(e.metadata!.chart!.amount).toBe('70.0000');});
++it('retains the identical pending request after uncertain save and across repository replacement',async()=>{const c=await load(),t=apiMock();vi.mocked(t.action).mockImplementation(async action=>{if(action==='save')throw Error('lost delivery');return {status:action==='validate'?'validated':'absent',fact:fixture.weight.fact,execution_enabled:false} as never;});const r=mount(c,t);const row=screen.getByText(fixture.weight.fact.id+' / '+fixture.weight.fact.revision).closest('tr')!;fireEvent.click(within(row).getByRole('button',{name:'Correct original record'}));fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Recorder'}});fireEvent.change(screen.getByLabelText('Reason for correction'),{target:{value:'Correction'}});fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));await screen.findByRole('button',{name:'Confirm RF2 append'});fireEvent.click(screen.getByRole('button',{name:'Confirm RF2 append'}));await screen.findByRole('button',{name:'Check exact RF2 saved result'});const original=vi.mocked(t.action).mock.calls[1][1];expect(vi.mocked(t.action).mock.calls.filter(x=>x[0]==='save')).toHaveLength(1);const changed={...c,repository:crypto.randomUUID()};r.rerender(<RenalFluidEntryWorkspace catalog={changed} gateConfirmed onGuardChange={()=>{}} onRefresh={async()=>{}} onLegacyCorrect={()=>{}} transport={t}/>);fireEvent.click(screen.getByRole('button',{name:'Check exact RF2 saved result'}));await screen.findByRole('button',{name:'Explicitly retry identical RF2 request'});expect(vi.mocked(t.action).mock.calls.at(-1)![1]).toBe(original);expect(screen.getByRole('button',{name:'Explicitly retry identical RF2 request'})).toBeDisabled();});
++it('saves mixed handover pins, restores exact revisions after remount, and preserves v1 bytes',async()=>{const c=await load(),t=apiMock();const v1Key=handoverStorageKey(c.combined.circulatory);localStorage.setItem(v1Key,'preserved legacy bytes');let r=mount(c,t);for(const id of [fixture.weight.fact.id,fixture.note.fact.id]){const row=screen.getByRole('row',{name:new RegExp(id)});fireEvent.click(within(row).getByRole('button',{name:'Add exact record to RF2 handover'}));}fireEvent.click(screen.getByRole('button',{name:'Save RF2 handover locally'}));const before=localStorage.getItem(storageKey(c.repository))!;expect(decodeRF2Saved(before,c.repository).pins).toHaveLength(2);expect(localStorage.getItem(v1Key)).toBe('preserved legacy bytes');r.unmount();r=mount(c,t);await screen.findByText(/Restored saved RF2 handover: 2 selection/);await waitFor(()=>expect(t.resolve).toHaveBeenCalled());expect(localStorage.getItem(storageKey(c.repository))).toBe(before);const region=screen.getByRole('region',{name:'RF2 saved handover'});const buttons=within(region).getAllByRole('button',{name:'Remove selection only'});fireEvent.click(buttons[0]);fireEvent.click(screen.getByRole('button',{name:'Save RF2 handover locally'}));expect(decodeRF2Saved(localStorage.getItem(storageKey(c.repository))!,c.repository).pins).toHaveLength(1);expect(localStorage.getItem(v1Key)).toBe('preserved legacy bytes');});
++it.each(['duplicate','foreign','oversized','unknown_version'])('rejects invalid saved data without modifying its bytes: %s',fault=>{const p=pin(fixture.weight as Evidence);const v={version:2,repository:p.repository,patient:'synthetic-p1',encounter:'synthetic-e1',savedAt:'2026-10-19T00:00:00Z',pins:[p]};let s=JSON.stringify(v);if(fault==='duplicate')s=s.replace('"version":2','"version":2,"version":2');if(fault==='foreign')v.repository=crypto.randomUUID(),s=JSON.stringify(v);if(fault==='oversized')s=' '.repeat(131073);if(fault==='unknown_version')s=s.replace('"version":2','"version":99');localStorage.setItem(storageKey(p.repository),s);expect(()=>decodeRF2Saved(s,p.repository)).toThrow();expect(localStorage.getItem(storageKey(p.repository))).toBe(s);});
++
++it('rejects duplicate and escaped-equivalent response members before object construction',async()=>{const b=body(),r=await result(b,'absent');const text=JSON.stringify(r).replace('"status":"absent"','"status":"saved","st\\u0061tus":"absent"');const api=new RF2Client(vi.fn<typeof fetch>().mockResolvedValue(new Response(text)));await expect(api.action('lookup',b)).rejects.toThrow();});
++it('keeps original pending bytes through explicit absent lookup and retry without an automatic save',async()=>{const c=await load(),t=apiMock();vi.mocked(t.action).mockImplementation(async action=>{if(action==='save')throw Error('delivery fault');return {status:action==='validate'?'validated':'absent',fact:fixture.weight.fact,execution_enabled:false} as never;});mount(c,t);const row=screen.getByRole('row',{name:new RegExp(fixture.weight.fact.id)});fireEvent.click(within(row).getByRole('button',{name:'Correct original record'}));fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Recorder'}});fireEvent.change(screen.getByLabelText('Reason for correction'),{target:{value:'Correction'}});fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));fireEvent.click(await screen.findByRole('button',{name:'Confirm RF2 append'}));fireEvent.click(await screen.findByRole('button',{name:'Check exact RF2 saved result'}));const retry=await screen.findByRole('button',{name:'Explicitly retry identical RF2 request'});expect(vi.mocked(t.action).mock.calls.filter(x=>x[0]==='save')).toHaveLength(1);fireEvent.click(retry);await screen.findByRole('button',{name:'Check exact RF2 saved result'});const writes=vi.mocked(t.action).mock.calls.filter(x=>x[0]==='save');expect(writes).toHaveLength(2);expect(writes[0][1]).toBe(writes[1][1]);});
++it('detects another-tab saved-set changes instead of overwriting them',async()=>{const c=await load();mount(c);const row=screen.getByRole('row',{name:new RegExp(fixture.weight.fact.id)});fireEvent.click(within(row).getByRole('button',{name:'Add exact record to RF2 handover'}));const k=storageKey(c.repository);localStorage.setItem(k,'another tab wrote this');fireEvent.click(screen.getByRole('button',{name:'Save RF2 handover locally'}));expect(screen.getByText(/Another tab changed/)).toBeInTheDocument();expect(localStorage.getItem(k)).toBe('another tab wrote this');});
++it('rejects an invented point timestamp independently of an interval end',async()=>{const e=structuredClone(fixture.urine) as Evidence;e.metadata!.chart!.point=null;const entries=e.fact.external_evidence as {namespace:string;code:string}[];const meta=entries.find(x=>x.namespace==='clinrx.local.rf2/v1')!;const d=JSON.parse(meta.code);d.chart.point=null;meta.code=stable(d);e.canonical_fact=stable(e.fact);e.digest=await hash(e.canonical_fact);await expect(decodeEvidence(e,e.repository)).rejects.toThrow();});
++it('retains an unsaved draft repository across replacement until explicit discard',async()=>{const c=await load(),t=apiMock();const r=mount(c,t);fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Recorder A'}});const replacement={...c,repository:crypto.randomUUID()};r.rerender(<RenalFluidEntryWorkspace catalog={replacement} gateConfirmed onGuardChange={()=>{}} onRefresh={async()=>{}} onLegacyCorrect={()=>{}} transport={t}/>);expect(screen.getByLabelText('Actor')).toHaveValue('Recorder A');expect(screen.getByRole('button',{name:'Validate RF2 draft'})).toBeDisabled();expect(t.action).not.toHaveBeenCalled();});
++it('opens the exact evidence retained by a selected renal note',async()=>{const c=await load(),t=apiMock();mount(c,t);const note=c.items.find(e=>e.metadata?.note)!;fireEvent.change(screen.getByLabelText('Note A'),{target:{value:JSON.stringify([note.repository,note.fact.kind,note.fact.id,note.fact.revision])}});fireEvent.click(screen.getByRole('button',{name:'Inspect exact evidence retained by this note'}));await screen.findByRole('region',{name:'Exact renal note evidence'});expect(t.resolve).toHaveBeenCalledWith(c.repository,note.metadata!.note!.pins);});
++it('compares two persisted renal notes with original and corrected weight revision references',async()=>{const c=await new RF2Client(sender(raw().comparison_catalog)).catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');mount(c);const a=c.items.find(e=>e.fact.id===fixture.note.fact.id)!,b=c.items.find(e=>e.fact.id===fixture.new_note.fact.id)!;fireEvent.change(screen.getByLabelText('Note A'),{target:{value:JSON.stringify([a.repository,a.fact.kind,a.fact.id,a.fact.revision])}});fireEvent.change(screen.getByLabelText('Note B'),{target:{value:JSON.stringify([b.repository,b.fact.kind,b.fact.id,b.fact.revision])}});const region=screen.getByRole('region',{name:'Compare renal reassessments'});expect(within(region).getByText(a.fact.id+' / '+a.fact.revision,{selector:'p'})).toBeInTheDocument();expect(within(region).getByText(b.fact.id+' / '+b.fact.revision,{selector:'p'})).toBeInTheDocument();const narratives=within(region).getAllByText((text,element)=>element?.tagName==='PRE'&&text.includes('pins'));expect(narratives[0]).toHaveTextContent(fixture.weight.fact.revision);expect(narratives[1]).toHaveTextContent(fixture.corrected_weight.fact.revision);expect(a.metadata!.note!.pins[0].reference.version).toBe(fixture.weight.fact.revision);});
++
++it.each(['70 kg',true])('does not promote a legacy weight assertion into a numeric quantity: %s',value=>{const e=structuredClone(fixture.weight) as Evidence;e.fact={...e.fact,value:{status:'known',value,reason:null}};delete e.fact.recorded_amount;expect(evidenceText(e)).toContain('no numeric quantity inferred');});
++
++it('keeps source timing, unavailable collection metadata and interval bounds visible',async()=>{const c=await load();const lab=c.items.find(e=>e.fact.id==='demo-creatinine-A')!;expect(sourceContext(lab,c)).toContain('Specimen/collection time and typed quality unavailable');const urine=c.items.find(e=>e.fact.id===fixture.urine.fact.id)!;expect(sourceContext(urine,c)).toContain('2026-10-08T09:30:00Z');expect(sourceContext(urine,c)).toContain('Source clock unknown');expect(sourceContext(urine,c)).toContain('no rate or duration inferred');});
+diff --git a/tests/test_renal_fluid_entry.py b/tests/test_renal_fluid_entry.py
+new file mode 100644
+index 0000000..a8e3c29
+--- /dev/null
++++ b/tests/test_renal_fluid_entry.py
+@@ -0,0 +1,198 @@
++import json
++from pathlib import Path
++from copy import deepcopy
++from uuid import uuid4
++import pytest
++from fastapi.testclient import TestClient
++from app.demo.renal_fluid_entry_gateway import SyntheticRF2Gateway,RF2
++from app.demo.renal_fluid_fixture import bootstrap
++from app.persistence.database import create_database
++import shutil
++from tests.test_synthetic_hosting import rows
++ORIGIN='http://127.0.0.1:5201'
++@pytest.fixture(scope='module')
++def seed(tmp_path_factory):
++    db=tmp_path_factory.mktemp('rf2-seed')/'seed.sqlite3';engine=create_database(db)
++    try:
++        from app.demo.patient_state import bootstrap as base_bootstrap, TARGET
++        from app.demo.icu_chart_entries import context_facts
++        from app.persistence.repository import transaction
++        base_bootstrap(engine)
++        with transaction(engine) as repo:
++            for fact in context_facts()[:14]:repo.append_fact(fact,target=TARGET)
++    finally:engine.dispose()
++    return db
++@pytest.fixture
++def ws(tmp_path,seed):
++    db=tmp_path/'rf2.sqlite3';shutil.copyfile(seed,db);front=tmp_path/'frontend';(front/'assets').mkdir(parents=True);(front/'index.html').write_text('synthetic')
++    app=SyntheticRF2Gateway(db,front,'ab'*32,ORIGIN)
++    with TestClient(app,base_url=ORIGIN,client=('127.0.0.1',50000),headers={'Origin':ORIGIN}) as c:yield c,db,app
++
++def draft(c,category='output_urine',key=True):
++    return {'repository':c.get(RF2).json()['repository'],'id':str(uuid4()),'revision':str(uuid4()),'actor':'Synthetic nurse','recorded_at':'2026-10-08T10:00:00Z','chart':{'category':category,'amount':'35.0000' if category!='weight' else '70.0000','unit':'mL' if category!='weight' else 'kg','point':'2026-10-08T09:45:00Z','start':'2026-10-08T09:30:00Z' if category!='weight' else None,'end':'2026-10-08T09:45:00Z' if category!='weight' else None,'acquisition':'measured' if category=='weight' else 'unknown','purpose':'body weight' if category=='weight' else None,'source_context':'Explicit local fictional measurement','uncertainty':'Collection method not verified','source_record':{'issuer_namespace':'clinrx.synthetic.chart','issuer':'nurse-chart-A','record_namespace':'chart-entry','record_id':'urine-0945' if category!='weight' else 'weight-0945','component':'volume' if category!='weight' else 'weight'} if key else None,'new_collection_reason':'New distinct collection' if not key else None},'note':None,'predecessor':None,'reason':None}
++def pin(e):
++    f=e['fact'];return {'repository':e['repository'],'reference':{'kind':f['kind'],'id':f['id'],'version':f['revision']},'digest':e['digest'],'ingestion':e['ingestion']['ingestion_sequence'],'cutoff':e['cutoff']}
++def post(c,path,b):return c.post(RF2+path,json=b)
++def saved(c,b):
++    v=post(c,'/validate',b);assert v.status_code==200,v.text
++    r=post(c,'/save',b);assert r.status_code==200,r.text
++    return r.json()['evidence']
++def test_chart_correction_replay_and_read_preservation(ws):
++    c,db,_=ws;b=draft(c);original=saved(c,b);assert original['fact']['recorded_amount']['value']=='35.0000'
++    before=rows(db);fresh=deepcopy(b);fresh['id']=str(uuid4());fresh['revision']=str(uuid4());fresh['actor']='Another recorder'
++    r=post(c,'/save',fresh);assert r.status_code==200,r.text;assert r.json()['status']=='source_replay';assert rows(db)==before
++    corr=deepcopy(b);corr.update(revision=str(uuid4()),predecessor=pin(original),reason='Transcription correction');corr['chart']['amount']='36.0000';successor=saved(c,corr)
++    before=rows(db);r=post(c,'/save',fresh);assert r.status_code==200,r.text;e=r.json()['evidence'];assert e['fact']==original['fact'] and e['superseded'] and e['terminal_reference']['version']==successor['fact']['revision'];assert rows(db)==before
++    r=post(c,'/resolve',{'repository':b['repository'],'pins':[pin(original),pin(successor)]});assert r.status_code==200,r.text;assert len(r.json()['items'])==2;assert rows(db)==before
++
++def test_note_mixed_pins_and_weight_purpose(ws):
++    c,db,_=ws;w=saved(c,draft(c,'weight'));catalog=c.get(RF2).json();lab0=next(x for x in catalog['combined']['laboratory']['observations'] if x['fact']['id']=='demo-creatinine-A');lab={'repository':catalog['repository'],'fact':lab0['fact'],'digest':lab0['expected_digest'],'ingestion':lab0['ingestion'],'cutoff':catalog['cutoff']['fact_watermark']};before=rows(db)
++    note=draft(c);note['chart']=None;note['note']={'question':'Review source records','findings':'Recorded weight and creatinine','possibilities':'No conclusion established','gaps':'Source uncertainty remains','plan':'Unscheduled clinician review','pins':[pin(w),pin(lab)]}
++    e=saved(c,note);assert e['metadata']['note']['pins']==note['note']['pins'];assert len(e['fact']['associations'])==2
++    assert rows(db)['circulatory_execution']==before['circulatory_execution']
++    r=post(c,'/resolve',{'repository':note['repository'],'pins':[pin(w)]});assert r.status_code==200;r=r.json()['items'][0];assert r['metadata']['chart']['acquisition']=='measured'
++@pytest.mark.parametrize('field,value',[('issuer','other issuer'),('component','other component'),('record_id','other collection')])
++def test_source_record_distinctions(ws,field,value):
++    c,_,_=ws;b=draft(c);a=saved(c,b);other=deepcopy(b);other.update(id=str(uuid4()),revision=str(uuid4()));other['chart']['source_record'][field]=value
++    e=saved(c,other);assert a['fact']['id']!=e['fact']['id']
++def test_conflict_lookup_and_foreign_pin(ws):
++    c,db,_=ws;b=draft(c);e=saved(c,b);before=rows(db);bad=deepcopy(b);bad.update(id=str(uuid4()),revision=str(uuid4()));bad['chart']['amount']='99.0'
++    assert post(c,'/save',bad).status_code==409;assert rows(db)==before
++    r=post(c,'/lookup',b);assert r.status_code==200 and r.json()['evidence']['fact']==e['fact']
++    p=pin(e);p['digest']='a'*64;assert post(c,'/resolve',{'repository':b['repository'],'pins':[p]}).status_code==409
++    assert rows(db)==before
++
++def test_input_shape_bounds_and_closed_gate(ws):
++    c,db,_=ws;b=draft(c);before=rows(db)
++    for change in [{'amount':'-1'},{'unit':'kg'},{'start':'2026-10-08T10:00:00Z','end':'2026-10-08T09:00:00Z'},{'point':1.25}]:
++        bad=deepcopy(b);bad['chart'].update(change);assert post(c,'/save',bad).status_code==422
++    whole=deepcopy(b);whole['chart']['source_record']['component']='whole-record';assert post(c,'/save',whole).status_code==422
++    bad=deepcopy(b);bad['chart']['source_record']['record_namespace']='infusion-series';assert post(c,'/save',bad).status_code==422
++    assert c.post(RF2+'/save',content='{"repository":"x","repository":"y"}',headers={'Content-Type':'application/json'}).status_code==422
++    assert c.post(RF2+'/save',content='x'*65537,headers={'Content-Type':'application/json'}).status_code==413
++    assert c.post(RF2+'/save',json=b,headers={'Origin':'https://foreign.example'}).status_code==403
++    assert c.post('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-review-preparations',json={}).status_code==404
++    assert c.get('/health').json()['execution_enabled'] is False
++    assert rows(db)==before
++
++@pytest.mark.parametrize('variant',['zero','missing','unplaced','overlap'])
++def test_interval_missing_and_zero_are_distinct(ws,variant):
++    c,_,_=ws;b=draft(c,key=False)
++    if variant=='zero':b['chart']['amount']='0.0000'
++    if variant=='missing':b['chart'].update(amount=None,unit=None,missing_reason='Not measured; not zero')
++    if variant=='unplaced':b['chart'].update(point=None,start=None,end=None)
++    if variant=='overlap':b['chart'].update(start='2026-10-08T09:35:00Z',end='2026-10-08T09:50:00Z',source_context='Overlaps another source interval; accounting unavailable')
++    e=saved(c,b);assert e['metadata']['chart']['amount']==b['chart']['amount'];assert e['metadata']['chart']['start']==b['chart']['start']
++
++def test_multiple_source_matches_and_budget_failure_do_not_insert(ws):
++    from app.services.renal_fluid_entry_service import RF2Service
++    from app.demo.renal_fluid_entry_gateway import service
++    from app.api.schemas.renal_fluid_entry import RF2Draft
++    from app.persistence.repository import transaction
++    from app.persistence.bounded_history import AggregateHistoryBudget
++    c,db,app=ws;b=draft(c);saved(c,b)
++    # Simulate two upstream owning records with the same key without using the guarded entry route.
++    other=deepcopy(b);other.update(id=str(uuid4()),revision=str(uuid4()))
++    svc=RF2Service(app.core.state.dependencies)
++    with transaction(svc.dependencies.engine) as repo:
++        f=svc.build_fact(repo,RF2Draft.model_validate(other),svc.accounting());repo.a

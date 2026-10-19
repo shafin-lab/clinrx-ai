@@ -1,0 +1,577 @@
+           "actor": "synthetic-demo",
+                  "recorded_at": "2026-10-08T08:00:00Z",
+                  "upstream": [],
+                  "lineage": "unknown",
+                  "limitations": [
+                    "Synthetic source assertion only."
+                  ]
+                },
+                "time": {
+                  "event": null,
+                  "recorded": null,
+                  "effective_start": null,
+                  "effective_end": null,
+                  "retrieved": null,
+                  "processed": null,
+                  "precision": "unknown",
+                  "uncertainty": null
+                },
+                "verification": "unverified",
+                "conflict": "unknown",
+                "temporal_status": "unknown",
+                "uncertainty": [],
+                "supersedes": null,
+                "correction_reason": null,
+                "contract_version": "3",
+                "occurred": {
+                  "timestamp_precision": "M7ExactTimestampInput/v1",
+                  "recorded": {
+                    "status": "known",
+                    "precision": "instant",
+                    "value": "2026-10-08T09:00:00Z",
+                    "lower": null,
+                    "upper": null,
+                    "uncertainty": null
+                  },
+                  "source_timestamp": "2026-10-08T09:00:00+00:00",
+                  "clock": "verified",
+                  "clock_basis": {
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "actor": "synthetic-demo",
+                    "recorded_at": "2026-10-08T08:00:00Z",
+                    "upstream": [],
+                    "lineage": "unknown",
+                    "limitations": [
+                      "Synthetic source assertion only."
+                    ]
+                  },
+                  "conflicting": [],
+                  "alternative_sources": [],
+                  "alignment": null
+                },
+                "available": {
+                  "timestamp_precision": "M7ExactTimestampInput/v1",
+                  "recorded": {
+                    "status": "known",
+                    "precision": "instant",
+                    "value": "2026-10-08T09:00:00Z",
+                    "lower": null,
+                    "upper": null,
+                    "uncertainty": null
+                  },
+                  "source_timestamp": "2026-10-08T09:00:00+00:00",
+                  "clock": "verified",
+                  "clock_basis": {
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "actor": "synthetic-demo",
+                    "recorded_at": "2026-10-08T08:00:00Z",
+                    "upstream": [],
+                    "lineage": "unknown",
+                    "limitations": [
+                      "Synthetic source assertion only."
+                    ]
+                  },
+                  "conflicting": [],
+                  "alternative_sources": [],
+                  "alignment": null
+                },
+                "associations": [],
+                "source_identifiers": [],
+                "disclosures": [
+                  "Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them."
+                ],
+                "record_status": "recorded",
+                "event_type": "other",
+                "description": {
+                  "raw_display": "Recorded net fluid removal by CRRT. This is the source-recorded interval volume, not an inferred hourly rate. Net balance is a source-reported calculation over the charted categories, not a ClinRx calculation or complete-patient fluid reconciliation.",
+                  "coding": {
+                    "namespace": "clinrx.synthetic.hemodynamic-chart/v1",
+                    "code": "output_crrt",
+                    "version": "1",
+                    "raw_display": "output_crrt"
+                  }
+                },
+                "external_evidence": [],
+                "recorded_amount": {
+                  "value": "50",
+                  "unit": {
+                    "raw": "mL",
+                    "status": "unresolved",
+                    "system": null,
+                    "code": null,
+                    "limitation": "Synthetic source unit."
+                  }
+                },
+                "recorded_interval": {
+                  "start": {
+                    "timestamp_precision": "M7ExactTimestampInput/v1",
+                    "recorded": {
+                      "status": "known",
+                      "precision": "instant",
+                      "value": "2026-10-08T08:45:00Z",
+                      "lower": null,
+                      "upper": null,
+                      "uncertainty": null
+                    },
+                    "source_timestamp": "2026-10-08T08:45:00+00:00",
+                    "clock": "verified",
+                    "clock_basis": {
+                      "source": {
+                        "namespace": "clinrx.synthetic.demo",
+                        "identifier": "patient-state-v1",
+                        "version": "1",
+                        "channel": "system"
+                      },
+                      "actor": "synthetic-demo",
+                      "recorded_at": "2026-10-08T08:00:00Z",
+                      "upstream": [],
+                      "lineage": "unknown",
+                      "limitations": [
+                        "Synthetic source assertion only."
+                      ]
+                    },
+                    "conflicting": [],
+                    "alternative_sources": [],
+                    "alignment": null
+                  },
+                  "end": {
+                    "timestamp_precision": "M7ExactTimestampInput/v1",
+                    "recorded": {
+                      "status": "known",
+                      "precision": "instant",
+                      "value": "2026-10-08T09:00:00Z",
+                      "lower": null,
+                      "upper": null,
+                      "uncertainty": null
+                    },
+                    "source_timestamp": "2026-10-08T09:00:00+00:00",
+                    "clock": "verified",
+                    "clock_basis": {
+                      "source": {
+                        "namespace": "clinrx.synthetic.demo",
+                        "identifier": "patient-state-v1",
+                        "version": "1",
+                        "channel": "system"
+                      },
+                      "actor": "synthetic-demo",
+                      "recorded_at": "2026-10-08T08:00:00Z",
+                      "upstream": [],
+                      "lineage": "unknown",
+                      "limitations": [
+                        "Synthetic source assertion only."
+                      ]
+                    },
+                    "conflicting": [],
+                    "alternative_sources": [],
+                    "alignment": null
+                  },
+                  "provenance": {
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "actor": "synthetic-demo",
+                    "recorded_at": "2026-10-08T08:00:00Z",
+                    "upstream": [],
+                    "lineage": "unknown",
+                    "limitations": [
+                      "Synthetic source assertion only."
+                    ]
+                  },
+                  "limitations": [
+                    "Source-recorded interval bounds; no duration, rate or completeness assessment is inferred."
+                  ]
+                }
+              },
+              "expected_digest": "0a0c42de2df0c402c5831de2958c7d851a634f2f57eb90df635f28c4a0975a52",
+              "ingestion": {
+                "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+                "ingestion_sequence": 72,
+                "ingested_at": "2026-10-19T07:52:24.246685Z",
+                "payload_version": 1
+              },
+              "inclusion": "in_window",
+              "contextual_for": [],
+              "disclosures": [
+                "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+              ]
+            },
+            {
+              "fact": {
+                "kind": "circulatory_event",
+                "id": "fs-IO-output_drain-60",
+                "revision": "1",
+                "binding": {
+                  "target": {
+                    "patient_id": "synthetic-p1",
+                    "encounter_id": "synthetic-e1",
+                    "longitudinal_context_id": null
+                  },
+                  "verification": {
+                    "status": "verified",
+                    "method": "synthetic-demo",
+                    "verifier": "synthetic-system",
+                    "assessed_at": "2026-10-08T08:00:00Z",
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "ambiguity": null
+                  }
+                },
+                "origin": "reported",
+                "provenance": {
+                  "source": {
+                    "namespace": "clinrx.synthetic.demo",
+                    "identifier": "patient-state-v1",
+                    "version": "1",
+                    "channel": "system"
+                  },
+                  "actor": "synthetic-demo",
+                  "recorded_at": "2026-10-08T08:00:00Z",
+                  "upstream": [],
+                  "lineage": "unknown",
+                  "limitations": [
+                    "Synthetic source assertion only."
+                  ]
+                },
+                "time": {
+                  "event": null,
+                  "recorded": null,
+                  "effective_start": null,
+                  "effective_end": null,
+                  "retrieved": null,
+                  "processed": null,
+                  "precision": "unknown",
+                  "uncertainty": null
+                },
+                "verification": "unverified",
+                "conflict": "unknown",
+                "temporal_status": "unknown",
+                "uncertainty": [],
+                "supersedes": null,
+                "correction_reason": null,
+                "contract_version": "3",
+                "occurred": {
+                  "timestamp_precision": "M7ExactTimestampInput/v1",
+                  "recorded": {
+                    "status": "known",
+                    "precision": "instant",
+                    "value": "2026-10-08T09:00:00Z",
+                    "lower": null,
+                    "upper": null,
+                    "uncertainty": null
+                  },
+                  "source_timestamp": "2026-10-08T09:00:00+00:00",
+                  "clock": "verified",
+                  "clock_basis": {
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "actor": "synthetic-demo",
+                    "recorded_at": "2026-10-08T08:00:00Z",
+                    "upstream": [],
+                    "lineage": "unknown",
+                    "limitations": [
+                      "Synthetic source assertion only."
+                    ]
+                  },
+                  "conflicting": [],
+                  "alternative_sources": [],
+                  "alignment": null
+                },
+                "available": {
+                  "timestamp_precision": "M7ExactTimestampInput/v1",
+                  "recorded": {
+                    "status": "known",
+                    "precision": "instant",
+                    "value": "2026-10-08T09:00:00Z",
+                    "lower": null,
+                    "upper": null,
+                    "uncertainty": null
+                  },
+                  "source_timestamp": "2026-10-08T09:00:00+00:00",
+                  "clock": "verified",
+                  "clock_basis": {
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "actor": "synthetic-demo",
+                    "recorded_at": "2026-10-08T08:00:00Z",
+                    "upstream": [],
+                    "lineage": "unknown",
+                    "limitations": [
+                      "Synthetic source assertion only."
+                    ]
+                  },
+                  "conflicting": [],
+                  "alternative_sources": [],
+                  "alignment": null
+                },
+                "associations": [],
+                "source_identifiers": [],
+                "disclosures": [
+                  "Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them."
+                ],
+                "record_status": "recorded",
+                "event_type": "other",
+                "description": {
+                  "raw_display": "Measured drain output. This is the source-recorded interval volume, not an inferred hourly rate. Net balance is a source-reported calculation over the charted categories, not a ClinRx calculation or complete-patient fluid reconciliation.",
+                  "coding": {
+                    "namespace": "clinrx.synthetic.hemodynamic-chart/v1",
+                    "code": "output_drain",
+                    "version": "1",
+                    "raw_display": "output_drain"
+                  }
+                },
+                "external_evidence": [],
+                "recorded_amount": {
+                  "value": "5",
+                  "unit": {
+                    "raw": "mL",
+                    "status": "unresolved",
+                    "system": null,
+                    "code": null,
+                    "limitation": "Synthetic source unit."
+                  }
+                },
+                "recorded_interval": {
+                  "start": {
+                    "timestamp_precision": "M7ExactTimestampInput/v1",
+                    "recorded": {
+                      "status": "known",
+                      "precision": "instant",
+                      "value": "2026-10-08T08:45:00Z",
+                      "lower": null,
+                      "upper": null,
+                      "uncertainty": null
+                    },
+                    "source_timestamp": "2026-10-08T08:45:00+00:00",
+                    "clock": "verified",
+                    "clock_basis": {
+                      "source": {
+                        "namespace": "clinrx.synthetic.demo",
+                        "identifier": "patient-state-v1",
+                        "version": "1",
+                        "channel": "system"
+                      },
+                      "actor": "synthetic-demo",
+                      "recorded_at": "2026-10-08T08:00:00Z",
+                      "upstream": [],
+                      "lineage": "unknown",
+                      "limitations": [
+                        "Synthetic source assertion only."
+                      ]
+                    },
+                    "conflicting": [],
+                    "alternative_sources": [],
+                    "alignment": null
+                  },
+                  "end": {
+                    "timestamp_precision": "M7ExactTimestampInput/v1",
+                    "recorded": {
+                      "status": "known",
+                      "precision": "instant",
+                      "value": "2026-10-08T09:00:00Z",
+                      "lower": null,
+                      "upper": null,
+                      "uncertainty": null
+                    },
+                    "source_timestamp": "2026-10-08T09:00:00+00:00",
+                    "clock": "verified",
+                    "clock_basis": {
+                      "source": {
+                        "namespace": "clinrx.synthetic.demo",
+                        "identifier": "patient-state-v1",
+                        "version": "1",
+                        "channel": "system"
+                      },
+                      "actor": "synthetic-demo",
+                      "recorded_at": "2026-10-08T08:00:00Z",
+                      "upstream": [],
+                      "lineage": "unknown",
+                      "limitations": [
+                        "Synthetic source assertion only."
+                      ]
+                    },
+                    "conflicting": [],
+                    "alternative_sources": [],
+                    "alignment": null
+                  },
+                  "provenance": {
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "actor": "synthetic-demo",
+                    "recorded_at": "2026-10-08T08:00:00Z",
+                    "upstream": [],
+                    "lineage": "unknown",
+                    "limitations": [
+                      "Synthetic source assertion only."
+                    ]
+                  },
+                  "limitations": [
+                    "Source-recorded interval bounds; no duration, rate or completeness assessment is inferred."
+                  ]
+                }
+              },
+              "expected_digest": "921e01a1aa54280872dfe2406fe7d4853e770579059cf3eade219532265a2018",
+              "ingestion": {
+                "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+                "ingestion_sequence": 71,
+                "ingested_at": "2026-10-19T07:52:24.243663Z",
+                "payload_version": 1
+              },
+              "inclusion": "in_window",
+              "contextual_for": [],
+              "disclosures": [
+                "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+              ]
+            },
+            {
+              "fact": {
+                "kind": "circulatory_event",
+                "id": "fs-IO-output_urine-60",
+                "revision": "1",
+                "binding": {
+                  "target": {
+                    "patient_id": "synthetic-p1",
+                    "encounter_id": "synthetic-e1",
+                    "longitudinal_context_id": null
+                  },
+                  "verification": {
+                    "status": "verified",
+                    "method": "synthetic-demo",
+                    "verifier": "synthetic-system",
+                    "assessed_at": "2026-10-08T08:00:00Z",
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "ambiguity": null
+                  }
+                },
+                "origin": "reported",
+                "provenance": {
+                  "source": {
+                    "namespace": "clinrx.synthetic.demo",
+                    "identifier": "patient-state-v1",
+                    "version": "1",
+                    "channel": "system"
+                  },
+                  "actor": "synthetic-demo",
+                  "recorded_at": "2026-10-08T08:00:00Z",
+                  "upstream": [],
+                  "lineage": "unknown",
+                  "limitations": [
+                    "Synthetic source assertion only."
+                  ]
+                },
+                "time": {
+                  "event": null,
+                  "recorded": null,
+                  "effective_start": null,
+                  "effective_end": null,
+                  "retrieved": null,
+                  "processed": null,
+                  "precision": "unknown",
+                  "uncertainty": null
+                },
+                "verification": "unverified",
+                "conflict": "unknown",
+                "temporal_status": "unknown",
+                "uncertainty": [],
+                "supersedes": null,
+                "correction_reason": null,
+                "contract_version": "3",
+                "occurred": {
+                  "timestamp_precision": "M7ExactTimestampInput/v1",
+                  "recorded": {
+                    "status": "known",
+                    "precision": "instant",
+                    "value": "2026-10-08T09:00:00Z",
+                    "lower": null,
+                    "upper": null,
+                    "uncertainty": null
+                  },
+                  "source_timestamp": "2026-10-08T09:00:00+00:00",
+                  "clock": "verified",
+                  "clock_basis": {
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "actor": "synthetic-demo",
+                    "recorded_at": "2026-10-08T08:00:00Z",
+                    "upstream": [],
+                    "lineage": "unknown",
+                    "limitations": [
+                      "Synthetic source assertion only."
+                    ]
+                  },
+                  "conflicting": [],
+                  "alternative_sources": [],
+                  "alignment": null
+                },
+                "available": {
+                  "timestamp_precision": "M7ExactTimestampInput/v1",
+                  "recorded": {
+                    "status": "known",
+                    "precision": "instant",
+                    "value": "2026-10-08T09:00:00Z",
+                    "lower": null,
+                    "upper": null,
+                    "uncertainty": null
+                  },
+                  "source_timestamp": "2026-10-08T09:00:00+00:00",
+                  "clock": "verified",
+                  "clock_basis": {
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "actor": "synthetic-demo",
+                    "recorded_at": "2026-10-08T08:00:00Z",
+                    "upstream": [],
+                    "lineage": "unknown",
+                    "limitations": [
+                      "Synthetic source assertion only."
+                    ]
+                  },
+                  "conflicting": [],
+                  "alternative_sources": [],
+                  "alignment": null
+                },
+                "associations": [],
+                "source_identifiers": [],
+                "disclosures": [
+                  "Fictional source-chart entry for hemodynamic context, n

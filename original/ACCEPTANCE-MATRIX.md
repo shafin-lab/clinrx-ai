@@ -1,0 +1,20 @@
+# RF2-01 through RF2-12: one candidate, bounded evidence
+
+Candidate 4429401. “Covered” below identifies test/API evidence; it is not independent clinical or browser acceptance. Read the source-attribution distinctions in MILESTONE-REPORT.md.
+
+| Case | Implementation and evidence | Remaining boundary |
+| --- | --- | --- |
+| RF2-01 scope | One composite cutoff; integrated shared-loader test; repository replacement preserves mounted drafts/pending request identity and clears scope-bound choices. | Component tests, not adversarial live browser. |
+| RF2-02 charting/shared values | Actual source-record admission, fresh-ID replay, issuer/component distinctions, series/context exclusion, separate equal-valued collections, ambiguous/budget failure tests. Existing creatinine/fs-WEIGHT reused without rows in real API journey. Legacy-owner bypass blocked on final runtime. | No real hospital issuer integration; no whole-record profile is configured. |
+| RF2-03 missing/context | Actual missing/zero and interval admission, independent acquisition/method/purpose tests, existing dosing acquisition unavailable; raw unit/context display assertions. Measured weight reused for dosing without quantity insertion. | No unit conversion or generated balance/rate. |
+| RF2-04 corrections | Real API urine and weight corrections; original rows/fields remain; stale predecessor and wrong-scope checks; exact historical resolution. Both views adapt the same composite facts rather than duplicating payloads. | Generic observations remain read-only and retain their original owner. |
+| RF2-05 reassessment | Real mixed-pin note using existing creatinine; twelve-pin carrier admission; complete DTO-to-persisted fact correspondence. Findings/possibilities/gaps/plan separate. | Clinician-authored assertion, not validated clinical conclusion. |
+| RF2-06 comparison | Two real persisted notes with different urine/weight pins; component display assertions and strict metadata duplicate-member/digest/ingestion validation. | No live comparison screenshot or pointer exercise. |
+| RF2-07 handover | Component save/remount/exact-resolution/removal tests; historical pins retained and unavailable records visible. Exact reference resolution exercised through API separately. | Browser storage/reload journey not captured. |
+| RF2-08 compatibility | v1 byte-preservation, explicit copy, both-present choice, corruption/size/duplicate fields, cross-tab conflict and quota tests; four supplemental local checks saved separately. | No cross-device sync or general durable recovery. |
+| RF2-09 uncertainty | Component pending identity/lookup/explicit same-request retry and scope replacement tests. Actual HTTP pre-dispatch absence then identical submission; actual commit followed by discarded response then exact lookup. | Discarded successful response is the exercised post-commit model; not socket loss. No live browser fault injection. |
+| RF2-10 bounds/isolation | Shared lookup budget, combined response cap, complete history/canonical/digest/ingestion correspondence; fail-closed invalid pins/context and aggregate exhaustion tests. | No load/security certification. |
+| RF2-11 disabled/preservation | Actual gate rejects new execution; seven declared additions only; all 175 originals and two receipts unchanged; final ownership checks produce no writes across all twelve tables. | Captured local HTTP/data evidence, not production gate activation. |
+| RF2-12 coherent use | One shared workspace offers chart, correct/history, reassess, compare and handover; integration and components plus real API journey cover underlying transitions. | **PARTIAL / NOT COMPLETE:** live desktop/narrow viewport, keyboard/focus, contained scrolling and uncoached usability blocked by browser security policy. No alternate surface used. |
+
+No duplicate old-module store or clinical model extension was introduced. Metadata fits unchanged carriers. No approval of M8/M9 completion, new clinical calculations, merge, deployment or external hosting follows.

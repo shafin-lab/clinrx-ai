@@ -1,0 +1,26 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run tests/rf2.test.tsx --maxWorkers=2
+
+failed to load config from /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend/vite.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: EPERM: operation not permitted, open '/Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend/node_modules/.vite-temp/vite.config.ts.timestamp-1792434048457-7625b268a4626.mjs'
+    at async open (node:internal/fs/promises:642:25)
+    at async Object.writeFile (node:internal/fs/promises:1249:14)
+    at async loadConfigFromBundledFile (file:///Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend/node_modules/vite/dist/node/chunks/node.js:38130:3)
+    at async bundleAndLoadConfigFile (file:///Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend/node_modules/vite/dist/node/chunks/node.js:37978:21)
+    at async loadConfigFromFile (file:///Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend/node_modules/vite/dist/node/chunks/node.js:37938:42)
+    at async resolveConfig (file:///Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend/node_modules/vite/dist/node/chunks/node.js:37540:22)
+    at async resolveConfig$1 (file:///Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend/node_modules/vitest/dist/chunks/index.DpLw24bj.js:14851:25)
+    at async createVitest (file:///Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend/node_modules/vitest/dist/chunks/cli-api.C4x4GGip.js:26:17)
+    at async prepareVitest (file:///Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend/node_modules/vitest/dist/chunks/cli-api.C4x4GGip.js:421:14)
+    at async startVitest (file:///Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend/node_modules/vitest/dist/chunks/cli-api.C4x4GGip.js:340:14) {
+  errno: -1,
+  code: 'EPERM',
+  syscall: 'open',
+  path: '/Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend/node_modules/.vite-temp/vite.config.ts.timestamp-1792434048457-7625b268a4626.mjs'
+}
+
+
+

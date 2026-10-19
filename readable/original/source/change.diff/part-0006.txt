@@ -1,0 +1,235 @@
+a-label="Renal charting and handover"><h2>Renal charting and handover</h2><p><strong>{gateConfirmed?'Clinical execution disabled.':'Execution gate not confirmed — new writes blocked.'}</strong> Local synthetic charting. No calculated balance, urine rate, AKI stage or treatment advice.</p><p>Repository {catalog.repository} · shared cutoff {catalog.cutoff.fact_watermark}. Reuse a recorded observation before entering another quantity. Acquisition and intended purpose are separate.</p>
++ {error&&<p role="alert">{error}</p>}<label>Find existing RF2 source<input type="search" value={search} onChange={e=>Search(e.target.value)} placeholder="Source ID, creatinine, weight, urine…"/></label><div className="rf2-scroll"><table><caption>Existing sources — use once across modules</caption><thead><tr><th>Exact record</th><th>Recorded assertion</th><th>Actions</th></tr></thead><tbody>{rows.map(e=><tr key={key(pin(e))}><th>{e.fact.id} / {e.fact.revision}</th><td>{evidenceText(e)}<br/><small>{sourceContext(e,catalog)}</small><br/>{e.metadata?.chart&&<>Acquisition: {e.metadata.chart.acquisition}; method {e.metadata.chart.method??'unavailable'}; purpose {e.metadata.chart.purpose??'unavailable'}</>}{e.fact.id==='fs-WEIGHT'&&<>Dosing-weight context; acquisition/method unavailable. Do not infer measured status.</>}<br/>{e.superseded?'Superseded historical revision':String(e.fact.record_status??'legacy source assertion')}</td><td><button onClick={()=>void inspect(e)}>Inspect exact history</button><button disabled={busy||locked||phase!=='editing'||!!selected||note.pins.length>=12} onClick={()=>reuse(e)}>Reuse for reassessment</button><button disabled={busy||dirty||phase==='review'||locked||e.fact.kind!=='circulatory_event'||!gateConfirmed} onClick={()=>correct(e)}>Correct original record</button><button disabled={activeScope!==scopeKey||!gateConfirmed} onClick={()=>addHandover(e)}>Add exact record to RF2 handover</button></td></tr>)}</tbody></table></div>
++ {references.length>0&&references.every(e=>e.repository===catalog.repository)&&<section aria-label="Exact renal note evidence"><h3>Exact sources retained by the note</h3>{references.map(e=><article key={key(pin(e))}><p>{e.fact.kind} / {e.fact.id} / {e.fact.revision}: {evidenceText(e)}</p><button onClick={()=>void inspect(e)}>Inspect this retained source history</button><details><summary>Complete retained evidence and uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details></article>)}</section>}
++ {inspected&&inspected.repository===catalog.repository&&<section aria-label="RF2 exact source history"><h3>Selected {inspected.fact.id} / {inspected.fact.revision}</h3><button onClick={()=>{generation.current++;Inspected(undefined);History(undefined);}}>Close history</button><p>Corrections retain originals. A transcription correction is not improvement or a new sample.</p>{history?history.map(e=><article key={key(pin(e))}><h4>{e.fact.id} / {e.fact.revision}</h4><p>{evidenceText(e)} · {e.superseded?'historical superseded revision':'terminal at this cutoff'}</p><details><summary>Complete exact record and uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details><button onClick={()=>reuse(e)} disabled={locked||busy||phase!=='editing'||!!selected}>Use this exact historical revision in reassessment</button><button onClick={()=>addHandover(e)} disabled={!gateConfirmed}>Add this revision to RF2 handover</button></article>):<p>History loading or unconfirmed; no substitute shown.</p>}</section>}
++ <section aria-label="RF2 draft"><h3>{selected?'Correct '+selected.fact.id:'Record a genuinely new collection or authored review'}</h3><p>Same numbers do not identify the same collection. Source replay uses issuer, record and component identity; series IDs are not record IDs.</p>
++ {draftScope!==catalog.repository&&<><p role="alert">Repository changed. The original draft/request remains retained; new save is blocked.</p>{phase==='editing'&&!locked&&<button onClick={reset}>Explicitly discard the retained draft from the previous repository</button>}</>}
++ {phase==='editing'?<fieldset disabled={!gateConfirmed||busy||draftScope!==catalog.repository}><label>Actor<input value={actor} maxLength={128} onChange={e=>{Actor(e.target.value);Dirty(true);}}/></label><label>Entry type<select value={mode} disabled={!!selected} onChange={e=>{M(e.target.value as 'chart'|'note');Dirty(true);}}><option value="chart">Source chart record</option><option value="note">Clinician-authored renal reassessment</option></select></label>
++ {mode==='chart'?<><label>Category<select value={chart.category} disabled={!!selected} onChange={e=>{const c=e.target.value;C(old=>({...old,category:c,unit:c==='weight'?'kg':'mL',acquisition:'unknown',purpose:null,start:c==='weight'?null:old.start,end:c==='weight'?null:old.end}));Dirty(true);}}>{Object.entries(labels).map(([k,label])=><option key={k} value={k}>{label}</option>)}</select></label><label>Amount state<select value={chart.missing_reason===null?'recorded':'missing'} onChange={e=>{C(old=>e.target.value==='missing'?{...old,amount:null,unit:null,missing_reason:''}:{...old,amount:'',unit:old.category==='weight'?'kg':'mL',missing_reason:null});Dirty(true);}}><option value="recorded">Recorded quantity, including zero</option><option value="missing">Source amount unavailable</option></select></label>{chart.missing_reason===null?<>{field('Recorded amount', 'amount')}<small>Use an exact decimal such as 35.0000; no conversion is performed.</small><label>Raw unit<select value={chart.unit??(chart.category==='weight'?'kg':'mL')} onChange={e=>changeChart('unit',e.target.value)}>{(chart.category==='weight'?['kg','g']:['mL','L']).map(u=><option key={u}>{u}</option>)}</select></label></>:field('Missing amount reason','missing_reason')}
++ {field('Source point time (explicit offset or Z; blank means unknown)','point',true)}{chart.category!=='weight'&&<>{field('Source interval start (blank means unknown)','start',true)}{field('Source interval end (blank means unknown)','end',true)}</>}
++ {chart.category==='weight'&&<><label>Acquisition assertion<select value={chart.acquisition} onChange={e=>changeChart('acquisition',e.target.value)}><option value="unknown">Unknown</option><option value="measured">Measured</option><option value="reported">Reported</option></select></label>{field('Intended purpose (independent of acquisition)','purpose',true)}</>}{field('Collection or acquisition method (optional)','method',true)}{field('Source context and completeness limitations','source_context')}{field('Uncertainty and confirmation gaps','uncertainty')}
++ <label><input type="checkbox" checked={sourceKey} disabled={!!selected} onChange={e=>{SourceKey(e.target.checked);Dirty(true);}}/>An explicit source RECORD key is available (not series/context)</label>{sourceKey?Object.entries(identity).map(([k,v])=><label key={k}>{k}<input value={v} maxLength={128} onChange={e=>{Identity(old=>({...old,[k]:e.target.value}));Dirty(true);}}/></label>):field('Why this is a genuinely new collection (not a copy)','new_collection_reason')}
++ <p>Gaps, overlaps and reported totals are not reconciled. A challenge may already be included in an interval input. CRRT net removal is not effluent or proof of continuous treatment.</p></>:<><p>Select existing evidence above. No intervention is required. Recorded findings, possibilities and gaps remain separate.</p>{(['question','findings','possibilities','gaps','plan'] as const).map(k=><label key={k}>{k}<textarea maxLength={512} value={note[k]} onChange={e=>{N(old=>({...old,[k]:e.target.value}));Dirty(true);}}/></label>)}<ul>{note.pins.map(p=><li key={key(p)}>{p.reference.kind} / {p.reference.id} / {p.reference.version} · selected cutoff {p.cutoff}<button onClick={()=>{N(old=>({...old,pins:old.pins.filter(x=>key(x)!==key(p))}));Dirty(true);}}>Remove evidence reference</button></li>)}</ul><p>Plan is recorded text, not a scheduled action. This note does not establish causation or a validated diagnosis.</p></>}
++ {selected&&<label>Reason for correction<input value={reason} maxLength={512} onChange={e=>Reason(e.target.value)}/></label>}<button onClick={()=>void validate()}>Validate RF2 draft</button><button onClick={reset}>Discard unsaved RF2 draft</button></fieldset>:<><h4>Exact request review</h4><pre>{JSON.stringify(review??pending,null,2)}</pre>{phase==='review'&&<><button disabled={!mayWrite} onClick={()=>void save()}>Confirm RF2 append</button><button onClick={()=>{Phase('editing');Pending(undefined);}}>Edit reviewed draft</button><button onClick={reset}>Discard reviewed draft</button></>}{(phase==='uncertain'||phase==='absent')&&<><p>Original request retained. Do not close/reload. Absence is not rollback proof.</p><button disabled={busy} onClick={()=>void lookup()}>Check exact RF2 saved result</button>{phase==='absent'&&<button disabled={!mayWrite} onClick={()=>void save()}>Explicitly retry identical RF2 request</button>}</>}{phase==='saving'&&<p role="status">Saving exact RF2 request…</p>}{phase==='saved'&&saved&&<><p role="status">RF2 result confirmed: {saved.fact.id} / {saved.fact.revision} · ingestion {saved.ingestion.ingestion_sequence}{saved.superseded?' · historical source replay; superseded, not restored as current':''}</p><button disabled={!gateConfirmed||saved.repository!==catalog.repository} onClick={()=>addHandover(saved)}>Add confirmed RF2 result to handover</button><button onClick={reset} disabled={!gateConfirmed}>Start another RF2 record</button></>}</>}
++ <p>General draft/command recovery after reload is deferred. Saved handover does not save a pending command.</p></section>
++ <NoteComparison key={scopeKey} items={catalog.items} onResolve={ps=>void inspectReferences(ps)}/>
++ <section aria-label="RF2 saved handover"><h3>Saved local RF2 handover</h3><p role="status">{storageMessage||'No RF2 saved selection restored.'}</p>{handoverDirty&&<p>Unsaved changes — save explicitly before reload.</p>}<button disabled={!gateConfirmed||activeScope!==scopeKey||busy} onClick={saveHandover}>Save RF2 handover locally</button><button disabled={!gateConfirmed||activeScope!==scopeKey} onClick={()=>void importV1()}>Explicitly copy version 1 into working version 2</button><p>If both versions exist, each remains separate. This view is version 2; the existing Handover tab shows version 1. Copying never saves or overwrites v1.</p>{activeScope===scopeKey&&pins.map(p=>{const e=restored.find(x=>key(pin(x))===key(p));return <article key={key(p)}><h4>{p.reference.kind} / {p.reference.id} / {p.reference.version}</h4><p>Original selected cutoff {p.cutoff}; digest {p.digest}</p>{e?<><p>{evidenceText(e)} · {e.superseded?'superseded historical revision retained':'exact source confirmed'}</p><details><summary>Retained source and note uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details></>:<p>Exact source unavailable/unconfirmed; pin retained without substitution.</p>}<button onClick={()=>{Pins(old=>old.filter(x=>key(x)!==key(p)));Restored(old=>old.filter(x=>key(pin(x))!==key(p)));HandoverDirty(true);}}>Remove selection only</button></article>;})}</section>
++ </section>;
++}
+diff --git a/frontend/src/demo/rf2.css b/frontend/src/demo/rf2.css
+new file mode 100644
+index 0000000..895c0db
+--- /dev/null
++++ b/frontend/src/demo/rf2.css
+@@ -0,0 +1 @@
++.rf2 {max-width:100%; overflow-wrap:anywhere}.rf2 label {display:block;margin:.7rem 0}.rf2 input:not([type=checkbox]),.rf2 select,.rf2 textarea {display:block;max-width:100%;width:32rem;box-sizing:border-box}.rf2 button {margin:.25rem;padding:.45rem}.rf2-scroll {max-height:28rem;overflow:auto;max-width:100%;border:1px solid #8b9cac}.rf2 table {border-collapse:collapse;min-width:42rem}.rf2 th,.rf2 td {text-align:left;vertical-align:top;padding:.6rem;border-bottom:1px solid #b7c2cb}.rf2 th {max-width:20rem}.rf2 thead th {position:sticky;top:0;background:#e8eef3;color:#14212d}.rf2 pre {white-space:pre-wrap;overflow-wrap:anywhere;max-height:24rem;overflow:auto}.rf2 article,.rf2 fieldset {margin:.8rem 0;padding:.8rem;border:1px solid #9aabb8}.rf2-compare {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}@media(max-width:600px){.rf2-compare{grid-template-columns:1fr}}
+diff --git a/frontend/src/demo/rf2Handover.ts b/frontend/src/demo/rf2Handover.ts
+new file mode 100644
+index 0000000..5eea63c
+--- /dev/null
++++ b/frontend/src/demo/rf2Handover.ts
+@@ -0,0 +1,8 @@
++import {type Pin,key} from '../api/rf2Client';
++export interface SavedRF2 {version:2;repository:string;patient:'synthetic-p1';encounter:'synthetic-e1';savedAt:string;pins:Pin[]}
++export const storageKey=(repository:string)=>'clinrx.synthetic.handover.v2:'+JSON.stringify([repository,'synthetic-p1','synthetic-e1']);
++export function decodeRF2Saved(raw:string,repository:string):SavedRF2{
++ if(raw.length>131072)throw Error('Saved handover exceeds bounds');const v=JSON.parse(raw) as SavedRF2;
++ if(JSON.stringify(v)!==raw||!v||Object.keys(v).sort().join()!=='encounter,patient,pins,repository,savedAt,version'||v.version!==2||v.repository!==repository||v.patient!=='synthetic-p1'||v.encounter!=='synthetic-e1'||typeof v.savedAt!=='string'||!Number.isFinite(Date.parse(v.savedAt))||!Array.isArray(v.pins)||v.pins.length>32)throw Error('Saved handover cannot be confirmed; original bytes preserved');
++ const keys=new Set<string>();for(const p of v.pins){if(!p||Object.keys(p).sort().join()!=='cutoff,digest,ingestion,reference,repository'||p.repository!==repository||!p.reference||Object.keys(p.reference).sort().join()!=='id,kind,version'||!Object.values(p.reference).every(x=>typeof x==='string'&&x.length>0&&x.length<=256)||!(p.reference.kind==='observation'||p.reference.kind.startsWith('circulatory_'))||!/^[a-f0-9]{64}$/.test(p.digest)||!Number.isSafeInteger(p.ingestion)||p.ingestion<1||!Number.isSafeInteger(p.cutoff)||p.cutoff<p.ingestion||keys.has(key(p)))throw Error('Invalid handover pin');keys.add(key(p));}return v;
++}
+diff --git a/frontend/src/demo/usePatientEvidenceState.ts b/frontend/src/demo/usePatientEvidenceState.ts
+index 3e98c61..9379231 100644
+--- a/frontend/src/demo/usePatientEvidenceState.ts
++++ b/frontend/src/demo/usePatientEvidenceState.ts
+@@ -1,22 +1,24 @@
++import {RF2Client,type Catalog} from '../api/rf2Client';
+ import {RenalFluidClient} from '../api/renalFluidClient';
+ import type {RenalFluidState} from '../api/renalFluidTypes';
+ import {useCallback,useEffect,useRef,useState} from 'react';
+ import type {CirculatoryClient} from '../api/circulatoryClient';
+ import type {CirculatoryState} from '../api/circulatoryTypes';
+-export interface PatientEvidenceState {state?:CirculatoryState;renalFluid?:RenalFluidState;retainedState?:CirculatoryState;loading:boolean;error:string;refresh:()=>Promise<void>}
++export interface PatientEvidenceState {rf2?:Catalog;retainedRF2?:Catalog;state?:CirculatoryState;renalFluid?:RenalFluidState;retainedState?:CirculatoryState;loading:boolean;error:string;refresh:()=>Promise<void>}
+ export function usePatientEvidenceState(client:CirculatoryClient,config:{patient:string;encounter:string;start:string;end:string}):PatientEvidenceState{
++ const [rf2,setRF2]=useState<Catalog>();const retainedRF2=useRef<Catalog|undefined>(undefined);
+  const [renalFluid,setRenalFluid]=useState<RenalFluidState>();
+  const [state,setState]=useState<CirculatoryState>(),[loading,setLoading]=useState(true),[error,setError]=useState('');
+  const generation=useRef(0),retained=useRef<CirculatoryState|undefined>(undefined);
+  const refresh=useCallback(async()=>{
+-  const token=++generation.current;setLoading(true);setState(undefined);setRenalFluid(undefined);setError('');
+-  try{const combined=client instanceof RenalFluidClient?await client.combinedState(config.start,config.end):undefined;const reply=combined?{...combined,data:combined.data.circulatory}:await client.circulatoryState(config.start,config.end);if(token!==generation.current)return;
++  const token=++generation.current;setLoading(true);setState(undefined);setRenalFluid(undefined);setRF2(undefined);setError('');
++  try{const catalog=import.meta.env.VITE_SYNTHETIC_RF2==='true'?await new RF2Client().catalog(config.start,config.end):undefined;const combined=catalog?{data:catalog.combined}:client instanceof RenalFluidClient?await client.combinedState(config.start,config.end):undefined;const reply=combined?{...combined,data:combined.data.circulatory}:await client.circulatoryState(config.start,config.end);if(token!==generation.current)return;
+    const scope=reply.data.assembly.request.scope;
+    if(reply.data.execution_enabled!==false||scope.patient_id!==config.patient||scope.encounter_id!==config.encounter)throw Error('unconfirmed_scope_or_gate');
+-   retained.current=reply.data;setState(reply.data);setRenalFluid(combined?.data);
++   if(catalog){setRF2(catalog);retainedRF2.current=catalog;}retained.current=reply.data;setState(reply.data);setRenalFluid(combined?.data);
+   }catch(error){if(token===generation.current)setError('The patient evidence or disabled execution gate could not be confirmed. Refresh to check again; no source was replaced.');throw error;}
+   finally{if(token===generation.current)setLoading(false);}
+  },[client,config.patient,config.encounter,config.start,config.end]);
+  useEffect(()=>{void refresh().catch(()=>{});return()=>{generation.current++;};},[refresh]);
+- return {state,renalFluid,retainedState:retained.current,loading,error,refresh};
++ return {rf2,retainedRF2:retainedRF2.current,state,renalFluid,retainedState:retained.current,loading,error,refresh};
+ }
+diff --git a/frontend/tests/fixtures/rf2-api.json b/frontend/tests/fixtures/rf2-api.json
+new file mode 100644
+index 0000000..b926c4f
+--- /dev/null
++++ b/frontend/tests/fixtures/rf2-api.json
+@@ -0,0 +1,3199 @@
++{
++  "attribution": "Small synthetic real-API fixture for client/component tests, not a runtime acceptance capture; signed contexts redacted",
++  "catalog": {
++    "repository": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7",
++    "cutoff": {
++      "repository_id": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7",
++      "fact_watermark": 6,
++      "captured_at": "2026-10-19T18:35:22.852952Z"
++    },
++    "combined": {
++      "context": {
++        "transport_version": "SyntheticRenalFluidReview/v1",
++        "scope": {
++          "contract_version": "3",
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1",
++          "review_start": "2026-10-08T08:00:00Z",
++          "review_end": "2026-10-08T10:00:00Z",
++          "repository_cutoff": {
++            "repository_id": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7",
++            "fact_watermark": 6,
++            "captured_at": "2026-10-19T18:35:22.852952Z"
++          }
++        },
++        "circulatory_digest": "5774d81f1fff5d696a723238c13ca6d01f6e4ac900d489bd4c501f56d41d8be5",
++        "observations_digest": "3d86987a9799b91140c92d41d513a645ec09436dfb05c273d89153601af0ccc5"
++      },
++      "state_context": "TEST_REDACTED_CONTEXT",
++      "circulatory": {
++        "transport_version": "m7-c/1",
++        "assembly_request": {
++          "scope": {
++            "contract_version": "3",
++            "patient_id": "synthetic-p1",
++            "encounter_id": "synthetic-e1",
++            "review_start": "2026-10-08T08:00:00Z",
++            "review_end": "2026-10-08T10:00:00Z",
++            "repository_cutoff": {
++              "repository_id": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7",
++              "fact_watermark": 6,
++              "captured_at": "2026-10-19T18:35:22.852952Z"
++            }
++          },
++          "profile_id": "RecordedCirculatoryEvidence",
++          "profile_version": "1",
++          "limits": {
++            "history": {
++              "max_rows": 4096,
++              "max_payload_bytes": 16777216
++            },
++            "max_items": 512,
++            "max_relationships": 2048,
++            "max_contextual": 256,
++            "max_groups": 256,
++            "max_signals": 64,
++            "max_depth": 8,
++            "max_fanout": 64,
++            "max_steps": 8192,
++            "max_issues": 1024,
++            "max_result_bytes": 16777216
++          }
++        },
++        "assembly_digest": "5774d81f1fff5d696a723238c13ca6d01f6e4ac900d489bd4c501f56d41d8be5",
++        "assembly": {
++          "request": {
++            "scope": {
++              "contract_version": "3",
++              "patient_id": "synthetic-p1",
++              "encounter_id": "synthetic-e1",
++              "review_start": "2026-10-08T08:00:00Z",
++              "review_end": "2026-10-08T10:00:00Z",
++              "repository_cutoff": {
++                "repository_id": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7",
++                "fact_watermark": 6,
++                "captured_at": "2026-10-19T18:35:22.852952Z"
++              }
++            },
++            "profile_id": "RecordedCirculatoryEvidence",
++            "profile_version": "1",
++            "limits": {
++              "history": {
++                "max_rows": 4096,
++                "max_payload_bytes": 16777216
++              },
++              "max_items": 512,
++              "max_relationships": 2048,
++              "max_contextual": 256,
++              "max_groups": 256,
++              "max_signals": 64,
++              "max_depth": 8,
++              "max_fanout": 64,
++              "max_steps": 8192,
++              "max_issues": 1024,
++              "max_result_bytes": 16777216
++            }
++          },
++          "snapshot": {
++            "contract_version": "3",
++            "scope": {
++              "contract_version": "3",
++              "patient_id": "synthetic-p1",
++              "encounter_id": "synthetic-e1",
++              "review_start": "2026-10-08T08:00:00Z",
++              "review_end": "2026-10-08T10:00:00Z",
++              "repository_cutoff": {
++                "repository_id": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7",
++                "fact_watermark": 6,
++                "captured_at": "2026-10-19T18:35:22.852952Z"
++              }
++            },
++            "profile_id": "RecordedCirculatoryEvidence",
++            "profile_version": "1",
++            "items": [
++              {
++                "fact": {
++                  "kind": "circulatory_event",
++                  "id": "9a9281f7-d7d5-4315-a6f6-ee516801d354",
++                  "revision": "d97b3a2b-d285-4021-92ae-c319506d41c0",
++                  "binding": {
++                    "target": {
++                      "patient_id": "synthetic-p1",
++                      "encounter_id": "synthetic-e1",
++                      "longitudinal_context_id": null
++                    },
++                    "verification": {
++                      "status": "unresolved",
++                      "method": "Synthetic scope selection",
++                      "verifier": "Synthetic nurse",
++                      "assessed_at": "2026-10-08T10:00:00Z",
++                      "source": {
++                        "namespace": "clinrx.local.synthetic.rf2",
++                        "identifier": "9a9281f7-d7d5-4315-a6f6-ee516801d354",
++                        "version": null,
++                        "channel": "clinician"
++                      },
++                      "ambiguity": "Local synthetic patient only."
++                    }
++                  },
++                  "origin": "reported",
++                  "provenance": {
++                    "source": {
++                      "namespace": "clinrx.local.synthetic.rf2",
++                      "identifier": "9a9281f7-d7d5-4315-a6f6-ee516801d354",
++                      "version": null,
++                      "channel": "clinician"
++                    },
++                    "actor": "Synthetic nurse",
++                    "recorded_at": "2026-10-08T10:00:00Z",
++                    "upstream": [],
++                    "lineage": "incomplete",
++                    "limitations": [
++                      "Unauthenticated local synthetic source assertion."
++                    ]
++                  },
++                  "time": {
++                    "ev

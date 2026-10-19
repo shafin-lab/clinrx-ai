@@ -1,0 +1,158 @@
+ongitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-08T10:00:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"de0f05cf-bb25-4f0a-952b-5934743a9b83\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic nurse\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"output_urine\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"output_urine\",\"version\":\"1\"},\"raw_display\":\"Explicit local fictional measurement\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"chart\\\":{\\\"acquisition\\\":\\\"unknown\\\",\\\"amount\\\":\\\"35.0000\\\",\\\"category\\\":\\\"output_urine\\\",\\\"end\\\":\\\"2026-10-08T09:45:00Z\\\",\\\"method\\\":null,\\\"missing_reason\\\":null,\\\"new_collection_reason\\\":null,\\\"point\\\":\\\"2026-10-08T09:45:00Z\\\",\\\"purpose\\\":null,\\\"source_context\\\":\\\"Explicit local fictional measurement\\\",\\\"source_record\\\":{\\\"component\\\":\\\"volume\\\",\\\"issuer\\\":\\\"nurse-chart-A\\\",\\\"issuer_namespace\\\":\\\"clinrx.synthetic.chart\\\",\\\"record_id\\\":\\\"urine-0945\\\",\\\"record_namespace\\\":\\\"chart-entry\\\"},\\\"source_version\\\":null,\\\"start\\\":\\\"2026-10-08T09:30:00Z\\\",\\\"uncertainty\\\":\\\"Collection method not verified\\\",\\\"unit\\\":\\\"mL\\\"},\\\"note\\\":null,\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"de0f05cf-bb25-4f0a-952b-5934743a9b83\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:45:00Z\"},\"source_timestamp\":\"2026-10-08T09:45:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"de0f05cf-bb25-4f0a-952b-5934743a9b83\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":{\"unit\":{\"code\":null,\"limitation\":\"Raw source unit; no conversion.\",\"raw\":\"mL\",\"status\":\"unresolved\",\"system\":null},\"value\":\"35.0000\"},\"recorded_interval\":{\"end\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:45:00Z\"},\"source_timestamp\":\"2026-10-08T09:45:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"limitations\":[\"Source bounds only; no calculated rate or duration.\"],\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"de0f05cf-bb25-4f0a-952b-5934743a9b83\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"start\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:30:00Z\"},\"source_timestamp\":\"2026-10-08T09:30:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"}},\"revision\":\"5b3081f9-ad8f-4389-b968-68e701e95256\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Collection method not verified\"],\"verification\":\"unverified\"},\"inclusion\":\"in_window\",\"ingestion\":{\"ingested_at\":\"2026-10-19T18:35:22.722478Z\",\"ingestion_sequence\":5,\"payload_version\":1,\"repository_id\":\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\"}},{\"contextual_for\":[],\"disclosures\":[\"Recorded evidence only; source availability, continuity and completeness require separate assessment.\"],\"expected_digest\":\"2be50751abcb188a125a7953171c737d3662d001d1f3799bba172c9b150ff9a0\",\"fact\":{\"associations\":[{\"candidates\":[],\"exact\":{\"id\":\"9a9281f7-d7d5-4315-a6f6-ee516801d354\",\"kind\":\"circulatory_event\",\"version\":\"d97b3a2b-d285-4021-92ae-c319506d41c0\"},\"limitation\":null,\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"54259128-a22c-4e16-acb1-6cbcdee22e96\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"role\":\"context\",\"scope\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"status\":\"resolved\"},{\"candidates\":[],\"exact\":{\"id\":\"de0f05cf-bb25-4f0a-952b-5934743a9b83\",\"kind\":\"circulatory_event\",\"version\":\"5b3081f9-ad8f-4389-b968-68e701e95256\"},\"limitation\":null,\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"54259128-a22c-4e16-acb1-6cbcdee22e96\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"role\":\"context\",\"scope\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"status\":\"resolved\"}],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-08T10:00:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"54259128-a22c-4e16-acb1-6cbcdee22e96\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic nurse\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"note\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Authored renal review\",\"version\":\"1\"},\"raw_display\":\"Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\\nquestion: Review kidney and fluid evidence\\nfindings: Recorded observations only\\npossibilities: Patient-level relationship not established\\ngaps: Source quality remains unknown\\nplan: Unscheduled review\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"cutoff\\\":4,\\\"digest\\\":\\\"4d31b977aa662a2cdfd32f08c09794beff1dfdb3b4c98a7b107c2f30ae7f9534\\\",\\\"ingestion\\\":4,\\\"reference\\\":{\\\"id\\\":\\\"9a9281f7-d7d5-4315-a6f6-ee516801d354\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"d97b3a2b-d285-4021-92ae-c319506d41c0\\\"},\\\"repository\\\":\\\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"cutoff\\\":5,\\\"digest\\\":\\\"f072460d4f7eaf5cc3294179d4962f52090db6bdd8ffbde85576688ca645f402\\\",\\\"ingestion\\\":5,\\\"reference\\\":{\\\"id\\\":\\\"de0f05cf-bb25-4f0a-952b-5934743a9b83\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"5b3081f9-ad8f-4389-b968-68e701e95256\\\"},\\\"repository\\\":\\\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"chart\\\":null,\\\"note\\\":{\\\"findings\\\":\\\"Recorded observations only\\\",\\\"gaps\\\":\\\"Source quality remains unknown\\\",\\\"pins\\\":[],\\\"plan\\\":\\\"Unscheduled review\\\",\\\"possibilities\\\":\\\"Patient-level relationship not established\\\",\\\"question\\\":\\\"Review kidney and fluid evidence\\\"},\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"54259128-a22c-4e16-acb1-6cbcdee22e96\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T10:00:00Z\"},\"source_timestamp\":\"2026-10-08T10:00:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"54259128-a22c-4e16-acb1-6cbcdee22e96\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":null,\"revision\":\"90085171-1b8f-405f-bbf8-4261c41cd59f\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Source quality remains unknown\"],\"verification\":\"unverified\"},\"inclusion\":\"in_window\",\"ingestion\":{\"ingested_at\":\"2026-10-19T18:35:22.843958Z\",\"ingestion_sequence\":6,\"payload_version\":1,\"repository_id\":\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\"}}],\"profile_id\":\"RecordedCirculatoryEvidence\",\"profile_version\":\"1\",\"scope\":{\"contract_version\":\"3\",\"encounter_id\":\"synthetic-e1\",\"patient_id\":\"synthetic-p1\",\"repository_cutoff\":{\"captured_at\":\"2026-10-19T18:35:22.852952Z\",\"fact_watermark\":6,\"repository_id\":\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\"},\"review_end\":\"2026-10-08T10:00:00Z\",\"review_start\":\"2026-10-08T08:00:00Z\"}}}",
+      "canonical_laboratory": "{\"observations\":[{\"canonical_fact\":\"{\\\"binding\\\":{\\\"target\\\":{\\\"encounter_id\\\":\\\"synthetic-e1\\\",\\\"longitudinal_context_id\\\":null,\\\"patient_id\\\":\\\"synthetic-p1\\\"},\\\"verification\\\":{\\\"ambiguity\\\":null,\\\"assessed_at\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"method\\\":\\\"synthetic-demo\\\",\\\"source\\\":{\\\"channel\\\":\\\"system\\\",\\\"identifier\\\":\\\"patient-state-v1\\\",\\\"namespace\\\":\\\"clinrx.synthetic.demo\\\",\\\"version\\\":\\\"1\\\"},\\\"status\\\":\\\"verified\\\",\\\"verifier\\\":\\\"synthetic-system\\\"}},\\\"concept_id\\\":\\\"synthetic-serum-creatinine\\\",\\\"conflict\\\":\\\"none_known\\\",\\\"correction_reason\\\":null,\\\"id\\\":\\\"demo-creatinine-A\\\",\\\"kind\\\":\\\"observation\\\",\\\"origin\\\":\\\"reported\\\",\\\"provenance\\\":{\\\"actor\\\":\\\"synthetic-demo\\\",\\\"limitations\\\":[\\\"Synthetic demonstration only; no clinical feed.\\\"],\\\"lineage\\\":\\\"unknown\\\",\\\"recorded_at\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"source\\\":{\\\"channel\\\":\\\"measurement\\\",\\\"identifier\\\":\\\"demo-sample-A\\\",\\\"namespace\\\":\\\"clinrx.synthetic.serum-creatinine\\\",\\\"version\\\":\\\"1\\\"},\\\"upstream\\\":[]},\\\"revision\\\":\\\"1\\\",\\\"supersedes\\\":null,\\\"temporal_status\\\":\\\"historical\\\",\\\"time\\\":{\\\"effective_end\\\":null,\\\"effective_start\\\":null,\\\"event\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"precision\\\":\\\"instant\\\",\\\"processed\\\":null,\\\"recorded\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"retrieved\\\":null,\\\"uncertainty\\\":null},\\\"uncertainty\\\":[\\\"Synthetic recorded evidence only.\\\"],\\\"value\\\":{\\\"reason\\\":null,\\\"status\\\":\\\"known\\\",\\\"value\\\":{\\\"unit\\\":{\\\"code\\\":\\\"mg/dL\\\",\\\"limitation\\\":null,\\\"raw\\\":\\\"mg/dL\\\",\\\"status\\\":\\\"assessed\\\",\\\"system\\\":\\\"UCUM\\\"},\\\"value\\\":\\\"1.00\\\"}},\\\"verification\\\":\\\"verified\\\"}\",\"expected_digest\":\"47725732962a14527b5867dd525393d46ecc03276528c7fa2428767beefbe4e1\",\"fact\":{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.00\"}},\"verification\":\"verified\"},\"inclusion\":\"in_window\",\"ingestion\":{\"ingested_at\":\"2026-10-19T18:35:22.403821Z\",\"ingestion_sequence\":1,\"payload_version\":1,\"repository_id\":\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\"}},{\"canonical_fact\":\"{\\\"binding\\\":{\\\"target\\\":{\\\"encounter_id\\\":\\\"synthetic-e1\\\",\\\"longitudinal_context_id\\\":null,\\\"patient_id\\\":\\\"synthetic-p1\\\"},\\\"verification\\\":{\\\"ambiguity\\\":null,\\\"assessed_at\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"method\\\":\\\"synthetic-demo\\\",\\\"source\\\":{\\\"channel\\\":\\\"system\\\",\\\"identifier\\\":\\\"patient-state-v1\\\",\\\"namespace\\\":\\\"clinrx.synthetic.demo\\\",\\\"version\\\":\\\"1\\\"},\\\"status\\\":\\\"verified\\\",\\\"verifier\\\":\\\"synthetic-system\\\"}},\\\"concept_id\\\":\\\"synthetic-serum-creatinine\\\",\\\"conflict\\\":\\\"none_known\\\",\\\"correction_reason\\\":null,\\\"id\\\":\\\"demo-creatinine-B\\\",\\\"kind\\\":\\\"observation\\\",\\\"origin\\\":\\\"reported\\\",\\\"provenance\\\":{\\\"actor\\\":\\\"synthetic-demo\\\",\\\"limitations\\\":[\\\"Synthetic demonstration only; no clinical feed.\\\"],\\\"lineage\\\":\\\"unknown\\\",\\\"recorded_at\\\":\\\"2026-10-08T10:00:00Z\\\",\\\"source\\\":{\\\"channel\\\":\\\"measurement\\\",\\\"identifier\\\":\\\"demo-sample-B\\\",\\\"namespace\\\":\\\"clinrx.synthetic.serum-creatinine\\\",\\\"version\\\":\\\"1\\\"},\\\"upstream\\\":[]},\\\"revision\\\":\\\"1\\\",\\\"supersedes\\\":null,\\\"temporal_status\\\":\\\"historical\\\",\\\"time\\\":{\\\"effective_end\\\":null,\\\"effective_start\\\":null,\\\"event\\\":\\\"2026-10-08T10:00:00Z\\\",\\\"precision\\\":\\\"instant\\\",\\\"processed\\\":null,\\\"recorded\\\":\\\"2026-10-08T10:00:00Z\\\",\\\"retrieved\\\":null,\\\"uncertainty\\\":null},\\\"uncertainty\\\":[\\\"Synthetic recorded evidence only.\\\"],\\\"value\\\":{\\\"reason\\\":null,\\\"status\\\":\\\"known\\\",\\\"value\\\":{\\\"unit\\\":{\\\"code\\\":\\\"mg/dL\\\",\\\"limitation\\\":null,\\\"raw\\\":\\\"mg/dL\\\",\\\"status\\\":\\\"assessed\\\",\\\"system\\\":\\\"UCUM\\\"},\\\"value\\\":\\\"2.000\\\"}},\\\"verification\\\":\\\"verified\\\"}\",\"expected_digest\":\"17833f40e3d34a11b4a3ddec12fea45b54b45bdbfa0f181c22960cd7e9b42c2f\",\"fact\":{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-B\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-B\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T10:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T10:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"2.000\"}},\"verification\":\"verified\"},\"inclusion\":\"in_window\",\"ingestion\":{\"ingested_at\":\"2026-10-19T18:35:22.407890Z\",\"ingestion_sequence\":3,\"payload_version\":1,\"repository_id\":\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\"}}],\"scope\":{\"contract_version\":\"3\",\"encounter_id\":\"synthetic-e1\",\"patient_id\":\"synthetic-p1\",\"repository_cutoff\":{\"captured_at\":\"2026-10-19T18:35:22.852952Z\",\"fact_watermark\":6,\"repository_id\":\"da23ef6d-d22b-4963-bb32-cdd8e53fe1c7\"},\"review_end\":\"2026-10-08T10:00:00Z\",\"review_start\":\"2026-10-08T08:00:00Z\"}}",
+      "execution_enabled": false
+    },
+    "items": [],
+    "execution_enabled": false
+  },
+  "weight_draft": {
+    "repository": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7",
+    "id": "9a9281f7-d7d5-4315-a6f6-ee516801d354",
+    "revision": "d97b3a2b-d285-4021-92ae-c319506d41c0",
+    "actor": "Synthetic nurse",
+    "recorded_at": "2026-10-08T10:00:00Z",
+    "chart": {
+      "category": "weight",
+      "amount": "70.0000",
+      "unit": "kg",
+      "point": "2026-10-08T09:45:00Z",
+      "start": null,
+      "end": null,
+      "acquisition": "measured",
+      "purpose": "body weight",
+      "source_context": "Explicit local fictional measurement",
+      "uncertainty": "Collection method not verified",
+      "source_record": {
+        "issuer_namespace": "clinrx.synthetic.chart",
+        "issuer": "nurse-chart-A",
+        "record_namespace": "chart-entry",
+        "record_id": "weight-0945",
+        "component": "weight"
+      },
+      "new_collection_reason": null
+    },
+    "note": null,
+    "predecessor": null,
+    "reason": null
+  },
+  "weight": {
+    "repository": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7",
+    "fact": {
+      "kind": "circulatory_event",
+      "id": "9a9281f7-d7d5-4315-a6f6-ee516801d354",
+      "revision": "d97b3a2b-d285-4021-92ae-c319506d41c0",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Synthetic scope selection",
+          "verifier": "Synthetic nurse",
+          "assessed_at": "2026-10-08T10:00:00Z",
+          "source": {
+            "namespace": "clinrx.local.synthetic.rf2",
+            "identifier": "9a9281f7-d7d5-4315-a6f6-ee516801d354",
+            "version": null,
+            "channel": "clinician"
+          },
+          "ambiguity": "Local synthetic patient only."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx.local.synthetic.rf2",
+          "identifier": "9a9281f7-d7d5-4315-a6f6-ee516801d354",
+          "version": null,
+          "channel": "clinician"
+        },
+        "actor": "Synthetic nurse",
+        "recorded_at": "2026-10-08T10:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Unauthenticated local synthetic source assertion."
+        ]
+      },
+      "time": {
+        "event": null,
+        "recorded": null,
+        "effective_start": null,
+        "effective_end": null,
+        "retrieved": null,
+        "processed": null,
+        "precision": "unknown",
+        "uncertainty": null
+      },
+      "verification": "unverified",
+      "conflict": "unknown",
+      "temporal_status": "unknown",
+      "uncertainty": [
+        "Collection method not verified"
+      ],
+      "supersedes": null,
+      "correction_reason": null,
+      "contract_version": "3",
+      "occurred": {
+        "timestamp_precision": "M7ExactTimestampInput/v1",
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:45:00Z",
+          "lower": null,
+          "upper": null,
+          "uncertainty": null
+        },
+        "source_timestamp": "2026-10-08T09:45:00Z",
+        "clock": "unknown",
+        "clock_basis": null,
+        "conflicting": [],
+        "alternative_sources": [],
+        "alignment": null
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded",
+          "precision": "unknown",
+          "value": null,
+          "lower": null,
+          "upper": null,
+          "uncertainty": null
+        },
+        "source_timestamp": null,
+        "clock": "unknown",
+        "clock_basis": null,
+        "conflicting": [],
+        "alternative_sources": [],
+        "alignment": null
+      },
+      "associations": [],
+      "source_identifiers": [],
+      "disclosures": [],
+      "record_status": "recorded",
+      "event_type": "other",
+      "description": {
+        "raw_display": "Explicit local fictional measurement",
+        "coding": {
+          "namespace": "clinrx.local.rf2/v1",
+          "code": "weight",
+          "version": "1",
+          "raw_display": "weight"
+        }
+      },
+      "external_evidence": [
+        {
+          "namespace": "clinrx.local.rf2/v1",
+          "code": "{\"chart\":{\"acquisition\":\"measured\",\"amount\":\"70.0000\",\"category\":\"weight\",\"end\":null,\"method\":null,\"missing_reason\":null,\"new_collection_reason\":null,\"point\":\"2026-10-08T09:45:00Z\",\"purpose\":\"body weight\",\"source_context\":\"Explicit local fictional measurement\",\"source_record\":{\"component\":\"weight\",\"issuer\":\"nurse-chart-A\",\"issuer_namespace\":\"clinrx.synthetic.chart\",\"record_id\":\"weight-0945\",\"record_namespace\":\"chart-entry\"},\"source_version\":null,\"start\":null,\"uncertainty\":\"Collection method not verified\",\"unit\":\"kg\"},\"note\":null,\"version\":1}",
+          "version": "1",
+          "raw_display": "Structured RF2 source assertions"
+        }
+      ],
+      "recorded_amount": {
+        "value": "70.0000",
+        "unit": {
+          "raw": "kg",
+          "status":

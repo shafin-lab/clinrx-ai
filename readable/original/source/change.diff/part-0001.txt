@@ -1,0 +1,396 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 0d3d3ff..f7f952c 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -131,10 +131,12 @@ jobs:
+         run: |
+           set -o pipefail
+           npm run build 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/build.txt"
+-      - name: Local synthetic authoring build
++      - name: Local synthetic RF2 authoring build
+         env:
+           VITE_SYNTHETIC_HOSTED: 'true'
+           VITE_SYNTHETIC_AUTHORING: 'true'
++          VITE_SYNTHETIC_RF1: 'true'
++          VITE_SYNTHETIC_RF2: 'true'
+         run: |
+           set -o pipefail
+           npm run build -- --outDir "$RUNNER_TEMP/clinrx-authoring-build" 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/authoring-build.txt"
+diff --git a/backend/app/api/schemas/renal_fluid_entry.py b/backend/app/api/schemas/renal_fluid_entry.py
+new file mode 100644
+index 0000000..4529de9
+--- /dev/null
++++ b/backend/app/api/schemas/renal_fluid_entry.py
+@@ -0,0 +1,117 @@
++"""Local RF2 product contracts. Existing clinical models/storage are unchanged."""
++from decimal import Decimal
++import re
++from typing import Annotated, Literal
++from uuid import UUID
++from pydantic import Field, model_validator, field_validator, TypeAdapter
++from app.api.schemas.common import DTO, Identifier, Digest, DecimalString, AwareTimestamp
++from app.models.clinical.common import Reference
++
++Short = Annotated[str, Field(strict=True, min_length=1, max_length=128)]
++NoteText = Annotated[str, Field(strict=True, min_length=1, max_length=512)]
++Category = Literal['output_urine','input_oral','input_enteral','input_iv','input_blood','output_drain','output_other','output_crrt','weight','net_balance_reported','urine_total_reported','balance_total_reported']
++
++class SourceRecord(DTO):
++    issuer_namespace: Short
++    issuer: Short
++    record_namespace: Short
++    record_id: Short
++    component: Short
++    @model_validator(mode='after')
++    def unique_record(self):
++        if self.component.lower().replace('-','').replace('_','').replace(' ','') in ('wholerecord','collection','series','context'):raise ValueError('no whole-record issuer profile is configured; provide a concrete component')
++        if any(s in self.record_namespace.lower() for s in ('series','context','channel','device')):
++            raise ValueError('record namespace must identify records, never context/series')
++        return self
++
++class Pin(DTO):
++    repository: UUID
++    reference: Reference
++    digest: Digest
++    ingestion: Annotated[int, Field(strict=True, ge=1)]
++    cutoff: Annotated[int, Field(strict=True, ge=1)]
++    @model_validator(mode='after')
++    def bounded(self):
++        if max(len(self.reference.kind),len(self.reference.id),len(self.reference.version))>256 or self.ingestion>self.cutoff:
++            raise ValueError('invalid exact pin')
++        return self
++
++class Chart(DTO):
++    category: Category
++    amount: DecimalString | None = None
++    unit: Literal['mL','L','kg','g'] | None = None
++    missing_reason: NoteText | None = None
++    point: Short | None = None
++    start: Short | None = None
++    end: Short | None = None
++    acquisition: Literal['measured','reported','unknown'] = 'unknown'
++    method: Short | None = None
++    purpose: Short | None = None
++    source_context: NoteText
++    uncertainty: NoteText
++    source_record: SourceRecord | None = None
++    source_version: Short | None = None
++    new_collection_reason: NoteText | None = None
++    @field_validator('point','start','end')
++    @classmethod
++    def exact_time(cls,v):
++        if v is not None:TypeAdapter(AwareTimestamp).validate_python(v)
++        return v
++    @model_validator(mode='after')
++    def coherent(self):
++        if (self.amount is None)!=(self.unit is None) or (self.amount is None)!=(self.missing_reason is not None):
++            raise ValueError('record quantity or explicit missing reason')
++        if self.amount is not None:
++            value=Decimal(self.amount)
++            if not re.fullmatch(r'-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?',self.amount):raise ValueError('use an exact decimal such as 0.50 or 35.0000')
++            if not value.is_finite() or (value<0 and self.category not in ('net_balance_reported','balance_total_reported')):
++                raise ValueError('invalid magnitude')
++        if self.unit is not None and self.unit not in (('kg','g') if self.category=='weight' else ('mL','L')):
++            raise ValueError('unit category mismatch')
++        if self.category=='weight' and (self.start is not None or self.end is not None):raise ValueError('weight is a point assertion')
++        if self.category!='weight' and (self.acquisition!='unknown' or self.purpose is not None):raise ValueError('weight-only acquisition/purpose')
++        if self.start is not None and self.end is not None and TypeAdapter(AwareTimestamp).validate_python(self.start)>TypeAdapter(AwareTimestamp).validate_python(self.end):raise ValueError('reversed interval')
++        if self.source_record is None and not self.new_collection_reason:raise ValueError('explicit new collection reason required')
++        return self
++
++class RenalNote(DTO):
++    question: NoteText
++    findings: NoteText
++    possibilities: NoteText
++    gaps: NoteText
++    plan: NoteText
++    pins: Annotated[tuple[Pin,...],Field(min_length=1,max_length=12)]
++    @model_validator(mode='after')
++    def unique(self):
++        keys=[(p.reference.kind,p.reference.id,p.reference.version) for p in self.pins]
++        if len(keys)!=len(set(keys)):raise ValueError('duplicate evidence pin')
++        return self
++
++class RF2Draft(DTO):
++    repository: UUID
++    id: UUID
++    revision: UUID
++    actor: Short
++    recorded_at: Short
++    chart: Chart | None = None
++    note: RenalNote | None = None
++    predecessor: Pin | None = None
++    reason: NoteText | None = None
++    @field_validator('recorded_at')
++    @classmethod
++    def exact_recorded(cls,v):
++        TypeAdapter(AwareTimestamp).validate_python(v)
++        return v
++    @model_validator(mode='after')
++    def shape(self):
++        if (self.chart is None)==(self.note is None):raise ValueError('one chart or note required')
++        if self.note and any(p.repository!=self.repository for p in self.note.pins):raise ValueError('note pins belong to the original repository')
++        if (self.predecessor is None)!=(self.reason is None):raise ValueError('correction needs predecessor and reason')
++        if self.predecessor and (self.predecessor.repository!=self.repository or self.predecessor.reference.kind!='circulatory_event' or self.predecessor.reference.id!=str(self.id)):
++            raise ValueError('correction must retain original owner')
++        if len(self.model_dump_json().encode())>65536:raise ValueError('RF2 request budget exceeded')
++        return self
++
++class ResolveRequest(DTO):
++    repository: UUID
++    pins: Annotated[tuple[Pin,...],Field(max_length=32)]
+diff --git a/backend/app/demo/renal_fluid_entry_gateway.py b/backend/app/demo/renal_fluid_entry_gateway.py
+new file mode 100644
+index 0000000..0c89f6b
+--- /dev/null
++++ b/backend/app/demo/renal_fluid_entry_gateway.py
+@@ -0,0 +1,130 @@
++"""Explicit loopback RF2 entry point. No production/Docker configuration changes."""
++import os,secrets
++from pathlib import Path
++from fastapi import APIRouter, Depends, Query
++from typing import Annotated
++from app.api.routes.patient_state import StateQuery
++from starlette.responses import JSONResponse
++from app.api.routes.circulatory import service as circulatory_service
++from app.api.schemas.renal_fluid_entry import RF2Draft, ResolveRequest
++from app.demo.renal_fluid_gateway import SyntheticRenalFluidGateway
++from app.demo.hosting import PREFIX
++from app.services.renal_fluid_entry_service import RF2Service
++from app.persistence.repository import transaction
++from app.persistence.shared_transaction import execution_transaction
++
++RF2=PREFIX+'/synthetic-rf2'
++router=APIRouter()
++def service(base=Depends(circulatory_service)):return RF2Service(base.dependencies)
++@router.get(RF2)
++def catalog(review_start:str='2026-10-08T08:00:00+00:00',review_end:str='2026-10-08T10:00:00+00:00',app=Depends(service)):
++    from pydantic import TypeAdapter
++    from app.api.schemas.common import AwareTimestamp
++    start=TypeAdapter(AwareTimestamp).validate_python(review_start);end=TypeAdapter(AwareTimestamp).validate_python(review_end)
++    with transaction(app.dependencies.engine) as repo:return app.catalog(repo,start,end)
++@router.post(RF2+'/resolve')
++def resolve(body:ResolveRequest,app=Depends(service)):
++    with transaction(app.dependencies.engine) as repo:return app.resolve(repo,body)
++@router.post(RF2+'/history')
++def history(body:ResolveRequest,app=Depends(service)):
++    with transaction(app.dependencies.engine) as repo:return app.history(repo,body)
++@router.post(RF2+'/validate')
++def validate(body:RF2Draft,app=Depends(service)):
++    with transaction(app.dependencies.engine) as repo:return app.validate(repo,body)
++@router.post(RF2+'/lookup')
++def lookup(body:RF2Draft,app=Depends(service)):
++    with transaction(app.dependencies.engine) as repo:return app.lookup(repo,body)
++@router.post(RF2+'/save')
++def save(body:RF2Draft,app=Depends(service)):
++    with execution_transaction(app.dependencies.engine) as tx:return app.save(tx.repository,body)
++
++class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
++    def __init__(self,database,frontend,signing_key,origin):
++        super().__init__(database,frontend,signing_key,origin)
++        self.core.include_router(router)
++    async def __call__(self,scope,receive,send):
++        # RF2 owns its structured facts even when the advanced legacy editor is used.
++        # Exact retained requests and read-only lookup preserve original recovery.
++        from app.demo.authoring import ENTRY, TARGET
++        legacy=scope['type']=='http' and scope.get('path') in (ENTRY,ENTRY+'/validate',ENTRY+'/lookup') and scope.get('method')=='POST'
++        if legacy:
++            headers=dict(scope.get('headers',()))
++            if not scope.get('client') or scope['client'][0] not in ('127.0.0.1','::1') or headers.get(b'host',b'').decode()!=self.host or headers.get(b'origin',b'').decode()!=self.origin:
++                return await JSONResponse({'code':'local_rf2_denied'},status_code=403)(scope,receive,send)
++            from app.api.middleware import MAX_REQUEST_BYTES
++            chunks=[];size=0
++            while True:
++                message=await receive()
++                if message['type']=='http.disconnect':return
++                chunk=message.get('body',b'');size+=len(chunk)
++                if size>MAX_REQUEST_BYTES:return await JSONResponse({'code':'request_too_large'},status_code=413)(scope,receive,send)
++                chunks.append(chunk)
++                if not message.get('more_body'):break
++            raw=b''.join(chunks)
++            try:
++                from app.demo.authoring import EvidenceDraft
++                from app.persistence.canonical import canonical_payload
++                from app.persistence.history import FactIdentity
++                from app.persistence.bounded_history import HistoryBudget,HistoryAccounting,AggregateHistoryBudget
++                from app.services.renal_fluid_entry_service import exact_json,META,PIN
++                proposed=EvidenceDraft.model_validate(exact_json(raw));fact=proposed.fact
++                def rf2(f):
++                    return any(e.namespace in (META,PIN) for e in f.external_evidence) if hasattr(f,'external_evidence') else False
++                from app.persistence.errors import RecordNotFound
++                exact=False
++                try:
++                    with transaction(self.core.state.dependencies.engine) as repo:
++                        if repo.capture_cutoff().repository_id!=proposed.repository_id:raise ValueError('repository mismatch')
++                        retained=repo.load_fact(fact.reference,target=TARGET)
++                        exact=canonical_payload(retained.fact)==canonical_payload(fact)
++                except RecordNotFound:
++                    pass
++                owned=rf2(fact) or (hasattr(fact,'description') and fact.description.coding is not None and fact.description.coding.namespace==META)
++                if not exact and scope['path']!=ENTRY+'/lookup':
++                    with transaction(self.core.state.dependencies.engine) as repo:
++                        if repo.capture_cutoff().repository_id!=proposed.repository_id:raise ValueError('repository mismatch')
++                        history=repo.list_bounded_history(target=TARGET,cutoff=repo.capture_cutoff(),identity=FactIdentity(kind=fact.kind,id=fact.id),budget=HistoryBudget(),accounting=HistoryAccounting(AggregateHistoryBudget())).records
++                        owned=owned or any(rf2(s.fact) for s in history)
++                if owned and not exact and scope['path']!=ENTRY+'/lookup':
++                    return await JSONResponse({'code':'rf2_owner_required','message':'Use the RF2 source owner for this record.'},status_code=409)(scope,receive,send)
++            except Exception:
++                return await JSONResponse({'code':'invalid_request'},status_code=422)(scope,receive,send)
++            delivered=False;upstream=receive
++            async def original_body():
++                nonlocal delivered
++                if not delivered:delivered=True;return {'type':'http.request','body':raw,'more_body':False}
++                return await upstream()
++            return await super().__call__(scope,original_body,send)
++        if scope['type']=='http' and (scope['path']==RF2 or scope['path'].startswith(RF2+'/')):
++            headers=dict(scope.get('headers',()))
++            paths={RF2+'/history',RF2+'/resolve',RF2+'/validate',RF2+'/lookup',RF2+'/save'}
++            allowed=(scope['path']==RF2 and scope['method']=='GET') or (scope['path'] in paths and scope['method']=='POST' and headers.get(b'origin',b'').decode()==self.origin and headers.get(b'content-type',b'').split(b';')[0]==b'application/json')
++            if not scope.get('client') or scope['client'][0] not in ('127.0.0.1','::1') or headers.get(b'host',b'').decode()!=self.host or headers.get(b'sec-fetch-site',b'same-origin') not in (b'same-origin',b'none') or not allowed:
++                return await JSONResponse({'code':'local_rf2_denied'},status_code=403)(scope,receive,send)
++            if scope['method']=='POST':
++                from app.services.renal_fluid_entry_service import exact_json
++                chunks=[];size=0
++                while True:
++                    m=await receive()
++                    if m['type']=='http.disconnect':return
++                    chunk=m.get('body',b'');size+=len(chunk)
++                    if size>65536:return await JSONResponse({'code':'request_too_large'},status_code=413)(scope,receive,send)
++                    chunks.append(chunk)
++                    if not m.get('more_body'):break
++                raw=b''.join(chunks)
++                try:exact_json(raw)
++                except (ValueError,UnicodeDecodeError):return await JSONResponse({'code':'invalid_request'},status_code=422)(scope,receive,send)
++                delivered=False
++                upstream=receive
++                async def replay_receive():
++                    nonlocal delivered
++                    if not delivered:delivered=True;return {'type':'http.request','body':raw,'more_body':False}
++                    return await upstream()
++                receive=replay_receive
++            async def no_store(m):
++                if m['type']=='http.response.start':m={**m,'headers':[*m.get('headers',()),(b'cache-control',b'no-store')]}
++                await send(m)
++            return await self.core(scope,receive,no_store)
++        return await super().__call__(scope,receive,send)
++def from_environment():
++    return SyntheticRF2Gateway(Path(os.environ['CLINRX_RF2_DATABASE']),Path(os.environ['CLINRX_RF2_FRONTEND']),secrets.token_hex(32),os.environ['CLINRX_RF2_ORIGIN'])
+diff --git a/backend/app/services/renal_fluid_entry_service.py b/backend/app/services/renal_fluid_entry_service.py
+new file mode 100644
+index 0000000..c90ecc6
+--- /dev/null
++++ b/backend/app/services/renal_fluid_entry_service.py
+@@ -0,0 +1,206 @@
++"""Opt-in synthetic RF2 composition. No new clinical fact or execution semantics."""
++import json
++from decimal import Decimal
++from hashlib import sha256
++from pydantic import ValidationError
++from app.api.schemas.renal_fluid_entry import Chart, RenalNote
++from app.demo.authoring import TARGET, EvidenceConflict
++from app.models.clinical.hemodynamics import CirculatoryEvent, ClinicalInstant, RecordedCirculatoryInterval, EvidenceBinding
++from app.models.clinical.recorded_v2 import SourceCode, ExactQuantity, RecordedConcept
++from app.models.clinical.facts import ClinicalObservation
++from app.models.clinical.common import Reference
++from app.persistence.canonical import canonical_payload
++from app.persistence.bounded_history import HistoryBudget, HistoryAccounting, AggregateHistoryBudget
++from app.persistence.errors import RecordNotFound, StorageIntegrityError, UnsupportedOperation, QueryLimitExceeded
++from app.persistence.history import FactIdentity
++from app.services.renal_fluid_product_service import RenalFluidProductService
++
++META='clinrx.local.rf2/v1'; PIN='clinrx.local.rf2.pin/v1'
++CATEGORIES={'input_iv','input_blood','input_oral','input_enteral','output_urine','output_drain','output_other','output_crrt','weight','dosing_weight','net_balance_reported','urine_total_reported','balance_total_reported','fluid_challenge','crrt_context'}
++def exact_json(raw):
++    def pairs(items):
++        d={}
++        for k,v in items:
++            if k in d:raise ValueError('duplicate member')
++            d[k]=v
++        return d
++    return json.loads(raw,object_pairs_hook=pairs)
++def encoded(namespace,value,label):
++    code=json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(',',':'))
++    if len(code.encode())>4096:raise QueryLimitExceeded('RF2 metadata exceeds carrier budget')
++    return SourceCode(namespace=namespace,version='1',code=code,raw_display=label)
++def metadata(fact):
++    entries=[x for x in getattr(fact,'external_evidence',()) if x.namespace==META]
++    if not entries:return None
++    if len(entries)!=1 or entries[0].version!='1':raise StorageIntegrityError('ambiguous RF2 metadata')
++    try:
++        d=exact_json(entries[0].code)
++        if set(d)!= {'version','chart','note'} or d['version']!=1:raise ValueError()
++        chart=Chart.model_validate(d['chart']) if d['chart'] is not None else None
++        if d['note'] is not None:
++            if d['note'].get('pins')!=[]:raise ValueError()
++            pin_entries=[x for x in getattr(fact,'external_evidence',()) if x.namespace==PIN]
++            if any(x.version!='1' for x in pin_entries):raise ValueError()
++            d['note']={**d['note'],'pins':[exact_json(x.code) for x in pin_entries]}
++        note=RenalNote.model_validate(d['note']) if d['note'] is not None else None
++        if note and {(a.exact.kind,a.exact.id,a.exact.version) for a in fact.associations if a.role=='context' and a.status=='resolved'}!={(p.reference.kind,p.reference.id,p.reference.version) for p in note.pins}:raise ValueError()
++        if (chart is None)==(note is None):raise ValueError()
++        if chart:
++            q=fact.recorded_amount
++            if (q is None)!=(chart.amount is None) or (q is not None and (str(q.value)!=chart.amount or q.unit.raw!=chart.unit)):raise ValueError()
++            if fact.occurred.source_timestamp!=chart.point:raise ValueError()
++            interval=fact.recorded_interval
++            if chart.start is not None or chart.end is not None:
++                if interval is None or interval.start.source_timestamp!=chart.start or interval.end.source_timestamp!=chart.end:raise ValueError()
++            elif interval is not None:raise ValueError()
++        if note:
++            expected='Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\n'+'\n'.join(k+': '+getattr(note,k) for k in ('question','findings','possibilities','gaps','plan'))
++            if fact.description.raw_display!=expected or len(fact.associations)!=len(note.pins):raise ValueError()
++        return d
++    except (ValueError,ValidationError,TypeError):raise StorageIntegrityError('invalid RF2 metadata') from None
++
++def category(fact):
++    m=metadata(fact)
++    if m:return m['chart']['category'] if m['chart'] else 'note'
++    if isinstance(fact,CirculatoryEvent):
++        c=fact.description.coding
++        if c and c.namespace=='clinrx.synthetic.hemodynamic-chart/v1' and c.code in CATEGORIES:return c.code
++    return None
++
++def material(chart):
++    d=chart.model_dump(mode='json');d.pop('new_collection_reason',None)
++    return d
++
++def time(text):
++    return ClinicalInstant.model_validate({'timestamp_precision':'M7ExactTimestampInput/v1','recorded':{'status':'known','precision':'instant','value':text},'source_timestamp':text,'clock':'unknown'}) if text else ClinicalInstant()
++
++def allowed(fact):
++    return (isinstance(fact,ClinicalObservation) and fact.concept_id in ('synthetic-serum-creatinine','body-weight')) or isinstance(fact,CirculatoryEvent) or fact.kind.startswith('circulatory_')
++
++class RF2Service(RenalFluidProductService):
++    def accounting(self):return HistoryAccounting(self.aggregate_budget)
++    def require_repo(self,repo,repository):
++        self.require_closed()
++        if repo.capture_cutoff().repository_id!=repository:raise EvidenceConflict()
++    def history_rows(self,repo,cutoff,accounting,reference=None):
++        return repo.list_bounded_history(target=TARGET,cutoff=cutoff,budget=self.history_budget,accounting=accounting,identity=FactIdentity(kind=reference.kind,id=reference.id) if reference else None).records
++    def pin_record(self,repo,pin,accounting):
++        self.require_repo(repo,pin.repository)
++        now=repo.capture_cutoff()
++        if pin.cutoff>now.fact_watermark:raise EvidenceConflict()
++        cutoff=now.model_copy(update={'fact_watermark':pin.cutoff})
++        rows=self.history_rows(repo,cutoff,accounting,pin.reference)
++        found=[x for x in rows if x.fact.reference==pin.reference]
++        if len(found)!=1:raise RecordNotFound('exact revision unavailable')
++        s=found[0]
++        if not allowed(s.fact) or s.ingestion.ingestion_sequence!=pin.ingestion or sha256(canonical_payload(s.fact).encode()).hexdigest()!=pin.digest:raise EvidenceConflict()
++        return s
++    def evidence(self,repo,stored,cutoff,accounting):
++        terminal=self.history_rows(repo,cutoff,accounting,stored.fact.reference)[-1]
++        f=stored.fact
++        return {'repository':str(cutoff.repository_id),'fact':f.model_dump(mode='json'),'canonical_fact':canonical_payload(f),'digest':sha256(canonical_payload(f).encode()).hexdigest(),'ingestion':stored.ingestion.model_dump(mode='json'),'cutoff':cutoff.fact_watermark,'terminal_reference':terminal.fact.reference.model_dump(),'superseded':terminal.fact.reference!=f.reference,'metadata':metadata(f)}
++    def resolve(self,repo,body):
++        self.require_repo(repo,body.repository);accounting=self.accounting();out=[]
++        for p in body.pins:
++            s=self.pin_record(repo,p,accounting)
++            out.append(self.evidence(repo,s,repo.capture_cutoff(),accounting))
++        return self.bounded_dict({'repository':str(body.repository),'items':out,'execution_enabled':False})
++    def history(self,repo,body):
++        if len(body.pins)!=1:raise UnsupportedOperation('select one exact history')
++        a=self.accounting();p=body.pins[0];self.pin_record(repo,p,a)
++        cutoff=repo.capture_cutoff().model_copy(update={'fact_watermark':p.cutoff})
++        rows=self.history_rows(repo,cutoff,a,p.reference)
++        if len(rows)>128:raise QueryLimitExceeded

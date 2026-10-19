@@ -1,0 +1,32 @@
+F
+=================================== FAILURES ===================================
+______________ test_chart_correction_replay_and_read_preservation ______________
+
+ws = (<starlette.testclient.TestClient object at 0x122ef15d0>, PosixPath('/private/var/folders/r9/4k0mh4sd5vgghvrds28byzqw0...art_correction_replay_a0/rf2.sqlite3'), <app.demo.renal_fluid_entry_gateway.SyntheticRF2Gateway object at 0x12287e810>)
+
+    def test_chart_correction_replay_and_read_preservation(ws):
+>       c,db,_=ws;b=draft(c);original=saved(c,b);assert original['fact']['recorded_amount']['value']=='35.0000'
+                    ^^^^^^^^
+
+tests/test_renal_fluid_entry.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+c = <starlette.testclient.TestClient object at 0x122ef15d0>
+category = 'output_urine', key = True
+
+    def draft(c,category='output_urine',key=True):
+>       return {'repository':c.get(RF2).json()['repository'],'id':str(uuid4()),'revision':str(uuid4()),'actor':'Synthetic nurse','recorded_at':'2026-10-08T10:00:00Z','chart':{'category':category,'amount':'35.0000' if category!='weight' else '70.0000','unit':'mL' if category!='weight' else 'kg','point':'2026-10-08T09:45:00Z','start':'2026-10-08T09:30:00Z' if category!='weight' else None,'end':'2026-10-08T09:45:00Z' if category!='weight' else None,'acquisition':'measured' if category=='weight' else 'unknown','purpose':'body weight' if category=='weight' else None,'source_context':'Explicit local fictional measurement','uncertainty':'Collection method not verified','source_record':{'issuer_namespace':'clinrx.synthetic.chart','issuer':'nurse-chart-A','record_namespace':'chart-entry','record_id':'urine-0945' if category!='weight' else 'weight-0945','component':'volume' if category!='weight' else 'weight'} if key else None,'new_collection_reason':'New distinct collection' if not key else None},'note':None,'predecessor':None,'reason':None}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'repository'
+
+tests/test_renal_fluid_entry.py:25: KeyError
+=============================== warnings summary ===============================
+../../../../Documents/clinrx-ai/backend/venv/lib/python3.11/site-packages/fastapi/testclient.py:1
+  /Users/mohammedshafiqshajahan/Documents/clinrx-ai/backend/venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_renal_fluid_entry.py::test_chart_correction_replay_and_read_preservation
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 1 warning in 8.66s

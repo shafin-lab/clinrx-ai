@@ -1,0 +1,218 @@
+ppend_fact(f,target=__import__('app.demo.authoring',fromlist=['TARGET']).TARGET)
++    before=rows(db);third=deepcopy(b);third.update(id=str(uuid4()),revision=str(uuid4()));assert post(c,'/save',third).status_code==409;assert rows(db)==before
++    app.core.dependency_overrides[service]=lambda:RF2Service(app.core.state.dependencies,aggregate_budget=AggregateHistoryBudget(max_rows=1))
++    assert post(c,'/save',third).status_code==422;assert rows(db)==before
++
++def test_weight_dosing_reuse_and_unavailable_historical_acquisition(ws):
++    c,db,_=ws;w=saved(c,draft(c,'weight'));before=rows(db)
++    r=post(c,'/resolve',{'repository':w['repository'],'pins':[pin(w)]});assert r.status_code==200;assert r.json()['items'][0]['metadata']['chart']['acquisition']=='measured';assert rows(db)==before
++    # The already charted dosing weight is carried in the shared assembly, not copied.
++    cat=c.get(RF2).json();dose=next(x for x in cat['combined']['circulatory']['assembly']['snapshot']['items'] if x['fact']['id']=='fs-WEIGHT')
++    assert not any(x.get('namespace')=='clinrx.local.rf2/v1' for x in dose['fact']['external_evidence'])
++    separate=draft(c,'weight',False);separate['chart'].update(acquisition='unknown',purpose='separately asserted dosing weight');e=saved(c,separate);assert e['fact']['id']!=w['fact']['id'] and e['metadata']['chart']['acquisition']=='unknown'
++
++def test_pin_history_stale_correction_and_receipt_preservation(ws):
++    c,db,_=ws;b=draft(c,'weight');e=saved(c,b);first=deepcopy(b);first.update(revision=str(uuid4()),predecessor=pin(e),reason='Source transcription correction');first['chart']['amount']='71.0000';later=saved(c,first)
++    before=rows(db);stale=deepcopy(first);stale['revision']=str(uuid4());stale['chart']['amount']='72';assert post(c,'/save',stale).status_code in (409,422);assert rows(db)==before
++    r=post(c,'/history',{'repository':e['repository'],'pins':[pin(later)]});assert r.status_code==200,r.text;assert [x['fact']['revision'] for x in r.json()['items']]==[e['fact']['revision'],later['fact']['revision']];assert rows(db)==before
++    # Reconciliation is lookup-only and retains the exact confirmed request result.
++    r=post(c,'/lookup',first);assert r.status_code==200 and r.json()['evidence']['fact']==later['fact'];assert rows(db)==before
++
++def test_aggregate_budget_is_shared_across_individually_valid_pins(ws):
++    from app.demo.renal_fluid_entry_gateway import service
++    from app.services.renal_fluid_entry_service import RF2Service
++    from app.persistence.bounded_history import AggregateHistoryBudget
++    c,db,app=ws;u=saved(c,draft(c));w=saved(c,draft(c,'weight'));before=rows(db)
++    app.core.dependency_overrides[service]=lambda:RF2Service(app.core.state.dependencies,aggregate_budget=AggregateHistoryBudget(max_rows=3))
++    for e in (u,w):assert post(c,'/resolve',{'repository':u['repository'],'pins':[pin(e)]}).status_code==200
++    assert post(c,'/resolve',{'repository':u['repository'],'pins':[pin(u),pin(w)]}).status_code==422
++    assert rows(db)==before
++
++def test_twelve_pins_fit_and_schema_export_is_current(ws):
++    from tools.export_rf2_transport import bundle
++    c,_,_=ws;cat=c.get(RF2).json();items=cat['combined']['circulatory']['assembly']['snapshot']['items'][:12]
++    pins=[{'repository':cat['repository'],'reference':{'kind':x['fact']['kind'],'id':x['fact']['id'],'version':x['fact']['revision']},'digest':x['expected_digest'],'ingestion':x['ingestion']['ingestion_sequence'],'cutoff':cat['cutoff']['fact_watermark']} for x in items]
++    assert len(pins)==12
++    b=draft(c);b['chart']=None;b['note']={'question':'Review twelve sources','findings':'Recorded assertions','possibilities':'Not established','gaps':'Unknown source context','plan':'Unscheduled','pins':pins};e=saved(c,b)
++    assert len(e['fact']['external_evidence'])==13 and len(e['fact']['associations'])==12
++    assert max(len(x['code'].encode()) for x in e['fact']['external_evidence'])<=4096
++    assert bundle()==json.loads((Path(__file__).resolve().parents[1]/'frontend/src/api/rf2Schemas.json').read_text())
++
++
++def test_interval_end_does_not_become_an_unknown_point_observation(ws):
++    c,_,_=ws;b=draft(c,key=False);b['chart']['point']=None
++    e=saved(c,b);assert e['fact']['occurred']['recorded']['status']=='not_recorded'
++    assert e['fact']['occurred']['source_timestamp'] is None
++    assert e['fact']['recorded_interval']['end']['source_timestamp']=='2026-10-08T09:45:00Z'
++    assert e['metadata']['chart']['point'] is None
++
++
++@pytest.fixture(scope='module')
++def full_seed(tmp_path_factory):
++    db=tmp_path_factory.mktemp('rf2-full-seed')/'seed.sqlite3';engine=create_database(db)
++    try:bootstrap(engine)
++    finally:engine.dispose()
++    return db
++
++def test_full_episode_reuse_and_note_preserve_all_originals_and_receipts(tmp_path,full_seed):
++    db=tmp_path/'full.sqlite3';shutil.copyfile(full_seed,db);front=tmp_path/'front';(front/'assets').mkdir(parents=True);(front/'index.html').write_text('synthetic')
++    app=SyntheticRF2Gateway(db,front,'bc'*32,ORIGIN)
++    before=rows(db)
++    with TestClient(app,base_url=ORIGIN,client=('127.0.0.1',1),headers={'Origin':ORIGIN}) as c:
++        cat=c.get(RF2).json();snapshot=cat['combined']['circulatory']['assembly']['snapshot']['items']
++        event=next(x for x in snapshot if x['fact']['id']=='fs-N-CHANGE');pump=next(x for x in snapshot if x['fact']['id']=='fs-PUMP-RATE-N-CHANGE')
++        assert event['fact']['source_identifiers'][0]==pump['fact']['source_identifiers'][0]
++        assert event['fact']['id']!=pump['fact']['id']
++        lab=cat['combined']['laboratory']['observations'][0]
++        p={'repository':cat['repository'],'reference':{'kind':lab['fact']['kind'],'id':lab['fact']['id'],'version':lab['fact']['revision']},'digest':lab['expected_digest'],'ingestion':lab['ingestion']['ingestion_sequence'],'cutoff':cat['cutoff']['fact_watermark']}
++        assert post(c,'/resolve',{'repository':cat['repository'],'pins':[p]}).status_code==200
++        assert rows(db)==before
++        b=draft(c);b['chart']=None;b['note']={'question':'Full episode review','findings':'Source creatinine only','possibilities':'Not established','gaps':'Uncertainty retained','plan':'Unscheduled','pins':[p]};saved(c,b)
++        assert c.get(RF2).status_code==200
++    after=rows(db)
++    assert len(before['fact_revision'])==170 and len(before['circulatory_execution'])==2
++    assert after['fact_revision'][:-1]==before['fact_revision']
++    for name in before:
++        if name not in ('fact_revision','sqlite_sequence'):assert after[name]==before[name]
++
++def test_advanced_legacy_entry_cannot_bypass_rf2_owner(ws):
++    from app.demo.authoring import ENTRY
++    c,db,_=ws;b=draft(c);e=saved(c,b);before=rows(db)
++    clone=deepcopy(e['fact']);clone.update(id=str(uuid4()),revision=str(uuid4()))
++    assert c.post(ENTRY,json={'repository_id':b['repository'],'fact':clone,'predecessor_digest':None}).status_code==409
++    stripped=deepcopy(e['fact']);stripped.update(revision=str(uuid4()),supersedes=pin(e)['reference'],correction_reason='Attempt through wrong owner',external_evidence=[])
++    assert c.post(ENTRY,json={'repository_id':b['repository'],'fact':stripped,'predecessor_digest':e['digest']}).status_code==409
++    exact={'repository_id':b['repository'],'fact':e['fact'],'predecessor_digest':None}
++    assert c.post(ENTRY+'/lookup',json=exact).status_code==200
++    assert c.post(ENTRY,json=exact).status_code==200
++    assert rows(db)==before
++
++def test_old_legacy_command_recovers_after_rf2_correction(ws):
++    from app.demo.authoring import ENTRY
++    from app.demo.icu_chart_entries import entry
++    c,db,_=ws;repository=c.get(RF2).json()['repository'];id=str(uuid4())
++    fact=entry(id,'input_iv',15,'Historical source interval', '20','mL',start=0).model_dump(mode='json')
++    original={'repository_id':repository,'fact':fact,'predecessor_digest':None}
++    r=c.post(ENTRY,json=original);assert r.status_code==200,r.text;old=r.json()
++    d=draft(c,'input_iv',False);d.update(id=id,revision=str(uuid4()),predecessor={'repository':repository,'reference':{'kind':'circulatory_event','id':id,'version':'1'},'digest':old['expected_digest'],'ingestion':old['ingestion']['ingestion_sequence'],'cutoff':old['ingestion']['ingestion_sequence']},reason='Explicit amendment through RF2 owner');saved(c,d)
++    before=rows(db)
++    assert c.post(ENTRY+'/lookup',json=original).json()['evidence']['fact']==fact
++    assert c.post(ENTRY,json=original).json()['fact']==fact
++    assert rows(db)==before
+diff --git a/tools/export_rf2_transport.py b/tools/export_rf2_transport.py
+new file mode 100644
+index 0000000..31442d3
+--- /dev/null
++++ b/tools/export_rf2_transport.py
+@@ -0,0 +1,17 @@
++"""Additive local RF2 schema; no clinical union changes."""
++import json
++from pathlib import Path
++from app.api.schemas.renal_fluid_entry import RF2Draft, ResolveRequest
++from app.models.clinical.facts import ClinicalObservation
++from app.persistence.metadata import IngestionMetadata, RepositoryCutoff
++
++def bundle():
++    roots={};definitions={}
++    for model in (RF2Draft,ResolveRequest,ClinicalObservation,IngestionMetadata,RepositoryCutoff):
++        schema=model.model_json_schema(mode='serialization')
++        for name,s in schema.pop('$defs',{}).items():
++            if name in definitions and definitions[name]!=s:raise ValueError('conflicting definition')
++            definitions[name]=s
++        roots[model.__name__]=schema
++    return {'roots':roots,'definitions':definitions}
++if __name__=='__main__':(Path(__file__).resolve().parents[1]/'frontend/src/api/rf2Schemas.json').write_text(json.dumps(bundle(),indent=2)+'\n')
+diff --git a/tools/validate_rf2_journey.py b/tools/validate_rf2_journey.py
+new file mode 100644
+index 0000000..353e1c1
+--- /dev/null
++++ b/tools/validate_rf2_journey.py
+@@ -0,0 +1,88 @@
++"""One explicit synthetic RF2 real-API journey; no browser/clinical-execution claim."""
++import argparse,hashlib,json,sqlite3,urllib.request,urllib.error,uuid
++from pathlib import Path
++from datetime import datetime,timezone
++from urllib.parse import urlsplit
++
++PREFIX='/api/v1/patients/synthetic-p1/encounters/synthetic-e1'
++def rows(path):
++    with sqlite3.connect(f'file:{path}?mode=ro',uri=True) as db:
++        return {t:db.execute('SELECT * FROM "'+t+'" ORDER BY rowid').fetchall() for t, in db.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")}
++def redact(value):
++    if isinstance(value,dict):return {k:'[REDACTED]' if k in ('state_context','command') else redact(v) for k,v in value.items()}
++    if isinstance(value,list):return list(map(redact,value))
++    return value
++class NoRedirect(urllib.request.HTTPRedirectHandler):
++    def redirect_request(self,*args,**kwargs):return None
++
++def run(origin,database,output):
++    parsed=urlsplit(origin)
++    if parsed.scheme!='http' or parsed.hostname!='127.0.0.1' or not parsed.port or parsed.path or parsed.query or parsed.fragment or parsed.username:raise ValueError('explicit loopback origin only')
++    output.mkdir(parents=True,exist_ok=False);events=[];ledger=[];opener=urllib.request.build_opener(NoRedirect)
++    def checkpoint(name):
++        with sqlite3.connect(f'file:{database}?mode=ro',uri=True) as a,sqlite3.connect(output/(name+'.sqlite3')) as b:a.backup(b)
++        data=rows(database);(output/(name+'-rows.json')).write_text(json.dumps(data,indent=2)+'\n');return data
++    def call(path,body=None):
++        number=len(events)+1;raw=json.dumps(body,ensure_ascii=False,separators=(',',':')).encode() if body is not None else None
++        req=urllib.request.Request(origin+path,data=raw,headers={'Origin':origin,'Content-Type':'application/json'})
++        try:
++            with opener.open(req,timeout=30) as r:status=r.status;reply=r.read()
++        except urllib.error.HTTPError as r:status=r.code;reply=r.read()
++        value=json.loads(reply);event={'number':number,'at':datetime.now(timezone.utc).isoformat(),'method':'POST' if raw is not None else 'GET','path':path,'status':status}
++        if raw is not None:
++            name=f'{number:03}-request.json';(output/name).write_bytes(raw);event.update(request=name,request_sha256=hashlib.sha256(raw).hexdigest())
++        name=f'{number:03}-response-redacted.json';(output/name).write_text(json.dumps(redact(value),indent=2)+'\n');event['response']=name;events.append(event)
++        return status,value
++    def api(path,body=None):
++        status,v=call(PREFIX+'/synthetic-rf2'+path,body);assert status==200,(status,v);return v
++    def pin(item,catalog=None):
++        f=item['fact'];return {'repository':item.get('repository') or catalog['repository'],'reference':{'kind':f['kind'],'id':f['id'],'version':f['revision']},'digest':item.get('digest') or item['expected_digest'],'ingestion':item['ingestion']['ingestion_sequence'],'cutoff':item.get('cutoff') or catalog['cutoff']['fact_watermark']}
++    def chart(category,amount,record):
++        return {'category':category,'amount':amount,'unit':'kg' if category=='weight' else 'mL','missing_reason':None,'point':'2026-10-08T09:45:00Z','start':None if category=='weight' else '2026-10-08T09:30:00Z','end':None if category=='weight' else '2026-10-08T09:45:00Z','acquisition':'measured' if category=='weight' else 'unknown','method':'Synthetic bed scale' if category=='weight' else None,'purpose':'body-weight review' if category=='weight' else None,'source_context':'Fictional distinct source collection; not a copy of earlier dosing or interval totals.','uncertainty':'Unauthenticated synthetic source; completeness and clinical relationship not established.','source_record':{'issuer_namespace':'clinrx.synthetic.rf2-journey','issuer':'synthetic-chart-A','record_namespace':'collection-record','record_id':record,'component':'weight' if category=='weight' else 'volume'},'source_version':None,'new_collection_reason':None}
++    def draft(c=None,n=None):
++        return {'repository':catalog['repository'],'id':str(uuid.uuid4()),'revision':str(uuid.uuid4()),'actor':'Synthetic journey operator','recorded_at':'2026-10-08T09:50:00Z','chart':c,'note':n,'predecessor':None,'reason':None}
++    def save(body,label,discard_delivery=False):
++        before=rows(database);api('/validate',body);assert rows(database)==before
++        result=api('/save',body);assert result['status']=='saved';e=result['evidence'];after=rows(database)
++        assert len(after['fact_revision'])==len(before['fact_revision'])+1
++        ledger.append({'label':label,'reference':pin(e)['reference'],'sequence':e['ingestion']['ingestion_sequence'],'delivery_fault':'successful response discarded by validation client after actual API returned' if discard_delivery else None})
++        if discard_delivery:
++            delivered=events[-1];looked=api('/lookup',body);assert looked['evidence']['fact']==e['fact'];assert delivered['request_sha256']==events[-1]['request_sha256'];assert rows(database)==after
++        return e
++    baseline=checkpoint('before');status,health=call('/health');assert status==200 and health['execution_enabled'] is False
++    catalog=api('');assert catalog['execution_enabled'] is False and catalog['combined']['execution_enabled'] is False
++    items=catalog['combined']['circulatory']['assembly']['snapshot']['items'];weight=next(x for x in items if x['fact']['id']=='fs-WEIGHT');lab=next(x for x in catalog['combined']['laboratory']['observations'] if x['fact']['id']=='demo-creatinine-A')
++    existing=api('/resolve',{'repository':catalog['repository'],'pins':[pin(weight,catalog),pin(lab,catalog)]});assert rows(database)==baseline
++    assert existing['items'][0]['fact']==weight['fact'];assert existing['items'][0]['metadata'] is None
++    ubody=draft(chart('output_urine','35.0000','urine-0945'));urine=save(ubody,'new urine collection')
++    wbody=draft(chart('weight','70.0000','weight-0945'));absent_before=rows(database);absent=api('/lookup',wbody);absent_event=events[-1];assert absent['status']=='absent' and rows(database)==absent_before
++    measured_weight=save(wbody,'explicit save after pre-dispatch absence');assert absent_event['request_sha256']==events[-1]['request_sha256']
++    fluid=save(draft(chart('input_iv','50.0000','iv-0945')),'new documented fluid volume',discard_delivery=True)
++    note={'question':'Review existing kidney and newly recorded interval evidence','findings':'Recorded sources only; measured weight is referenced for dosing review without another quantity row.','possibilities':'Patient-level relationship not established.','gaps':'Unknown source quality and incomplete fluid accounting remain.','plan':'Unscheduled clinician review; no action scheduled.','pins':[pin(urine),pin(measured_weight),pin(lab,catalog)]}
++    original_note=save(draft(n=note),'original authored reassessment')
++    uc=json.loads(json.dumps(ubody));uc.update(revision=str(uuid.uuid4()),predecessor=pin(urine),reason='Synthetic transcription correction, not a new collection or physiological improvement');uc['chart']['amount']='36.0000';corrected_urine=save(uc,'urine correction')
++    wc=json.loads(json.dumps(wbody));wc.update(revision=str(uuid.uuid4()),predecessor=pin(measured_weight),reason='Synthetic weight transcription correction, not a new measurement');wc['chart']['amount']='71.0000';corrected_weight=save(wc,'weight correction')
++    later_note=json.loads(json.dumps(note));later_note['question']='Review corrected source references';later_note['pins']=[pin(corrected_urine),pin(corrected_weight),pin(lab,catalog)];later_note['findings']='Corrected recorded sources; original note retains original revisions. Corrections do not establish treatment response or improvement.'
++    new_note=save(draft(n=later_note),'new authored reassessment')
++    assert original_note['metadata']['note']['pins'][0]['reference']==pin(urine)['reference'];assert new_note['metadata']['note']['pins'][0]['reference']==pin(corrected_urine)['reference']
++    reads_before=rows(database)
++    old_history=api('/history',{'repository':catalog['repository'],'pins':[pin(corrected_urine)]});assert [e['fact']['revision'] for e in old_history['items']]==[urine['fact']['revision'],corrected_urine['fact']['revision']]
++    pins=[pin(corrected_urine),pin(corrected_weight),pin(new_note),pin(original_note),pin(urine),pin(measured_weight)]
++    resolved=api('/resolve',{'repository':catalog['repository'],'pins':pins});assert [e['fact']['revision'] for e in resolved['items']]==[p['reference']['version'] for p in pins]
++    assert resolved['items'][-1]['superseded'] is True
++    replay=json.loads(json.dumps(ubody));replay.update(id=str(uuid.uuid4()),revision=str(uuid.uuid4()),actor='Another synthetic recorder');replayed=api('/save',replay)
++    assert replayed['status']=='source_replay' and replayed['evidence']['fact']==urine['fact'] and replayed['evidence']['superseded'] is True
++    assert replayed['evidence']['terminal_reference']==pin(corrected_urine)['reference'];assert rows(database)==reads_before
++    final_catalog=api('');assert final_catalog['cutoff']['fact_watermark']==len(baseline['fact_revision'])+7
++    for path in ('/circulatory-review-preparations','/circulatory-reviews'):
++        status,_=call(PREFIX+path,{});assert status==404
++    final=checkpoint('after');assert final['fact_revision'][:len(baseline['fact_revision'])]==baseline['fact_revision'];assert len(final['fact_revision'])==len(baseline['fact_revision'])+7
++    for t in baseline:
++        if t not in ('fact_revision','revision_link','sqlite_sequence'):assert final[t]==baseline[t]
++    assert len(final['revision_link'])==len(baseline['revision_link'])+2
++    with sqlite3.connect(database) as db:assert db.execute('PRAGMA integrity_check').fetchone()[0]=='ok';assert db.execute('PRAGMA foreign_key_check').fetchall()==[]
++    summary={'status':'PASS','kind':'implementation-operated real HTTP API journey; no browser or localStorage execution claim','origin':origin,'repository':catalog['repository'],'baseline_facts':len(baseline['fact_revision']),'final_facts':len(final['fact_revision']),'new_facts_and_revisions':7,'original_rows_preserved':True,'retained_receipts_unchanged':len(final['circulatory_execution']),'execution_enabled':False,'source_reuse_zero_writes':True,'source_replay_after_correction_zero_writes':True,'ledger':ledger,'events':len(events),'limitations':['Client-side successful-response discard, not socket loss','Pre-dispatch absence, not rollback proof','Saved handover and browser reload are covered separately by component tests, not this API journey']}
++    (output/'events.json').write_text(json.dumps(events,indent=2)+'\n');(output/'RESULTS.json').write_text(json.dumps(summary,indent=2)+'\n')
++    manifest={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(output.iterdir()) if p.is_file()};(output/'SHA256SUMS.json').write_text(json.dumps(manifest,indent=2)+'\n');print(json.dumps(summary,indent=2))
++if __name__=='__main__':
++    p=argparse.ArgumentParser();p.add_argument('--origin',required=True);p.add_argument('--database',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args();run(a.origin,a.database.resolve(),a.output.resolve())

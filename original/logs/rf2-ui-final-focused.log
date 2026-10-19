@@ -1,0 +1,385 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run tests/rf2.test.tsx tests/rf2.integration.test.tsx --maxWorkers=2
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend
+
+ ❯ tests/rf2.test.tsx (21 tests | 7 failed) 62ms
+   × decodes one shared snapshot without duplicating source references 16ms
+   × keeps acquisition separate when reusing measured weight in an authored dosing review 3ms
+   × correction preserves original owning identity and unrelated chart context 2ms
+   × retains the identical pending request after uncertain save and across repository replacement 2ms
+   × saves mixed handover pins, restores exact revisions after remount, and preserves v1 bytes 2ms
+   × keeps original pending bytes through explicit absent lookup and retry without an automatic save 2ms
+   × detects another-tab saved-set changes instead of overwriting them 2ms
+ ❯ tests/rf2.integration.test.tsx (1 test | 1 failed) 1131ms
+   × publishes one RF2/RF1 cutoff and keeps the prior workspace mounted 1129ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/rf2.integration.test.tsx > publishes one RF2/RF1 cutoff and keeps the prior workspace mounted
+TestingLibraryElementError: Unable to find role="region" and name "Renal charting and handover"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"patient-workspace"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mhref[39m=[32m"#patient-workflow"[39m
+      [36m>[39m
+        [0mSkip to patient workflow[0m
+      [36m</a>[39m
+      [36m<header>[39m
+        [36m<h1[39m
+          [33mtabindex[39m=[32m"-1"[39m
+        [36m>[39m
+          [0mSynthetic ICU patient workspace[0m
+        [36m</h1>[39m
+        [36m<p>[39m
+          [0mPatient [0m
+          [0msynthetic-p1[0m
+          [0m · Encounter [0m
+          [0msynthetic-e1[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [36m<strong>[39m
+            [0mExecution gate not confirmed — new writes blocked.[0m
+          [36m</strong>[39m
+          [0m Local synthetic evidence only; no treatment advice.[0m
+        [36m</p>[39m
+        [36m<form[39m
+          [33maria-label[39m=[32m"Find patient evidence"[39m
+          [33mrole[39m=[32m"search"[39m
+        [36m>[39m
+          [36m<label>[39m
+            [0mFind recorded evidence[0m
+            [36m<input[39m
+              [33mdisabled[39m=[32m""[39m
+              [33mplaceholder[39m=[32m"ABG 09:45, cardiac output, RVSP…"[39m
+              [33mtype[39m=[32m"search"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</label>[39m
+          [36m<button[39m
+            [33mdisabled[39m=[32m""[39m
+            [33mtype[39m=[32m"submit"[39m
+          [36m>[39m
+            [0mFind evidence[0m
+          [36m</button>[39m
+        [36m</form>[39m
+        [36m<p>[39m
+          [0mRecorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [0mRecorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.[0m
+        [36m</p>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Patient workflow"[39m
+        [36m>[39m
+          [36m<button>[39m
+            [0mPatient and evidence[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mSource entry and reassessment[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mCompare notes[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mHandover[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mRenal and fluid review[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"page"[39m
+          [36m>[39m
+            [0mRenal charting and handover[0m
+          [36m</button>[39m
+        [36m</nav>[39m
+        [36m<section[39m
+          [33maria-label[39m=[32m"Current workflow step"[39m
+          [33mclass[39m=[32m"workflow-guide"[39m
+        [36m>[39m
+          [36m<h2>[39m
+            [0mRenal charting and handover[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0mReuse existing sources; record genuinely new urine/fluid/weight evidence, preserve corrections, author a renal review and explicitly save a version 2 handover.[0m
+          [36m</p>[39m
+          [36m<details>[39m
+            [36m<summary>[39m
+              [0mHow to complete this synthetic patient workflow[0m
+            [36m</summary>[39m
+            [36m<ol>[39m
+              [36m<li>[39m
+                [0mBrowse pressures, flow, rhythm, gases, echo, infusions and perfusion together. Source times and gaps remain explicit.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mInspect the exact source and revision history. A correction appends a successor; it never overwrites the original.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mAuthor a separate reassessment with exact baseline, intervention and follow-up selections. Keep recorded findings, possibilities and gaps distinct.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mCompare two exact notes and their original references. Add the records/notes needed for handover.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mReview and explicitly save the handover selection locally; reload and open the saved view to recover it.[0m
+              [36m</li>[39m
+            [36m</ol>[39m
+            [36m<p>[39m
+              [0mThis workspace is for synthetic workflow testing. A saved selection is not a clinical handover sign-off. Pending clinical drafts and commands are not durably recovered after reload.[0m
+            [36m</p>[39m
+          [36m</details>[39m
+        [36m</section>[39m
+      [36m</header>[39m
+      [36m<p[39m
+        [33mrole[39m=[32m"alert"[39m
+      [36m>[39m
+        [0mThe patient evidence or disabled execution gate could not be confirmed. Refresh to check again; no source was replaced.[0m
+      [36m</p>[39m
+      [36m<button>[39m
+        [0mRefresh patient evidence[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mid[39m=[32m"patient-workflow"[39m
+        [33mtabindex[39m=[32m"-1"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mhidden[39m=[32m""[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mUnchanged comprehensive view[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mhidden[39m=[32m""[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mExisting hemodynamic editor stays mounted[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"patient-workspace"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mhref[39m=[32m"#patient-workflow"[39m
+      [36m>[39m
+        [0mSkip to patient workflow[0m
+      [36m</a>[39m
+      [36m<header>[39m
+        [36m<h1[39m
+          [33mtabindex[39m=[32m"-1"[39m
+        [36m>[39m
+          [0mSynthetic ICU patient workspace[0m
+        [36m</h1>[39m
+        [36m<p>[39m
+          [0mPatient [0m
+          [0msynthetic-p1[0m
+          [0m · Encounter [0m
+          [0msynthetic-e1[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [36m<strong>[39m
+            [0mExecution gate not confirmed — new writes blocked.[0m
+          [36m</strong>[39m
+          [0m Local synthetic evidence only; no treatment advice.[0m
+        [36m</p>[39m
+        [36m<form[39m
+          [33maria-label[39m=[32m"Find patient evidence"[39m
+          [33mrole[39m=[32m"search"[39m
+        [36m>[39m
+          [36m<label>[39m
+            [0mFind recorded evidence[0m
+            [36m<input[39m
+              [33mdisabled[39m=[32m""[39m
+              [33mplaceholder[39m=[32m"ABG 09:45, cardiac output, RVSP…"[39m
+              [33mtype[39m=[32m"search"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</label>[39m
+          [36m<button[39m
+            [33mdisabled[39m=[32m""[39m
+            [33mtype[39m=[32m"submit"[39m
+          [36m>[39m
+            [0mFind evidence[0m
+          [36m</button>[39m
+        [36m</form>[39m
+        [36m<p>[39m
+          [0mRecorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [0mRecorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.[0m
+        [36m</p>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Patient workflow"[39m
+        [36m>[39m
+          [36m<button>[39m
+            [0mPatient and evidence[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mSource entry and reassessment[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mCompare notes[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mHandover[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mRenal and fluid review[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"page"[39m
+          [36m>[39m
+            [0mRenal charting and handover[0m
+          [36m</button>[39m
+        [36m</nav>[39m
+        [36m<section[39m
+          [33maria-label[39m=[32m"Current workflow step"[39m
+          [33mclass[39m=[32m"workflow-guide"[39m
+        [36m>[39m
+          [36m<h2>[39m
+            [0mRenal charting and handover[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0mReuse existing sources; record genuinely new urine/fluid/weight evidence, preserve corrections, author a renal review and explicitly save a version 2 handover.[0m
+          [36m</p>[39m
+          [36m<details>[39m
+            [36m<summary>[39m
+              [0mHow to complete this synthetic patient workflow[0m
+            [36m</summary>[39m
+            [36m<ol>[39m
+              [36m<li>[39m
+                [0mBrowse pressures, flow, rhythm, gases, echo, infusions and perfusion together. Source times and gaps remain explicit.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mInspect the exact source and revision history. A correction appends a successor; it never overwrites the original.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mAuthor a separate reassessment with exact baseline, intervention and follow-up selections. Keep recorded findings, possibilities and gaps distinct.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mCompare two exact notes and their original references. Add the records/notes needed for handover.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mReview and explicitly save the handover selection locally; reload and open the saved view to recover it.[0m
+              [36m</li>[39m
+            [36m</ol>[39m
+            [36m<p>[39m
+              [0mThis workspace is for synthetic workflow testing. A saved selection is not a clinical handover sign-off. Pending clinical drafts and commands are not durably recovered after reload.[0m
+            [36m</p>[39m
+          [36m</details>[39m
+        [36m</section>[39m
+      [36m</header>[39m
+      [36m<p[39m
+        [33mrole[39m=[32m"alert"[39m
+      [36m>[39m
+        [0mThe patient evidence or disabled execution gate could not be confirmed. Refresh to check again; no source was replaced.[0m
+      [36m</p>[39m
+      [36m<button>[39m
+        [0mRefresh patient evidence[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mid[39m=[32m"patient-workflow"[39m
+        [33mtabindex[39m=[32m"-1"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mhidden[39m=[32m""[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mUnchanged comprehensive view[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mhidden[39m=[32m""[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mExisting hemodynamic editor stays mounted[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ waitForWrapper ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ tests/rf2.integration.test.tsx:11:864
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/rf2.test.tsx > decodes one shared snapshot without duplicating source references
+ReferenceError: Cannot access 'keys' before initialization
+ ❯ RF2Client.catalog src/api/rf2Client.ts:53:3
+
+ ❯ tests/rf2.test.tsx:17:90
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/rf2.test.tsx > keeps acquisition separate when reusing measured weight in an authored dosing review
+ReferenceError: Cannot access 'keys' before initialization
+ ❯ RF2Client.catalog src/api/rf2Client.ts:53:3
+
+ ❯ tests/rf2.test.tsx:23:109
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/rf2.test.tsx > correction preserves original owning identity and unrelated chart context
+ReferenceError: Cannot access 'keys' before initialization
+ ❯ RF2Client.catalog src/api/rf2Client.ts:53:3
+
+ ❯ tests/rf2.test.tsx:24:98
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/rf2.test.tsx > retains the identical pending request after uncertain save and across repository replacement
+ReferenceError: Cannot access 'keys' before initialization
+ ❯ RF2Client.catalog src/api/rf2Client.ts:53:3
+
+ ❯ tests/rf2.test.tsx:25:117
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/rf2.test.tsx > saves mixed handover pins, restores exact revisions after remount, and preserves v1 bytes
+ReferenceError: Cannot access 'keys' before initialization
+ ❯ RF2Client.catalog src/api/rf2Client.ts:53:3
+
+ ❯ tests/rf2.test.tsx:26:114
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/rf2.test.tsx > keeps original pending bytes through explicit absent lookup and retry without an automatic save
+ReferenceError: Cannot access 'keys' before initialization
+ ❯ RF2Client.catalog src/api/rf2Client.ts:53:3
+
+ ❯ tests/rf2.test.tsx:30:120
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/rf2.test.tsx > detects another-tab saved-set changes instead of overwriting them
+ReferenceError: Cannot access 'keys' before initialization
+ ❯ RF2Client.catalog src/api/rf2Client.ts:53:3
+
+ ❯ tests/rf2.test.tsx:31:90
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  8 failed | 14 passed (22)
+   Start at  23:56:09
+   Duration  2.98s (environment 50%, tests 26%, transform 13%, setup 8%, import 3%)
+

@@ -1,0 +1,186 @@
+{
+  "status": "validated",
+  "request_digest": "e81a2456d40fcf861dd2b9e103c035500cb1fd0912bcb4289686cc98fb811845",
+  "request_canonical": "{\"actor\":\"Synthetic journey operator\",\"chart\":{\"acquisition\":\"unknown\",\"amount\":\"50.0000\",\"category\":\"input_iv\",\"end\":\"2026-10-08T09:45:00Z\",\"method\":null,\"missing_reason\":null,\"new_collection_reason\":null,\"point\":\"2026-10-08T09:45:00Z\",\"purpose\":null,\"source_context\":\"Fictional distinct source collection; not a copy of earlier dosing or interval totals.\",\"source_record\":{\"component\":\"volume\",\"issuer\":\"synthetic-chart-A\",\"issuer_namespace\":\"clinrx.synthetic.rf2-journey\",\"record_id\":\"iv-0945\",\"record_namespace\":\"collection-record\"},\"source_version\":null,\"start\":\"2026-10-08T09:30:00Z\",\"uncertainty\":\"Unauthenticated synthetic source; completeness and clinical relationship not established.\",\"unit\":\"mL\"},\"id\":\"f18f21c6-618d-4fbe-b978-4c307de6276d\",\"note\":null,\"predecessor\":null,\"reason\":null,\"recorded_at\":\"2026-10-08T09:50:00Z\",\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\",\"revision\":\"1d08f553-9ce8-4127-ad93-870244f5873b\"}",
+  "fact": {
+    "kind": "circulatory_event",
+    "id": "f18f21c6-618d-4fbe-b978-4c307de6276d",
+    "revision": "1d08f553-9ce8-4127-ad93-870244f5873b",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "unresolved",
+        "method": "Synthetic scope selection",
+        "verifier": "Synthetic journey operator",
+        "assessed_at": "2026-10-08T09:50:00Z",
+        "source": {
+          "namespace": "clinrx.local.synthetic.rf2",
+          "identifier": "f18f21c6-618d-4fbe-b978-4c307de6276d",
+          "version": null,
+          "channel": "clinician"
+        },
+        "ambiguity": "Local synthetic patient only."
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx.local.synthetic.rf2",
+        "identifier": "f18f21c6-618d-4fbe-b978-4c307de6276d",
+        "version": null,
+        "channel": "clinician"
+      },
+      "actor": "Synthetic journey operator",
+      "recorded_at": "2026-10-08T09:50:00Z",
+      "upstream": [],
+      "lineage": "incomplete",
+      "limitations": [
+        "Unauthenticated local synthetic source assertion."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [
+      "Unauthenticated synthetic source; completeness and clinical relationship not established."
+    ],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "timestamp_precision": "M7ExactTimestampInput/v1",
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:45:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:45:00Z",
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "recorded": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": null,
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [],
+    "source_identifiers": [],
+    "disclosures": [],
+    "record_status": "recorded",
+    "event_type": "other",
+    "description": {
+      "raw_display": "Fictional distinct source collection; not a copy of earlier dosing or interval totals.",
+      "coding": {
+        "namespace": "clinrx.local.rf2/v1",
+        "code": "input_iv",
+        "version": "1",
+        "raw_display": "input_iv"
+      }
+    },
+    "external_evidence": [
+      {
+        "namespace": "clinrx.local.rf2/v1",
+        "code": "{\"chart\":{\"acquisition\":\"unknown\",\"amount\":\"50.0000\",\"category\":\"input_iv\",\"end\":\"2026-10-08T09:45:00Z\",\"method\":null,\"missing_reason\":null,\"new_collection_reason\":null,\"point\":\"2026-10-08T09:45:00Z\",\"purpose\":null,\"source_context\":\"Fictional distinct source collection; not a copy of earlier dosing or interval totals.\",\"source_record\":{\"component\":\"volume\",\"issuer\":\"synthetic-chart-A\",\"issuer_namespace\":\"clinrx.synthetic.rf2-journey\",\"record_id\":\"iv-0945\",\"record_namespace\":\"collection-record\"},\"source_version\":null,\"start\":\"2026-10-08T09:30:00Z\",\"uncertainty\":\"Unauthenticated synthetic source; completeness and clinical relationship not established.\",\"unit\":\"mL\"},\"note\":null,\"version\":1}",
+        "version": "1",
+        "raw_display": "Structured RF2 source assertions"
+      }
+    ],
+    "recorded_amount": {
+      "value": "50.0000",
+      "unit": {
+        "raw": "mL",
+        "status": "unresolved",
+        "system": null,
+        "code": null,
+        "limitation": "Raw source unit; no conversion."
+      }
+    },
+    "recorded_interval": {
+      "start": {
+        "timestamp_precision": "M7ExactTimestampInput/v1",
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:30:00Z",
+          "lower": null,
+          "upper": null,
+          "uncertainty": null
+        },
+        "source_timestamp": "2026-10-08T09:30:00Z",
+        "clock": "unknown",
+        "clock_basis": null,
+        "conflicting": [],
+        "alternative_sources": [],
+        "alignment": null
+      },
+      "end": {
+        "timestamp_precision": "M7ExactTimestampInput/v1",
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:45:00Z",
+          "lower": null,
+          "upper": null,
+          "uncertainty": null
+        },
+        "source_timestamp": "2026-10-08T09:45:00Z",
+        "clock": "unknown",
+        "clock_basis": null,
+        "conflicting": [],
+        "alternative_sources": [],
+        "alignment": null
+      },
+      "provenance": {
+        "source": {
+          "namespace": "clinrx.local.synthetic.rf2",
+          "identifier": "f18f21c6-618d-4fbe-b978-4c307de6276d",
+          "version": null,
+          "channel": "clinician"
+        },
+        "actor": "Synthetic journey operator",
+        "recorded_at": "2026-10-08T09:50:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Unauthenticated local synthetic source assertion."
+        ]
+      },
+      "limitations": [
+        "Source bounds only; no calculated rate or duration."
+      ]
+    }
+  },
+  "replay_reference": null,
+  "execution_enabled": false
+}

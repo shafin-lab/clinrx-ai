@@ -1,0 +1,92 @@
+{
+  "status": "PASS",
+  "kind": "implementation-operated real HTTP API journey; no browser or localStorage execution claim",
+  "origin": "http://127.0.0.1:5201",
+  "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+  "baseline_facts": 175,
+  "final_facts": 182,
+  "new_facts_and_revisions": 7,
+  "original_rows_preserved": true,
+  "retained_receipts_unchanged": 2,
+  "execution_enabled": false,
+  "source_reuse_zero_writes": true,
+  "source_replay_after_correction_zero_writes": true,
+  "ledger": [
+    {
+      "label": "new urine collection",
+      "reference": {
+        "kind": "circulatory_event",
+        "id": "8ed66203-db30-4029-8853-e714ec103d92",
+        "version": "ccf69899-2ba2-454b-a449-ee47550088c7"
+      },
+      "sequence": 176,
+      "delivery_fault": null
+    },
+    {
+      "label": "explicit save after pre-dispatch absence",
+      "reference": {
+        "kind": "circulatory_event",
+        "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+        "version": "10f64596-a8bb-4a8e-b748-206ce97f056f"
+      },
+      "sequence": 177,
+      "delivery_fault": null
+    },
+    {
+      "label": "new documented fluid volume",
+      "reference": {
+        "kind": "circulatory_event",
+        "id": "f18f21c6-618d-4fbe-b978-4c307de6276d",
+        "version": "1d08f553-9ce8-4127-ad93-870244f5873b"
+      },
+      "sequence": 178,
+      "delivery_fault": "successful response discarded by validation client after actual API returned"
+    },
+    {
+      "label": "original authored reassessment",
+      "reference": {
+        "kind": "circulatory_event",
+        "id": "d6aeaf0c-eefc-4fa8-81c2-0fd77b31feef",
+        "version": "7dcea000-9446-4990-8624-c9a3e4366510"
+      },
+      "sequence": 179,
+      "delivery_fault": null
+    },
+    {
+      "label": "urine correction",
+      "reference": {
+        "kind": "circulatory_event",
+        "id": "8ed66203-db30-4029-8853-e714ec103d92",
+        "version": "5d74953c-c2ac-4e91-8082-839ecf6f9a98"
+      },
+      "sequence": 180,
+      "delivery_fault": null
+    },
+    {
+      "label": "weight correction",
+      "reference": {
+        "kind": "circulatory_event",
+        "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+        "version": "2a764832-ebfe-4903-83a1-06f1726824f4"
+      },
+      "sequence": 181,
+      "delivery_fault": null
+    },
+    {
+      "label": "new authored reassessment",
+      "reference": {
+        "kind": "circulatory_event",
+        "id": "4efa2f1c-81d2-44c1-9e68-d84fb5e62e3a",
+        "version": "7ce7601f-73e6-4fbe-b27c-2f13ffe0e758"
+      },
+      "sequence": 182,
+      "delivery_fault": null
+    }
+  ],
+  "events": 25,
+  "limitations": [
+    "Client-side successful-response discard, not socket loss",
+    "Pre-dispatch absence, not rollback proof",
+    "Saved handover and browser reload are covered separately by component tests, not this API journey"
+  ]
+}

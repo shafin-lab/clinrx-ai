@@ -1,0 +1,937 @@
+   "type": "object"
++    },
++    "RepositoryCutoff": {
++      "additionalProperties": false,
++      "description": "Fact-ingestion prefix in ONE repository, not a clinical event-time cutoff.",
++      "properties": {
++        "repository_id": {
++          "format": "uuid",
++          "title": "Repository Id",
++          "type": "string"
++        },
++        "fact_watermark": {
++          "minimum": 0,
++          "title": "Fact Watermark",
++          "type": "integer"
++        },
++        "captured_at": {
++          "format": "date-time",
++          "title": "Captured At",
++          "type": "string"
++        }
++      },
++      "required": [
++        "repository_id",
++        "fact_watermark",
++        "captured_at"
++      ],
++      "title": "RepositoryCutoff",
++      "type": "object"
++    }
++  },
++  "definitions": {
++    "Chart": {
++      "additionalProperties": false,
++      "properties": {
++        "category": {
++          "enum": [
++            "output_urine",
++            "input_oral",
++            "input_enteral",
++            "input_iv",
++            "input_blood",
++            "output_drain",
++            "output_other",
++            "output_crrt",
++            "weight",
++            "net_balance_reported",
++            "urine_total_reported",
++            "balance_total_reported"
++          ],
++          "title": "Category",
++          "type": "string"
++        },
++        "amount": {
++          "anyOf": [
++            {
++              "maxLength": 128,
++              "pattern": "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$",
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Amount"
++        },
++        "unit": {
++          "anyOf": [
++            {
++              "enum": [
++                "mL",
++                "L",
++                "kg",
++                "g"
++              ],
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Unit"
++        },
++        "missing_reason": {
++          "anyOf": [
++            {
++              "maxLength": 512,
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Missing Reason"
++        },
++        "point": {
++          "anyOf": [
++            {
++              "maxLength": 128,
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Point"
++        },
++        "start": {
++          "anyOf": [
++            {
++              "maxLength": 128,
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Start"
++        },
++        "end": {
++          "anyOf": [
++            {
++              "maxLength": 128,
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "End"
++        },
++        "acquisition": {
++          "default": "unknown",
++          "enum": [
++            "measured",
++            "reported",
++            "unknown"
++          ],
++          "title": "Acquisition",
++          "type": "string"
++        },
++        "method": {
++          "anyOf": [
++            {
++              "maxLength": 128,
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Method"
++        },
++        "purpose": {
++          "anyOf": [
++            {
++              "maxLength": 128,
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Purpose"
++        },
++        "source_context": {
++          "maxLength": 512,
++          "minLength": 1,
++          "title": "Source Context",
++          "type": "string"
++        },
++        "uncertainty": {
++          "maxLength": 512,
++          "minLength": 1,
++          "title": "Uncertainty",
++          "type": "string"
++        },
++        "source_record": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/SourceRecord"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null
++        },
++        "source_version": {
++          "anyOf": [
++            {
++              "maxLength": 128,
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Source Version"
++        },
++        "new_collection_reason": {
++          "anyOf": [
++            {
++              "maxLength": 512,
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "New Collection Reason"
++        }
++      },
++      "required": [
++        "category",
++        "source_context",
++        "uncertainty"
++      ],
++      "title": "Chart",
++      "type": "object"
++    },
++    "Pin": {
++      "additionalProperties": false,
++      "properties": {
++        "repository": {
++          "format": "uuid",
++          "title": "Repository",
++          "type": "string"
++        },
++        "reference": {
++          "$ref": "#/$defs/Reference"
++        },
++        "digest": {
++          "pattern": "^[0-9a-f]{64}$",
++          "title": "Digest",
++          "type": "string"
++        },
++        "ingestion": {
++          "minimum": 1,
++          "title": "Ingestion",
++          "type": "integer"
++        },
++        "cutoff": {
++          "minimum": 1,
++          "title": "Cutoff",
++          "type": "integer"
++        }
++      },
++      "required": [
++        "repository",
++        "reference",
++        "digest",
++        "ingestion",
++        "cutoff"
++      ],
++      "title": "Pin",
++      "type": "object"
++    },
++    "Reference": {
++      "additionalProperties": false,
++      "description": "An exact internal record revision, never a pointer to mutable 'latest'.",
++      "properties": {
++        "kind": {
++          "minLength": 1,
++          "title": "Kind",
++          "type": "string"
++        },
++        "id": {
++          "minLength": 1,
++          "title": "Id",
++          "type": "string"
++        },
++        "version": {
++          "minLength": 1,
++          "title": "Version",
++          "type": "string"
++        }
++      },
++      "required": [
++        "kind",
++        "id",
++        "version"
++      ],
++      "title": "Reference",
++      "type": "object"
++    },
++    "RenalNote": {
++      "additionalProperties": false,
++      "properties": {
++        "question": {
++          "maxLength": 512,
++          "minLength": 1,
++          "title": "Question",
++          "type": "string"
++        },
++        "findings": {
++          "maxLength": 512,
++          "minLength": 1,
++          "title": "Findings",
++          "type": "string"
++        },
++        "possibilities": {
++          "maxLength": 512,
++          "minLength": 1,
++          "title": "Possibilities",
++          "type": "string"
++        },
++        "gaps": {
++          "maxLength": 512,
++          "minLength": 1,
++          "title": "Gaps",
++          "type": "string"
++        },
++        "plan": {
++          "maxLength": 512,
++          "minLength": 1,
++          "title": "Plan",
++          "type": "string"
++        },
++        "pins": {
++          "items": {
++            "$ref": "#/$defs/Pin"
++          },
++          "maxItems": 12,
++          "minItems": 1,
++          "title": "Pins",
++          "type": "array"
++        }
++      },
++      "required": [
++        "question",
++        "findings",
++        "possibilities",
++        "gaps",
++        "plan",
++        "pins"
++      ],
++      "title": "RenalNote",
++      "type": "object"
++    },
++    "SourceRecord": {
++      "additionalProperties": false,
++      "properties": {
++        "issuer_namespace": {
++          "maxLength": 128,
++          "minLength": 1,
++          "title": "Issuer Namespace",
++          "type": "string"
++        },
++        "issuer": {
++          "maxLength": 128,
++          "minLength": 1,
++          "title": "Issuer",
++          "type": "string"
++        },
++        "record_namespace": {
++          "maxLength": 128,
++          "minLength": 1,
++          "title": "Record Namespace",
++          "type": "string"
++        },
++        "record_id": {
++          "maxLength": 128,
++          "minLength": 1,
++          "title": "Record Id",
++          "type": "string"
++        },
++        "component": {
++          "maxLength": 128,
++          "minLength": 1,
++          "title": "Component",
++          "type": "string"
++        }
++      },
++      "required": [
++        "issuer_namespace",
++        "issuer",
++        "record_namespace",
++        "record_id",
++        "component"
++      ],
++      "title": "SourceRecord",
++      "type": "object"
++    },
++    "Binding": {
++      "additionalProperties": false,
++      "properties": {
++        "target": {
++          "$ref": "#/$defs/ContextTarget"
++        },
++        "verification": {
++          "$ref": "#/$defs/IdentityVerification"
++        }
++      },
++      "required": [
++        "target",
++        "verification"
++      ],
++      "title": "Binding",
++      "type": "object"
++    },
++    "ClinicalTime": {
++      "additionalProperties": false,
++      "properties": {
++        "event": {
++          "anyOf": [
++            {
++              "format": "date-time",
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Event"
++        },
++        "recorded": {
++          "anyOf": [
++            {
++              "format": "date-time",
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Recorded"
++        },
++        "effective_start": {
++          "anyOf": [
++            {
++              "format": "date-time",
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Effective Start"
++        },
++        "effective_end": {
++          "anyOf": [
++            {
++              "format": "date-time",
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Effective End"
++        },
++        "retrieved": {
++          "anyOf": [
++            {
++              "format": "date-time",
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Retrieved"
++        },
++        "processed": {
++          "anyOf": [
++            {
++              "format": "date-time",
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Processed"
++        },
++        "precision": {
++          "enum": [
++            "instant",
++            "day",
++            "approximate",
++            "unknown"
++          ],
++          "title": "Precision",
++          "type": "string"
++        },
++        "uncertainty": {
++          "anyOf": [
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Uncertainty"
++        }
++      },
++      "required": [
++        "precision"
++      ],
++      "title": "ClinicalTime",
++      "type": "object"
++    },
++    "ClinicalValue": {
++      "additionalProperties": false,
++      "properties": {
++        "status": {
++          "enum": [
++            "known",
++            "unknown",
++            "missing",
++            "not_measured",
++            "not_applicable"
++          ],
++          "title": "Status",
++          "type": "string"
++        },
++        "value": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/Quantity"
++            },
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "boolean"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Value"
++        },
++        "reason": {
++          "anyOf": [
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Reason"
++        }
++      },
++      "required": [
++        "status"
++      ],
++      "title": "ClinicalValue",
++      "type": "object"
++    },
++    "ContextTarget": {
++      "additionalProperties": false,
++      "properties": {
++        "patient_id": {
++          "minLength": 1,
++          "title": "Patient Id",
++          "type": "string"
++        },
++        "encounter_id": {
++          "anyOf": [
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Encounter Id"
++        },
++        "longitudinal_context_id": {
++          "anyOf": [
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Longitudinal Context Id"
++        }
++      },
++      "required": [
++        "patient_id"
++      ],
++      "title": "ContextTarget",
++      "type": "object"
++    },
++    "IdentityVerification": {
++      "additionalProperties": false,
++      "properties": {
++        "status": {
++          "enum": [
++            "verified",
++            "unresolved"
++          ],
++          "title": "Status",
++          "type": "string"
++        },
++        "method": {
++          "minLength": 1,
++          "title": "Method",
++          "type": "string"
++        },
++        "verifier": {
++          "minLength": 1,
++          "title": "Verifier",
++          "type": "string"
++        },
++        "assessed_at": {
++          "format": "date-time",
++          "title": "Assessed At",
++          "type": "string"
++        },
++        "source": {
++          "$ref": "#/$defs/Source"
++        },
++        "ambiguity": {
++          "anyOf": [
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Ambiguity"
++        }
++      },
++      "required": [
++        "status",
++        "method",
++        "verifier",
++        "assessed_at",
++        "source"
++      ],
++      "title": "IdentityVerification",
++      "type": "object"
++    },
++    "LineageEdge": {
++      "additionalProperties": false,
++      "properties": {
++        "target": {
++          "$ref": "#/$defs/Reference"
++        },
++        "relationship": {
++          "enum": [
++            "copied_from",
++            "derived_from",
++            "calculated_from",
++            "independent_confirmation",
++            "fulfills_order"
++          ],
++          "title": "Relationship",
++          "type": "string"
++        },
++        "basis": {
++          "default": [],
++          "items": {
++            "$ref": "#/$defs/Reference"
++          },
++          "title": "Basis",
++          "type": "array"
++        },
++        "rationale": {
++          "anyOf": [
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Rationale"
++        }
++      },
++      "required": [
++        "target",
++        "relationship"
++      ],
++      "title": "LineageEdge",
++      "type": "object"
++    },
++    "Provenance": {
++      "additionalProperties": false,
++      "properties": {
++        "source": {
++          "$ref": "#/$defs/Source"
++        },
++        "actor": {
++          "minLength": 1,
++          "title": "Actor",
++          "type": "string"
++        },
++        "recorded_at": {
++          "format": "date-time",
++          "title": "Recorded At",
++          "type": "string"
++        },
++        "upstream": {
++          "default": [],
++          "items": {
++            "$ref": "#/$defs/LineageEdge"
++          },
++          "title": "Upstream",
++          "type": "array"
++        },
++        "lineage": {
++          "enum": [
++            "complete",
++            "incomplete",
++            "unknown"
++          ],
++          "title": "Lineage",
++          "type": "string"
++        },
++        "limitations": {
++          "default": [],
++          "items": {
++            "minLength": 1,
++            "type": "string"
++          },
++          "title": "Limitations",
++          "type": "array"
++        }
++      },
++      "required": [
++        "source",
++        "actor",
++        "recorded_at",
++        "lineage"
++      ],
++      "title": "Provenance",
++      "type": "object"
++    },
++    "Quantity": {
++      "additionalProperties": false,
++      "properties": {
++        "value": {
++          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
++          "title": "Value",
++          "type": "string"
++        },
++        "unit": {
++          "$ref": "#/$defs/Unit"
++        }
++      },
++      "required": [
++        "value",
++        "unit"
++      ],
++      "title": "Quantity",
++      "type": "object"
++    },
++    "Source": {
++      "additionalProperties": false,
++      "properties": {
++        "namespace": {
++          "minLength": 1,
++          "title": "Namespace",
++          "type": "string"
++        },
++        "identifier": {
++          "minLength": 1,
++          "title": "Identifier",
++          "type": "string"
++        },
++        "version": {
++          "anyOf": [
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Version"
++        },
++        "channel": {
++          "enum": [
++            "measurement",
++            "external_record",
++            "clinician",
++            "patient",
++            "system"
++          ],
++          "title": "Channel",
++          "type": "string"
++        }
++      },
++      "required": [
++        "namespace",
++        "identifier",
++        "channel"
++      ],
++      "title": "Source",
++      "type": "object"
++    },
++    "Unit": {
++      "additionalProperties": false,
++      "description": "Source spelling and an explicit assessment, not a unit-conversion engine.",
++      "properties": {
++        "raw": {
++          "anyOf": [
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Raw"
++        },
++        "status": {
++          "enum": [
++            "unresolved",
++            "assessed",
++            "normalized"
++          ],
++          "title": "Status",
++          "type": "string"
++        },
++        "system": {
++          "anyOf": [
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "System"
++        },
++        "code": {
++          "anyOf": [
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Code"
++        },
++        "limitation": {
++          "anyOf": [
++            {
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Limitation"
++        }
++      },
++      "required": [
++        "status"
++      ],
++      "title": "Unit",
++      "type": "object"
++    }
++  }
++}
+diff --git a/frontend/src/demo/PatientWorkspace.tsx b/frontend/src/demo/PatientWorkspace.tsx
+index cb8fe5c..caf39bf 100644
+--- a/frontend/src/demo/PatientWorkspace.tsx
++++ b/frontend/src/demo/PatientWorkspace.tsx
+@@ -1,3 +1,4 @@
++import {RenalFluidEntryWorkspace} from './RenalFluidEntryWorkspace';
+ import {RenalFluidClient} from '../api/renalFluidClient';
+ import {RenalFluidReview} from './RenalFluidReview';
+ import {useLocalHandover} from './useLocalHandover';
+@@ -12,14 +13,14 @@ import {ReassessmentComparison} from './ReassessmentComparison';
+ import {HandoverReview} from './HandoverReview';
+ import {evidenceKey} from './evidenceIdentity';
+ import './evidenceEntry.css';
+-const steps={evidence:'Patient and evidence',entry:'Source entry and reassessment',compare:'Compare notes',handover:'Handover',renal:'Renal and fluid review'} as const;
++const steps={evidence:'Patient and evidence',entry:'Source entry and reassessment',compare:'Compare notes',handover:'Handover',renal:'Renal and fluid review',rf2:'Renal charting and handover'} as const;
+ export function PatientWorkspace({client,entry,config}:{client:CirculatoryClient;entry:EvidenceEntryClient;config:{patient:string;encounter:string;start:string;end:string;releasedExample:string;withheldExample:string;hosted?:boolean}}){
+  const shared=usePatientEvidenceState(client,config),[view,setView]=useState<keyof typeof steps>('evidence');
+  const [guarded,setGuarded]=useState(false),[handoff,setHandoff]=useState<SourceHandoff>();
+  const [actionError,setActionError]=useState(''),[findQuery,setFindQuery]=useState(''),[searchRequest,setSearchRequest]=useState<EvidenceSearchRequest>();
+  const handover=useLocalHandover(shared.state),selections=handover.selections;
+  const snapshot=shared.state??shared.retainedState;
+- const stepHelp={renal:'Review original creatinine observations beside existing urine and fluid intervals. Inspect exact source history; missing metadata stays unavailable. Renal authoring and calculations are deferred.',evidence:'Start with the flowsheet or search by parameter, source time or source ID. Inspect a record to see its context and revision history; correct it only when the source needs an explicit amendment.',entry:'Record one source result/event, or append a reasoned correction. Validate, review, then confirm the append. Keep this page open while a save is uncertain; exact lookup comes before any explicit retry.',compare:'Select Note A and Note B explicitly. Compare their retained revisions, then expand the authored text and caveats. A later note does not replace an earlier note or establish improvement.',handover:'Review the exact records and authored notes selected for handover. Add or remove cards, then Save handover locally. After reload, Open saved handover restores the saved selection in this browser.'} as const;
++ const stepHelp={rf2:'Reuse existing sources; record genuinel

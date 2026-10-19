@@ -1,0 +1,628 @@
+10-08T08:00:00Z",
+                      "upstream": [],
+                      "lineage": "unknown",
+                      "limitations": [
+                        "Synthetic source assertion only."
+                      ]
+                    },
+                    "conflicting": [],
+                    "alternative_sources": [],
+                    "alignment": null
+                  },
+                  "provenance": {
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "actor": "synthetic-demo",
+                    "recorded_at": "2026-10-08T08:00:00Z",
+                    "upstream": [],
+                    "lineage": "unknown",
+                    "limitations": [
+                      "Synthetic source assertion only."
+                    ]
+                  },
+                  "limitations": [
+                    "Source-recorded interval bounds; no duration, rate or completeness assessment is inferred."
+                  ]
+                }
+              },
+              "expected_digest": "94db0bcbe08130fb2cccf6e2dfb91c6c24174025e06932069ded5569a5173d64",
+              "ingestion": {
+                "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+                "ingestion_sequence": 175,
+                "ingested_at": "2026-10-19T14:37:10.369736Z",
+                "payload_version": 1
+              },
+              "inclusion": "in_window",
+              "contextual_for": [],
+              "disclosures": [
+                "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+              ]
+            },
+            {
+              "fact": {
+                "kind": "circulatory_pressure",
+                "id": "m7-UNPLACED",
+                "revision": "1",
+                "binding": {
+                  "target": {
+                    "patient_id": "synthetic-p1",
+                    "encounter_id": "synthetic-e1",
+                    "longitudinal_context_id": null
+                  },
+                  "verification": {
+                    "status": "verified",
+                    "method": "synthetic-demo",
+                    "verifier": "synthetic-system",
+                    "assessed_at": "2026-10-08T08:00:00Z",
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "ambiguity": null
+                  }
+                },
+                "origin": "reported",
+                "provenance": {
+                  "source": {
+                    "namespace": "clinrx.synthetic.demo",
+                    "identifier": "patient-state-v1",
+                    "version": "1",
+                    "channel": "system"
+                  },
+                  "actor": "synthetic-demo",
+                  "recorded_at": "2026-10-08T08:00:00Z",
+                  "upstream": [],
+                  "lineage": "unknown",
+                  "limitations": [
+                    "Synthetic source assertion only."
+                  ]
+                },
+                "time": {
+                  "event": null,
+                  "recorded": null,
+                  "effective_start": null,
+                  "effective_end": null,
+                  "retrieved": null,
+                  "processed": null,
+                  "precision": "unknown",
+                  "uncertainty": null
+                },
+                "verification": "unverified",
+                "conflict": "unknown",
+                "temporal_status": "unknown",
+                "uncertainty": [],
+                "supersedes": null,
+                "correction_reason": null,
+                "contract_version": "3",
+                "occurred": {
+                  "recorded": {
+                    "status": "not_recorded",
+                    "precision": "unknown",
+                    "value": null,
+                    "lower": null,
+                    "upper": null,
+                    "uncertainty": null
+                  },
+                  "source_timestamp": null,
+                  "clock": "unknown",
+                  "clock_basis": null,
+                  "conflicting": [],
+                  "alternative_sources": [],
+                  "alignment": null
+                },
+                "available": {
+                  "timestamp_precision": "M7ExactTimestampInput/v1",
+                  "recorded": {
+                    "status": "known",
+                    "precision": "instant",
+                    "value": "2026-10-08T08:00:00Z",
+                    "lower": null,
+                    "upper": null,
+                    "uncertainty": null
+                  },
+                  "source_timestamp": "2026-10-08T08:00:00+00:00",
+                  "clock": "verified",
+                  "clock_basis": {
+                    "source": {
+                      "namespace": "clinrx.synthetic.demo",
+                      "identifier": "patient-state-v1",
+                      "version": "1",
+                      "channel": "system"
+                    },
+                    "actor": "synthetic-demo",
+                    "recorded_at": "2026-10-08T08:00:00Z",
+                    "upstream": [],
+                    "lineage": "unknown",
+                    "limitations": [
+                      "Synthetic source assertion only."
+                    ]
+                  },
+                  "conflicting": [],
+                  "alternative_sources": [],
+                  "alignment": null
+                },
+                "associations": [],
+                "source_identifiers": [],
+                "disclosures": [],
+                "record_status": "recorded",
+                "result": {
+                  "result_type": "missing",
+                  "status": "unknown",
+                  "reason": "Not established"
+                },
+                "acquisition": {
+                  "method": "unknown",
+                  "source_method": null,
+                  "device": null,
+                  "episode": null,
+                  "parameter": null,
+                  "parameter_concept": null,
+                  "algorithm": null,
+                  "parameter_support": "unknown",
+                  "support_provenance": null,
+                  "site": null,
+                  "compartment": "unknown",
+                  "laterality": "unknown",
+                  "respiratory_phase": null,
+                  "position": null,
+                  "reference_level": null,
+                  "calibration": "unknown",
+                  "zeroing": "unknown",
+                  "calibration_provenance": null,
+                  "zeroing_provenance": null,
+                  "interval_start": {
+                    "status": "not_recorded",
+                    "precision": "unknown",
+                    "value": null,
+                    "lower": null,
+                    "upper": null,
+                    "uncertainty": null
+                  },
+                  "interval_end": {
+                    "status": "not_recorded",
+                    "precision": "unknown",
+                    "value": null,
+                    "lower": null,
+                    "upper": null,
+                    "uncertainty": null
+                  },
+                  "averaging": null,
+                  "indexing_denominator": null,
+                  "indexing_basis": null,
+                  "indicator": null,
+                  "injection": null,
+                  "quality": {
+                    "status": "acceptable",
+                    "artifacts": [],
+                    "limitations": [],
+                    "provenance": {
+                      "source": {
+                        "namespace": "clinrx.synthetic.demo",
+                        "identifier": "patient-state-v1",
+                        "version": "1",
+                        "channel": "system"
+                      },
+                      "actor": "synthetic-demo",
+                      "recorded_at": "2026-10-08T08:00:00Z",
+                      "upstream": [],
+                      "lineage": "unknown",
+                      "limitations": [
+                        "Synthetic source assertion only."
+                      ]
+                    }
+                  },
+                  "limitations": []
+                },
+                "production": "direct_measurement",
+                "calculation_method": null,
+                "calculation_inputs": [],
+                "concept": "cvp"
+              },
+              "expected_digest": "c490faf55f3dd8b6f768fb90a5c9e4d456e07682a307e77dad6b6e7a4d575094",
+              "ingestion": {
+                "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+                "ingestion_sequence": 18,
+                "ingested_at": "2026-10-19T07:52:21.371827Z",
+                "payload_version": 1
+              },
+              "inclusion": "unplaced",
+              "contextual_for": [],
+              "disclosures": [
+                "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+              ]
+            }
+          ],
+          "issues": [
+            {
+              "reference": {
+                "kind": "circulatory_cardiac",
+                "id": "fs-CO-60",
+                "version": "1"
+              },
+              "reason": "uncertain_quality"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_cardiac",
+                "id": "m7-CONTEXT-CO",
+                "version": "1"
+              },
+              "reason": "contextual"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_cardiac",
+                "id": "m7-PICCO-CO",
+                "version": "1"
+              },
+              "reason": "uncertain_quality"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "00234d1d-b5ff-47da-a702-e6f50918056f",
+                "version": "1"
+              },
+              "reason": "temporal_uncertainty"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "3583c95b-119c-4daf-9642-42845112602e",
+                "version": "1"
+              },
+              "reason": "historical_association"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "3583c95b-119c-4daf-9642-42845112602e",
+                "version": "1"
+              },
+              "reason": "temporal_uncertainty"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+                "version": "2a764832-ebfe-4903-83a1-06f1726824f4"
+              },
+              "reason": "temporal_uncertainty"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "4efa2f1c-81d2-44c1-9e68-d84fb5e62e3a",
+                "version": "7ce7601f-73e6-4fbe-b27c-2f13ffe0e758"
+              },
+              "reason": "outside_profile"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "4efa2f1c-81d2-44c1-9e68-d84fb5e62e3a",
+                "version": "7ce7601f-73e6-4fbe-b27c-2f13ffe0e758"
+              },
+              "reason": "temporal_uncertainty"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "8ed66203-db30-4029-8853-e714ec103d92",
+                "version": "5d74953c-c2ac-4e91-8082-839ecf6f9a98"
+              },
+              "reason": "temporal_uncertainty"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "d6aeaf0c-eefc-4fa8-81c2-0fd77b31feef",
+                "version": "7dcea000-9446-4990-8624-c9a3e4366510"
+              },
+              "reason": "historical_association"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "d6aeaf0c-eefc-4fa8-81c2-0fd77b31feef",
+                "version": "7dcea000-9446-4990-8624-c9a3e4366510"
+              },
+              "reason": "outside_profile"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "d6aeaf0c-eefc-4fa8-81c2-0fd77b31feef",
+                "version": "7dcea000-9446-4990-8624-c9a3e4366510"
+              },
+              "reason": "temporal_uncertainty"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "f01d969c-54a5-4566-815e-2bd8ae5e9505",
+                "version": "1"
+              },
+              "reason": "historical_association"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "f01d969c-54a5-4566-815e-2bd8ae5e9505",
+                "version": "1"
+              },
+              "reason": "temporal_uncertainty"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "f18f21c6-618d-4fbe-b978-4c307de6276d",
+                "version": "1d08f553-9ce8-4127-ad93-870244f5873b"
+              },
+              "reason": "temporal_uncertainty"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_event",
+                "id": "rf1-fluid-withdrawn",
+                "version": "1"
+              },
+              "reason": "withdrawn_terminal"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_pressure",
+                "id": "m7-P",
+                "version": "1"
+              },
+              "reason": "historical_association"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_pressure",
+                "id": "m7-UNPLACED",
+                "version": "1"
+              },
+              "reason": "temporal_uncertainty"
+            },
+            {
+              "reference": {
+                "kind": "circulatory_pressure",
+                "id": "m7-UNPLACED",
+                "version": "1"
+              },
+              "reason": "unplaced"
+            },
+            {
+              "reference": {
+                "kind": "inference",
+                "id": "00000000-0000-4000-8000-00000000c901-inference",
+                "version": "1"
+              },
+              "reason": "outside_profile"
+            },
+            {
+              "reference": {
+                "kind": "inference",
+                "id": "00000000-0000-4000-8000-00000000c902-inference",
+                "version": "1"
+              },
+              "reason": "outside_profile"
+            },
+            {
+              "reference": {
+                "kind": "medication_order",
+                "id": "demo-medication-M",
+                "version": "1"
+              },
+              "reason": "outside_profile"
+            },
+            {
+              "reference": {
+                "kind": "observation",
+                "id": "demo-creatinine-A",
+                "version": "2"
+              },
+              "reason": "outside_profile"
+            },
+            {
+              "reference": {
+                "kind": "observation",
+                "id": "demo-creatinine-B",
+                "version": "1"
+              },
+              "reason": "outside_profile"
+            },
+            {
+              "reference": {
+                "kind": "observation",
+                "id": "rf1-creatinine-missing",
+                "version": "1"
+              },
+              "reason": "outside_profile"
+            },
+            {
+              "reference": {
+                "kind": "observation",
+                "id": "rf1-creatinine-unlike-unit",
+                "version": "1"
+              },
+              "reason": "outside_profile"
+            }
+          ],
+          "coverage": {
+            "source_completeness": "unknown",
+            "continuity": "not_established",
+            "candidate_rows": 182,
+            "terminal_count": 176,
+            "retained_count": 169,
+            "limitations": [
+              "Only declared recorded M7 evidence; absence and continuous physiology are not established."
+            ]
+          }
+        }
+      },
+      "state_context": "[REDACTED]",
+      "execution_enabled": false
+    },
+    "laboratory": {
+      "scope": {
+        "contract_version": "3",
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "review_start": "2026-10-08T08:00:00Z",
+        "review_end": "2026-10-08T10:00:00Z",
+        "repository_cutoff": {
+          "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+          "fact_watermark": 182,
+          "captured_at": "2026-10-19T18:49:07.635166Z"
+        }
+      },
+      "observations": [
+        {
+          "fact": {
+            "kind": "observation",
+            "id": "demo-creatinine-A",
+            "revision": "2",
+            "binding": {
+              "target": {
+                "patient_id": "synthetic-p1",
+                "encounter_id": "synthetic-e1",
+                "longitudinal_context_id": null
+              },
+              "verification": {
+                "status": "verified",
+                "method": "synthetic-demo",
+                "verifier": "synthetic-system",
+                "assessed_at": "2026-10-08T08:00:00Z",
+                "source": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "ambiguity": null
+              }
+            },
+            "origin": "reported",
+            "provenance": {
+              "source": {
+                "namespace": "clinrx.synthetic.serum-creatinine",
+                "identifier": "demo-sample-A",
+                "version": "1",
+                "channel": "measurement"
+              },
+              "actor": "synthetic-demo",
+              "recorded_at": "2026-10-08T08:00:00Z",
+              "upstream": [],
+              "lineage": "unknown",
+              "limitations": [
+                "Synthetic demonstration only; no clinical feed."
+              ]
+            },
+            "time": {
+              "event": "2026-10-08T08:00:00Z",
+              "recorded": "2026-10-08T08:00:00Z",
+              "effective_start": null,
+              "effective_end": null,
+              "retrieved": null,
+              "processed": null,
+              "precision": "instant",
+              "uncertainty": null
+            },
+            "verification": "verified",
+            "conflict": "none_known",
+            "temporal_status": "historical",
+            "uncertainty": [
+              "Synthetic recorded evidence only."
+            ],
+            "supersedes": {
+              "kind": "observation",
+              "id": "demo-creatinine-A",
+              "version": "1"
+            },
+            "correction_reason": "Synthetic transcription correction, not a new sample.",
+            "concept_id": "synthetic-serum-creatinine",
+            "value": {
+              "status": "known",
+              "value": {
+                "value": "1.1000",
+                "unit": {
+                  "raw": "mg/dL",
+                  "status": "assessed",
+                  "system": "UCUM",
+                  "code": "mg/dL",
+                  "limitation": null
+                }
+              },
+              "reason": null
+            }
+          },
+          "expected_digest": "06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa",
+          "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":\"Synthetic transcription correction, not a new sample.\",\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"2\",\"supersedes\":{\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"version\":\"1\"},\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.1000\"}},\"verification\":\"verified\"}",
+          "ingestion": {
+            "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+            "ingestion_sequence": 168,
+            "ingested_at": "2026-10-19T14:37:10.323955Z",
+            "payload_version": 1
+          },
+          "inclusion": "in_window"
+        },
+        {
+          "fact": {
+            "kind": "observation",
+            "id": "demo-creatinine-B",
+            "revision": "1",
+            "binding": {
+              "target": {
+                "patient_id": "synthetic-p1",
+                "encounter_id": "synthetic-e1",
+                "longitudinal_context_id": null
+              },
+              "verification": {
+                "status": "verified",
+                "method": "synthetic-demo",
+                "verifier": "synthetic-system",
+                "assessed_at": "2026-10-08T08:00:00Z",
+                "source": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "ambiguity": null
+              }
+            },
+            "origin": "reported",
+            "provenance": {
+              "source": {
+                "namespace": "clinrx.synthetic.serum-creatinine",
+                "identifier": "demo-sample-B",
+                "version": "1",
+                "channel": "measurement"
+              },
+              "actor": "synthetic-demo",
+              "recorded_at": "2026-10-08T10:00:00Z",
+              "upstream": [],
+              "lineage": "unknown",
+              "limitations": [
+                "Synthetic demonstration only; no clinical feed."
+              ]
+            },
+            "time": {
+              "event": "2026-10-08T10:00:00Z",
+              "recorded": "2026-10-08T10:00:00Z",
+              "effective_start": null,
+              "effective_end": null,
+              "retrieved": null,
+              "processed": null,
+              "precision": "instant",
+              "uncertainty": null
+            },
+            "verification": "verified",

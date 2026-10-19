@@ -1,0 +1,176 @@
+{
+  "status": "saved",
+  "request_digest": "243a8191bcfeb0a38ba847846f4897c5b88e948ea07d4798775c11a381bc3097",
+  "request_canonical": "{\"actor\":\"Synthetic journey operator\",\"chart\":{\"acquisition\":\"measured\",\"amount\":\"70.0000\",\"category\":\"weight\",\"end\":null,\"method\":\"Synthetic bed scale\",\"missing_reason\":null,\"new_collection_reason\":null,\"point\":\"2026-10-08T09:45:00Z\",\"purpose\":\"body-weight review\",\"source_context\":\"Fictional distinct source collection; not a copy of earlier dosing or interval totals.\",\"source_record\":{\"component\":\"weight\",\"issuer\":\"synthetic-chart-A\",\"issuer_namespace\":\"clinrx.synthetic.rf2-journey\",\"record_id\":\"weight-0945\",\"record_namespace\":\"collection-record\"},\"source_version\":null,\"start\":null,\"uncertainty\":\"Unauthenticated synthetic source; completeness and clinical relationship not established.\",\"unit\":\"kg\"},\"id\":\"4669259b-f7b2-4a85-b93b-9743381ea10d\",\"note\":null,\"predecessor\":null,\"reason\":null,\"recorded_at\":\"2026-10-08T09:50:00Z\",\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\",\"revision\":\"10f64596-a8bb-4a8e-b748-206ce97f056f\"}",
+  "evidence": {
+    "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+    "fact": {
+      "kind": "circulatory_event",
+      "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+      "revision": "10f64596-a8bb-4a8e-b748-206ce97f056f",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Synthetic scope selection",
+          "verifier": "Synthetic journey operator",
+          "assessed_at": "2026-10-08T09:50:00Z",
+          "source": {
+            "namespace": "clinrx.local.synthetic.rf2",
+            "identifier": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+            "version": null,
+            "channel": "clinician"
+          },
+          "ambiguity": "Local synthetic patient only."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx.local.synthetic.rf2",
+          "identifier": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+          "version": null,
+          "channel": "clinician"
+        },
+        "actor": "Synthetic journey operator",
+        "recorded_at": "2026-10-08T09:50:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Unauthenticated local synthetic source assertion."
+        ]
+      },
+      "time": {
+        "event": null,
+        "recorded": null,
+        "effective_start": null,
+        "effective_end": null,
+        "retrieved": null,
+        "processed": null,
+        "precision": "unknown",
+        "uncertainty": null
+      },
+      "verification": "unverified",
+      "conflict": "unknown",
+      "temporal_status": "unknown",
+      "uncertainty": [
+        "Unauthenticated synthetic source; completeness and clinical relationship not established."
+      ],
+      "supersedes": null,
+      "correction_reason": null,
+      "contract_version": "3",
+      "occurred": {
+        "timestamp_precision": "M7ExactTimestampInput/v1",
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:45:00Z",
+          "lower": null,
+          "upper": null,
+          "uncertainty": null
+        },
+        "source_timestamp": "2026-10-08T09:45:00Z",
+        "clock": "unknown",
+        "clock_basis": null,
+        "conflicting": [],
+        "alternative_sources": [],
+        "alignment": null
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded",
+          "precision": "unknown",
+          "value": null,
+          "lower": null,
+          "upper": null,
+          "uncertainty": null
+        },
+        "source_timestamp": null,
+        "clock": "unknown",
+        "clock_basis": null,
+        "conflicting": [],
+        "alternative_sources": [],
+        "alignment": null
+      },
+      "associations": [],
+      "source_identifiers": [],
+      "disclosures": [],
+      "record_status": "recorded",
+      "event_type": "other",
+      "description": {
+        "raw_display": "Fictional distinct source collection; not a copy of earlier dosing or interval totals.",
+        "coding": {
+          "namespace": "clinrx.local.rf2/v1",
+          "code": "weight",
+          "version": "1",
+          "raw_display": "weight"
+        }
+      },
+      "external_evidence": [
+        {
+          "namespace": "clinrx.local.rf2/v1",
+          "code": "{\"chart\":{\"acquisition\":\"measured\",\"amount\":\"70.0000\",\"category\":\"weight\",\"end\":null,\"method\":\"Synthetic bed scale\",\"missing_reason\":null,\"new_collection_reason\":null,\"point\":\"2026-10-08T09:45:00Z\",\"purpose\":\"body-weight review\",\"source_context\":\"Fictional distinct source collection; not a copy of earlier dosing or interval totals.\",\"source_record\":{\"component\":\"weight\",\"issuer\":\"synthetic-chart-A\",\"issuer_namespace\":\"clinrx.synthetic.rf2-journey\",\"record_id\":\"weight-0945\",\"record_namespace\":\"collection-record\"},\"source_version\":null,\"start\":null,\"uncertainty\":\"Unauthenticated synthetic source; completeness and clinical relationship not established.\",\"unit\":\"kg\"},\"note\":null,\"version\":1}",
+          "version": "1",
+          "raw_display": "Structured RF2 source assertions"
+        }
+      ],
+      "recorded_amount": {
+        "value": "70.0000",
+        "unit": {
+          "raw": "kg",
+          "status": "unresolved",
+          "system": null,
+          "code": null,
+          "limitation": "Raw source unit; no conversion."
+        }
+      }
+    },
+    "canonical_fact": "{\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-08T09:50:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"4669259b-f7b2-4a85-b93b-9743381ea10d\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic journey operator\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"weight\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"weight\",\"version\":\"1\"},\"raw_display\":\"Fictional distinct source collection; not a copy of earlier dosing or interval totals.\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"chart\\\":{\\\"acquisition\\\":\\\"measured\\\",\\\"amount\\\":\\\"70.0000\\\",\\\"category\\\":\\\"weight\\\",\\\"end\\\":null,\\\"method\\\":\\\"Synthetic bed scale\\\",\\\"missing_reason\\\":null,\\\"new_collection_reason\\\":null,\\\"point\\\":\\\"2026-10-08T09:45:00Z\\\",\\\"purpose\\\":\\\"body-weight review\\\",\\\"source_context\\\":\\\"Fictional distinct source collection; not a copy of earlier dosing or interval totals.\\\",\\\"source_record\\\":{\\\"component\\\":\\\"weight\\\",\\\"issuer\\\":\\\"synthetic-chart-A\\\",\\\"issuer_namespace\\\":\\\"clinrx.synthetic.rf2-journey\\\",\\\"record_id\\\":\\\"weight-0945\\\",\\\"record_namespace\\\":\\\"collection-record\\\"},\\\"source_version\\\":null,\\\"start\\\":null,\\\"uncertainty\\\":\\\"Unauthenticated synthetic source; completeness and clinical relationship not established.\\\",\\\"unit\\\":\\\"kg\\\"},\\\"note\\\":null,\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"4669259b-f7b2-4a85-b93b-9743381ea10d\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:45:00Z\"},\"source_timestamp\":\"2026-10-08T09:45:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic journey operator\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T09:50:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"4669259b-f7b2-4a85-b93b-9743381ea10d\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":{\"unit\":{\"code\":null,\"limitation\":\"Raw source unit; no conversion.\",\"raw\":\"kg\",\"status\":\"unresolved\",\"system\":null},\"value\":\"70.0000\"},\"revision\":\"10f64596-a8bb-4a8e-b748-206ce97f056f\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Unauthenticated synthetic source; completeness and clinical relationship not established.\"],\"verification\":\"unverified\"}",
+    "digest": "b9a598657709813728f9748b027ffdf56550eb12e5be509cd975423d3bfb28d8",
+    "ingestion": {
+      "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+      "ingestion_sequence": 177,
+      "ingested_at": "2026-10-19T18:40:26.686035Z",
+      "payload_version": 1
+    },
+    "cutoff": 177,
+    "terminal_reference": {
+      "kind": "circulatory_event",
+      "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+      "version": "10f64596-a8bb-4a8e-b748-206ce97f056f"
+    },
+    "superseded": false,
+    "metadata": {
+      "chart": {
+        "acquisition": "measured",
+        "amount": "70.0000",
+        "category": "weight",
+        "end": null,
+        "method": "Synthetic bed scale",
+        "missing_reason": null,
+        "new_collection_reason": null,
+        "point": "2026-10-08T09:45:00Z",
+        "purpose": "body-weight review",
+        "source_context": "Fictional distinct source collection; not a copy of earlier dosing or interval totals.",
+        "source_record": {
+          "component": "weight",
+          "issuer": "synthetic-chart-A",
+          "issuer_namespace": "clinrx.synthetic.rf2-journey",
+          "record_id": "weight-0945",
+          "record_namespace": "collection-record"
+        },
+        "source_version": null,
+        "start": null,
+        "uncertainty": "Unauthenticated synthetic source; completeness and clinical relationship not established.",
+        "unit": "kg"
+      },
+      "note": null,
+      "version": 1
+    }
+  },
+  "execution_enabled": false
+}
