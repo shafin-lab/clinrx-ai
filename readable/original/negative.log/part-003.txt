@@ -1,0 +1,493 @@
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-B[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m2.000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-missing[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0mmissing — Source result unavailable.[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mEvent time unavailable[0m
+                [0m · [0m
+                [0munplaced[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0munavailable[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-unlike-unit[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m150.0 umol/L · unit mapping unresolved[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0munverified[0m
+                [0m; conflict [0m
+                [0munresolved[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic conflicting report; no corroboration or interpretation.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+      [36m<h3>[39m
+        [0mUrine, fluid, weight and renal-support source context[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mPoint events and intervals remain separate. Gaps, overlapping intervals and completeness are not reconciled here. Zero is a recorded value; missing is not zero. Reported balances/totals are source calculations, not ClinRx calculations. A fluid challenge may already be included in an input interval and must not be added again. CRRT net remova...
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ tests/renalFluidHistory.test.tsx:33:175
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  tests/renalFluidHistory.test.tsx > accepts unchanged fluid history and clears it when the next history cannot be confirmed
+TestingLibraryElementError: Unable to find role="alert"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Renal and fluid review"[39m
+    [36m>[39m
+      [36m<h2>[39m
+        [0mRenal and fluid review[0m
+      [36m</h2>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mRead-only synthetic evidence. Clinical execution disabled.[0m
+        [36m</strong>[39m
+        [0m No AKI stage, eGFR, calculated trend, balance, urine rate or treatment advice.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRepository [0m
+        [0meb763eb6-094e-4ee0-8ff3-449e3ffe7ad5[0m
+        [0m · cutoff [0m
+        [0m175[0m
+        [0m · review [0m
+        [0m2026-10-08T08:00:00Z[0m
+        [0m → [0m
+        [0m2026-10-08T10:00:00Z[0m
+        [0m. Same patient and historical cutoff as hemodynamics; this does not establish simultaneous measurements.[0m
+      [36m</p>[39m
+      [36m<h3>[39m
+        [0mRecorded creatinine[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mSource event time is not confirmed specimen collection time. Specimen, collection time, typed quality and withdrawal metadata are unavailable in this legacy observation contract. Source text is retained without promoting it to a typed fact. Outside-window and unplaced terminal observations stay visible; older values are not resurrected.[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"Recorded creatinine table"[39m
+        [33mclass[39m=[32m"rf-scroll"[39m
+        [33mrole[39m=[32m"region"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m>[39m
+        [36m<table>[39m
+          [36m<thead>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [0mExact source[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mRecorded result / raw unit[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mSource timing[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mUncertainty[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-A[0m
+                  [0m / [0m
+                  [0m2[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m1.1000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T08:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T08:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-B[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m2.000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-missing[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0mmissing — Source result unavailable.[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mEvent time unavailable[0m
+                [0m · [0m
+                [0munplaced[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0munavailable[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-unlike-unit[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m150.0 umol/L · unit mapping unresolved[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0munverified[0m
+                [0m; conflict [0m
+                [0munresolved[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic conflicting report; no corroboration or interpretation.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+      [36m<h3>[39m
+        [0mUrine, fluid, weight and renal-support source context[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mPoint events and intervals remain separate. Gaps, overlapping intervals and completeness are not reconciled here. Zero is a recorded value; missing is not zero. Reported balances/totals are source calculations, not ClinRx calculations. A fluid challenge may already be included in an input interval and must not be added again. CRRT net remova...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Renal and fluid review"[39m
+    [36m>[39m
+      [36m<h2>[39m
+        [0mRenal and fluid review[0m
+      [36m</h2>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mRead-only synthetic evidence. Clinical execution disabled.[0m
+        [36m</strong>[39m
+        [0m No AKI stage, eGFR, calculated trend, balance, urine rate or treatment advice.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRepository [0m
+        [0meb763eb6-094e-4ee0-8ff3-449e3ffe7ad5[0m
+        [0m · cutoff [0m
+        [0m175[0m
+        [0m · review [0m
+        [0m2026-10-08T08:00:00Z[0m
+        [0m → [0m
+        [0m2026-10-08T10:00:00Z[0m
+        [0m. Same patient and historical cutoff as hemodynamics; this does not establish simultaneous measurements.[0m
+      [36m</p>[39m
+      [36m<h3>[39m
+        [0mRecorded creatinine[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mSource event time is not confirmed specimen collection time. Specimen, collection time, typed quality and withdrawal metadata are unavailable in this legacy observation contract. Source text is retained without promoting it to a typed fact. Outside-window and unplaced terminal observations stay visible; older values are not resurrected.[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"Recorded creatinine table"[39m
+        [33mclass[39m=[32m"rf-scroll"[39m
+        [33mrole[39m=[32m"region"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m>[39m
+        [36m<table>[39m
+          [36m<thead>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [0mExact source[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mRecorded result / raw unit[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mSource timing[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mUncertainty[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-A[0m
+                  [0m / [0m
+                  [0m2[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m1.1000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T08:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T08:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-B[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m2.000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-missing[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0mmissing — Source result unavailable.[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mEvent time unavailable[0m
+                [0m · [0m
+                [0munplaced[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0munavailable[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-unlike-unit[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m150.0 umol/L · unit mapping unresolved[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0munverified[0m
+                [0m; conflict [0m
+                [0munresolved[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic conflicting report; no corroboration or interpretation.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+      [36m<h3>[39m
+        [0mUrine, fluid, weight and renal-support source context[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mPoint events and intervals remain separate. Gaps, overlapping intervals and completeness are not reconciled here. Zero is a recorded value; missing is not zero. Reported balances/totals are source calculations, not ClinRx calculations. A fluid challenge may already be included in an input interval and must not be added again. CRRT net remova...
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ tests/renalFluidHistory.test.tsx:34:839
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  12 failed | 2 passed (14)
+   Start at  21:54:34
+   Duration  15.08s (tests 91%, environment 5%, transform 2%, import 1%, setup 1%)
+

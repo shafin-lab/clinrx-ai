@@ -1,0 +1,43 @@
+{
+  "negative_control": {
+    "command": "npm test -- tests/renalFluidHistory.test.tsx --maxWorkers=2",
+    "source": "c2d58e4 plus new tests before source correction",
+    "exit": 1,
+    "result": "12 failed, 2 passed; failures demonstrate accepted contradictions or missing withholding warning"
+  },
+  "initial_focused": {
+    "command": "npm test -- tests/renalFluid.test.tsx tests/renalFluidHistory.test.tsx --maxWorkers=2",
+    "exit": 0,
+    "result": "35 passed, 8.75s"
+  },
+  "initial_typecheck": {
+    "command": "npm run typecheck",
+    "exit": 1,
+    "reason": "JSON fixture types widened fact.kind to string; corrected test setup to use decoded typed observations"
+  },
+  "final_focused": {
+    "command": "npm test -- tests/renalFluid.test.tsx tests/renalFluidHistory.test.tsx tests/circulatory.test.tsx --maxWorkers=2",
+    "exit": 0,
+    "result": "87 passed, 12.15s"
+  },
+  "final_typecheck": {
+    "command": "npm run typecheck",
+    "exit": 0
+  },
+  "default_build": {
+    "command": "npm run build -- --outDir /tmp/clinrx-rf1-f1-default-build",
+    "exit": 0
+  },
+  "RF1_build": {
+    "command": "VITE_SYNTHETIC_HOSTED=true VITE_SYNTHETIC_AUTHORING=true VITE_SYNTHETIC_RF1=true npm run build -- --outDir /tmp/clinrx-rf1-f1-authoring-build",
+    "exit": 0
+  },
+  "hosted_CI": {
+    "run": 39285512771,
+    "event": "workflow_dispatch",
+    "tag": "clinrx-rf1-f1-5cb7321",
+    "head": "5cb73212ae6104b02bad361886cd9507795d88bf",
+    "status": "queued",
+    "conclusion": ""
+  }
+}

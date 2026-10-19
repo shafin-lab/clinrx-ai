@@ -1,0 +1,16 @@
+
+> clinrx-synthetic-review@0.1.0 typecheck
+> tsc --noEmit
+
+tests/renalFluid.test.tsx(23,664): error TS2345: Argument of type '{ fact: { kind: string; id: string; revision: string; binding: { target: { patient_id: string; encounter_id: string; longitudinal_context_id: null; }; verification: { status: string; method: string; verifier: string; assessed_at: string; source: { ...; }; ambiguity: null; }; }; ... 10 more ...; value: { ...; }; }; e...' is not assignable to parameter of type 'RenalObservation'.
+  Type '{ fact: { kind: string; id: string; revision: string; binding: { target: { patient_id: string; encounter_id: string; longitudinal_context_id: null; }; verification: { status: string; method: string; verifier: string; assessed_at: string; source: { namespace: string; identifier: string; version: string; channel: stri...' is not assignable to type 'RenalObservation'.
+    The types of 'fact.kind' are incompatible between these types.
+      Type 'string' is not assignable to type '"observation"'.
+tests/renalFluidHistory.test.tsx(20,527): error TS2345: Argument of type '{ fact: { kind: string; id: string; revision: string; binding: { target: { patient_id: string; encounter_id: string; longitudinal_context_id: null; }; verification: { status: string; method: string; verifier: string; assessed_at: string; source: { ...; }; ambiguity: null; }; }; ... 10 more ...; value: { ...; }; }; e...' is not assignable to parameter of type 'RenalObservation'.
+  Type '{ fact: { kind: string; id: string; revision: string; binding: { target: { patient_id: string; encounter_id: string; longitudinal_context_id: null; }; verification: { status: string; method: string; verifier: string; assessed_at: string; source: { namespace: string; identifier: string; version: string; channel: stri...' is not assignable to type 'RenalObservation'.
+    The types of 'fact.kind' are incompatible between these types.
+      Type 'string' is not assignable to type '"observation"'.
+tests/renalFluidHistory.test.tsx(21,148): error TS2345: Argument of type '{ fact: { kind: string; id: string; revision: string; binding: { target: { patient_id: string; encounter_id: string; longitudinal_context_id: null; }; verification: { status: string; method: string; verifier: string; assessed_at: string; source: { ...; }; ambiguity: null; }; }; ... 10 more ...; value: { ...; }; }; e...' is not assignable to parameter of type 'RenalObservation'.
+  Type '{ fact: { kind: string; id: string; revision: string; binding: { target: { patient_id: string; encounter_id: string; longitudinal_context_id: null; }; verification: { status: string; method: string; verifier: string; assessed_at: string; source: { namespace: string; identifier: string; version: string; channel: stri...' is not assignable to type 'RenalObservation'.
+    The types of 'fact.kind' are incompatible between these types.
+      Type 'string' is not assignable to type '"observation"'.

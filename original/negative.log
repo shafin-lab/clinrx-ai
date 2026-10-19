@@ -1,0 +1,1445 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run tests/renalFluidHistory.test.tsx --maxWorkers=2
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/renalFluidHistory.test.tsx (14 tests | 12 failed) 13571ms
+   × rejects selected creatinine content mismatch: self_consistent_value 284ms
+   × rejects selected creatinine content mismatch: ingestion_time 270ms
+   × rejects selected creatinine content mismatch: ingestion_sequence 270ms
+   × withholds fluid history at the UI boundary: cutoff 1442ms
+   × withholds fluid history at the UI boundary: repository 1335ms
+   × withholds fluid history at the UI boundary: window 1324ms
+   × withholds fluid history at the UI boundary: assembly_digest 1331ms
+   × withholds fluid history at the UI boundary: request_limits 1335ms
+   × withholds fluid history at the UI boundary: selected_content 1328ms
+   × withholds fluid history at the UI boundary: ingestion_time 1327ms
+   × withholds fluid history at the UI boundary: ingestion_sequence 1324ms
+   × accepts unchanged fluid history and clears it when the next history cannot be confirmed 1351ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/renalFluidHistory.test.tsx > rejects selected creatinine content mismatch: self_consistent_value
+AssertionError: promise resolved "{ …(2) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "data": {
++     "context": {
++       "circulatory_digest": "4fcd81dfb8522cc8813e820f9177409887cc23498b5e392c48a8762ed45a512d",
++       "observations_digest": "da525e72edb5c7d823db9a8d0659620ca06803cbb0185240702d3c9508a0db88",
++       "scope": {
++         "contract_version": "3",
++         "encounter_id": "synthetic-e1",
++         "patient_id": "synthetic-p1",
++         "repository_cutoff": {
++           "captured_at": "2026-10-19T14:37:10.764440Z",
++           "fact_watermark": 175,
++           "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
++         },
++         "review_end": "2026-10-08T10:00:00Z",
++         "review_start": "2026-10-08T08:00:00Z",
++       },
++       "transport_version": "SyntheticRenalFluidReview/v1",
++     },
++     "reference": {
++       "id": "demo-creatinine-A",
++       "kind": "observation",
++       "version": "2",
++     },
++     "revisions": [
++       {
++         "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.00\"}},\"verification\":\"verified\"}",
++         "expected_digest": "47725732962a14527b5867dd525393d46ecc03276528c7fa2428767beefbe4e1",
++         "fact": {
++           "binding": {
++             "target": {
++               "encounter_id": "synthetic-e1",
++               "longitudinal_context_id": null,
++               "patient_id": "synthetic-p1",
++             },
++             "verification": {
++               "ambiguity": null,
++               "assessed_at": "2026-10-08T08:00:00Z",
++               "method": "synthetic-demo",
++               "source": {
++                 "channel": "system",
++                 "identifier": "patient-state-v1",
++                 "namespace": "clinrx.synthetic.demo",
++                 "version": "1",
++               },
++               "status": "verified",
++               "verifier": "synthetic-system",
++             },
++           },
++           "concept_id": "synthetic-serum-creatinine",
++           "conflict": "none_known",
++           "correction_reason": null,
++           "id": "demo-creatinine-A",
++           "kind": "observation",
++           "origin": "reported",
++           "provenance": {
++             "actor": "synthetic-demo",
++             "limitations": [
++               "Synthetic demonstration only; no clinical feed.",
++             ],
++             "lineage": "unknown",
++             "recorded_at": "2026-10-08T08:00:00Z",
++             "source": {
++               "channel": "measurement",
++               "identifier": "demo-sample-A",
++               "namespace": "clinrx.synthetic.serum-creatinine",
++               "version": "1",
++             },
++             "upstream": [],
++           },
++           "revision": "1",
++           "supersedes": null,
++           "temporal_status": "historical",
++           "time": {
++             "effective_end": null,
++             "effective_start": null,
++             "event": "2026-10-08T08:00:00Z",
++             "precision": "instant",
++             "processed": null,
++             "recorded": "2026-10-08T08:00:00Z",
++             "retrieved": null,
++             "uncertainty": null,
++           },
++           "uncertainty": [
++             "Synthetic recorded evidence only.",
++           ],
++           "value": {
++             "reason": null,
++             "status": "known",
++             "value": {
++               "unit": {
++                 "code": "mg/dL",
++                 "limitation": null,
++                 "raw": "mg/dL",
++                 "status": "assessed",
++                 "system": "UCUM",
++               },
++               "value": "1.00",
++             },
++           },
++           "verification": "verified",
++         },
++         "inclusion": "in_window",
++         "ingestion": {
++           "ingested_at": "2026-10-19T07:52:21.269505Z",
++           "ingestion_sequence": 1,
++           "payload_version": 1,
++           "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
++         },
++       },
++       {
++         "canonical_fact": "{\"kind\":\"observation\",\"id\":\"demo-creatinine-A\",\"revision\":\"2\",\"binding\":{\"target\":{\"patient_id\":\"synthetic-p1\",\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null},\"verification\":{\"status\":\"verified\",\"method\":\"synthetic-demo\",\"verifier\":\"synthetic-system\",\"assessed_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"namespace\":\"clinrx.synthetic.demo\",\"identifier\":\"patient-state-v1\",\"version\":\"1\",\"channel\":\"system\"},\"ambiguity\":null}},\"origin\":\"reported\",\"provenance\":{\"source\":{\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"identifier\":\"demo-sample-A\",\"version\":\"1\",\"channel\":\"measurement\"},\"actor\":\"synthetic-demo\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"upstream\":[],\"lineage\":\"unknown\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"]},\"time\":{\"event\":\"2026-10-08T08:00:00Z\",\"recorded\":\"2026-10-08T08:00:00Z\",\"effective_start\":null,\"effective_end\":null,\"retrieved\":null,\"processed\":null,\"precision\":\"instant\",\"uncertainty\":null},\"verification\":\"verified\",\"conflict\":\"none_known\",\"temporal_status\":\"historical\",\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"supersedes\":{\"kind\":\"observation\",\"id\":\"demo-creatinine-A\",\"version\":\"1\"},\"correction_reason\":\"Synthetic transcription correction, not a new sample.\",\"concept_id\":\"synthetic-serum-creatinine\",\"value\":{\"status\":\"known\",\"value\":{\"value\":\"9.9000\",\"unit\":{\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\",\"code\":\"mg/dL\",\"limitation\":null}},\"reason\":null}}",
++         "expected_digest": "96e8b1579671acc99ee2195d08a49ae5632ad3f9959472806faf37bde0e07bce",
++         "fact": {
++           "binding": {
++             "target": {
++               "encounter_id": "synthetic-e1",
++               "longitudinal_context_id": null,
++               "patient_id": "synthetic-p1",
++             },
++             "verification": {
++               "ambiguity": null,
++               "assessed_at": "2026-10-08T08:00:00Z",
++               "method": "synthetic-demo",
++               "source": {
++                 "channel": "system",
++                 "identifier": "patient-state-v1",
++                 "namespace": "clinrx.synthetic.demo",
++                 "version": "1",
++               },
++               "status": "verified",
++               "verifier": "synthetic-system",
++             },
++           },
++           "concept_id": "synthetic-serum-creatinine",
++           "conflict": "none_known",
++           "correction_reason": "Synthetic transcription correction, not a new sample.",
++           "id": "demo-creatinine-A",
++           "kind": "observation",
++           "origin": "reported",
++           "provenance": {
++             "actor": "synthetic-demo",
++             "limitations": [
++               "Synthetic demonstration only; no clinical feed.",
++             ],
++             "lineage": "unknown",
++             "recorded_at": "2026-10-08T08:00:00Z",
++             "source": {
++               "channel": "measurement",
++               "identifier": "demo-sample-A",
++               "namespace": "clinrx.synthetic.serum-creatinine",
++               "version": "1",
++             },
++             "upstream": [],
++           },
++           "revision": "2",
++           "supersedes": {
++             "id": "demo-creatinine-A",
++             "kind": "observation",
++             "version": "1",
++           },
++           "temporal_status": "historical",
++           "time": {
++             "effective_end": null,
++             "effective_start": null,
++             "event": "2026-10-08T08:00:00Z",
++             "precision": "instant",
++             "processed": null,
++             "recorded": "2026-10-08T08:00:00Z",
++             "retrieved": null,
++             "uncertainty": null,
++           },
++           "uncertainty": [
++             "Synthetic recorded evidence only.",
++           ],
++           "value": {
++             "reason": null,
++             "status": "known",
++             "value": {
++               "unit": {
++                 "code": "mg/dL",
++                 "limitation": null,
++                 "raw": "mg/dL",
++                 "status": "assessed",
++                 "system": "UCUM",
++               },
++               "value": "9.9000",
++             },
++           },
++           "verification": "verified",
++         },
++         "inclusion": "in_window",
++         "ingestion": {
++           "ingested_at": "2026-10-19T14:37:10.323955Z",
++           "ingestion_sequence": 168,
++           "payload_version": 1,
++           "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
++         },
++       },
++     ],
++   },
++   "mode": null,
+  }
+
+ ❯ tests/renalFluidHistory.test.tsx:20:542
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  tests/renalFluidHistory.test.tsx > rejects selected creatinine content mismatch: ingestion_time
+AssertionError: promise resolved "{ …(2) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "data": {
++     "context": {
++       "circulatory_digest": "4fcd81dfb8522cc8813e820f9177409887cc23498b5e392c48a8762ed45a512d",
++       "observations_digest": "da525e72edb5c7d823db9a8d0659620ca06803cbb0185240702d3c9508a0db88",
++       "scope": {
++         "contract_version": "3",
++         "encounter_id": "synthetic-e1",
++         "patient_id": "synthetic-p1",
++         "repository_cutoff": {
++           "captured_at": "2026-10-19T14:37:10.764440Z",
++           "fact_watermark": 175,
++           "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
++         },
++         "review_end": "2026-10-08T10:00:00Z",
++         "review_start": "2026-10-08T08:00:00Z",
++       },
++       "transport_version": "SyntheticRenalFluidReview/v1",
++     },
++     "reference": {
++       "id": "demo-creatinine-A",
++       "kind": "observation",
++       "version": "2",
++     },
++     "revisions": [
++       {
++         "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.00\"}},\"verification\":\"verified\"}",
++         "expected_digest": "47725732962a14527b5867dd525393d46ecc03276528c7fa2428767beefbe4e1",
++         "fact": {
++           "binding": {
++             "target": {
++               "encounter_id": "synthetic-e1",
++               "longitudinal_context_id": null,
++               "patient_id": "synthetic-p1",
++             },
++             "verification": {
++               "ambiguity": null,
++               "assessed_at": "2026-10-08T08:00:00Z",
++               "method": "synthetic-demo",
++               "source": {
++                 "channel": "system",
++                 "identifier": "patient-state-v1",
++                 "namespace": "clinrx.synthetic.demo",
++                 "version": "1",
++               },
++               "status": "verified",
++               "verifier": "synthetic-system",
++             },
++           },
++           "concept_id": "synthetic-serum-creatinine",
++           "conflict": "none_known",
++           "correction_reason": null,
++           "id": "demo-creatinine-A",
++           "kind": "observation",
++           "origin": "reported",
++           "provenance": {
++             "actor": "synthetic-demo",
++             "limitations": [
++               "Synthetic demonstration only; no clinical feed.",
++             ],
++             "lineage": "unknown",
++             "recorded_at": "2026-10-08T08:00:00Z",
++             "source": {
++               "channel": "measurement",
++               "identifier": "demo-sample-A",
++               "namespace": "clinrx.synthetic.serum-creatinine",
++               "version": "1",
++             },
++             "upstream": [],
++           },
++           "revision": "1",
++           "supersedes": null,
++           "temporal_status": "historical",
++           "time": {
++             "effective_end": null,
++             "effective_start": null,
++             "event": "2026-10-08T08:00:00Z",
++             "precision": "instant",
++             "processed": null,
++             "recorded": "2026-10-08T08:00:00Z",
++             "retrieved": null,
++             "uncertainty": null,
++           },
++           "uncertainty": [
++             "Synthetic recorded evidence only.",
++           ],
++           "value": {
++             "reason": null,
++             "status": "known",
++             "value": {
++               "unit": {
++                 "code": "mg/dL",
++                 "limitation": null,
++                 "raw": "mg/dL",
++                 "status": "assessed",
++                 "system": "UCUM",
++               },
++               "value": "1.00",
++             },
++           },
++           "verification": "verified",
++         },
++         "inclusion": "in_window",
++         "ingestion": {
++           "ingested_at": "2026-10-19T07:52:21.269505Z",
++           "ingestion_sequence": 1,
++           "payload_version": 1,
++           "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
++         },
++       },
++       {
++         "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":\"Synthetic transcription correction, not a new sample.\",\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"2\",\"supersedes\":{\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"version\":\"1\"},\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.1000\"}},\"verification\":\"verified\"}",
++         "expected_digest": "06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa",
++         "fact": {
++           "binding": {
++             "target": {
++               "encounter_id": "synthetic-e1",
++               "longitudinal_context_id": null,
++               "patient_id": "synthetic-p1",
++             },
++             "verification": {
++               "ambiguity": null,
++               "assessed_at": "2026-10-08T08:00:00Z",
++               "method": "synthetic-demo",
++               "source": {
++                 "channel": "system",
++                 "identifier": "patient-state-v1",
++                 "namespace": "clinrx.synthetic.demo",
++                 "version": "1",
++               },
++               "status": "verified",
++               "verifier": "synthetic-system",
++             },
++           },
++           "concept_id": "synthetic-serum-creatinine",
++           "conflict": "none_known",
++           "correction_reason": "Synthetic transcription correction, not a new sample.",
++           "id": "demo-creatinine-A",
++           "kind": "observation",
++           "origin": "reported",
++           "provenance": {
++             "actor": "synthetic-demo",
++             "limitations": [
++               "Synthetic demonstration only; no clinical feed.",
++             ],
++             "lineage": "unknown",
++             "recorded_at": "2026-10-08T08:00:00Z",
++             "source": {
++               "channel": "measurement",
++               "identifier": "demo-sample-A",
++               "namespace": "clinrx.synthetic.serum-creatinine",
++               "version": "1",
++             },
++             "upstream": [],
++           },
++           "revision": "2",
++           "supersedes": {
++             "id": "demo-creatinine-A",
++             "kind": "observation",
++             "version": "1",
++           },
++           "temporal_status": "historical",
++           "time": {
++             "effective_end": null,
++             "effective_start": null,
++             "event": "2026-10-08T08:00:00Z",
++             "precision": "instant",
++             "processed": null,
++             "recorded": "2026-10-08T08:00:00Z",
++             "retrieved": null,
++             "uncertainty": null,
++           },
++           "uncertainty": [
++             "Synthetic recorded evidence only.",
++           ],
++           "value": {
++             "reason": null,
++             "status": "known",
++             "value": {
++               "unit": {
++                 "code": "mg/dL",
++                 "limitation": null,
++                 "raw": "mg/dL",
++                 "status": "assessed",
++                 "system": "UCUM",
++               },
++               "value": "1.1000",
++             },
++           },
++           "verification": "verified",
++         },
++         "inclusion": "in_window",
++         "ingestion": {
++           "ingested_at": "2026-10-19T15:00:00Z",
++           "ingestion_sequence": 168,
++           "payload_version": 1,
++           "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
++         },
++       },
++     ],
++   },
++   "mode": null,
+  }
+
+ ❯ tests/renalFluidHistory.test.tsx:20:542
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  tests/renalFluidHistory.test.tsx > rejects selected creatinine content mismatch: ingestion_sequence
+AssertionError: promise resolved "{ …(2) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "data": {
++     "context": {
++       "circulatory_digest": "4fcd81dfb8522cc8813e820f9177409887cc23498b5e392c48a8762ed45a512d",
++       "observations_digest": "da525e72edb5c7d823db9a8d0659620ca06803cbb0185240702d3c9508a0db88",
++       "scope": {
++         "contract_version": "3",
++         "encounter_id": "synthetic-e1",
++         "patient_id": "synthetic-p1",
++         "repository_cutoff": {
++           "captured_at": "2026-10-19T14:37:10.764440Z",
++           "fact_watermark": 175,
++           "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
++         },
++         "review_end": "2026-10-08T10:00:00Z",
++         "review_start": "2026-10-08T08:00:00Z",
++       },
++       "transport_version": "SyntheticRenalFluidReview/v1",
++     },
++     "reference": {
++       "id": "demo-creatinine-A",
++       "kind": "observation",
++       "version": "2",
++     },
++     "revisions": [
++       {
++         "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.00\"}},\"verification\":\"verified\"}",
++         "expected_digest": "47725732962a14527b5867dd525393d46ecc03276528c7fa2428767beefbe4e1",
++         "fact": {
++           "binding": {
++             "target": {
++               "encounter_id": "synthetic-e1",
++               "longitudinal_context_id": null,
++               "patient_id": "synthetic-p1",
++             },
++             "verification": {
++               "ambiguity": null,
++               "assessed_at": "2026-10-08T08:00:00Z",
++               "method": "synthetic-demo",
++               "source": {
++                 "channel": "system",
++                 "identifier": "patient-state-v1",
++                 "namespace": "clinrx.synthetic.demo",
++                 "version": "1",
++               },
++               "status": "verified",
++               "verifier": "synthetic-system",
++             },
++           },
++           "concept_id": "synthetic-serum-creatinine",
++           "conflict": "none_known",
++           "correction_reason": null,
++           "id": "demo-creatinine-A",
++           "kind": "observation",
++           "origin": "reported",
++           "provenance": {
++             "actor": "synthetic-demo",
++             "limitations": [
++               "Synthetic demonstration only; no clinical feed.",
++             ],
++             "lineage": "unknown",
++             "recorded_at": "2026-10-08T08:00:00Z",
++             "source": {
++               "channel": "measurement",
++               "identifier": "demo-sample-A",
++               "namespace": "clinrx.synthetic.serum-creatinine",
++               "version": "1",
++             },
++             "upstream": [],
++           },
++           "revision": "1",
++           "supersedes": null,
++           "temporal_status": "historical",
++           "time": {
++             "effective_end": null,
++             "effective_start": null,
++             "event": "2026-10-08T08:00:00Z",
++             "precision": "instant",
++             "processed": null,
++             "recorded": "2026-10-08T08:00:00Z",
++             "retrieved": null,
++             "uncertainty": null,
++           },
++           "uncertainty": [
++             "Synthetic recorded evidence only.",
++           ],
++           "value": {
++             "reason": null,
++             "status": "known",
++             "value": {
++               "unit": {
++                 "code": "mg/dL",
++                 "limitation": null,
++                 "raw": "mg/dL",
++                 "status": "assessed",
++                 "system": "UCUM",
++               },
++               "value": "1.00",
++             },
++           },
++           "verification": "verified",
++         },
++         "inclusion": "in_window",
++         "ingestion": {
++           "ingested_at": "2026-10-19T07:52:21.269505Z",
++           "ingestion_sequence": 1,
++           "payload_version": 1,
++           "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
++         },
++       },
++       {
++         "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":\"Synthetic transcription correction, not a new sample.\",\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"2\",\"supersedes\":{\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"version\":\"1\"},\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.1000\"}},\"verification\":\"verified\"}",
++         "expected_digest": "06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa",
++         "fact": {
++           "binding": {
++             "target": {
++               "encounter_id": "synthetic-e1",
++               "longitudinal_context_id": null,
++               "patient_id": "synthetic-p1",
++             },
++             "verification": {
++               "ambiguity": null,
++               "assessed_at": "2026-10-08T08:00:00Z",
++               "method": "synthetic-demo",
++               "source": {
++                 "channel": "system",
++                 "identifier": "patient-state-v1",
++                 "namespace": "clinrx.synthetic.demo",
++                 "version": "1",
++               },
++               "status": "verified",
++               "verifier": "synthetic-system",
++             },
++           },
++           "concept_id": "synthetic-serum-creatinine",
++           "conflict": "none_known",
++           "correction_reason": "Synthetic transcription correction, not a new sample.",
++           "id": "demo-creatinine-A",
++           "kind": "observation",
++           "origin": "reported",
++           "provenance": {
++             "actor": "synthetic-demo",
++             "limitations": [
++               "Synthetic demonstration only; no clinical feed.",
++             ],
++             "lineage": "unknown",
++             "recorded_at": "2026-10-08T08:00:00Z",
++             "source": {
++               "channel": "measurement",
++               "identifier": "demo-sample-A",
++               "namespace": "clinrx.synthetic.serum-creatinine",
++               "version": "1",
++             },
++             "upstream": [],
++           },
++           "revision": "2",
++           "supersedes": {
++             "id": "demo-creatinine-A",
++             "kind": "observation",
++             "version": "1",
++           },
++           "temporal_status": "historical",
++           "time": {
++             "effective_end": null,
++             "effective_start": null,
++             "event": "2026-10-08T08:00:00Z",
++             "precision": "instant",
++             "processed": null,
++             "recorded": "2026-10-08T08:00:00Z",
++             "retrieved": null,
++             "uncertainty": null,
++           },
++           "uncertainty": [
++             "Synthetic recorded evidence only.",
++           ],
++           "value": {
++             "reason": null,
++             "status": "known",
++             "value": {
++               "unit": {
++                 "code": "mg/dL",
++                 "limitation": null,
++                 "raw": "mg/dL",
++                 "status": "assessed",
++                 "system": "UCUM",
++               },
++               "value": "1.1000",
++             },
++           },
++           "verification": "verified",
++         },
++         "inclusion": "in_window",
++         "ingestion": {
++           "ingested_at": "2026-10-19T14:37:10.323955Z",
++           "ingestion_sequence": 169,
++           "payload_version": 1,
++           "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
++         },
++       },
++     ],
++   },
++   "mode": null,
+  }
+
+ ❯ tests/renalFluidHistory.test.tsx:20:542
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  tests/renalFluidHistory.test.tsx > withholds fluid history at the UI boundary: cutoff
+ FAIL  tests/renalFluidHistory.test.tsx > withholds fluid history at the UI boundary: repository
+ FAIL  tests/renalFluidHistory.test.tsx > withholds fluid history at the UI boundary: window
+ FAIL  tests/renalFluidHistory.test.tsx > withholds fluid history at the UI boundary: assembly_digest
+ FAIL  tests/renalFluidHistory.test.tsx > withholds fluid history at the UI boundary: request_limits
+ FAIL  tests/renalFluidHistory.test.tsx > withholds fluid history at the UI boundary: selected_content
+ FAIL  tests/renalFluidHistory.test.tsx > withholds fluid history at the UI boundary: ingestion_time
+ FAIL  tests/renalFluidHistory.test.tsx > withholds fluid history at the UI boundary: ingestion_sequence
+TestingLibraryElementError: Unable to find role="alert"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Renal and fluid review"[39m
+    [36m>[39m
+      [36m<h2>[39m
+        [0mRenal and fluid review[0m
+      [36m</h2>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mRead-only synthetic evidence. Clinical execution disabled.[0m
+        [36m</strong>[39m
+        [0m No AKI stage, eGFR, calculated trend, balance, urine rate or treatment advice.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRepository [0m
+        [0meb763eb6-094e-4ee0-8ff3-449e3ffe7ad5[0m
+        [0m · cutoff [0m
+        [0m175[0m
+        [0m · review [0m
+        [0m2026-10-08T08:00:00Z[0m
+        [0m → [0m
+        [0m2026-10-08T10:00:00Z[0m
+        [0m. Same patient and historical cutoff as hemodynamics; this does not establish simultaneous measurements.[0m
+      [36m</p>[39m
+      [36m<h3>[39m
+        [0mRecorded creatinine[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mSource event time is not confirmed specimen collection time. Specimen, collection time, typed quality and withdrawal metadata are unavailable in this legacy observation contract. Source text is retained without promoting it to a typed fact. Outside-window and unplaced terminal observations stay visible; older values are not resurrected.[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"Recorded creatinine table"[39m
+        [33mclass[39m=[32m"rf-scroll"[39m
+        [33mrole[39m=[32m"region"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m>[39m
+        [36m<table>[39m
+          [36m<thead>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [0mExact source[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mRecorded result / raw unit[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mSource timing[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mUncertainty[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-A[0m
+                  [0m / [0m
+                  [0m2[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m1.1000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T08:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T08:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-B[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m2.000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-missing[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0mmissing — Source result unavailable.[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mEvent time unavailable[0m
+                [0m · [0m
+                [0munplaced[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0munavailable[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-unlike-unit[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m150.0 umol/L · unit mapping unresolved[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0munverified[0m
+                [0m; conflict [0m
+                [0munresolved[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic conflicting report; no corroboration or interpretation.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+      [36m<h3>[39m
+        [0mUrine, fluid, weight and renal-support source context[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mPoint events and intervals remain separate. Gaps, overlapping intervals and completeness are not reconciled here. Zero is a recorded value; missing is not zero. Reported balances/totals are source calculations, not ClinRx calculations. A fluid challenge may already be included in an input interval and must not be added again. CRRT net remova...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Renal and fluid review"[39m
+    [36m>[39m
+      [36m<h2>[39m
+        [0mRenal and fluid review[0m
+      [36m</h2>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mRead-only synthetic evidence. Clinical execution disabled.[0m
+        [36m</strong>[39m
+        [0m No AKI stage, eGFR, calculated trend, balance, urine rate or treatment advice.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRepository [0m
+        [0meb763eb6-094e-4ee0-8ff3-449e3ffe7ad5[0m
+        [0m · cutoff [0m
+        [0m175[0m
+        [0m · review [0m
+        [0m2026-10-08T08:00:00Z[0m
+        [0m → [0m
+        [0m2026-10-08T10:00:00Z[0m
+        [0m. Same patient and historical cutoff as hemodynamics; this does not establish simultaneous measurements.[0m
+      [36m</p>[39m
+      [36m<h3>[39m
+        [0mRecorded creatinine[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mSource event time is not confirmed specimen collection time. Specimen, collection time, typed quality and withdrawal metadata are unavailable in this legacy observation contract. Source text is retained without promoting it to a typed fact. Outside-window and unplaced terminal observations stay visible; older values are not resurrected.[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"Recorded creatinine table"[39m
+        [33mclass[39m=[32m"rf-scroll"[39m
+        [33mrole[39m=[32m"region"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m>[39m
+        [36m<table>[39m
+          [36m<thead>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [0mExact source[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mRecorded result / raw unit[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mSource timing[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mUncertainty[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-A[0m
+                  [0m / [0m
+                  [0m2[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m1.1000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T08:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T08:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-B[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m2.000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-missing[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0mmissing — Source result unavailable.[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mEvent time unavailable[0m
+                [0m · [0m
+                [0munplaced[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0munavailable[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-unlike-unit[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m150.0 umol/L · unit mapping unresolved[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0munverified[0m
+                [0m; conflict [0m
+                [0munresolved[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic conflicting report; no corroboration or interpretation.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+      [36m<h3>[39m
+        [0mUrine, fluid, weight and renal-support source context[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mPoint events and intervals remain separate. Gaps, overlapping intervals and completeness are not reconciled here. Zero is a recorded value; missing is not zero. Reported balances/totals are source calculations, not ClinRx calculations. A fluid challenge may already be included in an input interval and must not be added again. CRRT net remova...
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ tests/renalFluidHistory.test.tsx:33:175
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  tests/renalFluidHistory.test.tsx > accepts unchanged fluid history and clears it when the next history cannot be confirmed
+TestingLibraryElementError: Unable to find role="alert"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Renal and fluid review"[39m
+    [36m>[39m
+      [36m<h2>[39m
+        [0mRenal and fluid review[0m
+      [36m</h2>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mRead-only synthetic evidence. Clinical execution disabled.[0m
+        [36m</strong>[39m
+        [0m No AKI stage, eGFR, calculated trend, balance, urine rate or treatment advice.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRepository [0m
+        [0meb763eb6-094e-4ee0-8ff3-449e3ffe7ad5[0m
+        [0m · cutoff [0m
+        [0m175[0m
+        [0m · review [0m
+        [0m2026-10-08T08:00:00Z[0m
+        [0m → [0m
+        [0m2026-10-08T10:00:00Z[0m
+        [0m. Same patient and historical cutoff as hemodynamics; this does not establish simultaneous measurements.[0m
+      [36m</p>[39m
+      [36m<h3>[39m
+        [0mRecorded creatinine[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mSource event time is not confirmed specimen collection time. Specimen, collection time, typed quality and withdrawal metadata are unavailable in this legacy observation contract. Source text is retained without promoting it to a typed fact. Outside-window and unplaced terminal observations stay visible; older values are not resurrected.[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"Recorded creatinine table"[39m
+        [33mclass[39m=[32m"rf-scroll"[39m
+        [33mrole[39m=[32m"region"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m>[39m
+        [36m<table>[39m
+          [36m<thead>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [0mExact source[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mRecorded result / raw unit[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mSource timing[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mUncertainty[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-A[0m
+                  [0m / [0m
+                  [0m2[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m1.1000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T08:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T08:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-B[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m2.000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-missing[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0mmissing — Source result unavailable.[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mEvent time unavailable[0m
+                [0m · [0m
+                [0munplaced[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0munavailable[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-unlike-unit[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m150.0 umol/L · unit mapping unresolved[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0munverified[0m
+                [0m; conflict [0m
+                [0munresolved[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic conflicting report; no corroboration or interpretation.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+      [36m<h3>[39m
+        [0mUrine, fluid, weight and renal-support source context[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mPoint events and intervals remain separate. Gaps, overlapping intervals and completeness are not reconciled here. Zero is a recorded value; missing is not zero. Reported balances/totals are source calculations, not ClinRx calculations. A fluid challenge may already be included in an input interval and must not be added again. CRRT net remova...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Renal and fluid review"[39m
+    [36m>[39m
+      [36m<h2>[39m
+        [0mRenal and fluid review[0m
+      [36m</h2>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mRead-only synthetic evidence. Clinical execution disabled.[0m
+        [36m</strong>[39m
+        [0m No AKI stage, eGFR, calculated trend, balance, urine rate or treatment advice.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRepository [0m
+        [0meb763eb6-094e-4ee0-8ff3-449e3ffe7ad5[0m
+        [0m · cutoff [0m
+        [0m175[0m
+        [0m · review [0m
+        [0m2026-10-08T08:00:00Z[0m
+        [0m → [0m
+        [0m2026-10-08T10:00:00Z[0m
+        [0m. Same patient and historical cutoff as hemodynamics; this does not establish simultaneous measurements.[0m
+      [36m</p>[39m
+      [36m<h3>[39m
+        [0mRecorded creatinine[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mSource event time is not confirmed specimen collection time. Specimen, collection time, typed quality and withdrawal metadata are unavailable in this legacy observation contract. Source text is retained without promoting it to a typed fact. Outside-window and unplaced terminal observations stay visible; older values are not resurrected.[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"Recorded creatinine table"[39m
+        [33mclass[39m=[32m"rf-scroll"[39m
+        [33mrole[39m=[32m"region"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m>[39m
+        [36m<table>[39m
+          [36m<thead>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [0mExact source[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mRecorded result / raw unit[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mSource timing[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mUncertainty[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-A[0m
+                  [0m / [0m
+                  [0m2[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m1.1000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T08:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T08:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mdemo-creatinine-B[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m2.000 mg/dL · unit mapping assessed[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-missing[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0mmissing — Source result unavailable.[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mEvent time unavailable[0m
+                [0m · [0m
+                [0munplaced[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0munavailable[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0mverified[0m
+                [0m; conflict [0m
+                [0mnone_known[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic recorded evidence only.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [36m<button>[39m
+                  [0mrf1-creatinine-unlike-unit[0m
+                  [0m / [0m
+                  [0m1[0m
+                [36m</button>[39m
+              [36m</th>[39m
+              [36m<td>[39m
+                [0m150.0 umol/L · unit mapping unresolved[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m2026-10-08T10:00:00Z[0m
+                [0m · [0m
+                [0min_window[0m
+                [36m<br />[39m
+                [0mRecorded [0m
+                [0m2026-10-08T10:00:00Z[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0mVerification [0m
+                [0munverified[0m
+                [0m; conflict [0m
+                [0munresolved[0m
+                [0m; temporal status [0m
+                [0mhistorical[0m
+                [36m<br />[39m
+                [0mSynthetic conflicting report; no corroboration or interpretation.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+      [36m<h3>[39m
+        [0mUrine, fluid, weight and renal-support source context[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0mPoint events and intervals remain separate. Gaps, overlapping intervals and completeness are not reconciled here. Zero is a recorded value; missing is not zero. Reported balances/totals are source calculations, not ClinRx calculations. A fluid challenge may already be included in an input interval and must not be added again. CRRT net remova...
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ tests/renalFluidHistory.test.tsx:34:839
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  12 failed | 2 passed (14)
+   Start at  21:54:34
+   Duration  15.08s (tests 91%, environment 5%, transform 2%, import 1%, setup 1%)
+

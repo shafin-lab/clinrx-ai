@@ -1,0 +1,135 @@
+frontend	Record checkout and environment	2026-10-19T16:27:14.5361630Z shell: /usr/bin/bash -e {0}
+frontend	Record checkout and environment	2026-10-19T16:27:14.5361867Z ##[endgroup]
+frontend	Record checkout and environment	2026-10-19T16:27:14.5463171Z 5cb73212ae6104b02bad361886cd9507795d88bf
+frontend	Record checkout and environment	2026-10-19T16:27:14.5463977Z event=workflow_dispatch source_sha=5cb73212ae6104b02bad361886cd9507795d88bf ref=refs/tags/clinrx-rf1-f1-5cb7321
+frontend	Record checkout and environment	2026-10-19T16:27:14.5464495Z runner_image=ubuntu24 image_version=20261012.334.1
+frontend	Record checkout and environment	2026-10-19T16:27:14.5468091Z PRETTY_NAME="Ubuntu 24.04.5 LTS"
+frontend	Record checkout and environment	2026-10-19T16:27:14.5468432Z NAME="Ubuntu"
+frontend	Record checkout and environment	2026-10-19T16:27:14.5468727Z VERSION_ID="24.04"
+frontend	Record checkout and environment	2026-10-19T16:27:14.5469105Z VERSION="24.04.5 LTS (Noble Numbat)"
+frontend	Record checkout and environment	2026-10-19T16:27:14.5469474Z VERSION_CODENAME=noble
+frontend	Record checkout and environment	2026-10-19T16:27:14.5469748Z ID=ubuntu
+frontend	Record checkout and environment	2026-10-19T16:27:14.5469992Z ID_LIKE=debian
+frontend	Record checkout and environment	2026-10-19T16:27:14.5470342Z HOME_URL="https://www.ubuntu.com/"
+frontend	Record checkout and environment	2026-10-19T16:27:14.5470773Z SUPPORT_URL="https://help.ubuntu.com/"
+frontend	Record checkout and environment	2026-10-19T16:27:14.5471294Z BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+frontend	Record checkout and environment	2026-10-19T16:27:14.5471738Z PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+frontend	Record checkout and environment	2026-10-19T16:27:14.5472108Z UBUNTU_CODENAME=noble
+frontend	Record checkout and environment	2026-10-19T16:27:14.5472312Z LOGO=ubuntu-logo
+frontend	Record checkout and environment	2026-10-19T16:27:14.5476206Z x86_64
+frontend	Record checkout and environment	2026-10-19T16:27:14.5503664Z v22.13.0
+frontend	Record checkout and environment	2026-10-19T16:27:14.6066566Z 10.9.2
+frontend	Record checkout and environment	2026-10-19T16:27:14.6111172Z 786e4abafbe4e25ebd2f9f11b233566a63c6e0c60e3883a8c8ae0b1e2a741c08  package.json
+frontend	Record checkout and environment	2026-10-19T16:27:14.6112009Z 29fec0b288521d6bbb0cc188c5d56a3b0a10cc13e400564d8852ee13b6c5be23  package-lock.json
+frontend	Clean frontend dependency installation	﻿2026-10-19T16:27:14.6145095Z ##[group]Run npm ci
+frontend	Clean frontend dependency installation	2026-10-19T16:27:14.6145321Z ^[[36;1mnpm ci^[[0m
+frontend	Clean frontend dependency installation	2026-10-19T16:27:14.6201125Z shell: /usr/bin/bash -e {0}
+frontend	Clean frontend dependency installation	2026-10-19T16:27:14.6201355Z ##[endgroup]
+frontend	Clean frontend dependency installation	2026-10-19T16:27:16.7086585Z 
+frontend	Clean frontend dependency installation	2026-10-19T16:27:16.7087495Z added 108 packages, and audited 109 packages in 2s
+frontend	Clean frontend dependency installation	2026-10-19T16:27:16.7087882Z 
+frontend	Clean frontend dependency installation	2026-10-19T16:27:16.7088087Z 22 packages are looking for funding
+frontend	Clean frontend dependency installation	2026-10-19T16:27:16.7088514Z   run `npm fund` for details
+frontend	Clean frontend dependency installation	2026-10-19T16:27:16.7094858Z 
+frontend	Clean frontend dependency installation	2026-10-19T16:27:16.7095324Z found 0 vulnerabilities
+frontend	Full frontend tests	﻿2026-10-19T16:27:16.7514382Z ##[group]Run set -o pipefail
+frontend	Full frontend tests	2026-10-19T16:27:16.7514654Z ^[[36;1mset -o pipefail^[[0m
+frontend	Full frontend tests	2026-10-19T16:27:16.7514972Z ^[[36;1mnpm test -- --maxWorkers=2 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/tests.txt"^[[0m
+frontend	Full frontend tests	2026-10-19T16:27:16.7575675Z shell: /usr/bin/bash -e {0}
+frontend	Full frontend tests	2026-10-19T16:27:16.7575916Z ##[endgroup]
+frontend	Full frontend tests	2026-10-19T16:27:16.8380665Z 
+frontend	Full frontend tests	2026-10-19T16:27:16.8381383Z > clinrx-synthetic-review@0.1.0 test
+frontend	Full frontend tests	2026-10-19T16:27:16.8381788Z > vitest run --maxWorkers=2
+frontend	Full frontend tests	2026-10-19T16:27:16.8381926Z 
+frontend	Full frontend tests	2026-10-19T16:27:17.0868252Z 
+frontend	Full frontend tests	2026-10-19T16:27:17.0871298Z ^[[1m^[[30m^[[46m RUN ^[[49m^[[39m^[[22m ^[[36mv5.0.3 ^[[39m^[[90m/home/runner/work/clinrx-ai/clinrx-ai/frontend^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:17.0871655Z 
+frontend	Full frontend tests	2026-10-19T16:27:25.5926868Z  ^[[32m✓^[[39m tests/comprehensiveDemo.test.tsx ^[[2m(^[[22m^[[2m30 tests^[[22m^[[2m)^[[22m^[[33m 6879^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:25.5928298Z    ^[[32m✓^[[39m comprehensive read-only synthetic demo ^[[2m(8)^[[22m
+frontend	Full frontend tests	2026-10-19T16:27:25.5929869Z      ^[[33m^[[2m✓^[[22m^[[39m opens with cardiac output and echo, preserves exact values and makes no execution request^[[33m 310^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:25.5931337Z    ^[[33m^[[2m✓^[[22m^[[39m browses ABG independently of lactate, retains exact quantities and sample context^[[33m 329^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:25.5932682Z    ^[[33m^[[2m✓^[[22m^[[39m combines ABG, cardiac output and echo in one patient summary with exact source inspection^[[33m 605^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:25.5934091Z    ^[[33m^[[2m✓^[[22m^[[39m shows case-specific possibilities through read-only browsing and preserves exact source inspection^[[33m 314^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:25.5935496Z    ^[[33m^[[2m✓^[[22m^[[39m opens the persisted flowsheet with exact infusion inspection without preparing or executing^[[33m 563^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:25.5936962Z    ^[[33m^[[2m✓^[[22m^[[39m uses the separately authored expanded case rather than reusing the old case^[[33m 374^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:25.5938692Z    ^[[33m^[[2m✓^[[22m^[[39m opens expanded authored possibilities and serial sources without preparing or executing a review^[[33m 663^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.3817217Z  ^[[32m✓^[[39m tests/micro.test.tsx ^[[2m(^[[22m^[[2m41 tests^[[22m^[[2m)^[[22m^[[33m 6855^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.3819012Z    ^[[33m^[[2m✓^[[22m^[[39m renders backend hierarchy, source precision, and separate antimicrobial categories^[[33m 405^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9207852Z  ^[[32m✓^[[39m tests/patientWorkspace.test.tsx ^[[2m(^[[22m^[[2m28 tests^[[22m^[[2m)^[[22m^[[33m 15174^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9209418Z    ^[[33m^[[2m✓^[[22m^[[39m uses one shared snapshot and hands off the exact selected revision and digest without enabling execution^[[33m 838^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9210907Z    ^[[33m^[[2m✓^[[22m^[[39m preserves a guided unsaved draft by blocking navigation and refresh until explicit discard^[[33m 537^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9212326Z    ^[[33m^[[2m✓^[[22m^[[39m retains original pending draft through committed recovery, without navigation or automatic retry^[[33m 601^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9213805Z    ^[[33m^[[2m✓^[[22m^[[39m retains original pending draft through absent recovery, without navigation or automatic retry^[[33m 814^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9215160Z    ^[[33m^[[2m✓^[[22m^[[39m keeps exact pending identity and blocks navigation when lookup fails^[[33m 605^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9216494Z    ^[[33m^[[2m✓^[[22m^[[39m fails closed on unconfirmed gate and recovers only after an explicit refresh^[[33m 397^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9217738Z    ^[[33m^[[2m✓^[[22m^[[39m fails closed on unconfirmed patient and recovers only after an explicit refresh^[[33m 362^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9218608Z    ^[[33m^[[2m✓^[[22m^[[39m fails closed on unconfirmed encounter and recovers only after an explicit refresh^[[33m 394^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9219430Z    ^[[33m^[[2m✓^[[22m^[[39m reviews handover from exact selections, retaining historical identity when the latest snapshot changes^[[33m 524^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9220274Z    ^[[33m^[[2m✓^[[22m^[[39m invalidates an in-flight inspector history on shared refresh and does not show stale data^[[33m 397^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9221608Z    ^[[33m^[[2m✓^[[22m^[[39m completes correction, separate authored reassessment, comparison and handover without rewriting the original note^[[33m 1018^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9222438Z    ^[[33m^[[2m✓^[[22m^[[39m preserves exact comparison selection across refresh and discloses a disappeared note^[[33m 451^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9223237Z    ^[[33m^[[2m✓^[[22m^[[39m retains confirmed save identity when the subsequent shared refresh fails, while blocking new writes^[[33m 540^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9224067Z    ^[[33m^[[2m✓^[[22m^[[39m finds an ABG by plain name and source time from comparison, resets stale filters and opens the exact source^[[33m 384^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9224833Z    ^[[33m^[[2m✓^[[22m^[[39m saves exact handover pins and restores their verified API records after remount^[[33m 677^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9225604Z    ^[[33m^[[2m✓^[[22m^[[39m restores a historical pin as unavailable when a successor exists, preserving the original storage^[[33m 607^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9226962Z    ^[[33m^[[2m✓^[[22m^[[39m reports storage failure without claiming a saved handover or discarding selections^[[33m 414^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9228249Z    ^[[33m^[[2m✓^[[22m^[[39m blocks overwriting a handover changed in another tab and retains current selections^[[33m 483^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9229572Z    ^[[33m^[[2m✓^[[22m^[[39m gives an explicit next step for each part of the patient workflow without claiming clinical completion^[[33m 400^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9231035Z    ^[[33m^[[2m✓^[[22m^[[39m starts a separate reassessment after confirmation with no copied evidence selections or automatic finding^[[33m 539^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9237021Z    ^[[33m^[[2m✓^[[22m^[[39m withholds post-save handover navigation if the refreshed snapshot does not confirm the exact saved digest^[[33m 472^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9238700Z    ^[[33m^[[2m✓^[[22m^[[39m keeps post-save actions blocked after an unconfirmed refresh^[[33m 438^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9240144Z    ^[[33m^[[2m✓^[[22m^[[39m completes a cardiac-output correction through readable history, separate note, exact comparison and saved handover recovery^[[33m 1505^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9241652Z    ^[[33m^[[2m✓^[[22m^[[39m M1: repository replacement cannot rebind a selected comparison note into the new handover^[[33m 585^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:33.9243154Z    ^[[33m^[[2m✓^[[22m^[[39m M1: retains repository A saved confirmation but withholds continuation against B with identical reference and digest^[[33m 457^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:35.3522204Z  ^[[32m✓^[[39m tests/microDecoders.test.ts ^[[2m(^[[22m^[[2m116 tests^[[22m^[[2m)^[[22m^[[33m 439^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:40.1396660Z  ^[[32m✓^[[39m tests/review.test.tsx ^[[2m(^[[22m^[[2m36 tests^[[22m^[[2m)^[[22m^[[33m 5846^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:40.1398010Z    ^[[32m✓^[[39m evidence and preparation ^[[2m(7)^[[22m
+frontend	Full frontend tests	2026-10-19T16:27:40.1399090Z      ^[[33m^[[2m✓^[[22m^[[39m loads exact strings and ten explicit coverage entries^[[33m 364^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:41.2295906Z  ^[[32m✓^[[39m tests/client.test.ts ^[[2m(^[[22m^[[2m88 tests^[[22m^[[2m)^[[22m^[[32m 225^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:41.5783547Z  ^[[32m✓^[[39m tests/evidenceEntry.test.tsx ^[[2m(^[[22m^[[2m17 tests^[[22m^[[2m)^[[22m^[[33m 5241^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:41.5784971Z    ^[[33m^[[2m✓^[[22m^[[39m reviews a reasoned exact correction before any append and preserves original time and sample context^[[33m 555^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:41.5786610Z    ^[[33m^[[2m✓^[[22m^[[39m retains the exact reviewed draft after a lost response and requires explicit absent-case retry^[[33m 393^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:41.5787911Z    ^[[33m^[[2m✓^[[22m^[[39m keeps JSON-only and interleaved shortcut edits in the single authoritative draft^[[33m 328^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:41.5789245Z    ^[[33m^[[2m✓^[[22m^[[39m ignores an older refresh result after a newer response and selects exact revisions only^[[33m 486^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:41.5791104Z    ^[[33m^[[2m✓^[[22m^[[39m creates a guided BP source without JSON editing and reviews exact context before append^[[33m 309^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:41.5792231Z    ^[[33m^[[2m✓^[[22m^[[39m prepares a clinician-authored reassessment with exact linked revisions and no automatic conclusion^[[33m 513^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:46.0178149Z  ^[[32m✓^[[39m tests/circulatory.test.tsx ^[[2m(^[[22m^[[2m52 tests^[[22m^[[2m)^[[22m^[[33m 3884^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:46.0213577Z    ^[[32m✓^[[39m M7 explicit review state ^[[2m(9)^[[22m
+frontend	Full frontend tests	2026-10-19T16:27:46.0214500Z      ^[[33m^[[2m✓^[[22m^[[39m browses all families and corrections even with execution gate closed^[[33m 565^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:46.0215458Z      ^[[33m^[[2m✓^[[22m^[[39m retains command and reconciles after network loss^[[33m 316^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:46.9533095Z  ^[[32m✓^[[39m tests/caseInterpretation.test.tsx ^[[2m(^[[22m^[[2m43 tests^[[22m^[[2m)^[[22m^[[33m 4257^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:51.0920289Z  ^[[32m✓^[[39m tests/flowsheetOverview.test.tsx ^[[2m(^[[22m^[[2m9 tests^[[22m^[[2m)^[[22m^[[33m 3170^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:51.0921329Z    ^[[33m^[[2m✓^[[22m^[[39m defaults to a compact overview with all eight groups and exact source selection^[[33m 441^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:51.0922170Z    ^[[33m^[[2m✓^[[22m^[[39m makes every overview event reachable through time pages and through all-times mode^[[33m 641^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:51.0922982Z    ^[[33m^[[2m✓^[[22m^[[39m keeps full-detail records and unknown or withdrawn source status available^[[33m 460^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:51.0923815Z    ^[[33m^[[2m✓^[[22m^[[39m keeps pressure, method-specific flow and source rhythm on exact times with inspectable uncertainty^[[33m 441^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:51.0924697Z    ^[[33m^[[2m✓^[[22m^[[39m keeps ABG samples and older echo at their original columns, with exact inspectors and source caveats^[[33m 504^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:51.0925848Z    ^[[33m^[[2m✓^[[22m^[[39m does not place ambiguous gas or echo timing on the axis or hide suspect and withdrawn findings^[[33m 317^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:51.8753310Z  ^[[32m✓^[[39m tests/reassessmentComparison.test.tsx ^[[2m(^[[22m^[[2m36 tests^[[22m^[[2m)^[[22m^[[33m 4956^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:51.8755151Z    ^[[33m^[[2m✓^[[22m^[[39m compares exact original and successor references without replacing missing historical measurements or mutating notes^[[33m 385^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:52.8206210Z  ^[[32m✓^[[39m tests/decoders.test.ts ^[[2m(^[[22m^[[2m94 tests^[[22m^[[2m)^[[22m^[[32m 54^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:56.1815936Z  ^[[32m✓^[[39m tests/flowsheet.test.tsx ^[[2m(^[[22m^[[2m24 tests^[[22m^[[2m)^[[22m^[[33m 4118^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:56.1817846Z    ^[[33m^[[2m✓^[[22m^[[39m does not carry forward a dose or replace a pause/stop with zero^[[33m 351^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:56.1829991Z    ^[[33m^[[2m✓^[[22m^[[39m preserves exact drug units, event distinctions and source links^[[33m 794^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:56.1831340Z    ^[[33m^[[2m✓^[[22m^[[39m retains top-level assessment and signal quality rather than labeling it missing^[[33m 340^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:57.2029787Z  ^[[32m✓^[[39m tests/guidedEvidence.test.ts ^[[2m(^[[22m^[[2m20 tests^[[22m^[[2m)^[[22m^[[32m 12^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:59.4696661Z  ^[[32m✓^[[39m tests/renalFluid.test.tsx ^[[2m(^[[22m^[[2m21 tests^[[22m^[[2m)^[[22m^[[33m 5525^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:59.4707939Z    ^[[33m^[[2m✓^[[22m^[[39m decodes the real composite, four original terminal observations and exact two-revision history^[[33m 312^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:59.4727962Z    ^[[33m^[[2m✓^[[22m^[[39m shows raw creatinine and fluid intervals, preserves uncertainty and opens both revisions^[[33m 599^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:59.4729491Z    ^[[33m^[[2m✓^[[22m^[[39m clears previous history immediately and ignores a late response after a new selection^[[33m 389^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:27:59.4730813Z    ^[[33m^[[2m✓^[[22m^[[39m uses one composite load and returns to the same hemodynamics workspace^[[33m 345^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:00.5064336Z  ^[[32m✓^[[39m tests/evidenceExplanation.test.tsx ^[[2m(^[[22m^[[2m5 tests^[[22m^[[2m)^[[22m^[[32m 234^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:02.4966155Z  ^[[32m✓^[[39m tests/evidenceEntryClient.test.ts ^[[2m(^[[22m^[[2m9 tests^[[22m^[[2m)^[[22m^[[33m 1060^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.5197855Z  ^[[32m✓^[[39m tests/evidenceSearch.test.ts ^[[2m(^[[22m^[[2m9 tests^[[22m^[[2m)^[[22m^[[32m 7^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8969285Z  ^[[32m✓^[[39m tests/renalFluidHistory.test.tsx ^[[2m(^[[22m^[[2m14 tests^[[22m^[[2m)^[[22m^[[33m 5812^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8975969Z    ^[[33m^[[2m✓^[[22m^[[39m rejects selected creatinine content mismatch: self_consistent_value^[[33m 509^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8977340Z    ^[[33m^[[2m✓^[[22m^[[39m rejects selected creatinine content mismatch: ingestion_time^[[33m 490^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8987860Z    ^[[33m^[[2m✓^[[22m^[[39m rejects selected creatinine content mismatch: ingestion_sequence^[[33m 470^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8989018Z    ^[[33m^[[2m✓^[[22m^[[39m accepts unchanged selected creatinine history through the real client^[[33m 481^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8990031Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: cutoff^[[33m 570^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8990923Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: repository^[[33m 416^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8991795Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: window^[[33m 392^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8992717Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: assembly_digest^[[33m 365^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8993656Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: request_limits^[[33m 318^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8994622Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: selected_content^[[33m 311^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T16:28:03.8995972Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: ingestion_time^[[33m 341^[[2mms^[[22m^[[39m
