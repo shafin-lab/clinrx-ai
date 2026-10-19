@@ -1,0 +1,36 @@
+[
+  {
+    "path": "/health",
+    "method": "GET",
+    "status": 200,
+    "body": {
+      "status": "ok",
+      "mode": "synthetic-evidence-authoring",
+      "execution_enabled": false
+    }
+  },
+  {
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-review-preparations",
+    "method": "POST",
+    "status": 404,
+    "body": {
+      "code": "not_found"
+    }
+  },
+  {
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/circulatory-reviews",
+    "method": "POST",
+    "status": 404,
+    "body": {
+      "code": "not_found"
+    }
+  },
+  {
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/renal-observations",
+    "method": "POST",
+    "status": 404,
+    "body": {
+      "code": "not_found"
+    }
+  }
+]

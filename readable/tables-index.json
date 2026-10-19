@@ -1,0 +1,316 @@
+{
+  "alembic_version": {
+    "columns": [
+      "version_num"
+    ],
+    "files": [
+      "readable/tables/alembic_version/000.json"
+    ]
+  },
+  "circulatory_execution": {
+    "columns": [
+      "execution_id",
+      "patient_id",
+      "encounter_id",
+      "payload_digest",
+      "payload_version",
+      "payload",
+      "ingested_at"
+    ],
+    "files": [
+      "readable/tables/circulatory_execution/000.json",
+      "readable/tables/circulatory_execution/001.json"
+    ]
+  },
+  "creatinine_trend_execution": {
+    "columns": [
+      "execution_id",
+      "patient_id",
+      "encounter_id",
+      "payload_version",
+      "payload",
+      "payload_digest",
+      "ingested_at"
+    ],
+    "files": []
+  },
+  "encounter": {
+    "columns": [
+      "encounter_id",
+      "patient_id",
+      "payload_version",
+      "payload",
+      "ingested_at"
+    ],
+    "files": [
+      "readable/tables/encounter/000.json"
+    ]
+  },
+  "fact_revision": {
+    "columns": [
+      "ingestion_sequence",
+      "kind",
+      "fact_id",
+      "revision",
+      "patient_id",
+      "encounter_id",
+      "payload_version",
+      "payload",
+      "ingested_at"
+    ],
+    "files": [
+      "readable/tables/fact_revision/000.json",
+      "readable/tables/fact_revision/001.json",
+      "readable/tables/fact_revision/002.json",
+      "readable/tables/fact_revision/003.json",
+      "readable/tables/fact_revision/004.json",
+      "readable/tables/fact_revision/005.json",
+      "readable/tables/fact_revision/006.json",
+      "readable/tables/fact_revision/007.json",
+      "readable/tables/fact_revision/008.json",
+      "readable/tables/fact_revision/009.json",
+      "readable/tables/fact_revision/010.json",
+      "readable/tables/fact_revision/011.json",
+      "readable/tables/fact_revision/012.json",
+      "readable/tables/fact_revision/013.json",
+      "readable/tables/fact_revision/014.json",
+      "readable/tables/fact_revision/015.json",
+      "readable/tables/fact_revision/016.json",
+      "readable/tables/fact_revision/017.json",
+      "readable/tables/fact_revision/018.json",
+      "readable/tables/fact_revision/019.json",
+      "readable/tables/fact_revision/020.json",
+      "readable/tables/fact_revision/021.json",
+      "readable/tables/fact_revision/022.json",
+      "readable/tables/fact_revision/023.json",
+      "readable/tables/fact_revision/024.json",
+      "readable/tables/fact_revision/025.json",
+      "readable/tables/fact_revision/026.json",
+      "readable/tables/fact_revision/027.json",
+      "readable/tables/fact_revision/028.json",
+      "readable/tables/fact_revision/029.json",
+      "readable/tables/fact_revision/030.json",
+      "readable/tables/fact_revision/031.json",
+      "readable/tables/fact_revision/032.json",
+      "readable/tables/fact_revision/033.json",
+      "readable/tables/fact_revision/034.json",
+      "readable/tables/fact_revision/035.json",
+      "readable/tables/fact_revision/036.json",
+      "readable/tables/fact_revision/037.json",
+      "readable/tables/fact_revision/038.json",
+      "readable/tables/fact_revision/039.json",
+      "readable/tables/fact_revision/040.json",
+      "readable/tables/fact_revision/041.json",
+      "readable/tables/fact_revision/042.json",
+      "readable/tables/fact_revision/043.json",
+      "readable/tables/fact_revision/044.json",
+      "readable/tables/fact_revision/045.json",
+      "readable/tables/fact_revision/046.json",
+      "readable/tables/fact_revision/047.json",
+      "readable/tables/fact_revision/048.json",
+      "readable/tables/fact_revision/049.json",
+      "readable/tables/fact_revision/050.json",
+      "readable/tables/fact_revision/051.json",
+      "readable/tables/fact_revision/052.json",
+      "readable/tables/fact_revision/053.json",
+      "readable/tables/fact_revision/054.json",
+      "readable/tables/fact_revision/055.json",
+      "readable/tables/fact_revision/056.json",
+      "readable/tables/fact_revision/057.json",
+      "readable/tables/fact_revision/058.json",
+      "readable/tables/fact_revision/059.json",
+      "readable/tables/fact_revision/060.json",
+      "readable/tables/fact_revision/061.json",
+      "readable/tables/fact_revision/062.json",
+      "readable/tables/fact_revision/063.json",
+      "readable/tables/fact_revision/064.json",
+      "readable/tables/fact_revision/065.json",
+      "readable/tables/fact_revision/066.json",
+      "readable/tables/fact_revision/067.json",
+      "readable/tables/fact_revision/068.json",
+      "readable/tables/fact_revision/069.json",
+      "readable/tables/fact_revision/070.json",
+      "readable/tables/fact_revision/071.json",
+      "readable/tables/fact_revision/072.json",
+      "readable/tables/fact_revision/073.json",
+      "readable/tables/fact_revision/074.json",
+      "readable/tables/fact_revision/075.json",
+      "readable/tables/fact_revision/076.json",
+      "readable/tables/fact_revision/077.json",
+      "readable/tables/fact_revision/078.json",
+      "readable/tables/fact_revision/079.json",
+      "readable/tables/fact_revision/080.json",
+      "readable/tables/fact_revision/081.json",
+      "readable/tables/fact_revision/082.json",
+      "readable/tables/fact_revision/083.json",
+      "readable/tables/fact_revision/084.json",
+      "readable/tables/fact_revision/085.json",
+      "readable/tables/fact_revision/086.json",
+      "readable/tables/fact_revision/087.json",
+      "readable/tables/fact_revision/088.json",
+      "readable/tables/fact_revision/089.json",
+      "readable/tables/fact_revision/090.json",
+      "readable/tables/fact_revision/091.json",
+      "readable/tables/fact_revision/092.json",
+      "readable/tables/fact_revision/093.json",
+      "readable/tables/fact_revision/094.json",
+      "readable/tables/fact_revision/095.json",
+      "readable/tables/fact_revision/096.json",
+      "readable/tables/fact_revision/097.json",
+      "readable/tables/fact_revision/098.json",
+      "readable/tables/fact_revision/099.json",
+      "readable/tables/fact_revision/100.json",
+      "readable/tables/fact_revision/101.json",
+      "readable/tables/fact_revision/102.json",
+      "readable/tables/fact_revision/103.json",
+      "readable/tables/fact_revision/104.json",
+      "readable/tables/fact_revision/105.json",
+      "readable/tables/fact_revision/106.json",
+      "readable/tables/fact_revision/107.json",
+      "readable/tables/fact_revision/108.json",
+      "readable/tables/fact_revision/109.json",
+      "readable/tables/fact_revision/110.json",
+      "readable/tables/fact_revision/111.json",
+      "readable/tables/fact_revision/112.json",
+      "readable/tables/fact_revision/113.json",
+      "readable/tables/fact_revision/114.json",
+      "readable/tables/fact_revision/115.json",
+      "readable/tables/fact_revision/116.json",
+      "readable/tables/fact_revision/117.json",
+      "readable/tables/fact_revision/118.json",
+      "readable/tables/fact_revision/119.json",
+      "readable/tables/fact_revision/120.json",
+      "readable/tables/fact_revision/121.json",
+      "readable/tables/fact_revision/122.json",
+      "readable/tables/fact_revision/123.json",
+      "readable/tables/fact_revision/124.json",
+      "readable/tables/fact_revision/125.json",
+      "readable/tables/fact_revision/126.json",
+      "readable/tables/fact_revision/127.json",
+      "readable/tables/fact_revision/128.json",
+      "readable/tables/fact_revision/129.json",
+      "readable/tables/fact_revision/130.json",
+      "readable/tables/fact_revision/131.json",
+      "readable/tables/fact_revision/132.json",
+      "readable/tables/fact_revision/133.json",
+      "readable/tables/fact_revision/134.json",
+      "readable/tables/fact_revision/135.json",
+      "readable/tables/fact_revision/136.json",
+      "readable/tables/fact_revision/137.json",
+      "readable/tables/fact_revision/138.json",
+      "readable/tables/fact_revision/139.json",
+      "readable/tables/fact_revision/140.json",
+      "readable/tables/fact_revision/141.json",
+      "readable/tables/fact_revision/142.json",
+      "readable/tables/fact_revision/143.json",
+      "readable/tables/fact_revision/144.json",
+      "readable/tables/fact_revision/145.json",
+      "readable/tables/fact_revision/146.json",
+      "readable/tables/fact_revision/147.json",
+      "readable/tables/fact_revision/148.json",
+      "readable/tables/fact_revision/149.json",
+      "readable/tables/fact_revision/150.json",
+      "readable/tables/fact_revision/151.json",
+      "readable/tables/fact_revision/152.json",
+      "readable/tables/fact_revision/153.json",
+      "readable/tables/fact_revision/154.json",
+      "readable/tables/fact_revision/155.json",
+      "readable/tables/fact_revision/156.json",
+      "readable/tables/fact_revision/157.json",
+      "readable/tables/fact_revision/158.json",
+      "readable/tables/fact_revision/159.json",
+      "readable/tables/fact_revision/160.json",
+      "readable/tables/fact_revision/161.json",
+      "readable/tables/fact_revision/162.json",
+      "readable/tables/fact_revision/163.json",
+      "readable/tables/fact_revision/164.json",
+      "readable/tables/fact_revision/165.json",
+      "readable/tables/fact_revision/166.json",
+      "readable/tables/fact_revision/167.json",
+      "readable/tables/fact_revision/168.json",
+      "readable/tables/fact_revision/169.json",
+      "readable/tables/fact_revision/170.json",
+      "readable/tables/fact_revision/171.json",
+      "readable/tables/fact_revision/172.json",
+      "readable/tables/fact_revision/173.json",
+      "readable/tables/fact_revision/174.json"
+    ]
+  },
+  "micro_antimicrobial_execution": {
+    "columns": [
+      "execution_id",
+      "patient_id",
+      "encounter_id",
+      "payload_version",
+      "payload",
+      "payload_digest",
+      "ingested_at"
+    ],
+    "files": []
+  },
+  "patient": {
+    "columns": [
+      "patient_id",
+      "payload_version",
+      "payload",
+      "ingested_at"
+    ],
+    "files": [
+      "readable/tables/patient/000.json"
+    ]
+  },
+  "patient_state_temporal_execution": {
+    "columns": [
+      "execution_id",
+      "patient_id",
+      "encounter_id",
+      "payload_version",
+      "payload",
+      "payload_digest",
+      "ingested_at"
+    ],
+    "files": []
+  },
+  "repository_identity": {
+    "columns": [
+      "singleton",
+      "repository_id"
+    ],
+    "files": [
+      "readable/tables/repository_identity/000.json"
+    ]
+  },
+  "revision_link": {
+    "columns": [
+      "successor_sequence",
+      "predecessor_sequence"
+    ],
+    "files": [
+      "readable/tables/revision_link/000.json",
+      "readable/tables/revision_link/001.json",
+      "readable/tables/revision_link/002.json",
+      "readable/tables/revision_link/003.json"
+    ]
+  },
+  "sqlite_sequence": {
+    "columns": [
+      "name",
+      "seq"
+    ],
+    "files": [
+      "readable/tables/sqlite_sequence/000.json"
+    ]
+  },
+  "weight_trend_execution": {
+    "columns": [
+      "execution_id",
+      "patient_id",
+      "encounter_id",
+      "payload_version",
+      "payload",
+      "payload_digest",
+      "ingested_at"
+    ],
+    "files": []
+  }
+}

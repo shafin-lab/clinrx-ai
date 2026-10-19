@@ -1,0 +1,23 @@
+
+> clinrx-synthetic-review@0.1.0 build
+> tsc --noEmit && vite build --outDir /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf1-local-v2/frontend
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 73 modules transformed.
+
+(!) outDir /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf1-local-v2/frontend is not inside project root and will not be emptied.
+Use --emptyOutDir to override.
+
+rendering chunks...
+computing gzip size...
+../../../.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf1-local-v2/frontend/index.html                     0.37 kB │ gzip:   0.27 kB
+../../../.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf1-local-v2/frontend/assets/index-BfR1mbBI.css     33.31 kB │ gzip:   7.37 kB
+../../../.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf1-local-v2/frontend/assets/index-OLlh1iVZ.js   1,468.97 kB │ gzip: 191.65 kB
+
+✓ built in 243ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

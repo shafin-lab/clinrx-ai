@@ -1,0 +1,8 @@
+
+> clinrx-synthetic-review@0.1.0 typecheck
+> tsc --noEmit
+
+tests/renalFluid.test.tsx(2,25): error TS2591: Cannot find name 'node:crypto'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+tests/renalFluid.test.tsx(20,631): error TS2345: Argument of type '{ transport_version: string; scope: { contract_version: string; patient_id: string; encounter_id: string; review_start: string; review_end: string; repository_cutoff: { repository_id: string; fact_watermark: number; captured_at: string; }; }; circulatory_digest: string; observations_digest: string; }' is not assignable to parameter of type 'RenalFluidContext'.
+  Types of property 'transport_version' are incompatible.
+    Type 'string' is not assignable to type '"SyntheticRenalFluidReview/v1"'.

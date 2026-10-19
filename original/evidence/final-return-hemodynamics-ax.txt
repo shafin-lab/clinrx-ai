@@ -1,0 +1,1223 @@
+Browser tab: 26, Title: "ClinRx AI · Synthetic review", URL: "http://127.0.0.1:5197/".
+0 AXWebArea ClinRx AI · Synthetic review, URL: 127.0.0.1:5197/
+	1 container root
+		2 link Description: Skip to patient workflow, Value: 127.0.0.1:5197/#patient-workflow
+		3 container
+			4 heading Synthetic ICU patient workspace, Value: 1
+				5 text Synthetic ICU patient workspace
+			6 text Patient  synthetic-p1  · Encounter  synthetic-e1
+			7 text Clinical execution disabled.
+			8 text  Local synthetic evidence only; no treatment advice.
+			9 container Find patient evidence
+				10 container
+					11 text Find recorded evidence
+					12 search text field (settable) Find recorded evidence
+				13 button Find evidence
+			14 text Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover. Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.
+			15 container Patient workflow
+				16 button Patient and evidence
+				17 button Source entry and reassessment
+				18 button Compare notes
+				19 button Handover
+				20 button Renal and fluid review
+			21 container Current workflow step
+				22 heading Patient and evidence, Value: 2
+					23 text Patient and evidence
+				24 text Start with the flowsheet or search by parameter, source time or source ID. Inspect a record to see its context and revision history; correct it only when the source needs an explicit amendment.
+				25 button (collapsed) How to complete this synthetic patient workflow, Secondary Actions: Expand
+					26 text How to complete this synthetic patient workflow
+		27 container demo-main
+			28 container
+				29 text CIRCULATORY EVIDENCE /  PATIENT OVERVIEW
+			30 heading See the fuller picture., Value: 1
+				31 text See the fuller picture.
+			32 text Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+			33 button Refresh recorded state
+			34 container Evidence views
+				35 button ICU flowsheet
+				36 button Patient summary
+				37 button Patient overview
+				38 button Evidence library
+				39 button Recording timeline
+				40 button Retained examples
+			41 text Synthetic exploration only. No treatment recommendations or live device connections. New reviews:  disabled .
+			42 container
+				43 text HPI is optional.  Not recorded in this case; ABG, echo and other evidence remain available.
+			44 container Recorded-state coverage
+				45 text 164
+				46 text recorded items
+				47 container
+					48 text 14  / 15
+				49 text evidence families present
+				50 text 5
+				51 text quality flagged or unknown
+				52 text 2
+				53 text contextual or unplaced
+			54 button Open combined patient summary →
+			55 container Guided views
+				56 checkbox 01 / EXPLORE Cardiac output + echo Put measurements beside their methods., Value: 1
+					57 text 0
+					58 text 1
+					59 text  / EXPLORE
+					60 text Cardiac output + echo
+					61 text Put measurements beside their methods.
+				62 checkbox 02 / EXPLORE ABG + oxygen transport Inspect gases with sample context., Value: 0
+					63 text 0
+					64 text 2
+					65 text  / EXPLORE
+					66 text ABG + oxygen transport
+					67 text Inspect gases with sample context.
+				68 checkbox 03 / EXPLORE Follow a correction See why the original record matters., Value: 0
+					69 text 0
+					70 text 3
+					71 text  / EXPLORE
+					72 text Follow a correction
+					73 text See why the original record matters.
+				74 checkbox 04 / EXPLORE Find the evidence gaps Keep unknowns visible., Value: 0
+					75 text 0
+					76 text 4
+					77 text  / EXPLORE
+					78 text Find the evidence gaps
+					79 text Keep unknowns visible.
+			80 container
+				81 heading Cardiac output + echo, Value: 2
+					82 text Cardiac output + echo
+				83 text Compare cardiac output and LVOT VTI alongside RVSP/PASP estimates, TR velocity, RV findings, valves and pericardium. Pulmonary hypertension wording is source-reported, not a ClinRx diagnosis or PAH classification.
+			84 container Guided recorded measurements
+				85 button Inspect Cardiac output m7-CO
+					86 text Cardiac output
+					87 container
+						88 text 4.50 L/min
+					89 text bolus thermodilution · SwanGanz · HemoSphere
+					90 text In window
+					91 text  · 
+					92 text 2026-10-08T08:00:00+00:00
+					93 text m7-CO
+					94 text  / 
+					95 text 1
+					96 text Quality: 
+					97 text acceptable
+				98 button Inspect LVOT VTI m7-VTI
+					99 text LVOT VTI
+					100 container
+						101 text 17.5 cm
+					102 text echo
+					103 text In window
+					104 text  · 
+					105 text 2026-10-08T08:00:00+00:00
+					106 text m7-VTI
+					107 text  / 
+					108 text 1
+					109 text Quality: 
+					110 text acceptable
+				111 button Inspect Estimated RVSP m7-RVSP
+					112 text Estimated RVSP
+					113 container
+						114 text 45.0 mmHg
+					115 text echo
+					116 text In window
+					117 text  · 
+					118 text 2026-10-08T08:00:00+00:00
+					119 text m7-RVSP
+					120 text  / 
+					121 text 1
+					122 text Quality: 
+					123 text acceptable
+				124 button Inspect Pulmonary hypertension report finding m7-PH
+					125 text Pulmonary hypertension report finding
+					126 text Synthetic report: findings suggest pulmonary hypertension; no invasive confirmation or PAH subtype established.
+					127 text echo
+					128 text In window
+					129 text  · 
+					130 text 2026-10-08T08:00:00+00:00
+					131 text m7-PH
+					132 text  / 
+					133 text 1
+					134 text Quality: 
+					135 text acceptable
+				136 button Inspect LV ejection fraction m7-EF
+					137 text LV ejection fraction
+					138 container
+						139 text 55.0 %
+					140 text echo
+					141 text In window
+					142 text  · 
+					143 text 2026-10-08T08:00:00+00:00
+					144 text m7-EF
+					145 text  / 
+					146 text 1
+					147 text Quality: 
+					148 text acceptable
+				149 button Inspect TR peak velocity m7-TRV
+					150 text TR peak velocity
+					151 container
+						152 text 3.16 m/s
+					153 text echo
+					154 text In window
+					155 text  · 
+					156 text 2026-10-08T08:00:00+00:00
+					157 text m7-TRV
+					158 text  / 
+					159 text 1
+					160 text Quality: 
+					161 text acceptable
+				162 button Inspect Estimated PASP m7-PASP
+					163 text Estimated PASP
+					164 container
+						165 text 45.0 mmHg
+					166 text echo
+					167 text In window
+					168 text  · 
+					169 text 2026-10-08T08:00:00+00:00
+					170 text m7-PASP
+					171 text  / 
+					172 text 1
+					173 text Quality: 
+					174 text acceptable
+				175 button Inspect RV function m7-RVFUNCTION
+					176 text RV function
+					177 text Synthetic report: mildly reduced RV systolic function.
+					178 text echo
+					179 text In window
+					180 text  · 
+					181 text 2026-10-08T08:00:00+00:00
+					182 text m7-RVFUNCTION
+					183 text  / 
+					184 text 1
+					185 text Quality: 
+					186 text acceptable
+				187 button Inspect RV basal dimension m7-RVD
+					188 text RV basal dimension
+					189 container
+						190 text 4.3 cm
+					191 text echo
+					192 text In window
+					193 text  · 
+					194 text 2026-10-08T08:00:00+00:00
+					195 text m7-RVD
+					196 text  / 
+					197 text 1
+					198 text Quality: 
+					199 text acceptable
+				200 button Inspect Septal configuration m7-SEPTUM
+					201 text Septal configuration
+					202 text Synthetic report: systolic septal flattening.
+					203 text echo
+					204 text In window
+					205 text  · 
+					206 text 2026-10-08T08:00:00+00:00
+					207 text m7-SEPTUM
+					208 text  / 
+					209 text 1
+					210 text Quality: 
+					211 text acceptable
+				212 button Inspect Valve finding m7-VALVE
+					213 text Valve finding
+					214 text Synthetic report: moderate tricuspid regurgitation.
+					215 text echo
+					216 text In window
+					217 text  · 
+					218 text 2026-10-08T08:00:00+00:00
+					219 text m7-VALVE
+					220 text  / 
+					221 text 1
+					222 text Quality: 
+					223 text acceptable
+				224 button Inspect Pericardial effusion m7-EFFUSION
+					225 text Pericardial effusion
+					226 text Synthetic report: no pericardial effusion visualized.
+					227 text echo
+					228 text In window
+					229 text  · 
+					230 text 2026-10-08T08:00:00+00:00
+					231 text m7-EFFUSION
+					232 text  / 
+					233 text 1
+					234 text Quality: 
+					235 text acceptable
+				236 button Inspect TAPSE m7-ECHO
+					237 text TAPSE
+					238 container
+						239 text 18 mm
+					240 text echo
+					241 text In window
+					242 text  · 
+					243 text 2026-10-08T08:00:00+00:00
+					244 text m7-ECHO
+					245 text  / 
+					246 text 1
+					247 text Quality: 
+					248 text acceptable
+				249 button Inspect Mean arterial pressure m7-P
+					250 text Mean arterial pressure
+					251 container
+						252 text 65.00 mmHg
+					253 text invasive arterial
+					254 text In window
+					255 text  · 
+					256 text 2026-10-08T08:00:00+00:00
+					257 text m7-P
+					258 text  / 
+					259 text 1
+					260 text Quality: 
+					261 text acceptable
+				262 button Inspect Source rhythm m7-RHYTHM
+					263 text Source rhythm
+					264 text Synthetic source-reported rhythm
+					265 text ecg monitor
+					266 text In window
+					267 text  · 
+					268 text 2026-10-08T08:00:00+00:00
+					269 text m7-RHYTHM
+					270 text  / 
+					271 text 1
+					272 text Quality: 
+					273 text acceptable
+				274 button Inspect Cardiac index m7-CI
+					275 text Cardiac index
+					276 container
+						277 text 2.60 L/min/m2
+					278 text bolus thermodilution · SwanGanz · HemoSphere
+					279 text In window
+					280 text  · 
+					281 text 2026-10-08T08:00:00+00:00
+					282 text m7-CI
+					283 text  / 
+					284 text 1
+					285 text Quality: 
+					286 text acceptable
+				287 button Inspect Cardiac output m7-FLOTRAC
+					288 text Cardiac output
+					289 container
+						290 text 4.40 L/min
+					291 text pulse contour · FloTrac · HemoSphere
+					292 text In window
+					293 text  · 
+					294 text 2026-10-08T08:00:00+00:00
+					295 text m7-FLOTRAC
+					296 text  / 
+					297 text 1
+					298 text Quality: 
+					299 text acceptable
+				300 button Inspect Cardiac output m7-PICCO-CO
+					301 text Cardiac output
+					302 container
+						303 text 4.60 L/min
+					304 text pulse contour · PiCCO · PiCCO
+					305 text In window
+					306 text  · 
+					307 text 2026-10-08T08:00:00+00:00
+					308 text m7-PICCO-CO
+					309 text  / 
+					310 text 1
+					311 text Quality: 
+					312 text unknown
+				313 button Inspect Cardiac output m7-VOLUMEVIEW
+					314 text Cardiac output
+					315 container
+						316 text 4.60 L/min
+					317 text transpulmonary thermodilution · VolumeView · EV1000
+					318 text In window
+					319 text  · 
+					320 text 2026-10-08T08:00:00+00:00
+					321 text m7-VOLUMEVIEW
+					322 text  / 
+					323 text 1
+					324 text Quality: 
+					325 text acceptable
+				326 button Inspect QTc m7-ECG
+					327 text QTc
+					328 container
+						329 text 420 ms
+					330 text ecg 12 lead
+					331 text In window
+					332 text  · 
+					333 text 2026-10-08T08:00:00+00:00
+					334 text m7-ECG
+					335 text  / 
+					336 text 1
+					337 text Quality: 
+					338 text acceptable
+				339 button Inspect Base excess m7-ABG-BE
+					340 text Arterial blood gas (ABG)
+					341 text  · 
+					342 text Base excess
+					343 container
+						344 text -2.0 mmol/L
+					345 text blood gas
+					346 text In window
+					347 text  · 
+					348 text 2026-10-08T08:00:00+00:00
+					349 text m7-ABG-BE
+					350 text  / 
+					351 text 1
+					352 text Quality: 
+					353 text acceptable
+				354 button Inspect Haemoglobin m7-ABG-HB
+					355 text Arterial blood gas (ABG)
+					356 text  · 
+					357 text Haemoglobin
+					358 container
+						359 text 10.2 g/dL
+					360 text blood gas
+					361 text In window
+					362 text  · 
+					363 text 2026-10-08T08:00:00+00:00
+					364 text m7-ABG-HB
+					365 text  / 
+					366 text 1
+					367 text Quality: 
+					368 text acceptable
+				369 button Inspect Bicarbonate m7-ABG-HCO3
+					370 text Arterial blood gas (ABG)
+					371 text  · 
+					372 text Bicarbonate
+					373 container
+						374 text 23.0 mmol/L
+					375 text blood gas
+					376 text In window
+					377 text  · 
+					378 text 2026-10-08T08:00:00+00:00
+					379 text m7-ABG-HCO3
+					380 text  / 
+					381 text 1
+					382 text Quality: 
+					383 text acceptable
+				384 button Inspect PaCO₂ m7-ABG-PACO2
+					385 text Arterial blood gas (ABG)
+					386 text  · 
+					387 text PaCO₂
+					388 container
+						389 text 48.0 mmHg
+					390 text blood gas
+					391 text In window
+					392 text  · 
+					393 text 2026-10-08T08:00:00+00:00
+					394 text m7-ABG-PACO2
+					395 text  / 
+					396 text 1
+					397 text Quality: 
+					398 text acceptable
+				399 button Inspect PaO₂ m7-ABG-PAO2
+					400 text Arterial blood gas (ABG)
+					401 text  · 
+					402 text PaO₂
+					403 container
+						404 text 78.0 mmHg
+					405 text blood gas
+					406 text In window
+					407 text  · 
+					408 text 2026-10-08T08:00:00+00:00
+					409 text m7-ABG-PAO2
+					410 text  / 
+					411 text 1
+					412 text Quality: 
+					413 text acceptable
+				414 button Inspect pH m7-ABG-PH
+					415 text Arterial blood gas (ABG)
+					416 text  · 
+					417 text pH
+					418 container
+						419 text 7.31 (unit: 1)
+					420 text blood gas
+					421 text In window
+					422 text  · 
+					423 text 2026-10-08T08:00:00+00:00
+					424 text m7-ABG-PH
+					425 text  / 
+					426 text 1
+					427 text Quality: 
+					428 text acceptable
+				429 button Inspect Arterial oxygen saturation m7-ABG-SAO2
+					430 text Arterial blood gas (ABG)
+					431 text  · 
+					432 text Arterial oxygen saturation
+					433 container
+						434 text 95.0 %
+					435 text blood gas
+					436 text In window
+					437 text  · 
+					438 text 2026-10-08T08:00:00+00:00
+					439 text m7-ABG-SAO2
+					440 text  / 
+					441 text 1
+					442 text Quality: 
+					443 text acceptable
+				444 button Inspect Mixed venous oxygen saturation m7-SVO2
+					445 text mixed venous sample
+					446 text  · 
+					447 text Mixed venous oxygen saturation
+					448 container
+						449 text 65.0 %
+					450 text blood gas
+					451 text In window
+					452 text  · 
+					453 text 2026-10-08T08:00:00+00:00
+					454 text m7-SVO2
+					455 text  / 
+					456 text 1
+					457 text Quality: 
+					458 text acceptable
+				459 button Inspect Central venous pressure m7-PAC
+					460 text Central venous pressure
+					461 container
+						462 text 8.0 mmHg
+					463 text pac
+					464 text In window
+					465 text  · 
+					466 text 2026-10-08T08:00:00+00:00
+					467 text m7-PAC
+					468 text  / 
+					469 text 1
+					470 text Quality: 
+					471 text acceptable
+				472 button Inspect Pulmonary artery wedge pressure m7-RHC
+					473 text Pulmonary artery wedge pressure
+					474 container
+						475 text 12.0 mmHg
+					476 text rhc
+					477 text In window
+					478 text  · 
+					479 text 2026-10-08T08:00:00+00:00
+					480 text m7-RHC
+					481 text  / 
+					482 text 1
+					483 text Quality: 
+					484 text acceptable
+				485 button Inspect Cardiac index fs-CI-15
+					486 text Cardiac index
+					487 container
+						488 text 2.30 L/min/m2
+					489 text bolus thermodilution · SwanGanz · HemoSphere
+					490 text In window
+					491 text  · 
+					492 text 2026-10-08T08:15:00+00:00
+					493 text fs-CI-15
+					494 text  / 
+					495 text 1
+					496 text Quality: 
+					497 text acceptable
+				498 button Inspect Cardiac output fs-CO-15
+					499 text Cardiac output
+					500 container
+						501 text 4.00 L/min
+					502 text bolus thermodilution · SwanGanz · HemoSphere
+					503 text In window
+					504 text  · 
+					505 text 2026-10-08T08:15:00+00:00
+					506 text fs-CO-15
+					507 text  / 
+					508 text 1
+					509 text Quality: 
+					510 text acceptable
+				511 button Inspect Heart rate fs-HR-15
+					512 text Heart rate
+					513 container
+						514 text 104 /min
+					515 text ecg monitor
+					516 text In window
+					517 text  · 
+					518 text 2026-10-08T08:15:00+00:00
+					519 text fs-HR-15
+					520 text  / 
+					521 text 1
+					522 text Quality: 
+					523 text acceptable
+				524 button Inspect Source rhythm fs-RHYTHM-15
+					525 text Source rhythm
+					526 text Source-reported sinus rhythm.
+					527 text ecg monitor
+					528 text In window
+					529 text  · 
+					530 text 2026-10-08T08:15:00+00:00
+					531 text fs-RHYTHM-15
+					532 text  / 
+					533 text 1
+					534 text Quality: 
+					535 text acceptable
+				536 button Inspect PaCO₂ fs-PACO2-15
+					537 text Arterial blood gas (ABG)
+					538 text  · 
+					539 text PaCO₂
+					540 container
+						541 text 50.0 mmHg
+					542 text blood gas
+					543 text In window
+					544 text  · 
+					545 text 2026-10-08T08:15:00+00:00
+					546 text fs-PACO2-15
+					547 text  / 
+					548 text 1
+					549 text Quality: 
+					550 text acceptable
+				551 button Inspect PaO₂ fs-PAO2-15
+					552 text Arterial blood gas (ABG)
+					553 text  · 
+					554 text PaO₂
+					555 container
+						556 text 80.0 mmHg
+					557 text blood gas
+					558 text In window
+					559 text  · 
+					560 text 2026-10-08T08:15:00+00:00
+					561 text fs-PAO2-15
+					562 text  / 
+					563 text 1
+					564 text Quality: 
+					565 text acceptable
+				566 button Inspect pH fs-PH-15
+					567 text Arterial blood gas (ABG)
+					568 text  · 
+					569 text pH
+					570 container
+						571 text 7.30 (unit: 1)
+					572 text blood gas
+					573 text In window
+					574 text  · 
+					575 text 2026-10-08T08:15:00+00:00
+					576 text fs-PH-15
+					577 text  / 
+					578 text 1
+					579 text Quality: 
+					580 text acceptable
+				581 button Inspect Central venous pressure fs-CVP-15
+					582 text Central venous pressure
+					583 container
+						584 text 9.0 mmHg
+					585 text pac
+					586 text In window
+					587 text  · 
+					588 text 2026-10-08T08:15:00+00:00
+					589 text fs-CVP-15
+					590 text  / 
+					591 text 1
+					592 text Quality: 
+					593 text acceptable
+				594 button Inspect Mean arterial pressure fs-MAP-15
+					595 text Mean arterial pressure
+					596 container
+						597 text 63.0000 mmHg
+					598 text invasive arterial
+					599 text In window
+					600 text  · 
+					601 text 2026-10-08T08:15:00+00:00
+					602 text fs-MAP-15
+					603 text  / 
+					604 text 915ae2cb-99f9-47e6-883e-9fc51725a7f0
+					605 text Quality: 
+					606 text acceptable
+				607 button Inspect Diastolic blood pressure fs-systemic_diastolic-15
+					608 text Diastolic blood pressure
+					609 container
+						610 text 47 mmHg
+					611 text invasive arterial
+					612 text In window
+					613 text  · 
+					614 text 2026-10-08T08:15:00+00:00
+					615 text fs-systemic_diastolic-15
+					616 text  / 
+					617 text 1
+					618 text Quality: 
+					619 text acceptable
+				620 button Inspect Systolic blood pressure fs-systemic_systolic-15
+					621 text Systolic blood pressure
+					622 container
+						623 text 92 mmHg
+					624 text invasive arterial
+					625 text In window
+					626 text  · 
+					627 text 2026-10-08T08:15:00+00:00
+					628 text fs-systemic_systolic-15
+					629 text  / 
+					630 text 1
+					631 text Quality: 
+					632 text acceptable
+				633 button Inspect Cardiac index fs-CI-30
+					634 text Cardiac index
+					635 container
+						636 text 2.50 L/min/m2
+					637 text bolus thermodilution · SwanGanz · HemoSphere
+					638 text In window
+					639 text  · 
+					640 text 2026-10-08T08:30:00+00:00
+					641 text fs-CI-30
+					642 text  / 
+					643 text 1
+					644 text Quality: 
+					645 text acceptable
+				646 button Inspect Cardiac output fs-CO-30
+					647 text Cardiac output
+					648 container
+						649 text 4.40 L/min
+					650 text bolus thermodilution · SwanGanz · HemoSphere
+					651 text In window
+					652 text  · 
+					653 text 2026-10-08T08:30:00+00:00
+					654 text fs-CO-30
+					655 text  / 
+					656 text 1
+					657 text Quality: 
+					658 text acceptable
+				659 button Inspect Heart rate fs-HR-30
+					660 text Heart rate
+					661 container
+						662 text 108 /min
+					663 text ecg monitor
+					664 text In window
+					665 text  · 
+					666 text 2026-10-08T08:30:00+00:00
+					667 text fs-HR-30
+					668 text  / 
+					669 text 1
+					670 text Quality: 
+					671 text acceptable
+				672 button Inspect Source rhythm fs-RHYTHM-30
+					673 text Source rhythm
+					674 text Source-reported irregular rhythm; no arrhythmia classification confirmed.
+					675 text ecg monitor
+					676 text In window
+					677 text  · 
+					678 text 2026-10-08T08:30:00+00:00
+					679 text fs-RHYTHM-30
+					680 text  / 
+					681 text 1
+					682 text Quality: 
+					683 text acceptable
+				684 button Inspect PaCO₂ fs-PACO2-30
+					685 text Arterial blood gas (ABG)
+					686 text  · 
+					687 text PaCO₂
+					688 container
+						689 text 47.0 mmHg
+					690 text blood gas
+					691 text In window
+					692 text  · 
+					693 text 2026-10-08T08:30:00+00:00
+					694 text fs-PACO2-30
+					695 text  / 
+					696 text 1
+					697 text Quality: 
+					698 text acceptable
+				699 button Inspect PaO₂ fs-PAO2-30
+					700 text Arterial blood gas (ABG)
+					701 text  · 
+					702 text PaO₂
+					703 container
+						704 text 84.0 mmHg
+					705 text blood gas
+					706 text In window
+					707 text  · 
+					708 text 2026-10-08T08:30:00+00:00
+					709 text fs-PAO2-30
+					710 text  / 
+					711 text 1
+					712 text Quality: 
+					713 text acceptable
+				714 button Inspect pH fs-PH-30
+					715 text Arterial blood gas (ABG)
+					716 text  · 
+					717 text pH
+					718 container
+						719 text 7.32 (unit: 1)
+					720 text blood gas
+					721 text In window
+					722 text  · 
+					723 text 2026-10-08T08:30:00+00:00
+					724 text fs-PH-30
+					725 text  / 
+					726 text 1
+					727 text Quality: 
+					728 text acceptable
+				729 button Inspect scvo2 fs-SCVO2-30
+					730 text central venous sample
+					731 text  · 
+					732 text scvo2
+					733 container
+						734 text 66.0 %
+					735 text blood gas
+					736 text In window
+					737 text  · 
+					738 text 2026-10-08T08:30:00+00:00
+					739 text fs-SCVO2-30
+					740 text  / 
+					741 text 1
+					742 text Quality: 
+					743 text acceptable
+				744 button Inspect Mixed venous oxygen saturation fs-SVO2-30
+					745 text mixed venous sample
+					746 text  · 
+					747 text Mixed venous oxygen saturation
+					748 container
+						749 text 64.0 %
+					750 text blood gas
+					751 text In window
+					752 text  · 
+					753 text 2026-10-08T08:30:00+00:00
+					754 text fs-SVO2-30
+					755 text  / 
+					756 text 1
+					757 text Quality: 
+					758 text acceptable
+				759 button Inspect Central venous pressure fs-CVP-30
+					760 text Central venous pressure
+					761 container
+						762 text 10.0 mmHg
+					763 text pac
+					764 text In window
+					765 text  · 
+					766 text 2026-10-08T08:30:00+00:00
+					767 text fs-CVP-30
+					768 text  / 
+					769 text 1
+					770 text Quality: 
+					771 text acceptable
+				772 button Inspect Mean arterial pressure fs-MAP-30
+					773 text Mean arterial pressure
+					774 container
+						775 text 68 mmHg
+					776 text invasive arterial
+					777 text In window
+					778 text  · 
+					779 text 2026-10-08T08:30:00+00:00
+					780 text fs-MAP-30
+					781 text  / 
+					782 text 1
+					783 text Quality: 
+					784 text acceptable
+				785 button Inspect Diastolic blood pressure fs-systemic_diastolic-30
+					786 text Diastolic blood pressure
+					787 container
+						788 text 52 mmHg
+					789 text invasive arterial
+					790 text In window
+					791 text  · 
+					792 text 2026-10-08T08:30:00+00:00
+					793 text fs-systemic_diastolic-30
+					794 text  / 
+					795 text 1
+					796 text Quality: 
+					797 text acceptable
+				798 button Inspect Systolic blood pressure fs-systemic_systolic-30
+					799 text Systolic blood pressure
+					800 container
+						801 text 101 mmHg
+					802 text invasive arterial
+					803 text In window
+					804 text  · 
+					805 text 2026-10-08T08:30:00+00:00
+					806 text fs-systemic_systolic-30
+					807 text  / 
+					808 text 1
+					809 text Quality: 
+					810 text acceptable
+				811 button Inspect Cardiac index fs-CI-45
+					812 text Cardiac index
+					813 container
+						814 text 2.70 L/min/m2
+					815 text bolus thermodilution · SwanGanz · HemoSphere
+					816 text In window
+					817 text  · 
+					818 text 2026-10-08T08:45:00+00:00
+					819 text fs-CI-45
+					820 text  / 
+					821 text 1
+					822 text Quality: 
+					823 text acceptable
+				824 button Inspect Cardiac output fs-CO-45
+					825 text Cardiac output
+					826 container
+						827 text 4.70 L/min
+					828 text bolus thermodilution · SwanGanz · HemoSphere
+					829 text In window
+					830 text  · 
+					831 text 2026-10-08T08:45:00+00:00
+					832 text fs-CO-45
+					833 text  / 
+					834 text 1
+					835 text Quality: 
+					836 text acceptable
+				837 button Inspect Heart rate fs-HR-45
+					838 text Heart rate
+					839 container
+						840 text 102 /min
+					841 text ecg monitor
+					842 text In window
+					843 text  · 
+					844 text 2026-10-08T08:45:00+00:00
+					845 text fs-HR-45
+					846 text  / 
+					847 text 1
+					848 text Quality: 
+					849 text acceptable
+				850 button Inspect Source rhythm fs-RHYTHM-45
+					851 text Source rhythm
+					852 text Source-reported sinus rhythm.
+					853 text ecg monitor
+					854 text In window
+					855 text  · 
+					856 text 2026-10-08T08:45:00+00:00
+					857 text fs-RHYTHM-45
+					858 text  / 
+					859 text 1
+					860 text Quality: 
+					861 text acceptable
+				862 button Inspect PaCO₂ fs-PACO2-45
+					863 text Arterial blood gas (ABG)
+					864 text  · 
+					865 text PaCO₂
+					866 container
+						867 text 45.0 mmHg
+					868 text blood gas
+					869 text In window
+					870 text  · 
+					871 text 2026-10-08T08:45:00+00:00
+					872 text fs-PACO2-45
+					873 text  / 
+					874 text 1
+					875 text Quality: 
+					876 text acceptable
+				877 button Inspect PaO₂ fs-PAO2-45
+					878 text Arterial blood gas (ABG)
+					879 text  · 
+					880 text PaO₂
+					881 container
+						882 text 86.0 mmHg
+					883 text blood gas
+					884 text In window
+					885 text  · 
+					886 text 2026-10-08T08:45:00+00:00
+					887 text fs-PAO2-45
+					888 text  / 
+					889 text 1
+					890 text Quality: 
+					891 text acceptable
+				892 button Inspect pH fs-PH-45
+					893 text Arterial blood gas (ABG)
+					894 text  · 
+					895 text pH
+					896 container
+						897 text 7.34 (unit: 1)
+					898 text blood gas
+					899 text In window
+					900 text  · 
+					901 text 2026-10-08T08:45:00+00:00
+					902 text fs-PH-45
+					903 text  / 
+					904 text 1
+					905 text Quality: 
+					906 text acceptable
+				907 button Inspect Central venous pressure fs-CVP-45
+					908 text Central venous pressure
+					909 container
+						910 text 9.0 mmHg
+					911 text pac
+					912 text In window
+					913 text  · 
+					914 text 2026-10-08T08:45:00+00:00
+					915 text fs-CVP-45
+					916 text  / 
+					917 text 1
+					918 text Quality: 
+					919 text acceptable
+				920 button Inspect Mean arterial pressure fs-MAP-45
+					921 text Mean arterial pressure
+					922 container
+						923 text 72 mmHg
+					924 text invasive arterial
+					925 text In window
+					926 text  · 
+					927 text 2026-10-08T08:45:00+00:00
+					928 text fs-MAP-45
+					929 text  / 
+					930 text 1
+					931 text Quality: 
+					932 text acceptable
+				933 button Inspect Diastolic blood pressure fs-systemic_diastolic-45
+					934 text Diastolic blood pressure
+					935 container
+						936 text 55 mmHg
+					937 text invasive arterial
+					938 text In window
+					939 text  · 
+					940 text 2026-10-08T08:45:00+00:00
+					941 text fs-systemic_diastolic-45
+					942 text  / 
+					943 text 1
+					944 text Quality: 
+					945 text acceptable
+				946 button Inspect Systolic blood pressure fs-systemic_systolic-45
+					947 text Systolic blood pressure
+					948 container
+						949 text 110 mmHg
+					950 text invasive arterial
+					951 text In window
+					952 text  · 
+					953 text 2026-10-08T08:45:00+00:00
+					954 text fs-systemic_systolic-45
+					955 text  / 
+					956 text 1
+					957 text Quality: 
+					958 text acceptable
+				959 button Inspect Cardiac index fs-CI-60
+					960 text Cardiac index
+					961 container
+						962 text 2.60 L/min/m2
+					963 text bolus thermodilution · SwanGanz · HemoSphere
+					964 text In window
+					965 text  · 
+					966 text 2026-10-08T09:00:00+00:00
+					967 text fs-CI-60
+					968 text  / 
+					969 text 1
+					970 text Quality: 
+					971 text acceptable
+				972 button Inspect Cardiac output fs-CO-60
+					973 text Cardiac output
+					974 container
+						975 text 4.60 L/min
+					976 text bolus thermodilution · SwanGanz · HemoSphere
+					977 text In window
+					978 text  · 
+					979 text 2026-10-08T09:00:00+00:00
+					980 text fs-CO-60
+					981 text  / 
+					982 text 1
+					983 text Quality: 
+					984 text suspect
+				985 button Inspect Heart rate fs-HR-60
+					986 text Heart rate
+					987 container
+						988 text 96 /min
+					989 text ecg monitor
+					990 text In window
+					991 text  · 
+					992 text 2026-10-08T09:00:00+00:00
+					993 text fs-HR-60
+					994 text  / 
+					995 text 1
+					996 text Quality: 
+					997 text acceptable
+				998 button Inspect Source rhythm fs-RHYTHM-60
+					999 text Source rhythm
+					1000 text Source-reported sinus rhythm.
+					1001 text ecg monitor
+					1002 text In window
+					1003 text  · 
+					1004 text 2026-10-08T09:00:00+00:00
+					1005 text fs-RHYTHM-60
+					1006 text  / 
+					1007 text 1
+					1008 text Quality: 
+					1009 text acceptable
+				1010 button Inspect PaCO₂ fs-PACO2-60
+					1011 text Arterial blood gas (ABG)
+					1012 text  · 
+					1013 text PaCO₂
+					1014 container
+						1015 text 44.0 mmHg
+					1016 text blood gas
+					1017 text In window
+					1018 text  · 
+					1019 text 2026-10-08T09:00:00+00:00
+					1020 text fs-PACO2-60
+					1021 text  / 
+					1022 text 1
+					1023 text Quality: 
+					1024 text acceptable
+				1025 button Inspect PaO₂ fs-PAO2-60
+					1026 text Arterial blood gas (ABG)
+					1027 text  · 
+					1028 text PaO₂
+					1029 container
+						1030 text 88.0 mmHg
+					1031 text blood gas
+					1032 text In window
+					1033 text  · 
+					1034 text 2026-10-08T09:00:00+00:00
+					1035 text fs-PAO2-60
+					1036 text  / 
+					1037 text 1
+					1038 text Quality: 
+					1039 text acceptable
+				1040 button Inspect pH fs-PH-60
+					1041 text Arterial blood gas (ABG)
+					1042 text  · 
+					1043 text pH
+					1044 container
+						1045 text 7.35 (unit: 1)
+					1046 text blood gas
+					1047 text In window
+					1048 text  · 
+					1049 text 2026-10-08T09:00:00+00:00
+					1050 text fs-PH-60
+					1051 text  / 
+					1052 text 1
+					1053 text Quality: 
+					1054 text acceptable
+				1055 button Inspect Central venous pressure fs-CVP-60
+					1056 text Central venous pressure
+					1057 container
+						1058 text 9.0 mmHg
+					1059 text pac
+					1060 text In window
+					1061 text  · 
+					1062 text 2026-10-08T09:00:00+00:00
+					1063 text fs-CVP-60
+					1064 text  / 
+					1065 text 1
+					1066 text Quality: 
+					1067 text acceptable
+				1068 button Inspect Mean arterial pressure fs-MAP-60
+					1069 text Mean arterial pressure
+					1070 container
+						1071 text 70 mmHg
+					1072 text invasive arterial
+					1073 text In window
+					1074 text  · 
+					1075 text 2026-10-08T09:00:00+00:00
+					1076 text fs-MAP-60
+					1077 text  / 
+					1078 text 1
+					1079 text Quality: 
+					1080 text acceptable
+				1081 button Inspect Diastolic blood pressure fs-systemic_diastolic-60
+					1082 text Diastolic blood pressure
+					1083 container
+						1084 text 53 mmHg
+					1085 text invasive arterial
+					1086 text In window
+					1087 text  · 
+					1088 text 2026-10-08T09:00:00+00:00
+					1089 text fs-systemic_diastolic-60
+					1090 text  / 
+					1091 text 1
+					1092 text Quality: 
+					1093 text acceptable
+				1094 button Inspect Systolic blood pressure fs-systemic_systolic-60
+					1095 text Systolic blood pressure
+					1096 container
+						1097 text 106 mmHg
+					1098 text invasive arterial
+					1099 text In window
+					1100 text  · 
+					1101 text 2026-10-08T09:00:00+00:00
+					1102 text fs-systemic_systolic-60
+					1103 text  / 
+					1104 text 1
+					1105 text Quality: 
+					1106 text acceptable
+				1107 button Inspect Cardiac output m7-CONTEXT-CO
+					1108 text Cardiac output
+					1109 container
+						1110 text 4.500 L/min
+					1111 text bolus thermodilution · SwanGanz · HemoSphere
+					1112 text Contextual
+					1113 text  · 
+					1114 text 2026-10-08T06:00:00+00:00
+					1115 text m7-CONTEXT-CO
+					1116 text  / 
+					1117 text 1
+					1118 text Quality: 
+					1119 text acceptable
+				1120 button Inspect Central venous pressure m7-UNPLACED
+					1121 text Central venous pressure
+					1122 text Not established
+					1123 text unknown
+					1124 text Unplaced
+					1125 text  · 
+					1126 text Time not established
+					1127 text m7-UNPLACED
+					1128 text  / 
+					1129 text 1
+					1130 text Quality: 
+					1131 text acceptable
+			1132 container Selected source evidence
+				1133 text SOURCE INSPECTOR
+				1134 heading Evidence within reach., Value: 2
+					1135 text Evidence within reach.
+				1136 text Select any recorded item to inspect its exact source, quality, device context and revision history.
+				1137 text Values are shown as recorded. Units are not converted, and quality labels are source assertions.
+			1138 container
+				1139 heading Explore every evidence family, Value: 2
+					1140 text Explore every evidence family
+				1141 text Missing records do not establish clinical absence.
+				1142 button 01 Pressure and PAC/RHC 20 recorded items →
+					1143 text 01
+					1144 text Pressure and PAC/RHC
+					1145 container
+						1146 text 20  recorded  items  →
+				1147 button 02 Cardiac output and performance 14 recorded items →
+					1148 text 02
+					1149 text Cardiac output and performance
+					1150 container
+						1151 text 14  recorded  items  →
+				1152 button 03 Volume and lung water 1 recorded item →
+					1153 text 03
+					1154 text Volume and lung water
+					1155 container
+						1156 text 1  recorded  item  →
+				1157 button 04 Dynamic measurements 1 recorded item →
+					1158 text 04
+					1159 text Dynamic measurements
+					1160 container
+						1161 text 1  recorded  item  →
+				1162 button 05 Recorded device predictions 0 recorded items →
+					1163 text 05
+					1164 text Recorded device predictions
+					1165 container
+						1166 text 0  recorded  items  →
+				1167 button 06 Tissue perfusion 13 recorded items →
+					1168 text 06
+					1169 text Tissue perfusion
+					1170 container
+						1171 text 13  recorded  items  →
+				1172 button 07 Oxygen transport and blood gases 22 recorded items →
+					1173 text 07
+					1174 text Oxygen transport and blood gases
+					1175 container
+						1176 text 22  recorded  items  →
+				1177 button 08 Lactate 5 recorded items →
+					1178 text 08
+					1179 text Lactate
+					1180 container
+						1181 text 5  recorded  items  →
+				1182 button 09 Echo and POCUS 12 recorded items →
+					1183 text 09
+					1184 text Echo and POCUS
+					1185 container
+						1186 text 12  recorded  items  →
+				1187 button 10 ECG and rhythm 10 recorded items →
+					1188 text 10
+					1189 text ECG and rhythm
+					1190 container
+						1191 text 10  recorded  items  →
+				1192 button 11 Vasoactive events 12 recorded items →
+					1193 text 11
+					1194 text Vasoactive events
+					1195 container
+						1196 text 12  recorded  items  →
+				1197 button 12 Edwards / PiCCO and monitoring context 1 recorded item →
+					1198 text 12
+					1199 text Edwards / PiCCO and monitoring context
+					1200 container
+						1201 text 1  recorded  item  →
+				1202 button 13 Dynamic assessment episodes 2 recorded items →
+					1203 text 13
+					1204 text Dynamic assessment episodes
+					1205 container
+						1206 text 2  recorded  items  →
+				1207 button 14 Recorded circulatory events 50 recorded items →
+					1208 text 14
+					1209 text Recorded circulatory events
+					1210 container
+						1211 text 50  recorded  items  →
+				1212 button 15 Signal manifests 1 recorded item →
+					1213 text 15
+					1214 text Signal manifests
+					1215 container
+						1216 text 1  recorded  item  →
+			1217 button (collapsed) Review boundary and repository coverage, Secondary Actions: Expand
+				1218 text Review boundary and repository coverage
+			1219 text A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.
+
+The focused UI element is 4 heading Synthetic ICU patient workspace, Value: 1

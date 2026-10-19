@@ -1,0 +1,25 @@
+{
+  "table": "fact_revision",
+  "columns": [
+    "ingestion_sequence",
+    "kind",
+    "fact_id",
+    "revision",
+    "patient_id",
+    "encounter_id",
+    "payload_version",
+    "payload",
+    "ingested_at"
+  ],
+  "row": [
+    169,
+    "observation",
+    "rf1-creatinine-missing",
+    "1",
+    "synthetic-p1",
+    "synthetic-e1",
+    1,
+    "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"rf1-creatinine-missing\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":\"Source event time unavailable.\"},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":\"Source result unavailable.\",\"status\":\"missing\",\"value\":null},\"verification\":\"verified\"}",
+    "2026-10-19T14:37:10.332430+00:00"
+  ]
+}

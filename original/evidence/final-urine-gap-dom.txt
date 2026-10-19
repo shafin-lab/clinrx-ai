@@ -1,0 +1,477 @@
+- link "Skip to patient workflow":
+  - /url: "#patient-workflow"
+- banner:
+  - heading "Synthetic ICU patient workspace" [level=1]
+  - paragraph: Patient synthetic-p1 · Encounter synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Local synthetic evidence only; no treatment advice.
+  - search "Find patient evidence":
+    - text: Find recorded evidence
+    - searchbox "Find recorded evidence"
+    - button "Find evidence"
+  - paragraph: Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.
+  - paragraph: Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.
+  - navigation "Patient workflow":
+    - button "Patient and evidence"
+    - button "Source entry and reassessment"
+    - button "Compare notes"
+    - button "Handover"
+    - button "Renal and fluid review"
+  - region "Current workflow step":
+    - heading "Renal and fluid review" [level=2]
+    - paragraph: Review original creatinine observations beside existing urine and fluid intervals. Inspect exact source history; missing metadata stays unavailable. Renal authoring and calculations are deferred.
+    - generic "How to complete this synthetic patient workflow"
+- region "Renal and fluid review":
+  - heading "Renal and fluid review" [level=2]
+  - paragraph:
+    - strong: Read-only synthetic evidence. Clinical execution disabled.
+    - text: No AKI stage, eGFR, calculated trend, balance, urine rate or treatment advice.
+  - paragraph: Repository eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5 · cutoff 175 · review 2026-10-08T08:00:00Z → 2026-10-08T10:00:00Z. Same patient and historical cutoff as hemodynamics; this does not establish simultaneous measurements.
+  - heading "Recorded creatinine" [level=3]
+  - paragraph: Source event time is not confirmed specimen collection time. Specimen, collection time, typed quality and withdrawal metadata are unavailable in this legacy observation contract. Source text is retained without promoting it to a typed fact. Outside-window and unplaced terminal observations stay visible; older values are not resurrected.
+  - region "Recorded creatinine table":
+    - table:
+      - rowgroup:
+        - row "Exact source Recorded result / raw unit Source timing Uncertainty":
+          - columnheader "Exact source"
+          - columnheader "Recorded result / raw unit"
+          - columnheader "Source timing"
+          - columnheader "Uncertainty"
+      - rowgroup:
+        - row "demo-creatinine-A / 2 1.1000 mg/dL · unit mapping assessed 2026-10-08T08:00:00Z · in_window Recorded 2026-10-08T08:00:00Z Verification verified; conflict none_known; temporal status historical Synthetic recorded evidence only.":
+          - rowheader "demo-creatinine-A / 2":
+            - button "demo-creatinine-A / 2"
+          - cell "1.1000 mg/dL · unit mapping assessed"
+          - cell "2026-10-08T08:00:00Z · in_window Recorded 2026-10-08T08:00:00Z":
+            - text: 2026-10-08T08:00:00Z · in_window
+            - text: Recorded 2026-10-08T08:00:00Z
+          - cell "Verification verified; conflict none_known; temporal status historical Synthetic recorded evidence only.":
+            - text: Verification verified; conflict none_known; temporal status historical
+            - text: Synthetic recorded evidence only.
+        - row "demo-creatinine-B / 1 2.000 mg/dL · unit mapping assessed 2026-10-08T10:00:00Z · in_window Recorded 2026-10-08T10:00:00Z Verification verified; conflict none_known; temporal status historical Synthetic recorded evidence only.":
+          - rowheader "demo-creatinine-B / 1":
+            - button "demo-creatinine-B / 1"
+          - cell "2.000 mg/dL · unit mapping assessed"
+          - cell "2026-10-08T10:00:00Z · in_window Recorded 2026-10-08T10:00:00Z":
+            - text: 2026-10-08T10:00:00Z · in_window
+            - text: Recorded 2026-10-08T10:00:00Z
+          - cell "Verification verified; conflict none_known; temporal status historical Synthetic recorded evidence only.":
+            - text: Verification verified; conflict none_known; temporal status historical
+            - text: Synthetic recorded evidence only.
+        - row "rf1-creatinine-missing / 1 missing — Source result unavailable. Event time unavailable · unplaced Recorded unavailable Verification verified; conflict none_known; temporal status historical Synthetic recorded evidence only.":
+          - rowheader "rf1-creatinine-missing / 1":
+            - button "rf1-creatinine-missing / 1"
+          - cell "missing — Source result unavailable."
+          - cell "Event time unavailable · unplaced Recorded unavailable":
+            - text: Event time unavailable · unplaced
+            - text: Recorded unavailable
+          - cell "Verification verified; conflict none_known; temporal status historical Synthetic recorded evidence only.":
+            - text: Verification verified; conflict none_known; temporal status historical
+            - text: Synthetic recorded evidence only.
+        - row "rf1-creatinine-unlike-unit / 1 150.0 umol/L · unit mapping unresolved 2026-10-08T10:00:00Z · in_window Recorded 2026-10-08T10:00:00Z Verification unverified; conflict unresolved; temporal status historical Synthetic conflicting report; no corroboration or interpretation.":
+          - rowheader "rf1-creatinine-unlike-unit / 1":
+            - button "rf1-creatinine-unlike-unit / 1"
+          - cell "150.0 umol/L · unit mapping unresolved"
+          - cell "2026-10-08T10:00:00Z · in_window Recorded 2026-10-08T10:00:00Z":
+            - text: 2026-10-08T10:00:00Z · in_window
+            - text: Recorded 2026-10-08T10:00:00Z
+          - cell "Verification unverified; conflict unresolved; temporal status historical Synthetic conflicting report; no corroboration or interpretation.":
+            - text: Verification unverified; conflict unresolved; temporal status historical
+            - text: Synthetic conflicting report; no corroboration or interpretation.
+  - heading "Urine, fluid, weight and renal-support source context" [level=3]
+  - paragraph: Point events and intervals remain separate. Gaps, overlapping intervals and completeness are not reconciled here. Zero is a recorded value; missing is not zero. Reported balances/totals are source calculations, not ClinRx calculations. A fluid challenge may already be included in an input interval and must not be added again. CRRT net removal is not total effluent or proof of continuous treatment; dosing weight is not a serial measured daily weight.
+  - region "Fluid and renal support records":
+    - table:
+      - rowgroup:
+        - row "Source category Recorded quantity Source time / interval Quality / status":
+          - columnheader "Source category"
+          - columnheader "Recorded quantity"
+          - columnheader "Source time / interval"
+          - columnheader "Quality / status"
+      - rowgroup:
+        - row "Source dosing weight · fs-WEIGHT / 1 Source-recorded actual weight 70 kg 2026-10-08T08:00:00+00:00 Point/context record; no interval inferred not recorded · recorded Completeness not established":
+          - rowheader "Source dosing weight · fs-WEIGHT / 1 Source-recorded actual weight":
+            - button "Source dosing weight · fs-WEIGHT / 1"
+            - generic: Source-recorded actual weight
+          - cell "70 kg"
+          - cell "2026-10-08T08:00:00+00:00 Point/context record; no interval inferred":
+            - text: 2026-10-08T08:00:00+00:00
+            - text: Point/context record; no interval inferred
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - row "Fluid challenge event · fs-FLUID-CHALLENGE / 1 Source event; may already be included in input totals 250 mL 2026-10-08T08:10:00+00:00 Point/context record; no interval inferred not recorded · recorded Completeness not established":
+          - rowheader "Fluid challenge event · fs-FLUID-CHALLENGE / 1 Source event; may already be included in input totals":
+            - button "Fluid challenge event · fs-FLUID-CHALLENGE / 1"
+            - generic: Source event; may already be included in input totals
+          - cell "250 mL"
+          - cell "2026-10-08T08:10:00+00:00 Point/context record; no interval inferred":
+            - text: 2026-10-08T08:10:00+00:00
+            - text: Point/context record; no interval inferred
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Blood-product input · fs-IO-input_blood-15 / 1 Source-recorded interval volume 0 mL 2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Blood-product input · fs-IO-input_blood-15 / 1 Source-recorded interval volume":
+            - button "Blood-product input · fs-IO-input_blood-15 / 1"
+            - generic: Source-recorded interval volume
+          - cell "0 mL"
+          - 'cell "2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:15:00+00:00
+            - text: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "IV fluid input · fs-IO-input_iv-15 / 1 Source-recorded interval volume 250 mL 2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "IV fluid input · fs-IO-input_iv-15 / 1 Source-recorded interval volume":
+            - button "IV fluid input · fs-IO-input_iv-15 / 1"
+            - generic: Source-recorded interval volume
+          - cell "250 mL"
+          - 'cell "2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:15:00+00:00
+            - text: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Reported interval fluid balance · fs-IO-net_balance_reported-15 / 1 Source-reported calculation; not calculated by ClinRx 205 mL 2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Reported interval fluid balance · fs-IO-net_balance_reported-15 / 1 Source-reported calculation; not calculated by ClinRx":
+            - button "Reported interval fluid balance · fs-IO-net_balance_reported-15 / 1"
+            - generic: Source-reported calculation; not calculated by ClinRx
+          - cell "205 mL"
+          - 'cell "2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:15:00+00:00
+            - text: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "CRRT net fluid removal · fs-IO-output_crrt-15 / 1 Source-recorded net removal, not total effluent 0 mL 2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "CRRT net fluid removal · fs-IO-output_crrt-15 / 1 Source-recorded net removal, not total effluent":
+            - button "CRRT net fluid removal · fs-IO-output_crrt-15 / 1"
+            - generic: Source-recorded net removal, not total effluent
+          - cell "0 mL"
+          - 'cell "2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:15:00+00:00
+            - text: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Drain output · fs-IO-output_drain-15 / 1 Measured interval volume 10 mL 2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Drain output · fs-IO-output_drain-15 / 1 Measured interval volume":
+            - button "Drain output · fs-IO-output_drain-15 / 1"
+            - generic: Measured interval volume
+          - cell "10 mL"
+          - 'cell "2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:15:00+00:00
+            - text: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Urine output · fs-IO-output_urine-15 / 1 Measured interval volume 35 mL 2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Urine output · fs-IO-output_urine-15 / 1 Measured interval volume":
+            - button "Urine output · fs-IO-output_urine-15 / 1"
+            - generic: Measured interval volume
+          - cell "35 mL"
+          - 'cell "2026-10-08T08:15:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:15:00+00:00
+            - text: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "CRRT fluid-removal context · fs-CRRT-NOTE / 1 Source chart context; not a renal-management recommendation Source chart: CRRT fluid-removal context recorded. Interval rows contain source-recorded NET removal, not total effluent. Replacement fluids are not independently reconciled by ClinRx. 2026-10-08T08:30:00+00:00 Point/context record; no interval inferred not recorded · recorded Completeness not established"':
+          - rowheader "CRRT fluid-removal context · fs-CRRT-NOTE / 1 Source chart context; not a renal-management recommendation":
+            - button "CRRT fluid-removal context · fs-CRRT-NOTE / 1"
+            - generic: Source chart context; not a renal-management recommendation
+          - 'cell "Source chart: CRRT fluid-removal context recorded. Interval rows contain source-recorded NET removal, not total effluent. Replacement fluids are not independently reconciled by ClinRx."'
+          - cell "2026-10-08T08:30:00+00:00 Point/context record; no interval inferred":
+            - text: 2026-10-08T08:30:00+00:00
+            - text: Point/context record; no interval inferred
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Blood-product input · fs-IO-input_blood-30 / 1 Source-recorded interval volume 0 mL 2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Blood-product input · fs-IO-input_blood-30 / 1 Source-recorded interval volume":
+            - button "Blood-product input · fs-IO-input_blood-30 / 1"
+            - generic: Source-recorded interval volume
+          - cell "0 mL"
+          - 'cell "2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:30:00+00:00
+            - text: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "IV fluid input · fs-IO-input_iv-30 / 1 Source-recorded interval volume 100 mL 2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "IV fluid input · fs-IO-input_iv-30 / 1 Source-recorded interval volume":
+            - button "IV fluid input · fs-IO-input_iv-30 / 1"
+            - generic: Source-recorded interval volume
+          - cell "100 mL"
+          - 'cell "2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:30:00+00:00
+            - text: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Reported interval fluid balance · fs-IO-net_balance_reported-30 / 1 Source-reported calculation; not calculated by ClinRx 20 mL 2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Reported interval fluid balance · fs-IO-net_balance_reported-30 / 1 Source-reported calculation; not calculated by ClinRx":
+            - button "Reported interval fluid balance · fs-IO-net_balance_reported-30 / 1"
+            - generic: Source-reported calculation; not calculated by ClinRx
+          - cell "20 mL"
+          - 'cell "2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:30:00+00:00
+            - text: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "CRRT net fluid removal · fs-IO-output_crrt-30 / 1 Source-recorded net removal, not total effluent 50 mL 2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "CRRT net fluid removal · fs-IO-output_crrt-30 / 1 Source-recorded net removal, not total effluent":
+            - button "CRRT net fluid removal · fs-IO-output_crrt-30 / 1"
+            - generic: Source-recorded net removal, not total effluent
+          - cell "50 mL"
+          - 'cell "2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:30:00+00:00
+            - text: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Drain output · fs-IO-output_drain-30 / 1 Measured interval volume 5 mL 2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Drain output · fs-IO-output_drain-30 / 1 Measured interval volume":
+            - button "Drain output · fs-IO-output_drain-30 / 1"
+            - generic: Measured interval volume
+          - cell "5 mL"
+          - 'cell "2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:30:00+00:00
+            - text: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Urine output · fs-IO-output_urine-30 / 1 Measured interval volume 25 mL 2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Urine output · fs-IO-output_urine-30 / 1 Measured interval volume":
+            - button "Urine output · fs-IO-output_urine-30 / 1"
+            - generic: Measured interval volume
+          - cell "25 mL"
+          - 'cell "2026-10-08T08:30:00+00:00 Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:30:00+00:00
+            - text: "Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Blood-product input · fs-IO-input_blood-45 / 1 Source-recorded interval volume 150 mL 2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Blood-product input · fs-IO-input_blood-45 / 1 Source-recorded interval volume":
+            - button "Blood-product input · fs-IO-input_blood-45 / 1"
+            - generic: Source-recorded interval volume
+          - cell "150 mL"
+          - 'cell "2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:45:00+00:00
+            - text: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "IV fluid input · fs-IO-input_iv-45 / 1 Source-recorded interval volume 50 mL 2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "IV fluid input · fs-IO-input_iv-45 / 1 Source-recorded interval volume":
+            - button "IV fluid input · fs-IO-input_iv-45 / 1"
+            - generic: Source-recorded interval volume
+          - cell "50 mL"
+          - 'cell "2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:45:00+00:00
+            - text: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Reported interval fluid balance · fs-IO-net_balance_reported-45 / 1 Source-reported calculation; not calculated by ClinRx 110 mL 2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Reported interval fluid balance · fs-IO-net_balance_reported-45 / 1 Source-reported calculation; not calculated by ClinRx":
+            - button "Reported interval fluid balance · fs-IO-net_balance_reported-45 / 1"
+            - generic: Source-reported calculation; not calculated by ClinRx
+          - cell "110 mL"
+          - 'cell "2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:45:00+00:00
+            - text: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "CRRT net fluid removal · fs-IO-output_crrt-45 / 1 Source-recorded net removal, not total effluent 50 mL 2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "CRRT net fluid removal · fs-IO-output_crrt-45 / 1 Source-recorded net removal, not total effluent":
+            - button "CRRT net fluid removal · fs-IO-output_crrt-45 / 1"
+            - generic: Source-recorded net removal, not total effluent
+          - cell "50 mL"
+          - 'cell "2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:45:00+00:00
+            - text: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Drain output · fs-IO-output_drain-45 / 1 Measured interval volume 0 mL 2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Drain output · fs-IO-output_drain-45 / 1 Measured interval volume":
+            - button "Drain output · fs-IO-output_drain-45 / 1"
+            - generic: Measured interval volume
+          - cell "0 mL"
+          - 'cell "2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:45:00+00:00
+            - text: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Urine output · fs-IO-output_urine-45 / 1 Measured interval volume 40 mL 2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Urine output · fs-IO-output_urine-45 / 1 Measured interval volume":
+            - button "Urine output · fs-IO-output_urine-45 / 1"
+            - generic: Measured interval volume
+          - cell "40 mL"
+          - 'cell "2026-10-08T08:45:00+00:00 Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T08:45:00+00:00
+            - text: "Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Reported cumulative chart balance · fs-BALANCE-TOTAL / 1 Source-reported total of charted categories; completeness unknown 285 mL 2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Reported cumulative chart balance · fs-BALANCE-TOTAL / 1 Source-reported total of charted categories; completeness unknown":
+            - button "Reported cumulative chart balance · fs-BALANCE-TOTAL / 1"
+            - generic: Source-reported total of charted categories; completeness unknown
+          - cell "285 mL"
+          - 'cell "2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:00:00+00:00
+            - text: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Blood-product input · fs-IO-input_blood-60 / 1 Source-recorded interval volume 0 mL 2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Blood-product input · fs-IO-input_blood-60 / 1 Source-recorded interval volume":
+            - button "Blood-product input · fs-IO-input_blood-60 / 1"
+            - generic: Source-recorded interval volume
+          - cell "0 mL"
+          - 'cell "2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:00:00+00:00
+            - text: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "IV fluid input · fs-IO-input_iv-60 / 1 Source-recorded interval volume 50 mL 2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "IV fluid input · fs-IO-input_iv-60 / 1 Source-recorded interval volume":
+            - button "IV fluid input · fs-IO-input_iv-60 / 1"
+            - generic: Source-recorded interval volume
+          - cell "50 mL"
+          - 'cell "2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:00:00+00:00
+            - text: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Reported interval fluid balance · fs-IO-net_balance_reported-60 / 1 Source-reported calculation; not calculated by ClinRx -50 mL 2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Reported interval fluid balance · fs-IO-net_balance_reported-60 / 1 Source-reported calculation; not calculated by ClinRx":
+            - button "Reported interval fluid balance · fs-IO-net_balance_reported-60 / 1"
+            - generic: Source-reported calculation; not calculated by ClinRx
+          - cell "-50 mL"
+          - 'cell "2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:00:00+00:00
+            - text: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "CRRT net fluid removal · fs-IO-output_crrt-60 / 1 Source-recorded net removal, not total effluent 50 mL 2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "CRRT net fluid removal · fs-IO-output_crrt-60 / 1 Source-recorded net removal, not total effluent":
+            - button "CRRT net fluid removal · fs-IO-output_crrt-60 / 1"
+            - generic: Source-recorded net removal, not total effluent
+          - cell "50 mL"
+          - 'cell "2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:00:00+00:00
+            - text: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Drain output · fs-IO-output_drain-60 / 1 Measured interval volume 5 mL 2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Drain output · fs-IO-output_drain-60 / 1 Measured interval volume":
+            - button "Drain output · fs-IO-output_drain-60 / 1"
+            - generic: Measured interval volume
+          - cell "5 mL"
+          - 'cell "2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:00:00+00:00
+            - text: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Urine output · fs-IO-output_urine-60 / 1 Measured interval volume 45 mL 2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Urine output · fs-IO-output_urine-60 / 1 Measured interval volume":
+            - button "Urine output · fs-IO-output_urine-60 / 1"
+            - generic: Measured interval volume
+          - cell "45 mL"
+          - 'cell "2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:00:00+00:00
+            - text: "Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Reported cumulative urine volume · fs-URINE-TOTAL / 1 Source-reported total; not calculated by ClinRx 145 mL 2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Reported cumulative urine volume · fs-URINE-TOTAL / 1 Source-reported total; not calculated by ClinRx":
+            - button "Reported cumulative urine volume · fs-URINE-TOTAL / 1"
+            - generic: Source-reported total; not calculated by ClinRx
+          - cell "145 mL"
+          - 'cell "2026-10-08T09:00:00+00:00 Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:00:00+00:00
+            - text: "Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Urine output · rf1-urine-zero / 1 Measured interval volume 0 mL 2026-10-08T09:15:00+00:00 Source interval: 2026-10-08T09:00:00+00:00 → 2026-10-08T09:15:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Urine output · rf1-urine-zero / 1 Measured interval volume":
+            - button "Urine output · rf1-urine-zero / 1"
+            - generic: Measured interval volume
+          - cell "0 mL"
+          - 'cell "2026-10-08T09:15:00+00:00 Source interval: 2026-10-08T09:00:00+00:00 → 2026-10-08T09:15:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:15:00+00:00
+            - text: "Source interval: 2026-10-08T09:00:00+00:00 → 2026-10-08T09:15:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Urine output · rf1-urine-gap / 1 Measured interval volume 20 mL 2026-10-08T09:45:00+00:00 Source interval: 2026-10-08T09:30:00+00:00 → 2026-10-08T09:45:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Urine output · rf1-urine-gap / 1 Measured interval volume":
+            - button "Urine output · rf1-urine-gap / 1"
+            - generic: Measured interval volume
+          - cell "20 mL"
+          - 'cell "2026-10-08T09:45:00+00:00 Source interval: 2026-10-08T09:30:00+00:00 → 2026-10-08T09:45:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:45:00+00:00
+            - text: "Source interval: 2026-10-08T09:30:00+00:00 → 2026-10-08T09:45:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Urine output · rf1-urine-overlap / 1 Measured interval volume 15 mL 2026-10-08T09:50:00+00:00 Source interval: 2026-10-08T09:40:00+00:00 → 2026-10-08T09:50:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Urine output · rf1-urine-overlap / 1 Measured interval volume":
+            - button "Urine output · rf1-urine-overlap / 1"
+            - generic: Measured interval volume
+          - cell "15 mL"
+          - 'cell "2026-10-08T09:50:00+00:00 Source interval: 2026-10-08T09:40:00+00:00 → 2026-10-08T09:50:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:50:00+00:00
+            - text: "Source interval: 2026-10-08T09:40:00+00:00 → 2026-10-08T09:50:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "Urine output · rf1-urine-missing / 1 Measured interval volume Source amount unavailable; not zero. 2026-10-08T09:55:00+00:00 Source interval: 2026-10-08T09:50:00+00:00 → 2026-10-08T09:55:00+00:00. Duration and interval ordering are not assessed here. not recorded · recorded Completeness not established"':
+          - rowheader "Urine output · rf1-urine-missing / 1 Measured interval volume":
+            - button "Urine output · rf1-urine-missing / 1"
+            - generic: Measured interval volume
+          - cell "Source amount unavailable; not zero."
+          - 'cell "2026-10-08T09:55:00+00:00 Source interval: 2026-10-08T09:50:00+00:00 → 2026-10-08T09:55:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T09:55:00+00:00
+            - text: "Source interval: 2026-10-08T09:50:00+00:00 → 2026-10-08T09:55:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · recorded Completeness not established":
+            - text: not recorded · recorded
+            - text: Completeness not established
+        - 'row "IV fluid input · rf1-fluid-withdrawn / 1 Source-recorded interval volume 50 mL 2026-10-08T10:00:00+00:00 Source interval: 2026-10-08T09:55:00+00:00 → 2026-10-08T10:00:00+00:00. Duration and interval ordering are not assessed here. not recorded · withdrawn Completeness not established"':
+          - rowheader "IV fluid input · rf1-fluid-withdrawn / 1 Source-recorded interval volume":
+            - button "IV fluid input · rf1-fluid-withdrawn / 1"
+            - generic: Source-recorded interval volume
+          - cell "50 mL"
+          - 'cell "2026-10-08T10:00:00+00:00 Source interval: 2026-10-08T09:55:00+00:00 → 2026-10-08T10:00:00+00:00. Duration and interval ordering are not assessed here."':
+            - text: 2026-10-08T10:00:00+00:00
+            - text: "Source interval: 2026-10-08T09:55:00+00:00 → 2026-10-08T10:00:00+00:00. Duration and interval ordering are not assessed here."
+          - cell "not recorded · withdrawn Completeness not established":
+            - text: not recorded · withdrawn
+            - text: Completeness not established
+  - region "Renal review exact source inspector":
+    - 'heading "Selected exact source: rf1-urine-gap / 1" [active] [level=3]'
+    - button "Close source"
+    - generic "Complete selected record and provenance"
+    - generic: "{ \"fact\": { \"kind\": \"circulatory_event\", \"id\": \"rf1-urine-gap\", \"revision\": \"1\", \"binding\": { \"target\": { \"patient_id\": \"synthetic-p1\", \"encounter_id\": \"synthetic-e1\", \"longitudinal_context_id\": null }, \"verification\": { \"status\": \"verified\", \"method\": \"synthetic-demo\", \"verifier\": \"synthetic-system\", \"assessed_at\": \"2026-10-08T08:00:00Z\", \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"ambiguity\": null } }, \"origin\": \"reported\", \"provenance\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"time\": { \"event\": null, \"recorded\": null, \"effective_start\": null, \"effective_end\": null, \"retrieved\": null, \"processed\": null, \"precision\": \"unknown\", \"uncertainty\": null }, \"verification\": \"unverified\", \"conflict\": \"unknown\", \"temporal_status\": \"unknown\", \"uncertainty\": [], \"supersedes\": null, \"correction_reason\": null, \"contract_version\": \"3\", \"occurred\": { \"timestamp_precision\": \"M7ExactTimestampInput/v1\", \"recorded\": { \"status\": \"known\", \"precision\": \"instant\", \"value\": \"2026-10-08T09:45:00Z\", \"lower\": null, \"upper\": null, \"uncertainty\": null }, \"source_timestamp\": \"2026-10-08T09:45:00+00:00\", \"clock\": \"verified\", \"clock_basis\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"conflicting\": [], \"alternative_sources\": [], \"alignment\": null }, \"available\": { \"timestamp_precision\": \"M7ExactTimestampInput/v1\", \"recorded\": { \"status\": \"known\", \"precision\": \"instant\", \"value\": \"2026-10-08T09:45:00Z\", \"lower\": null, \"upper\": null, \"uncertainty\": null }, \"source_timestamp\": \"2026-10-08T09:45:00+00:00\", \"clock\": \"verified\", \"clock_basis\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"conflicting\": [], \"alternative_sources\": [], \"alignment\": null }, \"associations\": [], \"source_identifiers\": [], \"disclosures\": [ \"Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them.\" ], \"record_status\": \"recorded\", \"event_type\": \"other\", \"description\": { \"raw_display\": \"Source interval after an undocumented gap; no continuity inferred.\", \"coding\": { \"namespace\": \"clinrx.synthetic.hemodynamic-chart/v1\", \"code\": \"output_urine\", \"version\": \"1\", \"raw_display\": \"output_urine\" } }, \"external_evidence\": [], \"recorded_amount\": { \"value\": \"20\", \"unit\": { \"raw\": \"mL\", \"status\": \"unresolved\", \"system\": null, \"code\": null, \"limitation\": \"Synthetic source unit.\" } }, \"recorded_interval\": { \"start\": { \"timestamp_precision\": \"M7ExactTimestampInput/v1\", \"recorded\": { \"status\": \"known\", \"precision\": \"instant\", \"value\": \"2026-10-08T09:30:00Z\", \"lower\": null, \"upper\": null, \"uncertainty\": null }, \"source_timestamp\": \"2026-10-08T09:30:00+00:00\", \"clock\": \"verified\", \"clock_basis\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"conflicting\": [], \"alternative_sources\": [], \"alignment\": null }, \"end\": { \"timestamp_precision\": \"M7ExactTimestampInput/v1\", \"recorded\": { \"status\": \"known\", \"precision\": \"instant\", \"value\": \"2026-10-08T09:45:00Z\", \"lower\": null, \"upper\": null, \"uncertainty\": null }, \"source_timestamp\": \"2026-10-08T09:45:00+00:00\", \"clock\": \"verified\", \"clock_basis\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"conflicting\": [], \"alternative_sources\": [], \"alignment\": null }, \"provenance\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"limitations\": [ \"Source-recorded interval bounds; no duration, rate or completeness assessment is inferred.\" ] } }, \"expected_digest\": \"bde7ffe8e4525c33f3ee678146f43ac96e1769d6a2a04710f5f27c9847a2444c\", \"ingestion\": { \"repository_id\": \"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\", \"ingestion_sequence\": 172, \"ingested_at\": \"2026-10-19T14:37:10.349083Z\", \"payload_version\": 1 }, \"inclusion\": \"in_window\", \"contextual_for\": [], \"disclosures\": [ \"Recorded evidence only; source availability, continuity and completeness require separate assessment.\" ] }"
+    - heading "Revision history at the selected cutoff" [level=4]
+    - paragraph: Original and corrected results are retained. Historical status is not withdrawal; a correction is not a new specimen or physiological improvement.
+    - article:
+      - heading "rf1-urine-gap / 1" [level=5]
+      - generic: "{ \"fact\": { \"kind\": \"circulatory_event\", \"id\": \"rf1-urine-gap\", \"revision\": \"1\", \"binding\": { \"target\": { \"patient_id\": \"synthetic-p1\", \"encounter_id\": \"synthetic-e1\", \"longitudinal_context_id\": null }, \"verification\": { \"status\": \"verified\", \"method\": \"synthetic-demo\", \"verifier\": \"synthetic-system\", \"assessed_at\": \"2026-10-08T08:00:00Z\", \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"ambiguity\": null } }, \"origin\": \"reported\", \"provenance\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"time\": { \"event\": null, \"recorded\": null, \"effective_start\": null, \"effective_end\": null, \"retrieved\": null, \"processed\": null, \"precision\": \"unknown\", \"uncertainty\": null }, \"verification\": \"unverified\", \"conflict\": \"unknown\", \"temporal_status\": \"unknown\", \"uncertainty\": [], \"supersedes\": null, \"correction_reason\": null, \"contract_version\": \"3\", \"occurred\": { \"timestamp_precision\": \"M7ExactTimestampInput/v1\", \"recorded\": { \"status\": \"known\", \"precision\": \"instant\", \"value\": \"2026-10-08T09:45:00Z\", \"lower\": null, \"upper\": null, \"uncertainty\": null }, \"source_timestamp\": \"2026-10-08T09:45:00+00:00\", \"clock\": \"verified\", \"clock_basis\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"conflicting\": [], \"alternative_sources\": [], \"alignment\": null }, \"available\": { \"timestamp_precision\": \"M7ExactTimestampInput/v1\", \"recorded\": { \"status\": \"known\", \"precision\": \"instant\", \"value\": \"2026-10-08T09:45:00Z\", \"lower\": null, \"upper\": null, \"uncertainty\": null }, \"source_timestamp\": \"2026-10-08T09:45:00+00:00\", \"clock\": \"verified\", \"clock_basis\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"conflicting\": [], \"alternative_sources\": [], \"alignment\": null }, \"associations\": [], \"source_identifiers\": [], \"disclosures\": [ \"Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them.\" ], \"record_status\": \"recorded\", \"event_type\": \"other\", \"description\": { \"raw_display\": \"Source interval after an undocumented gap; no continuity inferred.\", \"coding\": { \"namespace\": \"clinrx.synthetic.hemodynamic-chart/v1\", \"code\": \"output_urine\", \"version\": \"1\", \"raw_display\": \"output_urine\" } }, \"external_evidence\": [], \"recorded_amount\": { \"value\": \"20\", \"unit\": { \"raw\": \"mL\", \"status\": \"unresolved\", \"system\": null, \"code\": null, \"limitation\": \"Synthetic source unit.\" } }, \"recorded_interval\": { \"start\": { \"timestamp_precision\": \"M7ExactTimestampInput/v1\", \"recorded\": { \"status\": \"known\", \"precision\": \"instant\", \"value\": \"2026-10-08T09:30:00Z\", \"lower\": null, \"upper\": null, \"uncertainty\": null }, \"source_timestamp\": \"2026-10-08T09:30:00+00:00\", \"clock\": \"verified\", \"clock_basis\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"conflicting\": [], \"alternative_sources\": [], \"alignment\": null }, \"end\": { \"timestamp_precision\": \"M7ExactTimestampInput/v1\", \"recorded\": { \"status\": \"known\", \"precision\": \"instant\", \"value\": \"2026-10-08T09:45:00Z\", \"lower\": null, \"upper\": null, \"uncertainty\": null }, \"source_timestamp\": \"2026-10-08T09:45:00+00:00\", \"clock\": \"verified\", \"clock_basis\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"conflicting\": [], \"alternative_sources\": [], \"alignment\": null }, \"provenance\": { \"source\": { \"namespace\": \"clinrx.synthetic.demo\", \"identifier\": \"patient-state-v1\", \"version\": \"1\", \"channel\": \"system\" }, \"actor\": \"synthetic-demo\", \"recorded_at\": \"2026-10-08T08:00:00Z\", \"upstream\": [], \"lineage\": \"unknown\", \"limitations\": [ \"Synthetic source assertion only.\" ] }, \"limitations\": [ \"Source-recorded interval bounds; no duration, rate or completeness assessment is inferred.\" ] } }, \"ingestion\": { \"repository_id\": \"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\", \"ingestion_sequence\": 172, \"ingested_at\": \"2026-10-19T14:37:10.349083Z\", \"payload_version\": 1 } }"
+  - paragraph: Renal entry, reassessment selection and adding creatinine to saved handover are unavailable in RF1. Existing hemodynamics notes and handover remain separate and unchanged.

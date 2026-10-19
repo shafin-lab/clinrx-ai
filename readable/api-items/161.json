@@ -1,0 +1,237 @@
+{
+  "fact": {
+    "kind": "circulatory_event",
+    "id": "3583c95b-119c-4daf-9642-42845112602e",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "unresolved",
+        "method": "Local synthetic encounter selection",
+        "verifier": "Milestone synthetic reviewer",
+        "assessed_at": "2026-10-19T07:57:25.667000Z",
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "3583c95b-119c-4daf-9642-42845112602e",
+          "version": null,
+          "channel": "clinician"
+        },
+        "ambiguity": "Fictional patient identity only; not independently verified."
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "identifier": "3583c95b-119c-4daf-9642-42845112602e",
+        "version": null,
+        "channel": "clinician"
+      },
+      "actor": "Milestone synthetic reviewer",
+      "recorded_at": "2026-10-19T07:57:25.667000Z",
+      "upstream": [],
+      "lineage": "incomplete",
+      "limitations": [
+        "Fictional local entry; actor and source assertions are not independently authenticated."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [
+      "Fictional synthetic milestone journey. Actor identity is an assertion, not authenticated clinician sign-off. Source acquisition, clock and delivery context must be reviewed."
+    ],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-08T09:25:00Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-08T09:25:00Z",
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "recorded": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": null,
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [
+      {
+        "role": "context",
+        "scope": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null
+        },
+        "status": "resolved",
+        "exact": {
+          "kind": "circulatory_cardiac",
+          "id": "fs-CO-15",
+          "version": "1"
+        },
+        "candidates": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "3583c95b-119c-4daf-9642-42845112602e",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Milestone synthetic reviewer",
+          "recorded_at": "2026-10-19T07:57:25.667000Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        },
+        "limitation": null
+      },
+      {
+        "role": "context",
+        "scope": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null
+        },
+        "status": "resolved",
+        "exact": {
+          "kind": "circulatory_vasoactive",
+          "id": "fs-N-CHANGE",
+          "version": "1"
+        },
+        "candidates": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "3583c95b-119c-4daf-9642-42845112602e",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Milestone synthetic reviewer",
+          "recorded_at": "2026-10-19T07:57:25.667000Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        },
+        "limitation": null
+      },
+      {
+        "role": "context",
+        "scope": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null
+        },
+        "status": "resolved",
+        "exact": {
+          "kind": "circulatory_pressure",
+          "id": "fs-MAP-15",
+          "version": "41675deb-aa68-444f-a5fe-6ed8770c2c0c"
+        },
+        "candidates": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "3583c95b-119c-4daf-9642-42845112602e",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Milestone synthetic reviewer",
+          "recorded_at": "2026-10-19T07:57:25.667000Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        },
+        "limitation": null
+      }
+    ],
+    "source_identifiers": [
+      {
+        "namespace": "clinrx.local.chart-entry/v1",
+        "code": "reassessment",
+        "version": null,
+        "raw_display": "reassessment"
+      }
+    ],
+    "disclosures": [],
+    "record_status": "recorded",
+    "event_type": "other",
+    "description": {
+      "raw_display": "Clinician-authored synthetic reassessment; not a computed response or causal conclusion.\nQuestion: Review the corrected pressure alongside original flow and infusion context\nbaseline: {\"kind\":\"circulatory_cardiac\",\"id\":\"fs-CO-15\",\"version\":\"1\"}\nintervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"fs-N-CHANGE\",\"version\":\"1\"}\nfollowup: {\"kind\":\"circulatory_pressure\",\"id\":\"fs-MAP-15\",\"version\":\"41675deb-aa68-444f-a5fe-6ed8770c2c0c\"}\nRecorded findings: The same 08:15 source pressure now records transcription-corrected MAP 62.0000 mmHg. The original MAP 61 mmHg remains in revision history and the earlier note retains revision 1. Cardiac output 4.00 L/min and the documented noradrenaline event remain separate exact source records.\nUnconfirmed possibilities: The correction is not a new physiological observation or evidence of improvement. No treatment response, causal infusion effect, diagnosis or physiological simultaneity is established.\nConfirmation gaps: Fictional synthetic milestone journey. Actor identity is an assertion, not authenticated clinician sign-off. Source acquisition, clock and delivery context must be reviewed.\nNext review (recorded plan, not a scheduled action): Review exact pressure history, flow method, infusion documentation and unresolved context. Recorded plan only; no scheduled action.",
+      "coding": null
+    },
+    "external_evidence": [
+      {
+        "namespace": "clinrx.local.reassessment.baseline/v1",
+        "code": "{\"kind\":\"circulatory_cardiac\",\"id\":\"fs-CO-15\",\"version\":\"1\"}",
+        "version": null,
+        "raw_display": "{\"kind\":\"circulatory_cardiac\",\"id\":\"fs-CO-15\",\"version\":\"1\"}"
+      },
+      {
+        "namespace": "clinrx.local.reassessment.intervention/v1",
+        "code": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"fs-N-CHANGE\",\"version\":\"1\"}",
+        "version": null,
+        "raw_display": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"fs-N-CHANGE\",\"version\":\"1\"}"
+      },
+      {
+        "namespace": "clinrx.local.reassessment.followup/v1",
+        "code": "{\"kind\":\"circulatory_pressure\",\"id\":\"fs-MAP-15\",\"version\":\"41675deb-aa68-444f-a5fe-6ed8770c2c0c\"}",
+        "version": null,
+        "raw_display": "{\"kind\":\"circulatory_pressure\",\"id\":\"fs-MAP-15\",\"version\":\"41675deb-aa68-444f-a5fe-6ed8770c2c0c\"}"
+      }
+    ],
+    "recorded_amount": null
+  },
+  "expected_digest": "aa3056867810e03bfa4187b69356393aaab36227bdad9dfd40b37ba5deb30fdb",
+  "ingestion": {
+    "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+    "ingestion_sequence": 165,
+    "ingested_at": "2026-10-19T07:57:57.264070Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window",
+  "contextual_for": [],
+  "disclosures": [
+    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+  ]
+}

@@ -1,0 +1,29 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/renalFluid.test.tsx (21 tests | 1 failed) 20600ms
+   × uses one composite load and returns to the same hemodynamics workspace 11085ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/renalFluid.test.tsx > uses one composite load and returns to the same hemodynamics workspace
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/renalFluid.test.tsx:24:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 21 passed (22)
+      Tests  1 failed | 695 passed (696)
+   Start at  20:14:05
+   Duration  106.18s (tests 80%, environment 13%, import 2%, transform 2%, setup 2%)
+
+    Isolate  22 workers spawned · ~1.46s startup each (spawn + environment, per file)
+             at least ~14.65s faster with isolate: false — reuses workers across files instead of one per file
+

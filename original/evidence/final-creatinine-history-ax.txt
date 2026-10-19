@@ -1,0 +1,984 @@
+Browser tab: 26, Title: "ClinRx AI · Synthetic review", URL: "http://127.0.0.1:5197/".
+0 AXWebArea ClinRx AI · Synthetic review, URL: 127.0.0.1:5197/
+	1 container root
+		2 link Description: Skip to patient workflow, Value: 127.0.0.1:5197/#patient-workflow
+		3 container
+			4 heading Synthetic ICU patient workspace, Value: 1
+				5 text Synthetic ICU patient workspace
+			6 text Patient  synthetic-p1  · Encounter  synthetic-e1
+			7 text Clinical execution disabled.
+			8 text  Local synthetic evidence only; no treatment advice.
+			9 container Find patient evidence
+				10 container
+					11 text Find recorded evidence
+					12 search text field (settable) Find recorded evidence
+				13 button Find evidence
+			14 text Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover. Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.
+			15 container Patient workflow
+				16 button Patient and evidence
+				17 button Source entry and reassessment
+				18 button Compare notes
+				19 button Handover
+				20 button Renal and fluid review
+			21 container Current workflow step
+				22 heading Renal and fluid review, Value: 2
+					23 text Renal and fluid review
+				24 text Review original creatinine observations beside existing urine and fluid intervals. Inspect exact source history; missing metadata stays unavailable. Renal authoring and calculations are deferred.
+				25 button (collapsed) How to complete this synthetic patient workflow, Secondary Actions: Expand
+					26 text How to complete this synthetic patient workflow
+		27 container Renal and fluid review
+			28 heading Renal and fluid review, Value: 2
+				29 text Renal and fluid review
+			30 container
+				31 text Read-only synthetic evidence. Clinical execution disabled.  No AKI stage, eGFR, calculated trend, balance, urine rate or treatment advice.
+			32 container
+				33 text Repository  eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5  · cutoff  175  · review  2026-10-08T08:00:00Z  →  2026-10-08T10:00:00Z . Same patient and historical cutoff as hemodynamics; this does not establish simultaneous measurements.
+			34 heading Recorded creatinine, Value: 3
+				35 text Recorded creatinine
+			36 text Source event time is not confirmed specimen collection time. Specimen, collection time, typed quality and withdrawal metadata are unavailable in this legacy observation contract. Source text is retained without promoting it to a typed fact. Outside-window and unplaced terminal observations stay visible; older values are not resurrected.
+			37 container Recorded creatinine table
+				38 table
+					39 row
+						40 cell
+							41 text EXACT SOURCE
+						42 cell
+							43 text RECORDED RESULT / RAW UNIT
+						44 cell
+							45 text SOURCE TIMING
+						46 cell
+							47 text UNCERTAINTY
+					48 row
+						49 cell
+							50 button demo-creatinine-A / 2
+								51 text demo-creatinine-A
+								52 text  / 
+								53 text 2
+						54 cell
+							55 text 1.1000 mg/dL · unit mapping assessed
+						56 cell
+							57 text 2026-10-08T08:00:00Z  ·  in_window
+							58 text Recorded  2026-10-08T08:00:00Z
+						59 cell
+							60 text Verification  verified ; conflict  none_known ; temporal status  historical
+							61 text Synthetic recorded evidence only.
+					62 row
+						63 cell
+							64 button demo-creatinine-B / 1
+								65 text demo-creatinine-B
+								66 text  / 
+								67 text 1
+						68 cell
+							69 text 2.000 mg/dL · unit mapping assessed
+						70 cell
+							71 text 2026-10-08T10:00:00Z  ·  in_window
+							72 text Recorded  2026-10-08T10:00:00Z
+						73 cell
+							74 text Verification  verified ; conflict  none_known ; temporal status  historical
+							75 text Synthetic recorded evidence only.
+					76 row
+						77 cell
+							78 button rf1-creatinine-missing / 1
+								79 text rf1-creatinine-missing
+								80 text  / 
+								81 text 1
+						82 cell
+							83 text missing — Source result unavailable.
+						84 cell
+							85 text Event time unavailable  ·  unplaced
+							86 text Recorded  unavailable
+						87 cell
+							88 text Verification  verified ; conflict  none_known ; temporal status  historical
+							89 text Synthetic recorded evidence only.
+					90 row
+						91 cell
+							92 button rf1-creatinine-unlike-unit / 1
+								93 text rf1-creatinine-unlike-unit
+								94 text  / 
+								95 text 1
+						96 cell
+							97 text 150.0 umol/L · unit mapping unresolved
+						98 cell
+							99 text 2026-10-08T10:00:00Z  ·  in_window
+							100 text Recorded  2026-10-08T10:00:00Z
+						101 cell
+							102 text Verification  unverified ; conflict  unresolved ; temporal status  historical
+							103 text Synthetic conflicting report; no corroboration or interpretation.
+			104 heading Urine, fluid, weight and renal-support source context, Value: 3
+				105 text Urine, fluid, weight and renal-support source context
+			106 text Point events and intervals remain separate. Gaps, overlapping intervals and completeness are not reconciled here. Zero is a recorded value; missing is not zero. Reported balances/totals are source calculations, not ClinRx calculations. A fluid challenge may already be included in an input interval and must not be added again. CRRT net removal is not total effluent or proof of continuous treatment; dosing weight is not a serial measured daily weight.
+			107 container Fluid and renal support records
+				108 table
+					109 row
+						110 cell
+							111 text SOURCE CATEGORY
+						112 cell
+							113 text RECORDED QUANTITY
+						114 cell
+							115 text SOURCE TIME / INTERVAL
+						116 cell
+							117 text QUALITY / STATUS
+					118 row
+						119 cell
+							120 button Source dosing weight · fs-WEIGHT / 1
+								121 text Source dosing weight
+								122 text  · 
+								123 text fs-WEIGHT
+								124 text  / 
+								125 text 1
+							126 text SOURCE-RECORDED ACTUAL WEIGHT
+						127 cell
+							128 text 70 kg
+						129 cell
+							130 text 2026-10-08T08:00:00+00:00
+							131 text Point/context record; no interval inferred
+						132 cell
+							133 text not recorded  ·  recorded
+							134 text Completeness not established
+					135 row
+						136 cell
+							137 button Fluid challenge event · fs-FLUID-CHALLENGE / 1
+								138 text Fluid challenge event
+								139 text  · 
+								140 text fs-FLUID-CHALLENGE
+								141 text  / 
+								142 text 1
+							143 text SOURCE EVENT; MAY ALREADY BE INCLUDED IN INPUT TOTALS
+						144 cell
+							145 text 250 mL
+						146 cell
+							147 text 2026-10-08T08:10:00+00:00
+							148 text Point/context record; no interval inferred
+						149 cell
+							150 text not recorded  ·  recorded
+							151 text Completeness not established
+					152 row
+						153 cell
+							154 button Blood-product input · fs-IO-input_blood-15 / 1
+								155 text Blood-product input
+								156 text  · 
+								157 text fs-IO-input_blood-15
+								158 text  / 
+								159 text 1
+							160 text SOURCE-RECORDED INTERVAL VOLUME
+						161 cell
+							162 text 0 mL
+						163 cell
+							164 text 2026-10-08T08:15:00+00:00
+							165 text Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here.
+						166 cell
+							167 text not recorded  ·  recorded
+							168 text Completeness not established
+					169 row
+						170 cell
+							171 button IV fluid input · fs-IO-input_iv-15 / 1
+								172 text IV fluid input
+								173 text  · 
+								174 text fs-IO-input_iv-15
+								175 text  / 
+								176 text 1
+							177 text SOURCE-RECORDED INTERVAL VOLUME
+						178 cell
+							179 text 250 mL
+						180 cell
+							181 text 2026-10-08T08:15:00+00:00
+							182 text Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here.
+						183 cell
+							184 text not recorded  ·  recorded
+							185 text Completeness not established
+					186 row
+						187 cell
+							188 button Reported interval fluid balance · fs-IO-net_balance_reported-15 / 1
+								189 text Reported interval fluid balance
+								190 text  · 
+								191 text fs-IO-net_balance_reported-15
+								192 text  / 
+								193 text 1
+							194 text SOURCE-REPORTED CALCULATION; NOT CALCULATED BY CLINRX
+						195 cell
+							196 text 205 mL
+						197 cell
+							198 text 2026-10-08T08:15:00+00:00
+							199 text Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here.
+						200 cell
+							201 text not recorded  ·  recorded
+							202 text Completeness not established
+					203 row
+						204 cell
+							205 button CRRT net fluid removal · fs-IO-output_crrt-15 / 1
+								206 text CRRT net fluid removal
+								207 text  · 
+								208 text fs-IO-output_crrt-15
+								209 text  / 
+								210 text 1
+							211 text SOURCE-RECORDED NET REMOVAL, NOT TOTAL EFFLUENT
+						212 cell
+							213 text 0 mL
+						214 cell
+							215 text 2026-10-08T08:15:00+00:00
+							216 text Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here.
+						217 cell
+							218 text not recorded  ·  recorded
+							219 text Completeness not established
+					220 row
+						221 cell
+							222 button Drain output · fs-IO-output_drain-15 / 1
+								223 text Drain output
+								224 text  · 
+								225 text fs-IO-output_drain-15
+								226 text  / 
+								227 text 1
+							228 text MEASURED INTERVAL VOLUME
+						229 cell
+							230 text 10 mL
+						231 cell
+							232 text 2026-10-08T08:15:00+00:00
+							233 text Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here.
+						234 cell
+							235 text not recorded  ·  recorded
+							236 text Completeness not established
+					237 row
+						238 cell
+							239 button Urine output · fs-IO-output_urine-15 / 1
+								240 text Urine output
+								241 text  · 
+								242 text fs-IO-output_urine-15
+								243 text  / 
+								244 text 1
+							245 text MEASURED INTERVAL VOLUME
+						246 cell
+							247 text 35 mL
+						248 cell
+							249 text 2026-10-08T08:15:00+00:00
+							250 text Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T08:15:00+00:00. Duration and interval ordering are not assessed here.
+						251 cell
+							252 text not recorded  ·  recorded
+							253 text Completeness not established
+					254 row
+						255 cell
+							256 button CRRT fluid-removal context · fs-CRRT-NOTE / 1
+								257 text CRRT fluid-removal context
+								258 text  · 
+								259 text fs-CRRT-NOTE
+								260 text  / 
+								261 text 1
+							262 text SOURCE CHART CONTEXT; NOT A RENAL-MANAGEMENT RECOMMENDATION
+						263 cell
+							264 text Source chart: CRRT fluid-removal context recorded. Interval rows contain source-recorded NET removal, not total effluent. Replacement fluids are not independently reconciled by ClinRx.
+						265 cell
+							266 text 2026-10-08T08:30:00+00:00
+							267 text Point/context record; no interval inferred
+						268 cell
+							269 text not recorded  ·  recorded
+							270 text Completeness not established
+					271 row
+						272 cell
+							273 button Blood-product input · fs-IO-input_blood-30 / 1
+								274 text Blood-product input
+								275 text  · 
+								276 text fs-IO-input_blood-30
+								277 text  / 
+								278 text 1
+							279 text SOURCE-RECORDED INTERVAL VOLUME
+						280 cell
+							281 text 0 mL
+						282 cell
+							283 text 2026-10-08T08:30:00+00:00
+							284 text Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here.
+						285 cell
+							286 text not recorded  ·  recorded
+							287 text Completeness not established
+					288 row
+						289 cell
+							290 button IV fluid input · fs-IO-input_iv-30 / 1
+								291 text IV fluid input
+								292 text  · 
+								293 text fs-IO-input_iv-30
+								294 text  / 
+								295 text 1
+							296 text SOURCE-RECORDED INTERVAL VOLUME
+						297 cell
+							298 text 100 mL
+						299 cell
+							300 text 2026-10-08T08:30:00+00:00
+							301 text Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here.
+						302 cell
+							303 text not recorded  ·  recorded
+							304 text Completeness not established
+					305 row
+						306 cell
+							307 button Reported interval fluid balance · fs-IO-net_balance_reported-30 / 1
+								308 text Reported interval fluid balance
+								309 text  · 
+								310 text fs-IO-net_balance_reported-30
+								311 text  / 
+								312 text 1
+							313 text SOURCE-REPORTED CALCULATION; NOT CALCULATED BY CLINRX
+						314 cell
+							315 text 20 mL
+						316 cell
+							317 text 2026-10-08T08:30:00+00:00
+							318 text Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here.
+						319 cell
+							320 text not recorded  ·  recorded
+							321 text Completeness not established
+					322 row
+						323 cell
+							324 button CRRT net fluid removal · fs-IO-output_crrt-30 / 1
+								325 text CRRT net fluid removal
+								326 text  · 
+								327 text fs-IO-output_crrt-30
+								328 text  / 
+								329 text 1
+							330 text SOURCE-RECORDED NET REMOVAL, NOT TOTAL EFFLUENT
+						331 cell
+							332 text 50 mL
+						333 cell
+							334 text 2026-10-08T08:30:00+00:00
+							335 text Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here.
+						336 cell
+							337 text not recorded  ·  recorded
+							338 text Completeness not established
+					339 row
+						340 cell
+							341 button Drain output · fs-IO-output_drain-30 / 1
+								342 text Drain output
+								343 text  · 
+								344 text fs-IO-output_drain-30
+								345 text  / 
+								346 text 1
+							347 text MEASURED INTERVAL VOLUME
+						348 cell
+							349 text 5 mL
+						350 cell
+							351 text 2026-10-08T08:30:00+00:00
+							352 text Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here.
+						353 cell
+							354 text not recorded  ·  recorded
+							355 text Completeness not established
+					356 row
+						357 cell
+							358 button Urine output · fs-IO-output_urine-30 / 1
+								359 text Urine output
+								360 text  · 
+								361 text fs-IO-output_urine-30
+								362 text  / 
+								363 text 1
+							364 text MEASURED INTERVAL VOLUME
+						365 cell
+							366 text 25 mL
+						367 cell
+							368 text 2026-10-08T08:30:00+00:00
+							369 text Source interval: 2026-10-08T08:15:00+00:00 → 2026-10-08T08:30:00+00:00. Duration and interval ordering are not assessed here.
+						370 cell
+							371 text not recorded  ·  recorded
+							372 text Completeness not established
+					373 row
+						374 cell
+							375 button Blood-product input · fs-IO-input_blood-45 / 1
+								376 text Blood-product input
+								377 text  · 
+								378 text fs-IO-input_blood-45
+								379 text  / 
+								380 text 1
+							381 text SOURCE-RECORDED INTERVAL VOLUME
+						382 cell
+							383 text 150 mL
+						384 cell
+							385 text 2026-10-08T08:45:00+00:00
+							386 text Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here.
+						387 cell
+							388 text not recorded  ·  recorded
+							389 text Completeness not established
+					390 row
+						391 cell
+							392 button IV fluid input · fs-IO-input_iv-45 / 1
+								393 text IV fluid input
+								394 text  · 
+								395 text fs-IO-input_iv-45
+								396 text  / 
+								397 text 1
+							398 text SOURCE-RECORDED INTERVAL VOLUME
+						399 cell
+							400 text 50 mL
+						401 cell
+							402 text 2026-10-08T08:45:00+00:00
+							403 text Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here.
+						404 cell
+							405 text not recorded  ·  recorded
+							406 text Completeness not established
+					407 row
+						408 cell
+							409 button Reported interval fluid balance · fs-IO-net_balance_reported-45 / 1
+								410 text Reported interval fluid balance
+								411 text  · 
+								412 text fs-IO-net_balance_reported-45
+								413 text  / 
+								414 text 1
+							415 text SOURCE-REPORTED CALCULATION; NOT CALCULATED BY CLINRX
+						416 cell
+							417 text 110 mL
+						418 cell
+							419 text 2026-10-08T08:45:00+00:00
+							420 text Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here.
+						421 cell
+							422 text not recorded  ·  recorded
+							423 text Completeness not established
+					424 row
+						425 cell
+							426 button CRRT net fluid removal · fs-IO-output_crrt-45 / 1
+								427 text CRRT net fluid removal
+								428 text  · 
+								429 text fs-IO-output_crrt-45
+								430 text  / 
+								431 text 1
+							432 text SOURCE-RECORDED NET REMOVAL, NOT TOTAL EFFLUENT
+						433 cell
+							434 text 50 mL
+						435 cell
+							436 text 2026-10-08T08:45:00+00:00
+							437 text Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here.
+						438 cell
+							439 text not recorded  ·  recorded
+							440 text Completeness not established
+					441 row
+						442 cell
+							443 button Drain output · fs-IO-output_drain-45 / 1
+								444 text Drain output
+								445 text  · 
+								446 text fs-IO-output_drain-45
+								447 text  / 
+								448 text 1
+							449 text MEASURED INTERVAL VOLUME
+						450 cell
+							451 text 0 mL
+						452 cell
+							453 text 2026-10-08T08:45:00+00:00
+							454 text Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here.
+						455 cell
+							456 text not recorded  ·  recorded
+							457 text Completeness not established
+					458 row
+						459 cell
+							460 button Urine output · fs-IO-output_urine-45 / 1
+								461 text Urine output
+								462 text  · 
+								463 text fs-IO-output_urine-45
+								464 text  / 
+								465 text 1
+							466 text MEASURED INTERVAL VOLUME
+						467 cell
+							468 text 40 mL
+						469 cell
+							470 text 2026-10-08T08:45:00+00:00
+							471 text Source interval: 2026-10-08T08:30:00+00:00 → 2026-10-08T08:45:00+00:00. Duration and interval ordering are not assessed here.
+						472 cell
+							473 text not recorded  ·  recorded
+							474 text Completeness not established
+					475 row
+						476 cell
+							477 button Reported cumulative chart balance · fs-BALANCE-TOTAL / 1
+								478 text Reported cumulative chart balance
+								479 text  · 
+								480 text fs-BALANCE-TOTAL
+								481 text  / 
+								482 text 1
+							483 text SOURCE-REPORTED TOTAL OF CHARTED CATEGORIES; COMPLETENESS UNKNOWN
+						484 cell
+							485 text 285 mL
+						486 cell
+							487 text 2026-10-08T09:00:00+00:00
+							488 text Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here.
+						489 cell
+							490 text not recorded  ·  recorded
+							491 text Completeness not established
+					492 row
+						493 cell
+							494 button Blood-product input · fs-IO-input_blood-60 / 1
+								495 text Blood-product input
+								496 text  · 
+								497 text fs-IO-input_blood-60
+								498 text  / 
+								499 text 1
+							500 text SOURCE-RECORDED INTERVAL VOLUME
+						501 cell
+							502 text 0 mL
+						503 cell
+							504 text 2026-10-08T09:00:00+00:00
+							505 text Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here.
+						506 cell
+							507 text not recorded  ·  recorded
+							508 text Completeness not established
+					509 row
+						510 cell
+							511 button IV fluid input · fs-IO-input_iv-60 / 1
+								512 text IV fluid input
+								513 text  · 
+								514 text fs-IO-input_iv-60
+								515 text  / 
+								516 text 1
+							517 text SOURCE-RECORDED INTERVAL VOLUME
+						518 cell
+							519 text 50 mL
+						520 cell
+							521 text 2026-10-08T09:00:00+00:00
+							522 text Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here.
+						523 cell
+							524 text not recorded  ·  recorded
+							525 text Completeness not established
+					526 row
+						527 cell
+							528 button Reported interval fluid balance · fs-IO-net_balance_reported-60 / 1
+								529 text Reported interval fluid balance
+								530 text  · 
+								531 text fs-IO-net_balance_reported-60
+								532 text  / 
+								533 text 1
+							534 text SOURCE-REPORTED CALCULATION; NOT CALCULATED BY CLINRX
+						535 cell
+							536 text -50 mL
+						537 cell
+							538 text 2026-10-08T09:00:00+00:00
+							539 text Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here.
+						540 cell
+							541 text not recorded  ·  recorded
+							542 text Completeness not established
+					543 row
+						544 cell
+							545 button CRRT net fluid removal · fs-IO-output_crrt-60 / 1
+								546 text CRRT net fluid removal
+								547 text  · 
+								548 text fs-IO-output_crrt-60
+								549 text  / 
+								550 text 1
+							551 text SOURCE-RECORDED NET REMOVAL, NOT TOTAL EFFLUENT
+						552 cell
+							553 text 50 mL
+						554 cell
+							555 text 2026-10-08T09:00:00+00:00
+							556 text Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here.
+						557 cell
+							558 text not recorded  ·  recorded
+							559 text Completeness not established
+					560 row
+						561 cell
+							562 button Drain output · fs-IO-output_drain-60 / 1
+								563 text Drain output
+								564 text  · 
+								565 text fs-IO-output_drain-60
+								566 text  / 
+								567 text 1
+							568 text MEASURED INTERVAL VOLUME
+						569 cell
+							570 text 5 mL
+						571 cell
+							572 text 2026-10-08T09:00:00+00:00
+							573 text Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here.
+						574 cell
+							575 text not recorded  ·  recorded
+							576 text Completeness not established
+					577 row
+						578 cell
+							579 button Urine output · fs-IO-output_urine-60 / 1
+								580 text Urine output
+								581 text  · 
+								582 text fs-IO-output_urine-60
+								583 text  / 
+								584 text 1
+							585 text MEASURED INTERVAL VOLUME
+						586 cell
+							587 text 45 mL
+						588 cell
+							589 text 2026-10-08T09:00:00+00:00
+							590 text Source interval: 2026-10-08T08:45:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here.
+						591 cell
+							592 text not recorded  ·  recorded
+							593 text Completeness not established
+					594 row
+						595 cell
+							596 button Reported cumulative urine volume · fs-URINE-TOTAL / 1
+								597 text Reported cumulative urine volume
+								598 text  · 
+								599 text fs-URINE-TOTAL
+								600 text  / 
+								601 text 1
+							602 text SOURCE-REPORTED TOTAL; NOT CALCULATED BY CLINRX
+						603 cell
+							604 text 145 mL
+						605 cell
+							606 text 2026-10-08T09:00:00+00:00
+							607 text Source interval: 2026-10-08T08:00:00+00:00 → 2026-10-08T09:00:00+00:00. Duration and interval ordering are not assessed here.
+						608 cell
+							609 text not recorded  ·  recorded
+							610 text Completeness not established
+					611 row
+						612 cell
+							613 button Urine output · rf1-urine-zero / 1
+								614 text Urine output
+								615 text  · 
+								616 text rf1-urine-zero
+								617 text  / 
+								618 text 1
+							619 text MEASURED INTERVAL VOLUME
+						620 cell
+							621 text 0 mL
+						622 cell
+							623 text 2026-10-08T09:15:00+00:00
+							624 text Source interval: 2026-10-08T09:00:00+00:00 → 2026-10-08T09:15:00+00:00. Duration and interval ordering are not assessed here.
+						625 cell
+							626 text not recorded  ·  recorded
+							627 text Completeness not established
+					628 row
+						629 cell
+							630 button Urine output · rf1-urine-gap / 1
+								631 text Urine output
+								632 text  · 
+								633 text rf1-urine-gap
+								634 text  / 
+								635 text 1
+							636 text MEASURED INTERVAL VOLUME
+						637 cell
+							638 text 20 mL
+						639 cell
+							640 text 2026-10-08T09:45:00+00:00
+							641 text Source interval: 2026-10-08T09:30:00+00:00 → 2026-10-08T09:45:00+00:00. Duration and interval ordering are not assessed here.
+						642 cell
+							643 text not recorded  ·  recorded
+							644 text Completeness not established
+					645 row
+						646 cell
+							647 button Urine output · rf1-urine-overlap / 1
+								648 text Urine output
+								649 text  · 
+								650 text rf1-urine-overlap
+								651 text  / 
+								652 text 1
+							653 text MEASURED INTERVAL VOLUME
+						654 cell
+							655 text 15 mL
+						656 cell
+							657 text 2026-10-08T09:50:00+00:00
+							658 text Source interval: 2026-10-08T09:40:00+00:00 → 2026-10-08T09:50:00+00:00. Duration and interval ordering are not assessed here.
+						659 cell
+							660 text not recorded  ·  recorded
+							661 text Completeness not established
+					662 row
+						663 cell
+							664 button Urine output · rf1-urine-missing / 1
+								665 text Urine output
+								666 text  · 
+								667 text rf1-urine-missing
+								668 text  / 
+								669 text 1
+							670 text MEASURED INTERVAL VOLUME
+						671 cell
+							672 text Source amount unavailable; not zero.
+						673 cell
+							674 text 2026-10-08T09:55:00+00:00
+							675 text Source interval: 2026-10-08T09:50:00+00:00 → 2026-10-08T09:55:00+00:00. Duration and interval ordering are not assessed here.
+						676 cell
+							677 text not recorded  ·  recorded
+							678 text Completeness not established
+					679 row
+						680 cell
+							681 button IV fluid input · rf1-fluid-withdrawn / 1
+								682 text IV fluid input
+								683 text  · 
+								684 text rf1-fluid-withdrawn
+								685 text  / 
+								686 text 1
+							687 text SOURCE-RECORDED INTERVAL VOLUME
+						688 cell
+							689 text 50 mL
+						690 cell
+							691 text 2026-10-08T10:00:00+00:00
+							692 text Source interval: 2026-10-08T09:55:00+00:00 → 2026-10-08T10:00:00+00:00. Duration and interval ordering are not assessed here.
+						693 cell
+							694 text not recorded  ·  withdrawn
+							695 text Completeness not established
+			697 container Renal review exact source inspector
+				698 heading Selected exact source: demo-creatinine-A / 2, Value: 3
+					699 text Selected exact source: 
+					700 text demo-creatinine-A
+					701 text  / 
+					702 text 2
+				703 button Close source
+				704 container
+					705 text 1.1000 mg/dL · unit mapping assessed  ·  in_window  · digest  06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa  · ingestion  168
+				706 container
+					707 button (expanded) Complete selected record and provenance, Secondary Actions: Collapse
+						708 text Complete selected record and provenance
+					709 text {
+  "fact": {
+    "kind": "observation",
+    "id": "demo-creatinine-A",
+    "revision": "2",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "verified",
+        "method": "synthetic-demo",
+        "verifier": "synthetic-system",
+        "assessed_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "ambiguity": null
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx.synthetic.serum-creatinine",
+        "identifier": "demo-sample-A",
+        "version": "1",
+        "channel": "measurement"
+      },
+      "actor": "synthetic-demo",
+      "recorded_at": "2026-10-08T08:00:00Z",
+      "upstream": [],
+      "lineage": "unknown",
+      "limitations": [
+        "Synthetic demonstration only; no clinical feed."
+      ]
+    },
+    "time": {
+      "event": "2026-10-08T08:00:00Z",
+      "recorded": "2026-10-08T08:00:00Z",
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "instant",
+      "uncertainty": null
+    },
+    "verification": "verified",
+    "conflict": "none_known",
+    "temporal_status": "historical",
+    "uncertainty": [
+      "Synthetic recorded evidence only."
+    ],
+    "supersedes": {
+      "kind": "observation",
+      "id": "demo-creatinine-A",
+      "version": "1"
+    },
+    "correction_reason": "Synthetic transcription correction, not a new sample.",
+    "concept_id": "synthetic-serum-creatinine",
+    "value": {
+      "status": "known",
+      "value": {
+        "value": "1.1000",
+        "unit": {
+          "raw": "mg/dL",
+          "status": "assessed",
+          "system": "UCUM",
+          "code": "mg/dL",
+          "limitation": null
+        }
+      },
+      "reason": null
+    }
+  },
+  "expected_digest": "06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa",
+  "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":\"Synthetic transcription correction, not a new sample.\",\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"2\",\"supersedes\":{\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"version\":\"1\"},\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.1000\"}},\"verification\":\"verified\"}",
+  "ingestion": {
+    "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+    "ingestion_sequence": 168,
+    "ingested_at": "2026-10-19T14:37:10.323955Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window"
+}
+				710 heading Revision history at the selected cutoff, Value: 4
+					711 text Revision history at the selected cutoff
+				712 text Original and corrected results are retained. Historical status is not withdrawal; a correction is not a new specimen or physiological improvement.
+				713 container
+					714 heading demo-creatinine-A / 1, Value: 5
+						715 text demo-creatinine-A  /  1
+					716 text 1.00 mg/dL · unit mapping assessed {
+  "fact": {
+    "kind": "observation",
+    "id": "demo-creatinine-A",
+    "revision": "1",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "verified",
+        "method": "synthetic-demo",
+        "verifier": "synthetic-system",
+        "assessed_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "ambiguity": null
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx.synthetic.serum-creatinine",
+        "identifier": "demo-sample-A",
+        "version": "1",
+        "channel": "measurement"
+      },
+      "actor": "synthetic-demo",
+      "recorded_at": "2026-10-08T08:00:00Z",
+      "upstream": [],
+      "lineage": "unknown",
+      "limitations": [
+        "Synthetic demonstration only; no clinical feed."
+      ]
+    },
+    "time": {
+      "event": "2026-10-08T08:00:00Z",
+      "recorded": "2026-10-08T08:00:00Z",
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "instant",
+      "uncertainty": null
+    },
+    "verification": "verified",
+    "conflict": "none_known",
+    "temporal_status": "historical",
+    "uncertainty": [
+      "Synthetic recorded evidence only."
+    ],
+    "supersedes": null,
+    "correction_reason": null,
+    "concept_id": "synthetic-serum-creatinine",
+    "value": {
+      "status": "known",
+      "value": {
+        "value": "1.00",
+        "unit": {
+          "raw": "mg/dL",
+          "status": "assessed",
+          "system": "UCUM",
+          "code": "mg/dL",
+          "limitation": null
+        }
+      },
+      "reason": null
+    }
+  },
+  "expected_digest": "47725732962a14527b5867dd525393d46ecc03276528c7fa2428767beefbe4e1",
+  "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.00\"}},\"verification\":\"verified\"}",
+  "ingestion": {
+    "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+    "ingestion_sequence": 1,
+    "ingested_at": "2026-10-19T07:52:21.269505Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window"
+}
+				717 container
+					718 heading demo-creatinine-A / 2, Value: 5
+						719 text demo-creatinine-A  /  2
+					720 text 1.1000 mg/dL · unit mapping assessed {
+  "fact": {
+    "kind": "observation",
+    "id": "demo-creatinine-A",
+    "revision": "2",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "verified",
+        "method": "synthetic-demo",
+        "verifier": "synthetic-system",
+        "assessed_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "namespace": "clinrx.synthetic.demo",
+          "identifier": "patient-state-v1",
+          "version": "1",
+          "channel": "system"
+        },
+        "ambiguity": null
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx.synthetic.serum-creatinine",
+        "identifier": "demo-sample-A",
+        "version": "1",
+        "channel": "measurement"
+      },
+      "actor": "synthetic-demo",
+      "recorded_at": "2026-10-08T08:00:00Z",
+      "upstream": [],
+      "lineage": "unknown",
+      "limitations": [
+        "Synthetic demonstration only; no clinical feed."
+      ]
+    },
+    "time": {
+      "event": "2026-10-08T08:00:00Z",
+      "recorded": "2026-10-08T08:00:00Z",
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "instant",
+      "uncertainty": null
+    },
+    "verification": "verified",
+    "conflict": "none_known",
+    "temporal_status": "historical",
+    "uncertainty": [
+      "Synthetic recorded evidence only."
+    ],
+    "supersedes": {
+      "kind": "observation",
+      "id": "demo-creatinine-A",
+      "version": "1"
+    },
+    "correction_reason": "Synthetic transcription correction, not a new sample.",
+    "concept_id": "synthetic-serum-creatinine",
+    "value": {
+      "status": "known",
+      "value": {
+        "value": "1.1000",
+        "unit": {
+          "raw": "mg/dL",
+          "status": "assessed",
+          "system": "UCUM",
+          "code": "mg/dL",
+          "limitation": null
+        }
+      },
+      "reason": null
+    }
+  },
+  "expected_digest": "06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa",
+  "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":\"Synthetic transcription correction, not a new sample.\",\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"2\",\"supersedes\":{\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"version\":\"1\"},\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.1000\"}},\"verification\":\"verified\"}",
+  "ingestion": {
+    "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+    "ingestion_sequence": 168,
+    "ingested_at": "2026-10-19T14:37:10.323955Z",
+    "payload_version": 1
+  },
+  "inclusion": "in_window"
+}
+			696 text Renal entry, reassessment selection and adding creatinine to saved handover are unavailable in RF1. Existing hemodynamics notes and handover remain separate and unchanged.
+
+The focused UI element is 698 heading Selected exact source: demo-creatinine-A / 2, Value: 3

@@ -1,0 +1,200 @@
+{
+  "context": {
+    "transport_version": "SyntheticRenalFluidReview/v1",
+    "scope": {
+      "contract_version": "3",
+      "patient_id": "synthetic-p1",
+      "encounter_id": "synthetic-e1",
+      "review_start": "2026-10-08T08:00:00Z",
+      "review_end": "2026-10-08T10:00:00Z",
+      "repository_cutoff": {
+        "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+        "fact_watermark": 175,
+        "captured_at": "2026-10-19T14:46:53.190718Z"
+      }
+    },
+    "circulatory_digest": "5b531540222f76c3ff1943cc0f9e4e55614fab154d06598993cd04d0b576496f",
+    "observations_digest": "5dfaa5e0f1bf861b49cd1da9e80fe28548a243032f523d5056769cf4bb9e98e7"
+  },
+  "reference": {
+    "kind": "observation",
+    "id": "demo-creatinine-A",
+    "version": "2"
+  },
+  "revisions": [
+    {
+      "fact": {
+        "kind": "observation",
+        "id": "demo-creatinine-A",
+        "revision": "1",
+        "binding": {
+          "target": {
+            "patient_id": "synthetic-p1",
+            "encounter_id": "synthetic-e1",
+            "longitudinal_context_id": null
+          },
+          "verification": {
+            "status": "verified",
+            "method": "synthetic-demo",
+            "verifier": "synthetic-system",
+            "assessed_at": "2026-10-08T08:00:00Z",
+            "source": {
+              "namespace": "clinrx.synthetic.demo",
+              "identifier": "patient-state-v1",
+              "version": "1",
+              "channel": "system"
+            },
+            "ambiguity": null
+          }
+        },
+        "origin": "reported",
+        "provenance": {
+          "source": {
+            "namespace": "clinrx.synthetic.serum-creatinine",
+            "identifier": "demo-sample-A",
+            "version": "1",
+            "channel": "measurement"
+          },
+          "actor": "synthetic-demo",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "upstream": [],
+          "lineage": "unknown",
+          "limitations": [
+            "Synthetic demonstration only; no clinical feed."
+          ]
+        },
+        "time": {
+          "event": "2026-10-08T08:00:00Z",
+          "recorded": "2026-10-08T08:00:00Z",
+          "effective_start": null,
+          "effective_end": null,
+          "retrieved": null,
+          "processed": null,
+          "precision": "instant",
+          "uncertainty": null
+        },
+        "verification": "verified",
+        "conflict": "none_known",
+        "temporal_status": "historical",
+        "uncertainty": [
+          "Synthetic recorded evidence only."
+        ],
+        "supersedes": null,
+        "correction_reason": null,
+        "concept_id": "synthetic-serum-creatinine",
+        "value": {
+          "status": "known",
+          "value": {
+            "value": "1.00",
+            "unit": {
+              "raw": "mg/dL",
+              "status": "assessed",
+              "system": "UCUM",
+              "code": "mg/dL",
+              "limitation": null
+            }
+          },
+          "reason": null
+        }
+      },
+      "expected_digest": "47725732962a14527b5867dd525393d46ecc03276528c7fa2428767beefbe4e1",
+      "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.00\"}},\"verification\":\"verified\"}",
+      "ingestion": {
+        "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+        "ingestion_sequence": 1,
+        "ingested_at": "2026-10-19T07:52:21.269505Z",
+        "payload_version": 1
+      },
+      "inclusion": "in_window"
+    },
+    {
+      "fact": {
+        "kind": "observation",
+        "id": "demo-creatinine-A",
+        "revision": "2",
+        "binding": {
+          "target": {
+            "patient_id": "synthetic-p1",
+            "encounter_id": "synthetic-e1",
+            "longitudinal_context_id": null
+          },
+          "verification": {
+            "status": "verified",
+            "method": "synthetic-demo",
+            "verifier": "synthetic-system",
+            "assessed_at": "2026-10-08T08:00:00Z",
+            "source": {
+              "namespace": "clinrx.synthetic.demo",
+              "identifier": "patient-state-v1",
+              "version": "1",
+              "channel": "system"
+            },
+            "ambiguity": null
+          }
+        },
+        "origin": "reported",
+        "provenance": {
+          "source": {
+            "namespace": "clinrx.synthetic.serum-creatinine",
+            "identifier": "demo-sample-A",
+            "version": "1",
+            "channel": "measurement"
+          },
+          "actor": "synthetic-demo",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "upstream": [],
+          "lineage": "unknown",
+          "limitations": [
+            "Synthetic demonstration only; no clinical feed."
+          ]
+        },
+        "time": {
+          "event": "2026-10-08T08:00:00Z",
+          "recorded": "2026-10-08T08:00:00Z",
+          "effective_start": null,
+          "effective_end": null,
+          "retrieved": null,
+          "processed": null,
+          "precision": "instant",
+          "uncertainty": null
+        },
+        "verification": "verified",
+        "conflict": "none_known",
+        "temporal_status": "historical",
+        "uncertainty": [
+          "Synthetic recorded evidence only."
+        ],
+        "supersedes": {
+          "kind": "observation",
+          "id": "demo-creatinine-A",
+          "version": "1"
+        },
+        "correction_reason": "Synthetic transcription correction, not a new sample.",
+        "concept_id": "synthetic-serum-creatinine",
+        "value": {
+          "status": "known",
+          "value": {
+            "value": "1.1000",
+            "unit": {
+              "raw": "mg/dL",
+              "status": "assessed",
+              "system": "UCUM",
+              "code": "mg/dL",
+              "limitation": null
+            }
+          },
+          "reason": null
+        }
+      },
+      "expected_digest": "06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa",
+      "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":\"Synthetic transcription correction, not a new sample.\",\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"2\",\"supersedes\":{\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"version\":\"1\"},\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.1000\"}},\"verification\":\"verified\"}",
+      "ingestion": {
+        "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+        "ingestion_sequence": 168,
+        "ingested_at": "2026-10-19T14:37:10.323955Z",
+        "payload_version": 1
+      },
+      "inclusion": "in_window"
+    }
+  ]
+}

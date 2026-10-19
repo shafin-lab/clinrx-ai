@@ -1,0 +1,58 @@
+{
+  "source": "c2d58e4c8d52d2ceeddd57881365cc5f76cdf74f",
+  "tree": "960105b34b302648190fa40630725573e893edce",
+  "baseline": "b4194447829f060387b816437694af9f6c0cb60e",
+  "approved_specification": "7fa529dd276ceb140700760a358cf3493b44e85b",
+  "working_tree_clean": true,
+  "source_files_match_tested_manifest": 20,
+  "checks": {
+    "full_backend": {
+      "passed": 4318,
+      "warnings": 1,
+      "seconds": 1058.32,
+      "exit_code": 0
+    },
+    "rf1_api_storage": {
+      "passed": 16,
+      "seconds": 84.39,
+      "exit_code": 0
+    },
+    "full_frontend": {
+      "passed": 696,
+      "files": 22,
+      "seconds": 53.79,
+      "exit_code": 0
+    },
+    "typecheck": {
+      "exit_code": 0
+    },
+    "default_build": {
+      "exit_code": 0
+    },
+    "rf1_authoring_build": {
+      "exit_code": 0
+    },
+    "dependency_consistency": {
+      "exit_code": 0
+    },
+    "migration_head": "m7_0008",
+    "whitespace": "passed",
+    "python_syntax": "passed"
+  },
+  "readonly_verification": {
+    "status": "PASS",
+    "tables_unchanged": 12,
+    "fact_revisions_unchanged": 175,
+    "retained_receipts_unchanged": 2,
+    "captured_fact_correspondences": 341,
+    "final_build_fact_correspondences": 171,
+    "prior_167_facts_and_receipts_preserved": true,
+    "context_redaction": "Signed state-context fields are redacted. No signature authentication or complete browser network trace claimed."
+  },
+  "scope": "local synthetic read-only RF1; existing hemodynamics authoring remains separate",
+  "execution_enabled": false,
+  "remote_source_publication": false,
+  "hosted_ci": "outstanding for this candidate",
+  "independent_implementation_review": "outstanding",
+  "merge_deploy_external_hosting": false
+}

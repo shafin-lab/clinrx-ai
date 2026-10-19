@@ -1,0 +1,26 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2 tests/renalFluid.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/renalFluid.test.tsx (21 tests | 1 failed) 14696ms
+   × shows raw creatinine and fluid intervals, preserves uncertainty and opens both revisions 5371ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/renalFluid.test.tsx > shows raw creatinine and fluid intervals, preserves uncertainty and opens both revisions
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/renalFluid.test.tsx:24:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 20 passed (21)
+   Start at  20:16:02
+   Duration  16.97s (tests 87%, environment 6%, transform 4%, import 2%, setup 1%)
+
