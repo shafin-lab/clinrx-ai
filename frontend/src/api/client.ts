@@ -36,7 +36,7 @@ export class ReviewClient {
   protected async request<T>(suffix: string, decode:(value:unknown)=>T, body?: unknown): Promise<Reply<T>> {
     if(this.transport==='same-origin-read-only') {
       const path=suffix.split('?')[0];
-      const permitted=body===undefined ? path==='/patient-state-v3' || /^\/circulatory-reviews\/[0-9a-f-]{36}$/.test(path) : path==='/circulatory-evidence-history';
+      const permitted=body===undefined ? path==='/patient-state-v3' || path==='/synthetic-renal-fluid' || /^\/circulatory-reviews\/[0-9a-f-]{36}$/.test(path) : path==='/circulatory-evidence-history' || path==='/synthetic-renal-fluid/history';
       if(!permitted)throw new ApiFailure('method_not_allowed',403);
     }
     const controller=new AbortController();

@@ -196,7 +196,7 @@ function structure(name:string,value:unknown):void {
   }
 }
 // Exact integer microseconds are used solely for validating an explicitly supplied time interval.
-function instant(value:unknown):bigint {
+export function instant(value:unknown):bigint {
   const text=timestamp(value),m=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,6}))?(Z|[+-]\d{2}:\d{2})$/.exec(text)!;
   const [year,month,day,hour,minute,second]=m.slice(1,7).map(Number);
   const y=year-1,leap=year%4===0 && (year%100!==0 || year%400===0);

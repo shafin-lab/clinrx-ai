@@ -1,3 +1,4 @@
+import {RenalFluidClient} from './api/renalFluidClient';
 import {useState} from 'react';
 import {PatientWorkspace} from './demo/PatientWorkspace';
 import {EvidenceEntryClient} from './api/evidenceEntryClient';
@@ -9,7 +10,7 @@ import { ReviewClient } from './api/client';
 import { demo, hostedSyntheticDemo } from './config';
 import { PatientReviewPage } from './patient/PatientReviewPage';
 export default function App() {
-  const [clients]=useState(()=>{try{return {circulatory:new CirculatoryClient(demo.base,demo.patient,demo.encounter,fetch,30_000,hostedSyntheticDemo?'same-origin-read-only':'loopback'),patient:new ReviewClient(demo.base,demo.patient,demo.encounter,fetch,30_000,hostedSyntheticDemo?'same-origin-read-only':'loopback'),micro:new MicroReviewClient(demo.base,demo.patient,demo.encounter,fetch,30_000,hostedSyntheticDemo?'same-origin-read-only':'loopback')};}catch{return null;}});
+  const [clients]=useState(()=>{try{return {circulatory:new (import.meta.env.VITE_SYNTHETIC_RF1==='true'?RenalFluidClient:CirculatoryClient)(demo.base,demo.patient,demo.encounter,fetch,30_000,hostedSyntheticDemo?'same-origin-read-only':'loopback'),patient:new ReviewClient(demo.base,demo.patient,demo.encounter,fetch,30_000,hostedSyntheticDemo?'same-origin-read-only':'loopback'),micro:new MicroReviewClient(demo.base,demo.patient,demo.encounter,fetch,30_000,hostedSyntheticDemo?'same-origin-read-only':'loopback')};}catch{return null;}});
   const [entry]=useState(()=>new EvidenceEntryClient());
   if(!clients)return <main><h1>ClinRx AI</h1><p role="alert">The synthetic demo connection is unavailable.</p></main>;
   if(import.meta.env.VITE_SYNTHETIC_AUTHORING==='true'){
