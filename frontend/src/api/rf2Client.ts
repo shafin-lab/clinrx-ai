@@ -45,9 +45,10 @@ export class RF2Client {
  private reviewed=new Map<string,Fact>();
  constructor(private send:typeof fetch=fetch){}
  private async request(path:string,body?:unknown){
+  const send=this.send;
   const abort=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
   const deadline=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{abort.abort();reject(Error('Request timed out; completion is unconfirmed.'));},15000);});
-  try{return await Promise.race([(async()=>{const r=await this.send('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'same-origin',redirect:'error',signal:abort.signal});if(!r.ok)throw Error(r.status===409?'Source conflict: review the original record; no replacement was inserted.':'The exact result could not be confirmed.');return readRF2JSON(r);})(),deadline]);}finally{clearTimeout(timer);}
+  try{return await Promise.race([(async()=>{const r=await send('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'same-origin',redirect:'error',signal:abort.signal});if(!r.ok)throw Error(r.status===409?'Source conflict: review the original record; no replacement was inserted.':'The exact result could not be confirmed.');return readRF2JSON(r);})(),deadline]);}finally{clearTimeout(timer);}
  }
  async catalog(start:string,end:string):Promise<Catalog>{const c=object(await this.request('?'+new URLSearchParams({review_start:start,review_end:end}))) as unknown as Catalog;
   exactKeys(c,['repository','cutoff','items','combined','execution_enabled']);validateTransportSchema(c.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);if(c.execution_enabled!==false||c.repository!==c.cutoff.repository_id||!Array.isArray(c.items)||c.items.length>4096)reject();const combined=await decodeRenalFluid(c.combined,{patient_id:'synthetic-p1',encounter_id:'synthetic-e1',start,end});if(!equal(combined.context.scope.repository_cutoff,c.cutoff))reject();
