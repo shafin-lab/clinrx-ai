@@ -1,0 +1,30 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2 tests/reassessmentComparison.test.tsx tests/patientWorkspace.test.tsx tests/evidenceEntry.test.tsx tests/guidedEvidence.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/patientWorkspace.test.tsx (28 tests | 1 failed) 15859ms
+   × M1: repository replacement cannot rebind a selected comparison note into the new handover 588ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/patientWorkspace.test.tsx > M1: repository replacement cannot rebind a selected comparison note into the new handover
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  Different note, same tuple
+Received:
+  Handover reviewSave these selections on this browser for this synthetic patient. Only exact references and digests are stored; displayed records are restored from the verified local API. Clearing browser data or changing browser/address removes access to this saved view. This does not send, schedule or clinically sign off a handover.Save handover locallyUnsaved handover changes. Save locally before reloading.Recorded findings and clinician-authored assertions remain separate. No new derived result, diagnosis or treatment plan is generated.Clinician-authored reassessment (synthetic assertion) · othercirculatory_event / same-note / 1Source time: Time not established · Status: recordedSource quality: not recorded · Placement: in window. Missing or unknown context is not confirmation.Selected repository: replacement-repository · cutoff 162 · ingestion 138Exact selected revision is also present in this snapshot.Authored narrative not recordedbaseline: {"kind":"circulatory_oxygen","id":"fs-PH-30","version":"1"}intervention: {"kind":"circulatory_vasoactive","id":"fs-D-CHANGE","version":"1"}followup: {"kind":"circulatory_oxygen","id":"fs-PH-60","version":"1"}Handover source and uncertainty same-noteRemove from handover selection
+ ❯ tests/patientWorkspace.test.tsx:189:228
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 80 passed (81)
+   Start at  14:39:03
+   Duration  17.96s (tests 87%, environment 7%, transform 4%, setup 1%, import 1%)
+

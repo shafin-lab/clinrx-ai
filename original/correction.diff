@@ -1,0 +1,166 @@
+diff --git a/docs/HEMODYNAMICS-MILESTONE-EVIDENCE-ERRATUM.md b/docs/HEMODYNAMICS-MILESTONE-EVIDENCE-ERRATUM.md
+new file mode 100644
+index 0000000..01836ac
+--- /dev/null
++++ b/docs/HEMODYNAMICS-MILESTONE-EVIDENCE-ERRATUM.md
+@@ -0,0 +1,18 @@
++# ee81661 milestone capture attribution correction
++
++This is a documentation-only correction to the report published in evidence commit
++`3c823a0182c4a7f69cf235fe020e435b712e6a5b`, `START-HERE.md`, step 6.
++The reviewed original report, screenshots, DOM, database checkpoints and checksum
++manifests remain unchanged. This erratum does not substitute a new capture.
++
++The original wording says: “Compared both notes, expanded authored narrative/provenance”.
++
++Correct attribution: Compared both notes and expanded their authored narratives.
++Captures 12/13 show expanded narratives; the inner uncertainty/provenance disclosures
++remain collapsed. Those captures do not independently demonstrate expanded provenance
++contents. Retained record/API/database evidence and code review have their separately
++stated scope; they must not be attributed to those collapsed browser disclosures.
++
++This correction adds no browser, API, database or runtime observation. It accompanies
++the repository-identity continuation fix and does not change the earlier evidence.
++Production execution remains disabled. No merge, deployment or external hosting is authorized.
+diff --git a/frontend/src/demo/EvidenceEntryWorkspace.tsx b/frontend/src/demo/EvidenceEntryWorkspace.tsx
+index bbdcbfa..32d009c 100644
+--- a/frontend/src/demo/EvidenceEntryWorkspace.tsx
++++ b/frontend/src/demo/EvidenceEntryWorkspace.tsx
+@@ -14,7 +14,7 @@ import './demo.css';
+ import './evidenceEntry.css';
+ type Phase='editing'|'review'|'saving'|'uncertain'|'absent'|'saved';
+ export interface SourceHandoff {token:number;item:CirculatoryItem;context:string}
+-export function EvidenceEntryWorkspace({client,entry,config,shared,handoff,onGuardChange,onSavedEvidence}:{client:CirculatoryClient;entry:EvidenceEntryClient;config:{start:string;end:string};shared?:PatientEvidenceState;handoff?:SourceHandoff;onGuardChange?:(guarded:boolean)=>void;onSavedEvidence?:(action:'find'|'handover',reference:ExactRef,digest:string)=>void}){
++export function EvidenceEntryWorkspace({client,entry,config,shared,handoff,onGuardChange,onSavedEvidence}:{client:CirculatoryClient;entry:EvidenceEntryClient;config:{start:string;end:string};shared?:PatientEvidenceState;handoff?:SourceHandoff;onGuardChange?:(guarded:boolean)=>void;onSavedEvidence?:(action:'find'|'handover',reference:ExactRef,digest:string,repository:string)=>void}){
+   const [localState,setState]=useState<CirculatoryState>(),[selected,setSelected]=useState<CirculatoryItem>();
+   const [text,setText]=useState(''),[mode,setMode]=useState<'new'|'correct'|'withdraw'>('new');
+   const [actor,setActor]=useState(''),[reason,setReason]=useState('');
+@@ -42,6 +42,7 @@ export function EvidenceEntryWorkspace({client,entry,config,shared,handoff,onGua
+   useEffect(()=>{historyGeneration.current++;setHistory(undefined);},[shared?.state?.state_context]);
+   let numeric='';try{numeric=String(record(record(JSON.parse(text).result).quantity).value??'');}catch{/* Invalid JSON must be repaired; never replace it with a shortcut. */}
+   function editNumeric(next:string){try{setText(shortcutValue(text,next));}catch{setError('Repair the source JSON before editing its numeric value.');}}
++  const savedRepositoryMatches=!!review&&review.repository_id===state?.assembly.request.scope.repository_cutoff.repository_id;
+   const proposedQuantity=record(record(review?.fact.result).quantity);
+   const proposedFinding=record(record(review?.fact.result).finding);
+   const locked=phase==='saving'||phase==='uncertain'||phase==='absent';
+@@ -94,7 +95,7 @@ export function EvidenceEntryWorkspace({client,entry,config,shared,handoff,onGua
+     {phase==='review'&&<><button disabled={busy||!gateConfirmed} onClick={()=>void save()}>Confirm append to local database</button><button disabled={busy} onClick={()=>{setPhase('editing');setPending(undefined);setReview(undefined);}}>Edit draft</button><button disabled={busy} onClick={()=>{choose();void refresh().catch(()=>setError('Refresh failed.'));}}>Discard draft and reload</button></>}
+     {(phase==='uncertain'||phase==='absent')&&<><p>Original pending revision: {pending?.fact.id} / {pending?.fact.revision}</p><button disabled={busy} onClick={()=>void recover()}>Check exact saved revision</button>{phase==='absent'&&<><p>The exact revision is absent in this lookup. This is not proof that an earlier request rolled back. An explicit retry reuses this same reviewed draft and revision.</p><button disabled={busy||!gateConfirmed} onClick={()=>void save()}>Explicitly retry the same revision</button></>}</>}
+     {phase==='saving'&&<p role="status">Appending the exact reviewed revision…</p>}
+-    {phase==='saved'&&<><p role="status">Exact revision saved and confirmed. Ingestion sequence {review?.ingestion?.ingestion_sequence}.</p><section aria-label="Continue after saved evidence"><h3>Continue the patient workflow</h3><p>Inspect the saved record and its history, or add this exact revision to handover. A reassessment is a separate authored note; you must explicitly select its evidence and describe uncertainty.</p>{onSavedEvidence&&review&&<><button disabled={busy||!gateConfirmed} onClick={()=>onSavedEvidence('find',{kind:review.fact.kind,id:review.fact.id,version:review.fact.revision},review.expected_digest)}>Find saved record</button><button disabled={busy||!gateConfirmed} onClick={()=>onSavedEvidence('handover',{kind:review.fact.kind,id:review.fact.id,version:review.fact.revision},review.expected_digest)}>Add saved record to handover</button></>}<button disabled={busy||!gateConfirmed} onClick={()=>{choose();setGuidedFamily('reassessment');}}>Start a clinician-authored reassessment</button><button disabled={busy||!gateConfirmed} onClick={()=>choose()}>Start another entry</button></section></>}
++    {phase==='saved'&&<><p role="status">Exact revision saved and confirmed. Ingestion sequence {review?.ingestion?.ingestion_sequence}.</p><section aria-label="Continue after saved evidence"><h3>Continue the patient workflow</h3><p>Inspect the saved record and its history, or add this exact revision to handover. A reassessment is a separate authored note; you must explicitly select its evidence and describe uncertainty.</p>{onSavedEvidence&&review&&<>{!savedRepositoryMatches&&<p role="status">The saved revision belongs to a different repository. Its confirmation is retained; find and handover continuation are withheld.</p>}<button disabled={busy||!gateConfirmed||!savedRepositoryMatches} onClick={()=>onSavedEvidence('find',{kind:review.fact.kind,id:review.fact.id,version:review.fact.revision},review.expected_digest,review.repository_id)}>Find saved record</button><button disabled={busy||!gateConfirmed||!savedRepositoryMatches} onClick={()=>onSavedEvidence('handover',{kind:review.fact.kind,id:review.fact.id,version:review.fact.revision},review.expected_digest,review.repository_id)}>Add saved record to handover</button></>}<button disabled={busy||!gateConfirmed} onClick={()=>{choose();setGuidedFamily('reassessment');}}>Start a clinician-authored reassessment</button><button disabled={busy||!gateConfirmed} onClick={()=>choose()}>Start another entry</button></section></>}
+     </>}
+     <p>Pending drafts exist only in this page’s memory. Reloading or closing can lose them. Keep this page open while completion is unknown.</p></section></div></>}
+   </main>;
+diff --git a/frontend/src/demo/PatientWorkspace.tsx b/frontend/src/demo/PatientWorkspace.tsx
+index 1b8db74..76c79e8 100644
+--- a/frontend/src/demo/PatientWorkspace.tsx
++++ b/frontend/src/demo/PatientWorkspace.tsx
+@@ -23,8 +23,9 @@ export function PatientWorkspace({client,entry,config}:{client:CirculatoryClient
+  function findEvidence(){if(guarded||!shared.state)return;setSearchRequest({token:++token.current,query:findQuery});navigate('evidence');}
+  function correct(item:CirculatoryItem){if(guarded||!shared.state)return;setHandoff({token:++token.current,item,context:shared.state.state_context});navigate('entry');}
+  function add(item:CirculatoryItem){if(!shared.state)return;const exact=shared.state.assembly.snapshot.items.find(i=>evidenceKey(i.fact)===evidenceKey(item.fact)&&i.expected_digest===item.expected_digest);if(!exact){setActionError('The source selection is stale. Inspect it again before adding it to handover; no successor was substituted.');return;}setActionError('');const repository=shared.state.assembly.request.scope.repository_cutoff.repository_id;if(!selections.some(s=>s.repository===repository&&evidenceKey(s.item.fact)===evidenceKey(item.fact)))handover.change([...selections,{item:exact,repository,cutoff:shared.state.assembly.request.scope.repository_cutoff.fact_watermark}]);}
+- function savedEvidence(action:'find'|'handover',reference:ExactRef,digest:string){
++ function savedEvidence(action:'find'|'handover',reference:ExactRef,digest:string,repository:string){
+   if(guarded||!shared.state)return;
++  if(shared.state.assembly.request.scope.repository_cutoff.repository_id!==repository){setActionError('The saved revision belongs to a different repository. Its confirmation is retained; continuation is withheld.');return;}
+   const matches=shared.state.assembly.snapshot.items.filter(i=>i.fact.kind===reference.kind&&i.fact.id===reference.id&&i.fact.revision===reference.version&&i.expected_digest===digest);
+   if(matches.length!==1){setActionError('The exact saved revision is not confirmed in the refreshed snapshot. No successor was substituted. Inspect source history or refresh the patient evidence.');return;}
+   setActionError('');
+diff --git a/frontend/src/demo/ReassessmentComparison.tsx b/frontend/src/demo/ReassessmentComparison.tsx
+index 0c0768f..74efd1d 100644
+--- a/frontend/src/demo/ReassessmentComparison.tsx
++++ b/frontend/src/demo/ReassessmentComparison.tsx
+@@ -19,7 +19,13 @@ export function reassessmentReference(item:CirculatoryItem,stage:typeof stages[n
+  const matched=associations.filter(v=>{const a=record(v),exact=record(a.exact),scope=record(a.scope);return a.role==='context'&&a.status==='resolved'&&exact.kind===ref.kind&&exact.id===ref.id&&exact.version===ref.version&&scope.patient_id===item.fact.binding.target.patient_id&&scope.encounter_id===item.fact.binding.target.encounter_id;});
+  return matched.length===1?ref:undefined;
+ }
+-export function ReassessmentComparison({state,onHandover}:{state:CirculatoryState;onHandover?:(item:CirculatoryItem)=>void}){
++type ComparisonProps={state:CirculatoryState;onHandover?:(item:CirculatoryItem)=>void};
++export function ReassessmentComparison(props:ComparisonProps){
++ const scope=props.state.assembly.request.scope;
++ // Reset comparison choices only; the enclosing editor and pending command stay mounted.
++ return <ScopedReassessmentComparison key={JSON.stringify([scope.repository_cutoff.repository_id,scope.patient_id,scope.encounter_id])} {...props}/>;
++}
++function ScopedReassessmentComparison({state,onHandover}:ComparisonProps){
+  const [left,setLeft]=useState(''),[right,setRight]=useState('');
+  const scope=state.assembly.request.scope;
+  const notes=state.assembly.snapshot.items.filter(i=>isReassessment(i)&&i.fact.binding.target.patient_id===scope.patient_id&&i.fact.binding.target.encounter_id===scope.encounter_id);
+diff --git a/frontend/tests/patientWorkspace.test.tsx b/frontend/tests/patientWorkspace.test.tsx
+index 85f4492..3932ef1 100644
+--- a/frontend/tests/patientWorkspace.test.tsx
++++ b/frontend/tests/patientWorkspace.test.tsx
+@@ -176,3 +176,39 @@ it('completes a cardiac-output correction through readable history, separate not
+  const state=structuredClone(first.getState());expect(first.entry.save).toHaveBeenCalledTimes(2);expect(first.client.circulatoryPrepare).not.toHaveBeenCalled();expect(first.client.circulatoryExecute).not.toHaveBeenCalled();first.view.unmount();
+  const restored=setup(s=>Object.assign(s,state));await ready();fireEvent.click(await screen.findByRole('button',{name:'Open saved handover'}));const handover=screen.getByRole('region',{name:'Read-only handover'});expect(handover).toHaveTextContent('Restored saved handover: 2 selection');expect(handover).toHaveTextContent('4.5500');expect(handover).toHaveTextContent(note.id);expect(handover).toHaveTextContent(corrected.fact.revision);expect(restored.entry.save).not.toHaveBeenCalled();expect(restored.client.circulatoryExecute).not.toHaveBeenCalled();restored.view.unmount();window.localStorage.clear();
+ });
++
++it('M1: repository replacement cannot rebind a selected comparison note into the new handover',async()=>{
++ const {getState,setState,client,entry}=setup(s=>{
++  const baseline=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-30')!,followup=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!,intervention=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-D-CHANGE')!;
++  const fact=structuredClone(buildGuided('reassessment',{baseline:evidenceKey(baseline.fact),intervention:evidenceKey(intervention.fact),followup:evidenceKey(followup.fact),question:'Review',findings:'Original repository note',possibilities:'Unconfirmed',uncertainty:'Unknown'},'Synthetic',s.assembly.snapshot.items,'same-note','2026-10-18T12:00:00Z'));s.assembly.snapshot.items.push({...followup,fact});
++ });
++ await ready();const original=getState().assembly.snapshot.items.find(i=>i.fact.id==='same-note')!;step('Compare notes');fireEvent.change(screen.getByRole('combobox',{name:'Note A'}),{target:{value:evidenceKey(original.fact)}});step('Patient and evidence');
++ const next=structuredClone(getState());next.state_context+='-new-repository';next.assembly.request.scope.repository_cutoff.repository_id='replacement-repository';const replacement=next.assembly.snapshot.items.find(i=>i.fact.id==='same-note')!;replacement.fact.description={raw_display:'Different note, same tuple'};replacement.expected_digest='b'.repeat(64);setState(next);
++ step('Refresh recorded state');await waitFor(()=>expect(client.circulatoryState).toHaveBeenCalledTimes(2));await waitFor(()=>expect(screen.getByRole('button',{name:'Refresh recorded state'})).toBeEnabled());step('Compare notes');
++ expect(screen.getByRole('combobox',{name:'Note A'})).toHaveValue('');expect(screen.queryByRole('button',{name:'Add Note A to handover'})).not.toBeInTheDocument();step('Handover');expect(screen.getByRole('region',{name:'Read-only handover'})).not.toHaveTextContent('Different note, same tuple');
++ step('Compare notes');fireEvent.change(screen.getByRole('combobox',{name:'Note A'}),{target:{value:evidenceKey(replacement.fact)}});step('Add Note A to handover');expect(screen.getByRole('region',{name:'Read-only handover'})).toHaveTextContent('Different note, same tuple');expect(entry.save).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
++});
++it('M1: retains repository A saved confirmation but withholds continuation against B with identical reference and digest',async()=>{
++ const {entry,client,getState}=setup();await correction();
++ client.circulatoryState.mockImplementationOnce(async()=>{const next=structuredClone(getState());next.state_context+='-replacement';next.assembly.request.scope.repository_cutoff.repository_id='replacement-repository';return {data:next};});
++ step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await waitFor(()=>expect(screen.getByRole('button',{name:'Refresh evidence'})).toBeEnabled());
++ expect(screen.getByText(/saved revision belongs to a different repository/i)).toBeInTheDocument();
++ for(const name of ['Find saved record','Add saved record to handover'])expect(screen.getByRole('button',{name})).toBeDisabled();
++ const saved=entry.save.mock.results[0];const confirmation=await saved.value;expect(screen.getByRole('region',{name:'Evidence draft'})).toHaveTextContent(confirmation.fact.revision);expect(screen.getByRole('region',{name:'Evidence draft'})).toHaveTextContent(confirmation.expected_digest);
++ expect(entry.save).toHaveBeenCalledTimes(1);expect(client.circulatoryExecute).not.toHaveBeenCalled();expect(window.localStorage.length).toBe(0);
++});
++
++it('M1: repository refresh does not remount the editor or replace an uncertain pending revision',async()=>{
++ const state=decodeCirculatoryState({...structuredClone(fixture),execution_enabled:false});state.assembly.snapshot.items=state.assembly.snapshot.items.filter(i=>i.fact.id==='fs-PH-60');
++ const repository=state.assembly.request.scope.repository_cutoff.repository_id;
++ const entry={validate:vi.fn(async(body:Draft)=>({repository_id:body.repository_id,fact:body.fact,expected_digest:'a'.repeat(64),canonical_fact:JSON.stringify(body.fact),ingestion:null} as Evidence)),save:vi.fn(async(_body:Draft)=>{throw Error('lost_delivery');}),lookup:vi.fn(async(_body:Draft)=>({status:'absent'}))};
++ const client={} as CirculatoryClient,refresh=vi.fn(async()=>{}),shared={state,loading:false,error:'',refresh};
++ const view=render(<EvidenceEntryWorkspace client={client} entry={entry as unknown as EvidenceEntryClient} config={config} shared={shared}/>);
++ fireEvent.click(screen.getByRole('region',{name:'Recorded evidence'}).querySelector('.entry-list button')!);
++ fireEvent.change(screen.getByRole('textbox',{name:'Actor name'}),{target:{value:'Synthetic reviewer'}});fireEvent.change(screen.getByRole('textbox',{name:'Reason for correction or withdrawal'}),{target:{value:'Transcription correction'}});fireEvent.change(screen.getByRole('textbox',{name:'Recorded numeric value (raw unit preserved)'}),{target:{value:'7.3600'}});
++ step('Validate and review draft');await screen.findByRole('button',{name:'Confirm append to local database'});step('Confirm append to local database');await screen.findByRole('button',{name:'Check exact saved revision'});
++ const pending=entry.save.mock.calls[0][0],editor=screen.getByRole('region',{name:'Evidence draft'});const next=structuredClone(state);next.assembly.request.scope.repository_cutoff.repository_id='replacement-repository';next.state_context+='-replacement';
++ view.rerender(<EvidenceEntryWorkspace client={client} entry={entry as unknown as EvidenceEntryClient} config={config} shared={{...shared,state:next}}/>);
++ expect(screen.getByRole('region',{name:'Evidence draft'})).toBe(editor);expect(editor).toHaveTextContent(pending.fact.revision);expect(screen.queryByRole('button',{name:'Discard unsaved entry'})).not.toBeInTheDocument();
++ step('Check exact saved revision');await screen.findByRole('button',{name:'Explicitly retry the same revision'});expect(entry.lookup).toHaveBeenCalledExactlyOnceWith(pending);expect(pending.repository_id).toBe(repository);expect(entry.save).toHaveBeenCalledTimes(1);
++});
+diff --git a/frontend/tests/reassessmentComparison.test.tsx b/frontend/tests/reassessmentComparison.test.tsx
+index bf40a36..7d61fc1 100644
+--- a/frontend/tests/reassessmentComparison.test.tsx
++++ b/frontend/tests/reassessmentComparison.test.tsx
+@@ -1,4 +1,4 @@
+-import {afterEach,expect,it} from 'vitest';
++import {afterEach,expect,it,vi} from 'vitest';
+ import {cleanup,fireEvent,render,screen,within} from '@testing-library/react';
+ import fixture from './fixtures/icuFlowsheet.json';
+ import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
+@@ -105,3 +105,23 @@ it.each([
+  const {b}=data();(b.fact.external_evidence as Record<string,unknown>[])[2].code=code;
+  expect(reassessmentReference(b,'followup')).toBeUndefined();
+ });
++
++it.each(['repository','patient','encounter'] as const)('M1: clears only comparison selections after a %s scope change and requires explicit reselection',boundary=>{
++ const {state,a,b}=data(),onHandover=vi.fn();const view=render(<ReassessmentComparison state={state} onHandover={onHandover}/>);select(a,b);
++ const next=structuredClone(state),scope=next.assembly.request.scope;
++ if(boundary==='repository')scope.repository_cutoff.repository_id='replacement-repository';
++ else if(boundary==='patient')scope.patient_id='replacement-patient';else scope.encounter_id='replacement-encounter';
++ for(const note of next.assembly.snapshot.items){note.fact.binding.target.patient_id=scope.patient_id;note.fact.binding.target.encounter_id=scope.encounter_id;}
++ const replacement=next.assembly.snapshot.items.find(i=>i.fact.id===a.fact.id)!;replacement.fact.description={raw_display:'Replacement content with reused identity'};replacement.expected_digest='b'.repeat(64);
++ view.rerender(<ReassessmentComparison state={next} onHandover={onHandover}/>);
++ for(const name of ['Note A','Note B'])expect(screen.getByRole('combobox',{name})).toHaveValue('');
++ expect(screen.queryByRole('button',{name:'Add Note A to handover'})).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Add Note B to handover'})).not.toBeInTheDocument();expect(onHandover).not.toHaveBeenCalled();
++ fireEvent.change(screen.getByRole('combobox',{name:'Note A'}),{target:{value:evidenceKey(replacement.fact)}});fireEvent.click(screen.getByRole('button',{name:'Add Note A to handover'}));expect(onHandover).toHaveBeenCalledExactlyOnceWith(replacement);
++});
++it('M1: same-repository refresh preserves both explicit choices and exact handover actions',()=>{
++ const {state,a,b}=data(),onHandover=vi.fn();const view=render(<ReassessmentComparison state={state} onHandover={onHandover}/>);select(a,b);
++ const next=structuredClone(state);next.state_context+='-refresh';next.assembly.request.scope.repository_cutoff.fact_watermark++;next.assembly.snapshot.items.reverse();
++ view.rerender(<ReassessmentComparison state={next} onHandover={onHandover}/>);
++ expect(screen.getByRole('combobox',{name:'Note A'})).toHaveValue(evidenceKey(a.fact));expect(screen.getByRole('combobox',{name:'Note B'})).toHaveValue(evidenceKey(b.fact));
++ fireEvent.click(screen.getByRole('button',{name:'Add Note B to handover'}));expect(onHandover).toHaveBeenCalledExactlyOnceWith(next.assembly.snapshot.items.find(i=>i.fact.id===b.fact.id));
++});

@@ -1,0 +1,233 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2 tests/reassessmentComparison.test.tsx tests/patientWorkspace.test.tsx -t M1:
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/reassessmentComparison.test.tsx (36 tests | 3 failed | 32 skipped) 794ms
+   × M1: clears only comparison selections after a repository scope change and requires explicit reselection 257ms
+   × M1: clears only comparison selections after a patient scope change and requires explicit reselection 197ms
+   × M1: clears only comparison selections after a encounter scope change and requires explicit reselection 162ms
+ ❯ tests/patientWorkspace.test.tsx (27 tests | 2 failed | 25 skipped) 1166ms
+   × M1: repository replacement cannot rebind a selected comparison note into the new handover 675ms
+   × M1: retains repository A saved confirmation but withholds continuation against B with identical reference and digest 489ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/patientWorkspace.test.tsx > M1: repository replacement cannot rebind a selected comparison note into the new handover
+Error: expect(element).toHaveValue()
+
+Expected the element to have value:
+
+Received:
+  ["circulatory_event","same-note","1"]
+ ❯ tests/patientWorkspace.test.tsx:188:55
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/patientWorkspace.test.tsx > M1: retains repository A saved confirmation but withholds continuation against B with identical reference and digest
+TestingLibraryElementError: Unable to find an element with the text: /saved revision belongs to a different repository/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"patient-workspace"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mhref[39m=[32m"#patient-workflow"[39m
+      [36m>[39m
+        [0mSkip to patient workflow[0m
+      [36m</a>[39m
+      [36m<header>[39m
+        [36m<h1[39m
+          [33mtabindex[39m=[32m"-1"[39m
+        [36m>[39m
+          [0mSynthetic ICU patient workspace[0m
+        [36m</h1>[39m
+        [36m<p>[39m
+          [0mPatient [0m
+          [0msynthetic-p1[0m
+          [0m · Encounter [0m
+          [0msynthetic-e1[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [36m<strong>[39m
+            [0mClinical execution disabled.[0m
+          [36m</strong>[39m
+          [0m Local synthetic evidence only; no treatment advice.[0m
+        [36m</p>[39m
+        [36m<form[39m
+          [33maria-label[39m=[32m"Find patient evidence"[39m
+          [33mrole[39m=[32m"search"[39m
+        [36m>[39m
+          [36m<label>[39m
+            [0mFind recorded evidence[0m
+            [36m<input[39m
+              [33mplaceholder[39m=[32m"ABG 09:45, cardiac output, RVSP…"[39m
+              [33mtype[39m=[32m"search"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</label>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"submit"[39m
+          [36m>[39m
+            [0mFind evidence[0m
+          [36m</button>[39m
+        [36m</form>[39m
+        [36m<p>[39m
+          [0mRecorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [0mRecorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.[0m
+        [36m</p>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Patient workflow"[39m
+        [36m>[39m
+          [36m<button>[39m
+            [0mPatient and evidence[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"page"[39m
+          [36m>[39m
+            [0mSource entry and reassessment[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mCompare notes[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mHandover[0m
+          [36m</button>[39m
+        [36m</nav>[39m
+        [36m<section[39m
+          [33maria-label[39m=[32m"Current workflow step"[39m
+          [33mclass[39m=[32m"workflow-guide"[39m
+        [36m>[39m
+          [36m<h2>[39m
+            [0mSource entry and reassessment[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0mRecord one source result/event, or append a reasoned correction. Validate, review, then confirm the append. Keep this page open while a save is uncertain; exact lookup comes before any explicit retry.[0m
+          [36m</p>[39m
+          [36m<details>[39m
+            [36m<summary>[39m
+              [0mHow to complete this synthetic patient workflow[0m
+            [36m</summary>[39m
+            [36m<ol>[39m
+              [36m<li>[39m
+                [0mBrowse pressures, flow, rhythm, gases, echo, infusions and perfusion together. Source times and gaps remain explicit.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mInspect the exact source and revision history. A correction appends a successor; it never overwrites the original.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mAuthor a separate reassessment with exact baseline, intervention and follow-up selections. Keep recorded findings, possibilities and gaps distinct.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mCompare two exact notes and their original references. Add the records/notes needed for handover.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mReview and explicitly save the handover selection locally; reload and open the saved view to recover it.[0m
+              [36m</li>[39m
+            [36m</ol>[39m
+            [36m<p>[39m
+              [0mThis workspace is for synthetic workflow testing. A saved selection is not a clinical handover sign-off. Pending clinical drafts and commands are not durably recovered after reload.[0m
+            [36m</p>[39m
+          [36m</details>[39m
+        [36m</section>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mid[39m=[32m"patient-workflow"[39m
+        [33mtabindex[39m=[32m"-1"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mhidden[39m=[32m""[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"demo-app consolidated-viewer"[39m
+          [36m>[39m
+            [36m<a[39m
+              [33mclass[39m=[32m"demo-skip"[39m
+              [33mhidden[39m=[32m""[39m
+              [33mhref[39m=[32m"#demo-main"[39m
+            [36m>[39m
+              [0mSkip to evidence workspace[0m
+            [36m</a>[39m
+            [36m<header[39m
+              [33mclass[39m=[32m"demo-topbar"[39m
+              [33mhidden[39m=[32m""[39m
+            [36m>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"demo-brand"[39m
+                [33mhref[39m=[32m"/"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"demo-mark"[39m
+                [36m>[39m
+                  [0mC[0m
+                [36m</span>[39m
+                [0mClinRx [0m
+                [36m<span>[39m
+                  [0mAI[0m
+                [36m</span>[39m
+              [36m</a>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"demo-environment"[39m
+              [36m>[39m
+                [0mSYNTHETIC PREVIEW[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"demo-gate"[39m
+              [36m>[39m
+                [0mNew execution disabled in this demo[0m
+              [36m</span>[39m
+            [36m</header>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"demo-layout"[39m
+            [36m>[39m
+              [36m<aside[39m
+                [33mclass[39m=[32m"demo-sidebar"[39m
+                [33mhidden[39m=[32m""[39m
+              [36m>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"demo-overline"[39m
+                [36m>[39m
+                  [0mEVIDENCE WORKSPACE[0m
+                [36m</p>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"demo-patient"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"demo-avatar"...
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/patientWorkspace.test.tsx:195:16
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/reassessmentComparison.test.tsx > M1: clears only comparison selections after a repository scope change and requires explicit reselection
+ FAIL  tests/reassessmentComparison.test.tsx > M1: clears only comparison selections after a patient scope change and requires explicit reselection
+ FAIL  tests/reassessmentComparison.test.tsx > M1: clears only comparison selections after a encounter scope change and requires explicit reselection
+Error: expect(element).toHaveValue()
+
+Expected the element to have value:
+
+Received:
+  ["circulatory_event","note/original","1"]
+ ❯ tests/reassessmentComparison.test.tsx:117:84
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  5 failed | 1 passed | 57 skipped (63)
+   Start at  14:37:39
+   Duration  3.43s (environment 36%, tests 34%, transform 17%, setup 7%, import 6%)
+
