@@ -1,0 +1,207 @@
+{
+  "columns": {
+    "ingestion_sequence": 167,
+    "kind": "circulatory_vasoactive",
+    "fact_id": "99a26724-026c-4ccc-ac63-c22ddada2664",
+    "revision": "1",
+    "patient_id": "synthetic-p1",
+    "encounter_id": "synthetic-e1",
+    "payload_version": 1,
+    "payload": "{\"action\":{\"delivery\":{\"amount\":null,\"attestation\":{\"actor\":\"Synthetic validation reviewer\",\"limitations\":[\"Fictional local entry; actor and source assertions are not independently authenticated.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-18T14:51:29.020000Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"namespace\":\"clinrx-local-synthetic-entry\",\"version\":null},\"upstream\":[]},\"channel\":null,\"concentration\":{\"unit\":{\"code\":null,\"limitation\":\"Locally recorded raw unit; terminology and conversion not assessed.\",\"raw\":\"mg/mL\",\"status\":\"unresolved\",\"system\":null},\"value\":\"5.0\"},\"dosing_weight\":null,\"dosing_weight_basis\":\"unknown\",\"infusion\":{\"code\":\"guided-dobutamine-series\",\"namespace\":\"clinrx.local.infusion-series/v1\",\"raw_display\":\"guided-dobutamine-series\",\"version\":null},\"pump\":null,\"rate\":{\"unit\":{\"code\":null,\"limitation\":\"Locally recorded raw unit; terminology and conversion not assessed.\",\"raw\":\"mcg/kg/min\",\"status\":\"unresolved\",\"system\":null},\"value\":\"2.50\"},\"route\":{\"coding\":null,\"raw_display\":\"Source central venous route\"}},\"event_type\":\"rate_change\"},\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Fictional patient identity only; not independently verified.\",\"assessed_at\":\"2026-10-18T14:51:29.020000Z\",\"method\":\"Local synthetic encounter selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"namespace\":\"clinrx-local-synthetic-entry\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic validation reviewer\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"disclosures\":[\"Orders and preparations do not establish administration. Documented delivery is a source assertion, not continuous exposure, a conversion, or proof of treatment effect. Weight-dependent doses require separately reviewed weight support; this guided form does not calculate doses or pump rates.\"],\"drug\":{\"canonical_id\":null,\"formulation\":null,\"identity_version\":\"1\",\"limitation\":\"Raw agent identity recorded; no terminology mapping asserted.\",\"mapping\":\"unknown\",\"mapping_provenance\":{\"actor\":\"Synthetic validation reviewer\",\"limitations\":[\"Fictional local entry; actor and source assertions are not independently authenticated.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-18T14:51:29.020000Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"namespace\":\"clinrx-local-synthetic-entry\",\"version\":null},\"upstream\":[]},\"source\":{\"code\":\"dobutamine\",\"namespace\":\"clinrx-local-synthetic-entry\",\"raw_display\":\"dobutamine\",\"version\":null}},\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"kind\":\"circulatory_vasoactive\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:30:00Z\"},\"source_timestamp\":\"2026-10-08T09:30:00Z\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic validation reviewer\",\"limitations\":[\"Fictional local entry; actor and source assertions are not independently authenticated.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-18T14:51:29.020000Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"namespace\":\"clinrx-local-synthetic-entry\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"revision\":\"1\",\"source_identifiers\":[{\"code\":\"guided-dobutamine-series\",\"namespace\":\"clinrx.local.infusion-series/v1\",\"raw_display\":\"guided-dobutamine-series\",\"version\":null}],\"source_status\":{\"coding\":null,\"raw_display\":\"Fictional documented rate change, not an order\"},\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Fictional documented event. Dosing weight not established; no dose conversion, continuous exposure or treatment effect.\"],\"verification\":\"unverified\"}",
+    "ingested_at": "2026-10-18T14:51:35.895200+00:00"
+  },
+  "decoded_json_fields": {
+    "payload": {
+      "action": {
+        "delivery": {
+          "amount": null,
+          "attestation": {
+            "actor": "Synthetic validation reviewer",
+            "limitations": [
+              "Fictional local entry; actor and source assertions are not independently authenticated."
+            ],
+            "lineage": "incomplete",
+            "recorded_at": "2026-10-18T14:51:29.020000Z",
+            "source": {
+              "channel": "clinician",
+              "identifier": "99a26724-026c-4ccc-ac63-c22ddada2664",
+              "namespace": "clinrx-local-synthetic-entry",
+              "version": null
+            },
+            "upstream": []
+          },
+          "channel": null,
+          "concentration": {
+            "unit": {
+              "code": null,
+              "limitation": "Locally recorded raw unit; terminology and conversion not assessed.",
+              "raw": "mg/mL",
+              "status": "unresolved",
+              "system": null
+            },
+            "value": "5.0"
+          },
+          "dosing_weight": null,
+          "dosing_weight_basis": "unknown",
+          "infusion": {
+            "code": "guided-dobutamine-series",
+            "namespace": "clinrx.local.infusion-series/v1",
+            "raw_display": "guided-dobutamine-series",
+            "version": null
+          },
+          "pump": null,
+          "rate": {
+            "unit": {
+              "code": null,
+              "limitation": "Locally recorded raw unit; terminology and conversion not assessed.",
+              "raw": "mcg/kg/min",
+              "status": "unresolved",
+              "system": null
+            },
+            "value": "2.50"
+          },
+          "route": {
+            "coding": null,
+            "raw_display": "Source central venous route"
+          }
+        },
+        "event_type": "rate_change"
+      },
+      "associations": [],
+      "available": {
+        "alignment": null,
+        "alternative_sources": [],
+        "clock": "unknown",
+        "clock_basis": null,
+        "conflicting": [],
+        "recorded": {
+          "lower": null,
+          "precision": "unknown",
+          "status": "not_recorded",
+          "uncertainty": null,
+          "upper": null,
+          "value": null
+        },
+        "source_timestamp": null
+      },
+      "binding": {
+        "target": {
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null,
+          "patient_id": "synthetic-p1"
+        },
+        "verification": {
+          "ambiguity": "Fictional patient identity only; not independently verified.",
+          "assessed_at": "2026-10-18T14:51:29.020000Z",
+          "method": "Local synthetic encounter selection",
+          "source": {
+            "channel": "clinician",
+            "identifier": "99a26724-026c-4ccc-ac63-c22ddada2664",
+            "namespace": "clinrx-local-synthetic-entry",
+            "version": null
+          },
+          "status": "unresolved",
+          "verifier": "Synthetic validation reviewer"
+        }
+      },
+      "conflict": "unknown",
+      "contract_version": "3",
+      "correction_reason": null,
+      "disclosures": [
+        "Orders and preparations do not establish administration. Documented delivery is a source assertion, not continuous exposure, a conversion, or proof of treatment effect. Weight-dependent doses require separately reviewed weight support; this guided form does not calculate doses or pump rates."
+      ],
+      "drug": {
+        "canonical_id": null,
+        "formulation": null,
+        "identity_version": "1",
+        "limitation": "Raw agent identity recorded; no terminology mapping asserted.",
+        "mapping": "unknown",
+        "mapping_provenance": {
+          "actor": "Synthetic validation reviewer",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ],
+          "lineage": "incomplete",
+          "recorded_at": "2026-10-18T14:51:29.020000Z",
+          "source": {
+            "channel": "clinician",
+            "identifier": "99a26724-026c-4ccc-ac63-c22ddada2664",
+            "namespace": "clinrx-local-synthetic-entry",
+            "version": null
+          },
+          "upstream": []
+        },
+        "source": {
+          "code": "dobutamine",
+          "namespace": "clinrx-local-synthetic-entry",
+          "raw_display": "dobutamine",
+          "version": null
+        }
+      },
+      "id": "99a26724-026c-4ccc-ac63-c22ddada2664",
+      "kind": "circulatory_vasoactive",
+      "occurred": {
+        "alignment": null,
+        "alternative_sources": [],
+        "clock": "unknown",
+        "clock_basis": null,
+        "conflicting": [],
+        "recorded": {
+          "lower": null,
+          "precision": "instant",
+          "status": "known",
+          "uncertainty": null,
+          "upper": null,
+          "value": "2026-10-08T09:30:00Z"
+        },
+        "source_timestamp": "2026-10-08T09:30:00Z"
+      },
+      "origin": "reported",
+      "provenance": {
+        "actor": "Synthetic validation reviewer",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ],
+        "lineage": "incomplete",
+        "recorded_at": "2026-10-18T14:51:29.020000Z",
+        "source": {
+          "channel": "clinician",
+          "identifier": "99a26724-026c-4ccc-ac63-c22ddada2664",
+          "namespace": "clinrx-local-synthetic-entry",
+          "version": null
+        },
+        "upstream": []
+      },
+      "record_status": "recorded",
+      "revision": "1",
+      "source_identifiers": [
+        {
+          "code": "guided-dobutamine-series",
+          "namespace": "clinrx.local.infusion-series/v1",
+          "raw_display": "guided-dobutamine-series",
+          "version": null
+        }
+      ],
+      "source_status": {
+        "coding": null,
+        "raw_display": "Fictional documented rate change, not an order"
+      },
+      "supersedes": null,
+      "temporal_status": "unknown",
+      "time": {
+        "effective_end": null,
+        "effective_start": null,
+        "event": null,
+        "precision": "unknown",
+        "processed": null,
+        "recorded": null,
+        "retrieved": null,
+        "uncertainty": null
+      },
+      "uncertainty": [
+        "Fictional documented event. Dosing weight not established; no dose conversion, continuous exposure or treatment effect."
+      ],
+      "verification": "unverified"
+    }
+  }
+}

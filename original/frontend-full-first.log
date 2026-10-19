@@ -1,0 +1,234 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+ ❯ tests/patientWorkspace.test.tsx (14 tests | 1 failed) 10534ms
+   × retains confirmed save identity when the subsequent shared refresh fails, while blocking new writes 809ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/patientWorkspace.test.tsx > retains confirmed save identity when the subsequent shared refresh fails, while blocking new writes
+TestingLibraryElementError: Found multiple elements with the text: /Execution gate not confirmed — new writes blocked/
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<strong>[39m
+  [0mExecution gate not confirmed — new writes blocked.[0m
+[36m</strong>[39m
+
+Ignored nodes: comments, script, style
+[36m<strong>[39m
+  [0mExecution gate not confirmed — new writes blocked.[0m
+[36m</strong>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"patient-workspace"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mhref[39m=[32m"#patient-workflow"[39m
+      [36m>[39m
+        [0mSkip to patient workflow[0m
+      [36m</a>[39m
+      [36m<header>[39m
+        [36m<h1[39m
+          [33mtabindex[39m=[32m"-1"[39m
+        [36m>[39m
+          [0mSynthetic ICU patient workspace[0m
+        [36m</h1>[39m
+        [36m<p>[39m
+          [0mPatient [0m
+          [0msynthetic-p1[0m
+          [0m · Encounter [0m
+          [0msynthetic-e1[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [36m<strong>[39m
+            [0mExecution gate not confirmed — new writes blocked.[0m
+          [36m</strong>[39m
+          [0m Local synthetic evidence only; no treatment advice.[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [0mRecorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [0mRecorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.[0m
+        [36m</p>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Patient workflow"[39m
+        [36m>[39m
+          [36m<button>[39m
+            [0mPatient and evidence[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"page"[39m
+          [36m>[39m
+            [0mSource entry and reassessment[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mCompare notes[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mHandover[0m
+          [36m</button>[39m
+        [36m</nav>[39m
+      [36m</header>[39m
+      [36m<p[39m
+        [33mrole[39m=[32m"alert"[39m
+      [36m>[39m
+        [0mThe patient evidence or disabled execution gate could not be confirmed. Refresh to check again; no source was replaced.[0m
+      [36m</p>[39m
+      [36m<button>[39m
+        [0mRefresh patient evidence[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mid[39m=[32m"patient-workflow"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mhidden[39m=[32m""[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"demo-app consolidated-viewer"[39m
+          [36m>[39m
+            [36m<a[39m
+              [33mclass[39m=[32m"demo-skip"[39m
+              [33mhidden[39m=[32m""[39m
+              [33mhref[39m=[32m"#demo-main"[39m
+            [36m>[39m
+              [0mSkip to evidence workspace[0m
+            [36m</a>[39m
+            [36m<header[39m
+              [33mclass[39m=[32m"demo-topbar"[39m
+              [33mhidden[39m=[32m""[39m
+            [36m>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"demo-brand"[39m
+                [33mhref[39m=[32m"/"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"demo-mark"[39m
+                [36m>[39m
+                  [0mC[0m
+                [36m</span>[39m
+                [0mClinRx [0m
+                [36m<span>[39m
+                  [0mAI[0m
+                [36m</span>[39m
+              [36m</a>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"demo-environment"[39m
+              [36m>[39m
+                [0mSYNTHETIC PREVIEW[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"demo-gate"[39m
+              [36m>[39m
+                [0mExecution configuration unverified — browsing blocked[0m
+              [36m</span>[39m
+            [36m</header>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"demo-layout"[39m
+            [36m>[39m
+              [36m<aside[39m
+                [33mclass[39m=[32m"demo-sidebar"[39m
+                [33mhidden[39m=[32m""[39m
+              [36m>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"demo-overline"[39m
+                [36m>[39m
+                  [0mEVIDENCE WORKSPACE[0m
+                [36m</p>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"demo-patient"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"demo-avatar"[39m
+                  [36m>[39m
+                    [0m01[0m
+                  [36m</span>[39m
+                  [36m<div>[39m
+                    [36m<strong>[39m
+                      [0mSynthetic ICU case[0m
+                    [36m</strong>[39m
+                    [36m<span>[39m
+                      [0mFabricated patient · ICU–01[0m
+                    [36m</span>[39m
+                  [36m</div>[39m
+                [36m</div>[39m
+                [36m<nav[39m
+                  [33maria-label[39m=[32m"Demo views"[39m
+                [36m>[39m
+                  [36m<button>[39m
+                    [36m<span>[39m
+                      [0mICU flowsheet[0m
+                    [36m</span>[39m
+                    [36m<span[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                    [36m>[39m
+                      [0m↗[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                  [36m<button>[39m
+                    [36m<span>[39m
+                      [0mPatient summary[0m
+                    [36m</span>[39m
+                    [36m<span[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                    [36m>[39m
+                      [0m↗[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                  [36m<button>[39m
+                    [36m<span>[39m
+                      [0mPatient overview[0m
+                    [36m</span>[39m
+                    [36m<span[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                    [36m>[39m
+                      [0m↗[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33maria-current[39m=[32m"page"[39m
+                  [36m>[39m
+                    [36m<span>[39m
+                      [0mEvidence library[0m
+                    [36m</span>[39m
+                    [36m<span[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                    [36m>[39m
+                      [0m↗[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                  [36m<button>[39m
+                    [36m<span>[39m
+                      [0mRecording timeline[0m
+                    [36m</span>[...
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getElementError node_modules/@testing-library/dom/dist/query-helpers.js:20:35
+ ❯ getMultipleElementsFoundError node_modules/@testing-library/dom/dist/query-helpers.js:23:10
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:55:13
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/patientWorkspace.test.tsx:95:16
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 18 passed (19)
+      Tests  1 failed | 638 passed (639)
+   Start at  22:57:53
+   Duration  59.61s (tests 80%, environment 13%, setup 3%, import 2%, transform 2%)
+
+    Isolate  19 workers spawned · ~963ms startup each (spawn + environment, per file)
+             at least ~8.19s faster with isolate: false — reuses workers across files instead of one per file
+

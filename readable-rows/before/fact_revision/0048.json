@@ -1,0 +1,162 @@
+{
+  "columns": {
+    "ingestion_sequence": 49,
+    "kind": "circulatory_event",
+    "fact_id": "fs-BSA",
+    "revision": "1",
+    "patient_id": "synthetic-p1",
+    "encounter_id": "synthetic-e1",
+    "payload_version": 1,
+    "payload": "{\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:00:00Z\"},\"source_timestamp\":\"2026-10-08T08:00:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"body_surface_area\",\"namespace\":\"clinrx.synthetic.hemodynamic-chart/v1\",\"raw_display\":\"body_surface_area\",\"version\":\"1\"},\"raw_display\":\"Source-reported BSA for indexing; height and formula are not supplied. ClinRx does not derive BSA from dosing weight.\"},\"disclosures\":[\"Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them.\"],\"event_type\":\"other\",\"external_evidence\":[],\"id\":\"fs-BSA\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:00:00Z\"},\"source_timestamp\":\"2026-10-08T08:00:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":{\"unit\":{\"code\":null,\"limitation\":\"Synthetic source unit.\",\"raw\":\"m2\",\"status\":\"unresolved\",\"system\":null},\"value\":\"1.73\"},\"revision\":\"1\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[],\"verification\":\"unverified\"}",
+    "ingested_at": "2026-10-18T14:46:29.288654+00:00"
+  },
+  "decoded_json_fields": {
+    "payload": {
+      "associations": [],
+      "available": {
+        "alignment": null,
+        "alternative_sources": [],
+        "clock": "verified",
+        "clock_basis": {
+          "actor": "synthetic-demo",
+          "limitations": [
+            "Synthetic source assertion only."
+          ],
+          "lineage": "unknown",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "source": {
+            "channel": "system",
+            "identifier": "patient-state-v1",
+            "namespace": "clinrx.synthetic.demo",
+            "version": "1"
+          },
+          "upstream": []
+        },
+        "conflicting": [],
+        "recorded": {
+          "lower": null,
+          "precision": "instant",
+          "status": "known",
+          "uncertainty": null,
+          "upper": null,
+          "value": "2026-10-08T08:00:00Z"
+        },
+        "source_timestamp": "2026-10-08T08:00:00+00:00",
+        "timestamp_precision": "M7ExactTimestampInput/v1"
+      },
+      "binding": {
+        "target": {
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null,
+          "patient_id": "synthetic-p1"
+        },
+        "verification": {
+          "ambiguity": null,
+          "assessed_at": "2026-10-08T08:00:00Z",
+          "method": "synthetic-demo",
+          "source": {
+            "channel": "system",
+            "identifier": "patient-state-v1",
+            "namespace": "clinrx.synthetic.demo",
+            "version": "1"
+          },
+          "status": "verified",
+          "verifier": "synthetic-system"
+        }
+      },
+      "conflict": "unknown",
+      "contract_version": "3",
+      "correction_reason": null,
+      "description": {
+        "coding": {
+          "code": "body_surface_area",
+          "namespace": "clinrx.synthetic.hemodynamic-chart/v1",
+          "raw_display": "body_surface_area",
+          "version": "1"
+        },
+        "raw_display": "Source-reported BSA for indexing; height and formula are not supplied. ClinRx does not derive BSA from dosing weight."
+      },
+      "disclosures": [
+        "Fictional source-chart entry for hemodynamic context, not a treatment recommendation or proof of a complete fluid record. Intervals and totals are source-recorded; ClinRx does not recalculate them."
+      ],
+      "event_type": "other",
+      "external_evidence": [],
+      "id": "fs-BSA",
+      "kind": "circulatory_event",
+      "occurred": {
+        "alignment": null,
+        "alternative_sources": [],
+        "clock": "verified",
+        "clock_basis": {
+          "actor": "synthetic-demo",
+          "limitations": [
+            "Synthetic source assertion only."
+          ],
+          "lineage": "unknown",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "source": {
+            "channel": "system",
+            "identifier": "patient-state-v1",
+            "namespace": "clinrx.synthetic.demo",
+            "version": "1"
+          },
+          "upstream": []
+        },
+        "conflicting": [],
+        "recorded": {
+          "lower": null,
+          "precision": "instant",
+          "status": "known",
+          "uncertainty": null,
+          "upper": null,
+          "value": "2026-10-08T08:00:00Z"
+        },
+        "source_timestamp": "2026-10-08T08:00:00+00:00",
+        "timestamp_precision": "M7ExactTimestampInput/v1"
+      },
+      "origin": "reported",
+      "provenance": {
+        "actor": "synthetic-demo",
+        "limitations": [
+          "Synthetic source assertion only."
+        ],
+        "lineage": "unknown",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "channel": "system",
+          "identifier": "patient-state-v1",
+          "namespace": "clinrx.synthetic.demo",
+          "version": "1"
+        },
+        "upstream": []
+      },
+      "record_status": "recorded",
+      "recorded_amount": {
+        "unit": {
+          "code": null,
+          "limitation": "Synthetic source unit.",
+          "raw": "m2",
+          "status": "unresolved",
+          "system": null
+        },
+        "value": "1.73"
+      },
+      "revision": "1",
+      "source_identifiers": [],
+      "supersedes": null,
+      "temporal_status": "unknown",
+      "time": {
+        "effective_end": null,
+        "effective_start": null,
+        "event": null,
+        "precision": "unknown",
+        "processed": null,
+        "recorded": null,
+        "retrieved": null,
+        "uncertainty": null
+      },
+      "uncertainty": [],
+      "verification": "unverified"
+    }
+  }
+}

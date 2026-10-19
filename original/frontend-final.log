@@ -1,0 +1,16 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/Documents/clinrx-ai/frontend
+
+
+ Test Files  19 passed (19)
+      Tests  639 passed (639)
+   Start at  23:10:47
+   Duration  38.49s (tests 79%, environment 15%, import 3%, setup 2%, transform 2%)
+
+    Isolate  19 workers spawned · ~668ms startup each (spawn + environment, per file)
+             at least ~5.68s faster with isolate: false — reuses workers across files instead of one per file
+

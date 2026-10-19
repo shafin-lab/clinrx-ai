@@ -1,0 +1,182 @@
+- link "Skip to patient workflow":
+  - /url: "#patient-workflow"
+- banner:
+  - heading "Synthetic ICU patient workspace" [level=1]
+  - paragraph: Patient synthetic-p1 · Encounter synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Local synthetic evidence only; no treatment advice.
+  - paragraph: Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.
+  - paragraph: Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.
+  - navigation "Patient workflow":
+    - button "Patient and evidence"
+    - button "Source entry and reassessment"
+    - button "Compare notes"
+    - button "Handover"
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / EVIDENCE LIBRARY
+  - heading "Evidence library" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - navigation "Evidence views":
+    - button "ICU flowsheet"
+    - button "Patient summary"
+    - button "Patient overview"
+    - button "Evidence library"
+    - button "Recording timeline"
+    - button "Retained examples"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "167"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "11"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - text: Search recorded evidence
+  - searchbox "Search recorded evidence": 1c1f16d9
+  - text: Evidence family
+  - combobox "Evidence family":
+    - option "All 15 families" [selected]
+    - option "Pressure and PAC/RHC (21)"
+    - option "Cardiac output and performance (15)"
+    - option "Volume and lung water (1)"
+    - option "Dynamic measurements (1)"
+    - option "Recorded device predictions (0)"
+    - option "Tissue perfusion (14)"
+    - option "Oxygen transport and blood gases (24)"
+    - option "Lactate (5)"
+    - option "Echo and POCUS (13)"
+    - option "ECG and rhythm (10)"
+    - option "Vasoactive events (13)"
+    - option "Edwards / PiCCO and monitoring context (1)"
+    - option "Dynamic assessment episodes (2)"
+    - option "Recorded circulatory events (46)"
+    - option "Signal manifests (1)"
+  - status: 3 recorded items in this view
+  - region "Evidence library results":
+    - heading "Pressure and PAC/RHC" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "Cardiac output and performance" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "Volume and lung water" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "Dynamic measurements" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "Recorded device predictions" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "Tissue perfusion" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "Oxygen transport and blood gases" [level=2]
+    - button "Inspect pH 1c1f16d9-33d7-40fb-a94f-013a383c9bfc":
+      - generic: pH
+      - strong: "7.3500 (unit: 1)"
+      - generic: blood gas
+      - generic: in window · 2026-10-08T09:45:00Z
+      - text: 1c1f16d9-33d7-40fb-a94f-013a383c9bfc / aeaca128-a674-4dfa-859a-9ab11d2a9368
+      - generic: "Quality: unknown"
+    - heading "Lactate" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "Echo and POCUS" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "ECG and rhythm" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "Vasoactive events" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "Edwards / PiCCO and monitoring context" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "Dynamic assessment episodes" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+    - heading "Recorded circulatory events" [level=2]
+    - button "Inspect other abae4ef7-74c4-48cc-bb50-f50e9fb151cd":
+      - generic: other
+      - strong: "Clinician-authored synthetic reassessment; not a computed response or causal conclusion. Question: Review the separately recorded arterial samples around a documented infusion event. baseline: {\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"} intervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"} followup: {\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"1\"} Recorded findings: Earlier arterial pH is recorded as 7.3400 at 09:20:00.123456 UTC. The new arterial pH is 7.3300 at 09:45 UTC with its own specimen, FiO2 40% and PEEP 5 cmH2O. A dobutamine rate change is documented at 09:30 UTC. These are separate source records. Unconfirmed possibilities: Patient-level relationship is not established. Whether the differing results reflect physiological change, sample variability or another factor is unconfirmed. No treatment effect or diagnosis is established. Confirmation gaps: Fictional walkthrough note, not clinician sign-off. Source quality and clock verification are unknown; samples are distinct. No calculated delta, responder classification or treatment recommendation. Next review (recorded plan, not a scheduled action): Review the full ABG results, specimen quality, source acquisition context and earlier echo report. This is a recorded plan, not a scheduled task."
+      - generic: Method not supplied
+      - generic: in window · 2026-10-08T09:50:00Z
+      - text: abae4ef7-74c4-48cc-bb50-f50e9fb151cd / 1
+      - generic: "Quality: not recorded"
+    - button "Inspect other 90c89b62-1f3a-4903-b10d-eb8c6711e921":
+      - generic: other
+      - strong: "Clinician-authored synthetic reassessment; not a computed response or causal conclusion. Question: Review the arterial sample using its explicitly corrected pH revision while preserving the earlier reassessment. baseline: {\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"} intervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"} followup: {\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"aeaca128-a674-4dfa-859a-9ab11d2a9368\"} Recorded findings: Synthetic reassessment after source correction. Earlier arterial pH 7.3400 is recorded at 09:20:00.123456 UTC; a dobutamine rate change is documented at 09:30 UTC. The 09:45 arterial specimen walkthrough-arterial-0945 has corrected pH 7.3500, superseding transcription value 7.3300 for the same specimen and observation time. Its own FiO2 is 40% and PEEP 5 cmH2O. The earlier reassessment is retained unchanged and still references original ABG revision 1; this new note explicitly references correction aeaca128-a674-4dfa-859a-9ab11d2a9368. Unconfirmed possibilities: Patient-level relationship is not established. The transcription correction is not a new measurement, physiological improvement or evidence of an infusion effect. No diagnosis, responder classification or causal conclusion is established. Confirmation gaps: Fictional local demonstration, not clinician sign-off. Source quality and clock verification remain unknown. Samples are distinct; timestamps do not establish causation. Earlier notes and exact references remain unchanged. Next review (recorded plan, not a scheduled action): Review the complete source ABG and specimen context alongside the original and corrected revisions. This is an authored review plan, not a scheduled action or treatment recommendation."
+      - generic: Method not supplied
+      - generic: in window · 2026-10-08T09:55:00Z
+      - text: 90c89b62-1f3a-4903-b10d-eb8c6711e921 / 1
+      - generic: "Quality: not recorded"
+    - heading "Signal manifests" [level=2]
+    - paragraph: No matching records in this bounded view. Clinical absence is not established.
+  - complementary "Selected source evidence":
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "pH" [level=2]
+    - paragraph: 7.3500 1
+    - paragraph:
+      - code: 1c1f16d9-33d7-40fb-a94f-013a383c9bfc / aeaca128-a674-4dfa-859a-9ab11d2a9368
+    - paragraph: blood gas
+    - term: Source time
+    - definition: 2026-10-08T09:45:00Z
+    - term: Recorded quality
+    - definition: unknown
+    - term: Source unit mapping
+    - definition:
+      - generic: "Result: unresolved · 1"
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx-local-synthetic-entry
+    - button "Correct this exact source"
+    - button "Add exact source to handover"
+    - region "Measurement acquisition context":
+      - heading "Measurement context" [level=3]
+      - term: Method
+      - definition: blood gas
+      - term: Recorded production
+      - definition: direct measurement
+      - term: Respiratory phase
+      - definition: Not recorded
+      - term: Position
+      - definition: Not recorded
+      - term: Recorded averaging basis
+      - definition: Not recorded · no average calculated here
+      - term: Calibration status
+      - definition: unknown
+      - term: Zeroing status
+      - definition: unknown
+      - term: Indexing denominator
+      - definition: Not recorded · source-recorded, not derived here
+      - term: Source quality
+      - definition: unknown
+      - paragraph: Source metadata does not establish measurement validity or dynamic-test applicability.
+    - region "Blood gas sample context":
+      - heading "Blood gas sample context" [level=3]
+      - term: Sample type
+      - definition: arterial
+      - term: Specimen
+      - definition: walkthrough-arterial-0945
+      - term: Collected
+      - definition: 2026-10-08T09:45:00Z
+      - term: Sample-time FiO₂
+      - definition: 40 %
+      - term: Oxygen device
+      - definition: Not recorded
+      - term: Ventilator mode
+      - definition: Not recorded
+      - term: Sample-time PEEP
+      - definition: 5 cmH2O
+      - generic "Sample-time oxygen and ventilation settings"
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+    - region "Bounded source revision history":
+      - heading "2 retained revisions at this cutoff" [level=3]
+      - strong: 1c1f16d9-33d7-40fb-a94f-013a383c9bfc / 1
+      - paragraph: Original recorded assertion
+      - generic "Complete revision 1"
+      - strong: 1c1f16d9-33d7-40fb-a94f-013a383c9bfc / aeaca128-a674-4dfa-859a-9ab11d2a9368
+      - paragraph: "Fictional transcription correction after rechecking the synthetic source: pH should be 7.3500, not 7.3300. Same specimen and observation time; not a new sample."
+      - generic "Complete revision aeaca128-a674-4dfa-859a-9ab11d2a9368"
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

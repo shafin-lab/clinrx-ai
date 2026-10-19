@@ -1,0 +1,289 @@
+{
+  "columns": {
+    "ingestion_sequence": 114,
+    "kind": "circulatory_cardiac",
+    "fact_id": "fs-CI-30",
+    "revision": "1",
+    "patient_id": "synthetic-p1",
+    "encounter_id": "synthetic-e1",
+    "payload_version": 1,
+    "payload": "{\"acquisition\":{\"algorithm\":null,\"averaging\":{\"unit\":{\"code\":null,\"limitation\":\"Synthetic source unit.\",\"raw\":\"{injections}\",\"status\":\"unresolved\",\"system\":null},\"value\":\"3\"},\"calibration\":\"unknown\",\"calibration_provenance\":null,\"compartment\":\"unknown\",\"device\":{\"catheter\":null,\"identity_version\":\"1\",\"limitations\":[],\"manufacturer\":{\"code\":\"manufacturer\",\"namespace\":\"clinrx.synthetic.micro\",\"raw_display\":\"manufacturer\",\"version\":\"1\"},\"platform\":\"HemoSphere\",\"product\":{\"code\":\"monitor\",\"namespace\":\"clinrx.synthetic.micro\",\"raw_display\":\"monitor\",\"version\":\"1\"},\"sensor\":{\"code\":\"sensor\",\"namespace\":\"clinrx.synthetic.micro\",\"raw_display\":\"sensor\",\"version\":\"1\"},\"serial_identity\":null,\"software\":null,\"technology\":\"SwanGanz\"},\"episode\":null,\"indexing_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"indexing_denominator\":{\"unit\":{\"code\":null,\"limitation\":\"Synthetic source unit.\",\"raw\":\"m2\",\"status\":\"unresolved\",\"system\":null},\"value\":\"1.73\"},\"indicator\":null,\"injection\":null,\"interval_end\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"interval_start\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"laterality\":\"unknown\",\"limitations\":[],\"method\":\"bolus_thermodilution\",\"parameter\":null,\"parameter_concept\":null,\"parameter_support\":\"unknown\",\"position\":{\"coding\":null,\"raw_display\":\"Source-charted semi-recumbent position\"},\"quality\":{\"artifacts\":[],\"limitations\":[],\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"status\":\"acceptable\"},\"reference_level\":null,\"respiratory_phase\":{\"coding\":null,\"raw_display\":\"Source-charted end expiration\"},\"site\":null,\"source_method\":null,\"support_provenance\":null,\"zeroing\":\"unknown\",\"zeroing_provenance\":null},\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:33:00Z\"},\"source_timestamp\":\"2026-10-08T08:33:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"calculation_inputs\":[],\"calculation_method\":{\"code\":\"source-chart-reported-cardiac-index\",\"namespace\":\"clinrx.synthetic.micro\",\"raw_display\":\"source-chart-reported-cardiac-index\",\"version\":\"1\"},\"concept\":\"ci\",\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"disclosures\":[],\"id\":\"fs-CI-30\",\"kind\":\"circulatory_cardiac\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"verified\",\"clock_basis\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:30:00Z\"},\"source_timestamp\":\"2026-10-08T08:30:00+00:00\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"production\":\"source_calculated\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic source assertion only.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"upstream\":[]},\"record_status\":\"recorded\",\"result\":{\"comparator\":\"=\",\"quantity\":{\"unit\":{\"code\":null,\"limitation\":\"Synthetic source unit.\",\"raw\":\"L/min/m2\",\"status\":\"unresolved\",\"system\":null},\"value\":\"2.50\"},\"result_type\":\"numeric\"},\"revision\":\"1\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[],\"verification\":\"unverified\"}",
+    "ingested_at": "2026-10-18T14:46:29.476067+00:00"
+  },
+  "decoded_json_fields": {
+    "payload": {
+      "acquisition": {
+        "algorithm": null,
+        "averaging": {
+          "unit": {
+            "code": null,
+            "limitation": "Synthetic source unit.",
+            "raw": "{injections}",
+            "status": "unresolved",
+            "system": null
+          },
+          "value": "3"
+        },
+        "calibration": "unknown",
+        "calibration_provenance": null,
+        "compartment": "unknown",
+        "device": {
+          "catheter": null,
+          "identity_version": "1",
+          "limitations": [],
+          "manufacturer": {
+            "code": "manufacturer",
+            "namespace": "clinrx.synthetic.micro",
+            "raw_display": "manufacturer",
+            "version": "1"
+          },
+          "platform": "HemoSphere",
+          "product": {
+            "code": "monitor",
+            "namespace": "clinrx.synthetic.micro",
+            "raw_display": "monitor",
+            "version": "1"
+          },
+          "sensor": {
+            "code": "sensor",
+            "namespace": "clinrx.synthetic.micro",
+            "raw_display": "sensor",
+            "version": "1"
+          },
+          "serial_identity": null,
+          "software": null,
+          "technology": "SwanGanz"
+        },
+        "episode": null,
+        "indexing_basis": {
+          "actor": "synthetic-demo",
+          "limitations": [
+            "Synthetic source assertion only."
+          ],
+          "lineage": "unknown",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "source": {
+            "channel": "system",
+            "identifier": "patient-state-v1",
+            "namespace": "clinrx.synthetic.demo",
+            "version": "1"
+          },
+          "upstream": []
+        },
+        "indexing_denominator": {
+          "unit": {
+            "code": null,
+            "limitation": "Synthetic source unit.",
+            "raw": "m2",
+            "status": "unresolved",
+            "system": null
+          },
+          "value": "1.73"
+        },
+        "indicator": null,
+        "injection": null,
+        "interval_end": {
+          "lower": null,
+          "precision": "unknown",
+          "status": "not_recorded",
+          "uncertainty": null,
+          "upper": null,
+          "value": null
+        },
+        "interval_start": {
+          "lower": null,
+          "precision": "unknown",
+          "status": "not_recorded",
+          "uncertainty": null,
+          "upper": null,
+          "value": null
+        },
+        "laterality": "unknown",
+        "limitations": [],
+        "method": "bolus_thermodilution",
+        "parameter": null,
+        "parameter_concept": null,
+        "parameter_support": "unknown",
+        "position": {
+          "coding": null,
+          "raw_display": "Source-charted semi-recumbent position"
+        },
+        "quality": {
+          "artifacts": [],
+          "limitations": [],
+          "provenance": {
+            "actor": "synthetic-demo",
+            "limitations": [
+              "Synthetic source assertion only."
+            ],
+            "lineage": "unknown",
+            "recorded_at": "2026-10-08T08:00:00Z",
+            "source": {
+              "channel": "system",
+              "identifier": "patient-state-v1",
+              "namespace": "clinrx.synthetic.demo",
+              "version": "1"
+            },
+            "upstream": []
+          },
+          "status": "acceptable"
+        },
+        "reference_level": null,
+        "respiratory_phase": {
+          "coding": null,
+          "raw_display": "Source-charted end expiration"
+        },
+        "site": null,
+        "source_method": null,
+        "support_provenance": null,
+        "zeroing": "unknown",
+        "zeroing_provenance": null
+      },
+      "associations": [],
+      "available": {
+        "alignment": null,
+        "alternative_sources": [],
+        "clock": "verified",
+        "clock_basis": {
+          "actor": "synthetic-demo",
+          "limitations": [
+            "Synthetic source assertion only."
+          ],
+          "lineage": "unknown",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "source": {
+            "channel": "system",
+            "identifier": "patient-state-v1",
+            "namespace": "clinrx.synthetic.demo",
+            "version": "1"
+          },
+          "upstream": []
+        },
+        "conflicting": [],
+        "recorded": {
+          "lower": null,
+          "precision": "instant",
+          "status": "known",
+          "uncertainty": null,
+          "upper": null,
+          "value": "2026-10-08T08:33:00Z"
+        },
+        "source_timestamp": "2026-10-08T08:33:00+00:00",
+        "timestamp_precision": "M7ExactTimestampInput/v1"
+      },
+      "binding": {
+        "target": {
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null,
+          "patient_id": "synthetic-p1"
+        },
+        "verification": {
+          "ambiguity": null,
+          "assessed_at": "2026-10-08T08:00:00Z",
+          "method": "synthetic-demo",
+          "source": {
+            "channel": "system",
+            "identifier": "patient-state-v1",
+            "namespace": "clinrx.synthetic.demo",
+            "version": "1"
+          },
+          "status": "verified",
+          "verifier": "synthetic-system"
+        }
+      },
+      "calculation_inputs": [],
+      "calculation_method": {
+        "code": "source-chart-reported-cardiac-index",
+        "namespace": "clinrx.synthetic.micro",
+        "raw_display": "source-chart-reported-cardiac-index",
+        "version": "1"
+      },
+      "concept": "ci",
+      "conflict": "unknown",
+      "contract_version": "3",
+      "correction_reason": null,
+      "disclosures": [],
+      "id": "fs-CI-30",
+      "kind": "circulatory_cardiac",
+      "occurred": {
+        "alignment": null,
+        "alternative_sources": [],
+        "clock": "verified",
+        "clock_basis": {
+          "actor": "synthetic-demo",
+          "limitations": [
+            "Synthetic source assertion only."
+          ],
+          "lineage": "unknown",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "source": {
+            "channel": "system",
+            "identifier": "patient-state-v1",
+            "namespace": "clinrx.synthetic.demo",
+            "version": "1"
+          },
+          "upstream": []
+        },
+        "conflicting": [],
+        "recorded": {
+          "lower": null,
+          "precision": "instant",
+          "status": "known",
+          "uncertainty": null,
+          "upper": null,
+          "value": "2026-10-08T08:30:00Z"
+        },
+        "source_timestamp": "2026-10-08T08:30:00+00:00",
+        "timestamp_precision": "M7ExactTimestampInput/v1"
+      },
+      "origin": "reported",
+      "production": "source_calculated",
+      "provenance": {
+        "actor": "synthetic-demo",
+        "limitations": [
+          "Synthetic source assertion only."
+        ],
+        "lineage": "unknown",
+        "recorded_at": "2026-10-08T08:00:00Z",
+        "source": {
+          "channel": "system",
+          "identifier": "patient-state-v1",
+          "namespace": "clinrx.synthetic.demo",
+          "version": "1"
+        },
+        "upstream": []
+      },
+      "record_status": "recorded",
+      "result": {
+        "comparator": "=",
+        "quantity": {
+          "unit": {
+            "code": null,
+            "limitation": "Synthetic source unit.",
+            "raw": "L/min/m2",
+            "status": "unresolved",
+            "system": null
+          },
+          "value": "2.50"
+        },
+        "result_type": "numeric"
+      },
+      "revision": "1",
+      "source_identifiers": [],
+      "supersedes": null,
+      "temporal_status": "unknown",
+      "time": {
+        "effective_end": null,
+        "effective_start": null,
+        "event": null,
+        "precision": "unknown",
+        "processed": null,
+        "recorded": null,
+        "retrieved": null,
+        "uncertainty": null
+      },
+      "uncertainty": [],
+      "verification": "unverified"
+    }
+  }
+}

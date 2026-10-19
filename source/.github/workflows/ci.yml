@@ -1,0 +1,165 @@
+name: ClinRx reproducible validation
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: backend
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify clean source checkout
+        run: |
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11.6'
+      - name: Record checkout and environment
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/clinrx-backend-logs"
+          {
+            git rev-parse HEAD
+            printf 'event=%s source_sha=%s ref=%s\n' "$GITHUB_EVENT_NAME" "$GITHUB_SHA" "$GITHUB_REF"
+            printf 'runner_image=%s image_version=%s\n' "$ImageOS" "$ImageVersion"
+            cat /etc/os-release
+            uname -m
+            python --version
+            python -m pip --version
+            sha256sum backend/requirements*.txt
+          } 2>&1 | tee "$RUNNER_TEMP/clinrx-backend-logs/environment.txt"
+      - name: Install pinned backend dependencies in a fresh environment
+        run: |
+          python -m venv "$RUNNER_TEMP/clinrx-backend"
+          "$RUNNER_TEMP/clinrx-backend/bin/python" -m pip install -r backend/requirements-dev.txt
+          "$RUNNER_TEMP/clinrx-backend/bin/python" -m pip check
+      - name: Record resolved Python dependencies
+        run: |
+          "$RUNNER_TEMP/clinrx-backend/bin/python" -m pip freeze --all > "$RUNNER_TEMP/clinrx-backend-logs/dependencies.txt"
+          cat "$RUNNER_TEMP/clinrx-backend-logs/dependencies.txt"
+      - name: Verify schema head
+        run: |
+          actual=$("$RUNNER_TEMP/clinrx-backend/bin/alembic" -c backend/alembic.ini heads)
+          printf '%s\n' "$actual" > "$RUNNER_TEMP/clinrx-backend-logs/schema-head.txt"
+          cat "$RUNNER_TEMP/clinrx-backend-logs/schema-head.txt"
+          test "$actual" = 'm7_0008 (head)'
+      - name: Full backend suite
+        run: |
+          set -o pipefail
+          "$RUNNER_TEMP/clinrx-backend/bin/python" -m pytest -q -p no:cacheprovider tests 2>&1 | tee "$RUNNER_TEMP/clinrx-backend-logs/pytest.txt"
+
+      # Only synthetic validation text is retained: no databases, fixtures, env dumps or build output.
+      - name: Bound synthetic validation evidence
+        if: always()
+        env:
+          VALIDATION_STATUS: ${{ job.status }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/clinrx-backend-evidence"
+          printf 'job_status=%s\n' "$VALIDATION_STATUS" > "$RUNNER_TEMP/clinrx-backend-evidence/status.txt"
+          # Four allowlisted files, at most 64 KiB each; preserve failure summaries at the tail.
+          for name in environment dependencies schema-head pytest; do
+            source="$RUNNER_TEMP/clinrx-backend-logs/$name.txt"
+            if test -f "$source"; then
+              tail -c 65536 "$source" > "$RUNNER_TEMP/clinrx-backend-evidence/$name.txt"
+            fi
+          done
+      - name: Upload bounded synthetic validation evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: synthetic-backend-validation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/clinrx-backend-evidence/*.txt
+          retention-days: 7
+          compression-level: 9
+          if-no-files-found: error
+          include-hidden-files: false
+
+  frontend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify clean source checkout
+        run: |
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22.13.0'
+      - name: Record checkout and environment
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/clinrx-frontend-logs"
+          {
+            git rev-parse HEAD
+            printf 'event=%s source_sha=%s ref=%s\n' "$GITHUB_EVENT_NAME" "$GITHUB_SHA" "$GITHUB_REF"
+            printf 'runner_image=%s image_version=%s\n' "$ImageOS" "$ImageVersion"
+            cat /etc/os-release
+            uname -m
+            node --version
+            npm --version
+            sha256sum package.json package-lock.json
+          } 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/environment.txt"
+      - name: Clean frontend dependency installation
+        run: npm ci
+      - name: Full frontend tests
+        run: |
+          set -o pipefail
+          npm test -- --maxWorkers=2 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/tests.txt"
+      - name: TypeScript typecheck
+        run: |
+          set -o pipefail
+          npm run typecheck 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/typecheck.txt"
+      - name: Production build
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/build.txt"
+      - name: Local synthetic authoring build
+        env:
+          VITE_SYNTHETIC_HOSTED: 'true'
+          VITE_SYNTHETIC_AUTHORING: 'true'
+        run: |
+          set -o pipefail
+          npm run build -- --outDir "$RUNNER_TEMP/clinrx-authoring-build" 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/authoring-build.txt"
+      # Only synthetic validation text is retained: no databases, fixtures, env dumps or build output.
+      - name: Bound synthetic validation evidence
+        if: always()
+        env:
+          VALIDATION_STATUS: ${{ job.status }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/clinrx-frontend-evidence"
+          printf 'job_status=%s\n' "$VALIDATION_STATUS" > "$RUNNER_TEMP/clinrx-frontend-evidence/status.txt"
+          # Five allowlisted files, at most 64 KiB each; preserve failure summaries at the tail.
+          for name in environment tests typecheck build authoring-build; do
+            source="$RUNNER_TEMP/clinrx-frontend-logs/$name.txt"
+            if test -f "$source"; then
+              tail -c 65536 "$source" > "$RUNNER_TEMP/clinrx-frontend-evidence/$name.txt"
+            fi
+          done
+      - name: Upload bounded synthetic validation evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: synthetic-frontend-validation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/clinrx-frontend-evidence/*.txt
+          retention-days: 7
+          compression-level: 9
+          if-no-files-found: error
+          include-hidden-files: false

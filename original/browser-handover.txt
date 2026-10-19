@@ -1,0 +1,42 @@
+- link "Skip to patient workflow":
+  - /url: "#patient-workflow"
+- banner:
+  - heading "Synthetic ICU patient workspace" [active] [level=1]
+  - paragraph: Patient synthetic-p1 · Encounter synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Local synthetic evidence only; no treatment advice.
+  - paragraph: Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.
+  - paragraph: Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.
+  - navigation "Patient workflow":
+    - button "Patient and evidence"
+    - button "Source entry and reassessment"
+    - button "Compare notes"
+    - button "Handover"
+- region "Read-only handover":
+  - heading "Handover review" [level=2]
+  - paragraph: Selections for this page session only. Add exact sources or notes from the source inspector. This does not save, send or schedule a handover.
+  - paragraph: Recorded findings and clinician-authored assertions remain separate. No new derived result, diagnosis or treatment plan is generated.
+  - article:
+    - heading "Recorded source evidence · pH" [level=3]
+    - paragraph: circulatory_oxygen / 1c1f16d9-33d7-40fb-a94f-013a383c9bfc / aeaca128-a674-4dfa-859a-9ab11d2a9368
+    - paragraph: "Source time: 2026-10-08T09:45:00Z · Status: recorded"
+    - paragraph: "Source quality: unknown · Placement: in window. Missing or unknown context is not confirmation."
+    - paragraph: "Selected repository: e85880e5-85aa-413d-92d1-0e909546dcbd · cutoff 174 · ingestion 173"
+    - paragraph: "Historical selection only: this exact revision/digest is not confirmed in the current snapshot. No successor substituted."
+    - paragraph: "Recorded result: 7.3500 1"
+    - generic "Handover source and uncertainty 1c1f16d9-33d7-40fb-a94f-013a383c9bfc"
+    - button "Remove from handover selection"
+  - article:
+    - heading "Clinician-authored reassessment (synthetic assertion) · other" [level=3]
+    - paragraph: circulatory_event / a38d77a7-1aed-4e96-a05d-c467144154a2 / 1
+    - paragraph: "Source time: 2026-10-08T09:59:00Z · Status: recorded"
+    - paragraph: "Source quality: not recorded · Placement: in window. Missing or unknown context is not confirmation."
+    - paragraph: "Selected repository: e85880e5-85aa-413d-92d1-0e909546dcbd · cutoff 176 · ingestion 176"
+    - paragraph: Exact selected revision is also present in this snapshot.
+    - paragraph: "Clinician-authored synthetic reassessment; not a computed response or causal conclusion. Question: Consolidated workflow review of the explicitly corrected arterial sample, preserving earlier assessments. baseline: {\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"} intervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"} followup: {\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"45797d66-cac9-4f83-9d40-45da73366753\"} Recorded findings: Fictional consolidation validation. Earlier arterial pH 7.3400 is recorded at 09:20:00.123456 UTC; a dobutamine event is documented at 09:30 UTC. The 09:45 arterial sample walkthrough-arterial-0945 now has transcription-corrected pH 7.3600, revision 45797d66-cac9-4f83-9d40-45da73366753, with its own FiO2 40% and PEEP 5 cmH2O. This new note explicitly selects that revision. Earlier assessments retain their original references and wording. Unconfirmed possibilities: Patient-level relationship is not established. A transcription correction is not a new sample or physiological improvement. No treatment effect, responder classification or diagnosis is confirmed. Confirmation gaps: Synthetic authored demonstration only, not clinician sign-off. Source quality and clock verification remain unknown; no calculation or treatment recommendation. Next review (recorded plan, not a scheduled action): Review complete original and corrected source records, sample context and source quality. This is a recorded plan, not a scheduled action."
+    - paragraph: "baseline: {\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"}"
+    - paragraph: "intervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}"
+    - paragraph: "followup: {\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"45797d66-cac9-4f83-9d40-45da73366753\"}"
+    - generic "Handover source and uncertainty a38d77a7-1aed-4e96-a05d-c467144154a2"
+    - button "Remove from handover selection"

@@ -1,0 +1,21 @@
+{
+  "columns": {
+    "patient_id": "synthetic-p1",
+    "payload_version": 1,
+    "payload": "{\"patient_id\":\"synthetic-p1\",\"source_identifiers\":[{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"}]}",
+    "ingested_at": "2026-10-18T14:46:26.306258+00:00"
+  },
+  "decoded_json_fields": {
+    "payload": {
+      "patient_id": "synthetic-p1",
+      "source_identifiers": [
+        {
+          "channel": "system",
+          "identifier": "patient-state-v1",
+          "namespace": "clinrx.synthetic.demo",
+          "version": "1"
+        }
+      ]
+    }
+  }
+}

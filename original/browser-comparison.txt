@@ -1,0 +1,105 @@
+- link "Skip to patient workflow":
+  - /url: "#patient-workflow"
+- banner:
+  - heading "Synthetic ICU patient workspace" [active] [level=1]
+  - paragraph: Patient synthetic-p1 · Encounter synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Local synthetic evidence only; no treatment advice.
+  - paragraph: Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.
+  - paragraph: Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.
+  - navigation "Patient workflow":
+    - button "Patient and evidence"
+    - button "Source entry and reassessment"
+    - button "Compare notes"
+    - button "Handover"
+- region "Read-only reassessment comparison":
+  - heading "Compare reassessment notes" [level=2]
+  - paragraph: Read-only comparison of two explicitly selected notes. A new note does not replace an earlier note or its exact references. A/B selection does not establish chronology, clinical improvement or treatment effect.
+  - text: Note A
+  - combobox "Note A":
+    - option "Select an exact reassessment note"
+    - option "2026-10-08T09:40:00Z · 4e4fc4b1-d51d-429b-b227-90092ca74e20 / 1 · recorded"
+    - option "2026-10-08T09:50:00Z · abae4ef7-74c4-48cc-bb50-f50e9fb151cd / 1 · recorded" [selected]
+    - option "2026-10-08T09:55:00Z · 90c89b62-1f3a-4903-b10d-eb8c6711e921 / 1 · recorded"
+    - option "2026-10-08T09:55:00Z · b19580df-dfcb-4494-a076-9a806be2c187 / 1 · recorded"
+    - option "2026-10-08T09:59:00Z · a38d77a7-1aed-4e96-a05d-c467144154a2 / 1 · recorded"
+  - text: Note B
+  - combobox "Note B":
+    - option "Select an exact reassessment note"
+    - option "2026-10-08T09:40:00Z · 4e4fc4b1-d51d-429b-b227-90092ca74e20 / 1 · recorded"
+    - option "2026-10-08T09:50:00Z · abae4ef7-74c4-48cc-bb50-f50e9fb151cd / 1 · recorded"
+    - option "2026-10-08T09:55:00Z · 90c89b62-1f3a-4903-b10d-eb8c6711e921 / 1 · recorded"
+    - option "2026-10-08T09:55:00Z · b19580df-dfcb-4494-a076-9a806be2c187 / 1 · recorded"
+    - option "2026-10-08T09:59:00Z · a38d77a7-1aed-4e96-a05d-c467144154a2 / 1 · recorded" [selected]
+  - region "Note reference comparison table":
+    - table "Exact note identities and retained evidence references":
+      - caption: Exact note identities and retained evidence references
+      - rowgroup:
+        - row "Recorded field Note A Note B":
+          - columnheader "Recorded field"
+          - columnheader "Note A"
+          - columnheader "Note B"
+      - rowgroup:
+        - 'row "Note identity / revision circulatory_event abae4ef7-74c4-48cc-bb50-f50e9fb151cd Revision: 1 circulatory_event a38d77a7-1aed-4e96-a05d-c467144154a2 Revision: 1"':
+          - rowheader "Note identity / revision"
+          - 'cell "circulatory_event abae4ef7-74c4-48cc-bb50-f50e9fb151cd Revision: 1"':
+            - text: circulatory_event
+            - text: abae4ef7-74c4-48cc-bb50-f50e9fb151cd
+            - strong: "Revision: 1"
+          - 'cell "circulatory_event a38d77a7-1aed-4e96-a05d-c467144154a2 Revision: 1"':
+            - text: circulatory_event
+            - text: a38d77a7-1aed-4e96-a05d-c467144154a2
+            - strong: "Revision: 1"
+        - row "Note source time 2026-10-08T09:50:00Z 2026-10-08T09:59:00Z":
+          - rowheader "Note source time"
+          - cell "2026-10-08T09:50:00Z"
+          - cell "2026-10-08T09:59:00Z"
+        - row "Actor / recorded status Synthetic walkthrough reviewer recorded Synthetic consolidation reviewer recorded":
+          - rowheader "Actor / recorded status"
+          - cell "Synthetic walkthrough reviewer recorded":
+            - text: Synthetic walkthrough reviewer
+            - text: recorded
+          - cell "Synthetic consolidation reviewer recorded":
+            - text: Synthetic consolidation reviewer
+            - text: recorded
+        - 'row "Baseline reference circulatory_oxygen a02f88e1-db04-48a0-89e6-f236016a38a8 Revision: 1 circulatory_oxygen a02f88e1-db04-48a0-89e6-f236016a38a8 Revision: 1"':
+          - rowheader "Baseline reference"
+          - 'cell "circulatory_oxygen a02f88e1-db04-48a0-89e6-f236016a38a8 Revision: 1"':
+            - text: circulatory_oxygen
+            - text: a02f88e1-db04-48a0-89e6-f236016a38a8
+            - strong: "Revision: 1"
+          - 'cell "circulatory_oxygen a02f88e1-db04-48a0-89e6-f236016a38a8 Revision: 1"':
+            - text: circulatory_oxygen
+            - text: a02f88e1-db04-48a0-89e6-f236016a38a8
+            - strong: "Revision: 1"
+        - 'row "Intervention reference circulatory_vasoactive 99a26724-026c-4ccc-ac63-c22ddada2664 Revision: 1 circulatory_vasoactive 99a26724-026c-4ccc-ac63-c22ddada2664 Revision: 1"':
+          - rowheader "Intervention reference"
+          - 'cell "circulatory_vasoactive 99a26724-026c-4ccc-ac63-c22ddada2664 Revision: 1"':
+            - text: circulatory_vasoactive
+            - text: 99a26724-026c-4ccc-ac63-c22ddada2664
+            - strong: "Revision: 1"
+          - 'cell "circulatory_vasoactive 99a26724-026c-4ccc-ac63-c22ddada2664 Revision: 1"':
+            - text: circulatory_vasoactive
+            - text: 99a26724-026c-4ccc-ac63-c22ddada2664
+            - strong: "Revision: 1"
+        - 'row "Follow-up ABG / evidence reference circulatory_oxygen 1c1f16d9-33d7-40fb-a94f-013a383c9bfc Revision: 1 circulatory_oxygen 1c1f16d9-33d7-40fb-a94f-013a383c9bfc Revision: 45797d66-cac9-4f83-9d40-45da73366753"':
+          - rowheader "Follow-up ABG / evidence reference"
+          - 'cell "circulatory_oxygen 1c1f16d9-33d7-40fb-a94f-013a383c9bfc Revision: 1"':
+            - text: circulatory_oxygen
+            - text: 1c1f16d9-33d7-40fb-a94f-013a383c9bfc
+            - strong: "Revision: 1"
+          - 'cell "circulatory_oxygen 1c1f16d9-33d7-40fb-a94f-013a383c9bfc Revision: 45797d66-cac9-4f83-9d40-45da73366753"':
+            - text: circulatory_oxygen
+            - text: 1c1f16d9-33d7-40fb-a94f-013a383c9bfc
+            - strong: "Revision: 45797d66-cac9-4f83-9d40-45da73366753"
+  - paragraph: References are shown exactly as retained by each note, even if a successor exists. Referenced measurement values are not reloaded or substituted here. Use source history to inspect measurements and their uncertainty.
+  - heading "Note A — authored text and caveats" [level=3]
+  - generic "Note A full authored narrative"
+  - generic "Note A uncertainty and provenance"
+  - generic "Note A complete retained record"
+  - heading "Note B — authored text and caveats" [level=3]
+  - generic "Note B full authored narrative"
+  - generic "Note B uncertainty and provenance"
+  - generic "Note B complete retained record"
+- paragraph: Choose two exact notes. Original references remain unchanged when a measurement is corrected.

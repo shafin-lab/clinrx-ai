@@ -1,0 +1,238 @@
+{
+  "columns": {
+    "ingestion_sequence": 176,
+    "kind": "circulatory_event",
+    "fact_id": "a38d77a7-1aed-4e96-a05d-c467144154a2",
+    "revision": "1",
+    "patient_id": "synthetic-p1",
+    "encounter_id": "synthetic-e1",
+    "payload_version": 1,
+    "payload": "{\"associations\":[{\"candidates\":[],\"exact\":{\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"kind\":\"circulatory_oxygen\",\"version\":\"1\"},\"limitation\":null,\"provenance\":{\"actor\":\"Synthetic consolidation reviewer\",\"limitations\":[\"Fictional local entry; actor and source assertions are not independently authenticated.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-18T17:32:49.982000Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"a38d77a7-1aed-4e96-a05d-c467144154a2\",\"namespace\":\"clinrx-local-synthetic-entry\",\"version\":null},\"upstream\":[]},\"role\":\"context\",\"scope\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"status\":\"resolved\"},{\"candidates\":[],\"exact\":{\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"kind\":\"circulatory_vasoactive\",\"version\":\"1\"},\"limitation\":null,\"provenance\":{\"actor\":\"Synthetic consolidation reviewer\",\"limitations\":[\"Fictional local entry; actor and source assertions are not independently authenticated.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-18T17:32:49.982000Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"a38d77a7-1aed-4e96-a05d-c467144154a2\",\"namespace\":\"clinrx-local-synthetic-entry\",\"version\":null},\"upstream\":[]},\"role\":\"context\",\"scope\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"status\":\"resolved\"},{\"candidates\":[],\"exact\":{\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"kind\":\"circulatory_oxygen\",\"version\":\"45797d66-cac9-4f83-9d40-45da73366753\"},\"limitation\":null,\"provenance\":{\"actor\":\"Synthetic consolidation reviewer\",\"limitations\":[\"Fictional local entry; actor and source assertions are not independently authenticated.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-18T17:32:49.982000Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"a38d77a7-1aed-4e96-a05d-c467144154a2\",\"namespace\":\"clinrx-local-synthetic-entry\",\"version\":null},\"upstream\":[]},\"role\":\"context\",\"scope\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"status\":\"resolved\"}],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Fictional patient identity only; not independently verified.\",\"assessed_at\":\"2026-10-18T17:32:49.982000Z\",\"method\":\"Local synthetic encounter selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"a38d77a7-1aed-4e96-a05d-c467144154a2\",\"namespace\":\"clinrx-local-synthetic-entry\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic consolidation reviewer\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":null,\"raw_display\":\"Clinician-authored synthetic reassessment; not a computed response or causal conclusion.\\nQuestion: Consolidated workflow review of the explicitly corrected arterial sample, preserving earlier assessments.\\nbaseline: {\\\"kind\\\":\\\"circulatory_oxygen\\\",\\\"id\\\":\\\"a02f88e1-db04-48a0-89e6-f236016a38a8\\\",\\\"version\\\":\\\"1\\\"}\\nintervention: {\\\"kind\\\":\\\"circulatory_vasoactive\\\",\\\"id\\\":\\\"99a26724-026c-4ccc-ac63-c22ddada2664\\\",\\\"version\\\":\\\"1\\\"}\\nfollowup: {\\\"kind\\\":\\\"circulatory_oxygen\\\",\\\"id\\\":\\\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\\\",\\\"version\\\":\\\"45797d66-cac9-4f83-9d40-45da73366753\\\"}\\nRecorded findings: Fictional consolidation validation. Earlier arterial pH 7.3400 is recorded at 09:20:00.123456 UTC; a dobutamine event is documented at 09:30 UTC. The 09:45 arterial sample walkthrough-arterial-0945 now has transcription-corrected pH 7.3600, revision 45797d66-cac9-4f83-9d40-45da73366753, with its own FiO2 40% and PEEP 5 cmH2O. This new note explicitly selects that revision. Earlier assessments retain their original references and wording.\\nUnconfirmed possibilities: Patient-level relationship is not established. A transcription correction is not a new sample or physiological improvement. No treatment effect, responder classification or diagnosis is confirmed.\\nConfirmation gaps: Synthetic authored demonstration only, not clinician sign-off. Source quality and clock verification remain unknown; no calculation or treatment recommendation.\\nNext review (recorded plan, not a scheduled action): Review complete original and corrected source records, sample context and source quality. This is a recorded plan, not a scheduled action.\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"kind\\\":\\\"circulatory_oxygen\\\",\\\"id\\\":\\\"a02f88e1-db04-48a0-89e6-f236016a38a8\\\",\\\"version\\\":\\\"1\\\"}\",\"namespace\":\"clinrx.local.reassessment.baseline/v1\",\"raw_display\":\"{\\\"kind\\\":\\\"circulatory_oxygen\\\",\\\"id\\\":\\\"a02f88e1-db04-48a0-89e6-f236016a38a8\\\",\\\"version\\\":\\\"1\\\"}\",\"version\":null},{\"code\":\"{\\\"kind\\\":\\\"circulatory_vasoactive\\\",\\\"id\\\":\\\"99a26724-026c-4ccc-ac63-c22ddada2664\\\",\\\"version\\\":\\\"1\\\"}\",\"namespace\":\"clinrx.local.reassessment.intervention/v1\",\"raw_display\":\"{\\\"kind\\\":\\\"circulatory_vasoactive\\\",\\\"id\\\":\\\"99a26724-026c-4ccc-ac63-c22ddada2664\\\",\\\"version\\\":\\\"1\\\"}\",\"version\":null},{\"code\":\"{\\\"kind\\\":\\\"circulatory_oxygen\\\",\\\"id\\\":\\\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\\\",\\\"version\\\":\\\"45797d66-cac9-4f83-9d40-45da73366753\\\"}\",\"namespace\":\"clinrx.local.reassessment.followup/v1\",\"raw_display\":\"{\\\"kind\\\":\\\"circulatory_oxygen\\\",\\\"id\\\":\\\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\\\",\\\"version\\\":\\\"45797d66-cac9-4f83-9d40-45da73366753\\\"}\",\"version\":null}],\"id\":\"a38d77a7-1aed-4e96-a05d-c467144154a2\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:59:00Z\"},\"source_timestamp\":\"2026-10-08T09:59:00Z\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic consolidation reviewer\",\"limitations\":[\"Fictional local entry; actor and source assertions are not independently authenticated.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-18T17:32:49.982000Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"a38d77a7-1aed-4e96-a05d-c467144154a2\",\"namespace\":\"clinrx-local-synthetic-entry\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":null,\"revision\":\"1\",\"source_identifiers\":[{\"code\":\"reassessment\",\"namespace\":\"clinrx.local.chart-entry/v1\",\"raw_display\":\"reassessment\",\"version\":null}],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic authored demonstration only, not clinician sign-off. Source quality and clock verification remain unknown; no calculation or treatment recommendation.\"],\"verification\":\"unverified\"}",
+    "ingested_at": "2026-10-18T17:33:01.050880+00:00"
+  },
+  "decoded_json_fields": {
+    "payload": {
+      "associations": [
+        {
+          "candidates": [],
+          "exact": {
+            "id": "a02f88e1-db04-48a0-89e6-f236016a38a8",
+            "kind": "circulatory_oxygen",
+            "version": "1"
+          },
+          "limitation": null,
+          "provenance": {
+            "actor": "Synthetic consolidation reviewer",
+            "limitations": [
+              "Fictional local entry; actor and source assertions are not independently authenticated."
+            ],
+            "lineage": "incomplete",
+            "recorded_at": "2026-10-18T17:32:49.982000Z",
+            "source": {
+              "channel": "clinician",
+              "identifier": "a38d77a7-1aed-4e96-a05d-c467144154a2",
+              "namespace": "clinrx-local-synthetic-entry",
+              "version": null
+            },
+            "upstream": []
+          },
+          "role": "context",
+          "scope": {
+            "encounter_id": "synthetic-e1",
+            "longitudinal_context_id": null,
+            "patient_id": "synthetic-p1"
+          },
+          "status": "resolved"
+        },
+        {
+          "candidates": [],
+          "exact": {
+            "id": "99a26724-026c-4ccc-ac63-c22ddada2664",
+            "kind": "circulatory_vasoactive",
+            "version": "1"
+          },
+          "limitation": null,
+          "provenance": {
+            "actor": "Synthetic consolidation reviewer",
+            "limitations": [
+              "Fictional local entry; actor and source assertions are not independently authenticated."
+            ],
+            "lineage": "incomplete",
+            "recorded_at": "2026-10-18T17:32:49.982000Z",
+            "source": {
+              "channel": "clinician",
+              "identifier": "a38d77a7-1aed-4e96-a05d-c467144154a2",
+              "namespace": "clinrx-local-synthetic-entry",
+              "version": null
+            },
+            "upstream": []
+          },
+          "role": "context",
+          "scope": {
+            "encounter_id": "synthetic-e1",
+            "longitudinal_context_id": null,
+            "patient_id": "synthetic-p1"
+          },
+          "status": "resolved"
+        },
+        {
+          "candidates": [],
+          "exact": {
+            "id": "1c1f16d9-33d7-40fb-a94f-013a383c9bfc",
+            "kind": "circulatory_oxygen",
+            "version": "45797d66-cac9-4f83-9d40-45da73366753"
+          },
+          "limitation": null,
+          "provenance": {
+            "actor": "Synthetic consolidation reviewer",
+            "limitations": [
+              "Fictional local entry; actor and source assertions are not independently authenticated."
+            ],
+            "lineage": "incomplete",
+            "recorded_at": "2026-10-18T17:32:49.982000Z",
+            "source": {
+              "channel": "clinician",
+              "identifier": "a38d77a7-1aed-4e96-a05d-c467144154a2",
+              "namespace": "clinrx-local-synthetic-entry",
+              "version": null
+            },
+            "upstream": []
+          },
+          "role": "context",
+          "scope": {
+            "encounter_id": "synthetic-e1",
+            "longitudinal_context_id": null,
+            "patient_id": "synthetic-p1"
+          },
+          "status": "resolved"
+        }
+      ],
+      "available": {
+        "alignment": null,
+        "alternative_sources": [],
+        "clock": "unknown",
+        "clock_basis": null,
+        "conflicting": [],
+        "recorded": {
+          "lower": null,
+          "precision": "unknown",
+          "status": "not_recorded",
+          "uncertainty": null,
+          "upper": null,
+          "value": null
+        },
+        "source_timestamp": null
+      },
+      "binding": {
+        "target": {
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null,
+          "patient_id": "synthetic-p1"
+        },
+        "verification": {
+          "ambiguity": "Fictional patient identity only; not independently verified.",
+          "assessed_at": "2026-10-18T17:32:49.982000Z",
+          "method": "Local synthetic encounter selection",
+          "source": {
+            "channel": "clinician",
+            "identifier": "a38d77a7-1aed-4e96-a05d-c467144154a2",
+            "namespace": "clinrx-local-synthetic-entry",
+            "version": null
+          },
+          "status": "unresolved",
+          "verifier": "Synthetic consolidation reviewer"
+        }
+      },
+      "conflict": "unknown",
+      "contract_version": "3",
+      "correction_reason": null,
+      "description": {
+        "coding": null,
+        "raw_display": "Clinician-authored synthetic reassessment; not a computed response or causal conclusion.\nQuestion: Consolidated workflow review of the explicitly corrected arterial sample, preserving earlier assessments.\nbaseline: {\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"}\nintervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}\nfollowup: {\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"45797d66-cac9-4f83-9d40-45da73366753\"}\nRecorded findings: Fictional consolidation validation. Earlier arterial pH 7.3400 is recorded at 09:20:00.123456 UTC; a dobutamine event is documented at 09:30 UTC. The 09:45 arterial sample walkthrough-arterial-0945 now has transcription-corrected pH 7.3600, revision 45797d66-cac9-4f83-9d40-45da73366753, with its own FiO2 40% and PEEP 5 cmH2O. This new note explicitly selects that revision. Earlier assessments retain their original references and wording.\nUnconfirmed possibilities: Patient-level relationship is not established. A transcription correction is not a new sample or physiological improvement. No treatment effect, responder classification or diagnosis is confirmed.\nConfirmation gaps: Synthetic authored demonstration only, not clinician sign-off. Source quality and clock verification remain unknown; no calculation or treatment recommendation.\nNext review (recorded plan, not a scheduled action): Review complete original and corrected source records, sample context and source quality. This is a recorded plan, not a scheduled action."
+      },
+      "disclosures": [],
+      "event_type": "other",
+      "external_evidence": [
+        {
+          "code": "{\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"}",
+          "namespace": "clinrx.local.reassessment.baseline/v1",
+          "raw_display": "{\"kind\":\"circulatory_oxygen\",\"id\":\"a02f88e1-db04-48a0-89e6-f236016a38a8\",\"version\":\"1\"}",
+          "version": null
+        },
+        {
+          "code": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}",
+          "namespace": "clinrx.local.reassessment.intervention/v1",
+          "raw_display": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"99a26724-026c-4ccc-ac63-c22ddada2664\",\"version\":\"1\"}",
+          "version": null
+        },
+        {
+          "code": "{\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"45797d66-cac9-4f83-9d40-45da73366753\"}",
+          "namespace": "clinrx.local.reassessment.followup/v1",
+          "raw_display": "{\"kind\":\"circulatory_oxygen\",\"id\":\"1c1f16d9-33d7-40fb-a94f-013a383c9bfc\",\"version\":\"45797d66-cac9-4f83-9d40-45da73366753\"}",
+          "version": null
+        }
+      ],
+      "id": "a38d77a7-1aed-4e96-a05d-c467144154a2",
+      "kind": "circulatory_event",
+      "occurred": {
+        "alignment": null,
+        "alternative_sources": [],
+        "clock": "unknown",
+        "clock_basis": null,
+        "conflicting": [],
+        "recorded": {
+          "lower": null,
+          "precision": "instant",
+          "status": "known",
+          "uncertainty": null,
+          "upper": null,
+          "value": "2026-10-08T09:59:00Z"
+        },
+        "source_timestamp": "2026-10-08T09:59:00Z"
+      },
+      "origin": "reported",
+      "provenance": {
+        "actor": "Synthetic consolidation reviewer",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ],
+        "lineage": "incomplete",
+        "recorded_at": "2026-10-18T17:32:49.982000Z",
+        "source": {
+          "channel": "clinician",
+          "identifier": "a38d77a7-1aed-4e96-a05d-c467144154a2",
+          "namespace": "clinrx-local-synthetic-entry",
+          "version": null
+        },
+        "upstream": []
+      },
+      "record_status": "recorded",
+      "recorded_amount": null,
+      "revision": "1",
+      "source_identifiers": [
+        {
+          "code": "reassessment",
+          "namespace": "clinrx.local.chart-entry/v1",
+          "raw_display": "reassessment",
+          "version": null
+        }
+      ],
+      "supersedes": null,
+      "temporal_status": "unknown",
+      "time": {
+        "effective_end": null,
+        "effective_start": null,
+        "event": null,
+        "precision": "unknown",
+        "processed": null,
+        "recorded": null,
+        "retrieved": null,
+        "uncertainty": null
+      },
+      "uncertainty": [
+        "Synthetic authored demonstration only, not clinician sign-off. Source quality and clock verification remain unknown; no calculation or treatment recommendation."
+      ],
+      "verification": "unverified"
+    }
+  }
+}
