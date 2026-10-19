@@ -1,0 +1,112 @@
+- link "Skip to patient workflow":
+  - /url: "#patient-workflow"
+- banner:
+  - heading "Synthetic ICU patient workspace" [level=1]
+  - paragraph: Patient synthetic-p1 · Encounter synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Local synthetic evidence only; no treatment advice.
+  - search "Find patient evidence":
+    - text: Find recorded evidence
+    - searchbox "Find recorded evidence"
+    - button "Find evidence"
+  - paragraph:
+    - button "Open saved handover"
+    - text: Saved on this browser.
+  - paragraph: Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.
+  - paragraph: Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.
+  - navigation "Patient workflow":
+    - button "Patient and evidence"
+    - button "Source entry and reassessment"
+    - button "Compare notes"
+    - button "Handover"
+  - region "Current workflow step":
+    - heading "Compare notes" [level=2]
+    - paragraph: Select Note A and Note B explicitly. Compare their retained revisions, then expand the authored text and caveats. A later note does not replace an earlier note or establish improvement.
+    - generic "How to complete this synthetic patient workflow"
+- region "Read-only reassessment comparison":
+  - heading "Compare reassessment notes" [level=2]
+  - paragraph: Read-only comparison of two explicitly selected notes. A new note does not replace an earlier note or its exact references. A/B selection does not establish chronology, clinical improvement or treatment effect.
+  - text: Note A
+  - combobox "Note A":
+    - option "Select an exact reassessment note"
+    - option "2026-10-08T09:20:00Z · f01d969c-54a5-4566-815e-2bd8ae5e9505 / 1 · recorded" [selected]
+    - option "2026-10-08T09:25:00Z · 3583c95b-119c-4daf-9642-42845112602e / 1 · recorded"
+  - text: Note B
+  - combobox "Note B":
+    - option "Select an exact reassessment note"
+    - option "2026-10-08T09:20:00Z · f01d969c-54a5-4566-815e-2bd8ae5e9505 / 1 · recorded"
+    - option "2026-10-08T09:25:00Z · 3583c95b-119c-4daf-9642-42845112602e / 1 · recorded" [selected]
+  - region "Note reference comparison table" [active]:
+    - table "Exact note identities and retained evidence references":
+      - caption: Exact note identities and retained evidence references
+      - rowgroup:
+        - row "Recorded field Note A Note B":
+          - columnheader "Recorded field"
+          - columnheader "Note A"
+          - columnheader "Note B"
+      - rowgroup:
+        - 'row "Note identity / revision circulatory_event f01d969c-54a5-4566-815e-2bd8ae5e9505 Revision: 1 circulatory_event 3583c95b-119c-4daf-9642-42845112602e Revision: 1"':
+          - rowheader "Note identity / revision"
+          - 'cell "circulatory_event f01d969c-54a5-4566-815e-2bd8ae5e9505 Revision: 1"':
+            - text: circulatory_event
+            - text: f01d969c-54a5-4566-815e-2bd8ae5e9505
+            - strong: "Revision: 1"
+          - 'cell "circulatory_event 3583c95b-119c-4daf-9642-42845112602e Revision: 1"':
+            - text: circulatory_event
+            - text: 3583c95b-119c-4daf-9642-42845112602e
+            - strong: "Revision: 1"
+        - row "Note source time 2026-10-08T09:20:00Z 2026-10-08T09:25:00Z":
+          - rowheader "Note source time"
+          - cell "2026-10-08T09:20:00Z"
+          - cell "2026-10-08T09:25:00Z"
+        - row "Actor / recorded status Milestone synthetic reviewer recorded Milestone synthetic reviewer recorded":
+          - rowheader "Actor / recorded status"
+          - cell "Milestone synthetic reviewer recorded":
+            - text: Milestone synthetic reviewer
+            - text: recorded
+          - cell "Milestone synthetic reviewer recorded":
+            - text: Milestone synthetic reviewer
+            - text: recorded
+        - 'row "Baseline reference circulatory_cardiac fs-CO-15 Revision: 1 circulatory_cardiac fs-CO-15 Revision: 1"':
+          - rowheader "Baseline reference"
+          - 'cell "circulatory_cardiac fs-CO-15 Revision: 1"':
+            - text: circulatory_cardiac
+            - text: fs-CO-15
+            - strong: "Revision: 1"
+          - 'cell "circulatory_cardiac fs-CO-15 Revision: 1"':
+            - text: circulatory_cardiac
+            - text: fs-CO-15
+            - strong: "Revision: 1"
+        - 'row "Intervention reference circulatory_vasoactive fs-N-CHANGE Revision: 1 circulatory_vasoactive fs-N-CHANGE Revision: 1"':
+          - rowheader "Intervention reference"
+          - 'cell "circulatory_vasoactive fs-N-CHANGE Revision: 1"':
+            - text: circulatory_vasoactive
+            - text: fs-N-CHANGE
+            - strong: "Revision: 1"
+          - 'cell "circulatory_vasoactive fs-N-CHANGE Revision: 1"':
+            - text: circulatory_vasoactive
+            - text: fs-N-CHANGE
+            - strong: "Revision: 1"
+        - 'row "Follow-up ABG / evidence reference circulatory_pressure fs-MAP-15 Revision: 1 circulatory_pressure fs-MAP-15 Revision: 41675deb-aa68-444f-a5fe-6ed8770c2c0c"':
+          - rowheader "Follow-up ABG / evidence reference"
+          - 'cell "circulatory_pressure fs-MAP-15 Revision: 1"':
+            - text: circulatory_pressure
+            - text: fs-MAP-15
+            - strong: "Revision: 1"
+          - 'cell "circulatory_pressure fs-MAP-15 Revision: 41675deb-aa68-444f-a5fe-6ed8770c2c0c"':
+            - text: circulatory_pressure
+            - text: fs-MAP-15
+            - strong: "Revision: 41675deb-aa68-444f-a5fe-6ed8770c2c0c"
+  - paragraph: References are shown exactly as retained by each note, even if a successor exists. Referenced measurement values are not reloaded or substituted here. Use source history to inspect measurements and their uncertainty.
+  - heading "Note A — authored text and caveats" [level=3]
+  - button "Add Note A to handover"
+  - generic "Note A full authored narrative"
+  - generic "Note A uncertainty and provenance"
+  - generic "Note A complete retained record"
+  - heading "Note B — authored text and caveats" [level=3]
+  - button "Add Note B to handover"
+  - generic "Note B full authored narrative"
+  - generic "Note B uncertainty and provenance"
+  - generic "Note B complete retained record"
+- paragraph: Choose two exact notes. Original references remain unchanged when a measurement is corrected.

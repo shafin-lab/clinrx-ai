@@ -1,0 +1,49 @@
+from pathlib import Path
+import asyncio,datetime,hashlib,itertools,json,os,secrets,shutil,socket,sqlite3
+import uvicorn
+from app.demo.icu_flowsheet import bootstrap
+from app.persistence.database import create_database
+from app.demo.authoring import SyntheticAuthoringGateway
+mirror=Path('/Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6')
+run=mirror/'hemodynamics-milestone-local-run';evidence=mirror/'hemodynamics-milestone-validation/browser-journey';port=5195
+with socket.socket() as s:s.bind(('127.0.0.1',port))
+run.mkdir(exist_ok=False);evidence.mkdir(parents=True,exist_ok=False)
+shutil.copytree(mirror/'hemodynamics-milestone-validation/authoring-build',run/'frontend')
+engine=create_database(run/'synthetic.sqlite3')
+try:manifest=bootstrap(engine)
+finally:engine.dispose()
+(run/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+with sqlite3.connect(run/'synthetic.sqlite3') as db,sqlite3.connect(evidence/'before.sqlite3') as dest:db.backup(dest)
+app=SyntheticAuthoringGateway(run/'synthetic.sqlite3',run/'frontend',secrets.token_hex(32),'http://127.0.0.1:'+str(port))
+counter=itertools.count(1)
+def redact(v):
+ if isinstance(v,dict):return {k:('<redacted signed state context>' if k=='state_context' else redact(x)) for k,x in v.items()}
+ if isinstance(v,list):return [redact(x) for x in v]
+ return v
+class Recorder:
+ async def __call__(self,scope,receive,send):
+  if scope['type']!='http':return await app(scope,receive,send)
+  n=next(counter);path=scope['path'];api=path.startswith('/api/') or path=='/health';req=bytearray();res=bytearray();status=0
+  async def capture_receive():
+   m=await receive()
+   if m['type']=='http.request':req.extend(m.get('body',b''))
+   return m
+  async def capture_send(m):
+   nonlocal status
+   if m['type']=='http.response.start':status=m['status']
+   if m['type']=='http.response.body':res.extend(m.get('body',b''))
+   await send(m)
+  await app(scope,capture_receive,capture_send)
+  record={'sequence':n,'at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'method':scope['method'],'path':path,'status':status,'request_bytes':len(req),'response_bytes':len(res)}
+  if api:
+   for label,data in [('request',bytes(req)),('response',bytes(res))]:
+    if not data:continue
+    parsed=json.loads(data);safe=redact(parsed);changed=safe!=parsed
+    retained=json.dumps(safe,ensure_ascii=False,separators=(',',':')).encode() if changed else data
+    name=f'{n:03d}-{label}.json';(evidence/name).write_bytes(retained)
+    record[label]={'file':name,'sha256':hashlib.sha256(retained).hexdigest(),'signed_context_redacted':changed}
+  elif path=='/' or path.startswith('/assets/'):
+   record['served_body_sha256']=hashlib.sha256(res).hexdigest()
+  with (evidence/'events.jsonl').open('a') as f:f.write(json.dumps(record,separators=(',',':'))+'\n')
+(run/'runtime.json').write_text(json.dumps({'pid':os.getpid(),'origin':'http://127.0.0.1:5195','source':'ee81661d7ae70d6ab5491a2da8634f675381d00a','production_execution_enabled':False,'recorder':'External observation-only ASGI wrapper. Request/response body captures omit headers and redact signed state_context values; no delivery fault injection.'},indent=2)+'\n')
+uvicorn.run(Recorder(),host='127.0.0.1',port=port,workers=1,access_log=False)

@@ -1,0 +1,134 @@
+- link "Skip to patient workflow":
+  - /url: "#patient-workflow"
+- banner:
+  - heading "Synthetic ICU patient workspace" [level=1]
+  - paragraph: Patient synthetic-p1 · Encounter synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Local synthetic evidence only; no treatment advice.
+  - search "Find patient evidence":
+    - text: Find recorded evidence
+    - searchbox "Find recorded evidence": mean arterial 08:15
+    - button "Find evidence"
+  - paragraph: Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.
+  - paragraph: Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.
+  - navigation "Patient workflow":
+    - button "Patient and evidence"
+    - button "Source entry and reassessment"
+    - button "Compare notes"
+    - button "Handover"
+  - region "Current workflow step":
+    - heading "Patient and evidence" [level=2]
+    - paragraph: Start with the flowsheet or search by parameter, source time or source ID. Inspect a record to see its context and revision history; correct it only when the source needs an explicit amendment.
+    - generic "How to complete this synthetic patient workflow"
+    - list:
+      - listitem: Browse pressures, flow, rhythm, gases, echo, infusions and perfusion together. Source times and gaps remain explicit.
+      - listitem: Inspect the exact source and revision history. A correction appends a successor; it never overwrites the original.
+      - listitem: Author a separate reassessment with exact baseline, intervention and follow-up selections. Keep recorded findings, possibilities and gaps distinct.
+      - listitem: Compare two exact notes and their original references. Add the records/notes needed for handover.
+      - listitem: Review and explicitly save the handover selection locally; reload and open the saved view to recover it.
+    - paragraph: This workspace is for synthetic workflow testing. A saved selection is not a clinical handover sign-off. Pending clinical drafts and commands are not durably recovered after reload.
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / EVIDENCE LIBRARY
+  - heading "Evidence library" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - navigation "Evidence views":
+    - button "ICU flowsheet"
+    - button "Patient summary"
+    - button "Patient overview"
+    - button "Evidence library"
+    - button "Recording timeline"
+    - button "Retained examples"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "157"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - text: Search recorded evidence
+  - searchbox "Search recorded evidence": mean arterial 08:15
+  - text: Evidence family
+  - combobox "Evidence family":
+    - option "All 15 families" [selected]
+    - option "Pressure and PAC/RHC (20)"
+    - option "Cardiac output and performance (14)"
+    - option "Volume and lung water (1)"
+    - option "Dynamic measurements (1)"
+    - option "Recorded device predictions (0)"
+    - option "Tissue perfusion (13)"
+    - option "Oxygen transport and blood gases (22)"
+    - option "Lactate (5)"
+    - option "Echo and POCUS (12)"
+    - option "ECG and rhythm (10)"
+    - option "Vasoactive events (12)"
+    - option "Edwards / PiCCO and monitoring context (1)"
+    - option "Dynamic assessment episodes (2)"
+    - option "Recorded circulatory events (43)"
+    - option "Signal manifests (1)"
+  - heading "Recorded evidence results" [level=2]
+  - paragraph: Search by name, sample type, specimen or source time, for example ABG 09:45. Times match their recorded spelling and offset. Separate words narrow the results together.
+  - button "Clear evidence filters"
+  - status: 1 recorded item in this view
+  - region "Evidence library results":
+    - heading "Pressure and PAC/RHC" [level=2]
+    - button "Inspect Mean arterial pressure fs-MAP-15":
+      - generic: Mean arterial pressure
+      - strong: 61 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-MAP-15 / 1
+      - generic: "Quality: acceptable"
+  - complementary "Selected source evidence" [active]:
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "Mean arterial pressure" [level=2]
+    - paragraph: 61 mmHg
+    - paragraph:
+      - code: fs-MAP-15 / 1
+    - paragraph: invasive arterial
+    - term: Source time
+    - definition: 2026-10-08T08:15:00+00:00
+    - term: Recorded quality
+    - definition: acceptable
+    - term: Source unit mapping
+    - definition:
+      - generic: "Result: unresolved · mmHg"
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx.synthetic.demo
+    - button "Correct this exact source"
+    - button "Add exact source to handover"
+    - region "Measurement acquisition context":
+      - heading "Measurement context" [level=3]
+      - term: Method
+      - definition: invasive arterial
+      - term: Recorded production
+      - definition: direct measurement
+      - term: Respiratory phase
+      - definition: Not recorded
+      - term: Position
+      - definition: Not recorded
+      - term: Recorded averaging basis
+      - definition: Not recorded · no average calculated here
+      - term: Calibration status
+      - definition: unknown
+      - term: Zeroing status
+      - definition: unknown
+      - term: Indexing denominator
+      - definition: Not recorded · source-recorded, not derived here
+      - term: Source quality
+      - definition: acceptable
+      - paragraph: Source metadata does not establish measurement validity or dynamic-test applicability.
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

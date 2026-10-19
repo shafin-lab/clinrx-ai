@@ -1,0 +1,31 @@
+[
+  {
+    "name": "frontend-full",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "test",
+      "--",
+      "--maxWorkers=2"
+    ],
+    "environment_overrides": {},
+    "started_utc": "2026-10-19T07:47:15.273537+00:00",
+    "exit_code": 0,
+    "seconds": 42.81
+  },
+  {
+    "name": "typecheck",
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "run",
+      "typecheck"
+    ],
+    "environment_overrides": {},
+    "started_utc": "2026-10-19T07:47:58.080408+00:00",
+    "exit_code": 1,
+    "seconds": 1.0
+  }
+]

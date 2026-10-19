@@ -1,0 +1,715 @@
+- link "Skip to patient workflow":
+  - /url: "#patient-workflow"
+- banner:
+  - heading "Synthetic ICU patient workspace" [level=1]
+  - paragraph: Patient synthetic-p1 · Encounter synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Local synthetic evidence only; no treatment advice.
+  - search "Find patient evidence":
+    - text: Find recorded evidence
+    - searchbox "Find recorded evidence"
+    - button "Find evidence"
+  - paragraph: Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.
+  - paragraph: Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.
+  - navigation "Patient workflow":
+    - button "Patient and evidence"
+    - button "Source entry and reassessment"
+    - button "Compare notes"
+    - button "Handover"
+  - region "Current workflow step":
+    - heading "Patient and evidence" [level=2]
+    - paragraph: Start with the flowsheet or search by parameter, source time or source ID. Inspect a record to see its context and revision history; correct it only when the source needs an explicit amendment.
+    - generic "How to complete this synthetic patient workflow" [active]
+    - list:
+      - listitem: Browse pressures, flow, rhythm, gases, echo, infusions and perfusion together. Source times and gaps remain explicit.
+      - listitem: Inspect the exact source and revision history. A correction appends a successor; it never overwrites the original.
+      - listitem: Author a separate reassessment with exact baseline, intervention and follow-up selections. Keep recorded findings, possibilities and gaps distinct.
+      - listitem: Compare two exact notes and their original references. Add the records/notes needed for handover.
+      - listitem: Review and explicitly save the handover selection locally; reload and open the saved view to recover it.
+    - paragraph: This workspace is for synthetic workflow testing. A saved selection is not a clinical handover sign-off. Pending clinical drafts and commands are not durably recovered after reload.
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / PATIENT OVERVIEW
+  - heading "See the fuller picture." [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - navigation "Evidence views":
+    - button "ICU flowsheet"
+    - button "Patient summary"
+    - button "Patient overview"
+    - button "Evidence library"
+    - button "Recording timeline"
+    - button "Retained examples"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "156"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "5"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - button "Open combined patient summary →"
+  - region "Guided views":
+    - button "01 / EXPLORE Cardiac output + echo Put measurements beside their methods." [pressed]:
+      - generic: 01 / EXPLORE
+      - strong: Cardiac output + echo
+      - generic: Put measurements beside their methods.
+    - button "02 / EXPLORE ABG + oxygen transport Inspect gases with sample context.":
+      - generic: 02 / EXPLORE
+      - strong: ABG + oxygen transport
+      - generic: Inspect gases with sample context.
+    - button "03 / EXPLORE Follow a correction See why the original record matters.":
+      - generic: 03 / EXPLORE
+      - strong: Follow a correction
+      - generic: See why the original record matters.
+    - button "04 / EXPLORE Find the evidence gaps Keep unknowns visible.":
+      - generic: 04 / EXPLORE
+      - strong: Find the evidence gaps
+      - generic: Keep unknowns visible.
+  - heading "Cardiac output + echo" [level=2]
+  - paragraph: Compare cardiac output and LVOT VTI alongside RVSP/PASP estimates, TR velocity, RV findings, valves and pericardium. Pulmonary hypertension wording is source-reported, not a ClinRx diagnosis or PAH classification.
+  - region "Guided recorded measurements":
+    - button "Inspect Cardiac output m7-CO":
+      - generic: Cardiac output
+      - strong: 4.50 L/min
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-CO / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect LVOT VTI m7-VTI":
+      - generic: LVOT VTI
+      - strong: 17.5 cm
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-VTI / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Estimated RVSP m7-RVSP":
+      - generic: Estimated RVSP
+      - strong: 45.0 mmHg
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-RVSP / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Pulmonary hypertension report finding m7-PH":
+      - generic: Pulmonary hypertension report finding
+      - strong: "Synthetic report: findings suggest pulmonary hypertension; no invasive confirmation or PAH subtype established."
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-PH / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect LV ejection fraction m7-EF":
+      - generic: LV ejection fraction
+      - strong: 55.0 %
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-EF / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect TR peak velocity m7-TRV":
+      - generic: TR peak velocity
+      - strong: 3.16 m/s
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-TRV / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Estimated PASP m7-PASP":
+      - generic: Estimated PASP
+      - strong: 45.0 mmHg
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-PASP / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect RV function m7-RVFUNCTION":
+      - generic: RV function
+      - strong: "Synthetic report: mildly reduced RV systolic function."
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-RVFUNCTION / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect RV basal dimension m7-RVD":
+      - generic: RV basal dimension
+      - strong: 4.3 cm
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-RVD / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Septal configuration m7-SEPTUM":
+      - generic: Septal configuration
+      - strong: "Synthetic report: systolic septal flattening."
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-SEPTUM / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Valve finding m7-VALVE":
+      - generic: Valve finding
+      - strong: "Synthetic report: moderate tricuspid regurgitation."
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-VALVE / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Pericardial effusion m7-EFFUSION":
+      - generic: Pericardial effusion
+      - strong: "Synthetic report: no pericardial effusion visualized."
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-EFFUSION / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect TAPSE m7-ECHO":
+      - generic: TAPSE
+      - strong: 18 mm
+      - generic: echo
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ECHO / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Mean arterial pressure m7-P":
+      - generic: Mean arterial pressure
+      - strong: 65.00 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-P / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Source rhythm m7-RHYTHM":
+      - generic: Source rhythm
+      - strong: Synthetic source-reported rhythm
+      - generic: ecg monitor
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-RHYTHM / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac index m7-CI":
+      - generic: Cardiac index
+      - strong: 2.60 L/min/m2
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-CI / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac output m7-FLOTRAC":
+      - generic: Cardiac output
+      - strong: 4.40 L/min
+      - generic: pulse contour · FloTrac · HemoSphere
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-FLOTRAC / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac output m7-PICCO-CO":
+      - generic: Cardiac output
+      - strong: 4.60 L/min
+      - generic: pulse contour · PiCCO · PiCCO
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-PICCO-CO / 1
+      - generic: "Quality: unknown"
+    - button "Inspect Cardiac output m7-VOLUMEVIEW":
+      - generic: Cardiac output
+      - strong: 4.60 L/min
+      - generic: transpulmonary thermodilution · VolumeView · EV1000
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-VOLUMEVIEW / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect QTc m7-ECG":
+      - generic: QTc
+      - strong: 420 ms
+      - generic: ecg 12 lead
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ECG / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Base excess m7-ABG-BE":
+      - generic: Arterial blood gas (ABG) ·
+      - text: Base excess
+      - strong: "-2.0 mmol/L"
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-BE / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Haemoglobin m7-ABG-HB":
+      - generic: Arterial blood gas (ABG) ·
+      - text: Haemoglobin
+      - strong: 10.2 g/dL
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-HB / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Bicarbonate m7-ABG-HCO3":
+      - generic: Arterial blood gas (ABG) ·
+      - text: Bicarbonate
+      - strong: 23.0 mmol/L
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-HCO3 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaCO₂ m7-ABG-PACO2":
+      - generic: Arterial blood gas (ABG) ·
+      - text: PaCO₂
+      - strong: 48.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-PACO2 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaO₂ m7-ABG-PAO2":
+      - generic: Arterial blood gas (ABG) ·
+      - text: PaO₂
+      - strong: 78.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-PAO2 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect pH m7-ABG-PH":
+      - generic: Arterial blood gas (ABG) ·
+      - text: pH
+      - strong: "7.31 (unit: 1)"
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-PH / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Arterial oxygen saturation m7-ABG-SAO2":
+      - generic: Arterial blood gas (ABG) ·
+      - text: Arterial oxygen saturation
+      - strong: 95.0 %
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-ABG-SAO2 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Mixed venous oxygen saturation m7-SVO2":
+      - generic: mixed venous sample ·
+      - text: Mixed venous oxygen saturation
+      - strong: 65.0 %
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-SVO2 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Central venous pressure m7-PAC":
+      - generic: Central venous pressure
+      - strong: 8.0 mmHg
+      - generic: pac
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-PAC / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Pulmonary artery wedge pressure m7-RHC":
+      - generic: Pulmonary artery wedge pressure
+      - strong: 12.0 mmHg
+      - generic: rhc
+      - generic: in window · 2026-10-08T08:00:00+00:00
+      - text: m7-RHC / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac index fs-CI-15":
+      - generic: Cardiac index
+      - strong: 2.30 L/min/m2
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-CI-15 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac output fs-CO-15":
+      - generic: Cardiac output
+      - strong: 4.00 L/min
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-CO-15 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Heart rate fs-HR-15":
+      - generic: Heart rate
+      - strong: 104 /min
+      - generic: ecg monitor
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-HR-15 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Source rhythm fs-RHYTHM-15":
+      - generic: Source rhythm
+      - strong: Source-reported sinus rhythm.
+      - generic: ecg monitor
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-RHYTHM-15 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaCO₂ fs-PACO2-15":
+      - generic: Arterial blood gas (ABG) ·
+      - text: PaCO₂
+      - strong: 50.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-PACO2-15 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaO₂ fs-PAO2-15":
+      - generic: Arterial blood gas (ABG) ·
+      - text: PaO₂
+      - strong: 80.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-PAO2-15 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect pH fs-PH-15":
+      - generic: Arterial blood gas (ABG) ·
+      - text: pH
+      - strong: "7.30 (unit: 1)"
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-PH-15 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Central venous pressure fs-CVP-15":
+      - generic: Central venous pressure
+      - strong: 9.0 mmHg
+      - generic: pac
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-CVP-15 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Mean arterial pressure fs-MAP-15":
+      - generic: Mean arterial pressure
+      - strong: 61 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-MAP-15 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Diastolic blood pressure fs-systemic_diastolic-15":
+      - generic: Diastolic blood pressure
+      - strong: 47 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-systemic_diastolic-15 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Systolic blood pressure fs-systemic_systolic-15":
+      - generic: Systolic blood pressure
+      - strong: 92 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:15:00+00:00
+      - text: fs-systemic_systolic-15 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac index fs-CI-30":
+      - generic: Cardiac index
+      - strong: 2.50 L/min/m2
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-CI-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac output fs-CO-30":
+      - generic: Cardiac output
+      - strong: 4.40 L/min
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-CO-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Heart rate fs-HR-30":
+      - generic: Heart rate
+      - strong: 108 /min
+      - generic: ecg monitor
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-HR-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Source rhythm fs-RHYTHM-30":
+      - generic: Source rhythm
+      - strong: Source-reported irregular rhythm; no arrhythmia classification confirmed.
+      - generic: ecg monitor
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-RHYTHM-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaCO₂ fs-PACO2-30":
+      - generic: Arterial blood gas (ABG) ·
+      - text: PaCO₂
+      - strong: 47.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-PACO2-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaO₂ fs-PAO2-30":
+      - generic: Arterial blood gas (ABG) ·
+      - text: PaO₂
+      - strong: 84.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-PAO2-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect pH fs-PH-30":
+      - generic: Arterial blood gas (ABG) ·
+      - text: pH
+      - strong: "7.32 (unit: 1)"
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-PH-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect scvo2 fs-SCVO2-30":
+      - generic: central venous sample ·
+      - text: scvo2
+      - strong: 66.0 %
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-SCVO2-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Mixed venous oxygen saturation fs-SVO2-30":
+      - generic: mixed venous sample ·
+      - text: Mixed venous oxygen saturation
+      - strong: 64.0 %
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-SVO2-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Central venous pressure fs-CVP-30":
+      - generic: Central venous pressure
+      - strong: 10.0 mmHg
+      - generic: pac
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-CVP-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Mean arterial pressure fs-MAP-30":
+      - generic: Mean arterial pressure
+      - strong: 68 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-MAP-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Diastolic blood pressure fs-systemic_diastolic-30":
+      - generic: Diastolic blood pressure
+      - strong: 52 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-systemic_diastolic-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Systolic blood pressure fs-systemic_systolic-30":
+      - generic: Systolic blood pressure
+      - strong: 101 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:30:00+00:00
+      - text: fs-systemic_systolic-30 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac index fs-CI-45":
+      - generic: Cardiac index
+      - strong: 2.70 L/min/m2
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T08:45:00+00:00
+      - text: fs-CI-45 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac output fs-CO-45":
+      - generic: Cardiac output
+      - strong: 4.70 L/min
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T08:45:00+00:00
+      - text: fs-CO-45 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Heart rate fs-HR-45":
+      - generic: Heart rate
+      - strong: 102 /min
+      - generic: ecg monitor
+      - generic: in window · 2026-10-08T08:45:00+00:00
+      - text: fs-HR-45 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Source rhythm fs-RHYTHM-45":
+      - generic: Source rhythm
+      - strong: Source-reported sinus rhythm.
+      - generic: ecg monitor
+      - generic: in window · 2026-10-08T08:45:00+00:00
+      - text: fs-RHYTHM-45 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaCO₂ fs-PACO2-45":
+      - generic: Arterial blood gas (ABG) ·
+      - text: PaCO₂
+      - strong: 45.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:45:00+00:00
+      - text: fs-PACO2-45 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaO₂ fs-PAO2-45":
+      - generic: Arterial blood gas (ABG) ·
+      - text: PaO₂
+      - strong: 86.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:45:00+00:00
+      - text: fs-PAO2-45 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect pH fs-PH-45":
+      - generic: Arterial blood gas (ABG) ·
+      - text: pH
+      - strong: "7.34 (unit: 1)"
+      - generic: blood gas
+      - generic: in window · 2026-10-08T08:45:00+00:00
+      - text: fs-PH-45 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Central venous pressure fs-CVP-45":
+      - generic: Central venous pressure
+      - strong: 9.0 mmHg
+      - generic: pac
+      - generic: in window · 2026-10-08T08:45:00+00:00
+      - text: fs-CVP-45 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Mean arterial pressure fs-MAP-45":
+      - generic: Mean arterial pressure
+      - strong: 72 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:45:00+00:00
+      - text: fs-MAP-45 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Diastolic blood pressure fs-systemic_diastolic-45":
+      - generic: Diastolic blood pressure
+      - strong: 55 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:45:00+00:00
+      - text: fs-systemic_diastolic-45 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Systolic blood pressure fs-systemic_systolic-45":
+      - generic: Systolic blood pressure
+      - strong: 110 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T08:45:00+00:00
+      - text: fs-systemic_systolic-45 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac index fs-CI-60":
+      - generic: Cardiac index
+      - strong: 2.60 L/min/m2
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T09:00:00+00:00
+      - text: fs-CI-60 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac output fs-CO-60":
+      - generic: Cardiac output
+      - strong: 4.60 L/min
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: in window · 2026-10-08T09:00:00+00:00
+      - text: fs-CO-60 / 1
+      - generic: "Quality: suspect"
+    - button "Inspect Heart rate fs-HR-60":
+      - generic: Heart rate
+      - strong: 96 /min
+      - generic: ecg monitor
+      - generic: in window · 2026-10-08T09:00:00+00:00
+      - text: fs-HR-60 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Source rhythm fs-RHYTHM-60":
+      - generic: Source rhythm
+      - strong: Source-reported sinus rhythm.
+      - generic: ecg monitor
+      - generic: in window · 2026-10-08T09:00:00+00:00
+      - text: fs-RHYTHM-60 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaCO₂ fs-PACO2-60":
+      - generic: Arterial blood gas (ABG) ·
+      - text: PaCO₂
+      - strong: 44.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T09:00:00+00:00
+      - text: fs-PACO2-60 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect PaO₂ fs-PAO2-60":
+      - generic: Arterial blood gas (ABG) ·
+      - text: PaO₂
+      - strong: 88.0 mmHg
+      - generic: blood gas
+      - generic: in window · 2026-10-08T09:00:00+00:00
+      - text: fs-PAO2-60 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect pH fs-PH-60":
+      - generic: Arterial blood gas (ABG) ·
+      - text: pH
+      - strong: "7.35 (unit: 1)"
+      - generic: blood gas
+      - generic: in window · 2026-10-08T09:00:00+00:00
+      - text: fs-PH-60 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Central venous pressure fs-CVP-60":
+      - generic: Central venous pressure
+      - strong: 9.0 mmHg
+      - generic: pac
+      - generic: in window · 2026-10-08T09:00:00+00:00
+      - text: fs-CVP-60 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Mean arterial pressure fs-MAP-60":
+      - generic: Mean arterial pressure
+      - strong: 70 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T09:00:00+00:00
+      - text: fs-MAP-60 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Diastolic blood pressure fs-systemic_diastolic-60":
+      - generic: Diastolic blood pressure
+      - strong: 53 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T09:00:00+00:00
+      - text: fs-systemic_diastolic-60 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Systolic blood pressure fs-systemic_systolic-60":
+      - generic: Systolic blood pressure
+      - strong: 106 mmHg
+      - generic: invasive arterial
+      - generic: in window · 2026-10-08T09:00:00+00:00
+      - text: fs-systemic_systolic-60 / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Cardiac output m7-CONTEXT-CO":
+      - generic: Cardiac output
+      - strong: 4.500 L/min
+      - generic: bolus thermodilution · SwanGanz · HemoSphere
+      - generic: contextual · 2026-10-08T06:00:00+00:00
+      - text: m7-CONTEXT-CO / 1
+      - generic: "Quality: acceptable"
+    - button "Inspect Central venous pressure m7-UNPLACED":
+      - generic: Central venous pressure
+      - strong: Not established
+      - generic: unknown
+      - generic: unplaced · Time not established
+      - text: m7-UNPLACED / 1
+      - generic: "Quality: acceptable"
+  - complementary "Selected source evidence":
+    - text: SOURCE INSPECTOR
+    - heading "Evidence within reach." [level=2]
+    - paragraph: Select any recorded item to inspect its exact source, quality, device context and revision history.
+    - generic: Source
+    - generic: Exact revision
+    - generic: Provenance
+    - generic: Values are shown as recorded. Units are not converted, and quality labels are source assertions.
+  - heading "Explore every evidence family" [level=2]
+  - generic: Missing records do not establish clinical absence.
+  - button "01 Pressure and PAC/RHC 20 recorded items →":
+    - generic: "01"
+    - strong: Pressure and PAC/RHC
+    - generic: 20 recorded items →
+  - button "02 Cardiac output and performance 14 recorded items →":
+    - generic: "02"
+    - strong: Cardiac output and performance
+    - generic: 14 recorded items →
+  - button "03 Volume and lung water 1 recorded item →":
+    - generic: "03"
+    - strong: Volume and lung water
+    - generic: 1 recorded item →
+  - button "04 Dynamic measurements 1 recorded item →":
+    - generic: "04"
+    - strong: Dynamic measurements
+    - generic: 1 recorded item →
+  - button "05 Recorded device predictions 0 recorded items →":
+    - generic: "05"
+    - strong: Recorded device predictions
+    - generic: 0 recorded items →
+  - button "06 Tissue perfusion 13 recorded items →":
+    - generic: "06"
+    - strong: Tissue perfusion
+    - generic: 13 recorded items →
+  - button "07 Oxygen transport and blood gases 22 recorded items →":
+    - generic: "07"
+    - strong: Oxygen transport and blood gases
+    - generic: 22 recorded items →
+  - button "08 Lactate 5 recorded items →":
+    - generic: "08"
+    - strong: Lactate
+    - generic: 5 recorded items →
+  - button "09 Echo and POCUS 12 recorded items →":
+    - generic: "09"
+    - strong: Echo and POCUS
+    - generic: 12 recorded items →
+  - button "10 ECG and rhythm 10 recorded items →":
+    - generic: "10"
+    - strong: ECG and rhythm
+    - generic: 10 recorded items →
+  - button "11 Vasoactive events 12 recorded items →":
+    - generic: "11"
+    - strong: Vasoactive events
+    - generic: 12 recorded items →
+  - button "12 Edwards / PiCCO and monitoring context 1 recorded item →":
+    - generic: "12"
+    - strong: Edwards / PiCCO and monitoring context
+    - generic: 1 recorded item →
+  - button "13 Dynamic assessment episodes 2 recorded items →":
+    - generic: "13"
+    - strong: Dynamic assessment episodes
+    - generic: 2 recorded items →
+  - button "14 Recorded circulatory events 42 recorded items →":
+    - generic: "14"
+    - strong: Recorded circulatory events
+    - generic: 42 recorded items →
+  - button "15 Signal manifests 1 recorded item →":
+    - generic: "15"
+    - strong: Signal manifests
+    - generic: 1 recorded item →
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

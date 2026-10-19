@@ -1,0 +1,359 @@
+diff --git a/docs/SYNTHETIC-HEMODYNAMICS-CONSOLIDATION.md b/docs/SYNTHETIC-HEMODYNAMICS-CONSOLIDATION.md
+index 2c9fa46..c9eb463 100644
+--- a/docs/SYNTHETIC-HEMODYNAMICS-CONSOLIDATION.md
++++ b/docs/SYNTHETIC-HEMODYNAMICS-CONSOLIDATION.md
+@@ -1,41 +1,63 @@
+-# Local synthetic hemodynamics consolidation
++# Local synthetic hemodynamics workflow milestone
+ 
+-Base: `db56f7e8164a7a3c46c6c8e17a56c0d9088c2de5`. This bounded increment connects existing evidence browsing, inspection, correction/history, authored reassessment and comparison, adding a session-only handover selection review. It introduces no clinical interpretation rule, backend contract, migration, dependency or execution activation.
++## Intended use and boundary
+ 
+-## Workflow and reusable components
++One local synthetic patient/encounter workflow: patient evidence → exact source/history → append-only correction → separately authored reassessment → exact-note comparison → locally saved handover selection. This consolidates the existing downstream work from db56f7e through a9fffd9,26545e7,d528004 and8c7fedc with the bounded integration improvements below. It does not create a new clinical engine or establish clinician/real-patient readiness.
+ 
+-The opt-in local authoring build opens one patient/encounter workspace. `usePatientEvidenceState.ts` owns the shared bounded snapshot, verifies scope and disabled execution, and rejects stale refresh results. `PatientWorkspace.tsx` keeps the viewer/editor mounted and coordinates exact source handoff, guarded navigation, comparison and handover.
++Production protected execution stays disabled. No merge, deployment, external hosting or execution activation is part of this milestone. Source entry is restricted to the existing opt-in IPv4-loopback synthetic authoring gateway. There is no renal, infection, respiratory-management or other new module implementation here.
+ 
+-`ComprehensiveDemo.tsx` reuses the existing flowsheet, summary, source inspector, history and retained-result examples. `EvidenceEntryWorkspace.tsx` reuses guided forms, strict source validation, immutable append, exact lookup and explicit same-revision retry. `ReassessmentComparison.tsx` and the accepted C1 retained-reference decoder are unchanged. `HandoverReview.tsx` retains selected exact source bytes, repository and cutoff and marks unconfirmed historical selections; it does not substitute successors or save/send a handover.
++## Complete bounded workflow
+ 
+-Recorded assertions, authored assessments and retained derived examples stay labelled separately. Missing/unknown source context is not confirmation. A transcription correction does not establish a new measurement, physiological improvement or treatment effect.
++1. **Patient and evidence.** One verified patient/encounter snapshot supplies all views. The flowsheet retains pressure/MAP, CO/CI, rhythm, ABG, echo, infusions, fluid intervals and perfusion. All 15 evidence families remain browsable, with empty/missing families explicitly disclosed. Search uses source spelling/times, specimen and parameter context. HPI is optional.
++2. **Exact inspection and history.** Inspect raw values, units, method, quality, acquisition/sample/study context, uncertainty, digest and ingestion. Revision history now shows each retained recorded result, source time, status and quality alongside its exact revision and complete disclosure. No conversion, averaging, preferred measurement, time substitution or physiological inference is added.
++3. **Source entry or correction.** Six guided source areas plus clinician-authored reassessment reuse the existing strict source model; complete-source entry retains all-family access. Corrections require the exact predecessor/digest and a reason; the source time/context is retained unless explicitly edited. Review and explicit confirmation precede append. Original evidence and receipts are immutable.
++4. **Confirmed-save continuation.** Find the saved record or add that exact revision to handover without re-searching manually. Both actions require the refreshed snapshot to confirm kind/ID/revision/digest; missing/mismatched confirmation withholds the action rather than substituting a successor. A failed/unconfirmed refresh blocks these actions. Start a new reassessment opens a blank assessment with no copied selections/findings; actor identity remains user-entered.
++5. **Authored reassessment and comparison.** Baseline, intervention and follow-up are explicit exact references. Recorded findings, unconfirmed possibilities, confirmation gaps and recorded review plans remain separate. A new note does not revise an earlier note. Compare Note A/B explicitly, expand their authored text/caveats, and optionally add either exact selected note to handover. Accepted tuple-identity and duplicate-member protections remain unchanged.
++6. **Handover.** Review source evidence and authored notes separately. Add/remove exact selections, then explicitly save locally. Reload can restore only verified exact pins from the current bounded API snapshot; unavailable/historical pins remain visible without successor substitution. Unsaved changes, storage errors and cross-tab conflicts remain explicit. A selected historical item is not presented as current.
+ 
+-## Affected files
++Every workflow step has a short purpose and next-action guide. The full journey instructions are expandable. Navigation, source refresh/handoff and the finder remain guarded while an entry is unsaved, reviewed or uncertain. Keyboard focus and readable narrow-layout behavior are checked as one journey, not separately certified for every device.
+ 
+-- `frontend/src/App.tsx`: selects the consolidated workspace only for the existing loopback-only authoring mode.
+-- `frontend/src/demo/usePatientEvidenceState.ts`: shared scope/gate/refresh boundary.
+-- `frontend/src/demo/PatientWorkspace.tsx`: workflow shell and exact handoffs.
+-- `frontend/src/demo/ComprehensiveDemo.tsx`: optional embedded/shared mode and inspector actions; standalone defaults remain.
+-- `frontend/src/demo/EvidenceEntryWorkspace.tsx`: shared snapshot, exact handoff, mounted-draft guard and stale-history rejection.
+-- `frontend/src/demo/HandoverReview.tsx`: read-only session selections and exact retained references.
+-- `frontend/src/demo/evidenceEntry.css`: responsive shell and comparison selectors.
+-- `frontend/tests/patientWorkspace.test.tsx`: integration acceptance cases.
+-- `tools/run_evidence_entry.py`: local launcher description.
+-- `.github/workflows/ci.yml`: bounded-concurrency frontend suite and authoring build/log; no execution or deployment job.
++## Recovery and clinical limits
+ 
+-## Acceptance cases and evidence reuse
++A lost/malformed/unconfirmed source-save response retains the original draft/revision. Recovery uses exact lookup; absence is not rollback proof. Only an explicit retry reuses that same reviewed identity. No automatic replacement or retry, clinical execution, diagnosis or treatment advice is introduced.
+ 
+-Fourteen new integration cases cover shared loading; exact predecessor handoff; draft retention; committed/absent/failed recovery without automatic retry; gate and patient/encounter mismatch; historical handover selection; stale history/handoff rejection; correction-to-new-note comparison/handover; disappeared-note disclosure; and confirmed save with failed refresh. Existing comparison/C1, guided entry, transport and full-fixture suites remain in the frontend suite. Focused authoring/gateway/storage tests cover unchanged real API boundaries.
++Only **handover selections** have bounded browser-local storage. This is not a signed, sent, scheduled or clinically approved handover. The format stores exact references/digests/cutoffs/ingestion, not fact payloads, narratives or tokens; at most32 pins, scoped to repository/patient/encounter. Save requires storage readback. Cross-tab conflict checking is best-effort, not a transactional lock. See SYNTHETIC-LOCAL-HANDOVER.md.
+ 
+-Earlier Director acceptances remain evidence of their original source and captured scope, not of this candidate: R1/F1/F2 on `008034e`; C1 on `db56f7e`; local update evidence `32fe43410b4a5061ce8649094e2edd6cda55b11c`; and previous Docker/lifecycle scopes. The accepted reference database is copied for an isolated normal-flow browser exercise, leaving the original workspace unchanged. New candidate validation is reported separately.
++General durable recovery of clinical drafts or uncertain commands after browser reload/closure remains deferred. Clearing browser data or changing browser/profile/origin can lose the saved view. These limitations must not be represented as complete clinical durability.
+ 
+-## Remaining integration boundaries
++## Reused implementation
+ 
+-- Obtain hosted CI for the exact chosen candidate/tree when separately authorized; PR #23's old CI does not cover this source. Local checks use Node 24.12.0/npm 11.6.2; hosted pins remain Node 22.13.0.
+-- Independent review and an uncoached new-visitor workflow test remain. Implementation-operated desktop/narrow captures are not independent usability or accessibility certification.
+-- Save uncertainty/failure paths have integration/API coverage; the new normal-flow browser exercise is not live fault injection or a complete network trace.
+-- Drafts, comparison and handover selections are in memory. Durable recovery across reload/closure remains deferred; unresolved pending saves must use the existing exact recovery path before leaving.
+-- Handover is review-only, with no durable handover, recipient, sign-off, scheduling or transmission workflow.
+-- Container acceptance remains attached to its previous source; no new container build is claimed here. No renal, infection, respiratory or other module integration is included.
++- Shared scope/gate/refresh boundary: usePatientEvidenceState.ts.
++- Workflow routing, exact handoffs and guidance: PatientWorkspace.tsx.
++- Evidence/flowsheet/summary/source/history: ComprehensiveDemo.tsx and existing evidence presentation/context components.
++- Strict entry, confirmation and exact recovery: EvidenceEntryWorkspace.tsx and EvidenceEntryClient.
++- Guided fields: GuidedEvidenceForm.tsx and guidedEvidence.ts.
++- Exact comparison: ReassessmentComparison.tsx, evidenceIdentity.ts and retainedReassessmentReference.ts.
++- Exact local selection storage/display: localHandover.ts, useLocalHandover.ts and HandoverReview.tsx.
+ 
+-Production protected execution remains disabled. This is a synthetic local prototype, not clinical readiness or authorization to merge, deploy or host.
++The milestone changes presentation and integration only. Backend, schemas, policies, migrations, dependencies, fixture authoring and production configuration remain unchanged.
++
++## Combined acceptance and validation plan
++
++| Area | Required evidence |
++| --- | --- |
++| Entry/inspection | Discover and inspect pressure, CO, rhythm, infusions, gases, echo and perfusion; unknown quality/context and distinct source times stay visible. |
++| Source/history | Exact source amendment retains predecessor/context; original and successor values remain readable in bounded history. |
++| Reassessment/comparison | Separate original/new notes retain different exact revisions; no inherited or generated clinical conclusion. Add a selected exact note to handover. |
++| Save/recovery | Confirmation before append; committed/absent/failed lookup paths preserve the exact draft and explicit retry; gate/scope/stale-response guards remain. |
++| Handover | Exact selection, explicit local save, reload restoration, unavailable reference, storage failure and cross-tab conflict checks. |
++| Navigation | Purpose/next step is clear; guarded drafts stay mounted; desktop/narrow/keyboard journey has no blocked required action or lost pending identity. |
++| Candidate | One commit/tree; full frontend, typecheck/default/authoring builds; hosted validation for this exact candidate when available. Existing PR23 CI is not evidence for downstream source. |
++| Independent review | One combined evidence index mapping final-source checks and reuse; Director records verdict and explicit remaining limits. |
++
++Integration regressions cover the existing lifecycle plus new confirmed-save actions, stale-digest withholding, unconfirmed-refresh blocking, blank authored reassessment, comparison-to-handover and a CO-based correction/history/note/comparison/saved-handover journey. Default test timeout and assertions are not relaxed.
++
++Use one isolated normal-flow browser-to-real-API journey with pressure/CO/infusion context and a disposable synthetic database. Preserve the earlier5193 workspace. Record original/final database correspondence, exact new records and receipts, source/build identity and screenshots/DOM with their viewport limits. Failure injection remains attributed to integration/API tests unless separately exercised live. No second ABG-only walkthrough or automatic repeat suite is required solely for publication.
++
++## Evidence reuse and review boundaries
++
++Prior C1/R1/F1/F2, code, Docker and lifecycle verdicts retain their exact source/scope. Accepted two-selection evidence1225b2e and three-selection evidence86aee664 establish their captured-display correspondence; they do not independently authenticate browser storage, API loading, database preservation or live gates. Separate8c7fedc/dac9fa19 timeout evidence retains its own663/17-test/typecheck attribution.
++
++The final milestone report must distinguish fresh final-source execution from reused evidence, implementation-operated UI captures from independent usability, and actual database/API observations from DOM assertions. Do not relabel older timeout failures as proven environmental. New hosted CI must identify its actual checkout/tree. A successful local or hosted test does not imply clinical validation.
++
++Uncoached clinician/new-visitor usability and independent Director acceptance cannot be self-certified by implementation-operated checks. Real-patient use still requires its separate identity/access/audit/storage/backup/recovery, intended-use/policy, clinical validation and governance work. No broad clinical-readiness claim follows from this milestone.
+diff --git a/frontend/src/demo/ComprehensiveDemo.tsx b/frontend/src/demo/ComprehensiveDemo.tsx
+index b3b9f10..8081639 100644
+--- a/frontend/src/demo/ComprehensiveDemo.tsx
++++ b/frontend/src/demo/ComprehensiveDemo.tsx
+@@ -100,5 +100,5 @@ export function ComprehensiveDemo({client,config,shared,embedded=false,onCorrect
+     </main></div>
+   </div>;
+   function inspector(){return <aside className="demo-inspector" aria-label="Selected source evidence" tabIndex={-1} ref={sourceInspector}>{selected?<><div className="demo-section-title"><span className="demo-overline">SOURCE INSPECTOR</span><button className="demo-close" onClick={()=>{detailGeneration.current++;setSelected(undefined);setHistory(undefined);setHistoryBusy(false);if(sourceTrigger.current?.isConnected)sourceTrigger.current.focus();}}>Close source</button></div><h2>{title(selected)}</h2><p className="demo-inspector-value">{value(selected).text} <small>{value(selected).unit}</small></p><p><code>{selected.fact.id} / {selected.fact.revision}</code></p><p className="demo-card-method">{method(selected)}</p><dl className="demo-source-summary"><dt>Source time</dt><dd>{sourceTime(selected)}</dd><dt>Recorded quality</dt><dd>{quality(selected)}</dd><dt>Source unit mapping</dt><dd>{sourceUnitMappings(selected).length?sourceUnitMappings(selected).map(mapping=><div key={mapping.label}>{mapping.label}: {mapping.status} · {mapping.unit}</div>):'No quantity recorded'}</dd><dt>Placement</dt><dd>{words(selected.inclusion)}</dd><dt>Source</dt><dd>{String(record(record(selected.fact.provenance).source).namespace??'Not recorded')}</dd></dl>{onCorrect&&<button onClick={()=>onCorrect(selected)}>Correct this exact source</button>}{onHandover&&<button onClick={()=>onHandover(selected)}>Add exact source to handover</button>}<MeasurementContext item={selected}/><SourceChartDetails item={selected}/><AssessmentContext item={selected} items={items} onInspect={inspect}/>{selected.fact.kind==='circulatory_vasoactive'&&<InfusionDetails item={selected} items={items}/>}
+-{selected.fact.kind==='circulatory_oxygen'&&<section aria-label="Blood gas sample context"><h3>Blood gas sample context</h3><dl className="demo-source-summary">{bloodGasSummary(selected).map(([label,text])=><div key={label}><dt>{label}</dt><dd>{text}</dd></div>)}</dl><RecordedDisclosure label="Sample-time oxygen and ventilation settings" value={selected.fact.blood_gas_context??'Not recorded; current settings are not substituted.'}/></section>}{selected.fact.kind==='circulatory_echo'&&<section aria-label="Echo study context"><h3>Echo study context</h3><p>Study: {String(record(selected.fact.study).raw_display??'Not recorded')} · Report: {String(record(selected.fact.report).raw_display??'Not recorded')} · Revision: {String(selected.fact.report_revision??'Not recorded')}</p><p>Recorded production tag: {words(selected.fact.production)}. Echo estimates remain separate from invasive pressure measurements. No PH diagnosis or PAH subtype is inferred.</p>{record(selected.fact.result).result_type==='qualitative'&&<p>Qualitative echo findings are source-report assertions, not directly measured diagnoses. The recorded production tag is preserved as supplied.</p>}<RecordedDisclosure label="Source limitations and estimate basis" value={selected.fact.disclosures}/></section>}<RecordedDisclosure label="Full source, timing, quality and device context" value={selected.fact}/><RecordedDisclosure label="Exact digest and ingestion metadata" value={{expected_digest:selected.expected_digest,ingestion:selected.ingestion,contextual_for:selected.contextual_for,disclosures:selected.disclosures}}/><button className="demo-history-button" disabled={historyBusy} onClick={()=>void loadHistory()}>{historyBusy?'Reading revisions…':'Inspect revision history'}</button>{detailError&&<p role="alert">{detailError}</p>}{history&&<section aria-label="Bounded source revision history"><h3>{history.revisions.length} retained {history.revisions.length===1?'revision':'revisions'} at this cutoff</h3>{history.revisions.map(entry=><div className="demo-history-entry" key={entry.fact.revision}><strong>{entry.fact.id} / {entry.fact.revision}</strong><p>{typeof entry.fact.correction_reason==='string'?entry.fact.correction_reason:'Original recorded assertion'}</p><RecordedDisclosure label={'Complete revision '+entry.fact.revision} value={entry}/></div>)}</section>}</>:<><span className="demo-overline">SOURCE INSPECTOR</span><h2>Evidence within reach.</h2><p>Select any recorded item to inspect its exact source, quality, device context and revision history.</p><div className="demo-inspector-illustration" aria-hidden="true"><span>Source</span><span>Exact revision</span><span>Provenance</span></div><small>Values are shown as recorded. Units are not converted, and quality labels are source assertions.</small></>}</aside>;}
++{selected.fact.kind==='circulatory_oxygen'&&<section aria-label="Blood gas sample context"><h3>Blood gas sample context</h3><dl className="demo-source-summary">{bloodGasSummary(selected).map(([label,text])=><div key={label}><dt>{label}</dt><dd>{text}</dd></div>)}</dl><RecordedDisclosure label="Sample-time oxygen and ventilation settings" value={selected.fact.blood_gas_context??'Not recorded; current settings are not substituted.'}/></section>}{selected.fact.kind==='circulatory_echo'&&<section aria-label="Echo study context"><h3>Echo study context</h3><p>Study: {String(record(selected.fact.study).raw_display??'Not recorded')} · Report: {String(record(selected.fact.report).raw_display??'Not recorded')} · Revision: {String(selected.fact.report_revision??'Not recorded')}</p><p>Recorded production tag: {words(selected.fact.production)}. Echo estimates remain separate from invasive pressure measurements. No PH diagnosis or PAH subtype is inferred.</p>{record(selected.fact.result).result_type==='qualitative'&&<p>Qualitative echo findings are source-report assertions, not directly measured diagnoses. The recorded production tag is preserved as supplied.</p>}<RecordedDisclosure label="Source limitations and estimate basis" value={selected.fact.disclosures}/></section>}<RecordedDisclosure label="Full source, timing, quality and device context" value={selected.fact}/><RecordedDisclosure label="Exact digest and ingestion metadata" value={{expected_digest:selected.expected_digest,ingestion:selected.ingestion,contextual_for:selected.contextual_for,disclosures:selected.disclosures}}/><button className="demo-history-button" disabled={historyBusy} onClick={()=>void loadHistory()}>{historyBusy?'Reading revisions…':'Inspect revision history'}</button>{detailError&&<p role="alert">{detailError}</p>}{history&&<section aria-label="Bounded source revision history"><h3>{history.revisions.length} retained {history.revisions.length===1?'revision':'revisions'} at this cutoff</h3>{history.revisions.map(entry=><div className="demo-history-entry" key={entry.fact.revision}><strong>{entry.fact.id} / {entry.fact.revision}</strong><p>{typeof entry.fact.correction_reason==='string'?entry.fact.correction_reason:'Original recorded assertion'}</p><p>Recorded result: {value(entry).text} {value(entry).unit}</p><p>Source time: {sourceTime(entry)} · Status: {String(entry.fact.record_status)} · Source quality: {quality(entry)}</p><RecordedDisclosure label={'Complete revision '+entry.fact.revision} value={entry}/></div>)}</section>}</>:<><span className="demo-overline">SOURCE INSPECTOR</span><h2>Evidence within reach.</h2><p>Select any recorded item to inspect its exact source, quality, device context and revision history.</p><div className="demo-inspector-illustration" aria-hidden="true"><span>Source</span><span>Exact revision</span><span>Provenance</span></div><small>Values are shown as recorded. Units are not converted, and quality labels are source assertions.</small></>}</aside>;}
+ }
+diff --git a/frontend/src/demo/EvidenceEntryWorkspace.tsx b/frontend/src/demo/EvidenceEntryWorkspace.tsx
+index c9885a5..bbdcbfa 100644
+--- a/frontend/src/demo/EvidenceEntryWorkspace.tsx
++++ b/frontend/src/demo/EvidenceEntryWorkspace.tsx
+@@ -3,22 +3,22 @@ import {ReassessmentComparison} from './ReassessmentComparison';
+ import {evidenceKey} from './evidenceIdentity';
+ import {useCallback,useEffect,useRef,useState} from 'react';
+ import type {CirculatoryClient} from '../api/circulatoryClient';
+-import type {CirculatoryItem,CirculatoryState,CirculatoryHistory} from '../api/circulatoryTypes';
++import type {CirculatoryItem,CirculatoryState,CirculatoryHistory,ExactRef} from '../api/circulatoryTypes';
+ import {EvidenceEntryClient,type Draft,type Evidence} from '../api/evidenceEntryClient';
+ import {families,reference,RecordedDisclosure} from '../patient/CirculatoryEvidence';
+ import {title,value,sourceTime,record} from './evidencePresentation';
+ import {EvidenceDraftSummary} from './EvidenceDraftSummary';
+ import {GuidedEvidenceForm} from './GuidedEvidenceForm';
+-import {shortcutValue} from './guidedEvidence';
++import {shortcutValue,type GuidedFamily} from './guidedEvidence';
+ import './demo.css';
+ import './evidenceEntry.css';
+ type Phase='editing'|'review'|'saving'|'uncertain'|'absent'|'saved';
+ export interface SourceHandoff {token:number;item:CirculatoryItem;context:string}
+-export function EvidenceEntryWorkspace({client,entry,config,shared,handoff,onGuardChange}:{client:CirculatoryClient;entry:EvidenceEntryClient;config:{start:string;end:string};shared?:PatientEvidenceState;handoff?:SourceHandoff;onGuardChange?:(guarded:boolean)=>void}){
++export function EvidenceEntryWorkspace({client,entry,config,shared,handoff,onGuardChange,onSavedEvidence}:{client:CirculatoryClient;entry:EvidenceEntryClient;config:{start:string;end:string};shared?:PatientEvidenceState;handoff?:SourceHandoff;onGuardChange?:(guarded:boolean)=>void;onSavedEvidence?:(action:'find'|'handover',reference:ExactRef,digest:string)=>void}){
+   const [localState,setState]=useState<CirculatoryState>(),[selected,setSelected]=useState<CirculatoryItem>();
+   const [text,setText]=useState(''),[mode,setMode]=useState<'new'|'correct'|'withdraw'>('new');
+   const [actor,setActor]=useState(''),[reason,setReason]=useState('');
+-  const [editor,setEditor]=useState<'guided'|'source'>('guided');
++  const [editor,setEditor]=useState<'guided'|'source'>('guided'),[guidedFamily,setGuidedFamily]=useState<GuidedFamily>('pressure');
+   const [search,setSearch]=useState(''),[family,setFamily]=useState('all');
+   const [phase,setPhase]=useState<Phase>('editing'),[busy,setBusy]=useState(false),[error,setError]=useState('');
+   const [review,setReview]=useState<Evidence>(),[pending,setPending]=useState<Draft>(),[history,setHistory]=useState<CirculatoryHistory>();
+@@ -45,7 +45,7 @@ export function EvidenceEntryWorkspace({client,entry,config,shared,handoff,onGua
+   const proposedQuantity=record(record(review?.fact.result).quantity);
+   const proposedFinding=record(record(review?.fact.result).finding);
+   const locked=phase==='saving'||phase==='uncertain'||phase==='absent';
+-  function choose(item?:CirculatoryItem){if(locked||busy||!gateConfirmed)return;historyGeneration.current++;setDirty(false);setFormSession(n=>n+1);setSelected(item);setMode(item?'correct':'new');setEditor(item?'source':'guided');setText(item?JSON.stringify(item.fact,null,2):'');setReason('');setHistory(undefined);setReview(undefined);setPending(undefined);setPhase('editing');setError('');}
++  function choose(item?:CirculatoryItem){if(locked||busy||!gateConfirmed)return;historyGeneration.current++;setDirty(false);setFormSession(n=>n+1);setSelected(item);setMode(item?'correct':'new');setGuidedFamily('pressure');setEditor(item?'source':'guided');setText(item?JSON.stringify(item.fact,null,2):'');setReason('');setHistory(undefined);setReview(undefined);setPending(undefined);setPhase('editing');setError('');}
+   useEffect(()=>{
+     if(!handoff||handoff.token===handledHandoff.current||!state||!gateConfirmed)return;
+     handledHandoff.current=handoff.token;
+@@ -89,12 +89,12 @@ export function EvidenceEntryWorkspace({client,entry,config,shared,handoff,onGua
+     <section aria-label="Evidence draft"><h2>{mode==='new'?'New source entry':mode==='withdraw'?'Withdraw selected evidence':'Correct selected evidence'}</h2>
+     {selected&&<><p>Original retained: {selected.fact.kind} / {selected.fact.id} / {selected.fact.revision}</p><p>Original recorded value: {value(selected).text} {value(selected).unit} · {sourceTime(selected)}</p><p>Correction keeps the original observation time and context unless explicitly changed in the source record. It is not a new measurement or evidence of ongoing administration.</p><button disabled={busy||locked||!gateConfirmed} onClick={()=>void revisions()}>Load exact revision history</button><RecordedDisclosure label="Original source record" value={selected.fact}/>{history&&<RecordedDisclosure label={'History: '+history.revisions.length+' retained revisions'} value={history.revisions}/>}</>}
+     {phase==='editing'?<fieldset onChangeCapture={()=>setDirty(true)} disabled={busy||!gateConfirmed}><label>Actor name<input value={actor} onChange={e=>setActor(e.target.value)} disabled={busy}/></label>{selected&&<><label>Action<select value={mode} onChange={e=>setMode(e.target.value as 'correct'|'withdraw')} disabled={busy}><option value="correct">Append correction</option><option value="withdraw">Append withdrawal</option></select></label><label>Reason for correction or withdrawal<textarea value={reason} onChange={e=>setReason(e.target.value)} disabled={busy}/></label>{record(record(selected.fact.result).quantity).value!==undefined&&<label>Recorded numeric value (raw unit preserved)<input value={numeric} onChange={e=>editNumeric(e.target.value)} disabled={busy}/></label>}</>}
+-    {mode==='new'&&editor==='guided'?<><GuidedEvidenceForm key={formSession} actor={actor} items={state.assembly.snapshot.items} onDraft={fact=>{setText(JSON.stringify(fact,null,2));setEditor('source');setError('');}}/><button onClick={()=>{setText('');setEditor('source');}}>Advanced source entry</button></>:<><p>One authoritative source draft. The numeric shortcut and complete record editor update the same value.</p><details><summary>Edit complete source record (advanced)</summary><label>Complete source record (JSON)<textarea className="entry-json" value={text} onChange={e=>setText(e.target.value)} disabled={busy} spellCheck={false}/></label></details><p>Preserve exact Decimal strings, sample type, units, method, quality, timing and support references. Nothing is converted or inferred. For a new entry supply a new ID/revision, full binding and provenance; copied source assertions must be reviewed.</p><button disabled={busy} onClick={()=>void validate()}>Validate and review draft</button>{mode==='new'&&<button onClick={()=>{setText('');setEditor('guided');}}>Start a different guided record</button>}</>}{shared&&<button disabled={busy} onClick={()=>choose()}>Discard unsaved entry</button>}</fieldset>:<>
++    {mode==='new'&&editor==='guided'?<><GuidedEvidenceForm key={formSession} initialFamily={guidedFamily} actor={actor} items={state.assembly.snapshot.items} onDraft={fact=>{setText(JSON.stringify(fact,null,2));setEditor('source');setError('');}}/><button onClick={()=>{setText('');setEditor('source');}}>Advanced source entry</button></>:<><p>One authoritative source draft. The numeric shortcut and complete record editor update the same value.</p><details><summary>Edit complete source record (advanced)</summary><label>Complete source record (JSON)<textarea className="entry-json" value={text} onChange={e=>setText(e.target.value)} disabled={busy} spellCheck={false}/></label></details><p>Preserve exact Decimal strings, sample type, units, method, quality, timing and support references. Nothing is converted or inferred. For a new entry supply a new ID/revision, full binding and provenance; copied source assertions must be reviewed.</p><button disabled={busy} onClick={()=>void validate()}>Validate and review draft</button>{mode==='new'&&<button onClick={()=>{setText('');setEditor('guided');}}>Start a different guided record</button>}</>}{shared&&<button disabled={busy} onClick={()=>choose()}>Discard unsaved entry</button>}</fieldset>:<>
+     <h3>Review before append</h3><p>{families[review?.fact.kind??'']} · {review?.fact.id} / {review?.fact.revision}</p>{proposedQuantity.value!==undefined&&<p>Proposed recorded result: {String(proposedQuantity.value)} {String(record(proposedQuantity.unit).raw??'Unit not recorded')}</p>}{proposedFinding.raw_display!==undefined&&<p>Proposed source finding: {String(proposedFinding.raw_display)}</p>}<p>Proposed status: {String(review?.fact.record_status)}</p><p>Actor: {String(record(review?.fact.provenance).actor??'Not recorded')}</p><p>Reason: {String(review?.fact.correction_reason??'New source entry; no predecessor')}</p>{review&&<EvidenceDraftSummary fact={review.fact}/>}<p>Digest: {review?.expected_digest}</p><RecordedDisclosure label="Complete validated record and source caveats" value={review?.fact}/><p>Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.</p>
+     {phase==='review'&&<><button disabled={busy||!gateConfirmed} onClick={()=>void save()}>Confirm append to local database</button><button disabled={busy} onClick={()=>{setPhase('editing');setPending(undefined);setReview(undefined);}}>Edit draft</button><button disabled={busy} onClick={()=>{choose();void refresh().catch(()=>setError('Refresh failed.'));}}>Discard draft and reload</button></>}
+     {(phase==='uncertain'||phase==='absent')&&<><p>Original pending revision: {pending?.fact.id} / {pending?.fact.revision}</p><button disabled={busy} onClick={()=>void recover()}>Check exact saved revision</button>{phase==='absent'&&<><p>The exact revision is absent in this lookup. This is not proof that an earlier request rolled back. An explicit retry reuses this same reviewed draft and revision.</p><button disabled={busy||!gateConfirmed} onClick={()=>void save()}>Explicitly retry the same revision</button></>}</>}
+     {phase==='saving'&&<p role="status">Appending the exact reviewed revision…</p>}
+-    {phase==='saved'&&<><p role="status">Exact revision saved and confirmed. Ingestion sequence {review?.ingestion?.ingestion_sequence}.</p><button disabled={busy} onClick={()=>choose()}>Start another entry</button></>}
++    {phase==='saved'&&<><p role="status">Exact revision saved and confirmed. Ingestion sequence {review?.ingestion?.ingestion_sequence}.</p><section aria-label="Continue after saved evidence"><h3>Continue the patient workflow</h3><p>Inspect the saved record and its history, or add this exact revision to handover. A reassessment is a separate authored note; you must explicitly select its evidence and describe uncertainty.</p>{onSavedEvidence&&review&&<><button disabled={busy||!gateConfirmed} onClick={()=>onSavedEvidence('find',{kind:review.fact.kind,id:review.fact.id,version:review.fact.revision},review.expected_digest)}>Find saved record</button><button disabled={busy||!gateConfirmed} onClick={()=>onSavedEvidence('handover',{kind:review.fact.kind,id:review.fact.id,version:review.fact.revision},review.expected_digest)}>Add saved record to handover</button></>}<button disabled={busy||!gateConfirmed} onClick={()=>{choose();setGuidedFamily('reassessment');}}>Start a clinician-authored reassessment</button><button disabled={busy||!gateConfirmed} onClick={()=>choose()}>Start another entry</button></section></>}
+     </>}
+     <p>Pending drafts exist only in this page’s memory. Reloading or closing can lose them. Keep this page open while completion is unknown.</p></section></div></>}
+   </main>;
+diff --git a/frontend/src/demo/GuidedEvidenceForm.tsx b/frontend/src/demo/GuidedEvidenceForm.tsx
+index ba2293d..10da3ad 100644
+--- a/frontend/src/demo/GuidedEvidenceForm.tsx
++++ b/frontend/src/demo/GuidedEvidenceForm.tsx
+@@ -3,8 +3,8 @@ import {useState} from 'react';
+ import type {CirculatoryItem} from '../api/circulatoryTypes';
+ import {title,value,sourceTime,quality} from './evidencePresentation';
+ import {buildGuided,concepts,emptyFields,guidedFamilies,type Fields,type GuidedFamily} from './guidedEvidence';
+-export function GuidedEvidenceForm({actor,items,onDraft}:{actor:string;items:CirculatoryItem[];onDraft:(fact:CirculatoryItem['fact'])=>void}){
+- const [family,setFamily]=useState<GuidedFamily>('pressure'),[f,setFields]=useState<Fields>(emptyFields),[error,setError]=useState('');
++export function GuidedEvidenceForm({actor,items,onDraft,initialFamily='pressure'}:{actor:string;items:CirculatoryItem[];onDraft:(fact:CirculatoryItem['fact'])=>void;initialFamily?:GuidedFamily}){
++ const [family,setFamily]=useState<GuidedFamily>(initialFamily),[f,setFields]=useState<Fields>(emptyFields),[error,setError]=useState('');
+  const set=(key:string,value:string)=>setFields(old=>({...old,[key]:value}));
+  const input=(key:string,label:string)=><label key={key}>{label}<input value={f[key]??''} onChange={e=>set(key,e.target.value)}/></label>;
+  const area=(key:string,label:string)=><label key={key}>{label}<textarea value={f[key]??''} onChange={e=>set(key,e.target.value)}/></label>;
+diff --git a/frontend/src/demo/PatientWorkspace.tsx b/frontend/src/demo/PatientWorkspace.tsx
+index 5f30074..1b8db74 100644
+--- a/frontend/src/demo/PatientWorkspace.tsx
++++ b/frontend/src/demo/PatientWorkspace.tsx
+@@ -1,7 +1,7 @@
+ import {useLocalHandover} from './useLocalHandover';
+ import {useRef,useState} from 'react';
+ import type {CirculatoryClient} from '../api/circulatoryClient';
+-import type {CirculatoryItem} from '../api/circulatoryTypes';
++import type {CirculatoryItem,ExactRef} from '../api/circulatoryTypes';
+ import type {EvidenceEntryClient} from '../api/evidenceEntryClient';
+ import {usePatientEvidenceState} from './usePatientEvidenceState';
+ import {ComprehensiveDemo,type EvidenceSearchRequest} from './ComprehensiveDemo';
+@@ -17,15 +17,24 @@ export function PatientWorkspace({client,entry,config}:{client:CirculatoryClient
+  const [actionError,setActionError]=useState(''),[findQuery,setFindQuery]=useState(''),[searchRequest,setSearchRequest]=useState<EvidenceSearchRequest>();
+  const handover=useLocalHandover(shared.state),selections=handover.selections;
+  const snapshot=shared.state??shared.retainedState;
++ const stepHelp={evidence:'Start with the flowsheet or search by parameter, source time or source ID. Inspect a record to see its context and revision history; correct it only when the source needs an explicit amendment.',entry:'Record one source result/event, or append a reasoned correction. Validate, review, then confirm the append. Keep this page open while a save is uncertain; exact lookup comes before any explicit retry.',compare:'Select Note A and Note B explicitly. Compare their retained revisions, then expand the authored text and caveats. A later note does not replace an earlier note or establish improvement.',handover:'Review the exact records and authored notes selected for handover. Add or remove cards, then Save handover locally. After reload, Open saved handover restores the saved selection in this browser.'} as const;
+  const token=useRef(0),heading=useRef<HTMLHeadingElement>(null);
+  function navigate(next:keyof typeof steps){if(guarded&&next!==view)return;setView(next);heading.current?.focus();}
+  function findEvidence(){if(guarded||!shared.state)return;setSearchRequest({token:++token.current,query:findQuery});navigate('evidence');}
+  function correct(item:CirculatoryItem){if(guarded||!shared.state)return;setHandoff({token:++token.current,item,context:shared.state.state_context});navigate('entry');}
+  function add(item:CirculatoryItem){if(!shared.state)return;const exact=shared.state.assembly.snapshot.items.find(i=>evidenceKey(i.fact)===evidenceKey(item.fact)&&i.expected_digest===item.expected_digest);if(!exact){setActionError('The source selection is stale. Inspect it again before adding it to handover; no successor was substituted.');return;}setActionError('');const repository=shared.state.assembly.request.scope.repository_cutoff.repository_id;if(!selections.some(s=>s.repository===repository&&evidenceKey(s.item.fact)===evidenceKey(item.fact)))handover.change([...selections,{item:exact,repository,cutoff:shared.state.assembly.request.scope.repository_cutoff.fact_watermark}]);}
+- return <div className="patient-workspace"><a href="#patient-workflow">Skip to patient workflow</a><header><h1 ref={heading} tabIndex={-1}>Synthetic ICU patient workspace</h1><p>Patient {config.patient} · Encounter {config.encounter}</p><p><strong>{shared.state?'Clinical execution disabled.':'Execution gate not confirmed — new writes blocked.'}</strong> Local synthetic evidence only; no treatment advice.</p><form role="search" aria-label="Find patient evidence" onSubmit={event=>{event.preventDefault();findEvidence();}}><label>Find recorded evidence<input type="search" value={findQuery} onChange={event=>setFindQuery(event.target.value)} placeholder="ABG 09:45, cardiac output, RVSP…" disabled={guarded||!shared.state}/></label><button disabled={guarded||!shared.state} type="submit">Find evidence</button></form>{handover.hasSaved&&!handover.dirty&&view!=='handover'&&<p><button disabled={guarded||!handover.ready} onClick={()=>navigate('handover')}>Open saved handover</button> Saved on this browser.</p>}<p>Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.</p><p>Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.</p><nav aria-label="Patient workflow">{Object.entries(steps).map(([key,label])=><button key={key} aria-current={view===key?'page':undefined} disabled={guarded&&view!==key} onClick={()=>navigate(key as keyof typeof steps)}>{label}</button>)}</nav>{guarded&&<p role="status">Finish, recover or explicitly discard the entry before leaving this step. The editor and exact pending revision remain mounted. Do not reload or close while completion is unknown.</p>}</header>
++ function savedEvidence(action:'find'|'handover',reference:ExactRef,digest:string){
++  if(guarded||!shared.state)return;
++  const matches=shared.state.assembly.snapshot.items.filter(i=>i.fact.kind===reference.kind&&i.fact.id===reference.id&&i.fact.revision===reference.version&&i.expected_digest===digest);
++  if(matches.length!==1){setActionError('The exact saved revision is not confirmed in the refreshed snapshot. No successor was substituted. Inspect source history or refresh the patient evidence.');return;}
++  setActionError('');
++  if(action==='handover'){add(matches[0]);navigate('handover');}
++  else{setFindQuery(reference.id);setSearchRequest({token:++token.current,query:reference.id});navigate('evidence');}
++ }
++ return <div className="patient-workspace"><a href="#patient-workflow">Skip to patient workflow</a><header><h1 ref={heading} tabIndex={-1}>Synthetic ICU patient workspace</h1><p>Patient {config.patient} · Encounter {config.encounter}</p><p><strong>{shared.state?'Clinical execution disabled.':'Execution gate not confirmed — new writes blocked.'}</strong> Local synthetic evidence only; no treatment advice.</p><form role="search" aria-label="Find patient evidence" onSubmit={event=>{event.preventDefault();findEvidence();}}><label>Find recorded evidence<input type="search" value={findQuery} onChange={event=>setFindQuery(event.target.value)} placeholder="ABG 09:45, cardiac output, RVSP…" disabled={guarded||!shared.state}/></label><button disabled={guarded||!shared.state} type="submit">Find evidence</button></form>{handover.hasSaved&&!handover.dirty&&view!=='handover'&&<p><button disabled={guarded||!handover.ready} onClick={()=>navigate('handover')}>Open saved handover</button> Saved on this browser.</p>}<p>Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.</p><p>Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.</p><nav aria-label="Patient workflow">{Object.entries(steps).map(([key,label])=><button key={key} aria-current={view===key?'page':undefined} disabled={guarded&&view!==key} onClick={()=>navigate(key as keyof typeof steps)}>{label}</button>)}</nav><section className="workflow-guide" aria-label="Current workflow step"><h2>{steps[view]}</h2><p>{stepHelp[view]}</p><details><summary>How to complete this synthetic patient workflow</summary><ol><li>Browse pressures, flow, rhythm, gases, echo, infusions and perfusion together. Source times and gaps remain explicit.</li><li>Inspect the exact source and revision history. A correction appends a successor; it never overwrites the original.</li><li>Author a separate reassessment with exact baseline, intervention and follow-up selections. Keep recorded findings, possibilities and gaps distinct.</li><li>Compare two exact notes and their original references. Add the records/notes needed for handover.</li><li>Review and explicitly save the handover selection locally; reload and open the saved view to recover it.</li></ol><p>This workspace is for synthetic workflow testing. A saved selection is not a clinical handover sign-off. Pending clinical drafts and commands are not durably recovered after reload.</p></details></section>{guarded&&<p role="status">Finish, recover or explicitly discard the entry before leaving this step. The editor and exact pending revision remain mounted. Do not reload or close while completion is unknown.</p>}</header>
+  {actionError&&<p role="alert">{actionError}</p>}{shared.error&&<p role="alert">{shared.error}</p>}{!shared.state&&<button disabled={shared.loading||guarded} onClick={()=>void shared.refresh().catch(()=>{})}>Refresh patient evidence</button>}
+  <div id="patient-workflow" tabIndex={-1}><div hidden={view!=='evidence'}><ComprehensiveDemo client={client} config={config} shared={shared} embedded searchRequest={searchRequest} onCorrect={correct} onHandover={add}/></div>
+- <div hidden={view!=='entry'}><EvidenceEntryWorkspace client={client} entry={entry} config={config} shared={shared} handoff={handoff} onGuardChange={setGuarded}/></div>
+- {snapshot&&<><div hidden={view!=='compare'||!shared.state}><ReassessmentComparison state={snapshot}/><p>Choose two exact notes. Original references remain unchanged when a measurement is corrected.</p></div><div hidden={view!=='handover'||!shared.state}><HandoverReview state={snapshot} selections={selections} onRemove={key=>handover.change(selections.filter(s=>s.repository+evidenceKey(s.item.fact)!==key))} persistence={handover}/></div></>}
++ <div hidden={view!=='entry'}><EvidenceEntryWorkspace client={client} entry={entry} config={config} shared={shared} handoff={handoff} onGuardChange={setGuarded} onSavedEvidence={savedEvidence}/></div>
++ {snapshot&&<><div hidden={view!=='compare'||!shared.state}><ReassessmentComparison state={snapshot} onHandover={item=>{if(!guarded&&shared.state){add(item);navigate('handover');}}}/><p>Choose two exact notes. Original references remain unchanged when a measurement is corrected.</p></div><div hidden={view!=='handover'||!shared.state}><HandoverReview state={snapshot} selections={selections} onRemove={key=>handover.change(selections.filter(s=>s.repository+evidenceKey(s.item.fact)!==key))} persistence={handover}/></div></>}
+  </div></div>;
+ }
+diff --git a/frontend/src/demo/ReassessmentComparison.tsx b/frontend/src/demo/ReassessmentComparison.tsx
+index 6f56886..0c0768f 100644
+--- a/frontend/src/demo/ReassessmentComparison.tsx
++++ b/frontend/src/demo/ReassessmentComparison.tsx
+@@ -19,7 +19,7 @@ export function reassessmentReference(item:CirculatoryItem,stage:typeof stages[n
+  const matched=associations.filter(v=>{const a=record(v),exact=record(a.exact),scope=record(a.scope);return a.role==='context'&&a.status==='resolved'&&exact.kind===ref.kind&&exact.id===ref.id&&exact.version===ref.version&&scope.patient_id===item.fact.binding.target.patient_id&&scope.encounter_id===item.fact.binding.target.encounter_id;});
+  return matched.length===1?ref:undefined;
+ }
+-export function ReassessmentComparison({state}:{state:CirculatoryState}){
++export function ReassessmentComparison({state,onHandover}:{state:CirculatoryState;onHandover?:(item:CirculatoryItem)=>void}){
+  const [left,setLeft]=useState(''),[right,setRight]=useState('');
+  const scope=state.assembly.request.scope;
+  const notes=state.assembly.snapshot.items.filter(i=>isReassessment(i)&&i.fact.binding.target.patient_id===scope.patient_id&&i.fact.binding.target.encounter_id===scope.encounter_id);
+@@ -34,6 +34,6 @@ export function ReassessmentComparison({state}:{state:CirculatoryState}){
+  <tr><th scope="row">Actor / recorded status</th>{selected.map((note,n)=><td key={n}>{note?<>{String(record(note.fact.provenance).actor??'Actor not recorded')}<br/>{String(note.fact.record_status)}</>:'Not available'}</td>)}</tr>
+  {stages.map(stage=><tr key={stage}><th scope="row">{labels[stage]}</th>{selected.map((note,n)=>{const ref=note&&reassessmentReference(note,stage);return <td key={n}>{!note?'Not available':ref?<>{ref.kind}<br/>{ref.id}<br/><strong>Revision: {ref.version}</strong></>:<strong>Reference missing, ambiguous or inconsistent — inspect the complete note</strong>}</td>;})}</tr>)}
+  </tbody></table></div><p>References are shown exactly as retained by each note, even if a successor exists. Referenced measurement values are not reloaded or substituted here. Use source history to inspect measurements and their uncertainty.</p>
+- <div className="note-comparison-details">{selected.map((note,n)=>note&&<div key={n}><h3>Note {n===0?'A':'B'} — authored text and caveats</h3><RecordedDisclosure label={'Note '+(n===0?'A':'B')+' full authored narrative'} value={note.fact.description}/><RecordedDisclosure label={'Note '+(n===0?'A':'B')+' uncertainty and provenance'} value={{uncertainty:note.fact.uncertainty,provenance:note.fact.provenance}}/><RecordedDisclosure label={'Note '+(n===0?'A':'B')+' complete retained record'} value={note.fact}/></div>)}</div>
++ <div className="note-comparison-details">{selected.map((note,n)=>note&&<div key={n}><h3>Note {n===0?'A':'B'} — authored text and caveats</h3>{onHandover&&<button onClick={()=>onHandover(note)}>Add Note {n===0?'A':'B'} to handover</button>}<RecordedDisclosure label={'Note '+(n===0?'A':'B')+' full authored narrative'} value={note.fact.description}/><RecordedDisclosure label={'Note '+(n===0?'A':'B')+' uncertainty and provenance'} value={{uncertainty:note.fact.uncertainty,provenance:note.fact.provenance}}/><RecordedDisclosure label={'Note '+(n===0?'A':'B')+' complete retained record'} value={note.fact}/></div>)}</div>
+  </section>;
+ }
+diff --git a/frontend/src/demo/evidenceEntry.css b/frontend/src/demo/evidenceEntry.css
+index d568ef9..93942e1 100644
+--- a/frontend/src/demo/evidenceEntry.css
++++ b/frontend/src/demo/evidenceEntry.css
+@@ -14,3 +14,5 @@
+ 
+ .patient-workspace [aria-label="Find patient evidence"]{display:flex;align-items:end;gap:10px;flex-wrap:wrap;margin-top:16px}.patient-workspace [aria-label="Find patient evidence"] label{flex:1 1 240px;min-width:0;font-weight:600}.patient-workspace [aria-label="Find patient evidence"] input{display:block;width:100%;min-width:0;box-sizing:border-box;margin-top:6px;padding:12px;border:1px solid #9cb5b8;border-radius:6px;font:inherit}.patient-workspace [aria-label="Find patient evidence"] button{min-height:44px}
+ .patient-workspace [aria-label="Evidence library results"] .demo-card-time{font-size:13px;font-weight:600;color:#173e45}
++
++.workflow-guide{border-left:4px solid #267277;background:#edf5f4;padding:12px 16px;margin:16px 0}.workflow-guide h2{font-size:1.1rem;margin:0 0 6px}.workflow-guide p{margin:6px 0}.workflow-guide summary{cursor:pointer;padding:8px 0}.workflow-guide li{margin:8px 0}.patient-workspace [aria-label="Continue after saved evidence"]{border:1px solid #b6c9cc;padding:12px;margin:12px 0}.patient-workspace [aria-label="Continue after saved evidence"] button{min-height:44px}.patient-workspace :focus-visible{outline:3px solid #267277;outline-offset:3px}
+diff --git a/frontend/src/demo/evidencePresentation.ts b/frontend/src/demo/evidencePresentation.ts
+index 132a86d..109eccf 100644
+--- a/frontend/src/demo/evidencePresentation.ts
++++ b/frontend/src/demo/evidencePresentation.ts
+@@ -4,15 +4,15 @@ export const record=(v:unknown):Record<string,unknown>=>v!==null&&typeof v==='ob
+ export const words=(v:unknown)=>typeof v==='string'?v.replaceAll('_',' '):'';
+ const concepts:Record<string,string>={co:'Cardiac output',ci:'Cardiac index',systemic_systolic:'Systolic blood pressure',systemic_diastolic:'Diastolic blood pressure',heart_rate:'Heart rate',systemic_mean:'Mean arterial pressure',lv_ef:'LV ejection fraction',lvot_vti:'LVOT VTI',tapse:'TAPSE',cvp:'Central venous pressure',pawp:'Pulmonary artery wedge pressure',gedv:'Global end-diastolic volume',svv:'Stroke volume variation',qtc:'QTc',svo2:'Mixed venous oxygen saturation',capillary_refill:'Capillary refill',ph:'pH',paco2:'PaCO₂',pao2:'PaO₂',bicarbonate:'Bicarbonate',base_excess:'Base excess',sao2:'Arterial oxygen saturation',hemoglobin:'Haemoglobin',estimated_rvsp:'Estimated RVSP',estimated_pasp:'Estimated PASP',tr_measurement:'TR peak velocity',rv_dimension:'RV basal dimension',rv_function:'RV function',septal_configuration:'Septal configuration',valve_finding:'Valve finding',pericardial_effusion:'Pericardial effusion',structural_finding:'Structural finding',hpi:'Source HPI (optional)',rhythm:'Source rhythm',configuration:'Monitor configuration',plr:'Passive leg raise episode',position_change:'Position change',arterial_pressure:'Arterial pressure signal'};
+ export function title(item:CirculatoryItem){const f=item.fact;const entry=chartEntry(item);if(entry)return entry.label;if(f.id==='m7-PH')return 'Pulmonary hypertension report finding';return concepts[String(f.concept??f.event_type??f.test??f.signal)]??(f.kind==='circulatory_lactate'?'Lactate':f.kind==='circulatory_vasoactive'?'Vasoactive event':words(f.concept??f.event_type??f.test??f.signal)||'Recorded evidence');}
+-export function value(item:CirculatoryItem){
++export function value(item:Pick<CirculatoryItem,'fact'>){
+   const f=item.fact,result=record(f.result),quantity=record(result.quantity??(f.kind==='circulatory_event'?f.recorded_amount:undefined)),unit=record(quantity.unit);
+   if(typeof quantity.value==='string')return {text:quantity.value,unit:typeof unit.raw==='string'?unit.raw:''};
+   const finding=record(result.finding??f.finding??f.description),drug=record(f.drug);
+   return {text:typeof finding.raw_display==='string'?finding.raw_display:typeof drug.canonical_id==='string'?drug.canonical_id:words(result.reason??result.status??f.event_type??f.availability)||'Recorded source',unit:words(record(f.action).event_type)};
+ }
+-const sourceQuality=(item:CirculatoryItem)=>record(record(item.fact.acquisition).quality??item.fact.quality);
+-export function quality(item:CirculatoryItem){return words(sourceQuality(item).status)||'not recorded';}
+-export function sourceTime(item:CirculatoryItem){
++const sourceQuality=(item:Pick<CirculatoryItem,'fact'>)=>record(record(item.fact.acquisition).quality??item.fact.quality);
++export function quality(item:Pick<CirculatoryItem,'fact'>){return words(sourceQuality(item).status)||'not recorded';}
++export function sourceTime(item:Pick<CirculatoryItem,'fact'>){
+   const time=record(item.fact.collected??item.fact.occurred);
+   return typeof time.source_timestamp==='string'?time.source_timestamp:typeof record(time.recorded).value==='string'?String(record(time.recorded).value):'Time not established';
+ }
+diff --git a/frontend/tests/patientWorkspace.test.tsx b/frontend/tests/patientWorkspace.test.tsx
+index ad75d8d..85f4492 100644
+--- a/frontend/tests/patientWorkspace.test.tsx
++++ b/frontend/tests/patientWorkspace.test.tsx
+@@ -2,18 +2,18 @@ import {afterEach,expect,it,vi} from 'vitest';
+ import {cleanup,fireEvent,render,screen,within,waitFor,act} from '@testing-library/react';
+ import fixture from './fixtures/icuFlowsheet.json';
+ import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
+-import type {CirculatoryItem,CirculatoryState} from '../src/api/circulatoryTypes';
++import type {CirculatoryItem,CirculatoryState,CirculatoryHistory} from '../src/api/circulatoryTypes';
+ import type {CirculatoryClient} from '../src/api/circulatoryClient';
+ import {EvidenceEntryClient,type Draft,type Evidence} from '../src/api/evidenceEntryClient';
+ import {PatientWorkspace} from '../src/demo/PatientWorkspace';
+ import {EvidenceEntryWorkspace} from '../src/demo/EvidenceEntryWorkspace';
+ import {buildGuided} from '../src/demo/guidedEvidence';
+ import {evidenceKey} from '../src/demo/evidenceIdentity';
+-afterEach(cleanup);
++afterEach(()=>{cleanup();window.localStorage.clear();});
+ const config={patient:'synthetic-p1',encounter:'synthetic-e1',start:'2026-10-08T08:00:00+00:00',end:'2026-10-08T10:00:00+00:00',releasedExample:'00000000-0000-4000-8000-00000000c901',withheldExample:'00000000-0000-4000-8000-00000000c902',hosted:true};
+ function setup(change?:(s:CirculatoryState)=>void){
+  let state=decodeCirculatoryState({...structuredClone(fixture),execution_enabled:false});state.assembly.snapshot.items=state.assembly.snapshot.items.filter(i=>['m7-CO','fs-PH-30','fs-PH-60','fs-D-CHANGE'].includes(i.fact.id));change?.(state);
+- const client={circulatoryState:vi.fn(async()=>({data:state})),circulatoryHistory:vi.fn(async()=>({data:{revisions:[]}})),circulatoryLookup:vi.fn(),circulatoryPrepare:vi.fn(),circulatoryExecute:vi.fn(),circulatoryReconcile:vi.fn()};
++ const client={circulatoryState:vi.fn(async()=>({data:state})),circulatoryHistory:vi.fn(async()=>({data:{revisions:[] as CirculatoryHistory['revisions']}})),circulatoryLookup:vi.fn(),circulatoryPrepare:vi.fn(),circulatoryExecute:vi.fn(),circulatoryReconcile:vi.fn()};
+  const entry={validate:vi.fn(async(body:Draft)=>({repository_id:body.repository_id,fact:body.fact,expected_digest:'a'.repeat(64),canonical_fact:JSON.stringify(body.fact),ingestion:null} as Evidence)),save:vi.fn(async(body:Draft)=>{const base=state.assembly.snapshot.items[0];const item={...base,fact:body.fact,expected_digest:'a'.repeat(64),ingestion:{...base.ingestion,ingestion_sequence:state.assembly.request.scope.repository_cutoff.fact_watermark+1}};state={...state,state_context:state.state_context+'-refreshed',assembly:{...state.assembly,request:{...state.assembly.request,scope:{...state.assembly.request.scope,repository_cutoff:{...state.assembly.request.scope.repository_cutoff,fact_watermark:item.ingestion.ingestion_sequence}}},snapshot:{...state.assembly.snapshot,items:[...state.assembly.snapshot.items.filter(i=>i.fact.kind!==item.fact.kind||i.fact.id!==item.fact.id),item]}}};return {repository_id:body.repository_id,fact:body.fact,expected_digest:item.expected_digest,canonical_fact:JSON.stringify(body.fact),ingestion:item.ingestion} as Evidence;}),lookup:vi.fn()};
+  const view=render(<PatientWorkspace client={client as unknown as CirculatoryClient} entry={entry as unknown as EvidenceEntryClient} config={config}/>);
+  return {client,entry,view,getState:()=>state,setState:(s:CirculatoryState)=>{state=s;}};
+@@ -120,3 +120,59 @@ it('reports storage failure without claiming a saved handover or discarding sele
+ it('blocks overwriting a handover changed in another tab and retains current selections',async()=>{
+  window.localStorage.clear();const {view}=setup();await ready();await source();step('Add exact source to handover');step('Handover');const repoKey='clinrx.synthetic.handover.v1:'+JSON.stringify([decodeCirculatoryState({...structuredClone(fixture),execution_enabled:false}).assembly.request.scope.repository_cutoff.repository_id,config.patient,config.encounter]);window.localStorage.setItem(repoKey,'changed');step('Save handover locally');expect(await screen.findByRole('alert')).toHaveTextContent('changed in another tab');expect(window.localStorage.getItem(repoKey)).toBe('changed');expect(screen.getByRole('region',{name:'Read-only handover'})).toHaveTextContent('fs-PH-60 / 1');view.unmount();window.localStorage.clear();
+ });
++
++it('gives an explicit next step for each part of the patient workflow without claiming clinical completion',async()=>{
++ setup();await ready();
++ const guide=()=>screen.getByRole('region',{name:'Current workflow step'});
++ expect(guide()).toHaveTextContent('source time or source ID');
++ for(const [name,text] of [['Source entry and reassessment','exact lookup comes before'],['Compare notes','Select Note A and Note B explicitly'],['Handover','Save handover locally']]){step(name);expect(guide()).toHaveTextContent(text);expect(screen.getByRole('button',{name})).toHaveAttribute('aria-current','page');}
++ fireEvent.click(within(guide()).getByText('How to complete this synthetic patient workflow'));
++ expect(guide()).toHaveTextContent('not a clinical handover sign-off');expect(guide()).toHaveTextContent('not durably recovered after reload');
++});
++it('starts a separate reassessment after confirmation with no copied evidence selections or automatic finding',async()=>{
++ const {entry}=setup();await correction();step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);
++ await waitFor(()=>expect(screen.getByRole('button',{name:'Start a clinician-authored reassessment'})).toBeEnabled());step('Start a clinician-authored reassessment');
++ const form=within(screen.getByRole('region',{name:'Evidence draft'}));
++ expect(form.getByRole('combobox',{name:'Entry family'})).toHaveValue('reassessment');
++ for(const name of ['Baseline evidence','Documented intervention','Follow-up evidence'])expect(form.getByRole('combobox',{name})).toHaveValue('');
++ for(const name of ['Recorded findings (your assessment)','Unconfirmed possibilities (your assessment)'])expect(form.getByRole('textbox',{name})).toHaveValue('');
++ expect(entry.save).toHaveBeenCalledTimes(1);
++});
++it('withholds post-save handover navigation if the refreshed snapshot does not confirm the exact saved digest',async()=>{
++ window.localStorage.clear();const {entry,client,getState,view}=setup();await correction();
++ client.circulatoryState.mockImplementationOnce(async()=>{const next=structuredClone(getState());const item=next.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!;item.expected_digest='b'.repeat(64);return {data:next};});
++ step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await waitFor(()=>expect(screen.getByRole('button',{name:'Add saved record to handover'})).toBeEnabled());step('Add saved record to handover');
++ expect(await screen.findByRole('alert')).toHaveTextContent('exact saved revision is not confirmed');expect(screen.getByRole('heading',{name:'Review before append'})).toBeInTheDocument();expect(entry.save).toHaveBeenCalledTimes(1);expect(client.circulatoryExecute).not.toHaveBeenCalled();view.unmount();window.localStorage.clear();
++});
++it('keeps post-save actions blocked after an unconfirmed refresh',async()=>{
++ const {entry,client}=setup();await correction();client.circulatoryState.mockRejectedValueOnce(Error('offline'));step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);
++ for(const name of ['Find saved record','Add saved record to handover','Start a clinician-authored reassessment'])expect(screen.getByRole('button',{name})).toBeDisabled();
++ expect(entry.save).toHaveBeenCalledTimes(1);expect(client.circulatoryExecute).not.toHaveBeenCalled();
++});
++it('completes a cardiac-output correction through readable history, separate note, exact comparison and saved handover recovery',async()=>{
++ window.localStorage.clear();let originalNote!:CirculatoryItem;
++ const first=setup(s=>{
++  const baseline=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-30')!,intervention=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-D-CHANGE')!,followup=s.assembly.snapshot.items.find(i=>i.fact.id==='m7-CO')!;
++  originalNote={...followup,fact:structuredClone(buildGuided('reassessment',{baseline:evidenceKey(baseline.fact),intervention:evidenceKey(intervention.fact),followup:evidenceKey(followup.fact),question:'Earlier flow review',findings:'Recorded source assertions.',possibilities:'No relationship confirmed.',uncertainty:'Synthetic context and source limitations.'},'Earlier reviewer',s.assembly.snapshot.items,'flow-original-note','2026-10-08T08:10:00Z'))};s.assembly.snapshot.items.push(originalNote);
++ });
++ const beforeNote=JSON.stringify(originalNote);await ready();step('Inspect Cardiac output m7-CO');step('Correct this exact source');
++ const draftForm=()=>within(screen.getByRole('region',{name:'Evidence draft'}));
++ fireEvent.change(draftForm().getByRole('textbox',{name:'Actor name'}),{target:{value:'Milestone reviewer'}});fireEvent.change(draftForm().getByRole('textbox',{name:'Reason for correction or withdrawal'}),{target:{value:'Source transcription correction; not a new measurement'}});fireEvent.change(draftForm().getByRole('textbox',{name:'Recorded numeric value (raw unit preserved)'}),{target:{value:'4.5500'}});
++ const original=first.getState().assembly.snapshot.items.find(i=>i.fact.id==='m7-CO')!;
++ step('Validate and review draft');await screen.findByRole('button',{name:'Confirm append to local database'});step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await waitFor(()=>expect(screen.getByRole('button',{name:'Find saved record'})).toBeEnabled());
++ const corrected=first.getState().assembly.snapshot.items.find(i=>i.fact.id==='m7-CO')!;
++ step('Find saved record');await screen.findByRole('button',{name:'Inspect Cardiac output m7-CO'});step('Inspect Cardiac output m7-CO');
++ first.client.circulatoryHistory.mockResolvedValueOnce({data:{revisions:[{fact:original.fact,ingestion:original.ingestion},{fact:corrected.fact,ingestion:corrected.ingestion}]}});step('Inspect revision history');
++ const history=await screen.findByRole('region',{name:'Bounded source revision history'});expect(history).toHaveTextContent('Recorded result: 4.50 L/min');expect(history).toHaveTextContent('Recorded result: 4.5500 L/min');expect(history).toHaveTextContent('Source time:');
++ step('Source entry and reassessment');step('Add saved record to handover');expect(screen.getByRole('region',{name:'Read-only handover'})).toHaveTextContent(corrected.fact.revision);
++ step('Source entry and reassessment');step('Start a clinician-authored reassessment');
++ for(const [name,value] of [['Reassessment question','Review recorded flow alongside intervention context'],['Recorded findings (your assessment)','The corrected source retains its original method and time.'],['Unconfirmed possibilities (your assessment)','No treatment response or physiological improvement established.'],['Source limitations / uncertainty (required)','Synthetic source; quality and timing context require review.']])fireEvent.change(draftForm().getByRole('textbox',{name}),{target:{value}});
++ const baseline=first.getState().assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-30')!,intervention=first.getState().assembly.snapshot.items.find(i=>i.fact.id==='fs-D-CHANGE')!;
++ for(const [name,item] of [['Baseline evidence',baseline],['Documented intervention',intervention],['Follow-up evidence',corrected]] as const)fireEvent.change(draftForm().getByRole('combobox',{name}),{target:{value:evidenceKey(item.fact)}});
++ step('Use guided record for validation');step('Validate and review draft');await screen.findByRole('button',{name:'Confirm append to local database'});step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await waitFor(()=>expect(screen.getByRole('button',{name:'Compare notes'})).toBeEnabled());
++ const note=first.entry.save.mock.calls[1][0].fact;expect(note.supersedes).toBeUndefined();expect(JSON.stringify(originalNote)).toBe(beforeNote);step('Compare notes');fireEvent.change(screen.getByRole('combobox',{name:'Note A'}),{target:{value:evidenceKey(originalNote.fact)}});fireEvent.change(screen.getByRole('combobox',{name:'Note B'}),{target:{value:evidenceKey(note)}});
++ const row=screen.getAllByRole('row').find(r=>r.textContent?.includes('Follow-up ABG / evidence reference'))!;const cells=within(row).getAllByRole('cell');expect(cells[0]).toHaveTextContent('Revision: 1');expect(cells[1]).toHaveTextContent('Revision: '+corrected.fact.revision);
++ step('Add Note B to handover');step('Save handover locally');await screen.findByText(/Saved locally in this browser: 2 selection/);
++ const state=structuredClone(first.getState());expect(first.entry.save).toHaveBeenCalledTimes(2);expect(first.client.circulatoryPrepare).not.toHaveBeenCalled();expect(first.client.circulatoryExecute).not.toHaveBeenCalled();first.view.unmount();
++ const restored=setup(s=>Object.assign(s,state));await ready();fireEvent.click(await screen.findByRole('button',{name:'Open saved handover'}));const handover=screen.getByRole('region',{name:'Read-only handover'});expect(handover).toHaveTextContent('Restored saved handover: 2 selection');expect(handover).toHaveTextContent('4.5500');expect(handover).toHaveTextContent(note.id);expect(handover).toHaveTextContent(corrected.fact.revision);expect(restored.entry.save).not.toHaveBeenCalled();expect(restored.client.circulatoryExecute).not.toHaveBeenCalled();restored.view.unmount();window.localStorage.clear();
++});

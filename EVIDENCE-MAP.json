@@ -1,0 +1,81 @@
+{
+  "review": "One combined synthetic hemodynamics milestone review",
+  "candidate": "ee81661d7ae70d6ab5491a2da8634f675381d00a",
+  "source_range": "db56f7e8164a7a3c46c6c8e17a56c0d9088c2de5...ee81661d7ae70d6ab5491a2da8634f675381d00a",
+  "cases": [
+    {
+      "area": "Scope, gate and stale responses",
+      "fresh": "668 frontend tests; full4302 backend CI; real isolated gateway false health/404 execution-route probe",
+      "paths": [
+        "source/frontend/src/demo/usePatientEvidenceState.ts",
+        "source/frontend/tests/patientWorkspace.test.tsx",
+        "original/browser-journey/gate-probe.json"
+      ]
+    },
+    {
+      "area": "All-family browsing and readable history",
+      "fresh": "Integrated flowsheet capture, real two-revision pressure history, 786 API fact/digest/ingestion checks",
+      "paths": [
+        "original/browser-journey/02-flowsheet-all-times.txt",
+        "original/browser-journey/07-pressure-history.txt",
+        "original/journey-verification.json"
+      ]
+    },
+    {
+      "area": "Correction, separate assessment and exact comparison",
+      "fresh": "Three actual reviewed appends; original/new notes retain pressure revisions1 and41675deb; original162 rows and2 receipts unchanged",
+      "paths": [
+        "original/browser-journey/before.sqlite3",
+        "original/browser-journey/after.sqlite3",
+        "original/browser-journey/12-comparison-expanded.txt",
+        "original/verify_journey.py"
+      ]
+    },
+    {
+      "area": "Save uncertainty and recovery",
+      "fresh": "Integration/client/API regression coverage in final suites; no new live fault injection",
+      "paths": [
+        "source/frontend/tests/patientWorkspace.test.tsx",
+        "source/frontend/tests/evidenceEntry.test.tsx",
+        "original/ci-complete.log"
+      ]
+    },
+    {
+      "area": "Bounded browser-local handover",
+      "fresh": "Two exact selections saved and restored in the same origin; storage/mismatch/conflict tests in full suite",
+      "paths": [
+        "source/frontend/src/demo/localHandover.ts",
+        "source/frontend/src/demo/useLocalHandover.ts",
+        "original/browser-journey/16-handover-restored.txt"
+      ]
+    },
+    {
+      "area": "Desktop/narrow navigation",
+      "fresh": "Implementation-operated1280/390 layouts, explicit guidance and exact post-save actions; not independent uncoached usability",
+      "paths": [
+        "original/browser-journey/browser-layout.json",
+        "original/browser-journey/final-layout.json",
+        "source/frontend/src/demo/PatientWorkspace.tsx"
+      ]
+    }
+  ],
+  "reuse": [
+    {
+      "scope": "C1/R1/F1/F2 and earlier gated/lifecycle/Docker reviews",
+      "disposition": "Preserve exact prior source/scope. No automatic acceptance of new code/container/clinical readiness."
+    },
+    {
+      "evidence": "1225b2e34ce2516c36ae47f781190ae5ebea49ca",
+      "scope": "Accepted two-selection captured display only"
+    },
+    {
+      "evidence": "86aee66412b4cc1a7861296a3877a8d31284e1cb",
+      "scope": "Accepted three-selection captured display only"
+    },
+    {
+      "evidence": "dac9fa1986824b782e7fe23977fc4e9c81149fff",
+      "scope": "Separate8c7fedc timeout correction663/17-test results, not new668 totals"
+    }
+  ],
+  "remaining": "Independent combined Director verdict, uncoached new-visitor/clinician usability and separate real-patient foundations; general durable draft/command recovery deferred; no new container acceptance."
+}

@@ -1,0 +1,985 @@
+frontend	Set up job	﻿2026-10-19T07:51:25.3252186Z Current runner version: '2.337.0'
+frontend	Set up job	2026-10-19T07:51:25.3271067Z ##[group]Runner Image Provisioner
+frontend	Set up job	2026-10-19T07:51:25.3271736Z Hosted Compute Agent
+frontend	Set up job	2026-10-19T07:51:25.3272093Z Version: 20261012.601
+frontend	Set up job	2026-10-19T07:51:25.3272458Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+frontend	Set up job	2026-10-19T07:51:25.3272932Z Build Date: 2026-10-12T17:48:21Z
+frontend	Set up job	2026-10-19T07:51:25.3273338Z Worker ID: {43763704-ee28-4549-8d0f-237c1c049392}
+frontend	Set up job	2026-10-19T07:51:25.3273813Z Region: southcentralus
+frontend	Set up job	2026-10-19T07:51:25.3274180Z Cloud: Azure
+frontend	Set up job	2026-10-19T07:51:25.3274507Z ##[endgroup]
+frontend	Set up job	2026-10-19T07:51:25.3275556Z ##[group]Operating System
+frontend	Set up job	2026-10-19T07:51:25.3275927Z Ubuntu
+frontend	Set up job	2026-10-19T07:51:25.3276309Z 24.04.5
+frontend	Set up job	2026-10-19T07:51:25.3276631Z LTS
+frontend	Set up job	2026-10-19T07:51:25.3276947Z ##[endgroup]
+frontend	Set up job	2026-10-19T07:51:25.3277314Z ##[group]Runner Image
+frontend	Set up job	2026-10-19T07:51:25.3277685Z Image: ubuntu-24.04
+frontend	Set up job	2026-10-19T07:51:25.3278046Z Version: 20261012.334.1
+frontend	Set up job	2026-10-19T07:51:25.3278708Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+frontend	Set up job	2026-10-19T07:51:25.3280033Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+frontend	Set up job	2026-10-19T07:51:25.3280598Z ##[endgroup]
+frontend	Set up job	2026-10-19T07:51:25.3281333Z ##[group]GITHUB_TOKEN Permissions
+frontend	Set up job	2026-10-19T07:51:25.3282673Z Contents: read
+frontend	Set up job	2026-10-19T07:51:25.3283081Z Metadata: read
+frontend	Set up job	2026-10-19T07:51:25.3283429Z ##[endgroup]
+frontend	Set up job	2026-10-19T07:51:25.3284822Z Secret source: Actions
+frontend	Set up job	2026-10-19T07:51:25.3285532Z Cache mode: write
+frontend	Set up job	2026-10-19T07:51:25.3286092Z Prepare workflow directory
+frontend	Set up job	2026-10-19T07:51:25.3531260Z Prepare all required actions
+frontend	Set up job	2026-10-19T07:51:25.3565026Z Getting action download info
+frontend	Set up job	2026-10-19T07:51:25.6054061Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+frontend	Set up job	2026-10-19T07:51:25.6856815Z Download action repository 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+frontend	Set up job	2026-10-19T07:51:25.7799146Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+frontend	Set up job	2026-10-19T07:51:25.9675897Z Complete job name: frontend
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-10-19T07:51:26.0140466Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0141002Z with:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0141239Z   persist-credentials: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0141518Z   repository: shafin-lab/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0143416Z   token: ***
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0143637Z   ssh-strict: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0143899Z   ssh-user: git
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0144120Z   clean: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0144354Z   sparse-checkout-cone-mode: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0144629Z   fetch-depth: 1
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0144983Z   fetch-tags: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0145215Z   show-progress: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0145452Z   lfs: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0145669Z   submodules: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0145906Z   set-safe-directory: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0146236Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0797904Z Syncing repository: shafin-lab/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0799551Z ##[group]Getting Git version info
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0800178Z Working directory is '/home/runner/work/clinrx-ai/clinrx-ai'
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0801203Z [command]/usr/bin/git version
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0856441Z git version 2.55.0
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0872526Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0892243Z Temporarily overriding HOME='/home/runner/work/_temp/6cba2ad1-c4f1-4db0-b62f-7a1c27aaa717' before making global git config changes
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0893541Z Adding repository directory to the temporary git global config as a safe directory
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0895755Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/clinrx-ai/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0941812Z Deleting the contents of '/home/runner/work/clinrx-ai/clinrx-ai'
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0945052Z ##[group]Initializing the repository
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.0949077Z [command]/usr/bin/git init /home/runner/work/clinrx-ai/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1165622Z hint: Using 'master' as the name for the initial branch. This default branch name
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1167217Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1168433Z hint: to use in all of your new repositories, which will suppress this warning,
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1169372Z hint: call:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1170015Z hint:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1170628Z hint: 	git config --global init.defaultBranch <name>
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1171264Z hint:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1171868Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1172810Z hint: 'development'. The just-created branch can be renamed via this command:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1173556Z hint:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1174040Z hint: 	git branch -m <name>
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1174601Z hint:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1175449Z hint: Disable this message with "git config set advice.defaultBranchName false"
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1176607Z Initialized empty Git repository in /home/runner/work/clinrx-ai/clinrx-ai/.git/
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1178880Z [command]/usr/bin/git remote add origin https://github.com/shafin-lab/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1226019Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1226752Z ##[group]Disabling automatic garbage collection
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1229263Z [command]/usr/bin/git config --local gc.auto 0
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1260239Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1260847Z ##[group]Setting up auth
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1265741Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1296459Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1588167Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1616359Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1792633Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1827707Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1828269Z ##[group]Fetching the repository
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.1833970Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ee81661d7ae70d6ab5491a2da8634f675381d00a:refs/tags/clinrx-hemodynamics-workflow-milestone-ee81661
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.0722877Z From https://github.com/shafin-lab/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.0725154Z  * [new ref]         ee81661d7ae70d6ab5491a2da8634f675381d00a -> clinrx-hemodynamics-workflow-milestone-ee81661
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.0728806Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.0730160Z ##[group]Determining the checkout info
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.0731535Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.0733784Z [command]/usr/bin/git sparse-checkout disable
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.0814692Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.0882191Z ##[group]Checking out the ref
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.0884662Z [command]/usr/bin/git checkout --progress --force refs/tags/clinrx-hemodynamics-workflow-milestone-ee81661
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1172777Z Note: switching to 'refs/tags/clinrx-hemodynamics-workflow-milestone-ee81661'.
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1174093Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1174695Z You are in 'detached HEAD' state. You can look around, make experimental
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1176374Z changes and commit them, and you can discard any commits you make in this
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1177857Z state without impacting any branches by switching back to a branch.
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1178774Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1179394Z If you want to create a new branch to retain commits you create, you may
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1180683Z do so (now or later) by using -c with the switch command. Example:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1181337Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1181936Z   git switch -c <new-branch-name>
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1182483Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1182767Z Or undo this operation with:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1183264Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1183576Z   git switch -
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1184017Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1184650Z Turn off this advice by setting config variable advice.detachedHead to false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1185657Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1186398Z HEAD is now at ee81661 Complete the bounded synthetic hemodynamics patient workflow milestone
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1189454Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1220406Z [command]/usr/bin/git log -1 --format=%H
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1243639Z ee81661d7ae70d6ab5491a2da8634f675381d00a
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1252040Z ##[group]Removing auth
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1253706Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1281062Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1447769Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1470725Z http.https://github.com/.extraheader
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1475961Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1503793Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:27.1670760Z ##[endgroup]
+frontend	Verify clean source checkout	﻿2026-10-19T07:51:27.1853532Z ##[group]Run test -z "$(git status --porcelain=v1 --untracked-files=all)"
+frontend	Verify clean source checkout	2026-10-19T07:51:27.1855096Z ^[[36;1mtest -z "$(git status --porcelain=v1 --untracked-files=all)"^[[0m
+frontend	Verify clean source checkout	2026-10-19T07:51:27.2149035Z shell: /usr/bin/bash -e {0}
+frontend	Verify clean source checkout	2026-10-19T07:51:27.2151750Z ##[endgroup]
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	﻿2026-10-19T07:51:27.3100499Z ##[group]Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:27.3102436Z with:
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:27.3102972Z   node-version: 22.13.0
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:27.3104701Z   always-auth: false
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:27.3105382Z   check-latest: false
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:27.3113187Z   token: ***
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:27.3114851Z ##[endgroup]
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:27.4094820Z Attempting to download 22.13.0...
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:27.4165627Z (node:2099) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:27.4168196Z (Use `node --trace-deprecation ...` to show where the warning was created)
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:28.2470749Z Acquiring 22.13.0 - x64 from https://github.com/actions/node-versions/releases/download/22.13.0-12683784390/node-22.13.0-linux-x64.tar.gz
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:28.7871600Z Extracting ...
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:28.7964467Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/77c84a2a-05c3-4ba5-a350-f6298ac7aacb -f /home/runner/work/_temp/7d740c91-ee4b-46f2-9d98-b752c8469626
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:29.7186723Z Adding to the cache ...
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:32.3268798Z ##[group]Environment details
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:32.4659105Z node: v22.13.0
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:32.4659624Z npm: 10.9.2
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:32.4659800Z yarn: 1.22.22
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:51:32.4660247Z ##[endgroup]
+frontend	Record checkout and environment	﻿2026-10-19T07:51:32.4796699Z ##[group]Run set -o pipefail
+frontend	Record checkout and environment	2026-10-19T07:51:32.4796919Z ^[[36;1mset -o pipefail^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4797089Z ^[[36;1mmkdir -p "$RUNNER_TEMP/clinrx-frontend-logs"^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4797259Z ^[[36;1m{^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4797377Z ^[[36;1m  git rev-parse HEAD^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4797610Z ^[[36;1m  printf 'event=%s source_sha=%s ref=%s\n' "$GITHUB_EVENT_NAME" "$GITHUB_SHA" "$GITHUB_REF"^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4797940Z ^[[36;1m  printf 'runner_image=%s image_version=%s\n' "$ImageOS" "$ImageVersion"^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4798157Z ^[[36;1m  cat /etc/os-release^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4798315Z ^[[36;1m  uname -m^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4798441Z ^[[36;1m  node --version^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4798755Z ^[[36;1m  npm --version^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4798917Z ^[[36;1m  sha256sum package.json package-lock.json^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4799135Z ^[[36;1m} 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/environment.txt"^[[0m
+frontend	Record checkout and environment	2026-10-19T07:51:32.4854758Z shell: /usr/bin/bash -e {0}
+frontend	Record checkout and environment	2026-10-19T07:51:32.4855068Z ##[endgroup]
+frontend	Record checkout and environment	2026-10-19T07:51:32.4952359Z ee81661d7ae70d6ab5491a2da8634f675381d00a
+frontend	Record checkout and environment	2026-10-19T07:51:32.4953105Z event=workflow_dispatch source_sha=ee81661d7ae70d6ab5491a2da8634f675381d00a ref=refs/tags/clinrx-hemodynamics-workflow-milestone-ee81661
+frontend	Record checkout and environment	2026-10-19T07:51:32.4953538Z runner_image=ubuntu24 image_version=20261012.334.1
+frontend	Record checkout and environment	2026-10-19T07:51:32.4957716Z PRETTY_NAME="Ubuntu 24.04.5 LTS"
+frontend	Record checkout and environment	2026-10-19T07:51:32.4957940Z NAME="Ubuntu"
+frontend	Record checkout and environment	2026-10-19T07:51:32.4958156Z VERSION_ID="24.04"
+frontend	Record checkout and environment	2026-10-19T07:51:32.4958436Z VERSION="24.04.5 LTS (Noble Numbat)"
+frontend	Record checkout and environment	2026-10-19T07:51:32.4958634Z VERSION_CODENAME=noble
+frontend	Record checkout and environment	2026-10-19T07:51:32.4958759Z ID=ubuntu
+frontend	Record checkout and environment	2026-10-19T07:51:32.4958876Z ID_LIKE=debian
+frontend	Record checkout and environment	2026-10-19T07:51:32.4959071Z HOME_URL="https://www.ubuntu.com/"
+frontend	Record checkout and environment	2026-10-19T07:51:32.4959268Z SUPPORT_URL="https://help.ubuntu.com/"
+frontend	Record checkout and environment	2026-10-19T07:51:32.4959491Z BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+frontend	Record checkout and environment	2026-10-19T07:51:32.4959812Z PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+frontend	Record checkout and environment	2026-10-19T07:51:32.4960069Z UBUNTU_CODENAME=noble
+frontend	Record checkout and environment	2026-10-19T07:51:32.4960198Z LOGO=ubuntu-logo
+frontend	Record checkout and environment	2026-10-19T07:51:32.4965310Z x86_64
+frontend	Record checkout and environment	2026-10-19T07:51:32.4989520Z v22.13.0
+frontend	Record checkout and environment	2026-10-19T07:51:32.5425416Z 10.9.2
+frontend	Record checkout and environment	2026-10-19T07:51:32.5471027Z 786e4abafbe4e25ebd2f9f11b233566a63c6e0c60e3883a8c8ae0b1e2a741c08  package.json
+frontend	Record checkout and environment	2026-10-19T07:51:32.5471740Z 29fec0b288521d6bbb0cc188c5d56a3b0a10cc13e400564d8852ee13b6c5be23  package-lock.json
+frontend	Clean frontend dependency installation	﻿2026-10-19T07:51:32.5502651Z ##[group]Run npm ci
+frontend	Clean frontend dependency installation	2026-10-19T07:51:32.5502820Z ^[[36;1mnpm ci^[[0m
+frontend	Clean frontend dependency installation	2026-10-19T07:51:32.5555973Z shell: /usr/bin/bash -e {0}
+frontend	Clean frontend dependency installation	2026-10-19T07:51:32.5556124Z ##[endgroup]
+frontend	Clean frontend dependency installation	2026-10-19T07:51:34.1757739Z 
+frontend	Clean frontend dependency installation	2026-10-19T07:51:34.1758582Z added 108 packages, and audited 109 packages in 2s
+frontend	Clean frontend dependency installation	2026-10-19T07:51:34.1758934Z 
+frontend	Clean frontend dependency installation	2026-10-19T07:51:34.1759085Z 22 packages are looking for funding
+frontend	Clean frontend dependency installation	2026-10-19T07:51:34.1759361Z   run `npm fund` for details
+frontend	Clean frontend dependency installation	2026-10-19T07:51:34.1763337Z 
+frontend	Clean frontend dependency installation	2026-10-19T07:51:34.1763579Z found 0 vulnerabilities
+frontend	Full frontend tests	﻿2026-10-19T07:51:34.2152766Z ##[group]Run set -o pipefail
+frontend	Full frontend tests	2026-10-19T07:51:34.2152948Z ^[[36;1mset -o pipefail^[[0m
+frontend	Full frontend tests	2026-10-19T07:51:34.2153158Z ^[[36;1mnpm test -- --maxWorkers=2 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/tests.txt"^[[0m
+frontend	Full frontend tests	2026-10-19T07:51:34.2204776Z shell: /usr/bin/bash -e {0}
+frontend	Full frontend tests	2026-10-19T07:51:34.2205028Z ##[endgroup]
+frontend	Full frontend tests	2026-10-19T07:51:34.2817658Z 
+frontend	Full frontend tests	2026-10-19T07:51:34.2818374Z > clinrx-synthetic-review@0.1.0 test
+frontend	Full frontend tests	2026-10-19T07:51:34.2818777Z > vitest run --maxWorkers=2
+frontend	Full frontend tests	2026-10-19T07:51:34.2818920Z 
+frontend	Full frontend tests	2026-10-19T07:51:34.4726311Z 
+frontend	Full frontend tests	2026-10-19T07:51:34.4728917Z ^[[1m^[[30m^[[46m RUN ^[[49m^[[39m^[[22m ^[[36mv5.0.3 ^[[39m^[[90m/home/runner/work/clinrx-ai/clinrx-ai/frontend^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:34.4729322Z 
+frontend	Full frontend tests	2026-10-19T07:51:41.1208164Z  ^[[32m✓^[[39m tests/comprehensiveDemo.test.tsx ^[[2m(^[[22m^[[2m30 tests^[[22m^[[2m)^[[22m^[[33m 5295^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:41.1209223Z    ^[[32m✓^[[39m comprehensive read-only synthetic demo ^[[2m(8)^[[22m
+frontend	Full frontend tests	2026-10-19T07:51:41.1210234Z      ^[[33m^[[2m✓^[[22m^[[39m opens with cardiac output and echo, preserves exact values and makes no execution request^[[33m 353^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:41.1211274Z    ^[[33m^[[2m✓^[[22m^[[39m combines ABG, cardiac output and echo in one patient summary with exact source inspection^[[33m 433^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:41.1212246Z    ^[[33m^[[2m✓^[[22m^[[39m opens the persisted flowsheet with exact infusion inspection without preparing or executing^[[33m 315^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:41.1213214Z    ^[[33m^[[2m✓^[[22m^[[39m opens expanded authored possibilities and serial sources without preparing or executing a review^[[33m 484^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6964512Z  ^[[32m✓^[[39m tests/patientWorkspace.test.tsx ^[[2m(^[[22m^[[2m25 tests^[[22m^[[2m)^[[22m^[[33m 10823^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6966485Z    ^[[33m^[[2m✓^[[22m^[[39m uses one shared snapshot and hands off the exact selected revision and digest without enabling execution^[[33m 977^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6967644Z    ^[[33m^[[2m✓^[[22m^[[39m preserves a guided unsaved draft by blocking navigation and refresh until explicit discard^[[33m 433^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6968762Z    ^[[33m^[[2m✓^[[22m^[[39m retains original pending draft through committed recovery, without navigation or automatic retry^[[33m 552^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6969901Z    ^[[33m^[[2m✓^[[22m^[[39m retains original pending draft through absent recovery, without navigation or automatic retry^[[33m 626^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6970910Z    ^[[33m^[[2m✓^[[22m^[[39m keeps exact pending identity and blocks navigation when lookup fails^[[33m 427^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6971851Z    ^[[33m^[[2m✓^[[22m^[[39m reviews handover from exact selections, retaining historical identity when the latest snapshot changes^[[33m 424^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6975326Z    ^[[33m^[[2m✓^[[22m^[[39m completes correction, separate authored reassessment, comparison and handover without rewriting the original note^[[33m 785^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6976355Z    ^[[33m^[[2m✓^[[22m^[[39m preserves exact comparison selection across refresh and discloses a disappeared note^[[33m 325^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6977307Z    ^[[33m^[[2m✓^[[22m^[[39m retains confirmed save identity when the subsequent shared refresh fails, while blocking new writes^[[33m 370^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6978301Z    ^[[33m^[[2m✓^[[22m^[[39m finds an ABG by plain name and source time from comparison, resets stale filters and opens the exact source^[[33m 311^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6979192Z    ^[[33m^[[2m✓^[[22m^[[39m saves exact handover pins and restores their verified API records after remount^[[33m 480^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6980100Z    ^[[33m^[[2m✓^[[22m^[[39m restores a historical pin as unavailable when a successor exists, preserving the original storage^[[33m 503^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6981022Z    ^[[33m^[[2m✓^[[22m^[[39m reports storage failure without claiming a saved handover or discarding selections^[[33m 319^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6981879Z    ^[[33m^[[2m✓^[[22m^[[39m blocks overwriting a handover changed in another tab and retains current selections^[[33m 382^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6983211Z    ^[[33m^[[2m✓^[[22m^[[39m starts a separate reassessment after confirmation with no copied evidence selections or automatic finding^[[33m 393^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6984305Z    ^[[33m^[[2m✓^[[22m^[[39m withholds post-save handover navigation if the refreshed snapshot does not confirm the exact saved digest^[[33m 351^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6985323Z    ^[[33m^[[2m✓^[[22m^[[39m keeps post-save actions blocked after an unconfirmed refresh^[[33m 357^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:46.6986302Z    ^[[33m^[[2m✓^[[22m^[[39m completes a cardiac-output correction through readable history, separate note, exact comparison and saved handover recovery^[[33m 1114^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:47.8096387Z  ^[[32m✓^[[39m tests/micro.test.tsx ^[[2m(^[[22m^[[2m41 tests^[[22m^[[2m)^[[22m^[[33m 5938^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:47.8097617Z    ^[[33m^[[2m✓^[[22m^[[39m renders backend hierarchy, source precision, and separate antimicrobial categories^[[33m 339^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:48.8426603Z  ^[[32m✓^[[39m tests/microDecoders.test.ts ^[[2m(^[[22m^[[2m116 tests^[[22m^[[2m)^[[22m^[[33m 303^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:52.0938548Z  ^[[32m✓^[[39m tests/review.test.tsx ^[[2m(^[[22m^[[2m36 tests^[[22m^[[2m)^[[22m^[[33m 4694^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:52.9005709Z  ^[[32m✓^[[39m tests/client.test.ts ^[[2m(^[[22m^[[2m88 tests^[[22m^[[2m)^[[22m^[[32m 162^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:53.6274769Z  ^[[32m✓^[[39m tests/evidenceEntry.test.tsx ^[[2m(^[[22m^[[2m17 tests^[[22m^[[2m)^[[22m^[[33m 4040^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:53.6276308Z    ^[[33m^[[2m✓^[[22m^[[39m reviews a reasoned exact correction before any append and preserves original time and sample context^[[33m 393^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:53.6277890Z    ^[[33m^[[2m✓^[[22m^[[39m retains the exact reviewed draft after a lost response and requires explicit absent-case retry^[[33m 307^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:53.6278990Z    ^[[33m^[[2m✓^[[22m^[[39m ignores an older refresh result after a newer response and selects exact revisions only^[[33m 373^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:53.6280302Z    ^[[33m^[[2m✓^[[22m^[[39m prepares a clinician-authored reassessment with exact linked revisions and no automatic conclusion^[[33m 413^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:56.5885140Z  ^[[32m✓^[[39m tests/circulatory.test.tsx ^[[2m(^[[22m^[[2m52 tests^[[22m^[[2m)^[[22m^[[33m 2999^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:56.5892188Z    ^[[32m✓^[[39m M7 explicit review state ^[[2m(9)^[[22m
+frontend	Full frontend tests	2026-10-19T07:51:56.5892635Z      ^[[33m^[[2m✓^[[22m^[[39m browses all families and corrections even with execution gate closed^[[33m 464^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:57.7633502Z  ^[[32m✓^[[39m tests/caseInterpretation.test.tsx ^[[2m(^[[22m^[[2m43 tests^[[22m^[[2m)^[[22m^[[33m 3231^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:59.9602390Z  ^[[32m✓^[[39m tests/flowsheetOverview.test.tsx ^[[2m(^[[22m^[[2m9 tests^[[22m^[[2m)^[[22m^[[33m 2669^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:59.9603501Z    ^[[33m^[[2m✓^[[22m^[[39m defaults to a compact overview with all eight groups and exact source selection^[[33m 395^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:59.9604400Z    ^[[33m^[[2m✓^[[22m^[[39m makes every overview event reachable through time pages and through all-times mode^[[33m 586^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:59.9605355Z    ^[[33m^[[2m✓^[[22m^[[39m keeps full-detail records and unknown or withdrawn source status available^[[33m 415^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:59.9605925Z    ^[[33m^[[2m✓^[[22m^[[39m keeps pressure, method-specific flow and source rhythm on exact times with inspectable uncertainty^[[33m 354^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:51:59.9606506Z    ^[[33m^[[2m✓^[[22m^[[39m keeps ABG samples and older echo at their original columns, with exact inspectors and source caveats^[[33m 372^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:00.7412827Z  ^[[32m✓^[[39m tests/decoders.test.ts ^[[2m(^[[22m^[[2m94 tests^[[22m^[[2m)^[[22m^[[32m 42^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:01.9759800Z  ^[[32m✓^[[39m tests/flowsheet.test.tsx ^[[2m(^[[22m^[[2m24 tests^[[22m^[[2m)^[[22m^[[33m 3384^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:01.9761274Z    ^[[33m^[[2m✓^[[22m^[[39m preserves exact drug units, event distinctions and source links^[[33m 738^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:01.9770807Z    ^[[33m^[[2m✓^[[22m^[[39m retains top-level assessment and signal quality rather than labeling it missing^[[33m 314^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:02.8705881Z  ^[[32m✓^[[39m tests/guidedEvidence.test.ts ^[[2m(^[[22m^[[2m20 tests^[[22m^[[2m)^[[22m^[[32m 9^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:03.6443002Z  ^[[32m✓^[[39m tests/evidenceExplanation.test.tsx ^[[2m(^[[22m^[[2m5 tests^[[22m^[[2m)^[[22m^[[32m 150^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:04.7593058Z  ^[[32m✓^[[39m tests/reassessmentComparison.test.tsx ^[[2m(^[[22m^[[2m32 tests^[[22m^[[2m)^[[22m^[[33m 3325^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:05.0964073Z  ^[[32m✓^[[39m tests/evidenceEntryClient.test.ts ^[[2m(^[[22m^[[2m9 tests^[[22m^[[2m)^[[22m^[[33m 817^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:05.5257486Z  ^[[32m✓^[[39m tests/evidenceSearch.test.ts ^[[2m(^[[22m^[[2m9 tests^[[22m^[[2m)^[[22m^[[32m 6^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:06.4101836Z  ^[[32m✓^[[39m tests/localHandover.test.ts ^[[2m(^[[22m^[[2m9 tests^[[22m^[[2m)^[[22m^[[32m 21^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:07.4008459Z  ^[[32m✓^[[39m tests/circulatoryLookup.test.tsx ^[[2m(^[[22m^[[2m3 tests^[[22m^[[2m)^[[22m^[[32m 243^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:07.4826756Z  ^[[32m✓^[[39m tests/sourceUnitMappings.test.tsx ^[[2m(^[[22m^[[2m4 tests^[[22m^[[2m)^[[22m^[[33m 1602^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:07.4834430Z    ^[[33m^[[2m✓^[[22m^[[39m displays the actual quantity mapping for fs-IO-output_urine-15^[[33m 608^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:07.4835770Z    ^[[33m^[[2m✓^[[22m^[[39m displays the actual quantity mapping for fs-D-ORDER^[[33m 395^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:07.4836510Z    ^[[33m^[[2m✓^[[22m^[[39m displays the actual quantity mapping for fs-D-CHANGE^[[33m 317^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:08.0923029Z  ^[[32m✓^[[39m tests/hostedDemo.test.tsx ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[32m 93^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:08.0951651Z 
+frontend	Full frontend tests	2026-10-19T07:52:08.0955915Z ^[[2m Test Files ^[[22m ^[[1m^[[32m21 passed^[[39m^[[22m^[[90m (21)^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:08.0957683Z ^[[2m      Tests ^[[22m ^[[1m^[[32m668 passed^[[39m^[[22m^[[90m (668)^[[39m
+frontend	Full frontend tests	2026-10-19T07:52:08.0960262Z ^[[2m   Start at ^[[22m 07:51:34
+frontend	Full frontend tests	2026-10-19T07:52:08.0961560Z ^[[2m   Duration ^[[22m 33.62s^[[2m (tests 77%, environment 15%, setup 3%, import 3%, transform 2%)^[[22m
+frontend	Full frontend tests	2026-10-19T07:52:08.0969295Z 
+frontend	Full frontend tests	2026-10-19T07:52:08.0970085Z ^[[2m    Isolate ^[[22m ^[[33m21 workers spawned^[[39m^[[2m · ~540ms startup each (spawn + environment, per file)^[[22m
+frontend	Full frontend tests	2026-10-19T07:52:08.0971039Z ^[[2m            ^[[22m ^[[2mat least ~5.13s faster with ^[[22m^[[33misolate: false^[[39m^[[2m — reuses workers across files instead of one per file^[[22m
+frontend	Full frontend tests	2026-10-19T07:52:08.0971478Z 
+frontend	TypeScript typecheck	﻿2026-10-19T07:52:08.1384181Z ##[group]Run set -o pipefail
+frontend	TypeScript typecheck	2026-10-19T07:52:08.1384387Z ^[[36;1mset -o pipefail^[[0m
+frontend	TypeScript typecheck	2026-10-19T07:52:08.1384615Z ^[[36;1mnpm run typecheck 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/typecheck.txt"^[[0m
+frontend	TypeScript typecheck	2026-10-19T07:52:08.1440675Z shell: /usr/bin/bash -e {0}
+frontend	TypeScript typecheck	2026-10-19T07:52:08.1440859Z ##[endgroup]
+frontend	TypeScript typecheck	2026-10-19T07:52:08.2166863Z 
+frontend	TypeScript typecheck	2026-10-19T07:52:08.2167528Z > clinrx-synthetic-review@0.1.0 typecheck
+frontend	TypeScript typecheck	2026-10-19T07:52:08.2167922Z > tsc --noEmit
+frontend	TypeScript typecheck	2026-10-19T07:52:08.2168054Z 
+frontend	Production build	﻿2026-10-19T07:52:09.1239836Z ##[group]Run set -o pipefail
+frontend	Production build	2026-10-19T07:52:09.1240221Z ^[[36;1mset -o pipefail^[[0m
+frontend	Production build	2026-10-19T07:52:09.1240421Z ^[[36;1mnpm run build 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/build.txt"^[[0m
+frontend	Production build	2026-10-19T07:52:09.1292337Z shell: /usr/bin/bash -e {0}
+frontend	Production build	2026-10-19T07:52:09.1292495Z ##[endgroup]
+frontend	Production build	2026-10-19T07:52:09.1974260Z 
+frontend	Production build	2026-10-19T07:52:09.1974845Z > clinrx-synthetic-review@0.1.0 build
+frontend	Production build	2026-10-19T07:52:09.1975273Z > tsc --noEmit && vite build
+frontend	Production build	2026-10-19T07:52:09.1975372Z 
+frontend	Production build	2026-10-19T07:52:10.1829046Z ^[[36mvite v8.3.4 ^[[32mbuilding client environment for production...^[[36m^[[39m
+frontend	Production build	2026-10-19T07:52:10.1902325Z transforming...
+frontend	Production build	2026-10-19T07:52:10.2388694Z ✓ 68 modules transformed.
+frontend	Production build	2026-10-19T07:52:10.2699269Z rendering chunks...
+frontend	Production build	2026-10-19T07:52:10.3219678Z computing gzip size...
+frontend	Production build	2026-10-19T07:52:10.3283056Z dist/index.html                     0.37 kB │ gzip:   0.27 kB
+frontend	Production build	2026-10-19T07:52:10.3283543Z dist/assets/index-BFUMIwbI.css     32.86 kB │ gzip:   7.24 kB
+frontend	Production build	2026-10-19T07:52:10.3283824Z dist/assets/index-COl3lBqd.js   1,374.06 kB │ gzip: 174.34 kB
+frontend	Production build	2026-10-19T07:52:10.3284033Z 
+frontend	Production build	2026-10-19T07:52:10.3285616Z ^[[32m✓ built in 145ms^[[39m
+frontend	Production build	2026-10-19T07:52:10.3290458Z ^[[33m[plugin builtin:vite-reporter] 
+frontend	Production build	2026-10-19T07:52:10.3290872Z (!) Some chunks are larger than 500 kB after minification. Consider:
+frontend	Production build	2026-10-19T07:52:10.3291281Z - Using dynamic import() to code-split the application
+frontend	Production build	2026-10-19T07:52:10.3291985Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+frontend	Production build	2026-10-19T07:52:10.3292898Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.^[[39m
+frontend	Local synthetic authoring build	﻿2026-10-19T07:52:10.3480443Z ##[group]Run set -o pipefail
+frontend	Local synthetic authoring build	2026-10-19T07:52:10.3480631Z ^[[36;1mset -o pipefail^[[0m
+frontend	Local synthetic authoring build	2026-10-19T07:52:10.3480920Z ^[[36;1mnpm run build -- --outDir "$RUNNER_TEMP/clinrx-authoring-build" 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/authoring-build.txt"^[[0m
+frontend	Local synthetic authoring build	2026-10-19T07:52:10.3532554Z shell: /usr/bin/bash -e {0}
+frontend	Local synthetic authoring build	2026-10-19T07:52:10.3532693Z env:
+frontend	Local synthetic authoring build	2026-10-19T07:52:10.3532802Z   VITE_SYNTHETIC_HOSTED: true
+frontend	Local synthetic authoring build	2026-10-19T07:52:10.3532938Z   VITE_SYNTHETIC_AUTHORING: true
+frontend	Local synthetic authoring build	2026-10-19T07:52:10.3533072Z ##[endgroup]
+frontend	Local synthetic authoring build	2026-10-19T07:52:10.4150387Z 
+frontend	Local synthetic authoring build	2026-10-19T07:52:10.4151074Z > clinrx-synthetic-review@0.1.0 build
+frontend	Local synthetic authoring build	2026-10-19T07:52:10.4151470Z > tsc --noEmit && vite build --outDir /home/runner/work/_temp/clinrx-authoring-build
+frontend	Local synthetic authoring build	2026-10-19T07:52:10.4151676Z 
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.4295762Z ^[[36mvite v8.3.4 ^[[32mbuilding client environment for production...^[[36m^[[39m
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.4358748Z transforming...
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.4894735Z ✓ 68 modules transformed.
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.4911975Z ^[[33m
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.4913216Z ^[[1m(!)^[[22m outDir ^[[37m^[[2m/home/runner/work/_temp/clinrx-authoring-build^[[22m^[[33m is not inside project root and will not be emptied.
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.4913863Z Use --emptyOutDir to override.
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.4914099Z ^[[39m
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5221957Z rendering chunks...
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5764681Z computing gzip size...
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5828306Z ../../../_temp/clinrx-authoring-build/index.html                     0.37 kB │ gzip:   0.27 kB
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5829071Z ../../../_temp/clinrx-authoring-build/assets/index-BFUMIwbI.css     32.86 kB │ gzip:   7.24 kB
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5829756Z ../../../_temp/clinrx-authoring-build/assets/index-CieaiqC4.js   1,377.37 kB │ gzip: 178.29 kB
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5830057Z 
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5830543Z ^[[32m✓ built in 152ms^[[39m
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5836444Z ^[[33m[plugin builtin:vite-reporter] 
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5836877Z (!) Some chunks are larger than 500 kB after minification. Consider:
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5837283Z - Using dynamic import() to code-split the application
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5837942Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+frontend	Local synthetic authoring build	2026-10-19T07:52:11.5838600Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.^[[39m
+frontend	Bound synthetic validation evidence	﻿2026-10-19T07:52:11.6000560Z ##[group]Run mkdir -p "$RUNNER_TEMP/clinrx-frontend-evidence"
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6000840Z ^[[36;1mmkdir -p "$RUNNER_TEMP/clinrx-frontend-evidence"^[[0m
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6001131Z ^[[36;1mprintf 'job_status=%s\n' "$VALIDATION_STATUS" > "$RUNNER_TEMP/clinrx-frontend-evidence/status.txt"^[[0m
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6001480Z ^[[36;1m# Five allowlisted files, at most 64 KiB each; preserve failure summaries at the tail.^[[0m
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6001776Z ^[[36;1mfor name in environment tests typecheck build authoring-build; do^[[0m
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6002018Z ^[[36;1m  source="$RUNNER_TEMP/clinrx-frontend-logs/$name.txt"^[[0m
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6002205Z ^[[36;1m  if test -f "$source"; then^[[0m
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6002432Z ^[[36;1m    tail -c 65536 "$source" > "$RUNNER_TEMP/clinrx-frontend-evidence/$name.txt"^[[0m
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6002643Z ^[[36;1m  fi^[[0m
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6002750Z ^[[36;1mdone^[[0m
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6056519Z shell: /usr/bin/bash -e {0}
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6056670Z env:
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6056788Z   VALIDATION_STATUS: success
+frontend	Bound synthetic validation evidence	2026-10-19T07:52:11.6056970Z ##[endgroup]
+frontend	Upload bounded synthetic validation evidence	﻿2026-10-19T07:52:11.6271147Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.6271380Z with:
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.6271536Z   name: synthetic-frontend-validation-39218687969-1
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.6271758Z   path: /home/runner/work/_temp/clinrx-frontend-evidence/*.txt
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.6271942Z   retention-days: 7
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.6272059Z   compression-level: 9
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.6272186Z   if-no-files-found: error
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.6272319Z   include-hidden-files: false
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.6272458Z   overwrite: false
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.6272571Z ##[endgroup]
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.7380748Z (node:2595) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.7381256Z (Use `node --trace-deprecation ...` to show where the warning was created)
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.7422025Z With the provided path, there will be 6 files uploaded
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.7426502Z Artifact name is valid!
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:11.7427042Z Root directory input is valid!
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:12.0298165Z Beginning upload of artifact content to blob storage
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:12.0459571Z (node:2595) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:12.2222834Z Uploaded bytes 4806
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:12.2622422Z Finished uploading artifact content to blob storage!
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:12.2622923Z SHA256 digest of uploaded artifact zip is 0b0c643e30d97a4240534a104a7377d084f2c23537f97492b5d91230453a6633
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:12.2623764Z Finalizing artifact upload
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:12.5389518Z Artifact synthetic-frontend-validation-39218687969-1.zip successfully finalized. Artifact ID 12170078531
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:12.5390685Z Artifact synthetic-frontend-validation-39218687969-1 has been successfully uploaded! Final size is 4806 bytes. Artifact ID is 12170078531
+frontend	Upload bounded synthetic validation evidence	2026-10-19T07:52:12.5396653Z Artifact download URL: https://github.com/shafin-lab/clinrx-ai/actions/runs/39218687969/artifacts/12170078531
+frontend	Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	﻿2026-10-19T07:52:12.5557429Z Post job cleanup.
+frontend	Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:52:12.6361308Z (node:2607) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+frontend	Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-19T07:52:12.6361857Z (Use `node --trace-deprecation ...` to show where the warning was created)
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-10-19T07:52:12.6537423Z Post job cleanup.
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:52:12.7115155Z [command]/usr/bin/git version
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:52:12.7148525Z git version 2.55.0
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:52:12.7173188Z Temporarily overriding HOME='/home/runner/work/_temp/54417a30-4e1d-463b-a2d1-53c26537c8bb' before making global git config changes
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:52:12.7174054Z Adding repository directory to the temporary git global config as a safe directory
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:52:12.7176613Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/clinrx-ai/clinrx-ai
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:52:12.7212891Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:52:12.7243933Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:52:12.7438945Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:52:12.7483243Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+frontend	Complete job	﻿2026-10-19T07:52:12.7806255Z Cleaning up orphan processes
+frontend	Complete job	2026-10-19T07:52:12.8027271Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+backend	Set up job	﻿2026-10-19T07:51:25.4530506Z Current runner version: '2.337.0'
+backend	Set up job	2026-10-19T07:51:25.4561002Z ##[group]Runner Image Provisioner
+backend	Set up job	2026-10-19T07:51:25.4561885Z Hosted Compute Agent
+backend	Set up job	2026-10-19T07:51:25.4562456Z Version: 20261012.601
+backend	Set up job	2026-10-19T07:51:25.4562950Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+backend	Set up job	2026-10-19T07:51:25.4563541Z Build Date: 2026-10-12T17:48:21Z
+backend	Set up job	2026-10-19T07:51:25.4564084Z Worker ID: {d8b3d3ae-1d2e-44ff-8957-d32e19e236d1}
+backend	Set up job	2026-10-19T07:51:25.4564740Z Region: westus3
+backend	Set up job	2026-10-19T07:51:25.4565197Z Cloud: Azure
+backend	Set up job	2026-10-19T07:51:25.4565588Z ##[endgroup]
+backend	Set up job	2026-10-19T07:51:25.4566674Z ##[group]Operating System
+backend	Set up job	2026-10-19T07:51:25.4567188Z Ubuntu
+backend	Set up job	2026-10-19T07:51:25.4567580Z 24.04.5
+backend	Set up job	2026-10-19T07:51:25.4568017Z LTS
+backend	Set up job	2026-10-19T07:51:25.4568510Z ##[endgroup]
+backend	Set up job	2026-10-19T07:51:25.4568940Z ##[group]Runner Image
+backend	Set up job	2026-10-19T07:51:25.4569375Z Image: ubuntu-24.04
+backend	Set up job	2026-10-19T07:51:25.4569828Z Version: 20261012.334.1
+backend	Set up job	2026-10-19T07:51:25.4570591Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+backend	Set up job	2026-10-19T07:51:25.4571742Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+backend	Set up job	2026-10-19T07:51:25.4572395Z ##[endgroup]
+backend	Set up job	2026-10-19T07:51:25.4573544Z ##[group]GITHUB_TOKEN Permissions
+backend	Set up job	2026-10-19T07:51:25.4575248Z Contents: read
+backend	Set up job	2026-10-19T07:51:25.4575619Z Metadata: read
+backend	Set up job	2026-10-19T07:51:25.4576088Z ##[endgroup]
+backend	Set up job	2026-10-19T07:51:25.4577706Z Secret source: Actions
+backend	Set up job	2026-10-19T07:51:25.4578489Z Cache mode: write
+backend	Set up job	2026-10-19T07:51:25.4579158Z Prepare workflow directory
+backend	Set up job	2026-10-19T07:51:25.4858395Z Prepare all required actions
+backend	Set up job	2026-10-19T07:51:25.4891213Z Getting action download info
+backend	Set up job	2026-10-19T07:51:25.7805696Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+backend	Set up job	2026-10-19T07:51:25.9413402Z Download action repository 'actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+backend	Set up job	2026-10-19T07:51:26.1314845Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+backend	Set up job	2026-10-19T07:51:26.5742212Z Complete job name: backend
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-10-19T07:51:26.6236606Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6237245Z with:
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6237514Z   persist-credentials: false
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6237831Z   repository: shafin-lab/clinrx-ai
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6240364Z   token: ***
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6240617Z   ssh-strict: true
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6240877Z   ssh-user: git
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6241132Z   clean: true
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6241414Z   sparse-checkout-cone-mode: true
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6241730Z   fetch-depth: 1
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6241990Z   fetch-tags: false
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6242259Z   show-progress: true
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6242528Z   lfs: false
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6242779Z   submodules: false
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6243077Z   set-safe-directory: true
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6243438Z env:
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6243704Z   PYTHONPATH: backend
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6244025Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6244321Z ##[endgroup]
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6929592Z Syncing repository: shafin-lab/clinrx-ai
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6931915Z ##[group]Getting Git version info
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6932677Z Working directory is '/home/runner/work/clinrx-ai/clinrx-ai'
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6933704Z [command]/usr/bin/git version
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.6985455Z git version 2.55.0
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7002139Z ##[endgroup]
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7020533Z Temporarily overriding HOME='/home/runner/work/_temp/f1e9f8d6-2346-4157-83ce-e7d6334d462a' before making global git config changes
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7022212Z Adding repository directory to the temporary git global config as a safe directory
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7023555Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/clinrx-ai/clinrx-ai
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7073416Z Deleting the contents of '/home/runner/work/clinrx-ai/clinrx-ai'
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7078804Z ##[group]Initializing the repository
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7083938Z [command]/usr/bin/git init /home/runner/work/clinrx-ai/clinrx-ai
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7271903Z hint: Using 'master' as the name for the initial branch. This default branch name
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7273632Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7274820Z hint: to use in all of your new repositories, which will suppress this warning,
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7275715Z hint: call:
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7276220Z hint:
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7276879Z hint: 	git config --global init.defaultBranch <name>
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7277621Z hint:
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7278541Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7279646Z hint: 'development'. The just-created branch can be renamed via this command:
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7280527Z hint:
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7281060Z hint: 	git branch -m <name>
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7281680Z hint:
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7282448Z hint: Disable this message with "git config set advice.defaultBranchName false"
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7283886Z Initialized empty Git repository in /home/runner/work/clinrx-ai/clinrx-ai/.git/
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7287971Z [command]/usr/bin/git remote add origin https://github.com/shafin-lab/clinrx-ai
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7421240Z ##[endgroup]
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7422174Z ##[group]Disabling automatic garbage collection
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7424076Z [command]/usr/bin/git config --local gc.auto 0
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7459498Z ##[endgroup]
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7460104Z ##[group]Setting up auth
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7464629Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7497504Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7823715Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.7855366Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.8036220Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.8071757Z ##[endgroup]
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.8072391Z ##[group]Fetching the repository
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:26.8078955Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ee81661d7ae70d6ab5491a2da8634f675381d00a:refs/tags/clinrx-hemodynamics-workflow-milestone-ee81661
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0259678Z From https://github.com/shafin-lab/clinrx-ai
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0262183Z  * [new ref]         ee81661d7ae70d6ab5491a2da8634f675381d00a -> clinrx-hemodynamics-workflow-milestone-ee81661
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0266806Z ##[endgroup]
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0268536Z ##[group]Determining the checkout info
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0270253Z ##[endgroup]
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0271502Z [command]/usr/bin/git sparse-checkout disable
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0356556Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0389321Z ##[group]Checking out the ref
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0393556Z [command]/usr/bin/git checkout --progress --force refs/tags/clinrx-hemodynamics-workflow-milestone-ee81661
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0724333Z Note: switching to 'refs/tags/clinrx-hemodynamics-workflow-milestone-ee81661'.
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0724884Z 
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0725139Z You are in 'detached HEAD' state. You can look around, make experimental
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0725638Z changes and commit them, and you can discard any commits you make in this
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0726177Z state without impacting any branches by switching back to a branch.
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0726459Z 
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0726712Z If you want to create a new branch to retain commits you create, you may
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0727630Z do so (now or later) by using -c with the switch command. Example:
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0727890Z 
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0728023Z   git switch -c <new-branch-name>
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0728233Z 
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0728508Z Or undo this operation with:
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0728671Z 
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0728776Z   git switch -
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0729007Z 
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0729388Z Turn off this advice by setting config variable advice.detachedHead to false
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0732341Z 
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0732748Z HEAD is now at ee81661 Complete the bounded synthetic hemodynamics patient workflow milestone
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0736252Z ##[endgroup]
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0781068Z [command]/usr/bin/git log -1 --format=%H
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0836979Z ee81661d7ae70d6ab5491a2da8634f675381d00a
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0843962Z ##[group]Removing auth
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0847124Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.0876153Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.1063276Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.1091110Z http.https://github.com/.extraheader
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.1096952Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.1126570Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+backend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T07:51:28.1308629Z ##[endgroup]
+backend	Verify clean source checkout	﻿2026-10-19T07:51:28.1478015Z ##[group]Run test -z "$(git status --porcelain=v1 --untracked-files=all)"
+backend	Verify clean source checkout	2026-10-19T07:51:28.1478777Z ^[[36;1mtest -z "$(git status --porcelain=v1 --untracked-files=all)"^[[0m
+backend	Verify clean source checkout	2026-10-19T07:51:28.1713929Z shell: /usr/bin/bash -e {0}
+backend	Verify clean source checkout	2026-10-19T07:51:28.1714269Z env:
+backend	Verify clean source checkout	2026-10-19T07:51:28.1714464Z   PYTHONPATH: backend
+backend	Verify clean source checkout	2026-10-19T07:51:28.1714650Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Verify clean source checkout	2026-10-19T07:51:28.1714843Z ##[endgroup]
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	﻿2026-10-19T07:51:28.2107197Z ##[group]Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.2107504Z with:
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.2107665Z   python-version: 3.11.6
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.2107846Z   check-latest: false
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.2109804Z   token: ***
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.2109963Z   update-environment: true
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.2110146Z   allow-prereleases: false
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.2110317Z   freethreaded: false
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.2110477Z env:
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.2110622Z   PYTHONPATH: backend
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.2110794Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.2110971Z ##[endgroup]
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.3015568Z ##[group]Installed versions
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.3030565Z Version 3.11.6 was not found in the local cache
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.3108210Z (node:2113) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:28.3108974Z (Use `node --trace-deprecation ...` to show where the warning was created)
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:29.4459977Z Version 3.11.6 is available for downloading
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:29.4460726Z Download from "https://github.com/actions/python-versions/releases/download/3.11.6-11113179737/python-3.11.6-linux-24.04-x64.tar.gz"
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:30.0645656Z Extract downloaded archive
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:30.0739502Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/9350c883-7436-4337-a9a9-9b4432b7febc -f /home/runner/work/_temp/28292287-021a-4c77-9611-412c0a611681
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:31.6420261Z Execute installation script
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:31.6511133Z Check if Python hostedtoolcache folder exist...
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:31.6511549Z Create Python 3.11.6 folder
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:31.6523443Z Copy Python binaries to hostedtoolcache folder
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:32.0570316Z Create additional symlinks (Required for the UsePythonVersion Azure Pipelines task and the setup-python GitHub Action)
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:32.0606575Z Upgrading pip...
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:33.8593146Z Looking in links: /tmp/tmpixj2cmz0
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:33.8598854Z Requirement already satisfied: setuptools in /opt/hostedtoolcache/Python/3.11.6/x64/lib/python3.11/site-packages (65.5.0)
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:33.8605100Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.11.6/x64/lib/python3.11/site-packages (23.2.1)
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:35.2926010Z Collecting pip
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:35.2926993Z Obtaining dependency information for pip from https://files.pythonhosted.org/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl.metadata
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:35.3419700Z Downloading pip-26.2.1-py3-none-any.whl.metadata (4.6 kB)
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:35.4069665Z Downloading pip-26.2.1-py3-none-any.whl (1.8 MB)
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:35.6775469Z ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 6.8 MB/s eta 0:00:00
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:35.6775852Z 
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:35.7095888Z Installing collected packages: pip
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:35.7096231Z Attempting uninstall: pip
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:35.7109703Z Found existing installation: pip 23.2.1
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:35.7367305Z Uninstalling pip-23.2.1:
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:35.7413288Z Successfully uninstalled pip-23.2.1
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:36.6630903Z Successfully installed pip-26.2.1
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:36.7630257Z Create complete file
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:36.7669065Z Successfully set up CPython (3.11.6)
+backend	Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T07:51:36.7670263Z ##[endgroup]
+backend	Record checkout and environment	﻿2026-10-19T07:51:36.8720995Z ##[group]Run set -o pipefail
+backend	Record checkout and environment	2026-10-19T07:51:36.8721273Z ^[[36;1mset -o pipefail^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8721456Z ^[[36;1mmkdir -p "$RUNNER_TEMP/clinrx-backend-logs"^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8721645Z ^[[36;1m{^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8721775Z ^[[36;1m  git rev-parse HEAD^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8722035Z ^[[36;1m  printf 'event=%s source_sha=%s ref=%s\n' "$GITHUB_EVENT_NAME" "$GITHUB_SHA" "$GITHUB_REF"^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8722399Z ^[[36;1m  printf 'runner_image=%s image_version=%s\n' "$ImageOS" "$ImageVersion"^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8722639Z ^[[36;1m  cat /etc/os-release^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8722787Z ^[[36;1m  uname -m^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8722922Z ^[[36;1m  python --version^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8723075Z ^[[36;1m  python -m pip --version^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8723245Z ^[[36;1m  sha256sum backend/requirements*.txt^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8723467Z ^[[36;1m} 2>&1 | tee "$RUNNER_TEMP/clinrx-backend-logs/environment.txt"^[[0m
+backend	Record checkout and environment	2026-10-19T07:51:36.8786767Z shell: /usr/bin/bash -e {0}
+backend	Record checkout and environment	2026-10-19T07:51:36.8786999Z env:
+backend	Record checkout and environment	2026-10-19T07:51:36.8787216Z   PYTHONPATH: backend
+backend	Record checkout and environment	2026-10-19T07:51:36.8787366Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Record checkout and environment	2026-10-19T07:51:36.8787558Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Record checkout and environment	2026-10-19T07:51:36.8787836Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib/pkgconfig
+backend	Record checkout and environment	2026-10-19T07:51:36.8788092Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Record checkout and environment	2026-10-19T07:51:36.8788434Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Record checkout and environment	2026-10-19T07:51:36.8788664Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Record checkout and environment	2026-10-19T07:51:36.8788895Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib
+backend	Record checkout and environment	2026-10-19T07:51:36.8789095Z ##[endgroup]
+backend	Record checkout and environment	2026-10-19T07:51:37.0056572Z ee81661d7ae70d6ab5491a2da8634f675381d00a
+backend	Record checkout and environment	2026-10-19T07:51:37.0058711Z event=workflow_dispatch source_sha=ee81661d7ae70d6ab5491a2da8634f675381d00a ref=refs/tags/clinrx-hemodynamics-workflow-milestone-ee81661
+backend	Record checkout and environment	2026-10-19T07:51:37.0059119Z runner_image=ubuntu24 image_version=20261012.334.1
+backend	Record checkout and environment	2026-10-19T07:51:37.0066372Z PRETTY_NAME="Ubuntu 24.04.5 LTS"
+backend	Record checkout and environment	2026-10-19T07:51:37.0066626Z NAME="Ubuntu"
+backend	Record checkout and environment	2026-10-19T07:51:37.0066786Z VERSION_ID="24.04"
+backend	Record checkout and environment	2026-10-19T07:51:37.0066924Z VERSION="24.04.5 LTS (Noble Numbat)"
+backend	Record checkout and environment	2026-10-19T07:51:37.0067089Z VERSION_CODENAME=noble
+backend	Record checkout and environment	2026-10-19T07:51:37.0067220Z ID=ubuntu
+backend	Record checkout and environment	2026-10-19T07:51:37.0067335Z ID_LIKE=debian
+backend	Record checkout and environment	2026-10-19T07:51:37.0067488Z HOME_URL="https://www.ubuntu.com/"
+backend	Record checkout and environment	2026-10-19T07:51:37.0067842Z SUPPORT_URL="https://help.ubuntu.com/"
+backend	Record checkout and environment	2026-10-19T07:51:37.0068043Z BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+backend	Record checkout and environment	2026-10-19T07:51:37.0068499Z PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+backend	Record checkout and environment	2026-10-19T07:51:37.0068803Z UBUNTU_CODENAME=noble
+backend	Record checkout and environment	2026-10-19T07:51:37.0068941Z LOGO=ubuntu-logo
+backend	Record checkout and environment	2026-10-19T07:51:37.0075436Z x86_64
+backend	Record checkout and environment	2026-10-19T07:51:37.0092088Z Python 3.11.6
+backend	Record checkout and environment	2026-10-19T07:51:37.3820073Z pip 26.2.1 from /opt/hostedtoolcache/Python/3.11.6/x64/lib/python3.11/site-packages/pip (python 3.11)
+backend	Record checkout and environment	2026-10-19T07:51:37.4192331Z 8e6097bbf2d5185c0aecdd0a5a1f9d97b933a5416d2721f2da1846d83fbbc789  backend/requirements-dev.txt
+backend	Record checkout and environment	2026-10-19T07:51:37.4193021Z 9d667072526148aa7d71105f89c575fe8dec0345275aa17838c1ebeafbdaaffd  backend/requirements-migrations.txt
+backend	Record checkout and environment	2026-10-19T07:51:37.4193684Z c2ba1ca8ab41540f58949fe29765fb491e4f9e0c8e8b570fd905c6a004aaa538  backend/requirements.txt
+backend	Install pinned backend dependencies in a fresh environment	﻿2026-10-19T07:51:37.4840681Z ##[group]Run python -m venv "$RUNNER_TEMP/clinrx-backend"
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4841158Z ^[[36;1mpython -m venv "$RUNNER_TEMP/clinrx-backend"^[[0m
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4841626Z ^[[36;1m"$RUNNER_TEMP/clinrx-backend/bin/python" -m pip install -r backend/requirements-dev.txt^[[0m
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4842132Z ^[[36;1m"$RUNNER_TEMP/clinrx-backend/bin/python" -m pip check^[[0m
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4903995Z shell: /usr/bin/bash -e {0}
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4904192Z env:
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4904330Z   PYTHONPATH: backend
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4904481Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4904676Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4904936Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib/pkgconfig
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4905190Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4905420Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4905649Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4905935Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:37.4906146Z ##[endgroup]
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.5070261Z Collecting annotated-doc==0.0.5 (from -r backend/requirements.txt (line 1))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.5071800Z   Obtaining dependency information for annotated-doc==0.0.5 from https://files.pythonhosted.org/packages/3e/30/e900b21425a860e195f32e37657aa1f7c7f2b1bfb26f03ca209b90933c06/annotated_doc-0.0.5-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.5523804Z   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.5981290Z Collecting annotated-types==0.8.0 (from -r backend/requirements.txt (line 2))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.5982453Z   Obtaining dependency information for annotated-types==0.8.0 from https://files.pythonhosted.org/packages/99/91/8acff4f5e50511b911bbccb72b8628a49c68ce14148cd9f6431094859a90/annotated_types-0.8.0-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.6100200Z   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.6446974Z Collecting anyio==4.14.2 (from -r backend/requirements.txt (line 3))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.6448803Z   Obtaining dependency information for anyio==4.14.2 from https://files.pythonhosted.org/packages/da/35/f2287558c17e29fafc8ef3daf819bb9834061cfa43bff8014f7df7f63bdc/anyio-4.14.2-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.6560768Z   Downloading anyio-4.14.2-py3-none-any.whl.metadata (4.6 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.6870304Z Collecting click==8.4.2 (from -r backend/requirements.txt (line 4))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.6871473Z   Obtaining dependency information for click==8.4.2 from https://files.pythonhosted.org/packages/fb/e2/79c688af8b210d232694e31e59da9f6ec747bae31c3f5946e4e9b98860d5/click-8.4.2-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.6979183Z   Downloading click-8.4.2-py3-none-any.whl.metadata (2.6 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.7797200Z Collecting fastapi==0.141.1 (from -r backend/requirements.txt (line 5))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.7798914Z   Obtaining dependency information for fastapi==0.141.1 from https://files.pythonhosted.org/packages/cb/03/10388a42375ee7e4ac9b94eb2c5c569c8b5795e377e701c9ac3ad63de890/fastapi-0.141.1-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.7904962Z   Downloading fastapi-0.141.1-py3-none-any.whl.metadata (27 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.8141733Z Collecting h11==0.16.0 (from -r backend/requirements.txt (line 6))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.8142509Z   Obtaining dependency information for h11==0.16.0 from https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.8246772Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.8479002Z Collecting idna==3.18 (from -r backend/requirements.txt (line 7))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.8480151Z   Obtaining dependency information for idna==3.18 from https://files.pythonhosted.org/packages/1e/5e/d4e9f1a599fb8e573b7b87160658329fbf28d19eac2718f51fc3def3aa5a/idna-3.18-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:41.8587296Z   Downloading idna-3.18-py3-none-any.whl.metadata (6.1 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:42.0338705Z Collecting pydantic==2.13.4 (from -r backend/requirements.txt (line 8))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:42.0340088Z   Obtaining dependency information for pydantic==2.13.4 from https://files.pythonhosted.org/packages/fd/7b/122376b1fd3c62c1ed9dc80c931ace4844b3c55407b6fb2d199377c9736f/pydantic-2.13.4-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:42.0447540Z   Downloading pydantic-2.13.4-py3-none-any.whl.metadata (109 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:42.0594325Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 109.4/109.4 kB 8.1 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.1461036Z Collecting pydantic_core==2.46.4 (from -r backend/requirements.txt (line 9))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.1462143Z   Obtaining dependency information for pydantic_core==2.46.4 from https://files.pythonhosted.org/packages/80/50/540cd3aeefc041beb111125c4bff779831a2111fc6b15a9138cda277d32c/pydantic_core-2.46.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.1567431Z   Downloading pydantic_core-2.46.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.1963668Z Collecting starlette==1.6.0 (from -r backend/requirements.txt (line 10))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.1964842Z   Obtaining dependency information for starlette==1.6.0 from https://files.pythonhosted.org/packages/c8/cb/6a6a47d5b464bd08695d254f3da6e7986cc70c9fa5d778eda57538edfe56/starlette-1.6.0-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.2074570Z   Downloading starlette-1.6.0-py3-none-any.whl.metadata (6.4 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.2270401Z Collecting typing-inspection==0.4.4 (from -r backend/requirements.txt (line 11))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.2271479Z   Obtaining dependency information for typing-inspection==0.4.4 from https://files.pythonhosted.org/packages/67/81/4add07e5172b7ac40d8ed5ff580409a7801a4fe26d529bdd915401dabfbe/typing_inspection-0.4.4-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.2376645Z   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.2662342Z Collecting typing_extensions==4.16.0 (from -r backend/requirements.txt (line 12))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.2663549Z   Obtaining dependency information for typing_extensions==4.16.0 from https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.2767144Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.4412907Z Collecting uvicorn==0.52.3 (from -r backend/requirements.txt (line 13))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.4413913Z   Obtaining dependency information for uvicorn==0.52.3 from https://files.pythonhosted.org/packages/dc/2b/ebd108734a8204c6b4b93c681c9a38c5273b3ccd5d129fee4ffc1d97772c/uvicorn-0.52.3-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.4525834Z   Downloading uvicorn-0.52.3-py3-none-any.whl.metadata (6.6 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.9831049Z Collecting SQLAlchemy==2.0.54 (from -r backend/requirements.txt (line 14))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.9832299Z   Obtaining dependency information for SQLAlchemy==2.0.54 from https://files.pythonhosted.org/packages/77/d5/ffd6b59795ebec81d582ad866f71ec7c73d356768e0442c6a07bba61c40c/sqlalchemy-2.0.54-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:43.9941013Z   Downloading sqlalchemy-2.0.54-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.7 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.2123265Z Collecting greenlet==3.5.6 (from -r backend/requirements.txt (line 15))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.2127666Z   Obtaining dependency information for greenlet==3.5.6 from https://files.pythonhosted.org/packages/ec/d3/63d4477ce31dff2fd802a9a20240f6606aac85977e0fb18443aae33de3f6/greenlet-3.5.6-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.2239827Z   Downloading greenlet-3.5.6-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.2521659Z Collecting itsdangerous==2.2.0 (from -r backend/requirements.txt (line 16))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.2523303Z   Obtaining dependency information for itsdangerous==2.2.0 from https://files.pythonhosted.org/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.2628669Z   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.2993502Z Collecting alembic==1.20.0 (from -r backend/requirements-migrations.txt (line 2))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.2994556Z   Obtaining dependency information for alembic==1.20.0 from https://files.pythonhosted.org/packages/3f/27/78a89b55b0904d222183164e079b4ca56208e94eff1d35ad1f1ad5be9b06/alembic-1.20.0-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.3103516Z   Downloading alembic-1.20.0-py3-none-any.whl.metadata (7.3 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.3440660Z Collecting Mako==1.4.3 (from -r backend/requirements-migrations.txt (line 3))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.3441767Z   Obtaining dependency information for Mako==1.4.3 from https://files.pythonhosted.org/packages/6d/a0/053d6af3e8f871e0073b4a36732d9e65be77a72e5434c31b94f6af78a6bb/mako-1.4.3-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.3546880Z   Downloading mako-1.4.3-py3-none-any.whl.metadata (2.9 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.5443312Z Collecting MarkupSafe==3.0.3 (from -r backend/requirements-migrations.txt (line 4))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.5446337Z   Obtaining dependency information for MarkupSafe==3.0.3 from https://files.pythonhosted.org/packages/30/ac/0273f6fcb5f42e314c6d8cd99effae6a5354604d461b8d392b5ec9530a54/markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.5551709Z   Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.6046447Z Collecting pytest==9.1.1 (from -r backend/requirements-dev.txt (line 2))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.6047415Z   Obtaining dependency information for pytest==9.1.1 from https://files.pythonhosted.org/packages/24/25/1de2678b631f5a49215c6c96fff41ba892b0a34df68d6d80292b1b48aa7f/pytest-9.1.1-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.6155037Z   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.6361992Z Collecting iniconfig==2.3.0 (from -r backend/requirements-dev.txt (line 3))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.6363276Z   Obtaining dependency information for iniconfig==2.3.0 from https://files.pythonhosted.org/packages/cb/b1/3846dd7f199d53cb17f49cba7e651e9ce294d8497c8c150530ed11865bb8/iniconfig-2.3.0-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.6468782Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.6754892Z Collecting packaging==26.3 (from -r backend/requirements-dev.txt (line 4))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.6756410Z   Obtaining dependency information for packaging==26.3 from https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.6862003Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.7089681Z Collecting pluggy==1.6.0 (from -r backend/requirements-dev.txt (line 5))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.7091240Z   Obtaining dependency information for pluggy==1.6.0 from https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.7197223Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.7597683Z Collecting Pygments==2.21.0 (from -r backend/requirements-dev.txt (line 6))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.7601296Z   Obtaining dependency information for Pygments==2.21.0 from https://files.pythonhosted.org/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.7706889Z   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.8012680Z Collecting httpx==0.28.1 (from -r backend/requirements-dev.txt (line 7))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.8013991Z   Obtaining dependency information for httpx==0.28.1 from https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.8120420Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.8400013Z Collecting httpcore==1.0.9 (from -r backend/requirements-dev.txt (line 8))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.8401028Z   Obtaining dependency information for httpcore==1.0.9 from https://files.pythonhosted.org/packages/7e/f5/f66802a942d491edb555dd61e3a9961140fd64c90bce1eafd741609d334d/httpcore-1.0.9-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.8505853Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.8803621Z Collecting certifi==2026.7.22 (from -r backend/requirements-dev.txt (line 9))
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.8804883Z   Obtaining dependency information for certifi==2026.7.22 from https://files.pythonhosted.org/packages/0b/a7/71ac2cff56fec219ed242bb11b8efb69fcc4bec75db06fb7bfe35de520e6/certifi-2026.7.22-py3-none-any.whl.metadata
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:44.8910239Z   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.0526629Z Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.0641676Z Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.0758800Z Downloading anyio-4.14.2-py3-none-any.whl (125 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.0873200Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 125.8/125.8 kB 11.9 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.0975821Z Downloading click-8.4.2-py3-none-any.whl (119 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.1009463Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 119.2/119.2 kB 58.1 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.1111302Z Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.1145307Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 132.0/132.0 kB 59.4 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.1245761Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.1357670Z Downloading idna-3.18-py3-none-any.whl (65 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.1382336Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 65.5/65.5 kB 48.7 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.1484366Z Downloading pydantic-2.13.4-py3-none-any.whl (472 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.1632932Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 472.3/472.3 kB 35.6 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.1738866Z Downloading pydantic_core-2.46.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.2136271Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 54.6 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.2242689Z Downloading starlette-1.6.0-py3-none-any.whl (75 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.2273113Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76.0/76.0 kB 42.2 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.2377304Z Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.2493972Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.2519982Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 kB 29.3 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.2622342Z Downloading uvicorn-0.52.3-py3-none-any.whl (79 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.2652136Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.9/79.9 kB 52.0 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.2762096Z Downloading sqlalchemy-2.0.54-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.4 MB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.3076952Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 114.2 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.3185692Z Downloading greenlet-3.5.6-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (624 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.3237922Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 624.4/624.4 kB 203.1 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.3343890Z Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.3460846Z Downloading alembic-1.20.0-py3-none-any.whl (268 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.3496887Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 268.7/268.7 kB 127.8 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.3599591Z Downloading mako-1.4.3-py3-none-any.whl (80 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.3627824Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 80.2/80.2 kB 50.8 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.3732041Z Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.3870888Z Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.3911060Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 386.5/386.5 kB 153.2 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4012653Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4127919Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4159275Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 130.0/130.0 kB 77.4 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4264441Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4385620Z Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4457642Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 243.2 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4560843Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4587506Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.5/73.5 kB 48.8 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4690005Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4715490Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.8/78.8 kB 53.9 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4816220Z Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.4842086Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 137.0/137.0 kB 91.3 MB/s eta 0:00:00
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:45.5957279Z Installing collected packages: typing_extensions, Pygments, pluggy, packaging, MarkupSafe, itsdangerous, iniconfig, idna, h11, greenlet, click, certifi, annotated-types, annotated-doc, uvicorn, typing-inspection, SQLAlchemy, pytest, pydantic_core, Mako, httpcore, anyio, starlette, pydantic, httpx, alembic, fastapi
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:47.7523827Z Successfully installed Mako-1.4.3 MarkupSafe-3.0.3 Pygments-2.21.0 SQLAlchemy-2.0.54 alembic-1.20.0 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.14.2 certifi-2026.7.22 click-8.4.2 fastapi-0.141.1 greenlet-3.5.6 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.18 iniconfig-2.3.0 itsdangerous-2.2.0 packaging-26.3 pluggy-1.6.0 pydantic-2.13.4 pydantic_core-2.46.4 pytest-9.1.1 starlette-1.6.0 typing-inspection-0.4.4 typing_extensions-4.16.0 uvicorn-0.52.3
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:47.8342850Z 
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:49.2041257Z [notice] A new release of pip is available: 23.2.1 -> 26.2.1
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:49.2041643Z [notice] To update, run: python -m pip install --upgrade pip
+backend	Install pinned backend dependencies in a fresh environment	2026-10-19T07:51:49.2041869Z No broken requirements found.
+backend	Record resolved Python dependencies	﻿2026-10-19T07:51:49.2741566Z ##[group]Run "$RUNNER_TEMP/clinrx-backend/bin/python" -m pip freeze --all > "$RUNNER_TEMP/clinrx-backend-logs/dependencies.txt"
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2742080Z ^[[36;1m"$RUNNER_TEMP/clinrx-backend/bin/python" -m pip freeze --all > "$RUNNER_TEMP/clinrx-backend-logs/dependencies.txt"^[[0m
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2742424Z ^[[36;1mcat "$RUNNER_TEMP/clinrx-backend-logs/dependencies.txt"^[[0m
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2797245Z shell: /usr/bin/bash -e {0}
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2797410Z env:
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2797533Z   PYTHONPATH: backend
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2797675Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2797857Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2798103Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib/pkgconfig
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2798467Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2798678Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2798892Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2799138Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.2799324Z ##[endgroup]
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9206852Z alembic==1.20.0
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9207218Z annotated-doc==0.0.5
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9207461Z annotated-types==0.8.0
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9207646Z anyio==4.14.2
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9207769Z certifi==2026.7.22
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9207924Z click==8.4.2
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9208038Z fastapi==0.141.1
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9208154Z greenlet==3.5.6
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9208265Z h11==0.16.0
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9208500Z httpcore==1.0.9
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9208705Z httpx==0.28.1
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9208864Z idna==3.18
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9209021Z iniconfig==2.3.0
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9209190Z itsdangerous==2.2.0
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9209362Z Mako==1.4.3
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9209528Z MarkupSafe==3.0.3
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9209708Z packaging==26.3
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9209881Z pip==23.2.1
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9210039Z pluggy==1.6.0
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9210239Z pydantic==2.13.4
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9210483Z pydantic_core==2.46.4
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9210666Z Pygments==2.21.0
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9210850Z pytest==9.1.1
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9211020Z setuptools==65.5.0
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9211192Z SQLAlchemy==2.0.54
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9211363Z starlette==1.6.0
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9211554Z typing-inspection==0.4.4
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9211770Z typing_extensions==4.16.0
+backend	Record resolved Python dependencies	2026-10-19T07:51:49.9211971Z uvicorn==0.52.3
+backend	Verify schema head	﻿2026-10-19T07:51:49.9249229Z ##[group]Run actual=$("$RUNNER_TEMP/clinrx-backend/bin/alembic" -c backend/alembic.ini heads)
+backend	Verify schema head	2026-10-19T07:51:49.9249914Z ^[[36;1mactual=$("$RUNNER_TEMP/clinrx-backend/bin/alembic" -c backend/alembic.ini heads)^[[0m
+backend	Verify schema head	2026-10-19T07:51:49.9250424Z ^[[36;1mprintf '%s\n' "$actual" > "$RUNNER_TEMP/clinrx-backend-logs/schema-head.txt"^[[0m
+backend	Verify schema head	2026-10-19T07:51:49.9250883Z ^[[36;1mcat "$RUNNER_TEMP/clinrx-backend-logs/schema-head.txt"^[[0m
+backend	Verify schema head	2026-10-19T07:51:49.9251201Z ^[[36;1mtest "$actual" = 'm7_0008 (head)'^[[0m
+backend	Verify schema head	2026-10-19T07:51:49.9324331Z shell: /usr/bin/bash -e {0}
+backend	Verify schema head	2026-10-19T07:51:49.9324552Z env:
+backend	Verify schema head	2026-10-19T07:51:49.9324690Z   PYTHONPATH: backend
+backend	Verify schema head	2026-10-19T07:51:49.9324837Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Verify schema head	2026-10-19T07:51:49.9325026Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Verify schema head	2026-10-19T07:51:49.9325292Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib/pkgconfig
+backend	Verify schema head	2026-10-19T07:51:49.9325535Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Verify schema head	2026-10-19T07:51:49.9325980Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Verify schema head	2026-10-19T07:51:49.9326501Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Verify schema head	2026-10-19T07:51:49.9326841Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib
+backend	Verify schema head	2026-10-19T07:51:49.9327137Z ##[endgroup]
+backend	Verify schema head	2026-10-19T07:51:50.5714555Z m7_0008 (head)
+backend	Full backend suite	﻿2026-10-19T07:51:50.5751812Z ##[group]Run set -o pipefail
+backend	Full backend suite	2026-10-19T07:51:50.5752155Z ^[[36;1mset -o pipefail^[[0m
+backend	Full backend suite	2026-10-19T07:51:50.5752710Z ^[[36;1m"$RUNNER_TEMP/clinrx-backend/bin/python" -m pytest -q -p no:cacheprovider tests 2>&1 | tee "$RUNNER_TEMP/clinrx-backend-logs/pytest.txt"^[[0m
+backend	Full backend suite	2026-10-19T07:51:50.5823746Z shell: /usr/bin/bash -e {0}
+backend	Full backend suite	2026-10-19T07:51:50.5823963Z env:
+backend	Full backend suite	2026-10-19T07:51:50.5824096Z   PYTHONPATH: backend
+backend	Full backend suite	2026-10-19T07:51:50.5824251Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Full backend suite	2026-10-19T07:51:50.5824442Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Full backend suite	2026-10-19T07:51:50.5824699Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib/pkgconfig
+backend	Full backend suite	2026-10-19T07:51:50.5824959Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Full backend suite	2026-10-19T07:51:50.5825173Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Full backend suite	2026-10-19T07:51:50.5825386Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Full backend suite	2026-10-19T07:51:50.5825603Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib
+backend	Full backend suite	2026-10-19T07:51:50.5825840Z ##[endgroup]
+backend	Full backend suite	2026-10-19T07:52:03.5484943Z ........................................................................ [  1%]
+backend	Full backend suite	2026-10-19T07:52:08.1500752Z ........................................................................ [  3%]
+backend	Full backend suite	2026-10-19T07:52:38.2273203Z ........................................................................ [  5%]
+backend	Full backend suite	2026-10-19T07:52:47.8834554Z ........................................................................ [  6%]
+backend	Full backend suite	2026-10-19T07:52:52.4802464Z ........................................................................ [  8%]
+backend	Full backend suite	2026-10-19T07:52:57.4010529Z ........................................................................ [ 10%]
+backend	Full backend suite	2026-10-19T07:53:01.8986710Z ........................................................................ [ 11%]
+backend	Full backend suite	2026-10-19T07:53:02.9938685Z ........................................................................ [ 13%]
+backend	Full backend suite	2026-10-19T07:53:11.8851941Z ........................................................................ [ 15%]
+backend	Full backend suite	2026-10-19T07:53:26.1334505Z ........................................................................ [ 16%]
+backend	Full backend suite	2026-10-19T07:53:32.3493926Z ........................................................................ [ 18%]
+backend	Full backend suite	2026-10-19T07:53:45.6894948Z ........................................................................ [ 20%]
+backend	Full backend suite	2026-10-19T07:53:59.5177238Z ........................................................................ [ 21%]
+backend	Full backend suite	2026-10-19T07:54:11.3754031Z ........................................................................ [ 23%]
+backend	Full backend suite	2026-10-19T07:54:28.5515272Z ........................................................................ [ 25%]
+backend	Full backend suite	2026-10-19T07:54:55.6778254Z ........................................................................ [ 26%]
+backend	Full backend suite	2026-10-19T07:55:01.1558996Z ........................................................................ [ 28%]
+backend	Full backend suite	2026-10-19T07:55:42.7518803Z ........................................................................ [ 30%]
+backend	Full backend suite	2026-10-19T07:55:48.1199294Z ........................................................................ [ 31%]
+backend	Full backend suite	2026-10-19T07:56:13.6061756Z ........................................................................ [ 33%]
+backend	Full backend suite	2026-10-19T07:56:14.0984987Z ........................................................................ [ 35%]
+backend	Full backend suite	2026-10-19T07:56:17.9658796Z ........................................................................ [ 36%]
+backend	Full backend suite	2026-10-19T07:56:26.8710441Z ........................................................................ [ 38%]
+backend	Full backend suite	2026-10-19T07:56:33.7155506Z ........................................................................ [ 40%]
+backend	Full backend suite	2026-10-19T07:56:35.7324672Z ........................................................................ [ 41%]
+backend	Full backend suite	2026-10-19T07:56:41.2470389Z ........................................................................ [ 43%]
+backend	Full backend suite	2026-10-19T07:56:51.8191415Z ........................................................................ [ 45%]
+backend	Full backend suite	2026-10-19T07:56:52.2050154Z ........................................................................ [ 46%]
+backend	Full backend suite	2026-10-19T07:56:55.4519174Z ........................................................................ [ 48%]
+backend	Full backend suite	2026-10-19T07:56:55.7004419Z ........................................................................ [ 50%]
+backend	Full backend suite	2026-10-19T07:56:56.7147862Z ........................................................................ [ 51%]
+backend	Full backend suite	2026-10-19T07:57:01.9912959Z ........................................................................ [ 53%]
+backend	Full backend suite	2026-10-19T07:57:03.2489229Z ........................................................................ [ 55%]
+backend	Full backend suite	2026-10-19T07:57:08.5528923Z ........................................................................ [ 56%]
+backend	Full backend suite	2026-10-19T07:57:29.0295197Z ........................................................................ [ 58%]
+backend	Full backend suite	2026-10-19T07:57:32.2432051Z ........................................................................ [ 60%]
+backend	Full backend suite	2026-10-19T07:57:32.3067049Z ........................................................................ [ 61%]
+backend	Full backend suite	2026-10-19T07:58:22.8502678Z ........................................................................ [ 63%]
+backend	Full backend suite	2026-10-19T07:58:39.8997529Z ........................................................................ [ 65%]
+backend	Full backend suite	2026-10-19T07:58:46.3292729Z ........................................................................ [ 66%]
+backend	Full backend suite	2026-10-19T07:58:52.3142618Z ........................................................................ [ 68%]
+backend	Full backend suite	2026-10-19T07:59:04.8063951Z ........................................................................ [ 70%]
+backend	Full backend suite	2026-10-19T07:59:17.6056336Z ........................................................................ [ 71%]
+backend	Full backend suite	2026-10-19T07:59:33.6554339Z ........................................................................ [ 73%]
+backend	Full backend suite	2026-10-19T07:59:41.2467034Z ........................................................................ [ 75%]
+backend	Full backend suite	2026-10-19T07:59:46.0944529Z ........................................................................ [ 76%]
+backend	Full backend suite	2026-10-19T07:59:52.0441019Z ........................................................................ [ 78%]
+backend	Full backend suite	2026-10-19T07:59:58.6843127Z ........................................................................ [ 80%]
+backend	Full backend suite	2026-10-19T08:02:03.4182617Z ........................................................................ [ 82%]
+backend	Full backend suite	2026-10-19T08:02:15.5987935Z ........................................................................ [ 83%]
+backend	Full backend suite	2026-10-19T08:02:16.9229899Z ........................................................................ [ 85%]
+backend	Full backend suite	2026-10-19T08:02:22.9727219Z ........................................................................ [ 87%]
+backend	Full backend suite	2026-10-19T08:02:32.5057875Z ........................................................................ [ 88%]
+backend	Full backend suite	2026-10-19T08:02:44.3815246Z ........................................................................ [ 90%]
+backend	Full backend suite	2026-10-19T08:02:52.0513829Z ........................................................................ [ 92%]
+backend	Full backend suite	2026-10-19T08:03:02.6739806Z ........................................................................ [ 93%]
+backend	Full backend suite	2026-10-19T08:03:10.9290826Z ........................................................................ [ 95%]
+backend	Full backend suite	2026-10-19T08:03:22.9873308Z ........................................................................ [ 97%]
+backend	Full backend suite	2026-10-19T08:03:34.5359390Z ........................................................................ [ 98%]
+backend	Full backend suite	2026-10-19T08:03:46.2141272Z ......................................................                   [100%]
+backend	Full backend suite	2026-10-19T08:03:46.2141609Z =============================== warnings summary ===============================
+backend	Full backend suite	2026-10-19T08:03:46.2141879Z ../../_temp/clinrx-backend/lib/python3.11/site-packages/fastapi/testclient.py:1
+backend	Full backend suite	2026-10-19T08:03:46.2145019Z   /home/runner/work/_temp/clinrx-backend/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+backend	Full backend suite	2026-10-19T08:03:46.2145772Z     from starlette.testclient import TestClient as TestClient  # noqa
+backend	Full backend suite	2026-10-19T08:03:46.2145924Z 
+backend	Full backend suite	2026-10-19T08:03:46.2146189Z -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+backend	Full backend suite	2026-10-19T08:03:46.2146445Z 4302 passed, 1 warning in 713.90s (0:11:53)
+backend	Bound synthetic validation evidence	﻿2026-10-19T08:03:48.5585360Z ##[group]Run mkdir -p "$RUNNER_TEMP/clinrx-backend-evidence"
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5585648Z ^[[36;1mmkdir -p "$RUNNER_TEMP/clinrx-backend-evidence"^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5585935Z ^[[36;1mprintf 'job_status=%s\n' "$VALIDATION_STATUS" > "$RUNNER_TEMP/clinrx-backend-evidence/status.txt"^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5586291Z ^[[36;1m# Four allowlisted files, at most 64 KiB each; preserve failure summaries at the tail.^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5586584Z ^[[36;1mfor name in environment dependencies schema-head pytest; do^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5586819Z ^[[36;1m  source="$RUNNER_TEMP/clinrx-backend-logs/$name.txt"^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5587008Z ^[[36;1m  if test -f "$source"; then^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5587222Z ^[[36;1m    tail -c 65536 "$source" > "$RUNNER_TEMP/clinrx-backend-evidence/$name.txt"^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5587431Z ^[[36;1m  fi^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5587539Z ^[[36;1mdone^[[0m
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5640690Z shell: /usr/bin/bash -e {0}
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5640834Z env:
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5640945Z   PYTHONPATH: backend
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5641121Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5641294Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5641525Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib/pkgconfig
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5641749Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5641950Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5642159Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5642363Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5642543Z   VALIDATION_STATUS: success
+backend	Bound synthetic validation evidence	2026-10-19T08:03:48.5642673Z ##[endgroup]
+backend	Upload bounded synthetic validation evidence	﻿2026-10-19T08:03:48.5834310Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5834555Z with:
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5834697Z   name: synthetic-backend-validation-39218687969-1
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5834915Z   path: /home/runner/work/_temp/clinrx-backend-evidence/*.txt
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5835098Z   retention-days: 7
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5835220Z   compression-level: 9
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5835346Z   if-no-files-found: error
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5835479Z   include-hidden-files: false
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5835608Z   overwrite: false
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5835717Z env:
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5835825Z   PYTHONPATH: backend
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5835956Z   PYTHONDONTWRITEBYTECODE: 1
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5836135Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5836359Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib/pkgconfig
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5836580Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5836781Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5837005Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.6/x64
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5837206Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.6/x64/lib
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.5837380Z ##[endgroup]
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.6958799Z (node:2957) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.6959342Z (Use `node --trace-deprecation ...` to show where the warning was created)
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.7000802Z With the provided path, there will be 5 files uploaded
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.7008827Z Artifact name is valid!
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:48.7014233Z Root directory input is valid!
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:49.0660511Z Beginning upload of artifact content to blob storage
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:49.0806890Z (node:2957) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:49.2857102Z Uploaded bytes 2066
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:49.3427292Z Finished uploading artifact content to blob storage!
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:49.3428036Z SHA256 digest of uploaded artifact zip is e96e087e3ba67cff17654fd972587fab6807b8ef746b0be213e5fd70a8290b8f
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:49.3428888Z Finalizing artifact upload
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:49.5691755Z Artifact synthetic-backend-validation-39218687969-1.zip successfully finalized. Artifact ID 12171167838
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:49.5692442Z Artifact synthetic-backend-validation-39218687969-1 has been successfully uploaded! Final size is 2066 bytes. Artifact ID is 12171167838
+backend	Upload bounded synthetic validation evidence	2026-10-19T08:03:49.5696903Z Artifact download URL: https://github.com/shafin-lab/clinrx-ai/actions/runs/39218687969/artifacts/12171167838
+backend	Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	﻿2026-10-19T08:03:49.5837620Z Post job cleanup.
+backend	Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T08:03:49.6630661Z (node:2970) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+backend	Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065	2026-10-19T08:03:49.6631138Z (Use `node --trace-deprecation ...` to show where the warning was created)
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-10-19T08:03:49.6782972Z Post job cleanup.
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T08:03:49.7369111Z [command]/usr/bin/git version
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T08:03:49.7391826Z git version 2.55.0
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T08:03:49.7424911Z Temporarily overriding HOME='/home/runner/work/_temp/329d5ffd-ee56-467c-b8e0-93a03cde3db3' before making global git config changes
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T08:03:49.7435409Z Adding repository directory to the temporary git global config as a safe directory
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T08:03:49.7435924Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/clinrx-ai/clinrx-ai
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T08:03:49.7462572Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T08:03:49.7493724Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T08:03:49.7709420Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+backend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-19T08:03:49.7736548Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+backend	Complete job	﻿2026-10-19T08:03:49.8069928Z Cleaning up orphan processes
+backend	Complete job	2026-10-19T08:03:49.8288105Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
