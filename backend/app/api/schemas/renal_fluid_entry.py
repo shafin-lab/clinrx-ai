@@ -19,6 +19,7 @@ class SourceRecord(DTO):
     component: Short
     @model_validator(mode='after')
     def unique_record(self):
+        if self.component.lower().replace('-','').replace('_','').replace(' ','') in ('wholerecord','collection','series','context'):raise ValueError('no whole-record issuer profile is configured; provide a concrete component')
         if any(s in self.record_namespace.lower() for s in ('series','context','channel','device')):
             raise ValueError('record namespace must identify records, never context/series')
         return self

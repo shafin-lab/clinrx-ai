@@ -66,6 +66,7 @@ def test_input_shape_bounds_and_closed_gate(ws):
     c,db,_=ws;b=draft(c);before=rows(db)
     for change in [{'amount':'-1'},{'unit':'kg'},{'start':'2026-10-08T10:00:00Z','end':'2026-10-08T09:00:00Z'},{'point':1.25}]:
         bad=deepcopy(b);bad['chart'].update(change);assert post(c,'/save',bad).status_code==422
+    whole=deepcopy(b);whole['chart']['source_record']['component']='whole-record';assert post(c,'/save',whole).status_code==422
     bad=deepcopy(b);bad['chart']['source_record']['record_namespace']='infusion-series';assert post(c,'/save',bad).status_code==422
     assert c.post(RF2+'/save',content='{"repository":"x","repository":"y"}',headers={'Content-Type':'application/json'}).status_code==422
     assert c.post(RF2+'/save',content='x'*65537,headers={'Content-Type':'application/json'}).status_code==413
