@@ -131,10 +131,12 @@ jobs:
         run: |
           set -o pipefail
           npm run build 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/build.txt"
-      - name: Local synthetic authoring build
+      - name: Local synthetic RF2 authoring build
         env:
           VITE_SYNTHETIC_HOSTED: 'true'
           VITE_SYNTHETIC_AUTHORING: 'true'
+          VITE_SYNTHETIC_RF1: 'true'
+          VITE_SYNTHETIC_RF2: 'true'
         run: |
           set -o pipefail
           npm run build -- --outDir "$RUNNER_TEMP/clinrx-authoring-build" 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/authoring-build.txt"
