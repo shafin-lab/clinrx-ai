@@ -23,8 +23,9 @@ export function PatientWorkspace({client,entry,config}:{client:CirculatoryClient
  function findEvidence(){if(guarded||!shared.state)return;setSearchRequest({token:++token.current,query:findQuery});navigate('evidence');}
  function correct(item:CirculatoryItem){if(guarded||!shared.state)return;setHandoff({token:++token.current,item,context:shared.state.state_context});navigate('entry');}
  function add(item:CirculatoryItem){if(!shared.state)return;const exact=shared.state.assembly.snapshot.items.find(i=>evidenceKey(i.fact)===evidenceKey(item.fact)&&i.expected_digest===item.expected_digest);if(!exact){setActionError('The source selection is stale. Inspect it again before adding it to handover; no successor was substituted.');return;}setActionError('');const repository=shared.state.assembly.request.scope.repository_cutoff.repository_id;if(!selections.some(s=>s.repository===repository&&evidenceKey(s.item.fact)===evidenceKey(item.fact)))handover.change([...selections,{item:exact,repository,cutoff:shared.state.assembly.request.scope.repository_cutoff.fact_watermark}]);}
- function savedEvidence(action:'find'|'handover',reference:ExactRef,digest:string){
+ function savedEvidence(action:'find'|'handover',reference:ExactRef,digest:string,repository:string){
   if(guarded||!shared.state)return;
+  if(shared.state.assembly.request.scope.repository_cutoff.repository_id!==repository){setActionError('The saved revision belongs to a different repository. Its confirmation is retained; continuation is withheld.');return;}
   const matches=shared.state.assembly.snapshot.items.filter(i=>i.fact.kind===reference.kind&&i.fact.id===reference.id&&i.fact.revision===reference.version&&i.expected_digest===digest);
   if(matches.length!==1){setActionError('The exact saved revision is not confirmed in the refreshed snapshot. No successor was substituted. Inspect source history or refresh the patient evidence.');return;}
   setActionError('');

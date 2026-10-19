@@ -1,4 +1,4 @@
-import {afterEach,expect,it} from 'vitest';
+import {afterEach,expect,it,vi} from 'vitest';
 import {cleanup,fireEvent,render,screen,within} from '@testing-library/react';
 import fixture from './fixtures/icuFlowsheet.json';
 import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
@@ -104,4 +104,24 @@ it.each([
 ])('C1: rejects invalid flat reference grammar: %s',code=>{
  const {b}=data();(b.fact.external_evidence as Record<string,unknown>[])[2].code=code;
  expect(reassessmentReference(b,'followup')).toBeUndefined();
+});
+
+it.each(['repository','patient','encounter'] as const)('M1: clears only comparison selections after a %s scope change and requires explicit reselection',boundary=>{
+ const {state,a,b}=data(),onHandover=vi.fn();const view=render(<ReassessmentComparison state={state} onHandover={onHandover}/>);select(a,b);
+ const next=structuredClone(state),scope=next.assembly.request.scope;
+ if(boundary==='repository')scope.repository_cutoff.repository_id='replacement-repository';
+ else if(boundary==='patient')scope.patient_id='replacement-patient';else scope.encounter_id='replacement-encounter';
+ for(const note of next.assembly.snapshot.items){note.fact.binding.target.patient_id=scope.patient_id;note.fact.binding.target.encounter_id=scope.encounter_id;}
+ const replacement=next.assembly.snapshot.items.find(i=>i.fact.id===a.fact.id)!;replacement.fact.description={raw_display:'Replacement content with reused identity'};replacement.expected_digest='b'.repeat(64);
+ view.rerender(<ReassessmentComparison state={next} onHandover={onHandover}/>);
+ for(const name of ['Note A','Note B'])expect(screen.getByRole('combobox',{name})).toHaveValue('');
+ expect(screen.queryByRole('button',{name:'Add Note A to handover'})).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Add Note B to handover'})).not.toBeInTheDocument();expect(onHandover).not.toHaveBeenCalled();
+ fireEvent.change(screen.getByRole('combobox',{name:'Note A'}),{target:{value:evidenceKey(replacement.fact)}});fireEvent.click(screen.getByRole('button',{name:'Add Note A to handover'}));expect(onHandover).toHaveBeenCalledExactlyOnceWith(replacement);
+});
+it('M1: same-repository refresh preserves both explicit choices and exact handover actions',()=>{
+ const {state,a,b}=data(),onHandover=vi.fn();const view=render(<ReassessmentComparison state={state} onHandover={onHandover}/>);select(a,b);
+ const next=structuredClone(state);next.state_context+='-refresh';next.assembly.request.scope.repository_cutoff.fact_watermark++;next.assembly.snapshot.items.reverse();
+ view.rerender(<ReassessmentComparison state={next} onHandover={onHandover}/>);
+ expect(screen.getByRole('combobox',{name:'Note A'})).toHaveValue(evidenceKey(a.fact));expect(screen.getByRole('combobox',{name:'Note B'})).toHaveValue(evidenceKey(b.fact));
+ fireEvent.click(screen.getByRole('button',{name:'Add Note B to handover'}));expect(onHandover).toHaveBeenCalledExactlyOnceWith(next.assembly.snapshot.items.find(i=>i.fact.id===b.fact.id));
 });

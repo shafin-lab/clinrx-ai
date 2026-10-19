@@ -19,7 +19,13 @@ export function reassessmentReference(item:CirculatoryItem,stage:typeof stages[n
  const matched=associations.filter(v=>{const a=record(v),exact=record(a.exact),scope=record(a.scope);return a.role==='context'&&a.status==='resolved'&&exact.kind===ref.kind&&exact.id===ref.id&&exact.version===ref.version&&scope.patient_id===item.fact.binding.target.patient_id&&scope.encounter_id===item.fact.binding.target.encounter_id;});
  return matched.length===1?ref:undefined;
 }
-export function ReassessmentComparison({state,onHandover}:{state:CirculatoryState;onHandover?:(item:CirculatoryItem)=>void}){
+type ComparisonProps={state:CirculatoryState;onHandover?:(item:CirculatoryItem)=>void};
+export function ReassessmentComparison(props:ComparisonProps){
+ const scope=props.state.assembly.request.scope;
+ // Reset comparison choices only; the enclosing editor and pending command stay mounted.
+ return <ScopedReassessmentComparison key={JSON.stringify([scope.repository_cutoff.repository_id,scope.patient_id,scope.encounter_id])} {...props}/>;
+}
+function ScopedReassessmentComparison({state,onHandover}:ComparisonProps){
  const [left,setLeft]=useState(''),[right,setRight]=useState('');
  const scope=state.assembly.request.scope;
  const notes=state.assembly.snapshot.items.filter(i=>isReassessment(i)&&i.fact.binding.target.patient_id===scope.patient_id&&i.fact.binding.target.encounter_id===scope.encounter_id);
