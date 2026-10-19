@@ -4,15 +4,15 @@ export const record=(v:unknown):Record<string,unknown>=>v!==null&&typeof v==='ob
 export const words=(v:unknown)=>typeof v==='string'?v.replaceAll('_',' '):'';
 const concepts:Record<string,string>={co:'Cardiac output',ci:'Cardiac index',systemic_systolic:'Systolic blood pressure',systemic_diastolic:'Diastolic blood pressure',heart_rate:'Heart rate',systemic_mean:'Mean arterial pressure',lv_ef:'LV ejection fraction',lvot_vti:'LVOT VTI',tapse:'TAPSE',cvp:'Central venous pressure',pawp:'Pulmonary artery wedge pressure',gedv:'Global end-diastolic volume',svv:'Stroke volume variation',qtc:'QTc',svo2:'Mixed venous oxygen saturation',capillary_refill:'Capillary refill',ph:'pH',paco2:'PaCO₂',pao2:'PaO₂',bicarbonate:'Bicarbonate',base_excess:'Base excess',sao2:'Arterial oxygen saturation',hemoglobin:'Haemoglobin',estimated_rvsp:'Estimated RVSP',estimated_pasp:'Estimated PASP',tr_measurement:'TR peak velocity',rv_dimension:'RV basal dimension',rv_function:'RV function',septal_configuration:'Septal configuration',valve_finding:'Valve finding',pericardial_effusion:'Pericardial effusion',structural_finding:'Structural finding',hpi:'Source HPI (optional)',rhythm:'Source rhythm',configuration:'Monitor configuration',plr:'Passive leg raise episode',position_change:'Position change',arterial_pressure:'Arterial pressure signal'};
 export function title(item:CirculatoryItem){const f=item.fact;const entry=chartEntry(item);if(entry)return entry.label;if(f.id==='m7-PH')return 'Pulmonary hypertension report finding';return concepts[String(f.concept??f.event_type??f.test??f.signal)]??(f.kind==='circulatory_lactate'?'Lactate':f.kind==='circulatory_vasoactive'?'Vasoactive event':words(f.concept??f.event_type??f.test??f.signal)||'Recorded evidence');}
-export function value(item:CirculatoryItem){
+export function value(item:Pick<CirculatoryItem,'fact'>){
   const f=item.fact,result=record(f.result),quantity=record(result.quantity??(f.kind==='circulatory_event'?f.recorded_amount:undefined)),unit=record(quantity.unit);
   if(typeof quantity.value==='string')return {text:quantity.value,unit:typeof unit.raw==='string'?unit.raw:''};
   const finding=record(result.finding??f.finding??f.description),drug=record(f.drug);
   return {text:typeof finding.raw_display==='string'?finding.raw_display:typeof drug.canonical_id==='string'?drug.canonical_id:words(result.reason??result.status??f.event_type??f.availability)||'Recorded source',unit:words(record(f.action).event_type)};
 }
-const sourceQuality=(item:CirculatoryItem)=>record(record(item.fact.acquisition).quality??item.fact.quality);
-export function quality(item:CirculatoryItem){return words(sourceQuality(item).status)||'not recorded';}
-export function sourceTime(item:CirculatoryItem){
+const sourceQuality=(item:Pick<CirculatoryItem,'fact'>)=>record(record(item.fact.acquisition).quality??item.fact.quality);
+export function quality(item:Pick<CirculatoryItem,'fact'>){return words(sourceQuality(item).status)||'not recorded';}
+export function sourceTime(item:Pick<CirculatoryItem,'fact'>){
   const time=record(item.fact.collected??item.fact.occurred);
   return typeof time.source_timestamp==='string'?time.source_timestamp:typeof record(time.recorded).value==='string'?String(record(time.recorded).value):'Time not established';
 }

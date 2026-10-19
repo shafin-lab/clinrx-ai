@@ -2,18 +2,18 @@ import {afterEach,expect,it,vi} from 'vitest';
 import {cleanup,fireEvent,render,screen,within,waitFor,act} from '@testing-library/react';
 import fixture from './fixtures/icuFlowsheet.json';
 import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
-import type {CirculatoryItem,CirculatoryState} from '../src/api/circulatoryTypes';
+import type {CirculatoryItem,CirculatoryState,CirculatoryHistory} from '../src/api/circulatoryTypes';
 import type {CirculatoryClient} from '../src/api/circulatoryClient';
 import {EvidenceEntryClient,type Draft,type Evidence} from '../src/api/evidenceEntryClient';
 import {PatientWorkspace} from '../src/demo/PatientWorkspace';
 import {EvidenceEntryWorkspace} from '../src/demo/EvidenceEntryWorkspace';
 import {buildGuided} from '../src/demo/guidedEvidence';
 import {evidenceKey} from '../src/demo/evidenceIdentity';
-afterEach(cleanup);
+afterEach(()=>{cleanup();window.localStorage.clear();});
 const config={patient:'synthetic-p1',encounter:'synthetic-e1',start:'2026-10-08T08:00:00+00:00',end:'2026-10-08T10:00:00+00:00',releasedExample:'00000000-0000-4000-8000-00000000c901',withheldExample:'00000000-0000-4000-8000-00000000c902',hosted:true};
 function setup(change?:(s:CirculatoryState)=>void){
  let state=decodeCirculatoryState({...structuredClone(fixture),execution_enabled:false});state.assembly.snapshot.items=state.assembly.snapshot.items.filter(i=>['m7-CO','fs-PH-30','fs-PH-60','fs-D-CHANGE'].includes(i.fact.id));change?.(state);
- const client={circulatoryState:vi.fn(async()=>({data:state})),circulatoryHistory:vi.fn(async()=>({data:{revisions:[]}})),circulatoryLookup:vi.fn(),circulatoryPrepare:vi.fn(),circulatoryExecute:vi.fn(),circulatoryReconcile:vi.fn()};
+ const client={circulatoryState:vi.fn(async()=>({data:state})),circulatoryHistory:vi.fn(async()=>({data:{revisions:[] as CirculatoryHistory['revisions']}})),circulatoryLookup:vi.fn(),circulatoryPrepare:vi.fn(),circulatoryExecute:vi.fn(),circulatoryReconcile:vi.fn()};
  const entry={validate:vi.fn(async(body:Draft)=>({repository_id:body.repository_id,fact:body.fact,expected_digest:'a'.repeat(64),canonical_fact:JSON.stringify(body.fact),ingestion:null} as Evidence)),save:vi.fn(async(body:Draft)=>{const base=state.assembly.snapshot.items[0];const item={...base,fact:body.fact,expected_digest:'a'.repeat(64),ingestion:{...base.ingestion,ingestion_sequence:state.assembly.request.scope.repository_cutoff.fact_watermark+1}};state={...state,state_context:state.state_context+'-refreshed',assembly:{...state.assembly,request:{...state.assembly.request,scope:{...state.assembly.request.scope,repository_cutoff:{...state.assembly.request.scope.repository_cutoff,fact_watermark:item.ingestion.ingestion_sequence}}},snapshot:{...state.assembly.snapshot,items:[...state.assembly.snapshot.items.filter(i=>i.fact.kind!==item.fact.kind||i.fact.id!==item.fact.id),item]}}};return {repository_id:body.repository_id,fact:body.fact,expected_digest:item.expected_digest,canonical_fact:JSON.stringify(body.fact),ingestion:item.ingestion} as Evidence;}),lookup:vi.fn()};
  const view=render(<PatientWorkspace client={client as unknown as CirculatoryClient} entry={entry as unknown as EvidenceEntryClient} config={config}/>);
  return {client,entry,view,getState:()=>state,setState:(s:CirculatoryState)=>{state=s;}};
@@ -119,4 +119,60 @@ it('reports storage failure without claiming a saved handover or discarding sele
 });
 it('blocks overwriting a handover changed in another tab and retains current selections',async()=>{
  window.localStorage.clear();const {view}=setup();await ready();await source();step('Add exact source to handover');step('Handover');const repoKey='clinrx.synthetic.handover.v1:'+JSON.stringify([decodeCirculatoryState({...structuredClone(fixture),execution_enabled:false}).assembly.request.scope.repository_cutoff.repository_id,config.patient,config.encounter]);window.localStorage.setItem(repoKey,'changed');step('Save handover locally');expect(await screen.findByRole('alert')).toHaveTextContent('changed in another tab');expect(window.localStorage.getItem(repoKey)).toBe('changed');expect(screen.getByRole('region',{name:'Read-only handover'})).toHaveTextContent('fs-PH-60 / 1');view.unmount();window.localStorage.clear();
+});
+
+it('gives an explicit next step for each part of the patient workflow without claiming clinical completion',async()=>{
+ setup();await ready();
+ const guide=()=>screen.getByRole('region',{name:'Current workflow step'});
+ expect(guide()).toHaveTextContent('source time or source ID');
+ for(const [name,text] of [['Source entry and reassessment','exact lookup comes before'],['Compare notes','Select Note A and Note B explicitly'],['Handover','Save handover locally']]){step(name);expect(guide()).toHaveTextContent(text);expect(screen.getByRole('button',{name})).toHaveAttribute('aria-current','page');}
+ fireEvent.click(within(guide()).getByText('How to complete this synthetic patient workflow'));
+ expect(guide()).toHaveTextContent('not a clinical handover sign-off');expect(guide()).toHaveTextContent('not durably recovered after reload');
+});
+it('starts a separate reassessment after confirmation with no copied evidence selections or automatic finding',async()=>{
+ const {entry}=setup();await correction();step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);
+ await waitFor(()=>expect(screen.getByRole('button',{name:'Start a clinician-authored reassessment'})).toBeEnabled());step('Start a clinician-authored reassessment');
+ const form=within(screen.getByRole('region',{name:'Evidence draft'}));
+ expect(form.getByRole('combobox',{name:'Entry family'})).toHaveValue('reassessment');
+ for(const name of ['Baseline evidence','Documented intervention','Follow-up evidence'])expect(form.getByRole('combobox',{name})).toHaveValue('');
+ for(const name of ['Recorded findings (your assessment)','Unconfirmed possibilities (your assessment)'])expect(form.getByRole('textbox',{name})).toHaveValue('');
+ expect(entry.save).toHaveBeenCalledTimes(1);
+});
+it('withholds post-save handover navigation if the refreshed snapshot does not confirm the exact saved digest',async()=>{
+ window.localStorage.clear();const {entry,client,getState,view}=setup();await correction();
+ client.circulatoryState.mockImplementationOnce(async()=>{const next=structuredClone(getState());const item=next.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!;item.expected_digest='b'.repeat(64);return {data:next};});
+ step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await waitFor(()=>expect(screen.getByRole('button',{name:'Add saved record to handover'})).toBeEnabled());step('Add saved record to handover');
+ expect(await screen.findByRole('alert')).toHaveTextContent('exact saved revision is not confirmed');expect(screen.getByRole('heading',{name:'Review before append'})).toBeInTheDocument();expect(entry.save).toHaveBeenCalledTimes(1);expect(client.circulatoryExecute).not.toHaveBeenCalled();view.unmount();window.localStorage.clear();
+});
+it('keeps post-save actions blocked after an unconfirmed refresh',async()=>{
+ const {entry,client}=setup();await correction();client.circulatoryState.mockRejectedValueOnce(Error('offline'));step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);
+ for(const name of ['Find saved record','Add saved record to handover','Start a clinician-authored reassessment'])expect(screen.getByRole('button',{name})).toBeDisabled();
+ expect(entry.save).toHaveBeenCalledTimes(1);expect(client.circulatoryExecute).not.toHaveBeenCalled();
+});
+it('completes a cardiac-output correction through readable history, separate note, exact comparison and saved handover recovery',async()=>{
+ window.localStorage.clear();let originalNote!:CirculatoryItem;
+ const first=setup(s=>{
+  const baseline=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-30')!,intervention=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-D-CHANGE')!,followup=s.assembly.snapshot.items.find(i=>i.fact.id==='m7-CO')!;
+  originalNote={...followup,fact:structuredClone(buildGuided('reassessment',{baseline:evidenceKey(baseline.fact),intervention:evidenceKey(intervention.fact),followup:evidenceKey(followup.fact),question:'Earlier flow review',findings:'Recorded source assertions.',possibilities:'No relationship confirmed.',uncertainty:'Synthetic context and source limitations.'},'Earlier reviewer',s.assembly.snapshot.items,'flow-original-note','2026-10-08T08:10:00Z'))};s.assembly.snapshot.items.push(originalNote);
+ });
+ const beforeNote=JSON.stringify(originalNote);await ready();step('Inspect Cardiac output m7-CO');step('Correct this exact source');
+ const draftForm=()=>within(screen.getByRole('region',{name:'Evidence draft'}));
+ fireEvent.change(draftForm().getByRole('textbox',{name:'Actor name'}),{target:{value:'Milestone reviewer'}});fireEvent.change(draftForm().getByRole('textbox',{name:'Reason for correction or withdrawal'}),{target:{value:'Source transcription correction; not a new measurement'}});fireEvent.change(draftForm().getByRole('textbox',{name:'Recorded numeric value (raw unit preserved)'}),{target:{value:'4.5500'}});
+ const original=first.getState().assembly.snapshot.items.find(i=>i.fact.id==='m7-CO')!;
+ step('Validate and review draft');await screen.findByRole('button',{name:'Confirm append to local database'});step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await waitFor(()=>expect(screen.getByRole('button',{name:'Find saved record'})).toBeEnabled());
+ const corrected=first.getState().assembly.snapshot.items.find(i=>i.fact.id==='m7-CO')!;
+ step('Find saved record');await screen.findByRole('button',{name:'Inspect Cardiac output m7-CO'});step('Inspect Cardiac output m7-CO');
+ first.client.circulatoryHistory.mockResolvedValueOnce({data:{revisions:[{fact:original.fact,ingestion:original.ingestion},{fact:corrected.fact,ingestion:corrected.ingestion}]}});step('Inspect revision history');
+ const history=await screen.findByRole('region',{name:'Bounded source revision history'});expect(history).toHaveTextContent('Recorded result: 4.50 L/min');expect(history).toHaveTextContent('Recorded result: 4.5500 L/min');expect(history).toHaveTextContent('Source time:');
+ step('Source entry and reassessment');step('Add saved record to handover');expect(screen.getByRole('region',{name:'Read-only handover'})).toHaveTextContent(corrected.fact.revision);
+ step('Source entry and reassessment');step('Start a clinician-authored reassessment');
+ for(const [name,value] of [['Reassessment question','Review recorded flow alongside intervention context'],['Recorded findings (your assessment)','The corrected source retains its original method and time.'],['Unconfirmed possibilities (your assessment)','No treatment response or physiological improvement established.'],['Source limitations / uncertainty (required)','Synthetic source; quality and timing context require review.']])fireEvent.change(draftForm().getByRole('textbox',{name}),{target:{value}});
+ const baseline=first.getState().assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-30')!,intervention=first.getState().assembly.snapshot.items.find(i=>i.fact.id==='fs-D-CHANGE')!;
+ for(const [name,item] of [['Baseline evidence',baseline],['Documented intervention',intervention],['Follow-up evidence',corrected]] as const)fireEvent.change(draftForm().getByRole('combobox',{name}),{target:{value:evidenceKey(item.fact)}});
+ step('Use guided record for validation');step('Validate and review draft');await screen.findByRole('button',{name:'Confirm append to local database'});step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await waitFor(()=>expect(screen.getByRole('button',{name:'Compare notes'})).toBeEnabled());
+ const note=first.entry.save.mock.calls[1][0].fact;expect(note.supersedes).toBeUndefined();expect(JSON.stringify(originalNote)).toBe(beforeNote);step('Compare notes');fireEvent.change(screen.getByRole('combobox',{name:'Note A'}),{target:{value:evidenceKey(originalNote.fact)}});fireEvent.change(screen.getByRole('combobox',{name:'Note B'}),{target:{value:evidenceKey(note)}});
+ const row=screen.getAllByRole('row').find(r=>r.textContent?.includes('Follow-up ABG / evidence reference'))!;const cells=within(row).getAllByRole('cell');expect(cells[0]).toHaveTextContent('Revision: 1');expect(cells[1]).toHaveTextContent('Revision: '+corrected.fact.revision);
+ step('Add Note B to handover');step('Save handover locally');await screen.findByText(/Saved locally in this browser: 2 selection/);
+ const state=structuredClone(first.getState());expect(first.entry.save).toHaveBeenCalledTimes(2);expect(first.client.circulatoryPrepare).not.toHaveBeenCalled();expect(first.client.circulatoryExecute).not.toHaveBeenCalled();first.view.unmount();
+ const restored=setup(s=>Object.assign(s,state));await ready();fireEvent.click(await screen.findByRole('button',{name:'Open saved handover'}));const handover=screen.getByRole('region',{name:'Read-only handover'});expect(handover).toHaveTextContent('Restored saved handover: 2 selection');expect(handover).toHaveTextContent('4.5500');expect(handover).toHaveTextContent(note.id);expect(handover).toHaveTextContent(corrected.fact.revision);expect(restored.entry.save).not.toHaveBeenCalled();expect(restored.client.circulatoryExecute).not.toHaveBeenCalled();restored.view.unmount();window.localStorage.clear();
 });

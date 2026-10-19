@@ -3,8 +3,8 @@ import {useState} from 'react';
 import type {CirculatoryItem} from '../api/circulatoryTypes';
 import {title,value,sourceTime,quality} from './evidencePresentation';
 import {buildGuided,concepts,emptyFields,guidedFamilies,type Fields,type GuidedFamily} from './guidedEvidence';
-export function GuidedEvidenceForm({actor,items,onDraft}:{actor:string;items:CirculatoryItem[];onDraft:(fact:CirculatoryItem['fact'])=>void}){
- const [family,setFamily]=useState<GuidedFamily>('pressure'),[f,setFields]=useState<Fields>(emptyFields),[error,setError]=useState('');
+export function GuidedEvidenceForm({actor,items,onDraft,initialFamily='pressure'}:{actor:string;items:CirculatoryItem[];onDraft:(fact:CirculatoryItem['fact'])=>void;initialFamily?:GuidedFamily}){
+ const [family,setFamily]=useState<GuidedFamily>(initialFamily),[f,setFields]=useState<Fields>(emptyFields),[error,setError]=useState('');
  const set=(key:string,value:string)=>setFields(old=>({...old,[key]:value}));
  const input=(key:string,label:string)=><label key={key}>{label}<input value={f[key]??''} onChange={e=>set(key,e.target.value)}/></label>;
  const area=(key:string,label:string)=><label key={key}>{label}<textarea value={f[key]??''} onChange={e=>set(key,e.target.value)}/></label>;

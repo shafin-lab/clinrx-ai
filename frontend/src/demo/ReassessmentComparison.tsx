@@ -19,7 +19,7 @@ export function reassessmentReference(item:CirculatoryItem,stage:typeof stages[n
  const matched=associations.filter(v=>{const a=record(v),exact=record(a.exact),scope=record(a.scope);return a.role==='context'&&a.status==='resolved'&&exact.kind===ref.kind&&exact.id===ref.id&&exact.version===ref.version&&scope.patient_id===item.fact.binding.target.patient_id&&scope.encounter_id===item.fact.binding.target.encounter_id;});
  return matched.length===1?ref:undefined;
 }
-export function ReassessmentComparison({state}:{state:CirculatoryState}){
+export function ReassessmentComparison({state,onHandover}:{state:CirculatoryState;onHandover?:(item:CirculatoryItem)=>void}){
  const [left,setLeft]=useState(''),[right,setRight]=useState('');
  const scope=state.assembly.request.scope;
  const notes=state.assembly.snapshot.items.filter(i=>isReassessment(i)&&i.fact.binding.target.patient_id===scope.patient_id&&i.fact.binding.target.encounter_id===scope.encounter_id);
@@ -34,6 +34,6 @@ export function ReassessmentComparison({state}:{state:CirculatoryState}){
  <tr><th scope="row">Actor / recorded status</th>{selected.map((note,n)=><td key={n}>{note?<>{String(record(note.fact.provenance).actor??'Actor not recorded')}<br/>{String(note.fact.record_status)}</>:'Not available'}</td>)}</tr>
  {stages.map(stage=><tr key={stage}><th scope="row">{labels[stage]}</th>{selected.map((note,n)=>{const ref=note&&reassessmentReference(note,stage);return <td key={n}>{!note?'Not available':ref?<>{ref.kind}<br/>{ref.id}<br/><strong>Revision: {ref.version}</strong></>:<strong>Reference missing, ambiguous or inconsistent — inspect the complete note</strong>}</td>;})}</tr>)}
  </tbody></table></div><p>References are shown exactly as retained by each note, even if a successor exists. Referenced measurement values are not reloaded or substituted here. Use source history to inspect measurements and their uncertainty.</p>
- <div className="note-comparison-details">{selected.map((note,n)=>note&&<div key={n}><h3>Note {n===0?'A':'B'} — authored text and caveats</h3><RecordedDisclosure label={'Note '+(n===0?'A':'B')+' full authored narrative'} value={note.fact.description}/><RecordedDisclosure label={'Note '+(n===0?'A':'B')+' uncertainty and provenance'} value={{uncertainty:note.fact.uncertainty,provenance:note.fact.provenance}}/><RecordedDisclosure label={'Note '+(n===0?'A':'B')+' complete retained record'} value={note.fact}/></div>)}</div>
+ <div className="note-comparison-details">{selected.map((note,n)=>note&&<div key={n}><h3>Note {n===0?'A':'B'} — authored text and caveats</h3>{onHandover&&<button onClick={()=>onHandover(note)}>Add Note {n===0?'A':'B'} to handover</button>}<RecordedDisclosure label={'Note '+(n===0?'A':'B')+' full authored narrative'} value={note.fact.description}/><RecordedDisclosure label={'Note '+(n===0?'A':'B')+' uncertainty and provenance'} value={{uncertainty:note.fact.uncertainty,provenance:note.fact.provenance}}/><RecordedDisclosure label={'Note '+(n===0?'A':'B')+' complete retained record'} value={note.fact}/></div>)}</div>
  </section>;
 }
