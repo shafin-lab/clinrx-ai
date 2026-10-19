@@ -1,5 +1,5 @@
 import {it,expect,vi,afterEach} from 'vitest';
-import {render,screen,fireEvent,cleanup,waitFor} from '@testing-library/react';
+import {render,screen,fireEvent,cleanup,waitFor,within} from '@testing-library/react';
 import fixture from './fixtures/icuFlowsheet.json';
 import collisionFixture from './fixtures/reassessmentCollision.json';
 import type {CirculatoryItem} from '../src/api/circulatoryTypes';
@@ -126,31 +126,35 @@ it('ignores an older refresh result after a newer response and selects exact rev
  resolve({data:state});await waitFor(()=>expect(screen.getByText(/0 source records in this snapshot/)).toBeInTheDocument());
 });
 
+// Scope form queries so the 156-record source list and revision-menu labels are not
+// rescanned for every field. Keep the full fixture and default timeout in use.
 it('creates a guided BP source without JSON editing and reviews exact context before append',async()=>{
- const {entry}=setup();await screen.findByRole('textbox',{name:'Find evidence'});
- fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Reviewer'}});
- fireEvent.change(screen.getByLabelText('Source observation / event time (ISO with offset; optional)'),{target:{value:'2026-10-08T09:15:00.123456Z'}});
- fireEvent.change(screen.getByLabelText('Recorded value (exact decimal text)'),{target:{value:'71.00'}});
- fireEvent.change(screen.getByLabelText('Raw unit as recorded'),{target:{value:'mmHg'}});
- fireEvent.change(screen.getByLabelText('Source limitations / uncertainty (required)'),{target:{value:'Cuff context incomplete'}});
- fireEvent.click(screen.getByRole('button',{name:'Use guided record for validation'}));
- fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
- await screen.findByRole('button',{name:'Confirm append to local database'});
+ const {entry}=setup();
+ const form=within(await screen.findByRole('region',{name:'Evidence draft'}));
+ fireEvent.change(form.getByRole('textbox',{name:'Actor name'}),{target:{value:'Reviewer'}});
+ fireEvent.change(form.getByRole('textbox',{name:'Source observation / event time (ISO with offset; optional)'}),{target:{value:'2026-10-08T09:15:00.123456Z'}});
+ fireEvent.change(form.getByRole('textbox',{name:'Recorded value (exact decimal text)'}),{target:{value:'71.00'}});
+ fireEvent.change(form.getByRole('textbox',{name:'Raw unit as recorded'}),{target:{value:'mmHg'}});
+ fireEvent.change(form.getByRole('textbox',{name:'Source limitations / uncertainty (required)'}),{target:{value:'Cuff context incomplete'}});
+ fireEvent.click(form.getByRole('button',{name:'Use guided record for validation'}));
+ fireEvent.click(form.getByRole('button',{name:'Validate and review draft'}));
+ await form.findByRole('button',{name:'Confirm append to local database'});
  expect(entry.validate.mock.calls[0][0].fact.result).toMatchObject({quantity:{value:'71.00'}});
- expect(screen.getByText('Cuff context incomplete')).toBeInTheDocument();
- expect(screen.getByText('2026-10-08T09:15:00.123456Z')).toBeInTheDocument();
+ expect(form.getByText('Cuff context incomplete')).toBeInTheDocument();
+ expect(form.getByText('2026-10-08T09:15:00.123456Z')).toBeInTheDocument();
  expect(entry.save).not.toHaveBeenCalled();
 });
 it('prepares a clinician-authored reassessment with exact linked revisions and no automatic conclusion',async()=>{
- const {entry}=setup();await screen.findByRole('textbox',{name:'Find evidence'});
- fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Reviewer'}});
- fireEvent.change(screen.getByLabelText('Entry family'),{target:{value:'reassessment'}});
- for(const [label,text] of [['Reassessment question','Review recorded intervention'],['Recorded findings (your assessment)','Distinct times and methods'],['Unconfirmed possibilities (your assessment)','No causal relationship established'],['Source limitations / uncertainty (required)','Sample context incomplete']])fireEvent.change(screen.getByLabelText(label),{target:{value:text}});
- for(const [label,ref] of [['Baseline evidence','["circulatory_pressure","fs-MAP-15","1"]'],['Documented intervention','["circulatory_vasoactive","fs-N-CHANGE","1"]'],['Follow-up evidence','["circulatory_cardiac","fs-CO-60","1"]']])fireEvent.change(screen.getByLabelText(label),{target:{value:ref}});
- fireEvent.click(screen.getByRole('button',{name:'Use guided record for validation'}));fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
- await screen.findByRole('button',{name:'Confirm append to local database'});
+ const {entry}=setup();
+ const form=within(await screen.findByRole('region',{name:'Evidence draft'}));
+ fireEvent.change(form.getByRole('textbox',{name:'Actor name'}),{target:{value:'Reviewer'}});
+ fireEvent.change(form.getByRole('combobox',{name:'Entry family'}),{target:{value:'reassessment'}});
+ for(const [label,text] of [['Reassessment question','Review recorded intervention'],['Recorded findings (your assessment)','Distinct times and methods'],['Unconfirmed possibilities (your assessment)','No causal relationship established'],['Source limitations / uncertainty (required)','Sample context incomplete']])fireEvent.change(form.getByRole('textbox',{name:label}),{target:{value:text}});
+ for(const [label,ref] of [['Baseline evidence','["circulatory_pressure","fs-MAP-15","1"]'],['Documented intervention','["circulatory_vasoactive","fs-N-CHANGE","1"]'],['Follow-up evidence','["circulatory_cardiac","fs-CO-60","1"]']])fireEvent.change(form.getByRole('combobox',{name:label}),{target:{value:ref}});
+ fireEvent.click(form.getByRole('button',{name:'Use guided record for validation'}));fireEvent.click(form.getByRole('button',{name:'Validate and review draft'}));
+ await form.findByRole('button',{name:'Confirm append to local database'});
  expect(entry.validate.mock.calls[0][0].fact.associations).toHaveLength(3);
- expect(screen.getByText(/Unconfirmed possibilities: No causal relationship established/)).toBeInTheDocument();expect(entry.save).not.toHaveBeenCalled();
+ expect(form.getByText(/Unconfirmed possibilities: No causal relationship established/)).toBeInTheDocument();expect(entry.save).not.toHaveBeenCalled();
 });
 it('does not mark a refreshed successor selected when the original revision remains the correction target',async()=>{
  const {entry,client,state}=setup();await draft();
