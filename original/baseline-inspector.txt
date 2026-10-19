@@ -1,0 +1,144 @@
+- link "Skip to patient workflow":
+  - /url: "#patient-workflow"
+- banner:
+  - heading "Synthetic ICU patient workspace" [level=1]
+  - paragraph: Patient synthetic-p1 · Encounter synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Local synthetic evidence only; no treatment advice.
+  - search "Find patient evidence":
+    - text: Find recorded evidence
+    - searchbox "Find recorded evidence": ABG 09:20
+    - button "Find evidence"
+  - paragraph:
+    - button "Open saved handover"
+    - text: Saved on this browser.
+  - paragraph: Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.
+  - paragraph: Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.
+  - navigation "Patient workflow":
+    - button "Patient and evidence"
+    - button "Source entry and reassessment"
+    - button "Compare notes"
+    - button "Handover"
+- main:
+  - paragraph: CIRCULATORY EVIDENCE / EVIDENCE LIBRARY
+  - heading "Evidence library" [level=1]
+  - paragraph: Cardiac output, ABG, echo and perfusion — with the source evidence in reach.
+  - button "Refresh recorded state"
+  - navigation "Evidence views":
+    - button "ICU flowsheet"
+    - button "Patient summary"
+    - button "Patient overview"
+    - button "Evidence library"
+    - button "Recording timeline"
+    - button "Retained examples"
+  - text: Synthetic exploration only. No treatment recommendations or live device connections.
+  - generic: "New reviews: disabled."
+  - paragraph: HPI is optional. Not recorded in this case; ABG, echo and other evidence remain available.
+  - region "Recorded-state coverage":
+    - strong: "169"
+    - generic: recorded items
+    - strong: 14 / 15
+    - generic: evidence families present
+    - strong: "11"
+    - generic: quality flagged or unknown
+    - strong: "2"
+    - generic: contextual or unplaced
+  - text: Search recorded evidence
+  - searchbox "Search recorded evidence": ABG 09:20
+  - text: Evidence family
+  - combobox "Evidence family":
+    - option "All 15 families" [selected]
+    - option "Pressure and PAC/RHC (21)"
+    - option "Cardiac output and performance (15)"
+    - option "Volume and lung water (1)"
+    - option "Dynamic measurements (1)"
+    - option "Recorded device predictions (0)"
+    - option "Tissue perfusion (14)"
+    - option "Oxygen transport and blood gases (24)"
+    - option "Lactate (5)"
+    - option "Echo and POCUS (13)"
+    - option "ECG and rhythm (10)"
+    - option "Vasoactive events (13)"
+    - option "Edwards / PiCCO and monitoring context (1)"
+    - option "Dynamic assessment episodes (2)"
+    - option "Recorded circulatory events (48)"
+    - option "Signal manifests (1)"
+  - heading "Recorded evidence results" [level=2]
+  - paragraph: Search by name, sample type, specimen or source time, for example ABG 09:45. Times match their recorded spelling and offset. Separate words narrow the results together.
+  - button "Clear evidence filters"
+  - status: 1 recorded item in this view
+  - region "Evidence library results":
+    - heading "Oxygen transport and blood gases" [level=2]
+    - button "Inspect pH a02f88e1-db04-48a0-89e6-f236016a38a8":
+      - generic: Arterial blood gas (ABG) ·
+      - text: pH
+      - strong: "7.3400 (unit: 1)"
+      - generic: blood gas
+      - generic: in window · 2026-10-08T09:20:00.123456Z
+      - text: a02f88e1-db04-48a0-89e6-f236016a38a8 / 1
+      - generic: "Quality: unknown"
+  - complementary "Selected source evidence" [active]:
+    - generic: SOURCE INSPECTOR
+    - button "Close source"
+    - heading "pH" [level=2]
+    - paragraph: 7.3400 1
+    - paragraph:
+      - code: a02f88e1-db04-48a0-89e6-f236016a38a8 / 1
+    - paragraph: blood gas
+    - term: Source time
+    - definition: 2026-10-08T09:20:00.123456Z
+    - term: Recorded quality
+    - definition: unknown
+    - term: Source unit mapping
+    - definition:
+      - generic: "Result: unresolved · 1"
+    - term: Placement
+    - definition: in window
+    - term: Source
+    - definition: clinrx-local-synthetic-entry
+    - button "Correct this exact source"
+    - button "Add exact source to handover"
+    - region "Measurement acquisition context":
+      - heading "Measurement context" [level=3]
+      - term: Method
+      - definition: blood gas
+      - term: Recorded production
+      - definition: direct measurement
+      - term: Respiratory phase
+      - definition: Not recorded
+      - term: Position
+      - definition: Not recorded
+      - term: Recorded averaging basis
+      - definition: Not recorded · no average calculated here
+      - term: Calibration status
+      - definition: unknown
+      - term: Zeroing status
+      - definition: unknown
+      - term: Indexing denominator
+      - definition: Not recorded · source-recorded, not derived here
+      - term: Source quality
+      - definition: unknown
+      - paragraph: Source metadata does not establish measurement validity or dynamic-test applicability.
+    - region "Blood gas sample context":
+      - heading "Blood gas sample context" [level=3]
+      - term: Sample type
+      - definition: arterial
+      - term: Specimen
+      - definition: guided-arterial-sample
+      - term: Collected
+      - definition: 2026-10-08T09:20:00.123456Z
+      - term: Sample-time FiO₂
+      - definition: 40 %
+      - term: Oxygen device
+      - definition: Not recorded
+      - term: Ventilator mode
+      - definition: Not recorded
+      - term: Sample-time PEEP
+      - definition: 5 cmH2O
+      - generic "Sample-time oxygen and ventilation settings"
+    - generic "Full source, timing, quality and device context"
+    - generic "Exact digest and ingestion metadata"
+    - button "Inspect revision history"
+  - generic "Review boundary and repository coverage"
+  - generic: A synthetic evidence exploration demo · Synthetic source assertions only · VA-ECMO, Impella and IABP remain deferred.

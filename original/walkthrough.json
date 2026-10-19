@@ -1,0 +1,42 @@
+{
+  "origin": "http://127.0.0.1:5193/",
+  "actions": [
+    "Observed existing two-selection saved handover",
+    "Searched ABG 09:20",
+    "Inspected exact baseline ABG a02f88e1-db04-48a0-89e6-f236016a38a8/1",
+    "Clicked Add exact source to handover",
+    "Opened Handover; observed unsaved changes",
+    "Clicked Save handover locally once; observed three selections saved",
+    "Reloaded page",
+    "Initial Open saved handover automation click exceeded its selector deadline; fresh observation showed a ready enabled control, then native UI click opened the view",
+    "Observed three restored selections and unchanged corrected ABG/reassessment references"
+  ],
+  "savedTimestamp": "2026-10-19T05:02:22.319Z",
+  "selectionCountBefore": 2,
+  "selectionCountAfter": 3,
+  "added": {
+    "kind": "circulatory_oxygen",
+    "id": "a02f88e1-db04-48a0-89e6-f236016a38a8",
+    "revision": "1",
+    "value": "7.3400",
+    "sourceTime": "2026-10-08T09:20:00.123456Z",
+    "ingestion": 164
+  },
+  "retained": [
+    {
+      "kind": "circulatory_oxygen",
+      "id": "1c1f16d9-33d7-40fb-a94f-013a383c9bfc",
+      "revision": "b4343979-e0f8-472a-b498-897d21cef254",
+      "value": "7.3700",
+      "ingestion": 177
+    },
+    {
+      "kind": "circulatory_event",
+      "id": "0d3b69c9-2f08-4d7b-ae4d-35c260f2bb71",
+      "revision": "1",
+      "ingestion": 178
+    }
+  ],
+  "gateHeader": "Clinical execution disabled.",
+  "limitations": "Implementation-operated browser UI captures. Browser-local handover selection saved once; no clinical evidence write, execution action, build, test, API body, localStorage export, or database checkpoint. Screenshot shows restore count and upper corrected ABG card; all three records are established by complete DOM."
+}
