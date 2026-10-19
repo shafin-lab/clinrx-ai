@@ -1,0 +1,52 @@
+- link "Skip to patient workflow":
+  - /url: "#patient-workflow"
+- banner:
+  - heading "Synthetic ICU patient workspace" [active] [level=1]
+  - paragraph: Patient synthetic-p1 · Encounter synthetic-e1
+  - paragraph:
+    - strong: Clinical execution disabled.
+    - text: Local synthetic evidence only; no treatment advice.
+  - search "Find patient evidence":
+    - text: Find recorded evidence
+    - searchbox "Find recorded evidence"
+    - button "Find evidence"
+  - paragraph: Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.
+  - paragraph: Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.
+  - navigation "Patient workflow":
+    - button "Patient and evidence"
+    - button "Source entry and reassessment"
+    - button "Compare notes"
+    - button "Handover"
+  - region "Current workflow step":
+    - heading "Handover" [level=2]
+    - paragraph: Review the exact records and authored notes selected for handover. Add or remove cards, then Save handover locally. After reload, Open saved handover restores the saved selection in this browser.
+    - generic "How to complete this synthetic patient workflow"
+- region "Read-only handover":
+  - heading "Handover review" [level=2]
+  - paragraph: Save these selections on this browser for this synthetic patient. Only exact references and digests are stored; displayed records are restored from the verified local API. Clearing browser data or changing browser/address removes access to this saved view. This does not send, schedule or clinically sign off a handover.
+  - button "Save handover locally"
+  - status: "Restored saved handover: 2 selection(s). Saved 2026-10-19T11:40:55.535Z."
+  - paragraph: Recorded findings and clinician-authored assertions remain separate. No new derived result, diagnosis or treatment plan is generated.
+  - article:
+    - heading "Clinician-authored reassessment (synthetic assertion) · other" [level=3]
+    - paragraph: circulatory_event / 00234d1d-b5ff-47da-a702-e6f50918056f / 1
+    - paragraph: "Source time: 2026-10-08T09:30:00Z · Status: recorded"
+    - paragraph: "Source quality: not recorded · Placement: in window. Missing or unknown context is not confirmation."
+    - paragraph: "Selected repository: eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5 · cutoff 167 · ingestion 167"
+    - paragraph: Exact selected revision is also present in this snapshot.
+    - paragraph: "Clinician-authored synthetic reassessment; not a computed response or causal conclusion. Question: Review the corrected 08:15 MAP with the recorded cardiac output and noradrenaline event baseline: {\"kind\":\"circulatory_cardiac\",\"id\":\"fs-CO-15\",\"version\":\"1\"} intervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"fs-N-CHANGE\",\"version\":\"1\"} followup: {\"kind\":\"circulatory_pressure\",\"id\":\"fs-MAP-15\",\"version\":\"915ae2cb-99f9-47e6-883e-9fc51725a7f0\"} Recorded findings: Assisted synthetic reassessment: the 08:15 source MAP now records 63.0000 mmHg after a transcription correction. Cardiac output 4.00 L/min and the documented noradrenaline/norepinephrine rate-change event are separately recorded at 08:15. This note retains their explicitly selected exact revisions. The earlier 09:25 note remains unchanged and retains the 62.0000 MAP revision. Unconfirmed possibilities: The transcription correction is not a new measurement or evidence of physiological improvement. No diagnosis, treatment response, causal infusion effect, continuous drug delivery or physiological simultaneity is established. Confirmation gaps: Fictional local case and assisted authoring, not authenticated clinician sign-off. Source quality, clock and method tags remain source assertions. Calibration/zeroing, acquisition and drug-delivery context require review; shared timestamp labels alone do not establish simultaneous physiology. Next review (recorded plan, not a scheduled action): Review the exact pressure revision history, cardiac-output method and infusion documentation. This is a recorded synthetic review plan, not a scheduled action or treatment instruction."
+    - paragraph: "baseline: {\"kind\":\"circulatory_cardiac\",\"id\":\"fs-CO-15\",\"version\":\"1\"}"
+    - paragraph: "intervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"fs-N-CHANGE\",\"version\":\"1\"}"
+    - paragraph: "followup: {\"kind\":\"circulatory_pressure\",\"id\":\"fs-MAP-15\",\"version\":\"915ae2cb-99f9-47e6-883e-9fc51725a7f0\"}"
+    - generic "Handover source and uncertainty 00234d1d-b5ff-47da-a702-e6f50918056f"
+    - button "Remove from handover selection"
+  - article:
+    - heading "Recorded source evidence · Mean arterial pressure" [level=3]
+    - paragraph: circulatory_pressure / fs-MAP-15 / 915ae2cb-99f9-47e6-883e-9fc51725a7f0
+    - paragraph: "Source time: 2026-10-08T08:15:00+00:00 · Status: recorded"
+    - paragraph: "Source quality: acceptable · Placement: in window. Missing or unknown context is not confirmation."
+    - paragraph: "Selected repository: eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5 · cutoff 167 · ingestion 166"
+    - paragraph: Exact selected revision is also present in this snapshot.
+    - paragraph: "Recorded result: 63.0000 mmHg"
+    - generic "Handover source and uncertainty fs-MAP-15"
+    - button "Remove from handover selection"

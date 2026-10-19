@@ -1,0 +1,107 @@
+{
+  "result": "PASS",
+  "note": {
+    "id": "00234d1d-b5ff-47da-a702-e6f50918056f",
+    "revision": "1",
+    "ingestion": 167,
+    "digest": "1ebc8a36d78781955607c81177a2886038e778087b647806aa34b693f31d9c9e"
+  },
+  "references": {
+    "baseline": {
+      "kind": "circulatory_cardiac",
+      "id": "fs-CO-15",
+      "version": "1"
+    },
+    "intervention": {
+      "kind": "circulatory_vasoactive",
+      "id": "fs-N-CHANGE",
+      "version": "1"
+    },
+    "followup": {
+      "kind": "circulatory_pressure",
+      "id": "fs-MAP-15",
+      "version": "915ae2cb-99f9-47e6-883e-9fc51725a7f0"
+    }
+  },
+  "earlier_note_followup": {
+    "kind": "circulatory_pressure",
+    "id": "fs-MAP-15",
+    "version": "41675deb-aa68-444f-a5fe-6ed8770c2c0c"
+  },
+  "all_166_prior_fact_rows_unchanged": true,
+  "both_receipts_unchanged": true,
+  "table_delta": {
+    "alembic_version": {
+      "before": 1,
+      "after": 1,
+      "added": 0,
+      "removed": 0
+    },
+    "circulatory_execution": {
+      "before": 2,
+      "after": 2,
+      "added": 0,
+      "removed": 0
+    },
+    "creatinine_trend_execution": {
+      "before": 0,
+      "after": 0,
+      "added": 0,
+      "removed": 0
+    },
+    "encounter": {
+      "before": 1,
+      "after": 1,
+      "added": 0,
+      "removed": 0
+    },
+    "fact_revision": {
+      "before": 166,
+      "after": 167,
+      "added": 1,
+      "removed": 0
+    },
+    "micro_antimicrobial_execution": {
+      "before": 0,
+      "after": 0,
+      "added": 0,
+      "removed": 0
+    },
+    "patient": {
+      "before": 1,
+      "after": 1,
+      "added": 0,
+      "removed": 0
+    },
+    "patient_state_temporal_execution": {
+      "before": 0,
+      "after": 0,
+      "added": 0,
+      "removed": 0
+    },
+    "repository_identity": {
+      "before": 1,
+      "after": 1,
+      "added": 0,
+      "removed": 0
+    },
+    "revision_link": {
+      "before": 3,
+      "after": 3,
+      "added": 0,
+      "removed": 0
+    },
+    "sqlite_sequence": {
+      "before": 1,
+      "after": 1,
+      "added": 1,
+      "removed": 1
+    },
+    "weight_trend_execution": {
+      "before": 0,
+      "after": 0,
+      "added": 0,
+      "removed": 0
+    }
+  }
+}

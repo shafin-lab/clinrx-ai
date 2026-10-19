@@ -1,0 +1,196 @@
+{
+  "all_165_prior_fact_rows_unchanged": true,
+  "both_receipts_unchanged": true,
+  "table_delta": {
+    "alembic_version": {
+      "before": 1,
+      "after": 1,
+      "added": 0,
+      "removed": 0
+    },
+    "circulatory_execution": {
+      "before": 2,
+      "after": 2,
+      "added": 0,
+      "removed": 0
+    },
+    "creatinine_trend_execution": {
+      "before": 0,
+      "after": 0,
+      "added": 0,
+      "removed": 0
+    },
+    "encounter": {
+      "before": 1,
+      "after": 1,
+      "added": 0,
+      "removed": 0
+    },
+    "fact_revision": {
+      "before": 165,
+      "after": 166,
+      "added": 1,
+      "removed": 0
+    },
+    "micro_antimicrobial_execution": {
+      "before": 0,
+      "after": 0,
+      "added": 0,
+      "removed": 0
+    },
+    "patient": {
+      "before": 1,
+      "after": 1,
+      "added": 0,
+      "removed": 0
+    },
+    "patient_state_temporal_execution": {
+      "before": 0,
+      "after": 0,
+      "added": 0,
+      "removed": 0
+    },
+    "repository_identity": {
+      "before": 1,
+      "after": 1,
+      "added": 0,
+      "removed": 0
+    },
+    "revision_link": {
+      "before": 2,
+      "after": 3,
+      "added": 1,
+      "removed": 0
+    },
+    "sqlite_sequence": {
+      "before": 1,
+      "after": 1,
+      "added": 1,
+      "removed": 1
+    },
+    "weight_trend_execution": {
+      "before": 0,
+      "after": 0,
+      "added": 0,
+      "removed": 0
+    }
+  },
+  "history": [
+    {
+      "ingestion": 101,
+      "revision": "1",
+      "value": "61",
+      "occurred": {
+        "alignment": null,
+        "alternative_sources": [],
+        "clock": "verified",
+        "clock_basis": {
+          "actor": "synthetic-demo",
+          "limitations": [
+            "Synthetic source assertion only."
+          ],
+          "lineage": "unknown",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "source": {
+            "channel": "system",
+            "identifier": "patient-state-v1",
+            "namespace": "clinrx.synthetic.demo",
+            "version": "1"
+          },
+          "upstream": []
+        },
+        "conflicting": [],
+        "recorded": {
+          "lower": null,
+          "precision": "instant",
+          "status": "known",
+          "uncertainty": null,
+          "upper": null,
+          "value": "2026-10-08T08:15:00Z"
+        },
+        "source_timestamp": "2026-10-08T08:15:00+00:00",
+        "timestamp_precision": "M7ExactTimestampInput/v1"
+      }
+    },
+    {
+      "ingestion": 164,
+      "revision": "41675deb-aa68-444f-a5fe-6ed8770c2c0c",
+      "value": "62.0000",
+      "occurred": {
+        "alignment": null,
+        "alternative_sources": [],
+        "clock": "verified",
+        "clock_basis": {
+          "actor": "synthetic-demo",
+          "limitations": [
+            "Synthetic source assertion only."
+          ],
+          "lineage": "unknown",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "source": {
+            "channel": "system",
+            "identifier": "patient-state-v1",
+            "namespace": "clinrx.synthetic.demo",
+            "version": "1"
+          },
+          "upstream": []
+        },
+        "conflicting": [],
+        "recorded": {
+          "lower": null,
+          "precision": "instant",
+          "status": "known",
+          "uncertainty": null,
+          "upper": null,
+          "value": "2026-10-08T08:15:00Z"
+        },
+        "source_timestamp": "2026-10-08T08:15:00+00:00",
+        "timestamp_precision": "M7ExactTimestampInput/v1"
+      }
+    },
+    {
+      "ingestion": 166,
+      "revision": "915ae2cb-99f9-47e6-883e-9fc51725a7f0",
+      "value": "63.0000",
+      "occurred": {
+        "alignment": null,
+        "alternative_sources": [],
+        "clock": "verified",
+        "clock_basis": {
+          "actor": "synthetic-demo",
+          "limitations": [
+            "Synthetic source assertion only."
+          ],
+          "lineage": "unknown",
+          "recorded_at": "2026-10-08T08:00:00Z",
+          "source": {
+            "channel": "system",
+            "identifier": "patient-state-v1",
+            "namespace": "clinrx.synthetic.demo",
+            "version": "1"
+          },
+          "upstream": []
+        },
+        "conflicting": [],
+        "recorded": {
+          "lower": null,
+          "precision": "instant",
+          "status": "known",
+          "uncertainty": null,
+          "upper": null,
+          "value": "2026-10-08T08:15:00Z"
+        },
+        "source_timestamp": "2026-10-08T08:15:00+00:00",
+        "timestamp_precision": "M7ExactTimestampInput/v1"
+      }
+    }
+  ],
+  "changed_fields": [
+    "correction_reason",
+    "provenance",
+    "result",
+    "revision",
+    "supersedes"
+  ],
+  "result": "PASS"
+}
