@@ -1,0 +1,72 @@
+--- prior-draft/RF2-WORKFLOW-SPEC.md
++++ RF2-WORKFLOW-SPEC.md
+@@ -39,7 +39,7 @@
+ | --- | --- |
+ | Urine/fluid amount | CirculatoryEvent.recorded_amount retains the exact decimal string and raw unit; recorded_interval retains source start/end assertions. Missing amount is null with an explicit source reason. Recorded zero remains a quantity. |
+ | Chart category | A versioned local source code distinguishes urine, oral/enteral/IV/blood intake, drain/other loss, CRRT net removal, reported total and reported balance. Existing source codes retain their meaning. |
+-| Weight | A separate CirculatoryEvent amount in a weight category, with no interval. Measured body weight, reported weight and existing dosing weight remain different source assertions. A dosing-weight record is not relabelled as a measured daily weight. |
++| Weight | Reuse an existing exact weight observation wherever it was first charted, including an existing ClinicalObservation when supported. Do not copy it into a new renal CirculatoryEvent. Only a genuinely new collection without an existing authoritative representation may use the bounded local weight-event form. Measured body weight, reported weight and dosing purpose remain distinguishable without duplicating the measurement. |
+ | Collection and method context | A bounded versioned product metadata entry in existing external_evidence, plus readable source description. Its fields are source assertions, not new generic clinical fields. |
+ | Renal/fluid note | A distinct local renal_reassessment source marker on CirculatoryEvent, authored narrative, exact resolved context associations and bounded versioned evidence-pin metadata. No fabricated intervention is required. |
+ | Existing creatinine | Read-only ClinicalObservation with its existing concept, value, time, conflict and uncertainty fields. No new specimen, quality, collection-time or withdrawal semantics are inferred. |
+@@ -52,9 +52,23 @@
+ 
+ If the proposed metadata cannot fit existing bounded SourceCode and fact limits, or existing repository semantics cannot preserve it losslessly, return a specification amendment before coding a clinical-model or storage redesign.
+ 
++## Shared values and prevention of duplicate charting
++
++RF2 is another view and entry point into the shared patient record, not a second weight or fluid database. The same source observation may appear in renal, hemodynamics, nutrition, medication review and handover while retaining one exact fact identity/revision and history. Repeated display is not a second measurement.
++
++Before implementation, inventory existing weight and fluid representations, concept/source codes, ownership, collection identifiers and exact lookup paths at the approved baseline. Record a bounded mapping in the implementation package. Reuse the existing authoritative entry/correction path when available; do not build a competing renal path. If an existing generic weight observation needs another kind of write contract, leave its correction with its existing owner and link to it rather than cloning it into a circulatory event. If that path is unavailable and completing the approved journey requires a new legacy authoring contract, request a specification amendment. Missing typed purpose/method remains unavailable; do not derive it from a narrative.
++
++For weight, show existing source records before offering new entry. The user chooses Use existing measurement, Correct this measurement or Record genuinely new measurement. Select existing by repository/patient/encounter and exact kind/ID/revision/digest, not by the displayed number. Sharing a measured weight for dosing or fluid review creates an exact contextual link, not another quantity. A separately asserted dosing-weight value or a different collection remains separately labelled with its provenance; neither automatically replaces a measured weight. There is no universal patient weight field whose latest number silently overwrites every purpose.
++
++Use an explicit source collection identifier when available. Under one transaction, replaying an existing source identifier with identical content returns the same fact; conflicting content requires explicit correction/conflict handling, never another automatic insertion. Preserve the distinct pending-request identity/idempotency rules. When collection identity is unavailable, show plausible overlaps from the bounded loaded view and require an explicit new-collection assertion with a reason; describe these as possible duplicates, not a complete cross-system search. Same value/time alone is not proof of duplication, and different units are not converted to search for matches. Do not merge genuine repeat measurements or fabricate missing source IDs.
++
++For fluids, retain one source event referenced by each applicable view. A fluid challenge, administered volume, interval total and cumulative balance can overlap in accounting without being identical facts. Show the source-declared relationship when available and a possible-overlap limitation otherwise. Do not copy an event from hemodynamics into renal charting, add components to their reported totals, or automatically infer equivalence/containment from coincident values or times. Interval overlap and undocumented gaps remain visible; RF2 does not calculate a reconciled balance.
++
++Corrections append to the original owning fact identity. Each refreshed view shows the same corrected source or an explicitly older cutoff. Old notes and saved handover keep their exact original revision references; they are not rewritten. Repository/patient/encounter/cutoff boundaries continue to apply to these shared values.
++
+ ## Charting and correction workflow
+ 
+-1. Open Renal and fluid review for the shared patient, encounter, window and cutoff. Choose Record urine, Record fluid or Record weight. These are local synthetic actions, distinct from clinical execution.
++1. Open Renal and fluid review for the shared patient, encounter, window and cutoff. Choose Use existing evidence or Record genuinely new urine/fluid/weight evidence after reviewing existing sources. These are local synthetic actions, distinct from clinical execution.
+ 2. Show required fields beside the entry: source category, quantity or explicit missing state, raw unit, source time/interval assertions, actor and uncertainty. Unknown context must be selectable; no positive-quality, verified-clock or measured-status defaults.
+ 3. Urine/fluid records use an explicit interval or a clearly marked point event. Partial or unknown bounds remain partial/unknown and are not turned into an hour. Reject contradictory exact start/end ordering using the accepted exact-time machinery; do not round timestamps or guess local timezone. Do not calculate duration or rate. Weight uses its own point/unknown time and explicit measured/reported/dosing purpose; measurement method may be unavailable.
+ 4. Present a validated review showing scope, proposed exact identity, amounts, intervals, raw context and limitations before the explicit save. Validation is not a saved confirmation.
+@@ -68,7 +82,7 @@
+ 
+ The renal/fluid note requires a review question, recorded findings, unconfirmed possibilities (including explicit none recorded), confirmation gaps and a recorded next-review plan or explicit unscheduled state. Actor identity remains an unauthenticated synthetic assertion. No action is scheduled by saving the plan.
+ 
+-Select one to twelve exact evidence items. The selectable read set is allowlisted: urine/fluid/weight/support chart events, existing creatinine observations and relevant existing hemodynamic evidence already available in the composite. Label references as reviewed evidence, with optional earlier/later/intervention context. No intervention is compulsory and selection order does not establish chronology or causation. Resolved context associations and the retained pin metadata must agree exactly; repeated or ambiguous role entries fail closed.
++Select one to twelve exact evidence items. The selectable read set is allowlisted: urine/fluid/weight/support chart events, existing creatinine and inventoried allowlisted weight observations, and relevant existing hemodynamic evidence in the bounded shared view. Any additive weight read adapter must preserve raw generic observations and existing RF1 contracts; do not extend the creatinine-only decoder by pretending weight is creatinine. Label references as reviewed evidence, with optional earlier/later/intervention context. No intervention is compulsory and selection order does not establish chronology or causation. Resolved context associations and the retained pin metadata must agree exactly; repeated or ambiguous role entries fail closed.
+ 
+ Each pin retains repository, patient/encounter, kind/ID/revision, canonical digest, ingestion identity and original selection cutoff. At save validation, resolve the exact historical revision in that repository, verify full correspondence and ensure it existed at its declared cutoff. A selected withdrawn/invalid/conflicting item remains explicitly labelled as such and cannot become an unqualified measured finding. A source change after selection prompts review; never silently select its successor. The user may explicitly retain the historical selection with a visible disclosure.
+ 
+@@ -109,7 +123,7 @@
+ | backend/app/services/renal_fluid_product_service.py; api/schemas/renal_fluid.py | Bounded mixed reference read/history if required; preserve original RF1 transport and history semantics |
+ | frontend/src/api/renalFluidEntryClient.ts; renalFluidEntryTypes.ts; renalFluidEntryDecoders.ts (new) | Strict local write/lookup and mixed resolution boundaries; generated additive transport schemas |
+ | frontend/src/demo/RenalFluidEntryWorkspace.tsx; RenalFluidReassessment.tsx; renalFluidEvidence.ts (new) | Guided chart forms, exact review/save/recovery, explicit mixed evidence adapter and renal note comparison |
+-| frontend/src/demo/RenalFluidReview.tsx; PatientWorkspace.tsx; chartEntries.ts | Visible entry/inspection navigation, new local chart categories, shared state and return focus |
++| frontend/src/demo/RenalFluidReview.tsx; PatientWorkspace.tsx; chartEntries.ts | Existing-source chooser, source-ownership mapping, reuse/correction/new-collection actions, visible shared categories/state and return focus |
+ | frontend/src/demo/renalFluidHandover.ts (new); HandoverReview.tsx; useLocalHandover.ts; localHandover.ts | Versioned mixed handover alongside unchanged v1 compatibility; no silent migration |
+ | tools/export_renal_fluid_transport.py | Additive schema generation/drift checks, without silently expanding existing response unions |
+ | tests/test_renal_fluid_entry.py; test_renal_fluid_entry_gateway.py; frontend/tests/renalFluidEntry.test.tsx; renalFluidReassessment.test.tsx; renalFluidHandover.test.tsx (new) | RF2 cases and integrated storage/transport/UI coverage |
+@@ -118,14 +132,14 @@
+ 
+ ## One synthetic case and acceptance cases
+ 
+-Use a disposable copy of the accepted shared episode, preserving its original rows and two retained receipts. Add fixture examples explicitly before validation: documented intake, zero/missing urine, gap/overlap intervals, measured versus dosing weight and a source-reported balance. These are test assertions, not treatment thresholds. No real patient data or existing user's database is modified.
++Use a disposable copy of the accepted shared episode, preserving its original rows and two retained receipts. Reuse the inventoried existing weights and fluid records before adding fixture examples explicitly for genuinely new collections: documented intake, zero/missing urine, gap/overlap intervals, measured versus dosing purpose and a source-reported balance. Include one source weight visible in two views, its correction, and two genuinely distinct equal-valued measurements. Reference the shared weight without adding another fact row. These are test assertions, not treatment thresholds. No real patient data or existing user's database is modified.
+ 
+ | Case | Required outcome |
+ | --- | --- |
+ | RF2-01 shared scope | One repository/patient/encounter/cutoff. Replacement repository, patient or encounter clears choices; mounted drafts and pending requests retain original identity. |
+-| RF2-02 charting | Save urine, fluid and weight records through real API with exact decimals/units, source time/interval, purpose, method/unknown context and actor. Show confirmed ingestion distinctly from validation. |
++| RF2-02 charting and shared values | Reuse weight/fluid evidence already charted elsewhere with zero new fact rows. A genuine new collection saves once through the real API. Same source-collection replay is idempotent; conflicting replay requires correction, and uncertain overlap requires explicit source review. Identical-valued distinct collections remain distinct. Confirm exact decimals/units, context and ingestion separately from validation. |
+ | RF2-03 missing and context | Zero versus missing, point versus interval, unknown/reversed/ambiguous bounds, unlike units and measured/reported/dosing weight stay distinct. No generated totals/rates or physiological interpretation. |
+-| RF2-04 correction | Correct one recorded urine/fluid amount and one weight assertion. Exact original bytes/history remain; unrelated fields persist; stale/wrong-repository predecessor fails without writes. |
++| RF2-04 correction | Correct one recorded urine/fluid amount and one weight assertion through their owning paths. Both renal and hemodynamic views at the same cutoff retain the same exact identity/revision; generic weight is not cloned into another kind. Exact original bytes/history remain; unrelated fields persist; stale/wrong-repository predecessor fails without writes. |
+ | RF2-05 reassessment | Save a renal note without a forced intervention, referencing corrected chart evidence and existing creatinine. Exact persisted pins, digests, associations and narrative correspond. |
+ | RF2-06 comparison | New note uses corrected evidence while earlier note retains its original revision. Duplicate JSON members, collisions, missing/foreign refs and digest/ingestion contradictions withhold exact-reference claims. |
+ | RF2-07 historical handover | Save mixed selections, reload, resolve exact historical revisions even with successors, remove one pin, explicitly save and reload. Old notes and source facts remain untouched; unavailable pins are retained visibly. |
