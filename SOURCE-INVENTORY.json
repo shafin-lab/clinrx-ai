@@ -1,0 +1,197 @@
+{
+  "application": "5cb73212ae6104b02bad361886cd9507795d88bf",
+  "tree": "7505ff88af8089f2d729fc230b15f3a604c5c9c0",
+  "scope": "RF2-relevant M1-M7 contracts and workflows; capability/source inspection, not exhaustive line-by-line or code-clone audit",
+  "files": {
+    "backend/app/models/clinical/common.py": {
+      "sha256": "51db391edcf8ff2610671a05b74545e958c13d429977353d2898bef5f25c2810",
+      "git_blob": "643fc48ca46aaf841ab7d5bf790b0a7c5edc0b50",
+      "bytes": 11037
+    },
+    "backend/app/models/clinical/facts.py": {
+      "sha256": "d5da34ee81ac26c2868c7d754a903cf3d53febfd0503ddc65b9195a843aa3837",
+      "git_blob": "457065196f84656f11d69d5b8603bb308263901d",
+      "bytes": 16930
+    },
+    "backend/app/models/clinical/hemodynamics.py": {
+      "sha256": "d5c07e74923c40588383d704dedf3cac8253bf75bb765748aae9513449f17271",
+      "git_blob": "6673377f304df809d24b088ce0be4fdc9c457814",
+      "bytes": 33760
+    },
+    "backend/app/models/clinical/microbiology.py": {
+      "sha256": "ec426d1ff80d229288fbe9fdf2d0141c5dbd061b79bdb77a8b2930cc9d139f97",
+      "git_blob": "d5399abbd8d6ba9ac71ae5105403fe437a78ee6d",
+      "bytes": 8195
+    },
+    "backend/app/models/clinical/antimicrobials.py": {
+      "sha256": "79abdc2c7a9c2ea2a4b0e3090e53266d38a9ab5f5d442b43c176091aa27f0bcf",
+      "git_blob": "752b5bf7b277f667c2aca73c192b7b5786a3d193",
+      "bytes": 5875
+    },
+    "backend/app/persistence/repository.py": {
+      "sha256": "8dd6b55527e66df0d46518b62a0beb26ef7b70aef130b73747986a0e9c85fd32",
+      "git_blob": "5a854049bbe4a0cc46d957d972595bb60442c1ee",
+      "bytes": 15393
+    },
+    "backend/app/persistence/bounded_history.py": {
+      "sha256": "6ec9c42146cc3b7b00d58733873ce9ea5c4101319265c0d64856a52006b2720e",
+      "git_blob": "f4a1d6ac0c1cd24dae49c389a0554a7b25676924",
+      "bytes": 8541
+    },
+    "backend/app/persistence/shared_transaction.py": {
+      "sha256": "87fa5dece833565ef621c8a91a2c805173f037ae1aab9a9d67d089e1b04132d0",
+      "git_blob": "a65049c403b3c0db2c7c394ef403c04e1fecfd19",
+      "bytes": 5335
+    },
+    "backend/app/execution/weight_trend.py": {
+      "sha256": "0a0eabe229dddd3dfe9282cbb23a4b0d84ecd838f559d215137e4c591a3e33a6",
+      "git_blob": "23ce09f799c851c182705318d3926b6dae2d7c59",
+      "bytes": 13346
+    },
+    "backend/app/execution/weight_trend_workflow.py": {
+      "sha256": "0605748e9c2e1e7f57e592e645a20eb4cdee7f3d43f3bd1994bbf9e070d4d214",
+      "git_blob": "14e647804ff65a9e122153c49a069f35883658d3",
+      "bytes": 18952
+    },
+    "backend/app/execution/creatinine_trend.py": {
+      "sha256": "8c42d9672048e0addd4e210a03fa038869fc37a05c98f45ce27f79c15530d3b8",
+      "git_blob": "578dbdb1b580e585332012b75a32253a4304911c",
+      "bytes": 16544
+    },
+    "backend/app/execution/creatinine_trend_workflow.py": {
+      "sha256": "55231fab5f5a6c5bfe6552b3cdcc919fa868e43fd7677120b4a7ae556ec30c63",
+      "git_blob": "232f8d6d53885661ee05b35bf00f3b5da5ad405a",
+      "bytes": 18391
+    },
+    "backend/app/execution/patient_state.py": {
+      "sha256": "24471e2d73b35b620bddff07e1220d630ac85c1fc78436804a538f5862123a73",
+      "git_blob": "a55b06d9b12a1ec0a121373a9c988dc7b20d478a",
+      "bytes": 12854
+    },
+    "backend/app/execution/patient_state_assembly.py": {
+      "sha256": "d31de01ea2e2d2f2f0ba6ddb7ac7c1cf99d36885261b42692082b6ec670bd667",
+      "git_blob": "c6588962d0f4359db6e9eb4ef314bc82dacf559e",
+      "bytes": 14389
+    },
+    "backend/app/execution/patient_state_inference.py": {
+      "sha256": "6f76e1946b6623374b27445399d735304c73ddfdc1dab0103431bf0f95f5e6dc",
+      "git_blob": "cb69d2cf34a6fbb2ee2c2721f804897a5aa31c06",
+      "bytes": 11173
+    },
+    "backend/app/execution/patient_state_execution.py": {
+      "sha256": "73528f29877a0c88565d97f4f0877b14e3ed07b3b57e7727321bb9d2efaf15fc",
+      "git_blob": "2349419b0ac41773f2ce1ccc664fcc239cb491b1",
+      "bytes": 30289
+    },
+    "backend/app/execution/patient_state_workflow.py": {
+      "sha256": "2342f583d11da22a8094aace4ffa66fe82844d1e0709df25eafdc342cb3c270f",
+      "git_blob": "35c982fb534fe099d5141e2fb9b901b4c5d42083",
+      "bytes": 15331
+    },
+    "backend/app/execution/patient_state_v2.py": {
+      "sha256": "1a71fb574ce10b4f8ded4cb0b8f40a0e6b6d70b9c01938f842fd837e0f9aeb2f",
+      "git_blob": "207b89a44e2314c2e56d28b3cf5419568d74e0af",
+      "bytes": 15615
+    },
+    "backend/app/execution/patient_state_v2_assembly.py": {
+      "sha256": "cf65cd6d85ee32242b79b8e5181c2c976d5d46f80e6526d530bc47b8d0ed4e06",
+      "git_blob": "78f5116615e756e148cb4adfda35d383661de70f",
+      "bytes": 16807
+    },
+    "backend/app/execution/patient_state_v2_inference.py": {
+      "sha256": "766e5b51cd053075957c997bcce626b232923a147c8082bf29a68158dcea48ff",
+      "git_blob": "947d25959be66df9f65559e659573de376d6f64d",
+      "bytes": 14852
+    },
+    "backend/app/execution/patient_state_v3.py": {
+      "sha256": "e7fc4d9924ceb8315e1c38e8707eee8150d9e06944bef5c3f7fa15aa0671791b",
+      "git_blob": "6ae93aef64c3ea2a6b03ab069005141bd2281cfa",
+      "bytes": 6103
+    },
+    "backend/app/execution/patient_state_v3_assembly.py": {
+      "sha256": "cf34275f31bb1a91881600ce007557fe3405587636530c3a49e1b7f027d126d1",
+      "git_blob": "ee21b2c8c0f24ebb60ac1ca3fd0bd4ecd391990b",
+      "bytes": 9599
+    },
+    "backend/app/services/patient_state_product_service.py": {
+      "sha256": "06c8530f1f8d26fb3ad8d078d10783fbf3ed803fb98524216e45c83e980948d3",
+      "git_blob": "7498f3bcb81c7edf01652fa9d33f8ef6d87a4c83",
+      "bytes": 6294
+    },
+    "backend/app/services/micro_antimicrobial_product_service.py": {
+      "sha256": "bc552990960df17739a892b7a15521ac727b7cf5169dd74bad849e5b983098b1",
+      "git_blob": "5002226ccff45bd2e947190159d7f541ff6d7b45",
+      "bytes": 5219
+    },
+    "backend/app/services/circulatory_product_service.py": {
+      "sha256": "11f4142f271ee735898b259e0a2a372c76bc95bcba537dc85803fc5105cf2a69",
+      "git_blob": "787120aaaacd6c6d81eaab05b8a4dbb232e9be76",
+      "bytes": 7477
+    },
+    "backend/app/services/renal_fluid_product_service.py": {
+      "sha256": "c3d7ecf4ee8f68f8d89089c72c7b1298948aeec2605232992c0b311b9e4550fa",
+      "git_blob": "f2a170a8ec56f32292b70dc7aff9a4978ecb4421",
+      "bytes": 6299
+    },
+    "backend/app/api/routes/patient_state.py": {
+      "sha256": "d92c431bf360911afeddb46d32d947481e12cfaa6a8b63387ac3ce10bd0996cf",
+      "git_blob": "7304a1c6396213f2910aa908ae555243b26585dc",
+      "bytes": 880
+    },
+    "backend/app/demo/authoring.py": {
+      "sha256": "f0a79f9a7503b9d39f441bdf58d3100670b31081b06a19625e3f95dd5a06a749",
+      "git_blob": "b5e70708c7e2753423c1749e17547a1eec359f40",
+      "bytes": 7241
+    },
+    "backend/app/demo/patient_state.py": {
+      "sha256": "67bd1fbbe3e6d03a9c23705092ab1677e6162020eecd2d1a32285fd75678e9b1",
+      "git_blob": "3b75dd3cf6e9eb2e52bc52bf73134a2506a995ab",
+      "bytes": 5389
+    },
+    "backend/app/demo/icu_chart_entries.py": {
+      "sha256": "7ede1edcd7ae7f45572972fb70a2749af9a3400bf4f01306bd51053308afaf86",
+      "git_blob": "7b41bae78d05772cdd729e6c27108215feed1f05",
+      "bytes": 7810
+    },
+    "backend/app/demo/icu_flowsheet.py": {
+      "sha256": "23b131255f4c329dd0ce1741b01a78c64fbe789a1bd43fbc4b3af863609c08d3",
+      "git_blob": "63089c60638bcbe3aa3b5fdeda4ea569d3fe6aee",
+      "bytes": 7003
+    },
+    "frontend/src/api/client.ts": {
+      "sha256": "23de0bc7fc6aa2ee8c5e49f21a85bbda383615d3478437dc8246137720b3030f",
+      "git_blob": "297e5b385af27d73b5c8dddc2632fe9248dc89b5",
+      "bytes": 6998
+    },
+    "frontend/src/App.tsx": {
+      "sha256": "8f8412abcd35d9677bd8170efae6576e8a2b52524492c04bf18ddd5360f58805",
+      "git_blob": "cba5cf8fced7a65a8ed2f03b4d06a2f5c1ba19d5",
+      "bytes": 2252
+    },
+    "frontend/src/demo/usePatientEvidenceState.ts": {
+      "sha256": "c919be95da99ef03ac4688c1fed3c2b7f547d7686e02afbfeb24c09655ae4843",
+      "git_blob": "3e98c618668c894d444d8f4cf3166db46a86b88d",
+      "bytes": 2123
+    },
+    "frontend/src/demo/EvidenceEntryWorkspace.tsx": {
+      "sha256": "d1d10ff5ded25b85e49518ef1d649a58a81ad84bb5792c86f02774b5e3753021",
+      "git_blob": "32d009c0d64e10459925d2740c2fffdf96b9227d",
+      "bytes": 18256
+    },
+    "frontend/src/demo/ReassessmentComparison.tsx": {
+      "sha256": "cf7c034c2812bf598457b73071c584cffb21f844da9164f811fa1fa2729da75c",
+      "git_blob": "74efd1d22ce162329bc66d95db51abac17f83b28",
+      "bytes": 6018
+    },
+    "frontend/src/demo/localHandover.ts": {
+      "sha256": "deb98b682b105b04f5af2ffd2395fb9d51f8adbf4ab33bfb7e321fa7095552f8",
+      "git_blob": "1be85ed9ae20e6b9f6bda3d10ab2787600a4d1f4",
+      "bytes": 3217
+    },
+    "tests/test_weight_trend.py": {
+      "sha256": "d20ee4fda64686fa64aec368e3da219c4fcaaa76c7ff99ee3889ae04c861f97c",
+      "git_blob": "62a191e645dff0d64e8f19a13e01ca77194c340c",
+      "bytes": 26418
+    }
+  }
+}
