@@ -15,6 +15,7 @@ Run app.demo.renal_fluid_entry_gateway:from_environment with one worker bound to
 ## Protocol and limits
 
 - Source-record replay uses scoped issuer/record/component identity and exact validated chart material independently of generated local IDs. Context/series namespaces are excluded. Same-key changed content requires correction; ambiguous/multiple matches or exhausted budgets cannot insert. Replaying an original after correction returns it with supersession disclosed, not resurrection.
+- In the opt-in RF2 gateway, advanced legacy entry cannot create or amend an RF2-owned record. Exact already-retained requests and read-only lookup remain available first, preserving original recovery and the legacy request-size limit. Other legacy source records retain their original owner.
 - Request retry/lookup instead retains the exact pending draft. Validation is separate from save. After uncertainty, lookup first; absence is not rollback proof and only an explicit identical retry is offered. General durable pending-command recovery after closure remains deferred.
 - Existing metadata carriers hold one bounded RF2 entry and up to twelve separately encoded note pins, with matching context associations. Strict source metadata, canonical/digest and exact-history correspondence fail closed. No clinical model or database schema was changed.
 - New entry accepts exact ordinary decimal strings such as 35.0000 or 0.50. Historical values/units outside this local entry profile remain inspectable; no implicit conversion or number extraction from source text is performed.

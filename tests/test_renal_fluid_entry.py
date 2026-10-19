@@ -171,3 +171,28 @@ def test_full_episode_reuse_and_note_preserve_all_originals_and_receipts(tmp_pat
     assert after['fact_revision'][:-1]==before['fact_revision']
     for name in before:
         if name not in ('fact_revision','sqlite_sequence'):assert after[name]==before[name]
+
+def test_advanced_legacy_entry_cannot_bypass_rf2_owner(ws):
+    from app.demo.authoring import ENTRY
+    c,db,_=ws;b=draft(c);e=saved(c,b);before=rows(db)
+    clone=deepcopy(e['fact']);clone.update(id=str(uuid4()),revision=str(uuid4()))
+    assert c.post(ENTRY,json={'repository_id':b['repository'],'fact':clone,'predecessor_digest':None}).status_code==409
+    stripped=deepcopy(e['fact']);stripped.update(revision=str(uuid4()),supersedes=pin(e)['reference'],correction_reason='Attempt through wrong owner',external_evidence=[])
+    assert c.post(ENTRY,json={'repository_id':b['repository'],'fact':stripped,'predecessor_digest':e['digest']}).status_code==409
+    exact={'repository_id':b['repository'],'fact':e['fact'],'predecessor_digest':None}
+    assert c.post(ENTRY+'/lookup',json=exact).status_code==200
+    assert c.post(ENTRY,json=exact).status_code==200
+    assert rows(db)==before
+
+def test_old_legacy_command_recovers_after_rf2_correction(ws):
+    from app.demo.authoring import ENTRY
+    from app.demo.icu_chart_entries import entry
+    c,db,_=ws;repository=c.get(RF2).json()['repository'];id=str(uuid4())
+    fact=entry(id,'input_iv',15,'Historical source interval', '20','mL',start=0).model_dump(mode='json')
+    original={'repository_id':repository,'fact':fact,'predecessor_digest':None}
+    r=c.post(ENTRY,json=original);assert r.status_code==200,r.text;old=r.json()
+    d=draft(c,'input_iv',False);d.update(id=id,revision=str(uuid4()),predecessor={'repository':repository,'reference':{'kind':'circulatory_event','id':id,'version':'1'},'digest':old['expected_digest'],'ingestion':old['ingestion']['ingestion_sequence'],'cutoff':old['ingestion']['ingestion_sequence']},reason='Explicit amendment through RF2 owner');saved(c,d)
+    before=rows(db)
+    assert c.post(ENTRY+'/lookup',json=original).json()['evidence']['fact']==fact
+    assert c.post(ENTRY,json=original).json()['fact']==fact
+    assert rows(db)==before

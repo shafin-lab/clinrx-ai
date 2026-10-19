@@ -43,6 +43,58 @@ class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
         super().__init__(database,frontend,signing_key,origin)
         self.core.include_router(router)
     async def __call__(self,scope,receive,send):
+        # RF2 owns its structured facts even when the advanced legacy editor is used.
+        # Exact retained requests and read-only lookup preserve original recovery.
+        from app.demo.authoring import ENTRY, TARGET
+        legacy=scope['type']=='http' and scope.get('path') in (ENTRY,ENTRY+'/validate',ENTRY+'/lookup') and scope.get('method')=='POST'
+        if legacy:
+            headers=dict(scope.get('headers',()))
+            if not scope.get('client') or scope['client'][0] not in ('127.0.0.1','::1') or headers.get(b'host',b'').decode()!=self.host or headers.get(b'origin',b'').decode()!=self.origin:
+                return await JSONResponse({'code':'local_rf2_denied'},status_code=403)(scope,receive,send)
+            from app.api.middleware import MAX_REQUEST_BYTES
+            chunks=[];size=0
+            while True:
+                message=await receive()
+                if message['type']=='http.disconnect':return
+                chunk=message.get('body',b'');size+=len(chunk)
+                if size>MAX_REQUEST_BYTES:return await JSONResponse({'code':'request_too_large'},status_code=413)(scope,receive,send)
+                chunks.append(chunk)
+                if not message.get('more_body'):break
+            raw=b''.join(chunks)
+            try:
+                from app.demo.authoring import EvidenceDraft
+                from app.persistence.canonical import canonical_payload
+                from app.persistence.history import FactIdentity
+                from app.persistence.bounded_history import HistoryBudget,HistoryAccounting,AggregateHistoryBudget
+                from app.services.renal_fluid_entry_service import exact_json,META,PIN
+                proposed=EvidenceDraft.model_validate(exact_json(raw));fact=proposed.fact
+                def rf2(f):
+                    return any(e.namespace in (META,PIN) for e in f.external_evidence) if hasattr(f,'external_evidence') else False
+                from app.persistence.errors import RecordNotFound
+                exact=False
+                try:
+                    with transaction(self.core.state.dependencies.engine) as repo:
+                        if repo.capture_cutoff().repository_id!=proposed.repository_id:raise ValueError('repository mismatch')
+                        retained=repo.load_fact(fact.reference,target=TARGET)
+                        exact=canonical_payload(retained.fact)==canonical_payload(fact)
+                except RecordNotFound:
+                    pass
+                owned=rf2(fact) or (hasattr(fact,'description') and fact.description.coding is not None and fact.description.coding.namespace==META)
+                if not exact and scope['path']!=ENTRY+'/lookup':
+                    with transaction(self.core.state.dependencies.engine) as repo:
+                        if repo.capture_cutoff().repository_id!=proposed.repository_id:raise ValueError('repository mismatch')
+                        history=repo.list_bounded_history(target=TARGET,cutoff=repo.capture_cutoff(),identity=FactIdentity(kind=fact.kind,id=fact.id),budget=HistoryBudget(),accounting=HistoryAccounting(AggregateHistoryBudget())).records
+                        owned=owned or any(rf2(s.fact) for s in history)
+                if owned and not exact and scope['path']!=ENTRY+'/lookup':
+                    return await JSONResponse({'code':'rf2_owner_required','message':'Use the RF2 source owner for this record.'},status_code=409)(scope,receive,send)
+            except Exception:
+                return await JSONResponse({'code':'invalid_request'},status_code=422)(scope,receive,send)
+            delivered=False;upstream=receive
+            async def original_body():
+                nonlocal delivered
+                if not delivered:delivered=True;return {'type':'http.request','body':raw,'more_body':False}
+                return await upstream()
+            return await super().__call__(scope,original_body,send)
         if scope['type']=='http' and (scope['path']==RF2 or scope['path'].startswith(RF2+'/')):
             headers=dict(scope.get('headers',()))
             paths={RF2+'/history',RF2+'/resolve',RF2+'/validate',RF2+'/lookup',RF2+'/save'}
