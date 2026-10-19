@@ -94,3 +94,14 @@ it('retains confirmed save identity when the subsequent shared refresh fails, wh
  const {entry,client}=setup();await correction();client.circulatoryState.mockRejectedValueOnce(Error('refresh_failed'));step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await screen.findByText('Saved revision confirmed; the evidence list could not be refreshed.');
  expect(screen.getByText(/Execution gate not confirmed — new writes blocked/, {selector:'header strong'})).toBeInTheDocument();expect(screen.getByRole('button',{name:'New source entry'})).toBeDisabled();expect(entry.save).toHaveBeenCalledTimes(1);expect(screen.getByText(/Retained snapshot is for reference only/i)).toBeInTheDocument();
 });
+
+it('finds an ABG by plain name and source time from comparison, resets stale filters and opens the exact source',async()=>{
+ const {client,entry,getState}=setup();await ready();step('Evidence library');fireEvent.change(screen.getByRole('combobox',{name:'Evidence family'}),{target:{value:'circulatory_echo'}});fireEvent.change(screen.getByRole('searchbox',{name:'Search recorded evidence'}),{target:{value:'stale-filter'}});step('Compare notes');
+ const finder=screen.getByRole('search',{name:'Find patient evidence'});fireEvent.change(within(finder).getByRole('searchbox',{name:'Find recorded evidence'}),{target:{value:'ABG 09:00'}});fireEvent.submit(finder);
+ await screen.findByRole('button',{name:'Inspect pH fs-PH-60'});expect(screen.getByRole('heading',{name:'Recorded evidence results'})).toHaveFocus();expect(screen.getByRole('combobox',{name:'Evidence family'})).toHaveValue('all');expect(screen.getByRole('status')).toHaveTextContent('1 recorded item');expect(screen.queryByRole('heading',{name:'Pressure and PAC/RHC'})).not.toBeInTheDocument();
+ step('Inspect pH fs-PH-60');const item=getState().assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!;expect(screen.getByRole('complementary',{name:'Selected source evidence'})).toHaveTextContent(item.fact.revision);step('Inspect revision history');await waitFor(()=>expect(client.circulatoryHistory).toHaveBeenCalledWith(getState().state_context,{kind:item.fact.kind,id:item.fact.id,version:item.fact.revision}));
+ expect(client.circulatoryState).toHaveBeenCalledTimes(1);expect(entry.save).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
+});
+it('blocks the workspace finder while an entry is unresolved or unsaved',async()=>{
+ setup();await ready();step('Source entry and reassessment');fireEvent.change(screen.getByRole('textbox',{name:'Actor name'}),{target:{value:'Unsaved'}});expect(screen.getByRole('button',{name:'Find evidence'})).toBeDisabled();expect(screen.getByRole('searchbox',{name:'Find recorded evidence'})).toBeDisabled();
+});
