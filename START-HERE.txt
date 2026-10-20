@@ -1,0 +1,67 @@
+CLINRX DIRECTOR — RF2 ISOLATED HARNESS REVIEW
+
+Source 780112139c2a6f0224df5331600f3874e8b714c7
+Tree 45365138ed1c85325c6f8887e156ffead6de1fa2
+Contract: rf2-harness/v1-proposal.2, base 635cfe22 + addendum db33b852.
+This is a separate harness review candidate, not a new application candidate.
+Accepted application baseline d608ce8 is untouched; no installation occurred.
+
+START WITH
+source/README.txt, source/CONTRACT-IDENTITY.json, source/rf2_harness.py,
+source/schema.json and source/tests/test_conformance.py.
+SOURCE-MANIFEST.json supplies all 70 exact Git blob identities/sizes/hashes.
+source-commit.raw permits reconstruction of the source commit identity.
+source/contracts contains exact approved base/addendum bytes.
+
+VALIDATION
+Initial focused: 88 passed.
+Expanded audit: 95 passed / 2 failed. Both failures remain preserved.
+- Duplicate registry relationship entries were evaluated instead of rejected.
+- A self-cycle was excluded but had no singleton conflict-group diagnostic.
+Both fixed; focused edge coverage expanded.
+Final corrected focused: 110 passed, pytest subprocess exit 0.
+See evidence/corrected-focused.log, corrected-focused-junit.xml and metadata JSON.
+No duplicate full application suite, hosted CI, browser or container claim.
+ATTRIBUTION.json distinguishes exploratory-run limitations from final runner data.
+Earlier snapshot/test-file reconstruction limits are explicitly disclosed there.
+
+FIXTURE AND CAPTURE CORRESPONDENCE
+Original 24 payloads and 23 proposed scenarios are preserved unchanged in source/original.
+source/fixtures/DERIVATION-MANIFEST.json maps 23 strict derived fixtures and expected
+dispositions. Their registry/run wrappers are NEW synthetic fixture assumptions.
+Scenario 11 now withholds the whole run because unknown summary membership has
+no bounded affected set, rather than claiming only a bounded excluded group.
+Scenario 22 adds the missing referenced predecessor to isolate availability.
+These are disclosed differences/refinements, not silent original-fixture edits.
+CONFORMANCE-MATRIX.json links each derived scenario to its observed result/capture.
+All 110 test cases have capture indexes; 135 actual in-memory calls have exact raw
+input bytes, immediately serialized output JSON and SHA-256 hashes. These are NOT
+clinical API captures, browser traces or live producer observations.
+Added dynamic edge inputs have new byte hashes and distinct test-case provenance.
+A byte-limit test deliberately includes >4 MiB of whitespace; preserve as evidence.
+
+ACCEPTED-SCOPE BEHAVIOR UNDER TEST
+Strict schema rejection vs unsupported-profile semantic exclusion; canonical body
+comparison; explicit cutoff/lineage terminal selection before registry availability;
+no predecessor fallback; scoped aliases/equivalence and correction conflicts;
+typed summary membership distinct from duplicate/overlap; sequential same-drain
+collections and independent simultaneous drains; transitive conflict closure;
+point/interval boundaries, DST offsets, input bounds and permutation invariance.
+Registry failures use whole-scope withholding when dependence cannot be proved
+bounded; no withheld/rejected result emits candidate_include. Known summaries
+never enter the collection overlap graph. No balance arithmetic is implemented.
+
+LIMITS AND REQUEST
+Passing synthetic assertions does not verify real producer/issuer guarantees,
+production eligibility, durable storage, adapter binding or physical independence.
+Registry authenticity/retention and application integration remain deferred.
+Request Director acceptance or changes for this exact isolated source/test scope.
+No numerical eligibility, chart integration, database writes, migrations,
+installation, merge, deployment, hosting or clinical readiness follows.
+Execution remains disabled; prior application acceptances remain unchanged.
+
+INTEGRITY
+verify_evidence.py performs DATA-ONLY hash/identity/capture checks, not harness tests.
+MIRRORS.json provides lossless UTF-8 or base64 parts for large/binary evidence.
+PUBLICATION-SHA256SUMS.json covers actual publication files except itself.
+No ZIP or Mac access required. Earlier evidence remains unchanged.

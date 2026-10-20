@@ -1,0 +1,12 @@
+{
+  "test": "tests/test_conformance.py::test_registry_failures_never_include[missing-predecessor]",
+  "calls": [
+    {
+      "input": "ae24fd5bc0a25f36f66d-001.input.bin",
+      "input_sha256": "550c29f036f5bcffe78b4547d85ed2e65e5c49c9e2d7a0cc4d6fde4fc6332009",
+      "output": "ae24fd5bc0a25f36f66d-001.output.json",
+      "output_sha256": "dce4af1084f5b28b48fab88b858dac0335ca0a2ab70ce11ff0f8210312161afa"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

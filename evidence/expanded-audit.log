@@ -1,0 +1,29 @@
+........................................................................ [ 74%]
+................FF.......                                                [100%]
+=================================== FAILURES ===================================
+_______ test_duplicate_registry_relationships_reject_not_silently_repeat _______
+
+    def test_duplicate_registry_relationships_reject_not_silently_repeat():
+        r=run_for();reg=registry(r,'component_aliases');reg['content']['entries']*=2
+>       o=result(rehash(r));assert o['run_status']=='rejected' and not included(o)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert ('evaluated' == 'rejected'
+E         
+E         - rejected
+E         + evaluated)
+
+tests/test_conformance.py:250: AssertionError
+____________ test_single_revision_self_cycle_reports_conflict_group ____________
+
+    def test_single_revision_self_cycle_reports_conflict_group():
+        r=run_for();e=r['records'][0]['envelope'];e['supersedes']={k:e[k] for k in ('identity_namespace','collection_key','component_key','revision')}
+        o=result(r);assert not included(o) and 'REVISION_CYCLE' in all_reasons(o)
+>       assert len(o['conflict_groups'])==1 and len(o['conflict_groups'][0]['members'])==1
+E       assert (0 == 1)
+E        +  where 0 = len([])
+
+tests/test_conformance.py:256: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conformance.py::test_duplicate_registry_relationships_reject_not_silently_repeat
+FAILED tests/test_conformance.py::test_single_revision_self_cycle_reports_conflict_group
+2 failed, 95 passed in 0.29s

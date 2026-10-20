@@ -1,0 +1,234 @@
+RF2 ISOLATED HARNESS CONTRACT — v1-proposal.1
+Prepared 20 October 2026. Proposed, not approved or implemented.
+Producer proposal package: 6fac1a26fc4f28d7128beea94d8c80f271383d83
+Accepted application baseline: d608ce8655a024cf7c9e4d78dbeb85b50d20fdc5
+
+1. PURPOSE AND IMPLEMENTATION BOUNDARY
+An isolated, in-memory validator and identity/lineage resolver returns candidate
+inclusion/exclusion decisions and reasons for synthetic fixtures only.
+No balance arithmetic, chart integration, live database access/writes, migrations,
+production adapter, durable registry/envelope storage, inferred legacy migration,
+installation or numerical-eligibility activation.
+This text freezes proposed behavior for review; it is not executable software.
+
+2. INPUT STRUCTURE AND BOUNDS
+A run input has exactly: contract_version, expected_scope, period, cutoff,
+clinical_as_of, input_complete, records, registries.
+contract_version is rf2-harness/v1-proposal.1. cutoff is an integer >= 0;
+clinical_as_of is null or an explicit offset instant; input_complete is boolean.
+expected_scope has repository, patient_id, encounter_id, issuer.namespace,
+issuer.id, identity_namespace. repository is UUID text; all other identifiers are
+nonempty strings <= 128 Unicode code points. Scope correspondence is exact.
+period has start and end offset instants, display_timezone IANA identifier;
+start < end by instant comparison. Timezone offset/zone correspondence must be
+validated; ambiguous/nonexistent local entry cannot be guessed.
+records is an array of {envelope, knowledge_sequence}; knowledge_sequence is a
+synthetic integer >=1, not an actual repository ingestion. registries is an array
+of snapshot objects defined below. These wrapper keys are required and exclusive.
+Maximum input UTF-8 bytes 4 MiB; records 256; registry snapshots 64; edges/members
+per array 256; recursive JSON nesting 32; every text field <=512 code points
+unless a stricter bound is stated. Exceeding a bound withholds the whole run,
+never truncates input. JSON duplicate members, unknown fields, non-finite numeric
+values, invalid UTF-8 or invalid required types reject the whole run.
+No network discovery or ambient registries. Input order cannot affect decisions.
+
+3. FROZEN ENVELOPE SCHEMA
+All following keys are required; unknown keys rejected. Nullable means explicit
+null, not omission. Scope is repository/patient_id/encounter_id; issuer is
+namespace/id. Identifier bounds and exact correspondence above apply.
+producer: {id, version}, both nonempty identifiers. Supported initial id is
+clinrx.synthetic.fluid-collections, version 0.1.0-proposal.1.
+profile: clinrx.fluid-collection-profile/v1-proposal.1.
+scope: {repository, patient_id, encounter_id}.
+issuer: {namespace, id}.
+identity_namespace: stable registry namespace, exact expected-scope match.
+collection_key, component_key, quantity_key, revision: nonempty identifiers.
+supersedes: null or {identity_namespace, collection_key, component_key, revision}.
+References inherit enclosing scope/issuer; no cross-scope or identity-changing
+correction is permitted. All referenced revisions must be supplied or their
+absence must trigger dependency handling, never guessed ordering.
+classification: collection | summary.
+category: input_oral | input_enteral | input_iv | input_blood | output_urine |
+output_drain | output_other | output_crrt_net | output_crrt_effluent.
+actual_recorded: boolean.
+quantity: {amount, unit}; amount null or decimal string matching
+(?:0|[1-9][0-9]*)(?:\.[0-9]+)?; unit null | mL | L.
+Both amount/unit null together, or both present. No negative/exponent/float/NaN.
+time: {kind, start, end, at, display_timezone}; kind interval | point.
+Interval: start/end required nonnull offset instants, start < end, at null.
+Point: at nonnull offset instant, start/end null; genuine point meaning must be
+asserted by approved producer semantics, never inferred from an interval end.
+Timestamp syntax: YYYY-MM-DDTHH:MM:SS[.fraction](Z|+HH:MM|-HH:MM), valid calendar
+and offset; reject leap-second values in this first harness contract. Compare
+instants at exact supplied fractional precision, not through binary floats.
+status: recorded | withdrawn | invalid | unknown.
+available_at: null or explicit offset instant.
+drain_key, drain_name: nullable identifiers/text; output_drain requires both.
+Other categories require both null. Drain name is never an identity.
+summary_members: null or array of {quantity_key}. References inherit scope/issuer.
+Collection requires null. Summary null means unresolved membership; [] means an
+explicitly empty summary. Summaries are always excluded regardless of membership.
+equivalence: array of {quantity_key}, same inherited scope/issuer.
+uncertainty: array of strings. Caveats cannot grant identity eligibility.
+All array bounds above apply. Duplicate relationship references are rejected.
+A malformed envelope whose intended scope/relationships cannot be safely bounded
+withholds candidate decisions for the run, rather than silently removing it.
+
+4. CANONICAL CONTENT AND REPLAY COMPARISON
+Canonical content contains every validated envelope field, including producer/
+profile version, category and explicit nulls. The knowledge-sequence wrapper is
+not producer canonical content; preserve it in the run input digest separately.
+Encode as UTF-8 JSON with lexicographically sorted object keys, compact separators,
+no BOM/trailing newline, literal Unicode except required JSON control/quote/
+backslash escapes; no optional slash escaping. Preserve array order and exact
+string content. No Unicode, decimal-text or timestamp-text normalization.
+Only integers and booleans appear as JSON numbers/control types; amounts remain
+strings. Hash canonical bytes SHA-256. The complete run input uses the same
+convention and includes records/registries in their supplied array order;
+decisions remain order invariant even if the input digest changes.
+Whitespace/key-order variations of input JSON canonicalize identically.
+Decimal spelling, timestamp spelling, array order or envelope content changes
+do not. This convention is separate from existing clinical-fact canonicalization.
+Revision identifiers are opaque. Same fully scoped collection/component/revision
+and unchanged canonical bytes is identical replay: one candidate contribution.
+Changed canonical content at that revision is a conflict. Changed content must
+arrive as an explicit successor correction. A registry alias may collapse
+identity but cannot excuse changed content or silently select one representation.
+Producer/profile-version changes, category changes and component aliases cannot
+manufacture contributions. Unknown versions remain excluded; when identity shows
+possible equivalence with a supported record, the affected conflict group is
+excluded rather than counting the supported representation silently.
+A distinct component is countable only with an explicit applicable assertion of
+a distinct non-overlapping physical quantity. Different keys alone are no proof.
+
+5. FULLY SCOPED REGISTRY SNAPSHOTS
+Each snapshot has exactly: registry_type, schema_version, scope, issuer,
+identity_namespace, version, digest, available_at, knowledge_sequence, supersedes,
+content. scope/issuer/namespace must match expected_scope.
+registry_type: component_aliases | quantity_equivalence | drain_lifecycle |
+independent_components. schema_version is rf2-registry/v1-proposal.1.
+version nonempty identifier; available_at nonnull offset instant;
+knowledge_sequence integer >=1. supersedes null or {registry_type, version, digest}
+within identical scope. No version/sequence lexical inference.
+digest is 64 lowercase SHA-256 hex digits over canonical JSON of the snapshot
+with ONLY its digest member removed. All other members, including version,
+availability, knowledge sequence, supersedes and content, are covered.
+Content shapes:
+component_aliases: {entries:[{collection_key, alias, canonical, quantity_key}]}.
+quantity_equivalence: {entries:[{left_quantity_key,right_quantity_key}]}.
+drain_lifecycle: {entries:[{drain_key,active_from,active_until,replaces}]} where
+active_until null or later instant; replaces null or existing drain key.
+independent_components: {entries:[{collection_key,components}]} where components
+is array of {component_key,quantity_key}, at least two distinct canonical
+components and distinct quantity keys, explicitly asserted to represent distinct
+non-overlapping quantities. This is synthetic issuer assertion, not verified fact.
+No extra keys. Alias cycles, multiple incompatible alias targets, lifecycle
+contradictions, equivalence/independence contradictions or unresolved predecessor
+references cause affected-group exclusion if bounded, otherwise withholding.
+Every registry type must be supplied, even if its applicable content is empty.
+No registry means unknown semantics, not permission to assume an empty registry.
+Select snapshots with knowledge_sequence <= cutoff, and, if clinical_as_of is
+requested, available_at <= clinical_as_of. Select the unique applicable terminal
+in explicit registry lineage. Never choose a conflicting branch or fall back to
+a convenient older snapshot. Snapshot versions/digests remain pinned in output.
+Future registry changes cannot rewrite reproduction against the original inputs.
+Retention of these inputs is manual evidence packaging only for this harness;
+no durable application retention/storage model is authorized.
+
+6. SYNTHETIC TRUST AND LINEAGE
+Inputs are untrusted synthetic data. Validation is contract conformance, not
+issuer authentication or verified physical independence. expected_scope is an
+explicit fixture assertion, not clinical authorization.
+Use only records with knowledge_sequence <= cutoff. A record available later
+than clinical_as_of, or with unknown availability when that filter is requested,
+cannot contribute. Source availability is not repository ingestion.
+Resolve revision chains at cutoff using supersedes, never revision-name order.
+Cycles, conflicting same-revision bodies and competing terminal branches exclude
+the affected family. Applicable withdrawn/invalid/unknown terminal revisions do
+not permit fallback to a recorded predecessor. No successor substitution in a
+retained historical cutoff. No scope crossing or dangling links are guessed.
+
+7. DETERMINISTIC CONFLICT AND GROUP HANDLING
+Evaluate complete supplied scope before emitting candidate inclusions.
+Resolve aliases and quantity equivalence using selected registries. Build groups
+from collection/component identity, physical quantity identity, explicit equivalence,
+correction lineage, known aggregate membership, drain identity/lifecycle and
+asserted independent components. IDs/timestamps alone prove neither duplication
+nor independence. Same-scope candidate collections with potential overlapping
+source/component identity but no sufficient independence assertion are unresolved.
+Exclude all affected members of unresolved groups. Independent identified drains
+may overlap in time. Same-label drains do not inherit identity. Replacement uses
+a new drain key; a collection must lie within that drain's lifecycle, otherwise
+exclude it pending supported interpretation, without proration.
+Summary known membership permits separate evaluation of its actual component
+collections but never includes the summary. Unresolved membership excludes all
+potentially affected candidates; if that set cannot be bounded, withhold the run.
+CRRT effluent is excluded. CRRT net removal is a candidate only once. Equivalent
+other-output representation forms a duplicate group and requires resolution.
+Group IDs are SHA-256 of canonical JSON listing sorted scoped member identities
+and sorted reason codes. Output decisions sorted by scoped identity, revision
+and canonical digest. Input permutation cannot affect decisions/group IDs.
+
+8. EXCLUSION VERSUS WITHHOLDING
+An exclusion is permitted when affected identities and scope are bounded.
+Withhold all candidate inclusion decisions when input_complete is false, scope is
+unresolved, an unbounded dependency/aggregate/equivalence ambiguity exists,
+registries/retrieval are incomplete, or bounds are exceeded.
+No partial successful candidate set or silent truncation. Definitive exclusions
+and diagnostics may still be returned but must not imply unaffected inclusion.
+Malformed JSON/schema causes run rejection and zero candidate inclusions.
+
+9. PERIOD AND STATUS DECISIONS
+Selected period [start,end). Collection [a,b) qualifies temporally iff
+start <= a < b <= end. Genuine point p qualifies iff start <= p < end.
+Crossing, partial, invalid/reversed intervals excluded; never prorate or treat
+interval end as point fallback. Multi-hour collections may qualify for containing
+periods while remaining unallocated to hourly rows. No 24-calendar-hour inference:
+24-hour mode means exactly 86400 elapsed seconds. No subtotal is calculated here.
+Candidate status requires actual_recorded=true, collection classification,
+nonnegative known mL/L amount, applicable recorded revision, established identity,
+supported profile, suitable time and all dependency/registry gates satisfied.
+Null quantity is unknown; explicit zero remains a candidate zero observation.
+No source gains production numerical eligibility from a harness candidate result.
+
+10. OUTPUT CONTRACT
+Return contract_version, schema_digest, resolver_version, synthetic_only=true,
+input_digest, requested_scope, period, cutoff, clinical_as_of, selected_registries,
+run_status, run_reasons, decisions, completeness='unresolved',
+numerical_eligibility_active=false.
+run_status: evaluated | withheld | rejected.
+Each decision contains scoped identity/revision, envelope_digest,
+decision=candidate_include | exclude | unresolved, reason_codes,
+applicable_revision reference or null, conflict_group_ids and registry pins.
+Withheld/rejected runs contain no candidate_include decisions.
+selected_registries lists type/version/digest and availability/knowledge sequence.
+Reason codes include UNSUPPORTED_PROFILE, SCOPE_MISMATCH, MISSING_QUANTITY,
+UNSUPPORTED_UNIT, NON_ACTUAL, SUMMARY, EFFLUENT, SAME_REVISION_CONFLICT,
+REVISION_BRANCH, REVISION_CYCLE, TERMINAL_NOT_RECORDED, DUPLICATE_UNRESOLVED,
+OVERLAP_UNRESOLVED, ALIAS_UNRESOLVED, DRAIN_LIFECYCLE, REGISTRY_CONFLICT,
+REGISTRY_UNAVAILABLE, DEPENDENCY_MISSING, AVAILABILITY_UNRESOLVED,
+AFTER_CLINICAL_AS_OF, OUTSIDE_PERIOD, CROSSING_PERIOD, INPUT_INCOMPLETE,
+SCOPE_UNBOUNDED, INPUT_LIMIT, SCHEMA_REJECTED, CANDIDATE_RULES_SATISFIED.
+No arithmetic subtotal, clinical interpretation or production activation flag.
+
+11. BOUNDED VERIFICATION AND ATTRIBUTION
+Preserve original 24 payloads and 23 proposed scenarios from 6fac1a26 unchanged.
+They are proposed/unexecuted, not proof of conformance. Convert incomplete design
+registries into strict harness fixtures as NEW derived fixtures with new hashes
+and explicit correspondence; do not relabel old examples as strict valid runs.
+Execute focused cases only AFTER separate authorization: identical replay;
+changed same-revision conflict; explicit correction; version/category/component
+aliases; independent components and drains/replacement; summary/duplicate/CRRT;
+cutoff/status/availability; canonical whitespace vs string spelling; scoped
+registry digest/lineage/cutoff/availability; missing dependencies/cycles/branches;
+bounded-group vs scope withholding; deterministic permutations; strict schema
+and input limits. Report actual results, deviations and exact source identities.
+Package JSON/hash checks are not application or producer tests.
+No full suite, installation or browser journey is requested for this harness.
+
+12. APPROVAL AND DEFERRED DECISIONS
+Request contract review first and a separately stated bounded implementation
+authorization. Production adapter, producer-to-repository revision binding,
+durable envelope/registry retention and storage suitability remain deferred.
+Execution remains disabled. Prior acceptances unchanged. No merge, deployment,
+external hosting, numerical eligibility or clinical-readiness approval follows.

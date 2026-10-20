@@ -1,0 +1,18 @@
+{
+  "test": "tests/test_conformance.py::test_canonical_whitespace_and_object_order",
+  "calls": [
+    {
+      "input": "c86afa1b57eea7507832-001.input.bin",
+      "input_sha256": "3a7e134235d1813c5b14f1c6b79bfbc4c8755eb34e635e7fadcce6fee8ed8936",
+      "output": "c86afa1b57eea7507832-001.output.json",
+      "output_sha256": "82add9d60b50d388d8fc1e97567d62d120b443aa58500845e39f4bc896ba00bb"
+    },
+    {
+      "input": "c86afa1b57eea7507832-002.input.bin",
+      "input_sha256": "bef000945ab58b3a34221630a4005251781a4de53e822347a592b4666601a10b",
+      "output": "c86afa1b57eea7507832-002.output.json",
+      "output_sha256": "82add9d60b50d388d8fc1e97567d62d120b443aa58500845e39f4bc896ba00bb"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

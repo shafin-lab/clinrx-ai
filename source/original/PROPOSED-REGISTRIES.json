@@ -1,0 +1,42 @@
+{
+  "component_aliases": [
+    {
+      "issuer": "fixture-issuer-A",
+      "collection_key": "C-001",
+      "alias": "urine-volume-alias",
+      "canonical": "volume",
+      "quantity_key": "Q-001"
+    }
+  ],
+  "version_identity": "Identity namespace unchanged. Producer/profile version is never part of contribution identity. Unknown aliases require group exclusion.",
+  "drain_lifecycle": [
+    {
+      "drain_key": "D-A",
+      "active_from": "2026-10-08T08:00:00+00:00",
+      "active_until": "2026-10-08T08:45:00+00:00"
+    },
+    {
+      "drain_key": "D-B",
+      "active_from": "2026-10-08T08:00:00+00:00",
+      "active_until": null
+    },
+    {
+      "drain_key": "D-C",
+      "active_from": "2026-10-08T08:45:00+00:00",
+      "active_until": null,
+      "replaces": "D-A"
+    }
+  ],
+  "distinct_component_assertion": {
+    "components": [
+      "volume",
+      "separate-container"
+    ],
+    "quantity_keys": [
+      "Q-001",
+      "Q-002"
+    ],
+    "relationship": "proposed issuer guarantee of distinct non-overlapping physical volumes; equal time bounds alone do not invalidate independent containers",
+    "verified": false
+  }
+}

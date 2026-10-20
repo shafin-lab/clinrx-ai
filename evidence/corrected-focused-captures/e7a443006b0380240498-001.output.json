@@ -1,0 +1,293 @@
+{
+  "clinical_as_of": null,
+  "completeness": "unresolved",
+  "conflict_groups": [
+    {
+      "id": "9218dba80bce6e91809cee8cde99d9c3b4f7a9a37adddc638afa344d6b358739",
+      "members": [
+        "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+        "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+      ],
+      "reason_codes": [
+        "DEPENDENCY_MISSING",
+        "DUPLICATE_UNRESOLVED",
+        "REVISION_BRANCH",
+        "REVISION_CYCLE"
+      ],
+      "typed_edges": [
+        {
+          "members": [
+            "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+            "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+          ],
+          "reason": "DEPENDENCY_MISSING",
+          "type": "CONFLICT"
+        },
+        {
+          "members": [
+            "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+            "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+          ],
+          "reason": "DUPLICATE_UNRESOLVED",
+          "type": "CONFLICT"
+        },
+        {
+          "members": [
+            "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+            "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+          ],
+          "reason": "REVISION_BRANCH",
+          "type": "CONFLICT"
+        },
+        {
+          "members": [
+            "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+            "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+          ],
+          "reason": "REVISION_CYCLE",
+          "type": "CONFLICT"
+        },
+        {
+          "members": [
+            "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+            "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+          ],
+          "reason": null,
+          "type": "EQUIVALENT_VOLUME"
+        },
+        {
+          "members": [
+            "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+            "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+          ],
+          "reason": null,
+          "type": "LINEAGE"
+        }
+      ]
+    }
+  ],
+  "contract_version": "rf2-harness/v1-proposal.2",
+  "cutoff": 102,
+  "decisions": [
+    {
+      "applicable_revision": null,
+      "conflict_group_ids": [
+        "9218dba80bce6e91809cee8cde99d9c3b4f7a9a37adddc638afa344d6b358739"
+      ],
+      "decision": "exclude",
+      "envelope_digest": "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994",
+      "identity": [
+        "11111111-1111-4111-8111-111111111111",
+        "proposal-p1",
+        "proposal-e1",
+        "clinrx.proposed.synthetic-issuer",
+        "fixture-issuer-A",
+        "clinrx.synthetic.fluid-collections.identity/v1",
+        "C-001",
+        "volume",
+        "r1"
+      ],
+      "knowledge_sequences": [
+        100
+      ],
+      "reason_codes": [
+        "DEPENDENCY_MISSING",
+        "DUPLICATE_UNRESOLVED",
+        "REVISION_BRANCH",
+        "REVISION_CYCLE"
+      ],
+      "registry_pins": [
+        {
+          "available_at": "2026-10-08T07:00:00+00:00",
+          "digest": "fe4417f1eaf27b05d8e8ae3e826e13ed65fd2851b27b7091605c43b3e571888b",
+          "knowledge_sequence": 1,
+          "registry_type": "component_aliases",
+          "version": "registry-r1"
+        },
+        {
+          "available_at": "2026-10-08T07:00:00+00:00",
+          "digest": "1b64d1d93583f748fea32aae6339db3275f6cbf2cf8b5c894135ad2b61c265a3",
+          "knowledge_sequence": 1,
+          "registry_type": "drain_lifecycle",
+          "version": "registry-r1"
+        },
+        {
+          "available_at": "2026-10-08T07:00:00+00:00",
+          "digest": "fe5ad573d01086b536d5807c777b83957b74f3eb74da7deadeaf091ce77b82a6",
+          "knowledge_sequence": 1,
+          "registry_type": "independent_components",
+          "version": "registry-r1"
+        },
+        {
+          "available_at": "2026-10-08T07:00:00+00:00",
+          "digest": "62f07169dcf5916675fd445f6238343bf7997fefe8b055eb626b03e0a5720a57",
+          "knowledge_sequence": 1,
+          "registry_type": "quantity_equivalence",
+          "version": "registry-r1"
+        }
+      ]
+    },
+    {
+      "applicable_revision": null,
+      "conflict_group_ids": [
+        "9218dba80bce6e91809cee8cde99d9c3b4f7a9a37adddc638afa344d6b358739"
+      ],
+      "decision": "exclude",
+      "envelope_digest": "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+      "identity": [
+        "11111111-1111-4111-8111-111111111111",
+        "proposal-p1",
+        "proposal-e1",
+        "clinrx.proposed.synthetic-issuer",
+        "fixture-issuer-A",
+        "clinrx.synthetic.fluid-collections.identity/v1",
+        "C-001",
+        "volume",
+        "r2"
+      ],
+      "knowledge_sequences": [
+        102
+      ],
+      "reason_codes": [
+        "DEPENDENCY_MISSING",
+        "DUPLICATE_UNRESOLVED",
+        "REVISION_BRANCH",
+        "REVISION_CYCLE"
+      ],
+      "registry_pins": [
+        {
+          "available_at": "2026-10-08T07:00:00+00:00",
+          "digest": "fe4417f1eaf27b05d8e8ae3e826e13ed65fd2851b27b7091605c43b3e571888b",
+          "knowledge_sequence": 1,
+          "registry_type": "component_aliases",
+          "version": "registry-r1"
+        },
+        {
+          "available_at": "2026-10-08T07:00:00+00:00",
+          "digest": "1b64d1d93583f748fea32aae6339db3275f6cbf2cf8b5c894135ad2b61c265a3",
+          "knowledge_sequence": 1,
+          "registry_type": "drain_lifecycle",
+          "version": "registry-r1"
+        },
+        {
+          "available_at": "2026-10-08T07:00:00+00:00",
+          "digest": "fe5ad573d01086b536d5807c777b83957b74f3eb74da7deadeaf091ce77b82a6",
+          "knowledge_sequence": 1,
+          "registry_type": "independent_components",
+          "version": "registry-r1"
+        },
+        {
+          "available_at": "2026-10-08T07:00:00+00:00",
+          "digest": "62f07169dcf5916675fd445f6238343bf7997fefe8b055eb626b03e0a5720a57",
+          "knowledge_sequence": 1,
+          "registry_type": "quantity_equivalence",
+          "version": "registry-r1"
+        }
+      ]
+    }
+  ],
+  "input_digest": "12152ba704b8669e818f68dd5e0eadf8bb33c684c0ab1afd39e607574f1d2da3",
+  "numerical_eligibility_active": false,
+  "period": {
+    "display_timezone": "UTC",
+    "end": "2026-10-08T09:00:00+00:00",
+    "start": "2026-10-08T08:00:00+00:00"
+  },
+  "relationships": [
+    {
+      "members": [
+        "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+        "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+      ],
+      "reason": "DEPENDENCY_MISSING",
+      "type": "CONFLICT"
+    },
+    {
+      "members": [
+        "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+        "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+      ],
+      "reason": "DUPLICATE_UNRESOLVED",
+      "type": "CONFLICT"
+    },
+    {
+      "members": [
+        "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+        "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+      ],
+      "reason": "REVISION_BRANCH",
+      "type": "CONFLICT"
+    },
+    {
+      "members": [
+        "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+        "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+      ],
+      "reason": "REVISION_CYCLE",
+      "type": "CONFLICT"
+    },
+    {
+      "members": [
+        "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+        "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+      ],
+      "reason": null,
+      "type": "EQUIVALENT_VOLUME"
+    },
+    {
+      "members": [
+        "00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f",
+        "affeeb8fae72a6e8fb53dae7cedce5115184e29df33f91ee893467a95d7e1994"
+      ],
+      "reason": null,
+      "type": "LINEAGE"
+    }
+  ],
+  "requested_scope": {
+    "encounter_id": "proposal-e1",
+    "identity_namespace": "clinrx.synthetic.fluid-collections.identity/v1",
+    "issuer": {
+      "id": "fixture-issuer-A",
+      "namespace": "clinrx.proposed.synthetic-issuer"
+    },
+    "patient_id": "proposal-p1",
+    "repository": "11111111-1111-4111-8111-111111111111"
+  },
+  "resolver_version": "rf2-isolated-resolver/1.0.0",
+  "run_reasons": [
+    "DEPENDENCY_MISSING"
+  ],
+  "run_status": "withheld",
+  "schema_digest": "524c7abc6ec2ab7d50a0d2deb64f412b76ed616d5b0cffcc4be943abba10afc3",
+  "selected_registries": [
+    {
+      "available_at": "2026-10-08T07:00:00+00:00",
+      "digest": "fe4417f1eaf27b05d8e8ae3e826e13ed65fd2851b27b7091605c43b3e571888b",
+      "knowledge_sequence": 1,
+      "registry_type": "component_aliases",
+      "version": "registry-r1"
+    },
+    {
+      "available_at": "2026-10-08T07:00:00+00:00",
+      "digest": "1b64d1d93583f748fea32aae6339db3275f6cbf2cf8b5c894135ad2b61c265a3",
+      "knowledge_sequence": 1,
+      "registry_type": "drain_lifecycle",
+      "version": "registry-r1"
+    },
+    {
+      "available_at": "2026-10-08T07:00:00+00:00",
+      "digest": "fe5ad573d01086b536d5807c777b83957b74f3eb74da7deadeaf091ce77b82a6",
+      "knowledge_sequence": 1,
+      "registry_type": "independent_components",
+      "version": "registry-r1"
+    },
+    {
+      "available_at": "2026-10-08T07:00:00+00:00",
+      "digest": "62f07169dcf5916675fd445f6238343bf7997fefe8b055eb626b03e0a5720a57",
+      "knowledge_sequence": 1,
+      "registry_type": "quantity_equivalence",
+      "version": "registry-r1"
+    }
+  ],
+  "synthetic_only": true
+}

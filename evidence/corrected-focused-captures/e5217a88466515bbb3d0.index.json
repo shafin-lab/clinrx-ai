@@ -1,0 +1,18 @@
+{
+  "test": "tests/test_conformance.py::test_drain_lifecycle_missing_and_replacement_conflict",
+  "calls": [
+    {
+      "input": "e5217a88466515bbb3d0-001.input.bin",
+      "input_sha256": "1048397dbe8f72af87485edf6597c0e8f666bb09bbda1b98d9e35a8fae930ab0",
+      "output": "e5217a88466515bbb3d0-001.output.json",
+      "output_sha256": "17ab1ca7e63e29c5e9ead5a54bb124d1ea5a332147870444d0d22aa080360a23"
+    },
+    {
+      "input": "e5217a88466515bbb3d0-002.input.bin",
+      "input_sha256": "9f7ce0d33423953744238620e83b8d8461e5bd30286e9207bc104c2e23bfdf4e",
+      "output": "e5217a88466515bbb3d0-002.output.json",
+      "output_sha256": "1363ed977a57bfec59c197e0991257b30dc5c7cd42d72c324a512bf698acd6c0"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

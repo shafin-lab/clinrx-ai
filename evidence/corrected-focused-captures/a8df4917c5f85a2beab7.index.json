@@ -1,0 +1,12 @@
+{
+  "test": "tests/test_conformance.py::test_schema_rejects_entire_run[missing-registry-field]",
+  "calls": [
+    {
+      "input": "a8df4917c5f85a2beab7-001.input.bin",
+      "input_sha256": "ee7691500e80e120e7a184107582d2ef9736b22c2e614fdb9f83acdafb0b72f4",
+      "output": "a8df4917c5f85a2beab7-001.output.json",
+      "output_sha256": "15aa7384399fd314d029bbacd3ab6a543312bd1b764d8128645c56351f344f07"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

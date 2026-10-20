@@ -1,0 +1,18 @@
+{
+  "test": "tests/test_conformance.py::test_point_end_exclusion_and_interval_end_inclusion_are_not_zero",
+  "calls": [
+    {
+      "input": "499ce27673b6b2ee39ff-001.input.bin",
+      "input_sha256": "a0ad44ae57201521bf25a3847fb3b0dfbdf6b1aaa44d18c15eaa18a5201a47e0",
+      "output": "499ce27673b6b2ee39ff-001.output.json",
+      "output_sha256": "63cc7f195c1aee55f675f0158e06407687fa41afc535d4837e69b970281fb299"
+    },
+    {
+      "input": "499ce27673b6b2ee39ff-002.input.bin",
+      "input_sha256": "088424c20cbf957d1d3fb9eb32cb8ea3edb5d8bf8ecdf611f81063614ec0c15c",
+      "output": "499ce27673b6b2ee39ff-002.output.json",
+      "output_sha256": "46552b714ca92be94c866fb68296650cafce8bf06b614a0a1226d12d9cc0a350"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

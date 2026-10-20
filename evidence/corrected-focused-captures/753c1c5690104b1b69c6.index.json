@@ -1,0 +1,12 @@
+{
+  "test": "tests/test_conformance.py::test_schema_rejects_entire_run[mixed]",
+  "calls": [
+    {
+      "input": "753c1c5690104b1b69c6-001.input.bin",
+      "input_sha256": "6e5adf7a549be5f18fa981fff850f9551b3784896b87cb5340684a2c4bf1eaa5",
+      "output": "753c1c5690104b1b69c6-001.output.json",
+      "output_sha256": "acc9824715da0e80060567b31e7b701e4c5608a652b271e0b7dab6d5f1253c3f"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

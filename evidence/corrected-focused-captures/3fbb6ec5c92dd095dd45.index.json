@@ -1,0 +1,12 @@
+{
+  "test": "tests/test_conformance.py::test_changed_canonical_same_revision_conflicts[profile]",
+  "calls": [
+    {
+      "input": "3fbb6ec5c92dd095dd45-001.input.bin",
+      "input_sha256": "4493150ad2b76ab528e59238bcc2bb308cb139a34e1cad17d785b04439c4f092",
+      "output": "3fbb6ec5c92dd095dd45-001.output.json",
+      "output_sha256": "8a28527aa7f9e0f445c66281777d24cf32883d0630e70c7c1427392ce7b8eb79"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}
