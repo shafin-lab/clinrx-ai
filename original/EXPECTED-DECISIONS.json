@@ -1,0 +1,272 @@
+[
+  {
+    "id": "01-identical-replay",
+    "examples": [
+      "urine-original",
+      "urine-original"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "one contribution",
+    "reason": "Same revision and unchanged canonical bytes; exact replay",
+    "test_executed": false
+  },
+  {
+    "id": "02-same-key-changed-content",
+    "examples": [
+      "urine-original",
+      "urine-changed-same-revision"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude conflicting group",
+    "reason": "Changed content without successor correction",
+    "test_executed": false
+  },
+  {
+    "id": "03-explicit-correction",
+    "examples": [
+      "urine-original",
+      "urine-correction"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "select r2 only at cutoff 102",
+    "reason": "Explicit successor; no predecessor plus correction",
+    "test_executed": false,
+    "history": [
+      {
+        "example": "urine-original",
+        "ingestion": 100
+      },
+      {
+        "example": "urine-correction",
+        "ingestion": 102
+      }
+    ]
+  },
+  {
+    "id": "04-version-alias",
+    "examples": [
+      "urine-original",
+      "urine-version-alias"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "no second contribution; exclude group until envelope change reconciled",
+    "reason": "Version change is not a new volume; same-revision canonical content changed",
+    "test_executed": false
+  },
+  {
+    "id": "05-component-alias",
+    "examples": [
+      "urine-original",
+      "urine-component-alias"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "no second contribution; exclude unresolved conflicting representations",
+    "reason": "Declared alias collapses identity but does not override changed-content conflict",
+    "test_executed": false
+  },
+  {
+    "id": "06-category-alias",
+    "examples": [
+      "urine-original",
+      "urine-category-alias"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude conflicting group",
+    "reason": "Category change cannot create independent contribution",
+    "test_executed": false
+  },
+  {
+    "id": "07-new-key-duplicate",
+    "examples": [
+      "urine-original",
+      "urine-new-key-same-volume"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude unresolved duplicate group",
+    "reason": "Same physical quantity with competing collection representations",
+    "test_executed": false
+  },
+  {
+    "id": "08-independent-drains",
+    "examples": [
+      "drain-A",
+      "drain-B"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "both may contribute",
+    "reason": "Proposed distinct stable drains/quantity identities despite same name and interval",
+    "test_executed": false
+  },
+  {
+    "id": "09-replacement",
+    "examples": [
+      "drain-replacement"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude outside drain lifecycle",
+    "reason": "Replacement D-C is not active during example interval; no guessed identity",
+    "test_executed": false
+  },
+  {
+    "id": "10-summary-known",
+    "examples": [
+      "urine-original",
+      "summary-known"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude summary; collection may contribute",
+    "reason": "Proposed membership resolved; count actual collection once",
+    "test_executed": false
+  },
+  {
+    "id": "11-summary-unknown",
+    "examples": [
+      "urine-original",
+      "summary-unresolved"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude summary and affected unresolved collection group",
+    "reason": "No membership inference from times or amounts; candidate group requires explicit resolution",
+    "test_executed": false
+  },
+  {
+    "id": "12-crrt-distinction",
+    "examples": [
+      "crrt-net",
+      "crrt-effluent"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "net only may contribute",
+    "reason": "Effluent never substitutes or adds to net removal",
+    "test_executed": false
+  },
+  {
+    "id": "13-crrt-cross-category",
+    "examples": [
+      "crrt-net",
+      "crrt-net-duplicate"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude duplicate group",
+    "reason": "Same quantity key despite category difference",
+    "test_executed": false
+  },
+  {
+    "id": "14-withdrawal",
+    "examples": [
+      "urine-original",
+      "urine-withdrawn"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude family; no fallback",
+    "reason": "Applicable withdrawn successor",
+    "test_executed": false
+  },
+  {
+    "id": "15-invalid",
+    "examples": [
+      "urine-original",
+      "urine-invalid"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude family; no fallback",
+    "reason": "Applicable invalid successor",
+    "test_executed": false
+  },
+  {
+    "id": "16-competing-revisions",
+    "examples": [
+      "urine-original",
+      "urine-competing-a",
+      "urine-competing-b"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude family",
+    "reason": "Unresolved competing successors",
+    "test_executed": false
+  },
+  {
+    "id": "17-pinned-cutoff",
+    "examples": [
+      "urine-original",
+      "urine-correction"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "r1 at cutoff 100; r2 at cutoff 102",
+    "reason": "Later knowledge cannot overwrite pinned history",
+    "test_executed": false,
+    "history": [
+      {
+        "example": "urine-original",
+        "ingestion": 100
+      },
+      {
+        "example": "urine-correction",
+        "ingestion": 102
+      }
+    ]
+  },
+  {
+    "id": "18-unknown-availability",
+    "examples": [
+      "urine-unknown-availability"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude from clinical-as-of calculation",
+    "reason": "Unknown availability cannot satisfy explicit clinical as-of requirement; cutoff alone is repository knowledge",
+    "test_executed": false,
+    "clinical_as_of": "2026-10-08T09:00:00+00:00"
+  },
+  {
+    "id": "19-distinct-component",
+    "examples": [
+      "urine-original",
+      "distinct-component"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "both may contribute only with approved distinct-volume assertion",
+    "reason": "Different component key alone is insufficient; proposed issuer non-overlap guarantee required",
+    "test_executed": false
+  },
+  {
+    "id": "20-zero",
+    "examples": [
+      "urine-zero"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "eligible exact zero is distinct from no eligible records",
+    "reason": "Only after all gates including producer approval",
+    "test_executed": false
+  },
+  {
+    "id": "21-missing",
+    "examples": [
+      "urine-unknown"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude",
+    "reason": "Unknown is not zero",
+    "test_executed": false
+  },
+  {
+    "id": "22-availability-after-as-of",
+    "examples": [
+      "urine-correction"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "exclude for clinical as-of 09:00",
+    "reason": "Source available_at 09:01 is later than selected clinical-as-of; no predecessor fallback",
+    "test_executed": false,
+    "clinical_as_of": "2026-10-08T09:00:00+00:00"
+  },
+  {
+    "id": "23-valid-replacement",
+    "examples": [
+      "drain-replacement-valid"
+    ],
+    "current_eligibility": "BLOCKED_PROFILE_NOT_APPROVED",
+    "conditional_expected_decision": "may contribute under D-C, never D-A",
+    "reason": "New drain identity, collection wholly within new lifecycle; same display name grants no continuity",
+    "test_executed": false
+  }
+]

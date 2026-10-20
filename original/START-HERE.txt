@@ -1,0 +1,136 @@
+CLINRX SYNTHETIC FLUID COLLECTION PRODUCER — PROPOSAL
+Version 0.1.0-proposal.1 / profile v1-proposal.1
+Prepared 20 October 2026 against accepted application d608ce8.
+
+STATUS
+The named producer DOES NOT EXIST as an implemented or verified producer.
+All guarantees, registries, envelopes and examples in this package are PROPOSED.
+No source gains numerical eligibility. No application changes, database writes,
+new persistence model, executable producer or calculator tests were performed.
+Package integrity checks do not establish producer conformance.
+
+REQUESTED DIRECTOR DECISION
+Approve/amend the named producer requirements and exact proposed field mapping.
+Identify any remaining contract decisions before bounded implementation could
+be authorized separately. Do not infer producer approval from these fixtures.
+
+IDENTITY GUARANTEES — PROPOSED
+Stable issuer scope is repository/patient/encounter + issuer namespace/ID +
+identity namespace. Within this scope, collection_key is never reassigned to a
+different physical collection. Canonical component keys are resolved through a
+versioned issuer alias registry. quantity_key identifies the physical volume
+represented, including alternate category or collection representations.
+Producer/profile versions, category labels and component aliases are NOT new
+contribution identity. A profile change must retain the registry namespace.
+Unknown registry mappings or incompatible identity migrations block inclusion.
+Never reconstruct these identities for legacy records from labels/timestamps.
+
+An identity-preserving replay retains the same collection/component and revision
+with unchanged canonical content. Changed content requires an explicit successor
+correction; otherwise it is a conflict.
+Profile-version changes, category changes and component aliases must not
+manufacture another contribution. A separately countable component must represent
+a distinct, non-overlapping quantity. Unresolved equivalence or overlap excludes
+every affected candidate.
+
+A quantity key is itself an issuer guarantee requiring evidence; merely adding a
+new key to a payload does not prove physical independence. Producer responsibility
+includes identifying cross-category and cross-source alternate representations.
+When this cannot be established, exclude the entire affected group.
+Alias resolution prevents double counting but does not excuse changed canonical
+content in an allegedly identical revision. Version aliases must be reconciled
+explicitly rather than choosing one representation silently.
+
+EXACT FIELD MAPPING
+FIELD-MAPPING.json defines the proposed envelope fields, types and meanings.
+This is NOT a mapping onto an existing approved RF2 storage representation.
+Existing Chart/SourceRecord fields do not encode all required identity guarantees.
+The future adapter must verify scope correspondence, raw amounts, revision links,
+status, collection semantics and source identity without rewriting retained facts.
+The adapter and any representation/persistence changes require separate review.
+Do not use unstructured context strings as an implicit identity registry.
+
+TIMING AND REVISIONS
+All timestamp values are explicit offset instants. Display timezone is separate;
+ambiguous/nonexistent local entry must be resolved before an envelope is formed.
+Intervals require start < end. Point events require a genuinely point-recorded
+quantity; collection-end timestamps cannot be reinterpreted as point events.
+The approved [start,end) and full-containment rules apply unchanged.
+
+supersedes references inherit the same issuer and patient/repository scope from
+the envelope and name identity namespace/collection/component/revision. Cross-scope
+or identity-changing correction links are invalid. Revision identifiers are
+opaque, not ordered lexically. Select by explicit lineage at pinned cutoff.
+No cycles, competing successors or conflicting same-revision content are allowed.
+Recorded/withdrawn/invalid/unknown remain distinct. Applicable withdrawn/invalid
+successors prevent predecessor fallback. Unresolved branches exclude the family.
+
+INGESTION/CUTOFF BINDING
+A future adapter must bind each accepted producer envelope to exact existing or
+separately approved repository evidence: kind/ID/revision, digest and ingestion.
+Example history entries in EXPECTED-DECISIONS.json are illustrative sequences,
+not actual database ingestions. Source revision and repository revision mapping
+must be explicit. A cutoff cannot be fabricated by the producer.
+Only repository evidence at or before the pinned cutoff participates. Source
+available_at is an independent axis; repository ingestion is not a substitute.
+Where a clinical-as-of constraint is requested, known availability must satisfy
+it; missing availability remains excluded from that calculation. No clinical
+as-of mode is automatically added to the approved UI by these fixtures.
+Historical cutoff reproduction must use registries/mappings available at that
+cutoff, with exact version/digest pins. Registry changes cannot silently relabel
+old contributions or remove old conflicts. Their retention mechanism is open.
+
+DRAINS AND SUMMARIES
+Stable drain_key represents a particular drain instance in the encounter.
+Drain names are display-only. Replacement creates a new key with explicit
+lifecycle boundaries and relation to the removed drain; no key reuse.
+Distinct drains may collect simultaneously. Components within one collection
+require explicit independent-volume semantics, not just distinct component keys.
+All drain collections must fall within their applicable lifecycle, or be excluded
+pending a supported explanation of boundary behavior. No prorating is inferred.
+
+Summary records never contribute. summary_members references inherit the same
+issuer/scope and name physical quantity keys. Null membership means unresolved,
+not an empty summary. Known summary membership does not create new observations.
+If membership is unknown, disclose and exclude the potentially affected group
+until the source establishes its bounds; do not guess which collections it covers.
+
+CRRT
+output_crrt_net and output_crrt_effluent are distinct proposed categories.
+Only actual net removal may contribute, once. Effluent is display-only. Another
+output representation of the same net volume shares quantity identity and must
+be reconciled; unresolved duplicates are all excluded.
+No replacement-fluid reconciliation, integration or inferred removal is supplied.
+
+ARITHMETIC AND COMPLETENESS
+The approved subtotal contract is unchanged: exact nonnegative mL/L values,
+1 L = 1000 mL, sum before two-decimal half-even rounding, exact sign and near-zero
+exception. Formula remains included intake minus included output.
+Completeness unresolved is permanent for this increment. No eligible records is
+not Zero. Failed/truncated/inconsistent retrieval withholds a numeric subtotal.
+
+EXAMPLES AND VALIDATION ATTRIBUTION
+examples/: proposed canonical design payloads, not generated by a working producer
+and not actual observations. EXAMPLE-MANIFEST.json identifies each byte payload by
+SHA-256. Package canonical JSON is a fixture convention, not a new application
+canonicalization implementation. EXPECTED-DECISIONS.json supplies conditional
+inclusion/exclusion expectations. Every current eligibility remains blocked.
+PROPOSED-REGISTRIES.json supplies proposed aliases, drain lifecycle and independent
+component assertions; none is verified issuer evidence.
+
+Only JSON parsing, reference/file existence and content-hash checks are performed
+for package preparation. No calculator/producer conformance or application tests
+are executed or claimed. Baseline source has not been modified.
+
+OPEN IMPLEMENTATION CONTRACT DECISIONS
+1. Approve how producer identity/quantity and alias/lifecycle metadata are carried
+   and retained; no new storage type is authorized by this proposal.
+2. Define authenticated or explicitly synthetic issuer guarantees and the adapter
+   validating those guarantees. These examples are unauthenticated design data.
+3. Specify canonical producer content, revision-to-fact mapping and replay
+   comparison compatible with existing canonical clinical evidence.
+4. Specify cutoff-pinned registry availability, updates and historical retention.
+5. Review executable conformance cases after separate bounded authorization.
+
+Execution stays disabled. Prior F1-F4, RF1 and hemodynamics acceptances remain.
+No merge, deployment, external hosting or clinical-readiness claim follows.

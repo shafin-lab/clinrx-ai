@@ -1,0 +1,161 @@
+{
+  "mapping_kind": "proposed producer envelope, not existing database schema",
+  "fields": [
+    {
+      "path": "producer.id",
+      "type": "string",
+      "meaning": "Exact producer ID; does not identify a collection"
+    },
+    {
+      "path": "producer.version",
+      "type": "string",
+      "meaning": "Pinned producer version; changes cannot create identity"
+    },
+    {
+      "path": "profile",
+      "type": "string",
+      "meaning": "Pinned profile version; does not partition collection identity"
+    },
+    {
+      "path": "scope.repository",
+      "type": "UUID",
+      "meaning": "Repository correspondence"
+    },
+    {
+      "path": "scope.patient_id",
+      "type": "string",
+      "meaning": "Exact patient scope"
+    },
+    {
+      "path": "scope.encounter_id",
+      "type": "string",
+      "meaning": "Exact encounter scope"
+    },
+    {
+      "path": "issuer.namespace",
+      "type": "string",
+      "meaning": "Stable issuer namespace"
+    },
+    {
+      "path": "issuer.id",
+      "type": "string",
+      "meaning": "Issuer within namespace"
+    },
+    {
+      "path": "identity_namespace",
+      "type": "string",
+      "meaning": "Stable identity registry, unchanged across producer/profile versions"
+    },
+    {
+      "path": "collection_key",
+      "type": "string",
+      "meaning": "Issuer-assigned physical collection key, never reused in scope"
+    },
+    {
+      "path": "component_key",
+      "type": "string",
+      "meaning": "Canonical component of that collection; aliases resolve before counting"
+    },
+    {
+      "path": "quantity_key",
+      "type": "string",
+      "meaning": "Stable identity of physical volume shared across categories/representations"
+    },
+    {
+      "path": "revision",
+      "type": "string",
+      "meaning": "Issuer revision identifier"
+    },
+    {
+      "path": "supersedes",
+      "type": "reference|null",
+      "meaning": "Explicit prior scoped collection/component/revision; acyclic"
+    },
+    {
+      "path": "classification",
+      "type": "collection|summary",
+      "meaning": "Explicit actual collection versus aggregate summary"
+    },
+    {
+      "path": "category",
+      "type": "enum",
+      "meaning": "input_oral,input_enteral,input_iv,input_blood,output_urine,output_drain,output_other,output_crrt_net,output_crrt_effluent"
+    },
+    {
+      "path": "actual_recorded",
+      "type": "boolean",
+      "meaning": "True only for actual recorded volumes"
+    },
+    {
+      "path": "quantity.amount",
+      "type": "decimal-string|null",
+      "meaning": "Nonnegative magnitude; null is unknown"
+    },
+    {
+      "path": "quantity.unit",
+      "type": "mL|L|null",
+      "meaning": "Raw units preserved"
+    },
+    {
+      "path": "time.kind",
+      "type": "interval|point",
+      "meaning": "Point requires genuinely instantaneous recorded volume; no interval-end fallback"
+    },
+    {
+      "path": "time.start",
+      "type": "offset instant|null",
+      "meaning": "Required interval start"
+    },
+    {
+      "path": "time.end",
+      "type": "offset instant|null",
+      "meaning": "Required interval end with start < end"
+    },
+    {
+      "path": "time.at",
+      "type": "offset instant|null",
+      "meaning": "Required only for genuine point"
+    },
+    {
+      "path": "time.display_timezone",
+      "type": "IANA zone",
+      "meaning": "Display zone; resolve against explicit offsets/instants"
+    },
+    {
+      "path": "status",
+      "type": "recorded|withdrawn|invalid|unknown",
+      "meaning": "Only applicable recorded terminal can qualify"
+    },
+    {
+      "path": "available_at",
+      "type": "offset instant|null",
+      "meaning": "Source availability; unknown cannot satisfy a clinical as-of filter"
+    },
+    {
+      "path": "drain_key",
+      "type": "string|null",
+      "meaning": "Stable drain identity; mandatory for output_drain"
+    },
+    {
+      "path": "drain_name",
+      "type": "string|null",
+      "meaning": "Readable label, never identity"
+    },
+    {
+      "path": "summary_members",
+      "type": "quantity-reference[]|null",
+      "meaning": "Known contributing physical quantities; null means unresolved membership"
+    },
+    {
+      "path": "equivalence",
+      "type": "quantity-reference[]",
+      "meaning": "Explicit alternate representations of the same volume"
+    },
+    {
+      "path": "uncertainty",
+      "type": "string[]",
+      "meaning": "Visible caveats, not machine-readable identity guarantees"
+    }
+  ],
+  "existing_RF2_adapter": "NOT DEFINED OR IMPLEMENTED; reviewed adapter/storage contract required. Existing source_record tuple alone cannot carry these guarantees."
+}

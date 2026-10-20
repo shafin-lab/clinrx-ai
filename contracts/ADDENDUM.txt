@@ -1,0 +1,228 @@
+RF2 ISOLATED HARNESS CONTRACT — ADDENDUM A-C / v1-proposal.2
+Prepared 20 October 2026. Proposed; implementation not authorized.
+
+BASE DOCUMENT
+635cfe224a49b98d489c5b66c63a41010ee2bbb6/HARNESS-CONTRACT.txt
+This addendum takes precedence only on decisions A-C below. All other scope,
+trust, input bounds and implementation exclusions remain. Read both artifacts.
+Contract identifier becomes rf2-harness/v1-proposal.2 when approved. Neither
+approval nor an executable harness is claimed by publication.
+
+A. SCHEMA REJECTION VERSUS SEMANTIC EXCLUSION
+
+A1. Structural/schema failures REJECT THE WHOLE RUN, with zero candidate_include
+outputs. Do not silently drop the malformed record and evaluate the remainder.
+These include malformed JSON/UTF-8, duplicate JSON keys, wrong types, missing or
+extra fields, bad identifier shapes/bounds, invalid enum values other than the
+producer/profile version identifiers described below, invalid amount syntax,
+non-finite/negative magnitudes, unpaired quantity nulls, unsupported quantity
+units, invalid timestamps/zone-offset correspondence, partial interval bounds,
+start >= end, mixed point/interval fields and invalid required drain-field shape.
+Unknown relationship-reference keys or malformed registry shapes also reject.
+Input-limit violations retain the existing whole-run withholding outcome, rather
+than being reclassified as individual schema exclusions.
+
+A2. producer.id, producer.version and profile are structurally nonempty bounded
+strings, not schema enums restricted to the supported values. A well-shaped
+unsupported value is a SEMANTIC EXCLUSION: UNSUPPORTED_PROFILE. Retain its scoped
+identity, revision, quantity and temporal information for conflict analysis.
+Supported initial identifiers remain those pinned by the named producer proposal;
+parsing an identifier never establishes support. Unknown versions do not create
+an additional contribution. If their alias interpretation cannot be bounded,
+withhold the scope; do not assume they are independent.
+
+A3. Units remain the strict mL/L/null schema. A nonnull unit other than mL or L
+rejects the whole run. UNSUPPORTED_UNIT is a run-rejection diagnostic in this
+version, never a per-record semantic exclusion. Structurally invalid/reversed
+intervals likewise reject, not exclude. Valid but outside/crossing intervals
+remain semantic exclusions. Valid null amounts remain MISSING_QUANTITY exclusions.
+A null amount is not invalid schema when unit is also null.
+
+A4. Conflicting same-revision canonical bodies and structurally valid lineage,
+alias, overlap or status conflicts are semantic graph decisions, not schema
+rejections. Duplicate identical array relationship references remain schema
+rejections as stated in the base contract; an identical replay is two record
+wrappers containing identical envelopes, not a duplicated relationship member.
+
+A5. Preserve all original producer fixtures and their proposed expectations.
+Any strict harness input derived from them must have a new identity/hash and
+explicit expected-outcome attribution, including rejection/exclusion changes.
+This addendum supplies contract outcomes, not executed test results.
+
+B. REGISTRY LINEAGE, AVAILABILITY AND NO FALLBACK
+
+For each registry type and fully scoped registry family, use exactly this order:
+
+1. Check structure/digests and restrict snapshot history to knowledge_sequence
+   <= selected cutoff. Keep explicit references to unavailable predecessors;
+   missing required lineage prevents assuming a terminal.
+2. Resolve the unique terminal of the retained explicit lineage. Version names
+   do not supply ordering. Multiple unconnected roots, conflicting bodies at the
+   same version, cycles, missing required dependencies or competing terminals
+   mean no applicable registry. Exclude bounded dependent groups; if the effect
+   cannot be bounded, withhold the run. Empty registry content still requires an
+   explicit applicable snapshot.
+3. Only then apply clinical-as-of availability to the selected terminal. If
+   clinical_as_of is requested and terminal.available_at > clinical_as_of,
+   withhold its dependent inclusion decisions. Do not fall back to an older
+   snapshot that happens to satisfy availability. If dependency scope cannot be
+   bounded, withhold the whole run. The terminal remains reported in diagnostics.
+
+A cutoff BEFORE a successor's knowledge sequence legitimately resolves the
+predecessor if its retained lineage is unique and it passes availability.
+A cutoff INCLUDING that successor must not select the predecessor because of a
+clinical-as-of filter. With no clinical_as_of filter, availability does not change
+the terminal selected by repository knowledge. Registry availability is required
+and nonnull by schema; it is not a guessed timestamp.
+
+A withheld dependent group produces no candidate_include decisions. The base
+output run_status is withheld when any such group remains withheld; that run
+contains no candidate_include decisions anywhere. Diagnostics may distinguish
+the bounded dependent group from other definitively excluded groups.
+
+C. DETERMINISTIC TYPED CONFLICT GRAPH
+
+C1. Input universe and identity
+Validate the entire run structurally first. Retain at-cutoff envelopes, including
+well-shaped unsupported producer/profile versions and noncandidate records.
+Lineage must be resolved before picking an applicable revision. Do not compare a
+predecessor and its valid successor as two concurrent collections.
+
+Scoped identity S is the exact tuple:
+(repository, patient_id, encounter_id, issuer.namespace, issuer.id,
+ identity_namespace).
+Component aliases resolve within S and collection_key using the selected
+component-alias registry. Unknown/multiple/cyclic alias targets are unresolved.
+An exact record node has S, collection_key, canonical component_key, revision,
+and envelope digest. Identity is independent of producer/profile version,
+category, name, knowledge sequence or display timestamp spelling.
+
+C2. Typed edges and which closures are allowed
+Maintain separate graphs/relations; never run untyped closure over every link.
+
+REPLAY: same scoped collection/component/revision and identical canonical bytes.
+Collapse these nodes to one representation, retaining all input references.
+
+LINEAGE: directed supersedes edges, within S and the same canonical collection/
+component. Use only for revision selection, branch/cycle checks and terminal
+status. LINEAGE is NOT duplicate equivalence. Valid selected successors replace
+predecessors for subsequent collection comparison. Unresolved branches/cycles or
+same-revision content conflicts exclude the full affected revision family.
+
+EQUIVALENT_VOLUME: same scoped quantity_key or an explicit selected quantity-
+equivalence registry edge, plus supported envelope equivalence declarations.
+Take transitive closure ONLY over these volume-equivalence edges. Multiple
+applicable representations of the same volume cannot contribute separately.
+Replay collapse or valid same-component lineage may leave one representation;
+otherwise exclude the unresolved representation group. Do not choose an arbitrary
+record based on order, supported version, category or newest timestamp.
+
+SUMMARY_MEMBER: directed summary -> named physical quantity. Used to identify
+summary exclusions and affected membership ambiguity. Never an equivalence or
+independence edge; a known summary and its known actual collection do not conflict
+merely because they have this relation. A missing named member is a dependency
+failure, not evidence of absence. Unknown summary membership with no explicitly
+bounded affected set withholds the scope; do not invent membership from times.
+
+DRAIN_LIFECYCLE: relation to a scoped drain instance and its active bounds.
+Not an equivalence or duplicate edge. Validate collections against lifecycle.
+Sequential valid collections on the same drain remain independently evaluable.
+
+INDEPENDENCE: applicable selected-registry assertion of distinct non-overlapping
+physical quantities for the named components, or separate valid identified drain
+instances. Not an equivalence edge. It may suppress ONLY the potential-identity/
+overlap conflicts specified in C3/C4. It cannot override same quantity identity,
+explicit equivalence, a canonical revision conflict or broken lineage. Such a
+contradiction excludes the affected assertion/member group.
+
+CONFLICT: undirected edges for unresolved same-revision content, competing
+identity representations, potential overlaps or contradictory assertions.
+Compute transitive connected components over CONFLICT edges (and attach members
+of their EQUIVALENT_VOLUME classes and unresolved LINEAGE families). Exclude all
+members of each affected component. Do not spread exclusion through unrelated
+SUMMARY_MEMBER, shared-drain or INDEPENDENCE relations.
+
+C3. Physical collection/component ambiguity
+Within S and collection_key:
+- Same canonical component uses revision/replay rules; category/version changes
+  cannot manufacture a separate contribution.
+- Different canonical components remain potentially overlapping physical-volume
+  representations unless an applicable independent_components assertion names
+  their distinct quantity keys. Without it, add a CONFLICT edge, irrespective of
+  matching labels, apparent different amounts or different time bounds.
+- Declared aliases do not make changed same-revision content identical.
+- Same/equivalent quantity identity ALWAYS forms EQUIVALENT_VOLUME, even across
+  different collection keys/categories. Independence cannot override it.
+
+C4. Same-source-stream overlap predicate across distinct collection keys
+Only compare selected applicable representations, not valid predecessors.
+A stream key is:
+(S, measurement_channel, canonical component_key, source_instance).
+measurement_channel is exact category for input_oral/input_enteral/input_iv/
+input_blood/output_urine/output_other/output_crrt_net/output_crrt_effluent.
+source_instance is the resolved drain_key for output_drain (channel output_drain);
+for every other category it is the constant 'unspecified-source'. This conservative
+key does not claim the producer has identified a physical source. It deliberately
+treats otherwise-unidentified overlapping collections in a channel as unresolved.
+Different category channels are not automatically independent: shared/equivalent
+quantity identity and C3 still apply across categories. If source evidence flags
+possible cross-category duplication whose affected set cannot be bounded, withhold
+the scope rather than relying on channel separation.
+
+For two distinct collection keys in the same stream, add a potential-overlap
+CONFLICT edge when time overlaps by these exact instant predicates:
+- intervals [a,b),[c,d): max(a,c) < min(b,d).
+- points p,q: p = q.
+- point p and interval [a,b): a <= p < b.
+Adjacent intervals ending/starting at the same instant do not overlap. A point at
+an interval end does not overlap that interval. Compare exact instants, not local
+wall-clock strings. Apply conflict detection to all supplied at-cutoff applicable
+records needed to understand groups, including crossing/outside-window records;
+only after conflict resolution apply selected-period temporal eligibility.
+A same-stream overlap is not proof of a duplicate; it is unresolved and excluded
+unless an applicable explicit independence assertion resolves it. Current registry
+shape defines independence only for components within the SAME collection key;
+it cannot silently authorize distinct-collection same-stream overlap. That case
+remains excluded in v1. Separate valid drains have different source_instance
+keys, so simultaneous independent drain collections do not form this edge.
+No conflict is formed solely by shared drain_key or sequential collection times.
+
+C5. Scope, trust, withholding and deterministic output
+References/registries inherit S; no cross-scope inference. Expected-scope mismatch
+that prevents identifying affected dependencies withholds the scope. Invalid input
+shape rejects as A. No approved issuer authenticity is inferred by these synthetic
+keys. Key assignment and absence of explicit duplicate links do not prove real
+physical uniqueness; candidate decisions remain synthetic contract results only.
+
+When a conflict/dependency group is fully bounded, report its exact members,
+typed edges and sorted reason codes. When its affected set cannot be bounded,
+withhold the entire run. Candidate inclusions are never emitted from a withheld
+or rejected run. Stable group IDs hash canonical sorted member identities/digests
+and typed conflict reasons; no timestamps/input order as tie breakers.
+
+Reason-code refinements: UNSUPPORTED_PROFILE semantic exclusion;
+UNSUPPORTED_UNIT and INVALID_INTERVAL_STRUCTURE run rejection diagnostics;
+REGISTRY_TERMINAL_AFTER_AS_OF withholding; SAME_STREAM_OVERLAP and
+COMPONENT_INDEPENDENCE_UNRESOLVED conflict-group exclusions. Existing reasons
+remain where not contradicted. Report candidate_include only for evaluated runs
+with all identity/lineage/registry/status/time gates satisfied.
+
+NARROW ACCEPTANCE ADDITIONS — PROPOSED, NOT EXECUTED
+A: unsupported identifiers parsed/excluded but retained in conflict graph;
+unsupported units/partial/equal/reversed intervals reject entire run; zero versus
+null remains distinct; original fixtures preserved with derived expectations.
+B: successor within cutoff but unavailable as-of does not fall back; cutoff
+before successor may select predecessor; branches/missing lineage/empty explicit
+snapshot; terminal availability withholding.
+C: sequential same-drain collections; overlapping same-drain group; simultaneous
+independent drains; point/interval and adjacent bounds; component independence
+versus quantity-equivalence contradiction; cross-category same quantity;
+known summary membership not equivalence; typed transitive conflict closure;
+unknown affected scope withholding; input permutations produce same decisions.
+
+REQUESTED DECISIONS
+1. Approve/amend base contract plus this exact precedence addendum.
+2. Separately authorize or withhold the isolated in-memory harness/resolver and
+   focused fixture tests only. No implementation has begun.
+Adapter integration and durable storage remain deferred. Execution stays disabled.
+No numerical eligibility, merge, deployment, hosting or clinical-readiness approval.

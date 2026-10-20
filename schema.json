@@ -1,0 +1,814 @@
+{
+  "schema_id": "rf2-harness-strict-input/v1",
+  "dialect": "isolated closed vocabulary; interpreted by rf2_harness.validate_shape, not a general JSON Schema implementation",
+  "definitions": {
+    "scope": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "format": "uuid"
+        },
+        "patient_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "encounter_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "repository",
+        "patient_id",
+        "encounter_id"
+      ],
+      "additionalProperties": false
+    },
+    "issuer": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "namespace",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "revision_reference": {
+      "type": "object",
+      "properties": {
+        "identity_namespace": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "collection_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "component_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "identity_namespace",
+        "collection_key",
+        "component_key",
+        "revision"
+      ],
+      "additionalProperties": false
+    },
+    "quantity_reference": {
+      "type": "object",
+      "properties": {
+        "quantity_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "quantity_key"
+      ],
+      "additionalProperties": false
+    },
+    "envelope": {
+      "type": "object",
+      "properties": {
+        "producer": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "scope": {
+          "$ref": "scope"
+        },
+        "issuer": {
+          "$ref": "issuer"
+        },
+        "identity_namespace": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "collection_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "component_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "quantity_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "revision_reference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "classification": {
+          "enum": [
+            "collection",
+            "summary"
+          ]
+        },
+        "category": {
+          "enum": [
+            "input_oral",
+            "input_enteral",
+            "input_iv",
+            "input_blood",
+            "output_urine",
+            "output_drain",
+            "output_other",
+            "output_crrt_net",
+            "output_crrt_effluent"
+          ]
+        },
+        "actual_recorded": {
+          "type": "boolean"
+        },
+        "quantity": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?",
+                  "maxLength": 512
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "unit": {
+              "enum": [
+                null,
+                "mL",
+                "L"
+              ]
+            }
+          },
+          "required": [
+            "amount",
+            "unit"
+          ],
+          "additionalProperties": false
+        },
+        "time": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "interval",
+                "point"
+              ]
+            },
+            "start": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "instant",
+                  "maxLength": 512
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "end": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "instant",
+                  "maxLength": 512
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "at": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "instant",
+                  "maxLength": 512
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "display_timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "kind",
+            "start",
+            "end",
+            "at",
+            "display_timezone"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "enum": [
+            "recorded",
+            "withdrawn",
+            "invalid",
+            "unknown"
+          ]
+        },
+        "available_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "instant",
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "drain_key": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "drain_name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 512,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "summary_members": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "quantity_reference"
+              },
+              "maxItems": 256,
+              "minItems": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "equivalence": {
+          "type": "array",
+          "items": {
+            "$ref": "quantity_reference"
+          },
+          "maxItems": 256,
+          "minItems": 0
+        },
+        "uncertainty": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "maxItems": 256,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "producer",
+        "profile",
+        "scope",
+        "issuer",
+        "identity_namespace",
+        "collection_key",
+        "component_key",
+        "quantity_key",
+        "revision",
+        "supersedes",
+        "classification",
+        "category",
+        "actual_recorded",
+        "quantity",
+        "time",
+        "status",
+        "available_at",
+        "drain_key",
+        "drain_name",
+        "summary_members",
+        "equivalence",
+        "uncertainty"
+      ],
+      "additionalProperties": false
+    },
+    "component_aliases": {
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "collection_key": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "alias": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "canonical": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "quantity_key": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "collection_key",
+              "alias",
+              "canonical",
+              "quantity_key"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 256,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "entries"
+      ],
+      "additionalProperties": false
+    },
+    "quantity_equivalence": {
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "left_quantity_key": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "right_quantity_key": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "left_quantity_key",
+              "right_quantity_key"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 256,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "entries"
+      ],
+      "additionalProperties": false
+    },
+    "drain_lifecycle": {
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "drain_key": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "active_from": {
+                "type": "string",
+                "format": "instant",
+                "maxLength": 512
+              },
+              "active_until": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "instant",
+                    "maxLength": 512
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "replaces": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "drain_key",
+              "active_from",
+              "active_until",
+              "replaces"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 256,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "entries"
+      ],
+      "additionalProperties": false
+    },
+    "independent_components": {
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "collection_key": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "components": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "component_key": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "quantity_key": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    }
+                  },
+                  "required": [
+                    "component_key",
+                    "quantity_key"
+                  ],
+                  "additionalProperties": false
+                },
+                "maxItems": 256,
+                "minItems": 2
+              }
+            },
+            "required": [
+              "collection_key",
+              "components"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 256,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "entries"
+      ],
+      "additionalProperties": false
+    },
+    "registry": {
+      "type": "object",
+      "properties": {
+        "registry_type": {
+          "enum": [
+            "component_aliases",
+            "quantity_equivalence",
+            "drain_lifecycle",
+            "independent_components"
+          ]
+        },
+        "schema_version": {
+          "enum": [
+            "rf2-registry/v1-proposal.1"
+          ]
+        },
+        "scope": {
+          "$ref": "scope"
+        },
+        "issuer": {
+          "$ref": "issuer"
+        },
+        "identity_namespace": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "[0-9a-f]{64}"
+        },
+        "available_at": {
+          "type": "string",
+          "format": "instant",
+          "maxLength": 512
+        },
+        "knowledge_sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "registry_type": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "digest": {
+                  "type": "string",
+                  "pattern": "[0-9a-f]{64}"
+                }
+              },
+              "required": [
+                "registry_type",
+                "version",
+                "digest"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "content": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "registry_type",
+        "schema_version",
+        "scope",
+        "issuer",
+        "identity_namespace",
+        "version",
+        "digest",
+        "available_at",
+        "knowledge_sequence",
+        "supersedes",
+        "content"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "run": {
+    "type": "object",
+    "properties": {
+      "contract_version": {
+        "enum": [
+          "rf2-harness/v1-proposal.2"
+        ]
+      },
+      "expected_scope": {
+        "type": "object",
+        "properties": {
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "format": "uuid"
+          },
+          "patient_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "encounter_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "issuer": {
+            "$ref": "issuer"
+          },
+          "identity_namespace": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "repository",
+          "patient_id",
+          "encounter_id",
+          "issuer",
+          "identity_namespace"
+        ],
+        "additionalProperties": false
+      },
+      "period": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "instant",
+            "maxLength": 512
+          },
+          "end": {
+            "type": "string",
+            "format": "instant",
+            "maxLength": 512
+          },
+          "display_timezone": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "display_timezone"
+        ],
+        "additionalProperties": false
+      },
+      "cutoff": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "clinical_as_of": {
+        "anyOf": [
+          {
+            "type": "string",
+            "format": "instant",
+            "maxLength": 512
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "input_complete": {
+        "type": "boolean"
+      },
+      "records": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "envelope": {
+              "$ref": "envelope"
+            },
+            "knowledge_sequence": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "envelope",
+            "knowledge_sequence"
+          ],
+          "additionalProperties": false
+        },
+        "maxItems": 256,
+        "minItems": 0
+      },
+      "registries": {
+        "type": "array",
+        "items": {
+          "$ref": "registry"
+        },
+        "maxItems": 64,
+        "minItems": 0
+      }
+    },
+    "required": [
+      "contract_version",
+      "expected_scope",
+      "period",
+      "cutoff",
+      "clinical_as_of",
+      "input_complete",
+      "records",
+      "registries"
+    ],
+    "additionalProperties": false
+  },
+  "semantic_structure": [
+    "quantity amount/unit null correspondence",
+    "interval/point exclusive bounds, exact instant order",
+    "zone/offset correspondence",
+    "drain field correspondence",
+    "collection summary_members null",
+    "unique relationship references",
+    "registry content selected by registry_type"
+  ]
+}
