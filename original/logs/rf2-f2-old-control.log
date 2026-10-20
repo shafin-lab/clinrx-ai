@@ -1,0 +1,40 @@
+F.                                                                       [100%]
+=================================== FAILURES ===================================
+__ test_actual_old_interval_correction_lookup_retry_and_no_resurrection[None] __
+
+ws = (<starlette.testclient.TestClient object at 0x11e99dd10>, PosixPath('/private/var/folders/r9/4k0mh4sd5vgghvrds28byzqw0...tual_old_interval_corre0/rf2.sqlite3'), <app.demo.renal_fluid_entry_gateway.SyntheticRF2Gateway object at 0x11bf36190>)
+changed_bound = None
+
+    @pytest.mark.parametrize('changed_bound',[None,'end'])
+    def test_actual_old_interval_correction_lookup_retry_and_no_resurrection(ws,changed_bound):
+        from app.demo.renal_fluid_entry_gateway import service
+        c,db,app=ws
+        original=draft(c)
+        app.core.dependency_overrides[service]=lambda:old_service()(app.core.state.dependencies)
+        first=saved(c,original)
+        correction=deepcopy(original);correction.update(revision=str(uuid4()),actor='Different correcting clinician',recorded_at='2026-10-08T10:10:00Z',predecessor=pin(first),reason='Historical amount correction')
+        correction['chart']['amount']='36.0000'
+        if changed_bound:correction['chart'][changed_bound]='2026-10-08T09:46:00Z'
+        retained=saved(c,correction)
+        assert retained['fact']['recorded_interval']['provenance']['actor']==correction['actor']
+        app.core.dependency_overrides.pop(service)
+        # A new correction is constructed by the current consumer and remains current.
+        next_body=deepcopy(correction);next_body.update(revision=str(uuid4()),actor='Current clinician',recorded_at='2026-10-08T10:20:00Z',predecessor=pin(retained));next_body['chart']['amount']='37.0000'
+        terminal=saved(c,next_body);before=rows(db)
+        for action in ('/lookup','/save'):
+>           response=post(c,action,correction);assert response.status_code==200,response.text
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: {"code":"evidence_conflict","message":"The exact evidence revision conflicts or the repository changed."}
+E           assert 409 == 200
+E            +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/test_rf2_retained_command_compatibility.py:35: AssertionError
+=============================== warnings summary ===============================
+../../../../Documents/clinrx-ai/backend/venv/lib/python3.11/site-packages/fastapi/testclient.py:1
+  /Users/mohammedshafiqshajahan/Documents/clinrx-ai/backend/venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_rf2_retained_command_compatibility.py::test_actual_old_interval_correction_lookup_retry_and_no_resurrection[None]
+1 failed, 1 passed, 1 warning in 3.22s

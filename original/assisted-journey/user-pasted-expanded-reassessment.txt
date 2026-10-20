@@ -1,0 +1,361 @@
+{
+  "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+  "fact": {
+    "kind": "circulatory_event",
+    "id": "fef765bd-863b-4645-941d-ab0c6ef3e09d",
+    "revision": "a71ff35d-6ab0-4681-b20b-34da41f53452",
+    "binding": {
+      "target": {
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "longitudinal_context_id": null
+      },
+      "verification": {
+        "status": "unresolved",
+        "method": "Synthetic scope selection",
+        "verifier": "Shafiq",
+        "assessed_at": "2026-10-20T08:31:35.384000Z",
+        "source": {
+          "namespace": "clinrx.local.synthetic.rf2",
+          "identifier": "fef765bd-863b-4645-941d-ab0c6ef3e09d",
+          "version": null,
+          "channel": "clinician"
+        },
+        "ambiguity": "Local synthetic patient only."
+      }
+    },
+    "origin": "reported",
+    "provenance": {
+      "source": {
+        "namespace": "clinrx.local.synthetic.rf2",
+        "identifier": "fef765bd-863b-4645-941d-ab0c6ef3e09d",
+        "version": null,
+        "channel": "clinician"
+      },
+      "actor": "Shafiq",
+      "recorded_at": "2026-10-20T08:31:35.384000Z",
+      "upstream": [],
+      "lineage": "incomplete",
+      "limitations": [
+        "Unauthenticated local synthetic source assertion."
+      ]
+    },
+    "time": {
+      "event": null,
+      "recorded": null,
+      "effective_start": null,
+      "effective_end": null,
+      "retrieved": null,
+      "processed": null,
+      "precision": "unknown",
+      "uncertainty": null
+    },
+    "verification": "unverified",
+    "conflict": "unknown",
+    "temporal_status": "unknown",
+    "uncertainty": [
+      "ollection completeness, fluid overlap, source quality and weight acquisition remain uncertain."
+    ],
+    "supersedes": null,
+    "correction_reason": null,
+    "contract_version": "3",
+    "occurred": {
+      "timestamp_precision": "M7ExactTimestampInput/v1",
+      "recorded": {
+        "status": "known",
+        "precision": "instant",
+        "value": "2026-10-20T08:31:35.384000Z",
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": "2026-10-20T08:31:35.384Z",
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "available": {
+      "recorded": {
+        "status": "not_recorded",
+        "precision": "unknown",
+        "value": null,
+        "lower": null,
+        "upper": null,
+        "uncertainty": null
+      },
+      "source_timestamp": null,
+      "clock": "unknown",
+      "clock_basis": null,
+      "conflicting": [],
+      "alternative_sources": [],
+      "alignment": null
+    },
+    "associations": [
+      {
+        "role": "context",
+        "scope": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null
+        },
+        "status": "resolved",
+        "exact": {
+          "kind": "circulatory_event",
+          "id": "fs-IO-output_urine-45",
+          "version": "ea732245-7cbc-4d58-a571-534754640fd2"
+        },
+        "candidates": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx.local.synthetic.rf2",
+            "identifier": "fef765bd-863b-4645-941d-ab0c6ef3e09d",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Shafiq",
+          "recorded_at": "2026-10-20T08:31:35.384000Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Unauthenticated local synthetic source assertion."
+          ]
+        },
+        "limitation": null
+      },
+      {
+        "role": "context",
+        "scope": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null
+        },
+        "status": "resolved",
+        "exact": {
+          "kind": "circulatory_event",
+          "id": "fs-WEIGHT",
+          "version": "1"
+        },
+        "candidates": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx.local.synthetic.rf2",
+            "identifier": "fef765bd-863b-4645-941d-ab0c6ef3e09d",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Shafiq",
+          "recorded_at": "2026-10-20T08:31:35.384000Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Unauthenticated local synthetic source assertion."
+          ]
+        },
+        "limitation": null
+      },
+      {
+        "role": "context",
+        "scope": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1",
+          "longitudinal_context_id": null
+        },
+        "status": "resolved",
+        "exact": {
+          "kind": "circulatory_event",
+          "id": "fs-IO-input_iv-15",
+          "version": "1"
+        },
+        "candidates": [],
+        "provenance": {
+          "source": {
+            "namespace": "clinrx.local.synthetic.rf2",
+            "identifier": "fef765bd-863b-4645-941d-ab0c6ef3e09d",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Shafiq",
+          "recorded_at": "2026-10-20T08:31:35.384000Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Unauthenticated local synthetic source assertion."
+          ]
+        },
+        "limitation": null
+      }
+    ],
+    "source_identifiers": [],
+    "disclosures": [],
+    "record_status": "recorded",
+    "event_type": "other",
+    "description": {
+      "raw_display": "Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\nquestion: Review the selected urine, fluid and weight evidence.\nfindings: Urine was corrected from 40 to 45 mL for the same collection. Fluid and weight retain their own source times.\npossibilities: No treatment response or fluid-status conclusion is established.\ngaps: ollection completeness, fluid overlap, source quality and weight acquisition remain uncertain.\nplan: - Review the original source chart. No action is scheduled.",
+      "coding": {
+        "namespace": "clinrx.local.rf2/v1",
+        "code": "note",
+        "version": "1",
+        "raw_display": "Authored renal review"
+      }
+    },
+    "external_evidence": [
+      {
+        "namespace": "clinrx.local.rf2.pin/v1",
+        "code": "{\"cutoff\":185,\"digest\":\"287284658d7de9cb75e4cc27639cf52bebbcf6b5daabc3c06185478948ced013\",\"ingestion\":185,\"reference\":{\"id\":\"fs-IO-output_urine-45\",\"kind\":\"circulatory_event\",\"version\":\"ea732245-7cbc-4d58-a571-534754640fd2\"},\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\"}",
+        "version": "1",
+        "raw_display": "Exact reviewed evidence"
+      },
+      {
+        "namespace": "clinrx.local.rf2.pin/v1",
+        "code": "{\"cutoff\":185,\"digest\":\"6ec7766be3c51e1c2010a605ef3122f50dad94c2acac6d5b1d614d6bb0462a32\",\"ingestion\":48,\"reference\":{\"id\":\"fs-WEIGHT\",\"kind\":\"circulatory_event\",\"version\":\"1\"},\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\"}",
+        "version": "1",
+        "raw_display": "Exact reviewed evidence"
+      },
+      {
+        "namespace": "clinrx.local.rf2.pin/v1",
+        "code": "{\"cutoff\":185,\"digest\":\"53557bb975d7bd9b86d9f1579039563145da8741c1073968d173e48210014855\",\"ingestion\":50,\"reference\":{\"id\":\"fs-IO-input_iv-15\",\"kind\":\"circulatory_event\",\"version\":\"1\"},\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\"}",
+        "version": "1",
+        "raw_display": "Exact reviewed evidence"
+      },
+      {
+        "namespace": "clinrx.local.rf2.review/v1",
+        "code": "{\"record_status\":\"recorded\",\"retain_historical\":false,\"selected\":{\"id\":\"fs-IO-output_urine-45\",\"kind\":\"circulatory_event\",\"version\":\"ea732245-7cbc-4d58-a571-534754640fd2\"},\"terminal\":{\"id\":\"fs-IO-output_urine-45\",\"kind\":\"circulatory_event\",\"version\":\"ea732245-7cbc-4d58-a571-534754640fd2\"},\"terminal_digest\":\"287284658d7de9cb75e4cc27639cf52bebbcf6b5daabc3c06185478948ced013\",\"terminal_ingestion\":185}",
+        "version": "1",
+        "raw_display": "Explicit selected-source review decision"
+      },
+      {
+        "namespace": "clinrx.local.rf2.review/v1",
+        "code": "{\"record_status\":\"recorded\",\"retain_historical\":false,\"selected\":{\"id\":\"fs-WEIGHT\",\"kind\":\"circulatory_event\",\"version\":\"1\"},\"terminal\":{\"id\":\"fs-WEIGHT\",\"kind\":\"circulatory_event\",\"version\":\"1\"},\"terminal_digest\":\"6ec7766be3c51e1c2010a605ef3122f50dad94c2acac6d5b1d614d6bb0462a32\",\"terminal_ingestion\":48}",
+        "version": "1",
+        "raw_display": "Explicit selected-source review decision"
+      },
+      {
+        "namespace": "clinrx.local.rf2.review/v1",
+        "code": "{\"record_status\":\"recorded\",\"retain_historical\":false,\"selected\":{\"id\":\"fs-IO-input_iv-15\",\"kind\":\"circulatory_event\",\"version\":\"1\"},\"terminal\":{\"id\":\"fs-IO-input_iv-15\",\"kind\":\"circulatory_event\",\"version\":\"1\"},\"terminal_digest\":\"53557bb975d7bd9b86d9f1579039563145da8741c1073968d173e48210014855\",\"terminal_ingestion\":50}",
+        "version": "1",
+        "raw_display": "Explicit selected-source review decision"
+      },
+      {
+        "namespace": "clinrx.local.rf2/v1",
+        "code": "{\"chart\":null,\"note\":{\"findings\":\"Urine was corrected from 40 to 45 mL for the same collection. Fluid and weight retain their own source times.\",\"gaps\":\"ollection completeness, fluid overlap, source quality and weight acquisition remain uncertain.\",\"pins\":[],\"plan\":\"- Review the original source chart. No action is scheduled.\",\"possibilities\":\"No treatment response or fluid-status conclusion is established.\",\"question\":\"Review the selected urine, fluid and weight evidence.\"},\"version\":1}",
+        "version": "1",
+        "raw_display": "Structured RF2 source assertions"
+      }
+    ],
+    "recorded_amount": null
+  },
+  "canonical_fact": "{\"associations\":[{\"candidates\":[],\"exact\":{\"id\":\"fs-IO-output_urine-45\",\"kind\":\"circulatory_event\",\"version\":\"ea732245-7cbc-4d58-a571-534754640fd2\"},\"limitation\":null,\"provenance\":{\"actor\":\"Shafiq\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-20T08:31:35.384000Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"fef765bd-863b-4645-941d-ab0c6ef3e09d\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"role\":\"context\",\"scope\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"status\":\"resolved\"},{\"candidates\":[],\"exact\":{\"id\":\"fs-WEIGHT\",\"kind\":\"circulatory_event\",\"version\":\"1\"},\"limitation\":null,\"provenance\":{\"actor\":\"Shafiq\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-20T08:31:35.384000Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"fef765bd-863b-4645-941d-ab0c6ef3e09d\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"role\":\"context\",\"scope\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"status\":\"resolved\"},{\"candidates\":[],\"exact\":{\"id\":\"fs-IO-input_iv-15\",\"kind\":\"circulatory_event\",\"version\":\"1\"},\"limitation\":null,\"provenance\":{\"actor\":\"Shafiq\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-20T08:31:35.384000Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"fef765bd-863b-4645-941d-ab0c6ef3e09d\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"role\":\"context\",\"scope\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"status\":\"resolved\"}],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-20T08:31:35.384000Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"fef765bd-863b-4645-941d-ab0c6ef3e09d\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Shafiq\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"note\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Authored renal review\",\"version\":\"1\"},\"raw_display\":\"Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\\nquestion: Review the selected urine, fluid and weight evidence.\\nfindings: Urine was corrected from 40 to 45 mL for the same collection. Fluid and weight retain their own source times.\\npossibilities: No treatment response or fluid-status conclusion is established.\\ngaps: ollection completeness, fluid overlap, source quality and weight acquisition remain uncertain.\\nplan: - Review the original source chart. No action is scheduled.\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"cutoff\\\":185,\\\"digest\\\":\\\"287284658d7de9cb75e4cc27639cf52bebbcf6b5daabc3c06185478948ced013\\\",\\\"ingestion\\\":185,\\\"reference\\\":{\\\"id\\\":\\\"fs-IO-output_urine-45\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"ea732245-7cbc-4d58-a571-534754640fd2\\\"},\\\"repository\\\":\\\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"cutoff\\\":185,\\\"digest\\\":\\\"6ec7766be3c51e1c2010a605ef3122f50dad94c2acac6d5b1d614d6bb0462a32\\\",\\\"ingestion\\\":48,\\\"reference\\\":{\\\"id\\\":\\\"fs-WEIGHT\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"1\\\"},\\\"repository\\\":\\\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"cutoff\\\":185,\\\"digest\\\":\\\"53557bb975d7bd9b86d9f1579039563145da8741c1073968d173e48210014855\\\",\\\"ingestion\\\":50,\\\"reference\\\":{\\\"id\\\":\\\"fs-IO-input_iv-15\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"1\\\"},\\\"repository\\\":\\\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"record_status\\\":\\\"recorded\\\",\\\"retain_historical\\\":false,\\\"selected\\\":{\\\"id\\\":\\\"fs-IO-output_urine-45\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"ea732245-7cbc-4d58-a571-534754640fd2\\\"},\\\"terminal\\\":{\\\"id\\\":\\\"fs-IO-output_urine-45\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"ea732245-7cbc-4d58-a571-534754640fd2\\\"},\\\"terminal_digest\\\":\\\"287284658d7de9cb75e4cc27639cf52bebbcf6b5daabc3c06185478948ced013\\\",\\\"terminal_ingestion\\\":185}\",\"namespace\":\"clinrx.local.rf2.review/v1\",\"raw_display\":\"Explicit selected-source review decision\",\"version\":\"1\"},{\"code\":\"{\\\"record_status\\\":\\\"recorded\\\",\\\"retain_historical\\\":false,\\\"selected\\\":{\\\"id\\\":\\\"fs-WEIGHT\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"1\\\"},\\\"terminal\\\":{\\\"id\\\":\\\"fs-WEIGHT\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"1\\\"},\\\"terminal_digest\\\":\\\"6ec7766be3c51e1c2010a605ef3122f50dad94c2acac6d5b1d614d6bb0462a32\\\",\\\"terminal_ingestion\\\":48}\",\"namespace\":\"clinrx.local.rf2.review/v1\",\"raw_display\":\"Explicit selected-source review decision\",\"version\":\"1\"},{\"code\":\"{\\\"record_status\\\":\\\"recorded\\\",\\\"retain_historical\\\":false,\\\"selected\\\":{\\\"id\\\":\\\"fs-IO-input_iv-15\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"1\\\"},\\\"terminal\\\":{\\\"id\\\":\\\"fs-IO-input_iv-15\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"1\\\"},\\\"terminal_digest\\\":\\\"53557bb975d7bd9b86d9f1579039563145da8741c1073968d173e48210014855\\\",\\\"terminal_ingestion\\\":50}\",\"namespace\":\"clinrx.local.rf2.review/v1\",\"raw_display\":\"Explicit selected-source review decision\",\"version\":\"1\"},{\"code\":\"{\\\"chart\\\":null,\\\"note\\\":{\\\"findings\\\":\\\"Urine was corrected from 40 to 45 mL for the same collection. Fluid and weight retain their own source times.\\\",\\\"gaps\\\":\\\"ollection completeness, fluid overlap, source quality and weight acquisition remain uncertain.\\\",\\\"pins\\\":[],\\\"plan\\\":\\\"- Review the original source chart. No action is scheduled.\\\",\\\"possibilities\\\":\\\"No treatment response or fluid-status conclusion is established.\\\",\\\"question\\\":\\\"Review the selected urine, fluid and weight evidence.\\\"},\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"fef765bd-863b-4645-941d-ab0c6ef3e09d\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-20T08:31:35.384000Z\"},\"source_timestamp\":\"2026-10-20T08:31:35.384Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Shafiq\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-20T08:31:35.384000Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"fef765bd-863b-4645-941d-ab0c6ef3e09d\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":null,\"revision\":\"a71ff35d-6ab0-4681-b20b-34da41f53452\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"ollection completeness, fluid overlap, source quality and weight acquisition remain uncertain.\"],\"verification\":\"unverified\"}",
+  "digest": "552d16eeb94f705d228f25bc3aa14602af465f7492b12b64b5b1d7dca26b7fda",
+  "ingestion": {
+    "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+    "ingestion_sequence": 186,
+    "ingested_at": "2026-10-20T08:34:45.155025Z",
+    "payload_version": 1
+  },
+  "cutoff": 186,
+  "terminal_reference": {
+    "kind": "circulatory_event",
+    "id": "fef765bd-863b-4645-941d-ab0c6ef3e09d",
+    "version": "a71ff35d-6ab0-4681-b20b-34da41f53452"
+  },
+  "superseded": false,
+  "metadata": {
+    "chart": null,
+    "note": {
+      "findings": "Urine was corrected from 40 to 45 mL for the same collection. Fluid and weight retain their own source times.",
+      "gaps": "ollection completeness, fluid overlap, source quality and weight acquisition remain uncertain.",
+      "pins": [
+        {
+          "cutoff": 185,
+          "digest": "287284658d7de9cb75e4cc27639cf52bebbcf6b5daabc3c06185478948ced013",
+          "ingestion": 185,
+          "reference": {
+            "id": "fs-IO-output_urine-45",
+            "kind": "circulatory_event",
+            "version": "ea732245-7cbc-4d58-a571-534754640fd2"
+          },
+          "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5"
+        },
+        {
+          "cutoff": 185,
+          "digest": "6ec7766be3c51e1c2010a605ef3122f50dad94c2acac6d5b1d614d6bb0462a32",
+          "ingestion": 48,
+          "reference": {
+            "id": "fs-WEIGHT",
+            "kind": "circulatory_event",
+            "version": "1"
+          },
+          "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5"
+        },
+        {
+          "cutoff": 185,
+          "digest": "53557bb975d7bd9b86d9f1579039563145da8741c1073968d173e48210014855",
+          "ingestion": 50,
+          "reference": {
+            "id": "fs-IO-input_iv-15",
+            "kind": "circulatory_event",
+            "version": "1"
+          },
+          "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5"
+        }
+      ],
+      "plan": "- Review the original source chart. No action is scheduled.",
+      "possibilities": "No treatment response or fluid-status conclusion is established.",
+      "question": "Review the selected urine, fluid and weight evidence."
+    },
+    "version": 1,
+    "source_review": [
+      {
+        "selected": {
+          "kind": "circulatory_event",
+          "id": "fs-IO-output_urine-45",
+          "version": "ea732245-7cbc-4d58-a571-534754640fd2"
+        },
+        "terminal": {
+          "kind": "circulatory_event",
+          "id": "fs-IO-output_urine-45",
+          "version": "ea732245-7cbc-4d58-a571-534754640fd2"
+        },
+        "terminal_digest": "287284658d7de9cb75e4cc27639cf52bebbcf6b5daabc3c06185478948ced013",
+        "terminal_ingestion": 185,
+        "record_status": "recorded",
+        "retain_historical": false
+      },
+      {
+        "selected": {
+          "kind": "circulatory_event",
+          "id": "fs-WEIGHT",
+          "version": "1"
+        },
+        "terminal": {
+          "kind": "circulatory_event",
+          "id": "fs-WEIGHT",
+          "version": "1"
+        },
+        "terminal_digest": "6ec7766be3c51e1c2010a605ef3122f50dad94c2acac6d5b1d614d6bb0462a32",
+        "terminal_ingestion": 48,
+        "record_status": "recorded",
+        "retain_historical": false
+      },
+      {
+        "selected": {
+          "kind": "circulatory_event",
+          "id": "fs-IO-input_iv-15",
+          "version": "1"
+        },
+        "terminal": {
+          "kind": "circulatory_event",
+          "id": "fs-IO-input_iv-15",
+          "version": "1"
+        },
+        "terminal_digest": "53557bb975d7bd9b86d9f1579039563145da8741c1073968d173e48210014855",
+        "terminal_ingestion": 50,
+        "record_status": "recorded",
+        "retain_historical": false
+      }
+    ]
+  }
+}
+Remove selection only
