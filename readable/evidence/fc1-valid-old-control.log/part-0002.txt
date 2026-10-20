@@ -1,0 +1,109 @@
+36m<td>[39m
+                [36m<article[39m
+                  [33maria-label[39m=[32m"Urine output 87d64a0f-07ce-55d0-a6e5-3dbb21a0084f / 5b3081f9-ad8f-4389-b968-68e701e95256"[39m
+                  [33mclass[39m=[32m"rf2-fluid-entry"[39m
+                [36m>[39m
+                  [36m<strong>[39m
+                    [0mUrine output[0m
+                    [36m<small>[39m
+                      [0mSource category: [0m
+                      [0moutput_urine[0m
+                    [36m</small>[39m
+                  [36m</strong>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"rf2-fluid-amount"[39m
+                  [36m>[39m
+                    [0m35.0000 mL[0m
+                  [36m</p>[39m
+                  [36m<p>[39m
+                    [0mRecorded point: [0m
+                    [0m2026-10-08T08:30:00Z[0m
+                  [36m</p>[39m
+                  [36m<p>[39m
+                    [0mRecord status: [0m
+                    [0mrecorded[0m
+                  [36m</p>[39m
+                  [36m<p>[39m
+                    [0mExplicit local fictional measurement[0m
+                  [36m</p>[39m
+                  [36m<p>[39m
+                    [0mUncertainty: [0m
+                    [0mCollection method not verified[0m
+                  [36m</p>[39m
+                  [36m<p>[39m
+                    [0mSource caveat: [0m
+                    [0mCollection method not verified[0m
+                  [36m</p>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"rf2-fluid-reference"[39m
+                  [36m>[39m
+                    [0mExact source: [0m
+                    [0m87d64a0f-07ce-55d0-a6e5-3dbb21a0084f[0m
+                    [0m / [0m
+                    [0m5b3081f9-ad8f-4389-b968-68e701e95256[0m
+                  [36m</p>[39m
+                  [36m<button[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [0mOpen exact source [0m
+                    [0m87d64a0f-07ce-55d0-a6e5-3dbb21a0084f[0m
+                    [0m / [0m
+                    [0m5b3081f9-ad8f-4389-b968-68e701e95256[0m
+                  [36m</button>[39m
+                  [36m<details>[39m
+                    [36m<summary>[39m
+                      [0mSource timing, verification and exact pin[0m
+                    [36m</summary>[39m
+                    [36m<p>[39m
+                      [0m2026-10-08T08:30:00Z · Exact source outside the shared snapshot; inspect timing · Source clock unknown; acquisition quality not recorded · Verification unverified; conflict unknown[0m
+                    [36m</p>[39m
+                    [36m<p>[39m
+                      [0mRepository [0m
+                      [0mda23ef6d-d22b-4963-bb32-cdd8e53fe1c7[0m
+                      [0m · cutoff [0m
+                      [0m6[0m
+                      [0m · ingestion [0m
+                      [0m5[0m
+                      [0m · digest [0m
+                      [0m8e974da148069b3b2b935354224c9fb7e50f8bdef1db40b38cb96e25ee47dd1b[0m
+                    [36m</p>[39m
+                  [36m</details>[39m
+                [36m</article>[39m
+              [36m</td>[39m
+              [36m<td>[39m
+                [36m<p>[39m
+                  [0mNo recorded entry shown[0m
+                [36m</p>[39m
+              [36m</td>[39m
+              [36m<td>[39m
+                [36m<p>[39m
+                  [0mNo recorded entry shown[0m
+                [36m</p>[39m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/rf2TypedTiming.test.tsx:34:16
+     32|  const c=cases.find(c=>c.name==='point-bounded')!,catalog=await catalo…
+     33|  const r=render(<RF2FluidChart catalog={catalog} status="current" text…
+     34|  expect(screen.getByRole('region',{name:'Unplaced entries'})).toHaveTe…
+       |                ^
+     35|  expect(screen.getByRole('region',{name:'Unplaced entries'})).toHaveTe…
+     36|  const alt=await catalogFor(cases.find(c=>c.name==='point-alternative-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 failed | 3 passed (13)
+   Start at  00:43:31
+   Duration  1.56s (environment 49%, tests 23%, transform 13%, setup 10%, import 5%)
+

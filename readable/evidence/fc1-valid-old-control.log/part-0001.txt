@@ -1,0 +1,761 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --configLoader runner --no-cache --maxWorkers=2 tests/rf2TypedTiming.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend
+
+ ❯ tests/rf2TypedTiming.test.tsx (13 tests | 10 failed) 332ms
+   × uses decoded typed precision/alternatives for interval-approximate-start 29ms
+   × uses decoded typed precision/alternatives for interval-approximate-end 12ms
+   × uses decoded typed precision/alternatives for point-approximate 10ms
+   × uses decoded typed precision/alternatives for interval-day 10ms
+   × uses decoded typed precision/alternatives for point-bounded 10ms
+   × uses decoded typed precision/alternatives for point-instant-uncertainty 10ms
+   × uses decoded typed precision/alternatives for interval-alternative-disagrees 10ms
+   × uses decoded typed precision/alternatives for point-alternative-disagrees 10ms
+   × shows approximate interval raw timestamp, precision and uncertainty rather than losing the typed assertion 146ms
+   × keeps point bounds and contradictory alternative source details readable 47ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for interval-approximate-start
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for interval-approximate-end
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for point-approximate
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for interval-day
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for point-bounded
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for point-instant-uncertainty
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for interval-alternative-disagrees
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for point-alternative-disagrees
+AssertionError: expected [ { …(9) } ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/rf2TypedTiming.test.tsx:19:54
+     17|  const catalog=await catalogFor(c.evidence);const model=fluidChartMode…
+     18|  expect(model.valid).toBe(true);
+     19|  expect(model.groups.flatMap(([,entries])=>entries)).toHaveLength(c.ex…
+       |                                                      ^
+     20|  expect(model.unplaced).toHaveLength(c.expected_placed?0:1);
+     21|  expect(catalog.items[0].digest).toBe(c.evidence.digest);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  tests/rf2TypedTiming.test.tsx > shows approximate interval raw timestamp, precision and uncertainty rather than losing the typed assertion
+TestingLibraryElementError: Unable to find an accessible element with the role "region" and name "Unplaced entries"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Fluid chart":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Fluid chart"[39m
+    [33mclass[39m=[32m"rf2-fluid-chart"[39m
+  [36m/>[39m
+
+  Name "Scrollable recorded fluid chart":
+  [36m<div[39m
+    [33maria-describedby[39m=[32m"rf2-fluid-scroll-help"[39m
+    [33maria-label[39m=[32m"Scrollable recorded fluid chart"[39m
+    [33mclass[39m=[32m"rf2-fluid-scroll"[39m
+    [33mrole[39m=[32m"region"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  heading:
+
+  Name "Fluid chart — recorded entries":
+  [36m<h3 />[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mid[39m=[32m"rf2-fluid-scroll-help"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"rf2-fluid-amount"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"rf2-fluid-reference"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+  table:
+
+  Name "Recorded entries side by side — no hourly totals":
+  [36m<table />[39m
+
+  --------------------------------------------------
+  caption:
+
+  Name "Recorded entries side by side — no hourly totals":
+  [36m<caption />[39m
+
+  --------------------------------------------------
+  rowgroup:
+
+  Name "":
+  [36m<thead />[39m
+
+  Name "":
+  [36m<tbody />[39m
+
+  --------------------------------------------------
+  row:
+
+  Name "Hour group / actual interval Intake Urine Drain output Other output":
+  [36m<tr />[39m
+
+  Name "2026-10-08T08:00:00Z · UTC +00:00 No recorded entry shown Urine output 344cd3bc-1a4f-5676-a88c-4c05ba5dade0 / 5b3081f9-ad8f-4389-b968-68e701e95256 No recorded entry shown No recorded entry shown":
+  [36m<tr />[39m
+
+  --------------------------------------------------
+  columnheader:
+
+  Name "Hour group / actual interval":
+  [36m<th[39m
+    [33mscope[39m=[32m"col"[39m
+  [36m/>[39m
+
+  Name "Intake":
+  [36m<th[39m
+    [33mscope[39m=[32m"col"[39m
+  [36m/>[39m
+
+  Name "Urine":
+  [36m<th[39m
+    [33mscope[39m=[32m"col"[39m
+  [36m/>[39m
+
+  Name "Drain output":
+  [36m<th[39m
+    [33mscope[39m=[32m"col"[39m
+  [36m/>[39m
+
+  Name "Other output":
+  [36m<th[39m
+    [33mscope[39m=[32m"col"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  rowheader:
+
+  Name "2026-10-08T08:00:00Z · UTC +00:00":
+  [36m<th[39m
+    [33mscope[39m=[32m"row"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  cell:
+
+  Name "No recorded entry shown":
+  [36m<td />[39m
+
+  Name "Urine output 344cd3bc-1a4f-5676-a88c-4c05ba5dade0 / 5b3081f9-ad8f-4389-b968-68e701e95256":
+  [36m<td />[39m
+
+  Name "No recorded entry shown":
+  [36m<td />[39m
+
+  Name "No recorded entry shown":
+  [36m<td />[39m
+
+  --------------------------------------------------
+  article:
+
+  Name "Urine output 344cd3bc-1a4f-5676-a88c-4c05ba5dade0 / 5b3081f9-ad8f-4389-b968-68e701e95256":
+  [36m<article[39m
+    [33maria-label[39m=[32m"Urine output 344cd3bc-1a4f-5676-a88c-4c05ba5dade0 / 5b3081f9-ad8f-4389-b968-68e701e95256"[39m
+    [33mclass[39m=[32m"rf2-fluid-entry"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "Open exact source 344cd3bc-1a4f-5676-a88c-4c05ba5dade0 / 5b3081f9-ad8f-4389-b968-68e701e95256":
+  [36m<button[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  group:
+
+  Name "":
+  [36m<details />[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Fluid chart"[39m
+      [33mclass[39m=[32m"rf2-fluid-chart"[39m
+    [36m>[39m
+      [36m<h3>[39m
+        [0mFluid chart — recorded entries[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mCalculations unavailable — source eligibility not established[0m
+        [36m</strong>[39m
+      [36m</p>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mCompleteness unresolved[0m
+        [36m</strong>[39m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mSelected source period: [0m
+        [0m2026-10-08T08:00:00Z[0m
+        [0m → [0m
+        [0m2026-10-08T10:00:00Z[0m
+        [0m. Hour groups use UTC (+00:00); source timestamps keep their recorded offsets. Groups are navigation only, not measured hourly volumes.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRepository [0m
+        [0mda23ef6d-d22b-4963-bb32-cdd8e53fe1c7[0m
+        [0m · source cutoff [0m
+        [0m6[0m
+        [0m. Recorded entries do not establish complete intake/output coverage.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mThe existing selected period is retained. No additional 24-hour retrieval is introduced in this view; no period total is calculated.[0m
+      [36m</p>[39m
+      [36m<p[39m
+        [33mid[39m=[32m"rf2-fluid-scroll-help"[39m
+      [36m>[39m
+        [0mAt narrow widths, focus the chart region and use Left/Right arrow keys to scroll. Each source button is keyboard-accessible. Amounts are separate source assertions, with no summing, conversion or allocation.[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33maria-describedby[39m=[32m"rf2-fluid-scroll-help"[39m
+        [33maria-label[39m=[32m"Scrollable recorded fluid chart"[39m
+        [33mclass[39m=[32m"rf2-fluid-scroll"[39m
+        [33mrole[39m=[32m"region"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m>[39m
+        [36m<table>[39m
+          [36m<caption>[39m
+            [0mRecorded entries side by side — no hourly totals[0m
+          [36m</caption>[39m
+          [36m<thead>[39m
+            [36m<tr>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mHour group / actual interval[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mIntake[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mUrine[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mDrain output[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mOther output[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody>[39m
+            [36m<tr>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"row"[39m
+              [36m>[39m
+                [0m2026-10-08T08:00:00Z[0m
+                [0m · UTC +00:00[0m
+              [36m</th>[39m
+              [36m<td>[39m
+                [36m<p>[39m
+                  [0mNo recorded entry shown[0m
+                [36m</p>[39m
+              [36m</td>[39m
+              [36m<td>[39m
+                [36m<article[39m
+                  [33maria-label[39m=[32m"Urine output 344cd3bc-1a4f-5676-a88c-4c05ba5dade0 / 5b3081f9-ad8f-4389-b968-68e701e95256"[39m
+                  [33mclass[39m=[32m"rf2-fluid-entry"[39m
+                [36m>[39m
+                  [36m<strong>[39m
+                    [0mUrine output[0m
+                    [36m<small>[39m
+                      [0mSource category: [0m
+                      [0moutput_urine[0m
+                    [36m</small>[39m
+                  [36m</strong>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"rf2-fluid-amount"[39m
+                  [36m>[39m
+                    [0m35.0000 mL[0m
+                  [36m</p>[39m
+                  [36m<p>[39m
+                    [0mRecorded interval: [0m
+                    [0m2026-10-08T08:30:00Z[0m
+                    [0m → [0m
+                    [0m2026-10-08T08:45:00Z[0m
+                  [36m</p>[39m
+                  [36m<p>[39m
+                    [0mRecord status: [0m
+                    [0mrecorded[0m
+                  [36m</p>[39m
+                  [36m<p>[39m
+                    [0mExplicit local fictional measurement[0m
+                  [36m</p>[39m
+                  [36m<p>[39m
+                    [0mUncertainty: [0m
+                    [0mCollection method not verified[0m
+                  [36m</p>[39m
+                  [36m<p>[39m
+                    [0mSource caveat: [0m
+                    [0mCollection method not verified[0m
+                  [36m</p>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"rf2-fluid-reference"[39m
+                  [36m>[39m
+                    [0mExact source: [0m
+                    [0m344cd3bc-1a4f-5676-a88c-4c05ba5dade0[0m
+                    [0m / [0m
+                    [0m5b3081f9-ad8f-4389-b968-68e701e95256[0m
+                  [36m</p>[39m
+                  [36m<button[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [0mOpen exact source [0m
+                    [0m344cd3bc-1a4f-5676-a88c-4c05ba5dade0[0m
+                    [0m / [0m
+                    [0m5b3081f9-ad8f-4389-b968-68e701e95256[0m
+                  [36m</button>[39m
+                  [36m<details>[39m
+                    [36m<summary>[39m
+                      [0mSource timing, verification and exact pin[0m
+                    [36m</summary>[39m
+                    [36m<p>[39m
+                      [0m2026-10-08T08:45:00Z · Exact source outside the shared snapshot; inspect timing · Source clock unknown; acquisition quality not recorded · Source interval 2026-10-08T08:30:00Z → 2026-10-08T08:45:00Z; no rate or duration inferred · Verification unverified; conflict unknown[0m
+                    [36m</p>[39m
+                    [36m<p>[39m
+                      [0mRepository [0m
+                      [0mda23ef6d-d22b-4963-bb32-cdd8e53fe1c7[0m
+                      [0m · cutoff [0m
+                      [0m6[0m
+                      [0m · ingestion [0m
+                      [0m5[0m
+                      [0m · digest [0m
+                      [0mb36335c790cdf9367b672ac45eb22ffec7159fa9fa7956d07d5ef27076bb58ed[0m
+                    [36m</p>[39m
+                  [36m</details>[39m
+                [36m</article>[39m
+              [36m</td>[39m
+              [36m<td>[39m
+                [36m<p>[39m
+                  [0mNo recorded entry shown[0m
+                [36m</p>[39m
+              [36m</td>[39m
+              [36m<td>[39m
+                [36m<p>[39m
+                  [0mNo recorded entry shown[0m
+                [36m</p>[39m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/rf2TypedTiming.test.tsx:26:22
+     24|  const c=cases.find(c=>c.name==='interval-approximate-start')!,catalog…
+     25|  render(<RF2FluidChart catalog={catalog} status="current" text={eviden…
+     26|  const region=screen.getByRole('region',{name:'Unplaced entries'});
+       |                      ^
+     27|  expect(region).toHaveTextContent('2026-10-08T08:30:00Z');
+     28|  expect(region).toHaveTextContent(/precision approximate/i);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  tests/rf2TypedTiming.test.tsx > keeps point bounds and contradictory alternative source details readable
+TestingLibraryElementError: Unable to find an accessible element with the role "region" and name "Unplaced entries"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Fluid chart":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Fluid chart"[39m
+    [33mclass[39m=[32m"rf2-fluid-chart"[39m
+  [36m/>[39m
+
+  Name "Scrollable recorded fluid chart":
+  [36m<div[39m
+    [33maria-describedby[39m=[32m"rf2-fluid-scroll-help"[39m
+    [33maria-label[39m=[32m"Scrollable recorded fluid chart"[39m
+    [33mclass[39m=[32m"rf2-fluid-scroll"[39m
+    [33mrole[39m=[32m"region"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  heading:
+
+  Name "Fluid chart — recorded entries":
+  [36m<h3 />[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mid[39m=[32m"rf2-fluid-scroll-help"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"rf2-fluid-amount"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"rf2-fluid-reference"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+  table:
+
+  Name "Recorded entries side by side — no hourly totals":
+  [36m<table />[39m
+
+  --------------------------------------------------
+  caption:
+
+  Name "Recorded entries side by side — no hourly totals":
+  [36m<caption />[39m
+
+  --------------------------------------------------
+  rowgroup:
+
+  Name "":
+  [36m<thead />[39m
+
+  Name "":
+  [36m<tbody />[39m
+
+  --------------------------------------------------
+  row:
+
+  Name "Hour group / actual interval Intake Urine Drain output Other output":
+  [36m<tr />[39m
+
+  Name "2026-10-08T08:00:00Z · UTC +00:00 No recorded entry shown Urine output 87d64a0f-07ce-55d0-a6e5-3dbb21a0084f / 5b3081f9-ad8f-4389-b968-68e701e95256 No recorded entry shown No recorded entry shown":
+  [36m<tr />[39m
+
+  --------------------------------------------------
+  columnheader:
+
+  Name "Hour group / actual interval":
+  [36m<th[39m
+    [33mscope[39m=[32m"col"[39m
+  [36m/>[39m
+
+  Name "Intake":
+  [36m<th[39m
+    [33mscope[39m=[32m"col"[39m
+  [36m/>[39m
+
+  Name "Urine":
+  [36m<th[39m
+    [33mscope[39m=[32m"col"[39m
+  [36m/>[39m
+
+  Name "Drain output":
+  [36m<th[39m
+    [33mscope[39m=[32m"col"[39m
+  [36m/>[39m
+
+  Name "Other output":
+  [36m<th[39m
+    [33mscope[39m=[32m"col"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  rowheader:
+
+  Name "2026-10-08T08:00:00Z · UTC +00:00":
+  [36m<th[39m
+    [33mscope[39m=[32m"row"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  cell:
+
+  Name "No recorded entry shown":
+  [36m<td />[39m
+
+  Name "Urine output 87d64a0f-07ce-55d0-a6e5-3dbb21a0084f / 5b3081f9-ad8f-4389-b968-68e701e95256":
+  [36m<td />[39m
+
+  Name "No recorded entry shown":
+  [36m<td />[39m
+
+  Name "No recorded entry shown":
+  [36m<td />[39m
+
+  --------------------------------------------------
+  article:
+
+  Name "Urine output 87d64a0f-07ce-55d0-a6e5-3dbb21a0084f / 5b3081f9-ad8f-4389-b968-68e701e95256":
+  [36m<article[39m
+    [33maria-label[39m=[32m"Urine output 87d64a0f-07ce-55d0-a6e5-3dbb21a0084f / 5b3081f9-ad8f-4389-b968-68e701e95256"[39m
+    [33mclass[39m=[32m"rf2-fluid-entry"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "Open exact source 87d64a0f-07ce-55d0-a6e5-3dbb21a0084f / 5b3081f9-ad8f-4389-b968-68e701e95256":
+  [36m<button[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  group:
+
+  Name "":
+  [36m<details />[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Fluid chart"[39m
+      [33mclass[39m=[32m"rf2-fluid-chart"[39m
+    [36m>[39m
+      [36m<h3>[39m
+        [0mFluid chart — recorded entries[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mCalculations unavailable — source eligibility not established[0m
+        [36m</strong>[39m
+      [36m</p>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mCompleteness unresolved[0m
+        [36m</strong>[39m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mSelected source period: [0m
+        [0m2026-10-08T08:00:00Z[0m
+        [0m → [0m
+        [0m2026-10-08T10:00:00Z[0m
+        [0m. Hour groups use UTC (+00:00); source timestamps keep their recorded offsets. Groups are navigation only, not measured hourly volumes.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRepository [0m
+        [0mda23ef6d-d22b-4963-bb32-cdd8e53fe1c7[0m
+        [0m · source cutoff [0m
+        [0m6[0m
+        [0m. Recorded entries do not establish complete intake/output coverage.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mThe existing selected period is retained. No additional 24-hour retrieval is introduced in this view; no period total is calculated.[0m
+      [36m</p>[39m
+      [36m<p[39m
+        [33mid[39m=[32m"rf2-fluid-scroll-help"[39m
+      [36m>[39m
+        [0mAt narrow widths, focus the chart region and use Left/Right arrow keys to scroll. Each source button is keyboard-accessible. Amounts are separate source assertions, with no summing, conversion or allocation.[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33maria-describedby[39m=[32m"rf2-fluid-scroll-help"[39m
+        [33maria-label[39m=[32m"Scrollable recorded fluid chart"[39m
+        [33mclass[39m=[32m"rf2-fluid-scroll"[39m
+        [33mrole[39m=[32m"region"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m>[39m
+        [36m<table>[39m
+          [36m<caption>[39m
+            [0mRecorded entries side by side — no hourly totals[0m
+          [36m</caption>[39m
+          [36m<thead>[39m
+            [36m<tr>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mHour group / actual interval[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mIntake[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mUrine[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mDrain output[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mOther output[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody>[39m
+            [36m<tr>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"row"[39m
+              [36m>[39m
+                [0m2026-10-08T08:00:00Z[0m
+                [0m · UTC +00:00[0m
+              [36m</th>[39m
+              [36m<td>[39m
+                [36m<p>[39m
+                  [0mNo recorded entry shown[0m
+                [36m</p>[39m
+              [36m</td>[39m
+              [

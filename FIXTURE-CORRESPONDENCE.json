@@ -1,0 +1,86 @@
+{
+  "fixture": "frontend/tests/fixtures/rf2-fc1-timing.json",
+  "examples": [
+    {
+      "name": "interval-approximate-start",
+      "expected_placed": false,
+      "canonical_digest": "b36335c790cdf9367b672ac45eb22ffec7159fa9fa7956d07d5ef27076bb58ed",
+      "id": "344cd3bc-1a4f-5676-a88c-4c05ba5dade0"
+    },
+    {
+      "name": "interval-approximate-end",
+      "expected_placed": false,
+      "canonical_digest": "04fe9d134f14c6da69384c4b0c399062201c50a1c5002c5f356f2b28ea5915a9",
+      "id": "4f864949-0793-55db-9070-e2b477d63ef6"
+    },
+    {
+      "name": "point-approximate",
+      "expected_placed": false,
+      "canonical_digest": "369f595aa4291b4c45fb90b875dad941f0c8787db988ded5453eac01982cfc93",
+      "id": "94d8c6b4-7dbd-5c40-b807-058c692c70d6"
+    },
+    {
+      "name": "interval-day",
+      "expected_placed": false,
+      "canonical_digest": "108281ced1b593af488be5826a87ea3e64023eb4d527e756fcec29267bee34df",
+      "id": "7e51ba79-a8a0-5ff8-9da3-2453830443e0"
+    },
+    {
+      "name": "point-bounded",
+      "expected_placed": false,
+      "canonical_digest": "8e974da148069b3b2b935354224c9fb7e50f8bdef1db40b38cb96e25ee47dd1b",
+      "id": "87d64a0f-07ce-55d0-a6e5-3dbb21a0084f"
+    },
+    {
+      "name": "point-instant-uncertainty",
+      "expected_placed": false,
+      "canonical_digest": "308c1f3cb193af713136bbd6677dcdccc5363034b28a38ecbd5943d6cf48a620",
+      "id": "eb659f1d-e7fc-5942-b9ff-b4ebf1c33850"
+    },
+    {
+      "name": "interval-alternative-disagrees",
+      "expected_placed": false,
+      "canonical_digest": "df7329e2518e8d1e12c7e7e0e46ef80c27224e99c1e94274b9926ff4977342cb",
+      "id": "dafb7901-8a45-5998-b66d-33bd8028596e"
+    },
+    {
+      "name": "point-alternative-disagrees",
+      "expected_placed": false,
+      "canonical_digest": "d310ed42f379fbb3e7615d2afa63b1e41593590b2fba757da4d5a8ece6f8c0cc",
+      "id": "b9a2eb52-eacc-57af-8c3f-3c3c3f591b27"
+    },
+    {
+      "name": "exact-interval-unknown-clock",
+      "expected_placed": true,
+      "canonical_digest": "cfda5cb172e157f674b6609379b29cd2475e2ceabdcd50b375ab5e1a2412cc1a",
+      "id": "091300a6-a954-5282-84bb-8b766841adb0"
+    },
+    {
+      "name": "exact-point-unknown-clock",
+      "expected_placed": true,
+      "canonical_digest": "1fd7ac41bf04bb6684c98b654ae73624c14b329bcac7fefa91b003c5c90b1264",
+      "id": "4217c07b-ffdb-5668-a207-13b2f60f9a84"
+    },
+    {
+      "name": "exact-point-agreeing-alternative",
+      "expected_placed": true,
+      "canonical_digest": "57536b22902b033159676d28bb9cf22155350ed97d94b01df5b7c1c3f10cceb6",
+      "id": "f283ee76-540d-59f6-bdc0-996deafdd853"
+    }
+  ],
+  "validation": "11 synthetic CirculatoryEvent facts validated through unchanged existing Pydantic model and canonical serializer, in memory only. All 11 passed existing frontend decodeEvidence within tests. No live API/runtime or database exercised; no source eligibility inferred.",
+  "focused_new_tests": 13,
+  "old_valid_source_control": {
+    "failed": 10,
+    "passed": 3,
+    "exit_code": 1
+  },
+  "initial_setup_failure": "13 failures due fixture cutoff mismatch with catalog; not an FC1 negative control. Original mismatched bytes preserved separately.",
+  "final_focused": {
+    "passed": 89,
+    "files": 6
+  },
+  "frontend_helper_change": "Existing rf2FluidChart component helper now supplies recorded typed time assertions rather than timestamp-only stubs; legacy presentation variants remain component fixtures.",
+  "previous_evidence": "dbcc6ef646a7580a55f8f0eeb52326ac9171abc3",
+  "rendered_desktop_or_360px_verified": false
+}

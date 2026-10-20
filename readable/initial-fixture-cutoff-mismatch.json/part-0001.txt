@@ -1,0 +1,414 @@
+[
+  {
+    "name": "interval-approximate-start",
+    "expected_placed": false,
+    "evidence": {
+      "repository": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7",
+      "fact": {
+        "kind": "circulatory_event",
+        "id": "344cd3bc-1a4f-5676-a88c-4c05ba5dade0",
+        "revision": "5b3081f9-ad8f-4389-b968-68e701e95256",
+        "binding": {
+          "target": {
+            "patient_id": "synthetic-p1",
+            "encounter_id": "synthetic-e1",
+            "longitudinal_context_id": null
+          },
+          "verification": {
+            "status": "unresolved",
+            "method": "Synthetic scope selection",
+            "verifier": "Synthetic nurse",
+            "assessed_at": "2026-10-08T10:00:00Z",
+            "source": {
+              "namespace": "clinrx.local.synthetic.rf2",
+              "identifier": "de0f05cf-bb25-4f0a-952b-5934743a9b83",
+              "version": null,
+              "channel": "clinician"
+            },
+            "ambiguity": "Local synthetic patient only."
+          }
+        },
+        "origin": "reported",
+        "provenance": {
+          "source": {
+            "namespace": "clinrx.local.synthetic.rf2",
+            "identifier": "de0f05cf-bb25-4f0a-952b-5934743a9b83",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Synthetic nurse",
+          "recorded_at": "2026-10-08T10:00:00Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Unauthenticated local synthetic source assertion."
+          ]
+        },
+        "time": {
+          "event": null,
+          "recorded": null,
+          "effective_start": null,
+          "effective_end": null,
+          "retrieved": null,
+          "processed": null,
+          "precision": "unknown",
+          "uncertainty": null
+        },
+        "verification": "unverified",
+        "conflict": "unknown",
+        "temporal_status": "unknown",
+        "uncertainty": [
+          "Collection method not verified"
+        ],
+        "supersedes": null,
+        "correction_reason": null,
+        "contract_version": "3",
+        "occurred": {
+          "timestamp_precision": "M7ExactTimestampInput/v1",
+          "recorded": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T08:45:00Z",
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "source_timestamp": "2026-10-08T08:45:00Z",
+          "clock": "unknown",
+          "clock_basis": null,
+          "conflicting": [],
+          "alternative_sources": [],
+          "alignment": null
+        },
+        "available": {
+          "recorded": {
+            "status": "not_recorded",
+            "precision": "unknown",
+            "value": null,
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "source_timestamp": null,
+          "clock": "unknown",
+          "clock_basis": null,
+          "conflicting": [],
+          "alternative_sources": [],
+          "alignment": null
+        },
+        "associations": [],
+        "source_identifiers": [],
+        "disclosures": [],
+        "record_status": "recorded",
+        "event_type": "other",
+        "description": {
+          "raw_display": "Explicit local fictional measurement",
+          "coding": {
+            "namespace": "clinrx.local.rf2/v1",
+            "code": "output_urine",
+            "version": "1",
+            "raw_display": "output_urine"
+          }
+        },
+        "external_evidence": [
+          {
+            "namespace": "clinrx.local.rf2/v1",
+            "code": "{\"chart\":{\"acquisition\":\"unknown\",\"amount\":\"35.0000\",\"category\":\"output_urine\",\"end\":\"2026-10-08T08:45:00Z\",\"method\":null,\"missing_reason\":null,\"new_collection_reason\":null,\"point\":\"2026-10-08T08:45:00Z\",\"purpose\":null,\"source_context\":\"Explicit local fictional measurement\",\"source_record\":{\"component\":\"volume\",\"issuer\":\"nurse-chart-A\",\"issuer_namespace\":\"clinrx.synthetic.chart\",\"record_id\":\"urine-0945\",\"record_namespace\":\"chart-entry\"},\"source_version\":null,\"start\":\"2026-10-08T08:30:00Z\",\"uncertainty\":\"Collection method not verified\",\"unit\":\"mL\"},\"note\":null,\"version\":1}",
+            "version": "1",
+            "raw_display": "Structured RF2 source assertions"
+          }
+        ],
+        "recorded_amount": {
+          "value": "35.0000",
+          "unit": {
+            "raw": "mL",
+            "status": "unresolved",
+            "system": null,
+            "code": null,
+            "limitation": "Raw source unit; no conversion."
+          }
+        },
+        "recorded_interval": {
+          "start": {
+            "timestamp_precision": "M7ExactTimestampInput/v1",
+            "recorded": {
+              "status": "known",
+              "precision": "approximate",
+              "value": "2026-10-08T08:30:00Z",
+              "lower": null,
+              "upper": null,
+              "uncertainty": "Collection boundary could be anywhere from 08:00 to 09:15"
+            },
+            "source_timestamp": "2026-10-08T08:30:00Z",
+            "clock": "unknown",
+            "clock_basis": null,
+            "conflicting": [],
+            "alternative_sources": [],
+            "alignment": null
+          },
+          "end": {
+            "timestamp_precision": "M7ExactTimestampInput/v1",
+            "recorded": {
+              "status": "known",
+              "precision": "instant",
+              "value": "2026-10-08T08:45:00Z",
+              "lower": null,
+              "upper": null,
+              "uncertainty": null
+            },
+            "source_timestamp": "2026-10-08T08:45:00Z",
+            "clock": "unknown",
+            "clock_basis": null,
+            "conflicting": [],
+            "alternative_sources": [],
+            "alignment": null
+          },
+          "provenance": {
+            "source": {
+              "namespace": "clinrx.local.synthetic.rf2",
+              "identifier": "de0f05cf-bb25-4f0a-952b-5934743a9b83",
+              "version": null,
+              "channel": "clinician"
+            },
+            "actor": "Synthetic nurse",
+            "recorded_at": "2026-10-08T10:00:00Z",
+            "upstream": [],
+            "lineage": "incomplete",
+            "limitations": [
+              "Unauthenticated local synthetic source assertion."
+            ]
+          },
+          "limitations": [
+            "Source bounds only; no calculated rate or duration."
+          ]
+        }
+      },
+      "canonical_fact": "{\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-08T10:00:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"de0f05cf-bb25-4f0a-952b-5934743a9b83\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic nurse\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"output_urine\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"output_urine\",\"version\":\"1\"},\"raw_display\":\"Explicit local fictional measurement\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"chart\\\":{\\\"acquisition\\\":\\\"unknown\\\",\\\"amount\\\":\\\"35.0000\\\",\\\"category\\\":\\\"output_urine\\\",\\\"end\\\":\\\"2026-10-08T08:45:00Z\\\",\\\"method\\\":null,\\\"missing_reason\\\":null,\\\"new_collection_reason\\\":null,\\\"point\\\":\\\"2026-10-08T08:45:00Z\\\",\\\"purpose\\\":null,\\\"source_context\\\":\\\"Explicit local fictional measurement\\\",\\\"source_record\\\":{\\\"component\\\":\\\"volume\\\",\\\"issuer\\\":\\\"nurse-chart-A\\\",\\\"issuer_namespace\\\":\\\"clinrx.synthetic.chart\\\",\\\"record_id\\\":\\\"urine-0945\\\",\\\"record_namespace\\\":\\\"chart-entry\\\"},\\\"source_version\\\":null,\\\"start\\\":\\\"2026-10-08T08:30:00Z\\\",\\\"uncertainty\\\":\\\"Collection method not verified\\\",\\\"unit\\\":\\\"mL\\\"},\\\"note\\\":null,\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"344cd3bc-1a4f-5676-a88c-4c05ba5dade0\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:45:00Z\"},\"source_timestamp\":\"2026-10-08T08:45:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"de0f05cf-bb25-4f0a-952b-5934743a9b83\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":{\"unit\":{\"code\":null,\"limitation\":\"Raw source unit; no conversion.\",\"raw\":\"mL\",\"status\":\"unresolved\",\"system\":null},\"value\":\"35.0000\"},\"recorded_interval\":{\"end\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:45:00Z\"},\"source_timestamp\":\"2026-10-08T08:45:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"limitations\":[\"Source bounds only; no calculated rate or duration.\"],\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"de0f05cf-bb25-4f0a-952b-5934743a9b83\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"start\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"approximate\",\"status\":\"known\",\"uncertainty\":\"Collection boundary could be anywhere from 08:00 to 09:15\",\"upper\":null,\"value\":\"2026-10-08T08:30:00Z\"},\"source_timestamp\":\"2026-10-08T08:30:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"}},\"revision\":\"5b3081f9-ad8f-4389-b968-68e701e95256\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Collection method not verified\"],\"verification\":\"unverified\"}",
+      "digest": "b36335c790cdf9367b672ac45eb22ffec7159fa9fa7956d07d5ef27076bb58ed",
+      "ingestion": {
+        "repository_id": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7",
+        "ingestion_sequence": 5,
+        "ingested_at": "2026-10-19T18:35:22.722478Z",
+        "payload_version": 1
+      },
+      "cutoff": 5,
+      "terminal_reference": {
+        "kind": "circulatory_event",
+        "id": "344cd3bc-1a4f-5676-a88c-4c05ba5dade0",
+        "version": "5b3081f9-ad8f-4389-b968-68e701e95256"
+      },
+      "superseded": false,
+      "metadata": {
+        "chart": {
+          "acquisition": "unknown",
+          "amount": "35.0000",
+          "category": "output_urine",
+          "end": "2026-10-08T08:45:00Z",
+          "method": null,
+          "missing_reason": null,
+          "new_collection_reason": null,
+          "point": "2026-10-08T08:45:00Z",
+          "purpose": null,
+          "source_context": "Explicit local fictional measurement",
+          "source_record": {
+            "component": "volume",
+            "issuer": "nurse-chart-A",
+            "issuer_namespace": "clinrx.synthetic.chart",
+            "record_id": "urine-0945",
+            "record_namespace": "chart-entry"
+          },
+          "source_version": null,
+          "start": "2026-10-08T08:30:00Z",
+          "uncertainty": "Collection method not verified",
+          "unit": "mL"
+        },
+        "note": null,
+        "version": 1
+      }
+    }
+  },
+  {
+    "name": "interval-approximate-end",
+    "expected_placed": false,
+    "evidence": {
+      "repository": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7",
+      "fact": {
+        "kind": "circulatory_event",
+        "id": "4f864949-0793-55db-9070-e2b477d63ef6",
+        "revision": "5b3081f9-ad8f-4389-b968-68e701e95256",
+        "binding": {
+          "target": {
+            "patient_id": "synthetic-p1",
+            "encounter_id": "synthetic-e1",
+            "longitudinal_context_id": null
+          },
+          "verification": {
+            "status": "unresolved",
+            "method": "Synthetic scope selection",
+            "verifier": "Synthetic nurse",
+            "assessed_at": "2026-10-08T10:00:00Z",
+            "source": {
+              "namespace": "clinrx.local.synthetic.rf2",
+              "identifier": "de0f05cf-bb25-4f0a-952b-5934743a9b83",
+              "version": null,
+              "channel": "clinician"
+            },
+            "ambiguity": "Local synthetic patient only."
+          }
+        },
+        "origin": "reported",
+        "provenance": {
+          "source": {
+            "namespace": "clinrx.local.synthetic.rf2",
+            "identifier": "de0f05cf-bb25-4f0a-952b-5934743a9b83",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Synthetic nurse",
+          "recorded_at": "2026-10-08T10:00:00Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Unauthenticated local synthetic source assertion."
+          ]
+        },
+        "time": {
+          "event": null,
+          "recorded": null,
+          "effective_start": null,
+          "effective_end": null,
+          "retrieved": null,
+          "processed": null,
+          "precision": "unknown",
+          "uncertainty": null
+        },
+        "verification": "unverified",
+        "conflict": "unknown",
+        "temporal_status": "unknown",
+        "uncertainty": [
+          "Collection method not verified"
+        ],
+        "supersedes": null,
+        "correction_reason": null,
+        "contract_version": "3",
+        "occurred": {
+          "timestamp_precision": "M7ExactTimestampInput/v1",
+          "recorded": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T08:45:00Z",
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "source_timestamp": "2026-10-08T08:45:00Z",
+          "clock": "unknown",
+          "clock_basis": null,
+          "conflicting": [],
+          "alternative_sources": [],
+          "alignment": null
+        },
+        "available": {
+          "recorded": {
+            "status": "not_recorded",
+            "precision": "unknown",
+            "value": null,
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "source_timestamp": null,
+          "clock": "unknown",
+          "clock_basis": null,
+          "conflicting": [],
+          "alternative_sources": [],
+          "alignment": null
+        },
+        "associations": [],
+        "source_identifiers": [],
+        "disclosures": [],
+        "record_status": "recorded",
+        "event_type": "other",
+        "description": {
+          "raw_display": "Explicit local fictional measurement",
+          "coding": {
+            "namespace": "clinrx.local.rf2/v1",
+            "code": "output_urine",
+            "version": "1",
+            "raw_display": "output_urine"
+          }
+        },
+        "external_evidence": [
+          {
+            "namespace": "clinrx.local.rf2/v1",
+            "code": "{\"chart\":{\"acquisition\":\"unknown\",\"amount\":\"35.0000\",\"category\":\"output_urine\",\"end\":\"2026-10-08T08:45:00Z\",\"method\":null,\"missing_reason\":null,\"new_collection_reason\":null,\"point\":\"2026-10-08T08:45:00Z\",\"purpose\":null,\"source_context\":\"Explicit local fictional measurement\",\"source_record\":{\"component\":\"volume\",\"issuer\":\"nurse-chart-A\",\"issuer_namespace\":\"clinrx.synthetic.chart\",\"record_id\":\"urine-0945\",\"record_namespace\":\"chart-entry\"},\"source_version\":null,\"start\":\"2026-10-08T08:30:00Z\",\"uncertainty\":\"Collection method not verified\",\"unit\":\"mL\"},\"note\":null,\"version\":1}",
+            "version": "1",
+            "raw_display": "Structured RF2 source assertions"
+          }
+        ],
+        "recorded_amount": {
+          "value": "35.0000",
+          "unit": {
+            "raw": "mL",
+            "status": "unresolved",
+            "system": null,
+            "code": null,
+            "limitation": "Raw source unit; no conversion."
+          }
+        },
+        "recorded_interval": {
+          "start": {
+            "timestamp_precision": "M7ExactTimestampInput/v1",
+            "recorded": {
+              "status": "known",
+              "precision": "instant",
+              "value": "2026-10-08T08:30:00Z",
+              "lower": null,
+              "upper": null,
+              "uncertainty": null
+            },
+            "source_timestamp": "2026-10-08T08:30:00Z",
+            "clock": "unknown",
+            "clock_basis": null,
+            "conflicting": [],
+            "alternative_sources": [],
+            "alignment": null
+          },
+          "end": {
+            "timestamp_precision": "M7ExactTimestampInput/v1",
+            "recorded": {
+              "status": "known",
+              "precision": "approximate",
+              "value": "2026-10-08T08:45:00Z",
+              "lower": null,
+              "upper": null,
+              "uncertainty": "End time may extend beyond the hour"
+            },
+            "source_timestamp": "2026-10-08T08:45:00Z",
+            "clock": "unknown",
+            "clock_basis": null,
+            "conflicting": [],
+            "alternative_sources": [],
+            "alignment": null
+          },
+          "provenance": {
+            "source": {
+              "namespace": "clinrx.local.synthetic.rf2",
+              "identifier": "de0f05cf-bb25-4f0a-952b-5934743a9b83",
+              "version": null,
+              "channel": "clinician"
+            },
+            "actor": "Synthetic nurse",
+            "recorded_at": "2026-10-08T10:00:00Z",
+            "upstream": [],
+            "lineage": "incomplete",
+            "limitations": [
+              "Unauthenticated local synthetic source assertion."
+            ]
+          },
+          "limitations": [
+            "Source bounds only; no calculated rate or duration."
+          ]
+        }
+      },
+      "canonical_fact": "{\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-08T10:00:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"de0f05cf-bb25-4f0a-952b-5934743a9b83\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic nurse\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"output_urine\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"output_urine\",\"version\":\"1\"},\"raw_display\":\"Explicit local fictional measurement\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"chart\\\":{\\\"acquisition\\\":\\\"unknown\\\",\\\"amount\\\":\\\"35.0000\\\",\\\"category\\\":\\\"output_urine\\\",\\\"end\\\":\\\"2026-10-08T08:45:00Z\\\",\\\"method\\\":null,\\\"missing_reason\\\":null,\\\"new_collection_reason\\\":null,\\\"point\\\":\\\"2026-10-08T08:45:00Z\\\",\\\"purpose\\\":null,\\\"source_context\\\":\\\"Explicit local fictional measurement\\\",\\\"source_record\\\":{\\\"component\\\":\\\"volume\\\",\\\"issuer\\\":\\\"nurse-chart-A\\\",\\\"issuer_namespace\\\":\\\"clinrx.synthetic.chart\\\",\\\"record_id\\\":\\\"urine-0945\\\",\\\"record_namespace\\\":\\\"chart-entry\\\"},\\\"source_version\\\":null,\\\"start\\\":\\\"2026-10-08T08:30:00Z\\\",\\\"uncertainty\\\":\\\"Collection method not verified\\\",\\\"unit\\\":\\\"mL\\\"},\\\"note\\\":null,\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"4f864949-0793-55db-9070-e2b477d63ef6\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:45:00Z\"},\"source_timestamp\":\"2026-10-08T08:45:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"de0f05cf-bb25-4f0a-952b-5934743a9b83\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":{\"unit\":{\"code\":null,\"limitation\":\"Raw source unit; no conversion.\",\"raw\":\"mL\",\"status\":\"unresolved\",\"system\":null},\"value\":\"35.0000\"},\"recorded_interval\":{\"end\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"approximate\",\"status\":\"known\",\"uncertainty\":\"End time may extend beyond the hour\",\"upper\":null,\"value\":\"2026-10-08T08:45:00Z\"},\"source_timestamp\":\"2026-10-08T08:45:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"limitations\":[\"Source bounds only; no calculated rate or duration.\"],\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"de0f05cf-bb25-4f0a-952b-5934743a9b83\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"start\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T08:30:00Z\"},\"source_timestamp\":\"2026-10-08T08:30:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"}},\"revision\":\"5b3081f9-ad8f-4389-b968-68e701e95256\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"proc

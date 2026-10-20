@@ -1,0 +1,75 @@
+CLINRX DIRECTOR — FC1 TYPED TIMING CORRECTION
+
+Source: 0bfef8294d2a5c730fb62413212e26cffb3df502
+Tree: d5540a755e5bc66a0871e3ae5d8877db2d06f0fa
+Parent: 74414c29f52a9f2e87f96feb6dee386ba5ee8999
+Previous evidence: dbcc6ef646a7580a55f8f0eeb52326ac9171abc3
+Accepted installed application baseline remains d608ce8; no installation performed.
+
+REQUEST
+Review FC1 correction in the bounded frontend source/component/build scope.
+Keep rendered desktop/360px evidence separately open. No further scope requested.
+
+CORRECTION
+Placement uses ClinicalInstant.recorded, requiring known instant precision,
+no uncertainty/bounds and an exact representative instant. Raw source_timestamp
+cannot override typed precision or disagree with its representative. Approximate,
+day, bounded, unknown, conflicting or uncertain times remain unplaced. Both
+interval boundaries are checked; no interval-end fallback. Alternative sources
+must themselves supply matching exact typed assertions. Contradictory/ambiguous
+alternatives retain the entry unplaced. Unknown clocks do not block otherwise
+exact assertions: no verified-clock requirement was introduced.
+
+Readable timing includes raw source strings, precision, representative values,
+bounds, uncertainty, clock and alternative-source assertions. Existing finer-than-
+millisecond unplaced behavior remains. Grouping still presents source assertions,
+not measured hourly amounts. No arithmetic, conversion, allocation, calculator,
+harness integration, API or write-path change.
+
+FILES
+One production frontend chart, one existing component test helper, one new focused
+test file and one typed fixture file changed. Backend models/serializer and API
+schema/decoder are copied as unchanged reference context only.
+
+FIXTURE CORRESPONDENCE
+11 full contract-shaped synthetic facts validated with the existing CirculatoryEvent
+model and canonical serializer in memory. All pass the existing frontend evidence
+decoder, including canonical digest. Eight ambiguous cases: approximate start,
+approximate end, approximate point, day precision, bounded point, instant with
+uncertainty, interval alternative disagreement and point alternative disagreement.
+Three exact controls cover interval/point with unknown clock and agreeing alternative.
+Two additional UI tests preserve interval uncertainty, point bounds and alternative
+raw timestamp details. No physical-collection identity/numerical eligibility claim.
+
+EXECUTED EVIDENCE / FAILURES
+1. Initial 13 failures: generator evidence cutoff did not match existing catalog
+   watermark. This is fixture setup failure, not a valid FC1 negative control.
+   fc1-old-control.*, initial-fixture-cutoff-mismatch.json preserve it.
+2. Corrected valid fixtures against unchanged parent chart: 10 failed / 3 passed,
+   exit 1. fc1-valid-old-control.* and old-control-source/ retain exact bytes.
+   These failures demonstrate misplacement and missing timing presentation.
+3. First corrected focused run: 89 passed / 6 files, exit 0.
+4. Final unchanged-source validation: 89 passed / 6 files, typecheck, default build
+   and explicit HOSTED/AUTHORING/RF1/RF2-enabled build passed, all exit 0.
+   final-focused.*, final-typecheck.*, default-build.*, rf2-build.* bind commands
+   and tested source hashes. Separate build bytes and flags preserved.
+Existing large-bundle warnings remain. No duplicate full application suite,
+backend suite, hosted CI or container test was run or inferred.
+
+PRIOR EVIDENCE / LIMITS
+Previous immutable candidate/evidence are preserved and linked, not relabelled.
+Earlier chart startup/test/typecheck failures retain their previous attribution.
+These are decoded fixture/component checks under jsdom, not actual browser
+resource traces or real rendered geometry. No desktop/360px screenshots, overflow
+geometry, real-browser focus/scroll, unassisted usability or broad accessibility
+acceptance is established. Browser restrictions were not bypassed.
+
+No live database/server/browser, browser storage, installation, migration,
+persistence change, adapter or harness was accessed/integrated. No runtime change
+is claimed. Completeness unresolved/calculations unavailable and disabled clinical
+execution remain. No merge, deployment, hosting or clinical-readiness approval.
+
+INTEGRITY
+SOURCE-MANIFEST.json pins changed/context files; raw commits reconstruct identities.
+BUILD-SHA256SUMS.json pins separate modes; lossless parts support large artifacts.
+Data-only verify_evidence.py checks bytes without rerunning application tests.

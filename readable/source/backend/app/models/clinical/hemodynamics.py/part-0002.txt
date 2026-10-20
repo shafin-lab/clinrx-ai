@@ -1,0 +1,219 @@
+v: v is None)
+
+    @model_validator(mode='after')
+    def sample_identity(self):
+        if self.blood_gas_context is not None and (self.acquisition.method != 'blood_gas' or self.sample_type == 'noninvasive'):
+            raise ValueError('blood gas context requires a sampled blood gas acquisition')
+        expected = {'scvo2': 'central_venous', 'svo2': 'mixed_venous',
+                    'sao2': 'arterial', 'spo2': 'noninvasive', 'paco2': 'arterial'}
+        if self.concept in expected and self.sample_type not in (expected[self.concept], 'unknown'):
+            raise ValueError('oxygen concept contradicts sample context')
+        return self
+
+
+class LactateResult(Measurement):
+    kind: Literal['circulatory_lactate'] = 'circulatory_lactate'
+    specimen: SourceCode | None = None
+    specimen_type: RecordedConcept | None = None
+    sampling_site: RecordedConcept | None = None
+    blood_source: Literal['arterial', 'central_venous', 'mixed_venous', 'peripheral_venous', 'other', 'unknown'] = 'unknown'
+    collected: ClinicalInstant = Field(default_factory=ClinicalInstant)
+    collection_assertion: BoundedProvenance | None = None
+    measured: ClinicalInstant = Field(default_factory=ClinicalInstant)
+    reported: ClinicalInstant = Field(default_factory=ClinicalInstant)
+    analyzer: SourceCode | None = None
+    report_status: Literal['final', 'preliminary', 'pending', 'cancelled', 'withdrawn', 'unknown']
+    change: Literal['original', 'corrected', 'amended', 'superseded'] = 'original'
+
+    @model_validator(mode='after')
+    def correction(self):
+        if self.change in ('corrected', 'amended') and self.supersedes is None:
+            raise ValueError('corrected report requires exact predecessor')
+        if self.supersedes is not None and self.change == 'original':
+            raise ValueError('successor cannot be original report')
+        return self
+
+
+class EchoObservation(Measurement):
+    kind: Literal['circulatory_echo'] = 'circulatory_echo'
+    concept: Literal['lv_ef', 'lv_dimension', 'lv_volume', 'lvot_vti', 'sv',
+        'diastolic_function', 'wall_motion', 'rv_dimension', 'rv_function', 'tapse',
+        'rv_fac', 'tissue_doppler_s', 'rv_strain', 'septal_configuration', 'rv_pressure',
+        'valve_finding', 'tr_measurement', 'estimated_rvsp', 'estimated_pasp', 'doppler',
+        'pericardial_effusion', 'tamponade_related_finding', 'ivc_dimension',
+        'ivc_variation', 'structural_finding']
+    study: SourceCode
+    report: SourceCode
+    report_revision: Text
+    view: RecordedConcept | None = None
+    operator: Text | None = None
+    reader: Text | None = None
+    image_references: Annotated[tuple[SourceCode, ...], Field(max_length=32)] = ()
+
+
+class ECGObservation(Measurement):
+    kind: Literal['circulatory_ecg'] = 'circulatory_ecg'
+    concept: Literal['heart_rate', 'rhythm', 'arrhythmia', 'pr', 'qrs', 'qt', 'qtc',
+        'st_finding', 'conduction_finding']
+    interpretation_source: Literal['monitor', 'clinician', 'source_algorithm', 'unknown']
+    leads: Annotated[tuple[SourceCode, ...], Field(max_length=16)] = ()
+    report: SourceCode | None = None
+
+
+class VasoactiveIdentity(Contract):
+    identity_version: Literal['1'] = '1'
+    source: SourceCode
+    canonical_id: Text | None = None
+    mapping: Literal['mapped', 'unknown', 'ambiguous', 'unsupported']
+    mapping_provenance: BoundedProvenance
+    formulation: RecordedConcept | None = None
+    limitation: Text | None = None
+
+    @model_validator(mode='after')
+    def mapped_identity(self):
+        if self.mapping == 'mapped':
+            if self.canonical_id is None:
+                raise ValueError('mapped agent requires canonical identity')
+        elif self.canonical_id is not None or not self.limitation:
+            raise ValueError('unresolved identity requires limitation, no asserted mapping')
+        return self
+
+
+class DeliveryDetails(Contract):
+    route: RecordedConcept | None = None
+    concentration: ExactQuantity | None = None
+    rate: ExactQuantity | None = None
+    amount: ExactQuantity | None = None
+    dosing_weight_basis: Literal['actual', 'ideal', 'adjusted', 'source_other', 'unknown'] = 'unknown'
+    dosing_weight: Reference | None = None
+    pump: SourceCode | None = None
+    channel: SourceCode | None = None
+    infusion: SourceCode | None = None
+    attestation: BoundedProvenance | None = None
+
+
+class OrderEvent(Contract):
+    event_type: Literal['order'] = 'order'
+    prescribed: DeliveryDetails
+    status: RecordedConcept
+
+
+class PreparationEvent(Contract):
+    event_type: Literal['preparation'] = 'preparation'
+    prepared: DeliveryDetails
+
+
+class InfusionEvent(Contract):
+    event_type: Literal['initiation', 'rate_change', 'restart', 'bolus']
+    delivery: DeliveryDetails
+
+
+class InterruptionEvent(Contract):
+    event_type: Literal['pause', 'permanent_stop', 'non_delivery']
+    reason: RecordedConcept
+    attestation: BoundedProvenance | None = None
+
+
+VasoactiveAction = Annotated[OrderEvent | PreparationEvent | InfusionEvent | InterruptionEvent,
+                            Field(discriminator='event_type')]
+
+
+class VasoactiveEvent(CirculatoryFact):
+    kind: Literal['circulatory_vasoactive'] = 'circulatory_vasoactive'
+    drug: VasoactiveIdentity
+    action: VasoactiveAction
+    source_status: RecordedConcept
+
+
+class MonitoringEvent(CirculatoryFact):
+    kind: Literal['circulatory_monitoring'] = 'circulatory_monitoring'
+    device: DeviceIdentity
+    event_type: Literal['configuration', 'calibration', 'zeroing', 'quality_change']
+    acquisition: Acquisition
+    finding: RecordedConcept
+
+
+class DynamicAssessment(CirculatoryFact):
+    kind: Literal['circulatory_assessment'] = 'circulatory_assessment'
+    test: Literal['plr', 'end_expiratory_occlusion', 'mini_fluid_challenge', 'fluid_challenge']
+    protocol: SourceCode
+    baseline: Refs
+    intervention: Refs
+    subsequent: Refs
+    ventilation_mode: RecordedConcept | None = None
+    tidal_volume: ExactQuantity | None = None
+    tidal_volume_basis: Text | None = None
+    rhythm: RecordedConcept | None = None
+    spontaneous_effort: Literal['present', 'absent', 'unknown'] = 'unknown'
+    position: RecordedConcept | None = None
+    quality: EvidenceQuality = Field(default_factory=EvidenceQuality)
+    reported_interpretation: RecordedConcept | None = None
+    interpretation_provenance: BoundedProvenance | None = None
+
+    @model_validator(mode='after')
+    def attributed_interpretation(self):
+        if self.reported_interpretation and self.interpretation_provenance is None:
+            raise ValueError('source interpretation requires provenance')
+        return self
+
+
+class RecordedCirculatoryInterval(Contract):
+    """Source-asserted boundaries, not a derived duration or verified ordering."""
+    start: ClinicalInstant
+    end: ClinicalInstant
+    provenance: BoundedProvenance
+    limitations: Notes = ()
+
+
+class CirculatoryEvent(CirculatoryFact):
+    kind: Literal['circulatory_event'] = 'circulatory_event'
+    event_type: Literal['fluid_bolus', 'fluid_challenge', 'transfusion', 'bleeding',
+        'arrhythmia', 'arrest', 'cardioversion', 'pacing', 'reperfusion', 'surgery',
+        'transplantation', 'ventilation_change', 'crrt_start', 'crrt_interruption',
+        'position_change', 'other']
+    description: RecordedConcept
+    external_evidence: Annotated[tuple[SourceCode, ...], Field(max_length=32)] = ()
+    recorded_amount: ExactQuantity | None = None
+    recorded_interval: RecordedCirculatoryInterval | None = Field(default=None, exclude_if=lambda v: v is None)
+
+
+class SignalManifest(CirculatoryFact):
+    kind: Literal['circulatory_signal'] = 'circulatory_signal'
+    signal: Literal['ecg', 'arterial_pressure', 'cvp', 'pap', 'beat_to_beat', 'monitor_trend']
+    device: DeviceIdentity
+    channel: SourceCode
+    start: ClinicalInstant
+    end: ClinicalInstant
+    sample_rate: ExactQuantity | None = None
+    sample_count: Annotated[int, Field(strict=True, ge=0)] | None = None
+    units: RecordedConcept
+    encoding: SourceCode
+    content: SourceCode | None = None
+    content_sha256: Annotated[str, Field(pattern='^[0-9a-f]{64}$')] | None = None
+    availability: Literal['available', 'unavailable', 'unknown']
+    gaps: Annotated[tuple[RecordedTime, ...], Field(max_length=64)] = ()
+    quality: EvidenceQuality = Field(default_factory=EvidenceQuality)
+
+    @model_validator(mode='after')
+    def integrity_reference(self):
+        if self.availability == 'available' and (self.content is None or self.content_sha256 is None):
+            raise ValueError('available segment requires content and integrity reference')
+        if self.sample_rate is not None and self.sample_rate.value <= 0:
+            raise ValueError('sample frequency must be positive')
+        if self.start.trustworthy and self.end.trustworthy:
+            if instant(self.start.recorded.value) > instant(self.end.recorded.value):
+                raise ValueError('signal interval reversed')
+        return self
+
+
+CirculatoryRecord = Annotated[PressureObservation | CardiacPerformance | VolumeMeasurement |
+    DynamicMeasurement | DevicePrediction | PerfusionObservation | OxygenTransport |
+    LactateResult | EchoObservation | ECGObservation | VasoactiveEvent | MonitoringEvent |
+    DynamicAssessment | CirculatoryEvent | SignalManifest, Field(discriminator='kind')]
+
+# Explicit persistence admission; not a clinical-policy registry.
+M7_FACTS = {m.model_fields['kind'].default: m for m in (
+    PressureObservation, CardiacPerformance, VolumeMeasurement, DynamicMeasurement,
+    DevicePrediction, PerfusionObservation, OxygenTransport, LactateResult,
+    EchoObservation, ECGObservation, VasoactiveEvent, MonitoringEvent,
+    DynamicAssessment, CirculatoryEvent, SignalManifest)}

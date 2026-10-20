@@ -1,0 +1,289 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --configLoader runner --no-cache --maxWorkers=2 tests/rf2TypedTiming.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend
+
+ ❯ tests/rf2TypedTiming.test.tsx (13 tests | 13 failed) 267ms
+   × uses decoded typed precision/alternatives for interval-approximate-start 29ms
+   × uses decoded typed precision/alternatives for interval-approximate-end 13ms
+   × uses decoded typed precision/alternatives for point-approximate 11ms
+   × uses decoded typed precision/alternatives for interval-day 10ms
+   × uses decoded typed precision/alternatives for point-bounded 10ms
+   × uses decoded typed precision/alternatives for point-instant-uncertainty 10ms
+   × uses decoded typed precision/alternatives for interval-alternative-disagrees 10ms
+   × uses decoded typed precision/alternatives for point-alternative-disagrees 10ms
+   × uses decoded typed precision/alternatives for exact-interval-unknown-clock 11ms
+   × uses decoded typed precision/alternatives for exact-point-unknown-clock 11ms
+   × uses decoded typed precision/alternatives for exact-point-agreeing-alternative 12ms
+   × shows approximate interval raw timestamp, precision and uncertainty rather than losing the typed assertion 105ms
+   × keeps point bounds and contradictory alternative source details readable 21ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for interval-approximate-start
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for interval-approximate-end
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for point-approximate
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for interval-day
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for point-bounded
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for point-instant-uncertainty
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for interval-alternative-disagrees
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for point-alternative-disagrees
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for exact-interval-unknown-clock
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for exact-point-unknown-clock
+ FAIL  tests/rf2TypedTiming.test.tsx > uses decoded typed precision/alternatives for exact-point-agreeing-alternative
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/rf2TypedTiming.test.tsx:18:22
+     16| it.each(cases)('uses decoded typed precision/alternatives for $name',a…
+     17|  const catalog=await catalogFor(c.evidence);const model=fluidChartMode…
+     18|  expect(model.valid).toBe(true);
+       |                      ^
+     19|  expect(model.groups.flatMap(([,entries])=>entries)).toHaveLength(c.ex…
+     20|  expect(model.unplaced).toHaveLength(c.expected_placed?0:1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  tests/rf2TypedTiming.test.tsx > shows approximate interval raw timestamp, precision and uncertainty rather than losing the typed assertion
+TestingLibraryElementError: Unable to find an accessible element with the role "region" and name "Unplaced entries"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Fluid chart":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Fluid chart"[39m
+    [33mclass[39m=[32m"rf2-fluid-chart"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  heading:
+
+  Name "Fluid chart — recorded entries":
+  [36m<h3 />[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+  alert:
+
+  Name "":
+  [36m<p[39m
+    [33mrole[39m=[32m"alert"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Fluid chart"[39m
+      [33mclass[39m=[32m"rf2-fluid-chart"[39m
+    [36m>[39m
+      [36m<h3>[39m
+        [0mFluid chart — recorded entries[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mCalculations unavailable — source eligibility not established[0m
+        [36m</strong>[39m
+      [36m</p>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mCompleteness unresolved[0m
+        [36m</strong>[39m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mSelected source period: [0m
+        [0m2026-10-08T08:00:00Z[0m
+        [0m → [0m
+        [0m2026-10-08T10:00:00Z[0m
+        [0m. Hour groups use UTC (+00:00); source timestamps keep their recorded offsets. Groups are navigation only, not measured hourly volumes.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRepository [0m
+        [0mda23ef6d-d22b-4963-bb32-cdd8e53fe1c7[0m
+        [0m · source cutoff [0m
+        [0m6[0m
+        [0m. Recorded entries do not establish complete intake/output coverage.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mThe existing selected period is retained. No additional 24-hour retrieval is introduced in this view; no period total is calculated.[0m
+      [36m</p>[39m
+      [36m<p[39m
+        [33mrole[39m=[32m"alert"[39m
+      [36m>[39m
+        [0mChart unavailable — scope, cutoff or selected-period correspondence could not be confirmed. No empty chart is substituted.[0m
+      [36m</p>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/rf2TypedTiming.test.tsx:26:22
+     24|  const c=cases.find(c=>c.name==='interval-approximate-start')!,catalog…
+     25|  render(<RF2FluidChart catalog={catalog} status="current" text={eviden…
+     26|  const region=screen.getByRole('region',{name:'Unplaced entries'});
+       |                      ^
+     27|  expect(region).toHaveTextContent('2026-10-08T08:30:00Z');
+     28|  expect(region).toHaveTextContent(/precision approximate/i);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  tests/rf2TypedTiming.test.tsx > keeps point bounds and contradictory alternative source details readable
+TestingLibraryElementError: Unable to find an accessible element with the role "region" and name "Unplaced entries"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Fluid chart":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Fluid chart"[39m
+    [33mclass[39m=[32m"rf2-fluid-chart"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  heading:
+
+  Name "Fluid chart — recorded entries":
+  [36m<h3 />[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+  alert:
+
+  Name "":
+  [36m<p[39m
+    [33mrole[39m=[32m"alert"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Fluid chart"[39m
+      [33mclass[39m=[32m"rf2-fluid-chart"[39m
+    [36m>[39m
+      [36m<h3>[39m
+        [0mFluid chart — recorded entries[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mCalculations unavailable — source eligibility not established[0m
+        [36m</strong>[39m
+      [36m</p>[39m
+      [36m<p>[39m
+        [36m<strong>[39m
+          [0mCompleteness unresolved[0m
+        [36m</strong>[39m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mSelected source period: [0m
+        [0m2026-10-08T08:00:00Z[0m
+        [0m → [0m
+        [0m2026-10-08T10:00:00Z[0m
+        [0m. Hour groups use UTC (+00:00); source timestamps keep their recorded offsets. Groups are navigation only, not measured hourly volumes.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRepository [0m
+        [0mda23ef6d-d22b-4963-bb32-cdd8e53fe1c7[0m
+        [0m · source cutoff [0m
+        [0m6[0m
+        [0m. Recorded entries do not establish complete intake/output coverage.[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mThe existing selected period is retained. No additional 24-hour retrieval is introduced in this view; no period total is calculated.[0m
+      [36m</p>[39m
+      [36m<p[39m
+        [33mrole[39m=[32m"alert"[39m
+      [36m>[39m
+        [0mChart unavailable — scope, cutoff or selected-period correspondence could not be confirmed. No empty chart is substituted.[0m
+      [36m</p>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/rf2TypedTiming.test.tsx:34:16
+     32|  const c=cases.find(c=>c.name==='point-bounded')!,catalog=await catalo…
+     33|  const r=render(<RF2FluidChart catalog={catalog} status="current" text…
+     34|  expect(screen.getByRole('region',{name:'Unplaced entries'})).toHaveTe…
+       |                ^
+     35|  expect(screen.getByRole('region',{name:'Unplaced entries'})).toHaveTe…
+     36|  const alt=await catalogFor(cases.find(c=>c.name==='point-alternative-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  13 failed (13)
+   Start at  00:42:56
+   Duration  1.57s (environment 52%, tests 18%, transform 14%, setup 9%, import 5%)
+

@@ -1,0 +1,379 @@
+ "required": [
+      "role",
+      "consumed",
+      "item_digest",
+      "source_digest",
+      "original_ingestion",
+      "terminal",
+      "terminal_source_digest",
+      "terminal_ingestion",
+      "suitability"
+    ],
+    "type": "object"
+  },
+  "MicroAntimicrobialFinalRecheck": {
+    "additionalProperties": false,
+    "properties": {
+      "scope": {
+        "$ref": "#/$defs/PatientStateScopeV2"
+      },
+      "inference_cutoff": {
+        "$ref": "#/$defs/RepositoryCutoff"
+      },
+      "final_cutoff": {
+        "$ref": "#/$defs/RepositoryCutoff"
+      },
+      "evidence": {
+        "maxItems": 4,
+        "minItems": 4,
+        "prefixItems": [
+          {
+            "$ref": "#/$defs/MicroAntimicrobialEvidenceWitness"
+          },
+          {
+            "$ref": "#/$defs/MicroAntimicrobialEvidenceWitness"
+          },
+          {
+            "$ref": "#/$defs/MicroAntimicrobialEvidenceWitness"
+          },
+          {
+            "$ref": "#/$defs/MicroAntimicrobialEvidenceWitness"
+          }
+        ],
+        "type": "array"
+      },
+      "terminal_facts": {
+        "maxItems": 4,
+        "minItems": 4,
+        "prefixItems": [
+          {
+            "$ref": "#/$defs/Specimen"
+          },
+          {
+            "$ref": "#/$defs/IsolateIdentification"
+          },
+          {
+            "$ref": "#/$defs/SusceptibilityResult"
+          },
+          {
+            "$ref": "#/$defs/CompletedAntimicrobialAdministration"
+          }
+        ],
+        "type": "array"
+      },
+      "inference": {
+        "$ref": "#/$defs/MicroAntimicrobialInferenceWitness"
+      },
+      "policy": {
+        "$ref": "#/$defs/Reference"
+      },
+      "implementation": {
+        "$ref": "#/$defs/Reference"
+      }
+    },
+    "required": [
+      "scope",
+      "inference_cutoff",
+      "final_cutoff",
+      "evidence",
+      "terminal_facts",
+      "inference"
+    ],
+    "type": "object"
+  },
+  "MicroAntimicrobialInferenceWitness": {
+    "additionalProperties": false,
+    "properties": {
+      "reference": {
+        "$ref": "#/$defs/Reference"
+      },
+      "expected_digest": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "observed_digest": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "ingestion": {
+        "$ref": "#/$defs/IngestionMetadata"
+      },
+      "terminal": {
+        "$ref": "#/$defs/Reference"
+      },
+      "terminal_digest": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "terminal_ingestion": {
+        "$ref": "#/$defs/IngestionMetadata"
+      },
+      "method": {
+        "$ref": "#/$defs/Reference"
+      },
+      "inputs": {
+        "maxItems": 4,
+        "minItems": 4,
+        "prefixItems": [
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "$ref": "#/$defs/Reference"
+          }
+        ],
+        "type": "array"
+      },
+      "dependencies": {
+        "maxItems": 4,
+        "minItems": 4,
+        "prefixItems": [
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "$ref": "#/$defs/Reference"
+          }
+        ],
+        "type": "array"
+      },
+      "declarations": {
+        "maxItems": 4,
+        "minItems": 4,
+        "prefixItems": [
+          {
+            "$ref": "#/$defs/LineageEdge"
+          },
+          {
+            "$ref": "#/$defs/LineageEdge"
+          },
+          {
+            "$ref": "#/$defs/LineageEdge"
+          },
+          {
+            "$ref": "#/$defs/LineageEdge"
+          }
+        ],
+        "type": "array"
+      },
+      "reconstruction_digest": {
+        "anyOf": [
+          {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "reference",
+      "expected_digest",
+      "observed_digest",
+      "ingestion",
+      "terminal",
+      "terminal_digest",
+      "terminal_ingestion",
+      "method",
+      "inputs",
+      "dependencies",
+      "declarations",
+      "reconstruction_digest"
+    ],
+    "type": "object"
+  },
+  "MicroProvenance": {
+    "additionalProperties": false,
+    "properties": {
+      "inference": {
+        "$ref": "#/$defs/ClinicalInference"
+      },
+      "consumed": {
+        "maxItems": 4,
+        "minItems": 4,
+        "prefixItems": [
+          {
+            "$ref": "#/$defs/RetainedStateItemV2"
+          },
+          {
+            "$ref": "#/$defs/RetainedStateItemV2"
+          },
+          {
+            "$ref": "#/$defs/RetainedStateItemV2"
+          },
+          {
+            "$ref": "#/$defs/RetainedStateItemV2"
+          }
+        ],
+        "type": "array"
+      },
+      "original_cutoff": {
+        "$ref": "#/$defs/RepositoryCutoff"
+      },
+      "inference_cutoff": {
+        "$ref": "#/$defs/RepositoryCutoff"
+      },
+      "final_recheck": {
+        "$ref": "#/$defs/MicroAntimicrobialFinalRecheck"
+      },
+      "specimen_binding_matches": {
+        "type": "boolean"
+      },
+      "isolate_binding_matches": {
+        "type": "boolean"
+      },
+      "antimicrobial_identity_matches": {
+        "type": "boolean"
+      },
+      "governance_policy": {
+        "$ref": "#/$defs/ExactReference"
+      },
+      "witness_statuses": {
+        "maxItems": 4,
+        "minItems": 4,
+        "prefixItems": [
+          {
+            "enum": [
+              "current",
+              "superseded"
+            ],
+            "type": "string"
+          },
+          {
+            "enum": [
+              "current",
+              "superseded"
+            ],
+            "type": "string"
+          },
+          {
+            "enum": [
+              "current",
+              "superseded"
+            ],
+            "type": "string"
+          },
+          {
+            "enum": [
+              "current",
+              "superseded"
+            ],
+            "type": "string"
+          }
+        ],
+        "type": "array"
+      },
+      "recheck_reasons": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "inference",
+      "consumed",
+      "original_cutoff",
+      "inference_cutoff",
+      "final_recheck",
+      "specimen_binding_matches",
+      "isolate_binding_matches",
+      "antimicrobial_identity_matches",
+      "governance_policy",
+      "witness_statuses",
+      "recheck_reasons"
+    ],
+    "type": "object"
+  },
+  "MicroExecutionResponse": {
+    "additionalProperties": false,
+    "properties": {
+      "transport_version": {
+        "const": "1",
+        "type": "string"
+      },
+      "execution_id": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "status": {
+        "const": "completed",
+        "type": "string"
+      },
+      "statement": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "finalized_at": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "ingested_at": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "governance": {
+        "$ref": "#/$defs/GovernanceView"
+      },
+      "provenance": {
+        "$ref": "#/$defs/MicroProvenance"
+      }
+    },
+    "required": [
+      "execution_id",
+      "statement",
+      "finalized_at",
+      "ingested_at",
+      "governance",
+      "provenance"
+    ],
+    "type": "object"
+  },
+  "MicroReconciliationResponse": {
+    "additionalProperties": false,
+    "properties": {
+      "status": {
+        "enum": [
+          "committed_match",
+          "absent"
+        ],
+        "type": "string"
+      },
+      "execution": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/MicroExecutionResponse"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "status",
+      "execution"
+    ],
+    "type": "object"
+  }
+} as const satisfies Record<string, Schema>;

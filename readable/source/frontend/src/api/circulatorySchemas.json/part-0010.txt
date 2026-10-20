@@ -1,0 +1,1034 @@
+    "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "origin": {
+          "enum": [
+            "observed",
+            "reported"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "time": {
+          "$ref": "#/$defs/ClinicalTime"
+        },
+        "verification": {
+          "default": "unverified",
+          "enum": [
+            "unverified",
+            "verified",
+            "clinician_confirmed"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "conflict": {
+          "default": "unknown",
+          "enum": [
+            "none_known",
+            "unresolved",
+            "resolved",
+            "unknown"
+          ],
+          "title": "Conflict",
+          "type": "string"
+        },
+        "temporal_status": {
+          "enum": [
+            "current",
+            "historical",
+            "unknown"
+          ],
+          "title": "Temporal Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "correction_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        },
+        "medication": {
+          "$ref": "#/$defs/MedicationIdentity"
+        },
+        "prescribed_dose": {
+          "$ref": "#/$defs/Dose"
+        },
+        "route": {
+          "minLength": 1,
+          "title": "Route",
+          "type": "string"
+        },
+        "schedule_text": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Schedule Text"
+        },
+        "order_status": {
+          "enum": [
+            "draft",
+            "active",
+            "held",
+            "cancelled",
+            "completed"
+          ],
+          "title": "Order Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "binding",
+        "origin",
+        "provenance",
+        "time",
+        "temporal_status",
+        "medication",
+        "prescribed_dose",
+        "route",
+        "order_status"
+      ],
+      "title": "MedicationOrder",
+      "type": "object"
+    },
+    "OutputTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/ContextTarget"
+        },
+        "request_id": {
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        },
+        "intended_use": {
+          "$ref": "#/$defs/Reference"
+        },
+        "destination": {
+          "minLength": 1,
+          "title": "Destination",
+          "type": "string"
+        },
+        "recipient": {
+          "minLength": 1,
+          "title": "Recipient",
+          "type": "string"
+        }
+      },
+      "required": [
+        "context",
+        "request_id",
+        "intended_use",
+        "destination",
+        "recipient"
+      ],
+      "title": "OutputTarget",
+      "type": "object"
+    },
+    "PatientContext": {
+      "additionalProperties": false,
+      "properties": {
+        "patient_id": {
+          "minLength": 1,
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "source_identifiers": {
+          "items": {
+            "$ref": "#/$defs/Source"
+          },
+          "title": "Source Identifiers",
+          "type": "array"
+        }
+      },
+      "required": [
+        "patient_id",
+        "source_identifiers"
+      ],
+      "title": "PatientContext",
+      "type": "object"
+    },
+    "PresentationPayload": {
+      "additionalProperties": false,
+      "description": "All material the adapter must deliver; no UI or semantic interpretation.",
+      "properties": {
+        "rendering": {
+          "$ref": "#/$defs/RenderedRecommendation"
+        },
+        "warnings": {
+          "items": {
+            "$ref": "#/$defs/WarningDisclosure"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "exceptions": {
+          "items": {
+            "$ref": "#/$defs/WarningExceptionProposal"
+          },
+          "title": "Exceptions",
+          "type": "array"
+        },
+        "limitations": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "rendering",
+        "warnings",
+        "exceptions",
+        "limitations"
+      ],
+      "title": "PresentationPayload",
+      "type": "object"
+    },
+    "Procedure": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "procedure",
+          "default": "procedure",
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "origin": {
+          "enum": [
+            "observed",
+            "reported"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "time": {
+          "$ref": "#/$defs/ClinicalTime"
+        },
+        "verification": {
+          "default": "unverified",
+          "enum": [
+            "unverified",
+            "verified",
+            "clinician_confirmed"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "conflict": {
+          "default": "unknown",
+          "enum": [
+            "none_known",
+            "unresolved",
+            "resolved",
+            "unknown"
+          ],
+          "title": "Conflict",
+          "type": "string"
+        },
+        "temporal_status": {
+          "enum": [
+            "current",
+            "historical",
+            "unknown"
+          ],
+          "title": "Temporal Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "correction_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        },
+        "concept_id": {
+          "minLength": 1,
+          "title": "Concept Id",
+          "type": "string"
+        },
+        "procedure_status": {
+          "enum": [
+            "planned",
+            "in_progress",
+            "performed",
+            "cancelled",
+            "unknown"
+          ],
+          "title": "Procedure Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "binding",
+        "origin",
+        "provenance",
+        "time",
+        "temporal_status",
+        "concept_id",
+        "procedure_status"
+      ],
+      "title": "Procedure",
+      "type": "object"
+    },
+    "Quantity": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "pattern": "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$",
+          "title": "Value",
+          "type": "string"
+        },
+        "unit": {
+          "$ref": "#/$defs/Unit"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "Quantity",
+      "type": "object"
+    },
+    "RecommendationReview": {
+      "additionalProperties": false,
+      "description": "Consistent immutable review bundle; evaluation is not release permission.",
+      "properties": {
+        "candidate": {
+          "$ref": "#/$defs/ClinicalRecommendation"
+        },
+        "rendering": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RenderedRecommendation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evaluations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SafetyEvaluation"
+          },
+          "title": "Evaluations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "candidate"
+      ],
+      "title": "RecommendationReview",
+      "type": "object"
+    },
+    "ReleaseDecision": {
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "$ref": "#/$defs/Reference"
+        },
+        "assessment": {
+          "$ref": "#/$defs/ReleaseEligibilityAssessment"
+        },
+        "actor": {
+          "minLength": 1,
+          "title": "Actor",
+          "type": "string"
+        },
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "released",
+            "withheld"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "reference",
+        "assessment",
+        "actor",
+        "at",
+        "outcome",
+        "reasons"
+      ],
+      "title": "ReleaseDecision",
+      "type": "object"
+    },
+    "ReleaseEligibilityAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "$ref": "#/$defs/Reference"
+        },
+        "review": {
+          "$ref": "#/$defs/RecommendationReview"
+        },
+        "payload": {
+          "$ref": "#/$defs/PresentationPayload"
+        },
+        "target": {
+          "$ref": "#/$defs/OutputTarget"
+        },
+        "policy": {
+          "$ref": "#/$defs/GovernancePolicy"
+        },
+        "content_validation": {
+          "$ref": "#/$defs/ContentValidationAssertion"
+        },
+        "state": {
+          "$ref": "#/$defs/RuntimeState"
+        },
+        "exceptions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/WarningException"
+          },
+          "title": "Exceptions",
+          "type": "array"
+        },
+        "assessor": {
+          "minLength": 1,
+          "title": "Assessor",
+          "type": "string"
+        },
+        "assessed_at": {
+          "format": "date-time",
+          "title": "Assessed At",
+          "type": "string"
+        },
+        "validity": {
+          "$ref": "#/$defs/ValidityWindow"
+        }
+      },
+      "required": [
+        "reference",
+        "review",
+        "payload",
+        "target",
+        "policy",
+        "content_validation",
+        "state",
+        "assessor",
+        "assessed_at",
+        "validity"
+      ],
+      "title": "ReleaseEligibilityAssessment",
+      "type": "object"
+    },
+    "RenderedRecommendation": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "candidate": {
+          "$ref": "#/$defs/Reference"
+        },
+        "snapshot": {
+          "$ref": "#/$defs/Reference"
+        },
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "destination": {
+          "minLength": 1,
+          "title": "Destination",
+          "type": "string"
+        },
+        "rendered_at": {
+          "format": "date-time",
+          "title": "Rendered At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "candidate",
+        "snapshot",
+        "content",
+        "destination",
+        "rendered_at"
+      ],
+      "title": "RenderedRecommendation",
+      "type": "object"
+    },
+    "RuntimeState": {
+      "additionalProperties": false,
+      "description": "Latest protected destination/request and source-state observation.",
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/OutputTarget"
+        },
+        "identity": {
+          "$ref": "#/$defs/IdentityVerification"
+        },
+        "request_state": {
+          "enum": [
+            "active",
+            "superseded",
+            "unknown"
+          ],
+          "title": "Request State",
+          "type": "string"
+        },
+        "output_state": {
+          "enum": [
+            "current",
+            "stale",
+            "withdrawn",
+            "superseded",
+            "unknown"
+          ],
+          "title": "Output State",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "authorization": {
+          "$ref": "#/$defs/AuthorizationAssertion"
+        },
+        "freshness": {
+          "$ref": "#/$defs/ContextFreshnessAssessment"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/DependencyState"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        }
+      },
+      "required": [
+        "target",
+        "identity",
+        "request_state",
+        "output_state",
+        "observed_at",
+        "authorization",
+        "freshness",
+        "dependencies"
+      ],
+      "title": "RuntimeState",
+      "type": "object"
+    },
+    "SafetyCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "rule": {
+          "$ref": "#/$defs/Reference"
+        },
+        "required": {
+          "title": "Required",
+          "type": "boolean"
+        },
+        "outcome": {
+          "enum": [
+            "no_detected_violation",
+            "warning",
+            "hard_failure",
+            "unavailable",
+            "not_applicable"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "coverage": {
+          "minLength": 1,
+          "title": "Coverage",
+          "type": "string"
+        },
+        "overrideable": {
+          "default": false,
+          "title": "Overrideable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "rule",
+        "required",
+        "outcome",
+        "reason",
+        "coverage"
+      ],
+      "title": "SafetyCheck",
+      "type": "object"
+    },
+    "SafetyEvaluation": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "candidate": {
+          "$ref": "#/$defs/Reference"
+        },
+        "rendering": {
+          "$ref": "#/$defs/Reference"
+        },
+        "snapshot": {
+          "$ref": "#/$defs/Reference"
+        },
+        "policy": {
+          "$ref": "#/$defs/Reference"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/SafetyCheck"
+          },
+          "minItems": 1,
+          "title": "Checks",
+          "type": "array"
+        },
+        "exact_meaning": {
+          "enum": [
+            "matched",
+            "failed",
+            "unavailable"
+          ],
+          "title": "Exact Meaning",
+          "type": "string"
+        },
+        "coverage": {
+          "minLength": 1,
+          "title": "Coverage",
+          "type": "string"
+        },
+        "limitations": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "uncertainty": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "evaluated_at": {
+          "format": "date-time",
+          "title": "Evaluated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "candidate",
+        "rendering",
+        "snapshot",
+        "policy",
+        "checks",
+        "exact_meaning",
+        "coverage",
+        "limitations",
+        "evaluated_at"
+      ],
+      "title": "SafetyEvaluation",
+      "type": "object"
+    },
+    "ValidityWindow": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "ValidityWindow",
+      "type": "object"
+    },
+    "WarningDisclosure": {
+      "additionalProperties": false,
+      "properties": {
+        "evaluation": {
+          "$ref": "#/$defs/Reference"
+        },
+        "check_id": {
+          "minLength": 1,
+          "title": "Check Id",
+          "type": "string"
+        },
+        "rule": {
+          "$ref": "#/$defs/Reference"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evaluation",
+        "check_id",
+        "rule",
+        "reason"
+      ],
+      "title": "WarningDisclosure",
+      "type": "object"
+    },
+    "WarningException": {
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "$ref": "#/$defs/Reference"
+        },
+        "evaluation": {
+          "$ref": "#/$defs/Reference"
+        },
+        "check_id": {
+          "minLength": 1,
+          "title": "Check Id",
+          "type": "string"
+        },
+        "safety_policy": {
+          "$ref": "#/$defs/Reference"
+        },
+        "target": {
+          "$ref": "#/$defs/OutputTarget"
+        },
+        "content_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Digest",
+          "type": "string"
+        },
+        "actor": {
+          "minLength": 1,
+          "title": "Actor",
+          "type": "string"
+        },
+        "rationale": {
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        },
+        "conditions": {
+          "minLength": 1,
+          "title": "Conditions",
+          "type": "string"
+        },
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "validity": {
+          "$ref": "#/$defs/ValidityWindow"
+        },
+        "authority": {
+          "$ref": "#/$defs/AuthorizationAssertion"
+        }
+      },
+      "required": [
+        "reference",
+        "evaluation",
+        "check_id",
+        "safety_policy",
+        "target",
+        "content_digest",
+        "actor",
+        "rationale",
+        "conditions",
+        "at",
+        "validity",
+        "authority"
+      ],
+      "title": "WarningException",
+      "type": "object"
+    },
+    "WarningExceptionProposal": {
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "$ref": "#/$defs/Reference"
+        },
+        "evaluation": {
+          "$ref": "#/$defs/Reference"
+        },
+        "check_id": {
+          "minLength": 1,
+          "title": "Check Id",
+          "type": "string"
+        },
+        "safety_policy": {
+          "$ref": "#/$defs/Reference"
+        },
+        "target": {
+          "$ref": "#/$defs/OutputTarget"
+        },
+        "content_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Digest",
+          "type": "string"
+        },
+        "actor": {
+          "minLength": 1,
+          "title": "Actor",
+          "type": "string"
+        },
+        "rationale": {
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        },
+        "conditions": {
+          "minLength": 1,
+          "title": "Conditions",
+          "type": "string"
+        },
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "validity": {
+          "$ref": "#/$defs/ValidityWindow"
+        }
+      },
+      "required": [
+        "reference",
+        "evaluation",
+        "check_id",
+        "safety_policy",
+        "target",
+        "content_digest",
+        "actor",
+        "rationale",
+        "conditions",
+        "at",
+        "validity"
+      ],
+      "title": "WarningExceptionProposal",
+      "type": "object"
+    },
+    "WarningRule": {
+      "additionalProperties": false,
+      "properties": {
+        "rule": {
+          "$ref": "#/$defs/Reference"
+        },
+        "response": {
+          "enum": [
+            "advisory",
+            "exception_required"
+          ],
+          "title": "Response",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule",
+        "response"
+      ],
+      "title": "WarningRule",
+      "type": "object"
+    },
+    "CirculatoryExecutionResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "transport_version": {
+          "const": "m7-c/1",
+          "default": "m7-c/1",
+          "title": "Transport Version",
+          "type": "string"
+        },
+        "execution_id": {
+          "format": "uuid",
+          "title": "Execution Id",
+          "type": "string"
+        },
+        "record": {
+          "$ref": "#/$defs/CirculatoryExecutionRecord"
+        },
+        "ingested_at": {
+          "format": "date-time",
+          "title": "Ingested At",
+          "type": "string"
+        },
+        "statement": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Statement"
+        }
+      },
+      "required": [
+        "execution_id",
+        "record",
+        "ingested_at",
+        "statement"
+      ],
+      "title": "CirculatoryExecutionResponse",
+      "type": "object"
+    },
+    "CirculatoryHistoricalFact": {
+      "additionalProperties": false,
+      "properties": {
+        "fact": {
+          "discriminator": {
+            "mapping": {
+              "circulatory_assessment": "#/$defs/DynamicAssessment",
+              "circulatory_cardiac": "#/$defs/CardiacPerformance",
+              "circulatory_device_prediction": "#/$defs/DevicePrediction",
+              "circulatory_dy

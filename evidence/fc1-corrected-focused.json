@@ -1,0 +1,21 @@
+{
+  "command": [
+    "npm",
+    "test",
+    "--prefix",
+    "frontend",
+    "--",
+    "--configLoader",
+    "runner",
+    "--no-cache",
+    "--maxWorkers=2",
+    "tests/rf2TypedTiming.test.tsx",
+    "tests/rf2FluidChart.test.tsx",
+    "tests/rf2.test.tsx",
+    "tests/rf2SourceReview.test.tsx",
+    "tests/rf2HandoverRace.test.tsx",
+    "tests/rf2.integration.test.tsx"
+  ],
+  "exit_code": 0,
+  "seconds": 6.314237707993016
+}

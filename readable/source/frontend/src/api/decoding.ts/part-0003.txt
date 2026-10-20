@@ -1,0 +1,1211 @@
+      "enum": [
+          "unsupported_source_structure",
+          "withdrawn_terminal",
+          "outside_review_window",
+          "temporal_incompleteness",
+          "contextual_parent",
+          "unresolved_parent",
+          "ambiguous_binding",
+          "historical_target_not_retained",
+          "withdrawn_binding_target",
+          "unsupported_antimicrobial_mapping",
+          "preliminary_report",
+          "incomplete_susceptibility",
+          "unknown_isolate_identity"
+        ],
+        "type": "string"
+      }
+    },
+    "required": [
+      "reference",
+      "reason"
+    ],
+    "type": "object"
+  },
+  "AssemblyLimits": {
+    "additionalProperties": false,
+    "properties": {
+      "history": {
+        "$ref": "#/$defs/HistoryBudget"
+      },
+      "max_items": {
+        "maximum": 512,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "max_specimens": {
+        "maximum": 128,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "max_isolates": {
+        "maximum": 256,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "max_children": {
+        "maximum": 64,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "max_molecular_targets": {
+        "maximum": 64,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "max_bindings": {
+        "maximum": 1024,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "max_depth": {
+        "maximum": 8,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "max_fanout": {
+        "maximum": 16,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "max_traversal_steps": {
+        "maximum": 8192,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "max_issues": {
+        "maximum": 512,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "max_result_bytes": {
+        "maximum": 16777216,
+        "minimum": 1,
+        "type": "integer"
+      }
+    },
+    "type": "object"
+  },
+  "AssemblyRequestV2": {
+    "additionalProperties": false,
+    "properties": {
+      "scope": {
+        "$ref": "#/$defs/PatientStateScopeV2"
+      },
+      "profile_id": {
+        "const": "SyntheticMicrobiologyAntimicrobialState",
+        "type": "string"
+      },
+      "profile_version": {
+        "const": "2",
+        "type": "string"
+      },
+      "limits": {
+        "$ref": "#/$defs/AssemblyLimits"
+      }
+    },
+    "required": [
+      "scope",
+      "profile_id",
+      "profile_version"
+    ],
+    "type": "object"
+  },
+  "Binding": {
+    "additionalProperties": false,
+    "properties": {
+      "target": {
+        "$ref": "#/$defs/ContextTarget"
+      },
+      "verification": {
+        "$ref": "#/$defs/IdentityVerification"
+      }
+    },
+    "required": [
+      "target",
+      "verification"
+    ],
+    "type": "object"
+  },
+  "BindingOutcomeV2": {
+    "additionalProperties": false,
+    "properties": {
+      "owner": {
+        "$ref": "#/$defs/Reference"
+      },
+      "role": {
+        "enum": [
+          "specimen",
+          "isolate",
+          "collection_set",
+          "bottle",
+          "order"
+        ],
+        "type": "string"
+      },
+      "declared": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "status": {
+        "enum": [
+          "resolved",
+          "unresolved",
+          "ambiguous"
+        ],
+        "type": "string"
+      },
+      "disposition": {
+        "enum": [
+          "retained_exact",
+          "historical_exact_not_retained",
+          "unavailable_in_prefix",
+          "declared_unresolved",
+          "declared_ambiguous",
+          "outside_profile",
+          "withdrawn_target_not_retained"
+        ],
+        "type": "string"
+      },
+      "candidates": {
+        "items": {
+          "$ref": "#/$defs/Reference"
+        },
+        "maxItems": 16,
+        "type": "array"
+      }
+    },
+    "required": [
+      "owner",
+      "role",
+      "status",
+      "disposition"
+    ],
+    "type": "object"
+  },
+  "BloodCultureBottle": {
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "const": "blood_culture_bottle",
+        "type": "string"
+      },
+      "id": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "revision": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "binding": {
+        "$ref": "#/$defs/Binding"
+      },
+      "origin": {
+        "enum": [
+          "observed",
+          "reported"
+        ],
+        "type": "string"
+      },
+      "provenance": {
+        "$ref": "#/$defs/BoundedProvenance"
+      },
+      "time": {
+        "$ref": "#/$defs/ClinicalTime"
+      },
+      "verification": {
+        "enum": [
+          "unverified",
+          "verified",
+          "clinician_confirmed"
+        ],
+        "type": "string"
+      },
+      "conflict": {
+        "enum": [
+          "none_known",
+          "unresolved",
+          "resolved",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "temporal_status": {
+        "enum": [
+          "current",
+          "historical",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "uncertainty": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "type": "array"
+      },
+      "supersedes": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "correction_reason": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "contract_version": {
+        "const": "2",
+        "type": "string"
+      },
+      "source_identifiers": {
+        "items": {
+          "$ref": "#/$defs/SourceCode"
+        },
+        "maxItems": 16,
+        "type": "array"
+      },
+      "domain_bindings": {
+        "items": {
+          "$ref": "#/$defs/DomainBinding"
+        },
+        "maxItems": 16,
+        "type": "array"
+      },
+      "disclosures": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "type": "array"
+      },
+      "bottle_identifier": {
+        "$ref": "#/$defs/SourceCode"
+      },
+      "bottle_type": {
+        "$ref": "#/$defs/RecordedConcept"
+      },
+      "bottle_role": {
+        "enum": [
+          "aerobic",
+          "anaerobic",
+          "pediatric",
+          "other",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "positive_at": {
+        "$ref": "#/$defs/RecordedTime"
+      },
+      "reported_time_to_positivity": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PositiveQuantity"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "revision",
+      "binding",
+      "origin",
+      "provenance",
+      "time",
+      "temporal_status",
+      "bottle_identifier",
+      "bottle_type",
+      "bottle_role"
+    ],
+    "type": "object"
+  },
+  "BloodCultureSet": {
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "const": "blood_culture_set",
+        "type": "string"
+      },
+      "id": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "revision": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "binding": {
+        "$ref": "#/$defs/Binding"
+      },
+      "origin": {
+        "enum": [
+          "observed",
+          "reported"
+        ],
+        "type": "string"
+      },
+      "provenance": {
+        "$ref": "#/$defs/BoundedProvenance"
+      },
+      "time": {
+        "$ref": "#/$defs/ClinicalTime"
+      },
+      "verification": {
+        "enum": [
+          "unverified",
+          "verified",
+          "clinician_confirmed"
+        ],
+        "type": "string"
+      },
+      "conflict": {
+        "enum": [
+          "none_known",
+          "unresolved",
+          "resolved",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "temporal_status": {
+        "enum": [
+          "current",
+          "historical",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "uncertainty": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "type": "array"
+      },
+      "supersedes": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "correction_reason": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "contract_version": {
+        "const": "2",
+        "type": "string"
+      },
+      "source_identifiers": {
+        "items": {
+          "$ref": "#/$defs/SourceCode"
+        },
+        "maxItems": 16,
+        "type": "array"
+      },
+      "domain_bindings": {
+        "items": {
+          "$ref": "#/$defs/DomainBinding"
+        },
+        "maxItems": 16,
+        "type": "array"
+      },
+      "disclosures": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "type": "array"
+      },
+      "set_identifier": {
+        "$ref": "#/$defs/SourceCode"
+      },
+      "collected": {
+        "$ref": "#/$defs/RecordedTime"
+      }
+    },
+    "required": [
+      "id",
+      "revision",
+      "binding",
+      "origin",
+      "provenance",
+      "time",
+      "temporal_status",
+      "set_identifier"
+    ],
+    "type": "object"
+  },
+  "BoundedProvenance": {
+    "additionalProperties": false,
+    "properties": {
+      "source": {
+        "$ref": "#/$defs/Source"
+      },
+      "actor": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "recorded_at": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "upstream": {
+        "items": {
+          "$ref": "#/$defs/LineageEdge"
+        },
+        "maxItems": 32,
+        "type": "array"
+      },
+      "lineage": {
+        "enum": [
+          "complete",
+          "incomplete",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "limitations": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "type": "array"
+      }
+    },
+    "required": [
+      "source",
+      "actor",
+      "recorded_at",
+      "lineage"
+    ],
+    "type": "object"
+  },
+  "BreakpointContext": {
+    "additionalProperties": false,
+    "properties": {
+      "authority": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "version": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "source_reference": {
+        "anyOf": [
+          {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "authority"
+    ],
+    "type": "object"
+  },
+  "ClinicalTime": {
+    "additionalProperties": false,
+    "properties": {
+      "event": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "recorded": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "effective_start": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "effective_end": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "retrieved": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "processed": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "precision": {
+        "enum": [
+          "instant",
+          "day",
+          "approximate",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "uncertainty": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "precision"
+    ],
+    "type": "object"
+  },
+  "CompletedAntimicrobialAdministration": {
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "const": "antimicrobial_administration",
+        "type": "string"
+      },
+      "id": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "revision": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "binding": {
+        "$ref": "#/$defs/Binding"
+      },
+      "origin": {
+        "enum": [
+          "observed",
+          "reported"
+        ],
+        "type": "string"
+      },
+      "provenance": {
+        "$ref": "#/$defs/BoundedProvenance"
+      },
+      "time": {
+        "$ref": "#/$defs/ClinicalTime"
+      },
+      "verification": {
+        "enum": [
+          "unverified",
+          "verified",
+          "clinician_confirmed"
+        ],
+        "type": "string"
+      },
+      "conflict": {
+        "enum": [
+          "none_known",
+          "unresolved",
+          "resolved",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "temporal_status": {
+        "enum": [
+          "current",
+          "historical",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "uncertainty": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "type": "array"
+      },
+      "supersedes": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "correction_reason": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "contract_version": {
+        "const": "2",
+        "type": "string"
+      },
+      "source_identifiers": {
+        "items": {
+          "$ref": "#/$defs/SourceCode"
+        },
+        "maxItems": 16,
+        "type": "array"
+      },
+      "domain_bindings": {
+        "items": {
+          "$ref": "#/$defs/DomainBinding"
+        },
+        "maxItems": 16,
+        "type": "array"
+      },
+      "disclosures": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "type": "array"
+      },
+      "antimicrobial": {
+        "$ref": "#/$defs/AntimicrobialIdentity"
+      },
+      "administered_dose": {
+        "$ref": "#/$defs/RecordedDose"
+      },
+      "route": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/RecordedConcept"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "completion": {
+        "const": "completed",
+        "type": "string"
+      },
+      "administered": {
+        "$ref": "#/$defs/RecordedTime"
+      },
+      "infusion_start": {
+        "$ref": "#/$defs/RecordedTime"
+      },
+      "infusion_end": {
+        "$ref": "#/$defs/RecordedTime"
+      },
+      "therapy_purpose": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/DocumentedTherapyPurpose"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "revision",
+      "binding",
+      "origin",
+      "provenance",
+      "time",
+      "temporal_status",
+      "antimicrobial",
+      "administered_dose"
+    ],
+    "type": "object"
+  },
+  "ContextTarget": {
+    "additionalProperties": false,
+    "properties": {
+      "patient_id": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "encounter_id": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "longitudinal_context_id": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "patient_id"
+    ],
+    "type": "object"
+  },
+  "CoverageV2": {
+    "additionalProperties": false,
+    "properties": {
+      "domain": {
+        "enum": [
+          "microbiology",
+          "antimicrobial"
+        ],
+        "type": "string"
+      },
+      "mapping_support": {
+        "enum": [
+          "supported",
+          "partial",
+          "unsupported"
+        ],
+        "type": "string"
+      },
+      "retrieval": {
+        "enum": [
+          "completed",
+          "not_attempted",
+          "limit_exceeded"
+        ],
+        "type": "string"
+      },
+      "candidate_count": {
+        "anyOf": [
+          {
+            "minimum": 0,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "retained_count": {
+        "anyOf": [
+          {
+            "minimum": 0,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "source_completeness": {
+        "const": "unknown",
+        "type": "string"
+      },
+      "limitations": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "minItems": 1,
+        "type": "array"
+      }
+    },
+    "required": [
+      "domain",
+      "mapping_support",
+      "retrieval",
+      "limitations"
+    ],
+    "type": "object"
+  },
+  "CultureFinding": {
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "const": "microbiology_culture",
+        "type": "string"
+      },
+      "id": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "revision": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "binding": {
+        "$ref": "#/$defs/Binding"
+      },
+      "origin": {
+        "enum": [
+          "observed",
+          "reported"
+        ],
+        "type": "string"
+      },
+      "provenance": {
+        "$ref": "#/$defs/BoundedProvenance"
+      },
+      "time": {
+        "$ref": "#/$defs/ClinicalTime"
+      },
+      "verification": {
+        "enum": [
+          "unverified",
+          "verified",
+          "clinician_confirmed"
+        ],
+        "type": "string"
+      },
+      "conflict": {
+        "enum": [
+          "none_known",
+          "unresolved",
+          "resolved",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "temporal_status": {
+        "enum": [
+          "current",
+          "historical",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "uncertainty": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "type": "array"
+      },
+      "supersedes": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "correction_reason": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "contract_version": {
+        "const": "2",
+        "type": "string"
+      },
+      "source_identifiers": {
+        "items": {
+          "$ref": "#/$defs/SourceCode"
+        },
+        "maxItems": 16,
+        "type": "array"
+      },
+      "domain_bindings": {
+        "items": {
+          "$ref": "#/$defs/DomainBinding"
+        },
+        "maxItems": 16,
+        "type": "array"
+      },
+      "disclosures": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "type": "array"
+      },
+      "report": {
+        "$ref": "#/$defs/ReportState"
+      },
+      "growth": {
+        "enum": [
+          "growth",
+          "no_growth",
+          "indeterminate"
+        ],
+        "type": "string"
+      },
+      "quantity": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/NonnegativeQuantity"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "semiquantitation": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/RecordedConcept"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "recorded_interpretation": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/RecordedConcept"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "revision",
+      "binding",
+      "origin",
+      "provenance",
+      "time",
+      "temporal_status",
+      "report",
+      "growth"
+    ],
+    "type": "object"
+  },
+  "DirectExamination": {
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "const": "microbiology_direct_examination",
+        "type": "string"
+      },
+      "id": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "revision": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "binding": {
+        "$ref": "#/$defs/Binding"
+      },
+      "origin": {
+        "enum": [
+          "observed",
+          "reported"
+        ],
+        "type": "string"
+      },
+      "provenance": {
+        "$ref": "#/$defs/BoundedProvenance"
+      },
+      "time": {
+        "$ref": "#/$defs/ClinicalTime"
+      },
+      "verification": {
+        "enum": [
+          "unverified",
+          "verified",
+          "clinician_confirmed"
+        ],
+        "type": "string"
+      },
+      "conflict": {
+        "enum": [
+          "none_known",
+          "unresolved",
+          "resolved",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "temporal_status": {
+        "enum": [
+          "current",
+          "historical",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "uncertainty": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "type": "array"
+      },
+      "supersedes": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/Reference"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "correction_reason": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "contract_version": {
+        "const": "2",
+        "type": "string"
+      },
+      "source_identifiers": {
+        "items": {
+          "$ref": "#/$defs/SourceCode"
+        },
+        "maxItems": 16,
+        "type": "array"
+      },
+      "domain_bindings": {
+        "items": {
+          "$ref": "#/$defs/DomainBinding"
+        },
+        "maxItems": 16,
+        "type": "array"
+      },
+      "disclosures": {
+        "items": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 32,
+        "type": "array"
+      },
+      "report": {
+        "$ref": "#/$defs/ReportState"
+      },
+      "examination_type": {
+        "enum": [
+          "gram_stain",
+          "microscopy",
+          "other"
+        ],
+        "type": "string"
+      },
+      "other_type":

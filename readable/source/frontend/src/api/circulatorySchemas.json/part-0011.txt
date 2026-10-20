@@ -1,0 +1,132 @@
+namic": "#/$defs/DynamicMeasurement",
+              "circulatory_ecg": "#/$defs/ECGObservation",
+              "circulatory_echo": "#/$defs/EchoObservation",
+              "circulatory_event": "#/$defs/CirculatoryEvent",
+              "circulatory_lactate": "#/$defs/LactateResult",
+              "circulatory_monitoring": "#/$defs/MonitoringEvent",
+              "circulatory_oxygen": "#/$defs/OxygenTransport",
+              "circulatory_perfusion": "#/$defs/PerfusionObservation",
+              "circulatory_pressure": "#/$defs/PressureObservation",
+              "circulatory_signal": "#/$defs/SignalManifest",
+              "circulatory_vasoactive": "#/$defs/VasoactiveEvent",
+              "circulatory_volume": "#/$defs/VolumeMeasurement"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/PressureObservation"
+            },
+            {
+              "$ref": "#/$defs/CardiacPerformance"
+            },
+            {
+              "$ref": "#/$defs/VolumeMeasurement"
+            },
+            {
+              "$ref": "#/$defs/DynamicMeasurement"
+            },
+            {
+              "$ref": "#/$defs/DevicePrediction"
+            },
+            {
+              "$ref": "#/$defs/PerfusionObservation"
+            },
+            {
+              "$ref": "#/$defs/OxygenTransport"
+            },
+            {
+              "$ref": "#/$defs/LactateResult"
+            },
+            {
+              "$ref": "#/$defs/EchoObservation"
+            },
+            {
+              "$ref": "#/$defs/ECGObservation"
+            },
+            {
+              "$ref": "#/$defs/VasoactiveEvent"
+            },
+            {
+              "$ref": "#/$defs/MonitoringEvent"
+            },
+            {
+              "$ref": "#/$defs/DynamicAssessment"
+            },
+            {
+              "$ref": "#/$defs/CirculatoryEvent"
+            },
+            {
+              "$ref": "#/$defs/SignalManifest"
+            }
+          ],
+          "title": "Fact"
+        },
+        "ingestion": {
+          "$ref": "#/$defs/IngestionMetadata"
+        }
+      },
+      "required": [
+        "fact",
+        "ingestion"
+      ],
+      "title": "CirculatoryHistoricalFact",
+      "type": "object"
+    },
+    "CirculatoryStateContext": {
+      "additionalProperties": false,
+      "properties": {
+        "transport_version": {
+          "const": "m7-c/1",
+          "default": "m7-c/1",
+          "title": "Transport Version",
+          "type": "string"
+        },
+        "assembly_request": {
+          "$ref": "#/$defs/AssemblyRequestV3"
+        },
+        "assembly_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Assembly Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "assembly_request",
+        "assembly_digest"
+      ],
+      "title": "CirculatoryStateContext",
+      "type": "object"
+    },
+    "ExactReference": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version"
+      ],
+      "title": "ExactReference",
+      "type": "object"
+    }
+  }
+}

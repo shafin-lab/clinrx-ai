@@ -1,0 +1,31 @@
+{
+  "command": [
+    "npm",
+    "test",
+    "--prefix",
+    "frontend",
+    "--",
+    "--configLoader",
+    "runner",
+    "--no-cache",
+    "--maxWorkers=2",
+    "tests/rf2TypedTiming.test.tsx",
+    "tests/rf2FluidChart.test.tsx",
+    "tests/rf2.test.tsx",
+    "tests/rf2SourceReview.test.tsx",
+    "tests/rf2HandoverRace.test.tsx",
+    "tests/rf2.integration.test.tsx"
+  ],
+  "exit_code": 0,
+  "seconds": 6.245525749982335,
+  "source_sha256": {
+    "frontend/src/demo/RF2FluidChart.tsx": "b555fb8e0a33e5150536d220ed2b3c3a126bec2a7342271595e24a88270ad80c",
+    "frontend/tests/fixtures/rf2-fc1-timing.json": "d80c06246512633cf7f9da1fbb1460c5c8bc40787289667fd5287d6f3d104b0c",
+    "frontend/tests/rf2FluidChart.test.tsx": "be459522dedd5dabc28d2efe28d7d9a392ab3a60998a2c1be4f1544ea77834f5",
+    "frontend/tests/rf2TypedTiming.test.tsx": "23aa3ec1fad88042f897b07ab5c46982aeb4d02cb17e5022752777d7bbedceef"
+  },
+  "vite_flags": {},
+  "node": "v24.12.0",
+  "npm": "11.6.2",
+  "scope": "frontend/component/build only; no live services/database/browser or installation"
+}

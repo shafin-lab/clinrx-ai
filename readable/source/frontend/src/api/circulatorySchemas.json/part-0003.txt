@@ -1,0 +1,1019 @@
+lation_inputs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "maxItems": 32,
+          "title": "Calculation Inputs",
+          "type": "array"
+        },
+        "concept": {
+          "const": "hpi",
+          "default": "hpi",
+          "title": "Concept",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "binding",
+        "origin",
+        "provenance",
+        "time",
+        "temporal_status",
+        "result",
+        "acquisition"
+      ],
+      "title": "DevicePrediction",
+      "type": "object"
+    },
+    "DynamicAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "circulatory_assessment",
+          "default": "circulatory_assessment",
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "origin": {
+          "enum": [
+            "observed",
+            "reported"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/BoundedProvenance"
+        },
+        "time": {
+          "$ref": "#/$defs/ClinicalTime"
+        },
+        "verification": {
+          "default": "unverified",
+          "enum": [
+            "unverified",
+            "verified",
+            "clinician_confirmed"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "conflict": {
+          "default": "unknown",
+          "enum": [
+            "none_known",
+            "unresolved",
+            "resolved",
+            "unknown"
+          ],
+          "title": "Conflict",
+          "type": "string"
+        },
+        "temporal_status": {
+          "enum": [
+            "current",
+            "historical",
+            "unknown"
+          ],
+          "title": "Temporal Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "correction_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        },
+        "contract_version": {
+          "const": "3",
+          "default": "3",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "occurred": {
+          "$ref": "#/$defs/ClinicalInstant"
+        },
+        "available": {
+          "$ref": "#/$defs/ClinicalInstant"
+        },
+        "associations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceBinding"
+          },
+          "maxItems": 32,
+          "title": "Associations",
+          "type": "array"
+        },
+        "source_identifiers": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceCode"
+          },
+          "maxItems": 16,
+          "title": "Source Identifiers",
+          "type": "array"
+        },
+        "disclosures": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Disclosures",
+          "type": "array"
+        },
+        "record_status": {
+          "default": "recorded",
+          "enum": [
+            "recorded",
+            "withdrawn",
+            "invalid",
+            "unknown"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "test": {
+          "enum": [
+            "plr",
+            "end_expiratory_occlusion",
+            "mini_fluid_challenge",
+            "fluid_challenge"
+          ],
+          "title": "Test",
+          "type": "string"
+        },
+        "protocol": {
+          "$ref": "#/$defs/SourceCode"
+        },
+        "baseline": {
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "maxItems": 32,
+          "title": "Baseline",
+          "type": "array"
+        },
+        "intervention": {
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "maxItems": 32,
+          "title": "Intervention",
+          "type": "array"
+        },
+        "subsequent": {
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "maxItems": 32,
+          "title": "Subsequent",
+          "type": "array"
+        },
+        "ventilation_mode": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedConcept"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "tidal_volume": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactQuantity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "tidal_volume_basis": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tidal Volume Basis"
+        },
+        "rhythm": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedConcept"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "spontaneous_effort": {
+          "default": "unknown",
+          "enum": [
+            "present",
+            "absent",
+            "unknown"
+          ],
+          "title": "Spontaneous Effort",
+          "type": "string"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedConcept"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "quality": {
+          "$ref": "#/$defs/EvidenceQuality"
+        },
+        "reported_interpretation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedConcept"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "interpretation_provenance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BoundedProvenance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "binding",
+        "origin",
+        "provenance",
+        "time",
+        "temporal_status",
+        "test",
+        "protocol",
+        "baseline",
+        "intervention",
+        "subsequent"
+      ],
+      "title": "DynamicAssessment",
+      "type": "object"
+    },
+    "DynamicMeasurement": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "circulatory_dynamic",
+          "default": "circulatory_dynamic",
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "origin": {
+          "enum": [
+            "observed",
+            "reported"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/BoundedProvenance"
+        },
+        "time": {
+          "$ref": "#/$defs/ClinicalTime"
+        },
+        "verification": {
+          "default": "unverified",
+          "enum": [
+            "unverified",
+            "verified",
+            "clinician_confirmed"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "conflict": {
+          "default": "unknown",
+          "enum": [
+            "none_known",
+            "unresolved",
+            "resolved",
+            "unknown"
+          ],
+          "title": "Conflict",
+          "type": "string"
+        },
+        "temporal_status": {
+          "enum": [
+            "current",
+            "historical",
+            "unknown"
+          ],
+          "title": "Temporal Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "correction_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        },
+        "contract_version": {
+          "const": "3",
+          "default": "3",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "occurred": {
+          "$ref": "#/$defs/ClinicalInstant"
+        },
+        "available": {
+          "$ref": "#/$defs/ClinicalInstant"
+        },
+        "associations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceBinding"
+          },
+          "maxItems": 32,
+          "title": "Associations",
+          "type": "array"
+        },
+        "source_identifiers": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceCode"
+          },
+          "maxItems": 16,
+          "title": "Source Identifiers",
+          "type": "array"
+        },
+        "disclosures": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Disclosures",
+          "type": "array"
+        },
+        "record_status": {
+          "default": "recorded",
+          "enum": [
+            "recorded",
+            "withdrawn",
+            "invalid",
+            "unknown"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "missing": "#/$defs/MissingResult",
+              "numeric": "#/$defs/NumericResult",
+              "qualitative": "#/$defs/QualitativeResult"
+            },
+            "propertyName": "result_type"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/NumericResult"
+            },
+            {
+              "$ref": "#/$defs/QualitativeResult"
+            },
+            {
+              "$ref": "#/$defs/MissingResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "acquisition": {
+          "$ref": "#/$defs/Acquisition"
+        },
+        "production": {
+          "enum": [
+            "direct_measurement",
+            "monitor_derived",
+            "source_calculated"
+          ],
+          "title": "Production",
+          "type": "string"
+        },
+        "calculation_method": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceCode"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "calculation_inputs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "maxItems": 32,
+          "title": "Calculation Inputs",
+          "type": "array"
+        },
+        "concept": {
+          "enum": [
+            "ppv",
+            "svv",
+            "dynamic_arterial_elastance",
+            "dp_dt",
+            "recorded_sv_change",
+            "recorded_co_change"
+          ],
+          "title": "Concept",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "binding",
+        "origin",
+        "provenance",
+        "time",
+        "temporal_status",
+        "result",
+        "acquisition",
+        "production",
+        "concept"
+      ],
+      "title": "DynamicMeasurement",
+      "type": "object"
+    },
+    "ECGObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "circulatory_ecg",
+          "default": "circulatory_ecg",
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "origin": {
+          "enum": [
+            "observed",
+            "reported"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/BoundedProvenance"
+        },
+        "time": {
+          "$ref": "#/$defs/ClinicalTime"
+        },
+        "verification": {
+          "default": "unverified",
+          "enum": [
+            "unverified",
+            "verified",
+            "clinician_confirmed"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "conflict": {
+          "default": "unknown",
+          "enum": [
+            "none_known",
+            "unresolved",
+            "resolved",
+            "unknown"
+          ],
+          "title": "Conflict",
+          "type": "string"
+        },
+        "temporal_status": {
+          "enum": [
+            "current",
+            "historical",
+            "unknown"
+          ],
+          "title": "Temporal Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "correction_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        },
+        "contract_version": {
+          "const": "3",
+          "default": "3",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "occurred": {
+          "$ref": "#/$defs/ClinicalInstant"
+        },
+        "available": {
+          "$ref": "#/$defs/ClinicalInstant"
+        },
+        "associations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceBinding"
+          },
+          "maxItems": 32,
+          "title": "Associations",
+          "type": "array"
+        },
+        "source_identifiers": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceCode"
+          },
+          "maxItems": 16,
+          "title": "Source Identifiers",
+          "type": "array"
+        },
+        "disclosures": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Disclosures",
+          "type": "array"
+        },
+        "record_status": {
+          "default": "recorded",
+          "enum": [
+            "recorded",
+            "withdrawn",
+            "invalid",
+            "unknown"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "missing": "#/$defs/MissingResult",
+              "numeric": "#/$defs/NumericResult",
+              "qualitative": "#/$defs/QualitativeResult"
+            },
+            "propertyName": "result_type"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/NumericResult"
+            },
+            {
+              "$ref": "#/$defs/QualitativeResult"
+            },
+            {
+              "$ref": "#/$defs/MissingResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "acquisition": {
+          "$ref": "#/$defs/Acquisition"
+        },
+        "production": {
+          "enum": [
+            "direct_measurement",
+            "monitor_derived",
+            "source_calculated"
+          ],
+          "title": "Production",
+          "type": "string"
+        },
+        "calculation_method": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceCode"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "calculation_inputs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "maxItems": 32,
+          "title": "Calculation Inputs",
+          "type": "array"
+        },
+        "concept": {
+          "enum": [
+            "heart_rate",
+            "rhythm",
+            "arrhythmia",
+            "pr",
+            "qrs",
+            "qt",
+            "qtc",
+            "st_finding",
+            "conduction_finding"
+          ],
+          "title": "Concept",
+          "type": "string"
+        },
+        "interpretation_source": {
+          "enum": [
+            "monitor",
+            "clinician",
+            "source_algorithm",
+            "unknown"
+          ],
+          "title": "Interpretation Source",
+          "type": "string"
+        },
+        "leads": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceCode"
+          },
+          "maxItems": 16,
+          "title": "Leads",
+          "type": "array"
+        },
+        "report": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceCode"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "binding",
+        "origin",
+        "provenance",
+        "time",
+        "temporal_status",
+        "result",
+        "acquisition",
+        "production",
+        "concept",
+        "interpretation_source"
+      ],
+      "title": "ECGObservation",
+      "type": "object"
+    },
+    "EchoObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "circulatory_echo",
+          "default": "circulatory_echo",
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "origin": {
+          "enum": [
+            "observed",
+            "reported"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/BoundedProvenance"
+        },
+        "time": {
+          "$ref": "#/$defs/ClinicalTime"
+        },
+        "verification": {
+          "default": "unverified",
+          "enum": [
+            "unverified",
+            "verified",
+            "clinician_confirmed"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "conflict": {
+          "default": "unknown",
+          "enum": [
+            "none_known",
+            "unresolved",
+            "resolved",
+            "unknown"
+          ],
+          "title": "Conflict",
+          "type": "string"
+        },
+        "temporal_status": {
+          "enum": [
+            "current",
+            "historical",
+            "unknown"
+          ],
+          "title": "Temporal Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "correction_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        },
+        "contract_version": {
+          "const": "3",
+          "default": "3",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "occurred": {
+          "$ref": "#/$defs/ClinicalInstant"
+        },
+        "available": {
+          "$ref": "#/$defs/ClinicalInstant"
+        },
+        "associations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceBinding"
+          },
+          "maxItems": 32,
+          "title": "Associations",
+          "type": "array"
+        },
+        "source_identifiers": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceCode"
+          },
+          "maxItems": 16,
+          "title": "Source Identifiers",
+          "type": "array"
+        },
+        "disclosures": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Disclosures",
+          "type": "array"
+        },
+        "record_status": {
+          "default": "recorded",
+          "enum": [
+            "recorded",
+            "withdrawn",
+            "invalid",
+            "unknown"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "missing": "#/$defs/MissingResult",
+              "numeric": "#/$defs/NumericResult",
+              "qualitative": "#/$defs/QualitativeResult"
+            },
+            "propertyName": "result_type"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/NumericResult"
+            },
+            {
+              "$ref": "#/$defs/QualitativeResult"
+            },
+            {
+              "$ref": "#/$defs/MissingResult"
+            }
+          ],
+          "title": "Result"
+        },
+        "acquisition": {
+          "$ref": "#/$defs/Acquisition"
+        },
+        "production": {
+          "enum": [
+            "direct_measurement",
+            "monitor_derived",
+            "source_calculated"
+          ],
+          "title": "Production",
+          "type": "string"
+        },
+        "calculation_method": {
+          "anyOf": [
+            {
+              "$ref": "#/$d
