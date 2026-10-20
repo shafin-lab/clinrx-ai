@@ -212,13 +212,29 @@ class RF2Service(RenalFluidProductService):
         if not owners:return None
         if len(matches)!=1:raise EvidenceConflict()
         return matches[0]
+    def require_retained_command(self,stored,fact,body):
+        if canonical_payload(stored.fact)==canonical_payload(fact):return
+        # Only retained chart amendments may match the complete 4429401 producer
+        # shape. Never use this reconstruction for validation or a new append.
+        if body.chart is not None and body.predecessor is not None:
+            c=body.chart;legacy=fact.model_dump(mode='json')
+            legacy['occurred']=time(c.point).model_dump(mode='json')
+            legacy['available']=time(None).model_dump(mode='json')
+            if c.start is not None or c.end is not None:
+                legacy['recorded_interval']=RecordedCirculatoryInterval(
+                    start=time(c.start),end=time(c.end),provenance=fact.provenance,
+                    limitations=('Source bounds only; no calculated rate or duration.',)
+                ).model_dump(mode='json')
+            else:legacy.pop('recorded_interval',None)
+            if canonical_payload(stored.fact)==canonical_payload(CirculatoryEvent.model_validate(legacy)):return
+        raise EvidenceConflict()
     def save(self,repo,body):
         a=self.accounting();fact=self.build_fact(repo,body,a)
         # Exact original-command idempotency is checked independently of source replay.
         retained=self.history_rows(repo,repo.capture_cutoff(),a,fact.reference)
         old=next((s for s in retained if s.fact.reference==fact.reference),None)
         if old:
-            if canonical_payload(old.fact)!=canonical_payload(fact):raise EvidenceConflict()
+            self.require_retained_command(old,fact,body)
             return self.result(repo,body,old,a,'saved')
         self.require_owner(repo,body,a)
         if body.note:self.require_review(repo,body,a)
@@ -239,5 +255,5 @@ class RF2Service(RenalFluidProductService):
         if stored is None:
             replay=self.replay(repo,body,a)
             return self.result(repo,body,replay,a,'source_replay') if replay else {'status':'absent','request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'request_canonical':canonical_payload(body),'execution_enabled':False}
-        if canonical_payload(stored.fact)!=canonical_payload(fact):raise EvidenceConflict()
+        self.require_retained_command(stored,fact,body)
         return self.result(repo,body,stored,a,'saved')
