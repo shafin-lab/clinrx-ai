@@ -1,0 +1,239 @@
+diff --git a/frontend/src/demo/EvidenceEntryWorkspace.tsx b/frontend/src/demo/EvidenceEntryWorkspace.tsx
+index 32d009c..03ef687 100644
+--- a/frontend/src/demo/EvidenceEntryWorkspace.tsx
++++ b/frontend/src/demo/EvidenceEntryWorkspace.tsx
+@@ -9,7 +9,7 @@ import {families,reference,RecordedDisclosure} from '../patient/CirculatoryEvide
+ import {title,value,sourceTime,record} from './evidencePresentation';
+ import {EvidenceDraftSummary} from './EvidenceDraftSummary';
+ import {GuidedEvidenceForm} from './GuidedEvidenceForm';
+-import {shortcutValue,type GuidedFamily} from './guidedEvidence';
++import {editableQuantity,shortcutValue,type GuidedFamily} from './guidedEvidence';
+ import './demo.css';
+ import './evidenceEntry.css';
+ type Phase='editing'|'review'|'saving'|'uncertain'|'absent'|'saved';
+@@ -40,10 +40,10 @@ export function EvidenceEntryWorkspace({client,entry,config,shared,handoff,onGua
+   },[client,config.start,config.end,shared?.refresh]);
+   useEffect(()=>{if(shared)return;void refresh().catch(()=>{});return()=>{generation.current++;historyGeneration.current++;};},[refresh]);
+   useEffect(()=>{historyGeneration.current++;setHistory(undefined);},[shared?.state?.state_context]);
+-  let numeric='';try{numeric=String(record(record(JSON.parse(text).result).quantity).value??'');}catch{/* Invalid JSON must be repaired; never replace it with a shortcut. */}
++  let numeric='';try{numeric=String(editableQuantity(JSON.parse(text))?.quantity.value??'');}catch{/* Invalid JSON must be repaired; never replace it with a shortcut. */}
+   function editNumeric(next:string){try{setText(shortcutValue(text,next));}catch{setError('Repair the source JSON before editing its numeric value.');}}
+   const savedRepositoryMatches=!!review&&review.repository_id===state?.assembly.request.scope.repository_cutoff.repository_id;
+-  const proposedQuantity=record(record(review?.fact.result).quantity);
++  const proposedQuantity=editableQuantity(review?.fact)?.quantity??{};
+   const proposedFinding=record(record(review?.fact.result).finding);
+   const locked=phase==='saving'||phase==='uncertain'||phase==='absent';
+   function choose(item?:CirculatoryItem){if(locked||busy||!gateConfirmed)return;historyGeneration.current++;setDirty(false);setFormSession(n=>n+1);setSelected(item);setMode(item?'correct':'new');setGuidedFamily('pressure');setEditor(item?'source':'guided');setText(item?JSON.stringify(item.fact,null,2):'');setReason('');setHistory(undefined);setReview(undefined);setPending(undefined);setPhase('editing');setError('');}
+@@ -89,7 +89,7 @@ export function EvidenceEntryWorkspace({client,entry,config,shared,handoff,onGua
+     {!state?<p>Loading the isolated evidence snapshot…</p>:<><p>{state.assembly.snapshot.items.length} source records in this snapshot. Originals remain in revision history. HPI is optional. Review window: {config.start} to {config.end}; source times may be contextual or unplaced.</p>{!shared&&<ReassessmentComparison state={state}/>}<div className="entry-columns"><section aria-label="Recorded evidence"><h2>Select evidence to correct</h2><button disabled={busy||locked||!gateConfirmed||(!!shared&&guarded)} onClick={()=>choose()}>New source entry</button><button disabled={busy||locked||(!!shared&&guarded)} onClick={()=>void refresh().catch(()=>setError('Refresh failed.'))}>Refresh evidence</button><label>Evidence family<select value={family} onChange={e=>setFamily(e.target.value)} disabled={busy||locked||!gateConfirmed}><option value="all">All 15 families</option>{Object.entries(families).map(([kind,label])=><option key={kind} value={kind}>{label}</option>)}</select></label><label>Find evidence<input value={search} onChange={e=>setSearch(e.target.value)} disabled={busy||locked||!gateConfirmed}/></label><ul className="entry-list">{state.assembly.snapshot.items.filter(item=>(family==='all'||item.fact.kind===family)&&[title(item),item.fact.id,value(item).text].join(' ').toLowerCase().includes(search.toLowerCase())).map(item=><li key={evidenceKey(item.fact)}><button disabled={busy||locked||!gateConfirmed||(!!shared&&guarded)} onClick={()=>choose(item)} aria-pressed={selected?.fact.id===item.fact.id&&selected?.fact.kind===item.fact.kind&&selected?.fact.revision===item.fact.revision}>{title(item)} · {value(item).text} {value(item).unit}<small>{item.fact.id} / {item.fact.revision} · {sourceTime(item)} · {String(item.fact.record_status)}</small></button></li>)}</ul></section>
+     <section aria-label="Evidence draft"><h2>{mode==='new'?'New source entry':mode==='withdraw'?'Withdraw selected evidence':'Correct selected evidence'}</h2>
+     {selected&&<><p>Original retained: {selected.fact.kind} / {selected.fact.id} / {selected.fact.revision}</p><p>Original recorded value: {value(selected).text} {value(selected).unit} · {sourceTime(selected)}</p><p>Correction keeps the original observation time and context unless explicitly changed in the source record. It is not a new measurement or evidence of ongoing administration.</p><button disabled={busy||locked||!gateConfirmed} onClick={()=>void revisions()}>Load exact revision history</button><RecordedDisclosure label="Original source record" value={selected.fact}/>{history&&<RecordedDisclosure label={'History: '+history.revisions.length+' retained revisions'} value={history.revisions}/>}</>}
+-    {phase==='editing'?<fieldset onChangeCapture={()=>setDirty(true)} disabled={busy||!gateConfirmed}><label>Actor name<input value={actor} onChange={e=>setActor(e.target.value)} disabled={busy}/></label>{selected&&<><label>Action<select value={mode} onChange={e=>setMode(e.target.value as 'correct'|'withdraw')} disabled={busy}><option value="correct">Append correction</option><option value="withdraw">Append withdrawal</option></select></label><label>Reason for correction or withdrawal<textarea value={reason} onChange={e=>setReason(e.target.value)} disabled={busy}/></label>{record(record(selected.fact.result).quantity).value!==undefined&&<label>Recorded numeric value (raw unit preserved)<input value={numeric} onChange={e=>editNumeric(e.target.value)} disabled={busy}/></label>}</>}
++    {phase==='editing'?<fieldset onChangeCapture={()=>setDirty(true)} disabled={busy||!gateConfirmed}><label>Actor name<input value={actor} onChange={e=>setActor(e.target.value)} disabled={busy}/></label>{selected&&<><label>Action<select value={mode} onChange={e=>setMode(e.target.value as 'correct'|'withdraw')} disabled={busy}><option value="correct">Append correction</option><option value="withdraw">Append withdrawal</option></select></label><label>Reason for correction or withdrawal<textarea value={reason} onChange={e=>setReason(e.target.value)} disabled={busy}/></label>{editableQuantity(selected.fact)&&<label>Recorded numeric value (raw unit preserved)<input value={numeric} onChange={e=>editNumeric(e.target.value)} disabled={busy}/></label>}</>}
+     {mode==='new'&&editor==='guided'?<><GuidedEvidenceForm key={formSession} initialFamily={guidedFamily} actor={actor} items={state.assembly.snapshot.items} onDraft={fact=>{setText(JSON.stringify(fact,null,2));setEditor('source');setError('');}}/><button onClick={()=>{setText('');setEditor('source');}}>Advanced source entry</button></>:<><p>One authoritative source draft. The numeric shortcut and complete record editor update the same value.</p><details><summary>Edit complete source record (advanced)</summary><label>Complete source record (JSON)<textarea className="entry-json" value={text} onChange={e=>setText(e.target.value)} disabled={busy} spellCheck={false}/></label></details><p>Preserve exact Decimal strings, sample type, units, method, quality, timing and support references. Nothing is converted or inferred. For a new entry supply a new ID/revision, full binding and provenance; copied source assertions must be reviewed.</p><button disabled={busy} onClick={()=>void validate()}>Validate and review draft</button>{mode==='new'&&<button onClick={()=>{setText('');setEditor('guided');}}>Start a different guided record</button>}</>}{shared&&<button disabled={busy} onClick={()=>choose()}>Discard unsaved entry</button>}</fieldset>:<>
+     <h3>Review before append</h3><p>{families[review?.fact.kind??'']} · {review?.fact.id} / {review?.fact.revision}</p>{proposedQuantity.value!==undefined&&<p>Proposed recorded result: {String(proposedQuantity.value)} {String(record(proposedQuantity.unit).raw??'Unit not recorded')}</p>}{proposedFinding.raw_display!==undefined&&<p>Proposed source finding: {String(proposedFinding.raw_display)}</p>}<p>Proposed status: {String(review?.fact.record_status)}</p><p>Actor: {String(record(review?.fact.provenance).actor??'Not recorded')}</p><p>Reason: {String(review?.fact.correction_reason??'New source entry; no predecessor')}</p>{review&&<EvidenceDraftSummary fact={review.fact}/>}<p>Digest: {review?.expected_digest}</p><RecordedDisclosure label="Complete validated record and source caveats" value={review?.fact}/><p>Saving adds one immutable revision. It does not overwrite the original or alter retained clinical receipts.</p>
+     {phase==='review'&&<><button disabled={busy||!gateConfirmed} onClick={()=>void save()}>Confirm append to local database</button><button disabled={busy} onClick={()=>{setPhase('editing');setPending(undefined);setReview(undefined);}}>Edit draft</button><button disabled={busy} onClick={()=>{choose();void refresh().catch(()=>setError('Refresh failed.'));}}>Discard draft and reload</button></>}
+diff --git a/frontend/src/demo/RenalFluidEntryWorkspace.tsx b/frontend/src/demo/RenalFluidEntryWorkspace.tsx
+index 20b2e66..c822a56 100644
+--- a/frontend/src/demo/RenalFluidEntryWorkspace.tsx
++++ b/frontend/src/demo/RenalFluidEntryWorkspace.tsx
+@@ -31,7 +31,10 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  const [defaultTransport]=useState(()=>new RF2Client());const transport=providedTransport??defaultTransport;
+  const [chart,C]=useState<Chart>({...chartDefaults}),[note,N]=useState<RenalNote>({question:'',findings:'',possibilities:'',gaps:'',plan:'',pins:[]}),[mode,M]=useState<'chart'|'note'>('chart');
+  const [draftRepository,DraftRepository]=useState(catalog.repository);const [references,References]=useState<Evidence[]>([]);
+- const [actor,Actor]=useState(''),[reason,Reason]=useState(''),[selected,Selected]=useState<Evidence>(),[dirty,Dirty]=useState(false),[phase,Phase]=useState<'editing'|'source-review'|'review-conflict'|'review'|'saving'|'uncertain'|'absent'|'saved'>('editing'),[pending,Pending]=useState<Draft>(),[review,Review]=useState<unknown>(),[saved,Saved]=useState<Evidence>(),[error,ErrorMessage]=useState(''),[busy,Busy]=useState(false);
++ const [actor,Actor]=useState(''),[reason,Reason]=useState(''),[selected,Selected]=useState<Evidence>(),[dirty,Dirty]=useState(false),[phase,Phase]=useState<'editing'|'source-review'|'review-conflict'|'review'|'saving'|'uncertain'|'absent'|'saved'>('editing'),[pending,Pending]=useState<Draft>(),[review,Review]=useState<unknown>(),[saved,Saved]=useState<Evidence>(),[feedback,Feedback]=useState<{message:string;area:'draft'|'source'}>({message:'',area:'draft'}),[busy,Busy]=useState(false);
++ const error=feedback.message;
++ function ErrorMessage(message:string){Feedback({message,area:'draft'});}
++ function SourceErrorMessage(message:string){Feedback({message,area:'source'});}
+  const [sourceReview,SourceReviewState]=useState<SourceReview[]>([]);
+  const [history,History]=useState<Evidence[]>(),[inspected,Inspected]=useState<Evidence>(),generation=useRef(0);
+  const [pins,Pins]=useState<Pin[]>([]),[restored,Restored]=useState<Evidence[]>([]),[handoverDirty,HandoverDirty]=useState(false),[storageMessage,StorageMessage]=useState(''),[activeScope,ActiveScope]=useState(''),lastRaw=useRef<string|null>(null),restoreGeneration=useRef(0);
+@@ -39,6 +42,12 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  const scopeKey=JSON.stringify([catalog.repository,'synthetic-p1','synthetic-e1']);
+  const locked=phase==='saving'||phase==='uncertain'||phase==='absent',draftScope= pending?.repository??selected?.repository??draftRepository;
+  const mayWrite=gateConfirmed&&draftScope===catalog.repository&&!busy;
++ const correctionBlocked=!gateConfirmed?'Correction is unavailable until the disabled execution gate is confirmed.':
++  locked?'Finish exact saved-result lookup or recovery before correcting another record. Keep the pending request open.':
++  busy?'Wait for the current request to finish before correcting another record.':
++  phase==='review'||phase==='review-conflict'||phase==='source-review'?'Finish or explicitly discard the reviewed draft before correcting another record.':
++  dirty?'An unsaved draft is open. Finish it or use Discard unsaved RF2 draft below before selecting a correction. Stored records will not be deleted.':'';
++
+  useEffect(()=>{onGuardChange(dirty||phase==='review'||phase==='review-conflict'||phase==='source-review'||locked);},[dirty,phase,locked,onGuardChange]);
+  useEffect(()=>()=>{generation.current++;restoreGeneration.current++;onGuardChange(false);},[onGuardChange]);
+  async function hydrate(next:Pin[]){const ticket=++restoreGeneration.current;Restored([]);try{const values=await transport.resolve(catalog.repository,next);if(ticket===restoreGeneration.current)Restored(values);}catch{if(ticket===restoreGeneration.current)StorageMessage('Exact saved references could not all be confirmed. Pins are retained as unavailable; no successor was substituted.');}}
+@@ -53,7 +62,11 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  function reset(){if(locked)return;DraftRepository(catalog.repository);C({...chartDefaults});N({question:'',findings:'',possibilities:'',gaps:'',plan:'',pins:[]});Selected(undefined);Reason('');Pending(undefined);Review(undefined);SourceReviewState([]);Saved(undefined);Phase('editing');Dirty(false);SourceKey(false);}
+  function reuse(e:Evidence){if(locked||busy||phase!=='editing'||selected||e.repository!==catalog.repository||draftRepository!==catalog.repository)return;N(old=>({...old,pins:old.pins.some(x=>key(x)===key(pin(e)))?old.pins:[...old.pins,pin(e)].slice(0,12)}));M('note');Dirty(true);}
+  function correct(e:Evidence){if(locked||dirty)return;if(!e.metadata?.chart){onLegacyCorrect(e);return;}Selected(e);C({...e.metadata.chart});M('chart');SourceKey(!!e.metadata.chart.source_record);if(e.metadata.chart.source_record)Identity(e.metadata.chart.source_record);Reason('');Phase('editing');Dirty(true);Saved(undefined);}
+- async function validate(){if(!mayWrite||locked)return;Busy(true);ErrorMessage('');try{
++ async function validate(){if(!mayWrite||locked)return;
++  const missing=[...(!actor.trim()?['Actor']:[]),...(mode==='note'?(['question','findings','possibilities','gaps','plan'] as const).filter(k=>!note[k].trim()).map(k=>k[0].toUpperCase()+k.slice(1)):[])];
++  if(mode==='note'&&!note.pins.length)missing.push('At least one selected evidence reference');
++  if(missing.length){ErrorMessage('Complete these required fields: '+missing.join(', ')+'. Your draft and selected references are retained; nothing was saved.');return;}
++  Busy(true);ErrorMessage('');try{
+   const draft:Draft={repository:catalog.repository,id:selected?.fact.id??crypto.randomUUID(),revision:crypto.randomUUID(),actor,recorded_at:new Date().toISOString(),chart:mode==='chart'?{...chart,source_record:sourceKey?identity:null}:null,note:mode==='note'?note:null,predecessor:selected?pin(selected):null,reason:selected?reason:null};
+   const r=await transport.action('validate',draft);if(draft.note&&!r.source_review)throw Error('Selected-source review could not be confirmed.');Pending(draft);Review(r);SourceReviewState(r.source_review??[]);Phase(draft.note?'source-review':'review');
+  }catch(e){ErrorMessage(e instanceof Error?e.message:'Draft could not be validated.');}finally{Busy(false);}}
+@@ -61,15 +74,15 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  async function refreshSourceReview(){if(!pending||!mayWrite||locked)return;Busy(true);ErrorMessage('');try{const next={...pending};delete next.source_review;const result=await transport.action('validate',next);if(!result.source_review)throw Error();Pending(next);SourceReviewState(result.source_review);Review(result);Phase('source-review');}catch{ErrorMessage('Current selected-source status could not be confirmed; no note saved.');}finally{Busy(false);}}
+  async function save(){if(!pending||!mayWrite)return;Busy(true);Phase('saving');ErrorMessage('');try{const r=await transport.action('save',pending);if(!r.evidence)throw Error('Unconfirmed save');Saved(r.evidence);Phase('saved');Dirty(false);try{await onRefresh();}catch{ErrorMessage('Saved confirmation retained; refresh failed. New writes remain blocked until scope is confirmed.');}}catch(error){if(error instanceof RF2ReviewChanged){Phase('review-conflict');ErrorMessage('The exact request was rejected because selected sources changed. It is retained. Explicitly review again before any new append.');}else{Phase('uncertain');ErrorMessage('Save completion is uncertain. Keep this page open and check the exact original request; do not create another entry.');}}finally{Busy(false);}}
+  async function lookup(){if(!pending)return;Busy(true);ErrorMessage('');try{const r=await transport.action('lookup',pending);if(r.status==='absent'){Phase('absent');}else if(r.evidence){Saved(r.evidence);Phase('saved');Dirty(false);await onRefresh();}else throw Error();}catch{ErrorMessage('Exact lookup could not be confirmed. The original pending request is retained.');}finally{Busy(false);}}
+- async function inspectReferences(ps:Pin[]){const ticket=++generation.current;References([]);History(undefined);Inspected(undefined);try{const found=await transport.resolve(catalog.repository,ps);if(ticket===generation.current)References(found.map((e,n)=>({...e,cutoff:ps[n].cutoff})));}catch{if(ticket===generation.current)ErrorMessage('Exact note evidence could not be confirmed. No successor was substituted.');}}
+- async function inspect(e:Evidence){const t=++generation.current;Inspected(e);History(undefined);ErrorMessage('');try{const result=await transport.history(e);if(t===generation.current)History(result);}catch{if(t===generation.current)ErrorMessage('Exact history could not be confirmed. No different source revision was substituted.');}}
++ async function inspectReferences(ps:Pin[]){const ticket=++generation.current;References([]);History(undefined);Inspected(undefined);try{const found=await transport.resolve(catalog.repository,ps);if(ticket===generation.current)References(found.map((e,n)=>({...e,cutoff:ps[n].cutoff})));}catch{if(ticket===generation.current)SourceErrorMessage('Exact note evidence could not be confirmed. No successor was substituted.');}}
++ async function inspect(e:Evidence){const t=++generation.current;Inspected(e);History(undefined);SourceErrorMessage('');try{const result=await transport.history(e);if(t===generation.current)History(result);}catch{if(t===generation.current)SourceErrorMessage('Exact history could not be confirmed. No different source revision was substituted.');}}
+  function addHandover(e:Evidence){if(activeScope!==scopeKey||e.repository!==catalog.repository)return;const p=pin(e);if(pins.some(x=>key(x)===key(p)))return;if(pins.length===32){StorageMessage('Handover limit reached; no selection was dropped.');return;}const next=[...pins,p];Pins(next);Restored(old=>[...old,e]);HandoverDirty(true);StorageMessage('Unsaved handover changes. Save explicitly before reload.');}
+  function saveHandover(){if(activeScope!==scopeKey||!gateConfirmed)return;try{const k=storageKey(catalog.repository);if(localStorage.getItem(k)!==lastRaw.current)throw Error('Another tab changed the saved set. Reload it before replacing it.');const value:SavedRF2={version:2,repository:catalog.repository,patient:'synthetic-p1',encounter:'synthetic-e1',savedAt:new Date().toISOString(),pins};const raw=JSON.stringify(value);decodeRF2Saved(raw,catalog.repository);localStorage.setItem(k,raw);lastRaw.current=raw;HandoverDirty(false);StorageMessage('Saved RF2 handover locally: '+pins.length+' selection(s). '+value.savedAt);}catch(e){StorageMessage(e instanceof Error?e.message:'Local save failed. Existing saved bytes were not intentionally replaced.');}}
+  async function importV1(){if(activeScope!==scopeKey||pins.length||handoverDirty){StorageMessage('Keep v1 and v2 separate: clear the working v2 selection explicitly before copying v1. No saved bytes were changed.');return;}try{const raw=localStorage.getItem(handoverStorageKey(catalog.combined.circulatory));if(raw===null)throw Error('No version 1 saved set exists.');const v=decodeSavedHandover(raw,catalog.combined.circulatory);const next=v.pins.map(p=>({...p,repository:catalog.repository}));Pins(next);HandoverDirty(true);StorageMessage('Copied v1 selections into the working v2 set. Save explicitly; v1 bytes remain unchanged.');await hydrate(next);}catch(e){StorageMessage(e instanceof Error?e.message:'Version 1 copy failed; originals unchanged.');}}
+  const field=(label:string,k:keyof Chart,optional=false)=><label>{label}<input value={String(chart[k]??'')} maxLength={k==='source_context'||k==='uncertainty'||k==='new_collection_reason'?512:128} onChange={e=>changeChart(k,e.target.value|| (optional?null:''))}/></label>;
+  const [search,Search]=useState('');const rows=catalog.items.filter(e=>[e.fact.id,e.fact.kind,evidenceText(e),e.metadata?.chart?.category??''].join(' ').toLowerCase().includes(search.toLowerCase()));
+  return <section className="rf2" aria-label="Renal charting and handover"><h2>Renal charting and handover</h2><p><strong>{gateConfirmed?'Clinical execution disabled.':'Execution gate not confirmed — new writes blocked.'}</strong> Local synthetic charting. No calculated balance, urine rate, AKI stage or treatment advice.</p><p>Repository {catalog.repository} · shared cutoff {catalog.cutoff.fact_watermark}. Reuse a recorded observation before entering another quantity. Acquisition and intended purpose are separate.</p>
+- {error&&<p role="alert">{error}</p>}<label>Find existing RF2 source<input type="search" value={search} onChange={e=>Search(e.target.value)} placeholder="Source ID, creatinine, weight, urine…"/></label><div className="rf2-scroll"><table><caption>Existing sources — use once across modules</caption><thead><tr><th>Exact record</th><th>Recorded assertion</th><th>Actions</th></tr></thead><tbody>{rows.map(e=><tr key={key(pin(e))}><th>{e.fact.id} / {e.fact.revision}</th><td>{evidenceText(e)}<br/><small>{sourceContext(e,catalog)}</small><br/>{e.metadata?.chart&&<>Acquisition: {e.metadata.chart.acquisition}; method {e.metadata.chart.method??'unavailable'}; purpose {e.metadata.chart.purpose??'unavailable'}</>}{e.fact.id==='fs-WEIGHT'&&<>Dosing-weight context; acquisition/method unavailable. Do not infer measured status.</>}<br/>{e.superseded?'Superseded historical revision':String(e.fact.record_status??'legacy source assertion')}</td><td><button onClick={()=>void inspect(e)}>Inspect exact history</button><button disabled={busy||locked||phase!=='editing'||!!selected||note.pins.length>=12} onClick={()=>reuse(e)}>Reuse for reassessment</button><button disabled={busy||dirty||phase==='review'||phase==='review-conflict'||phase==='source-review'||locked||e.fact.kind!=='circulatory_event'||!gateConfirmed} onClick={()=>correct(e)}>Correct original record</button><button disabled={activeScope!==scopeKey||!gateConfirmed} onClick={()=>addHandover(e)}>Add exact record to RF2 handover</button></td></tr>)}</tbody></table></div>
++ {error&&feedback.area==='source'&&<p role="alert">{error}</p>}<label>Find existing RF2 source<input type="search" value={search} onChange={e=>Search(e.target.value)} placeholder="Source ID, creatinine, weight, urine…"/></label>{correctionBlocked&&<p id="rf2-correction-help" role="status">{correctionBlocked}</p>}<div className="rf2-scroll"><table><caption>Existing sources — use once across modules</caption><thead><tr><th>Exact record</th><th>Recorded assertion</th><th>Actions</th></tr></thead><tbody>{rows.map(e=><tr key={key(pin(e))}><th>{e.fact.id} / {e.fact.revision}</th><td>{evidenceText(e)}<br/><small>{sourceContext(e,catalog)}</small><br/>{e.metadata?.chart&&<>Acquisition: {e.metadata.chart.acquisition}; method {e.metadata.chart.method??'unavailable'}; purpose {e.metadata.chart.purpose??'unavailable'}</>}{e.fact.id==='fs-WEIGHT'&&<>Dosing-weight context; acquisition/method unavailable. Do not infer measured status.</>}<br/>{e.superseded?'Superseded historical revision':String(e.fact.record_status??'legacy source assertion')}</td><td><button onClick={()=>void inspect(e)}>Inspect exact history</button><button disabled={busy||locked||phase!=='editing'||!!selected||note.pins.length>=12} onClick={()=>reuse(e)}>Reuse for reassessment</button><button disabled={!!correctionBlocked||e.fact.kind!=='circulatory_event'} aria-describedby={correctionBlocked?'rf2-correction-help':undefined} onClick={()=>correct(e)}>Correct original record</button><button disabled={activeScope!==scopeKey||!gateConfirmed} onClick={()=>addHandover(e)}>Add exact record to RF2 handover</button></td></tr>)}</tbody></table></div>
+  {references.length>0&&references.every(e=>e.repository===catalog.repository)&&<section aria-label="Exact renal note evidence"><h3>Exact sources retained by the note</h3>{references.map(e=><article key={key(pin(e))}><p>{e.fact.kind} / {e.fact.id} / {e.fact.revision}: {evidenceText(e)}</p><button onClick={()=>void inspect(e)}>Inspect this retained source history</button><details><summary>Complete retained evidence and uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details></article>)}</section>}
+  {inspected&&inspected.repository===catalog.repository&&<section aria-label="RF2 exact source history"><h3>Selected {inspected.fact.id} / {inspected.fact.revision}</h3><button onClick={()=>{generation.current++;Inspected(undefined);History(undefined);}}>Close history</button><p>Corrections retain originals. A transcription correction is not improvement or a new sample.</p>{history?history.map(e=><article key={key(pin(e))}><h4>{e.fact.id} / {e.fact.revision}</h4><p>{evidenceText(e)} · {e.superseded?'historical superseded revision':'terminal at this cutoff'}</p><details><summary>Complete exact record and uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details><button onClick={()=>reuse(e)} disabled={locked||busy||phase!=='editing'||!!selected}>Use this exact historical revision in reassessment</button><button onClick={()=>addHandover(e)} disabled={!gateConfirmed}>Add this revision to RF2 handover</button></article>):<p>History loading or unconfirmed; no substitute shown.</p>}</section>}
+  <section aria-label="RF2 draft"><h3>{selected?'Correct '+selected.fact.id:'Record a genuinely new collection or authored review'}</h3><p>Same numbers do not identify the same collection. Source replay uses issuer, record and component identity; series IDs are not record IDs.</p>
+@@ -81,6 +94,7 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  <label><input type="checkbox" checked={sourceKey} disabled={!!selected} onChange={e=>{SourceKey(e.target.checked);Dirty(true);}}/>An explicit source RECORD key is available (not series/context)</label>{sourceKey?Object.entries(identity).map(([k,v])=><label key={k}>{k}<input value={v} maxLength={128} onChange={e=>{Identity(old=>({...old,[k]:e.target.value}));Dirty(true);}}/></label>):field('Why this is a genuinely new collection (not a copy)','new_collection_reason')}
+  <p>Gaps, overlaps and reported totals are not reconciled. A challenge may already be included in an interval input. CRRT net removal is not effluent or proof of continuous treatment.</p></>:<><p>Select existing evidence above. No intervention is required. Recorded findings, possibilities and gaps remain separate.</p>{(['question','findings','possibilities','gaps','plan'] as const).map(k=><label key={k}>{k}<textarea maxLength={512} value={note[k]} onChange={e=>{N(old=>({...old,[k]:e.target.value}));Dirty(true);}}/></label>)}<ul>{note.pins.map(p=><li key={key(p)}>{p.reference.kind} / {p.reference.id} / {p.reference.version} · selected cutoff {p.cutoff}<button onClick={()=>{N(old=>({...old,pins:old.pins.filter(x=>key(x)!==key(p))}));Dirty(true);}}>Remove evidence reference</button></li>)}</ul><p>Plan is recorded text, not a scheduled action. This note does not establish causation or a validated diagnosis.</p></>}
+  {selected&&<label>Reason for correction<input value={reason} maxLength={512} onChange={e=>Reason(e.target.value)}/></label>}<button onClick={()=>void validate()}>Validate RF2 draft</button><button onClick={reset}>Discard unsaved RF2 draft</button></fieldset>:<><h4>Exact request review</h4><pre>{JSON.stringify(review??pending,null,2)}</pre>{phase==='review-conflict'&&<><p>No source successor was selected. The rejected original request remains above.</p><button disabled={!mayWrite} onClick={()=>void refreshSourceReview()}>Explicitly re-review rejected request sources</button></>}{phase==='source-review'&&<section aria-label="Review selected source changes"><h4>Review selected revisions against current source status</h4><p>Your original selections remain exact. Current status is a review checkpoint, not a substituted measurement. New changes before save will block the append.</p>{sourceReview.map((r,n)=><article key={n}><p>Selected {r.selected.kind} / {r.selected.id} / {r.selected.version}</p><p>Current terminal {r.terminal.version}; record status {r.record_status??'typed status unavailable'}; ingestion {r.terminal_ingestion}; digest {r.terminal_digest}</p>{needsHistoricalReview(r)?<label><input type="checkbox" checked={r.retain_historical} onChange={e=>SourceReviewState(old=>old.map((v,i)=>i===n?{...v,retain_historical:e.target.checked}:v))}/>Explicitly retain selected historical or withdrawn evidence {r.selected.id} / {r.selected.version}</label>:<p>Selected revision is unchanged and recorded, or has no typed status.</p>}</article>)}<button disabled={!mayWrite||sourceReview.some(r=>needsHistoricalReview(r)&&!r.retain_historical)} onClick={()=>void confirmSourceReview()}>Validate reviewed sources</button><button disabled={!mayWrite} onClick={()=>void refreshSourceReview()}>Refresh selected-source review</button><button disabled={busy} onClick={()=>{Phase('editing');Pending(undefined);SourceReviewState([]);}}>Edit reassessment draft</button></section>}{phase==='review'&&<><button disabled={!mayWrite} onClick={()=>void save()}>Confirm RF2 append</button><button onClick={()=>{Phase('editing');Pending(undefined);}}>Edit reviewed draft</button><button onClick={reset}>Discard reviewed draft</button></>}{(phase==='uncertain'||phase==='absent')&&<><p>Original request retained. Do not close/reload. Absence is not rollback proof.</p><button disabled={busy} onClick={()=>void lookup()}>Check exact RF2 saved result</button>{phase==='absent'&&<button disabled={!mayWrite} onClick={()=>void save()}>Explicitly retry identical RF2 request</button>}</>}{phase==='saving'&&<p role="status">Saving exact RF2 request…</p>}{phase==='saved'&&saved&&<><p role="status">RF2 result confirmed: {saved.fact.id} / {saved.fact.revision} · ingestion {saved.ingestion.ingestion_sequence}{saved.superseded?' · historical source replay; superseded, not restored as current':''}</p><button disabled={!gateConfirmed||saved.repository!==catalog.repository} onClick={()=>addHandover(saved)}>Add confirmed RF2 result to handover</button><button onClick={reset} disabled={!gateConfirmed}>Start another RF2 record</button></>}</>}
++ {error&&feedback.area==='draft'&&<p role="alert" id="rf2-draft-feedback">{error}</p>}
+  <p>General draft/command recovery after reload is deferred. Saved handover does not save a pending command.</p></section>
+  <NoteComparison key={scopeKey} items={catalog.items} onResolve={ps=>void inspectReferences(ps)}/>
+  <section aria-label="RF2 saved handover"><h3>Saved local RF2 handover</h3><p role="status">{storageMessage||'No RF2 saved selection restored.'}</p>{handoverDirty&&<p>Unsaved changes — save explicitly before reload.</p>}<button disabled={!gateConfirmed||activeScope!==scopeKey||busy} onClick={saveHandover}>Save RF2 handover locally</button><button disabled={!gateConfirmed||activeScope!==scopeKey} onClick={()=>void importV1()}>Explicitly copy version 1 into working version 2</button><p>If both versions exist, each remains separate. This view is version 2; the existing Handover tab shows version 1. Copying never saves or overwrites v1.</p>{activeScope===scopeKey&&pins.map(p=>{const e=restored.find(x=>key(pin(x))===key(p));return <article key={key(p)}><h4>{p.reference.kind} / {p.reference.id} / {p.reference.version}</h4><p>Original selected cutoff {p.cutoff}; digest {p.digest}</p>{e?<><p>{evidenceText(e)} · {e.superseded?'superseded historical revision retained':'exact source confirmed'}</p><details><summary>Retained source and note uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details></>:<p>Exact source unavailable/unconfirmed; pin retained without substitution.</p>}<button onClick={()=>{Pins(old=>old.filter(x=>key(x)!==key(p)));Restored(old=>old.filter(x=>key(pin(x))!==key(p)));HandoverDirty(true);}}>Remove selection only</button></article>;})}</section>
+diff --git a/frontend/src/demo/guidedEvidence.ts b/frontend/src/demo/guidedEvidence.ts
+index 24e376d..aa8d052 100644
+--- a/frontend/src/demo/guidedEvidence.ts
++++ b/frontend/src/demo/guidedEvidence.ts
+@@ -66,4 +66,17 @@ export function buildGuided(family:GuidedFamily,f:Fields,actor:string,items:Circ
+  }
+  return fact as CirculatoryItem['fact'];
+ }
+-export function shortcutValue(text:string,next:string){const fact=JSON.parse(text),result=record(fact.result);fact.result={...result,quantity:{...record(result.quantity),value:next}};return JSON.stringify(fact,null,2);}
++export function editableQuantity(fact:unknown){
++ const f=record(fact),result=record(f.result),quantity=record(result.quantity);
++ if(typeof quantity.value==='string')return {field:'result' as const,quantity};
++ const amount=record(f.recorded_amount);
++ if(f.kind==='circulatory_event'&&typeof amount.value==='string')return {field:'recorded_amount' as const,quantity:amount};
++ return undefined;
++}
++export function shortcutValue(text:string,next:string){
++ const fact=JSON.parse(text),selected=editableQuantity(fact);
++ if(!selected)throw Error('No recorded numeric quantity to edit.');
++ if(selected.field==='recorded_amount')fact.recorded_amount={...selected.quantity,value:next};
++ else fact.result={...record(fact.result),quantity:{...selected.quantity,value:next}};
++ return JSON.stringify(fact,null,2);
++}
+diff --git a/frontend/tests/evidenceEntry.test.tsx b/frontend/tests/evidenceEntry.test.tsx
+index 39f1cfe..699aa65 100644
+--- a/frontend/tests/evidenceEntry.test.tsx
++++ b/frontend/tests/evidenceEntry.test.tsx
+@@ -196,3 +196,21 @@ it.each([{reverse:false,selected:0},{reverse:false,selected:1},{reverse:true,sel
+  fireEvent.click(screen.getByRole('button',{name:'Confirm append to local database'}));await screen.findByText(/Exact revision saved and confirmed/);
+  check(entry.save.mock.calls[0][0].fact);
+ });
++
++it('corrects a legacy urine amount without JSON editing and preserves its interval, units and availability',async()=>{
++ const {entry,state}=setup();const original=state.assembly.snapshot.items.find(i=>i.fact.id==='fs-IO-output_urine-45')!;
++ fireEvent.change(await screen.findByLabelText('Find evidence'),{target:{value:original.fact.id}});
++ fireEvent.click(screen.getByRole('button',{name:new RegExp(original.fact.id)}));
++ const amount=screen.getByLabelText('Recorded numeric value (raw unit preserved)');expect(amount).toHaveValue('40');
++ fireEvent.change(amount,{target:{value:'45.0000'}});
++ fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Synthetic reviewer'}});
++ fireEvent.change(screen.getByLabelText('Reason for correction or withdrawal'),{target:{value:'Transcription correction; same collection'}});
++ fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
++ await screen.findByRole('button',{name:'Confirm append to local database'});
++ expect(screen.getByText('Proposed recorded result: 45.0000 mL')).toBeInTheDocument();expect(entry.save).not.toHaveBeenCalled();
++ const submitted=entry.validate.mock.calls[0][0];expect(submitted.predecessor_digest).toBe(original.expected_digest);
++ expect(submitted.fact.recorded_amount).toEqual({...original.fact.recorded_amount as object,value:'45.0000'});
++ for(const field of ['occurred','available','recorded_interval','description','associations','external_evidence'])expect(submitted.fact[field]).toEqual(original.fact[field]);
++ expect(submitted.fact.supersedes).toEqual({kind:original.fact.kind,id:original.fact.id,version:original.fact.revision});
++ expect(original.fact.recorded_amount).toMatchObject({value:'40'});
++});
+diff --git a/frontend/tests/guidedEvidence.test.ts b/frontend/tests/guidedEvidence.test.ts
+index 73d3a18..6341d7b 100644
+--- a/frontend/tests/guidedEvidence.test.ts
++++ b/frontend/tests/guidedEvidence.test.ts
+@@ -64,3 +64,21 @@ it('reproduces the old delimiter collision while tuple keys resolve exact compon
+  for(const order of [[a,b],[b,a]])for(const chosen of [a,b])expect(resolveEvidenceKey(order,evidenceKey(chosen.fact))).toBe(chosen);
+  for(const malformed of [legacy(a),'null','[]','["circulatory_pressure","a"]','["circulatory_pressure","a",1]','["circulatory_pressure","a","missing"]'])expect(resolveEvidenceKey([a,b],malformed)).toBeUndefined();
+ });
++
++it('keeps a recorded event amount and complete JSON editor in sync without changing any other source fields',async()=>{
++ const {shortcutValue}=await import('../src/demo/guidedEvidence');
++ const original=items.find(i=>i.fact.id==='fs-IO-output_urine-45')!.fact;
++ const changed=JSON.parse(shortcutValue(JSON.stringify(original),'45.0000'));
++ expect(changed).toEqual({...original,recorded_amount:{...original.recorded_amount as object,value:'45.0000'}});
++ changed.uncertainty=['Keep this independently edited limitation'];changed.recorded_amount.value='46.0000';
++ const final=JSON.parse(shortcutValue(JSON.stringify(changed),'47.0000'));
++ expect(final).toEqual({...changed,recorded_amount:{...changed.recorded_amount,value:'47.0000'}});
++ expect(final).not.toHaveProperty('result');
++});
++it('does not invent a numeric amount for a missing quantity or invalid source JSON',async()=>{
++ const {shortcutValue,editableQuantity}=await import('../src/demo/guidedEvidence');
++ for(const fact of [{kind:'circulatory_event',recorded_amount:null},{kind:'circulatory_event',recorded_amount:{value:null}},{kind:'circulatory_echo',result:{finding:{raw_display:'Qualitative'}}}]){
++  expect(editableQuantity(fact)).toBeUndefined();expect(()=>shortcutValue(JSON.stringify(fact),'45')).toThrow();
++ }
++ expect(()=>shortcutValue('{broken','45')).toThrow();
++});
+diff --git a/frontend/tests/rf2.test.tsx b/frontend/tests/rf2.test.tsx
+index 2f24681..967addc 100644
+--- a/frontend/tests/rf2.test.tsx
++++ b/frontend/tests/rf2.test.tsx
+@@ -1,6 +1,7 @@
+ import {afterAll,beforeAll,beforeEach,expect,it,vi} from 'vitest';
+ import {fireEvent,render,screen,within,waitFor,act} from '@testing-library/react';
+ import fixture from './fixtures/rf2-api.json';
++import flowsheet from './fixtures/icuFlowsheet.json';
+ import {RF2Client,decodeEvidence,chartDefaults,stable,hash,pin,type Draft,type Evidence,type Catalog,type Pin} from '../src/api/rf2Client';
+ import {RenalFluidEntryWorkspace,evidenceText,sourceContext} from '../src/demo/RenalFluidEntryWorkspace';
+ import {storageKey,decodeRF2Saved} from '../src/demo/rf2Handover';
+@@ -37,3 +38,47 @@ it('compares two persisted renal notes with original and corrected weight revisi
+ it.each(['70 kg',true])('does not promote a legacy weight assertion into a numeric quantity: %s',value=>{const e=structuredClone(fixture.weight) as Evidence;e.fact={...e.fact,value:{status:'known',value,reason:null}};delete e.fact.recorded_amount;expect(evidenceText(e)).toContain('no numeric quantity inferred');});
+ 
+ it('keeps source timing, unavailable collection metadata and interval bounds visible',async()=>{const c=await load();const lab=c.items.find(e=>e.fact.id==='demo-creatinine-A')!;expect(sourceContext(lab,c)).toContain('Specimen/collection time and typed quality unavailable');const urine=c.items.find(e=>e.fact.id===fixture.urine.fact.id)!;expect(sourceContext(urine,c)).toContain('2026-10-08T09:30:00Z');expect(sourceContext(urine,c)).toContain('Source clock unknown');expect(sourceContext(urine,c)).toContain('no rate or duration inferred');});
++
++it('explains a blocked correction and enables it only after explicit draft discard',async()=>{
++ const c=await load(),t=apiMock(),legacy=vi.fn();
++ const original=flowsheet.assembly.snapshot.items.find(e=>e.fact.id==='fs-IO-output_urine-45')!;
++ const source:Evidence={repository:c.repository,fact:original.fact as unknown as Evidence['fact'],canonical_fact:stable(original.fact),digest:await hash(stable(original.fact)),ingestion:{...original.ingestion,repository_id:c.repository},cutoff:c.cutoff.fact_watermark,terminal_reference:{kind:original.fact.kind,id:original.fact.id,version:original.fact.revision},superseded:false,metadata:null};
++ c.items.push(source);mount(c,t,{onLegacyCorrect:legacy});
++ const row=screen.getByRole('row',{name:new RegExp(source.fact.id)}),button=within(row).getByRole('button',{name:'Correct original record'});
++ expect(button).toBeEnabled();fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Unsaved author'}});
++ expect(button).toBeDisabled();expect(button).toHaveAccessibleDescription(/An unsaved draft is open/);
++ fireEvent.click(button);expect(legacy).not.toHaveBeenCalled();expect(screen.getByLabelText('Actor')).toHaveValue('Unsaved author');
++ fireEvent.click(screen.getByRole('button',{name:'Discard unsaved RF2 draft'}));expect(button).toBeEnabled();fireEvent.click(button);expect(legacy).toHaveBeenCalledWith(source);
++ expect(t.action).not.toHaveBeenCalled();
++});
++it('names missing reassessment fields before transport and retains exact source selections',async()=>{
++ const c=await load(),t=apiMock();mount(c,t);const source=c.items.find(e=>e.fact.id===fixture.weight.fact.id)!;
++ fireEvent.click(within(screen.getByRole('row',{name:new RegExp(source.fact.id)})).getByRole('button',{name:'Reuse for reassessment'}));
++ fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));
++ expect(screen.getByRole('alert')).toHaveTextContent('Complete these required fields: Actor, Question, Findings, Possibilities, Gaps, Plan.');expect(t.action).not.toHaveBeenCalled();
++ fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Synthetic author'}});
++ for(const k of ['question','findings','possibilities','plan'])fireEvent.change(screen.getByLabelText(k),{target:{value:'Recorded '+k}});
++ fireEvent.change(screen.getByLabelText('gaps'),{target:{value:'   '}});fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));
++ expect(screen.getByRole('alert')).toHaveTextContent('Complete these required fields: Gaps.');expect(t.action).not.toHaveBeenCalled();expect(screen.getByLabelText('findings')).toHaveValue('Recorded findings');
++ fireEvent.change(screen.getByLabelText('gaps'),{target:{value:'Unknown collection quality'}});
++ vi.mocked(t.action).mockResolvedValue({status:'validated',source_review:[],execution_enabled:false} as never);
++ fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));await screen.findByRole('region',{name:'Review selected source changes'});
++ expect(t.action).toHaveBeenCalledTimes(1);expect(vi.mocked(t.action).mock.calls[0][1].note?.pins).toEqual([pin(source)]);
++});
++
++it('places missing-field feedback beside the RF2 draft controls rather than above the source search',async()=>{
++ const c=await load(),t=apiMock();mount(c,t);const source=c.items.find(e=>e.fact.id===fixture.weight.fact.id)!;
++ fireEvent.click(within(screen.getByRole('row',{name:new RegExp(source.fact.id)})).getByRole('button',{name:'Reuse for reassessment'}));
++ const draftRegion=screen.getByRole('region',{name:'RF2 draft'}),validate=within(draftRegion).getByRole('button',{name:'Validate RF2 draft'});
++ fireEvent.click(validate);const alert=within(draftRegion).getByRole('alert');expect(alert).toHaveTextContent('Complete these required fields: Actor, Question, Findings, Possibilities, Gaps, Plan.');
++ expect(screen.getAllByRole('alert')).toHaveLength(1);expect(validate.compareDocumentPosition(alert)&Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
++ expect(draftRegion).toHaveTextContent(source.fact.revision);expect(t.action).not.toHaveBeenCalled();
++});
++it('keeps history confirmation failures beside the source area instead of labelling them draft validation',async()=>{
++ const c=await load(),t=apiMock();vi.mocked(t.history).mockRejectedValue(Error('Unavailable'));
++ mount(c,t);const source=c.items.find(e=>e.fact.id===fixture.weight.fact.id)!;
++ fireEvent.click(within(screen.getByRole('row',{name:new RegExp(source.fact.id)})).getByRole('button',{name:'Inspect exact history'}));
++ const alert=await screen.findByRole('alert');expect(alert).toHaveTextContent('Exact history could not be confirmed');
++ expect(within(screen.getByRole('region',{name:'RF2 draft'})).queryByRole('alert')).not.toBeInTheDocument();
++ expect(t.action).not.toHaveBeenCalled();
++});

@@ -1,0 +1,33 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2 tests/evidenceEntry.test.tsx tests/guidedEvidence.test.ts tests/rf2.test.tsx tests/rf2SourceReview.test.tsx tests/rf2.integration.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend
+
+ ❯ tests/rf2.test.tsx (30 tests | 1 failed) 1671ms
+   × explains a blocked correction and enables it only after explicit draft discard 41ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/rf2.test.tsx > explains a blocked correction and enables it only after explicit draft discard
+TypeError: Cannot read properties of undefined (reading 'fact')
+ ❯ tests/rf2.test.tsx:44:59
+     42|  const c=await load(),t=apiMock(),legacy=vi.fn();mount(c,t,{onLegacyCo…
+     43|  const source=c.items.find(e=>e.metadata===null&&e.fact.kind==='circul…
+     44|  const row=screen.getByRole('row',{name:new RegExp(source.fact.id)}),b…
+       |                                                           ^
+     45|  expect(button).toBeEnabled();fireEvent.change(screen.getByLabelText('…
+     46|  expect(button).toBeDisabled();expect(button).toHaveAccessibleDescript…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 78 passed (79)
+   Start at  16:50:03
+   Duration  7.67s (tests 64%, environment 23%, transform 5%, setup 4%, import 4%)
+
+    Isolate  5 workers spawned · ~769ms startup each (spawn + environment, per file)
+             at least ~1.15s faster with isolate: false — reuses workers across files instead of one per file
+

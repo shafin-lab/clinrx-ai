@@ -1,0 +1,17 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2 tests/rf2.test.tsx tests/rf2SourceReview.test.tsx tests/rf2.integration.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend
+
+
+ Test Files  3 passed (3)
+      Tests  41 passed (41)
+   Start at  17:42:54
+   Duration  3.78s (tests 48%, environment 33%, transform 9%, setup 6%, import 4%)
+
+Environment  jsdom was created 3 times · 2.25s total, 33% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
