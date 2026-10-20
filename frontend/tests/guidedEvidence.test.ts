@@ -64,3 +64,21 @@ it('reproduces the old delimiter collision while tuple keys resolve exact compon
  for(const order of [[a,b],[b,a]])for(const chosen of [a,b])expect(resolveEvidenceKey(order,evidenceKey(chosen.fact))).toBe(chosen);
  for(const malformed of [legacy(a),'null','[]','["circulatory_pressure","a"]','["circulatory_pressure","a",1]','["circulatory_pressure","a","missing"]'])expect(resolveEvidenceKey([a,b],malformed)).toBeUndefined();
 });
+
+it('keeps a recorded event amount and complete JSON editor in sync without changing any other source fields',async()=>{
+ const {shortcutValue}=await import('../src/demo/guidedEvidence');
+ const original=items.find(i=>i.fact.id==='fs-IO-output_urine-45')!.fact;
+ const changed=JSON.parse(shortcutValue(JSON.stringify(original),'45.0000'));
+ expect(changed).toEqual({...original,recorded_amount:{...original.recorded_amount as object,value:'45.0000'}});
+ changed.uncertainty=['Keep this independently edited limitation'];changed.recorded_amount.value='46.0000';
+ const final=JSON.parse(shortcutValue(JSON.stringify(changed),'47.0000'));
+ expect(final).toEqual({...changed,recorded_amount:{...changed.recorded_amount,value:'47.0000'}});
+ expect(final).not.toHaveProperty('result');
+});
+it('does not invent a numeric amount for a missing quantity or invalid source JSON',async()=>{
+ const {shortcutValue,editableQuantity}=await import('../src/demo/guidedEvidence');
+ for(const fact of [{kind:'circulatory_event',recorded_amount:null},{kind:'circulatory_event',recorded_amount:{value:null}},{kind:'circulatory_echo',result:{finding:{raw_display:'Qualitative'}}}]){
+  expect(editableQuantity(fact)).toBeUndefined();expect(()=>shortcutValue(JSON.stringify(fact),'45')).toThrow();
+ }
+ expect(()=>shortcutValue('{broken','45')).toThrow();
+});

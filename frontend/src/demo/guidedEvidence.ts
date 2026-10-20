@@ -66,4 +66,17 @@ export function buildGuided(family:GuidedFamily,f:Fields,actor:string,items:Circ
  }
  return fact as CirculatoryItem['fact'];
 }
-export function shortcutValue(text:string,next:string){const fact=JSON.parse(text),result=record(fact.result);fact.result={...result,quantity:{...record(result.quantity),value:next}};return JSON.stringify(fact,null,2);}
+export function editableQuantity(fact:unknown){
+ const f=record(fact),result=record(f.result),quantity=record(result.quantity);
+ if(typeof quantity.value==='string')return {field:'result' as const,quantity};
+ const amount=record(f.recorded_amount);
+ if(f.kind==='circulatory_event'&&typeof amount.value==='string')return {field:'recorded_amount' as const,quantity:amount};
+ return undefined;
+}
+export function shortcutValue(text:string,next:string){
+ const fact=JSON.parse(text),selected=editableQuantity(fact);
+ if(!selected)throw Error('No recorded numeric quantity to edit.');
+ if(selected.field==='recorded_amount')fact.recorded_amount={...selected.quantity,value:next};
+ else fact.result={...record(fact.result),quantity:{...selected.quantity,value:next}};
+ return JSON.stringify(fact,null,2);
+}

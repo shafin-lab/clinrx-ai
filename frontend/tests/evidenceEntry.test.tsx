@@ -196,3 +196,21 @@ it.each([{reverse:false,selected:0},{reverse:false,selected:1},{reverse:true,sel
  fireEvent.click(screen.getByRole('button',{name:'Confirm append to local database'}));await screen.findByText(/Exact revision saved and confirmed/);
  check(entry.save.mock.calls[0][0].fact);
 });
+
+it('corrects a legacy urine amount without JSON editing and preserves its interval, units and availability',async()=>{
+ const {entry,state}=setup();const original=state.assembly.snapshot.items.find(i=>i.fact.id==='fs-IO-output_urine-45')!;
+ fireEvent.change(await screen.findByLabelText('Find evidence'),{target:{value:original.fact.id}});
+ fireEvent.click(screen.getByRole('button',{name:new RegExp(original.fact.id)}));
+ const amount=screen.getByLabelText('Recorded numeric value (raw unit preserved)');expect(amount).toHaveValue('40');
+ fireEvent.change(amount,{target:{value:'45.0000'}});
+ fireEvent.change(screen.getByLabelText('Actor name'),{target:{value:'Synthetic reviewer'}});
+ fireEvent.change(screen.getByLabelText('Reason for correction or withdrawal'),{target:{value:'Transcription correction; same collection'}});
+ fireEvent.click(screen.getByRole('button',{name:'Validate and review draft'}));
+ await screen.findByRole('button',{name:'Confirm append to local database'});
+ expect(screen.getByText('Proposed recorded result: 45.0000 mL')).toBeInTheDocument();expect(entry.save).not.toHaveBeenCalled();
+ const submitted=entry.validate.mock.calls[0][0];expect(submitted.predecessor_digest).toBe(original.expected_digest);
+ expect(submitted.fact.recorded_amount).toEqual({...original.fact.recorded_amount as object,value:'45.0000'});
+ for(const field of ['occurred','available','recorded_interval','description','associations','external_evidence'])expect(submitted.fact[field]).toEqual(original.fact[field]);
+ expect(submitted.fact.supersedes).toEqual({kind:original.fact.kind,id:original.fact.id,version:original.fact.revision});
+ expect(original.fact.recorded_amount).toMatchObject({value:'40'});
+});

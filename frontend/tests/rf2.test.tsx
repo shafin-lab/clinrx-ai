@@ -1,6 +1,7 @@
 import {afterAll,beforeAll,beforeEach,expect,it,vi} from 'vitest';
 import {fireEvent,render,screen,within,waitFor,act} from '@testing-library/react';
 import fixture from './fixtures/rf2-api.json';
+import flowsheet from './fixtures/icuFlowsheet.json';
 import {RF2Client,decodeEvidence,chartDefaults,stable,hash,pin,type Draft,type Evidence,type Catalog,type Pin} from '../src/api/rf2Client';
 import {RenalFluidEntryWorkspace,evidenceText,sourceContext} from '../src/demo/RenalFluidEntryWorkspace';
 import {storageKey,decodeRF2Saved} from '../src/demo/rf2Handover';
@@ -37,3 +38,30 @@ it('compares two persisted renal notes with original and corrected weight revisi
 it.each(['70 kg',true])('does not promote a legacy weight assertion into a numeric quantity: %s',value=>{const e=structuredClone(fixture.weight) as Evidence;e.fact={...e.fact,value:{status:'known',value,reason:null}};delete e.fact.recorded_amount;expect(evidenceText(e)).toContain('no numeric quantity inferred');});
 
 it('keeps source timing, unavailable collection metadata and interval bounds visible',async()=>{const c=await load();const lab=c.items.find(e=>e.fact.id==='demo-creatinine-A')!;expect(sourceContext(lab,c)).toContain('Specimen/collection time and typed quality unavailable');const urine=c.items.find(e=>e.fact.id===fixture.urine.fact.id)!;expect(sourceContext(urine,c)).toContain('2026-10-08T09:30:00Z');expect(sourceContext(urine,c)).toContain('Source clock unknown');expect(sourceContext(urine,c)).toContain('no rate or duration inferred');});
+
+it('explains a blocked correction and enables it only after explicit draft discard',async()=>{
+ const c=await load(),t=apiMock(),legacy=vi.fn();
+ const original=flowsheet.assembly.snapshot.items.find(e=>e.fact.id==='fs-IO-output_urine-45')!;
+ const source:Evidence={repository:c.repository,fact:original.fact as unknown as Evidence['fact'],canonical_fact:stable(original.fact),digest:await hash(stable(original.fact)),ingestion:{...original.ingestion,repository_id:c.repository},cutoff:c.cutoff.fact_watermark,terminal_reference:{kind:original.fact.kind,id:original.fact.id,version:original.fact.revision},superseded:false,metadata:null};
+ c.items.push(source);mount(c,t,{onLegacyCorrect:legacy});
+ const row=screen.getByRole('row',{name:new RegExp(source.fact.id)}),button=within(row).getByRole('button',{name:'Correct original record'});
+ expect(button).toBeEnabled();fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Unsaved author'}});
+ expect(button).toBeDisabled();expect(button).toHaveAccessibleDescription(/An unsaved draft is open/);
+ fireEvent.click(button);expect(legacy).not.toHaveBeenCalled();expect(screen.getByLabelText('Actor')).toHaveValue('Unsaved author');
+ fireEvent.click(screen.getByRole('button',{name:'Discard unsaved RF2 draft'}));expect(button).toBeEnabled();fireEvent.click(button);expect(legacy).toHaveBeenCalledWith(source);
+ expect(t.action).not.toHaveBeenCalled();
+});
+it('names missing reassessment fields before transport and retains exact source selections',async()=>{
+ const c=await load(),t=apiMock();mount(c,t);const source=c.items.find(e=>e.fact.id===fixture.weight.fact.id)!;
+ fireEvent.click(within(screen.getByRole('row',{name:new RegExp(source.fact.id)})).getByRole('button',{name:'Reuse for reassessment'}));
+ fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));
+ expect(screen.getByRole('alert')).toHaveTextContent('Complete these required fields: Actor, Question, Findings, Possibilities, Gaps, Plan.');expect(t.action).not.toHaveBeenCalled();
+ fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Synthetic author'}});
+ for(const k of ['question','findings','possibilities','plan'])fireEvent.change(screen.getByLabelText(k),{target:{value:'Recorded '+k}});
+ fireEvent.change(screen.getByLabelText('gaps'),{target:{value:'   '}});fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));
+ expect(screen.getByRole('alert')).toHaveTextContent('Complete these required fields: Gaps.');expect(t.action).not.toHaveBeenCalled();expect(screen.getByLabelText('findings')).toHaveValue('Recorded findings');
+ fireEvent.change(screen.getByLabelText('gaps'),{target:{value:'Unknown collection quality'}});
+ vi.mocked(t.action).mockResolvedValue({status:'validated',source_review:[],execution_enabled:false} as never);
+ fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));await screen.findByRole('region',{name:'Review selected source changes'});
+ expect(t.action).toHaveBeenCalledTimes(1);expect(vi.mocked(t.action).mock.calls[0][1].note?.pins).toEqual([pin(source)]);
+});
