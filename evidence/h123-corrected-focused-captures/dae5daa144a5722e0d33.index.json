@@ -1,0 +1,12 @@
+{
+  "test": "tests/test_conformance.py::test_schema_rejects_entire_run[extra-registry]",
+  "calls": [
+    {
+      "input": "dae5daa144a5722e0d33-001.input.bin",
+      "input_sha256": "21dd26ac5eaaf3e008fa81aa8ae6a26da6cc21e71dc0e960a109b14a8de546b3",
+      "output": "dae5daa144a5722e0d33-001.output.json",
+      "output_sha256": "0d0d9b23102fad91bf88bbfafaffa4c8079072b70fc969a263a5fa380b8f1018"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

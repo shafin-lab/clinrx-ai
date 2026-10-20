@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/Users/mohammedshafiqshajahan/Documents/clinrx-ai/backend/venv/bin/python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--junitxml=evidence/h123-corrected-focused-junit.xml"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.7178887920454144,
+  "python": "3.11.6 (main, Nov 16 2025, 10:08:15) [Clang 17.0.0 (clang-1700.4.4.1)]",
+  "platform": "macOS-15.7.7-arm64-arm-64bit",
+  "pytest": "9.1.1",
+  "source_sha256": {
+    "fixture_support.py": "c964a9c74afb12ee6fa91d8ad4a828fcb861c810b54ad9cdb4d8bd93d6268127",
+    "generate_fixtures.py": "88f34a84e99936d4cafc354624395d5936cdb4163d740e0f538c3fbb5f6e123b",
+    "rf2_harness.py": "b6faa116b0d7a6451391efb7b35406a02f38b7f1ea3619c29282123f476f44ad",
+    "run_focused.py": "0956fb7f2582b533a966d00ae827fabfcd6a8ad2eec6e4d2c701f9e1e336af66",
+    "schema.json": "524c7abc6ec2ab7d50a0d2deb64f412b76ed616d5b0cffcc4be943abba10afc3",
+    "tests/conftest.py": "10a439832918223dc5d531e557506d9cb68ea28b6683ef8cd0be7cc3d6dbf501",
+    "tests/test_conformance.py": "de6ceaf69b9486d2ba11343a7d5a4b7342953f496e856d094c835bf4df912626",
+    "tests/test_director_h123.py": "2b13354afab3848c7a5dac8d5e14ae811c823eccc09756f774d19f6be6b677c4"
+  },
+  "scope": "isolated harness only; no application suite or live service",
+  "captures": "evidence/h123-corrected-focused-captures"
+}

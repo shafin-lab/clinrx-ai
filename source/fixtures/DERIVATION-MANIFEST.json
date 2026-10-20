@@ -1,0 +1,436 @@
+[
+  {
+    "id": "01-identical-replay",
+    "input": "fixtures/derived/01-identical-replay.json",
+    "sha256": "f7957b2cc1cabed283a3c3270ad15be168d8dc5ea8cd94ce02fd0262a070182a",
+    "original_scenario": "01-identical-replay",
+    "original_examples": [
+      "urine-original",
+      "urine-original"
+    ],
+    "original_expectation": "one contribution",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 1,
+      "reason": null
+    }
+  },
+  {
+    "id": "02-same-key-changed-content",
+    "input": "fixtures/derived/02-same-key-changed-content.json",
+    "sha256": "d5d0b0f72e2784601087c9656dd8ff9696858a77d979ea7c9114a838f71cbeee",
+    "original_scenario": "02-same-key-changed-content",
+    "original_examples": [
+      "urine-original",
+      "urine-changed-same-revision"
+    ],
+    "original_expectation": "exclude conflicting group",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "SAME_REVISION_CONFLICT"
+    }
+  },
+  {
+    "id": "03-explicit-correction",
+    "input": "fixtures/derived/03-explicit-correction.json",
+    "sha256": "c6c46d1aeab23c0754d2d6a4886004072c5e3fedcca9c9f65da3c3a602cdc93b",
+    "original_scenario": "03-explicit-correction",
+    "original_examples": [
+      "urine-original",
+      "urine-correction"
+    ],
+    "original_expectation": "select r2 only at cutoff 102",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 1,
+      "reason": null
+    }
+  },
+  {
+    "id": "04-version-alias",
+    "input": "fixtures/derived/04-version-alias.json",
+    "sha256": "1ca5e1f29fd3e38c2b77d66bbee88f59451b78adbedbd1eac94d07b460f36497",
+    "original_scenario": "04-version-alias",
+    "original_examples": [
+      "urine-original",
+      "urine-version-alias"
+    ],
+    "original_expectation": "no second contribution; exclude group until envelope change reconciled",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "SAME_REVISION_CONFLICT"
+    }
+  },
+  {
+    "id": "05-component-alias",
+    "input": "fixtures/derived/05-component-alias.json",
+    "sha256": "36fab4b2e10593f0fa8a39f430b16a4b3bcd92b47ff10cb5fcc074c23dc53a4e",
+    "original_scenario": "05-component-alias",
+    "original_examples": [
+      "urine-original",
+      "urine-component-alias"
+    ],
+    "original_expectation": "no second contribution; exclude unresolved conflicting representations",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "SAME_REVISION_CONFLICT"
+    }
+  },
+  {
+    "id": "06-category-alias",
+    "input": "fixtures/derived/06-category-alias.json",
+    "sha256": "3118d9fc5586079f5fa69b551426fb46381d7638f625c6e594e938ca96a622dc",
+    "original_scenario": "06-category-alias",
+    "original_examples": [
+      "urine-original",
+      "urine-category-alias"
+    ],
+    "original_expectation": "exclude conflicting group",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "SAME_REVISION_CONFLICT"
+    }
+  },
+  {
+    "id": "07-new-key-duplicate",
+    "input": "fixtures/derived/07-new-key-duplicate.json",
+    "sha256": "e35e8320f86ad8934ca596ec797e571cc00be4094cacd8231bd2c2e598f86c6d",
+    "original_scenario": "07-new-key-duplicate",
+    "original_examples": [
+      "urine-original",
+      "urine-new-key-same-volume"
+    ],
+    "original_expectation": "exclude unresolved duplicate group",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "DUPLICATE_UNRESOLVED"
+    }
+  },
+  {
+    "id": "08-independent-drains",
+    "input": "fixtures/derived/08-independent-drains.json",
+    "sha256": "ba79b800425ebc4f9cc960af7d93e614537d054706fe23b7827a3654d86615b6",
+    "original_scenario": "08-independent-drains",
+    "original_examples": [
+      "drain-A",
+      "drain-B"
+    ],
+    "original_expectation": "both may contribute",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 2,
+      "reason": null
+    }
+  },
+  {
+    "id": "09-replacement",
+    "input": "fixtures/derived/09-replacement.json",
+    "sha256": "6f6c1a4855dea5f6589d19744e839ae58acf95c6d4224a086338b5f3cc4a97ef",
+    "original_scenario": "09-replacement",
+    "original_examples": [
+      "drain-replacement"
+    ],
+    "original_expectation": "exclude outside drain lifecycle",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "DRAIN_LIFECYCLE"
+    }
+  },
+  {
+    "id": "10-summary-known",
+    "input": "fixtures/derived/10-summary-known.json",
+    "sha256": "0e68bb008113b38c4b248f1471c0bcbf5ae8fbb0d7ee6db7bb96325333a2d88b",
+    "original_scenario": "10-summary-known",
+    "original_examples": [
+      "urine-original",
+      "summary-known"
+    ],
+    "original_expectation": "exclude summary; collection may contribute",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 1,
+      "reason": "SUMMARY"
+    }
+  },
+  {
+    "id": "11-summary-unknown",
+    "input": "fixtures/derived/11-summary-unknown.json",
+    "sha256": "e7a1927cb587b7be46781962747f8091fabd8066d20efb6612d10d0616329e65",
+    "original_scenario": "11-summary-unknown",
+    "original_examples": [
+      "urine-original",
+      "summary-unresolved"
+    ],
+    "original_expectation": "exclude summary and affected unresolved collection group",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only.",
+      "Approved A-C contract refines original vague group exclusion to whole-run withholding because summary membership has no bounded affected set."
+    ],
+    "expected": {
+      "run_status": "withheld",
+      "candidate_count": 0,
+      "reason": "SCOPE_UNBOUNDED"
+    }
+  },
+  {
+    "id": "12-crrt-distinction",
+    "input": "fixtures/derived/12-crrt-distinction.json",
+    "sha256": "b8a71fc7225cb82869514c21b7766bc3f21385aacc46f4fcc858776cde6dd462",
+    "original_scenario": "12-crrt-distinction",
+    "original_examples": [
+      "crrt-net",
+      "crrt-effluent"
+    ],
+    "original_expectation": "net only may contribute",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 1,
+      "reason": "EFFLUENT"
+    }
+  },
+  {
+    "id": "13-crrt-cross-category",
+    "input": "fixtures/derived/13-crrt-cross-category.json",
+    "sha256": "e4de345ba7c75caf93b251128a4d615dabcce24462a5773108ebc0b79d5b49b0",
+    "original_scenario": "13-crrt-cross-category",
+    "original_examples": [
+      "crrt-net",
+      "crrt-net-duplicate"
+    ],
+    "original_expectation": "exclude duplicate group",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "DUPLICATE_UNRESOLVED"
+    }
+  },
+  {
+    "id": "14-withdrawal",
+    "input": "fixtures/derived/14-withdrawal.json",
+    "sha256": "c3d0b47eeb7d4e245a7350c8b96d7927db1d0af91124a61677c7dfa2616dda04",
+    "original_scenario": "14-withdrawal",
+    "original_examples": [
+      "urine-original",
+      "urine-withdrawn"
+    ],
+    "original_expectation": "exclude family; no fallback",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "TERMINAL_NOT_RECORDED"
+    }
+  },
+  {
+    "id": "15-invalid",
+    "input": "fixtures/derived/15-invalid.json",
+    "sha256": "8bac39d2cd642d82a1d5d98b1a3a7407262bbe2201cbd6fae32445b29a5fc9b1",
+    "original_scenario": "15-invalid",
+    "original_examples": [
+      "urine-original",
+      "urine-invalid"
+    ],
+    "original_expectation": "exclude family; no fallback",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "TERMINAL_NOT_RECORDED"
+    }
+  },
+  {
+    "id": "16-competing-revisions",
+    "input": "fixtures/derived/16-competing-revisions.json",
+    "sha256": "6086e44260aa696a026df0af6b3a0b44d1f7b644129906af5a46ad3eba1b56e2",
+    "original_scenario": "16-competing-revisions",
+    "original_examples": [
+      "urine-original",
+      "urine-competing-a",
+      "urine-competing-b"
+    ],
+    "original_expectation": "exclude family",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "REVISION_BRANCH"
+    }
+  },
+  {
+    "id": "17-pinned-cutoff",
+    "input": "fixtures/derived/17-pinned-cutoff.json",
+    "sha256": "c6c46d1aeab23c0754d2d6a4886004072c5e3fedcca9c9f65da3c3a602cdc93b",
+    "original_scenario": "17-pinned-cutoff",
+    "original_examples": [
+      "urine-original",
+      "urine-correction"
+    ],
+    "original_expectation": "r1 at cutoff 100; r2 at cutoff 102",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 1,
+      "reason": null
+    }
+  },
+  {
+    "id": "18-unknown-availability",
+    "input": "fixtures/derived/18-unknown-availability.json",
+    "sha256": "e419e8c08d93b46c2c79eff289b3771bfeef287523f3012dcced2e037a9fb7e2",
+    "original_scenario": "18-unknown-availability",
+    "original_examples": [
+      "urine-unknown-availability"
+    ],
+    "original_expectation": "exclude from clinical-as-of calculation",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "AVAILABILITY_UNRESOLVED"
+    }
+  },
+  {
+    "id": "19-distinct-component",
+    "input": "fixtures/derived/19-distinct-component.json",
+    "sha256": "26207826cf7a73233b6850dfc607551713d43b6410350c5b6e734cdf3eef2802",
+    "original_scenario": "19-distinct-component",
+    "original_examples": [
+      "urine-original",
+      "distinct-component"
+    ],
+    "original_expectation": "both may contribute only with approved distinct-volume assertion",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 2,
+      "reason": null
+    }
+  },
+  {
+    "id": "20-zero",
+    "input": "fixtures/derived/20-zero.json",
+    "sha256": "5deab591f5d9ce65f669ae508adf4d2c718e3377d28a43b4c50c6ff503044340",
+    "original_scenario": "20-zero",
+    "original_examples": [
+      "urine-zero"
+    ],
+    "original_expectation": "eligible exact zero is distinct from no eligible records",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 1,
+      "reason": null
+    }
+  },
+  {
+    "id": "21-missing",
+    "input": "fixtures/derived/21-missing.json",
+    "sha256": "f6165e52fb0c51469adc1a0441e98514ba91403c7e642dfa7259acdd58beda7f",
+    "original_scenario": "21-missing",
+    "original_examples": [
+      "urine-unknown"
+    ],
+    "original_expectation": "exclude",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "MISSING_QUANTITY"
+    }
+  },
+  {
+    "id": "22-availability-after-as-of",
+    "input": "fixtures/derived/22-availability-after-as-of.json",
+    "sha256": "6b67afe679b315aa0e248ce325ebc1378cf196ccd9aa665fbe73334f3aa7c957",
+    "original_scenario": "22-availability-after-as-of",
+    "original_examples": [
+      "urine-correction"
+    ],
+    "original_expectation": "exclude for clinical as-of 09:00",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only.",
+      "Supply referenced predecessor absent from isolated original scenario so availability is tested independently of missing-lineage withholding."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 0,
+      "reason": "AFTER_CLINICAL_AS_OF"
+    }
+  },
+  {
+    "id": "23-valid-replacement",
+    "input": "fixtures/derived/23-valid-replacement.json",
+    "sha256": "95bc8b730405b6c969506c5b08644e1553e38194399b968684e1ac4f7ff8742b",
+    "original_scenario": "23-valid-replacement",
+    "original_examples": [
+      "drain-replacement-valid"
+    ],
+    "original_expectation": "may contribute under D-C, never D-A",
+    "derivation": [
+      "Wrap unchanged payloads in strict run schema; add scoped versioned/digested registry snapshots derived from proposed registries; synthetic knowledge sequences only."
+    ],
+    "expected": {
+      "run_status": "evaluated",
+      "candidate_count": 1,
+      "reason": null
+    }
+  }
+]

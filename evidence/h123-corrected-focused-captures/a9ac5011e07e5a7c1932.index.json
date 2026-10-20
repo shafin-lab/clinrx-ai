@@ -1,0 +1,12 @@
+{
+  "test": "tests/test_conformance.py::test_missing_amount_does_not_poison_independent_drain",
+  "calls": [
+    {
+      "input": "a9ac5011e07e5a7c1932-001.input.bin",
+      "input_sha256": "998b8bc27aa0602b57d6ff8ce168b462f0869b56004c1743b370ef007011d750",
+      "output": "a9ac5011e07e5a7c1932-001.output.json",
+      "output_sha256": "b0edc9bb04f3278630a2b2e2f1473f51ad4303dc7c8f8f5fdfdb940488d3a3fb"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

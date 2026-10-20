@@ -1,0 +1,18 @@
+{
+  "test": "tests/test_conformance.py::test_historical_revision_selection",
+  "calls": [
+    {
+      "input": "531a5cee63ce7fdc9bf5-001.input.bin",
+      "input_sha256": "d8914d1cf916eeaf02b1534458356aa956396cea3bb6900b1efb91feccfc1325",
+      "output": "531a5cee63ce7fdc9bf5-001.output.json",
+      "output_sha256": "e845a8554bd89e7862fde6e8154f859c60cda7609c36dd58c5e974dbdb8a6a19"
+    },
+    {
+      "input": "531a5cee63ce7fdc9bf5-002.input.bin",
+      "input_sha256": "c6c46d1aeab23c0754d2d6a4886004072c5e3fedcca9c9f65da3c3a602cdc93b",
+      "output": "531a5cee63ce7fdc9bf5-002.output.json",
+      "output_sha256": "d9473ab8c96b83903b4bcf7145d70b80d12f366068b7d5add988e337c511b337"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

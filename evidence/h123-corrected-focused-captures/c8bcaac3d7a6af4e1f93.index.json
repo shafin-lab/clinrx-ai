@@ -1,0 +1,12 @@
+{
+  "test": "tests/test_conformance.py::test_registry_failures_never_include[scope]",
+  "calls": [
+    {
+      "input": "c8bcaac3d7a6af4e1f93-001.input.bin",
+      "input_sha256": "cb03b3e181bf701573396ca71d52f0c6fa61f60938c7e5d607965385568147cc",
+      "output": "c8bcaac3d7a6af4e1f93-001.output.json",
+      "output_sha256": "fd2c11ff5e3ca1edf6c9e1fa4e42d3abe6f06d9cbfd3673b7938e016589393c1"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

@@ -1,0 +1,105 @@
+{
+  "clinical_as_of": null,
+  "completeness": "unresolved",
+  "conflict_groups": [],
+  "contract_version": "rf2-harness/v1-proposal.2",
+  "cutoff": 102,
+  "decisions": [
+    {
+      "applicable_revision": [
+        "11111111-1111-4111-8111-111111111111",
+        "proposal-p1",
+        "proposal-e1",
+        "clinrx.proposed.synthetic-issuer",
+        "fixture-issuer-A",
+        "clinrx.synthetic.fluid-collections.identity/v1",
+        "C-001",
+        "volume",
+        "r1"
+      ],
+      "conflict_group_ids": [],
+      "decision": "unresolved",
+      "envelope_digest": "73f4d24239ae4b25ebfebf046ed4a4efbdd572b83c15088f90b571ca71cc2b3e",
+      "identity": [
+        "11111111-1111-4111-8111-111111111111",
+        "proposal-p1",
+        "proposal-e1",
+        "clinrx.proposed.synthetic-issuer",
+        "fixture-issuer-A",
+        "clinrx.synthetic.fluid-collections.identity/v1",
+        "C-001",
+        "volume",
+        "r1"
+      ],
+      "knowledge_sequences": [
+        100
+      ],
+      "reason_codes": [
+        "REGISTRY_UNAVAILABLE",
+        "SCOPE_UNBOUNDED"
+      ],
+      "registry_pins": [
+        {
+          "registry_type": "component_aliases",
+          "status": "unavailable"
+        },
+        {
+          "registry_type": "drain_lifecycle",
+          "status": "unavailable"
+        },
+        {
+          "registry_type": "independent_components",
+          "status": "unavailable"
+        },
+        {
+          "registry_type": "quantity_equivalence",
+          "status": "unavailable"
+        }
+      ]
+    }
+  ],
+  "input_digest": "cb03b3e181bf701573396ca71d52f0c6fa61f60938c7e5d607965385568147cc",
+  "numerical_eligibility_active": false,
+  "period": {
+    "display_timezone": "UTC",
+    "end": "2026-10-08T09:00:00+00:00",
+    "start": "2026-10-08T08:00:00+00:00"
+  },
+  "relationships": [],
+  "requested_scope": {
+    "encounter_id": "proposal-e1",
+    "identity_namespace": "clinrx.synthetic.fluid-collections.identity/v1",
+    "issuer": {
+      "id": "fixture-issuer-A",
+      "namespace": "clinrx.proposed.synthetic-issuer"
+    },
+    "patient_id": "proposal-p1",
+    "repository": "11111111-1111-4111-8111-111111111111"
+  },
+  "resolver_version": "rf2-isolated-resolver/1.0.1",
+  "run_reasons": [
+    "REGISTRY_UNAVAILABLE",
+    "SCOPE_UNBOUNDED"
+  ],
+  "run_status": "withheld",
+  "schema_digest": "524c7abc6ec2ab7d50a0d2deb64f412b76ed616d5b0cffcc4be943abba10afc3",
+  "selected_registries": [
+    {
+      "registry_type": "component_aliases",
+      "status": "unavailable"
+    },
+    {
+      "registry_type": "drain_lifecycle",
+      "status": "unavailable"
+    },
+    {
+      "registry_type": "independent_components",
+      "status": "unavailable"
+    },
+    {
+      "registry_type": "quantity_equivalence",
+      "status": "unavailable"
+    }
+  ],
+  "synthetic_only": true
+}

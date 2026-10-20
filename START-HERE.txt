@@ -1,0 +1,58 @@
+CLINRX DIRECTOR — ISOLATED RF2 HARNESS H1-H3 CORRECTIONS
+
+Corrected source 5830cdceb12f5adc48ce1867429ac7fd1b5a53f2
+Tree 91cf134092d0fd05616d12dedf8b2f5ec9b8c6a5
+Parent 780112139c2a6f0224df5331600f3874e8b714c7
+Approved contract/schema/original fixtures unchanged. Resolver version 1.0.1.
+Accepted application d608ce8 is untouched. No installation or integration.
+
+CHANGES
+H1: Every alias edge constrains physical quantity at both alias and target. All
+nodes/paths are validated, including converging chains; contradictory mappings
+withhold. Envelopes using a canonical target are checked against its quantity
+constraint, not only an immediately named alias. Canonical-target mismatch,
+contradictory/converging chains and separately valid alias/target paths are tested.
+H2: Directed edges retain predecessor->successor and summary->member order.
+Only symmetric relationships sort endpoints. Tests deliberately choose digest
+ordering opposite to causal direction, rather than coincidentally passing.
+H3: Singleton self-cycles emit LINEAGE self-edges and explicit CONFLICT self-edges
+with causal REVISION_CYCLE/branch reason codes. Group reasons/typed_edges are no
+longer empty. Valid exclusion behavior remains.
+See changes.diff, source/rf2_harness.py and source/tests/test_director_h123.py.
+Runner now accepts an explicit test-file subset for controlled negative tests.
+
+EXECUTED VALIDATION
+New focused regressions on unchanged parent resolver: 6 failed / 2 passed.
+First exploratory log is preserved separately (h123-old-source.*). Controlled
+negative run h123-old-control.* repeats only those 8 cases to capture exact inputs,
+results, subprocess exit 1, source hashes and pre-fix source snapshot.
+Corrected isolated suite: 118 passed, exit 0 (h123-corrected-focused.*).
+No full application suite, hosted CI, browser, database, server or container run.
+No balance calculation, chart integration, writes, migration, adapter, durable
+storage, inferred legacy migration or numerical-eligibility activation.
+
+CAPTURES AND ATTRIBUTION
+Negative control: 8 test indexes, 34 exact in-memory calls.
+Corrected run: 118 test indexes, 169 exact in-memory calls.
+H123-SAME-INPUT-COMPARISON.json matches all 34 negative/corrected input hashes;
+raw outputs immediately serialized before test mutation. These are harness calls,
+not clinical API or real producer evidence.
+Earlier 88-pass, 95-pass/2-fail and final 110-pass logs retain original attribution
+under evidence/prior-7801121. Original full evidence ec5072d remains immutable,
+including its disclosed reconstructed initial test-file limitation. No claim is
+made that 110 earlier passes covered H1-H3. No original fixture expectation changed.
+Original 24 payloads/23 scenarios, schema and contract hashes remain unchanged.
+
+REVIEW REQUEST
+Accept or identify remaining corrections for H1-H3 in this exact source/fixture/
+focused-test scope. Previous package integrity acceptance is not acceptance of
+these fixes; the supplied executions remain subject to Director review.
+Synthetic-only candidate decisions do not verify physical collection guarantees.
+Clinical execution remains disabled; prior application acceptances remain intact.
+No merge, deployment, external hosting or clinical-readiness acceptance follows.
+
+INTEGRITY
+SOURCE-MANIFEST.json contains 71 exact Git blob identities, sizes and SHA-256.
+Raw corrected/parent commit objects supplied. verify_evidence.py is data-only;
+it does not rerun harness or application tests. Lossless large/binary file parts
+are indexed by MIRRORS.json. Publication manifest excludes only itself. No ZIP.

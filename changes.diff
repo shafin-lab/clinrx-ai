@@ -1,0 +1,225 @@
+diff --git a/README.txt b/README.txt
+index 326a448..e692981 100644
+--- a/README.txt
++++ b/README.txt
+@@ -57,7 +57,12 @@ Initial focused run: 88 passed.
+ Expanded audit: 95 passed, 2 failed. Duplicate registry relationships were not
+ rejected; single-node revision self-cycle lacked a conflict-group diagnostic.
+ Both corrected; additional edge assertions added.
+-Corrected final focused run: 110 passed. See separate raw logs, JUnit, source hashes,
++Original 7801121 corrected run: 110 passed, retained under its original evidence.
++H1-H3 correction candidate: 118 passed. Its old-source focused control is 6 failed /
++2 passed with resolver bytes matching 7801121; raw logs and captures are separate.
++H1 enforces canonical-target and chain-wide quantity constraints; H2 preserves
++directed provenance; H3 reports singleton cycle reasons and self-edges.
++See separate raw logs, JUnit, source hashes,
+ exact synthetic input/output captures and environment metadata.
+ No full application suite, hosted CI, browser, live database/server or installation
+ was exercised. Application code and running workspace were not modified.
+diff --git a/rf2_harness.py b/rf2_harness.py
+index 7cdc1c5..f022e59 100644
+--- a/rf2_harness.py
++++ b/rf2_harness.py
+@@ -12,7 +12,7 @@ from uuid import UUID
+ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+ 
+ CONTRACT = 'rf2-harness/v1-proposal.2'
+-RESOLVER = 'rf2-isolated-resolver/1.0.0'
++RESOLVER = 'rf2-isolated-resolver/1.0.1'
+ SCHEMA_BYTES = Path(__file__).with_name('schema.json').read_bytes()
+ SCHEMA = json.loads(SCHEMA_BYTES)
+ SCHEMA_DIGEST = hashlib.sha256(SCHEMA_BYTES).hexdigest()
+@@ -300,25 +300,30 @@ def resolve(run):
+         n = nodes.setdefault(h, {'e': e, 'sequences': set(), 'reasons': set(), 'groups': set()})
+         n['sequences'].add(w['knowledge_sequence'])
+     aliases = defaultdict(set)
+-    alias_quantities = defaultdict(set)
++    component_quantities = defaultdict(set)
+     for a in regs.get('component_aliases', []):
+         aliases[(a['collection_key'], a['alias'])].add(a['canonical'])
+-        alias_quantities[(a['collection_key'], a['alias'])].add(a['quantity_key'])
++        # Every edge asserts the physical quantity at BOTH endpoints. This also
++        # constrains envelopes using a canonical target without an alias spelling.
++        for key in (a['alias'], a['canonical']):
++            component_quantities[(a['collection_key'], key)].add(a['quantity_key'])
+ 
+     def component(collection, key):
+-        seen = set()
++        seen, quantities_on_path = set(), set()
+         while (collection, key) in aliases:
+             if key in seen or len(aliases[(collection, key)]) != 1:
+                 raise ValueError('alias conflict')
+             seen.add(key)
++            quantities_on_path.update(component_quantities[(collection, key)])
+             key = next(iter(aliases[(collection, key)]))
++        quantities_on_path.update(component_quantities.get((collection, key), ()))
++        if len(quantities_on_path) > 1:
++            raise ValueError('contradictory alias quantity')
+         return key
+ 
+-    for (collection, key) in aliases:
++    for (collection, key) in component_quantities:
+         try:
+             component(collection, key)
+-            if len(alias_quantities[(collection, key)]) != 1:
+-                raise ValueError()
+         except ValueError:
+             # Alias registry scope is global; no unsupported assumption about unaffected input.
+             withheld.add('ALIAS_UNRESOLVED')
+@@ -330,7 +335,7 @@ def resolve(run):
+             c = e['component_key']
+             n['reasons'].add('ALIAS_UNRESOLVED')
+         n['identity'] = (*scope(e), e['collection_key'], c, e['revision'])
+-        alias_q = alias_quantities.get((e['collection_key'], e['component_key']))
++        alias_q = component_quantities.get((e['collection_key'], c))
+         if alias_q and e['quantity_key'] not in alias_q:
+             n['reasons'].add('ALIAS_UNRESOLVED')
+         if not supports(e):
+@@ -340,9 +345,11 @@ def resolve(run):
+     conflict = Union()
+ 
+     def edge(a, b, typ, reason=None):
+-        if a == b:
++        if a == b and typ not in ('LINEAGE', 'CONFLICT'):
+             return
+-        x, y = sorted((a, b))
++        # LINEAGE is predecessor -> successor; SUMMARY_MEMBER is summary -> member.
++        # Only symmetric relationships are canonically ordered by endpoint digest.
++        x, y = (a, b) if typ in ('LINEAGE', 'SUMMARY_MEMBER') else sorted((a, b))
+         edges.add((x, y, typ, reason or ''))
+         if typ == 'CONFLICT':
+             conflict.join(x, y)
+@@ -356,6 +363,8 @@ def resolve(run):
+             conflict.root(h)  # A one-node self-cycle is still a reportable group.
+         for a, b in itertools.combinations(ids, 2):
+             edge(a, b, 'CONFLICT', reason)
++        if len(ids) == 1:
++            edge(ids[0], ids[0], 'CONFLICT', reason)
+ 
+     families = defaultdict(list)
+     for h, n in nodes.items():
+diff --git a/run_focused.py b/run_focused.py
+index 44d1d1b..855b9cc 100644
+--- a/run_focused.py
++++ b/run_focused.py
+@@ -12,7 +12,8 @@ ROOT=Path(__file__).resolve().parent
+ name=sys.argv[1] if len(sys.argv)>1 else 'final-focused'
+ folder=ROOT/'evidence'
+ if (folder/(name+'.log')).exists():raise SystemExit('Refusing to overwrite existing run evidence')
+-command=[sys.executable,'-m','pytest','tests','-q',f'--junitxml=evidence/{name}-junit.xml']
++test_paths=sys.argv[2:] or ['tests']
++command=[sys.executable,'-m','pytest',*test_paths,'-q',f'--junitxml=evidence/{name}-junit.xml']
+ source={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(ROOT.rglob('*')) if p.is_file() and (p.suffix=='.py' or p.name=='schema.json') and 'evidence' not in p.parts and '__pycache__' not in p.parts}
+ env=dict(os.environ,RF2_HARNESS_CAPTURE_DIR=str(folder/(name+'-captures')))
+ start=time.monotonic()
+diff --git a/tests/test_director_h123.py b/tests/test_director_h123.py
+new file mode 100644
+index 0000000..adab5c1
+--- /dev/null
++++ b/tests/test_director_h123.py
+@@ -0,0 +1,105 @@
++"""Focused Director findings; old-source controls precede production fixes."""
++import copy
++import itertools
++from fixture_support import run_for, registry, rehash
++from rf2_harness import evaluate, canonical, digest
++
++
++def result(run):
++    return evaluate(canonical(run))
++
++
++def includes(output):
++    return [x for x in output['decisions'] if x['decision']=='candidate_include']
++
++
++def alias_registry(run, entries):
++    registry(run,'component_aliases')['content']['entries']=entries
++    return rehash(run)
++
++
++def test_h1_canonical_target_quantity_mismatch_is_excluded():
++    run=run_for();run['records'][0]['envelope']['quantity_key']='CONTRADICTS-TARGET'
++    out=result(run)
++    assert not includes(out)
++    assert 'ALIAS_UNRESOLVED' in out['decisions'][0]['reason_codes']
++
++
++def test_h1_contradictory_alias_chain_withholds():
++    run=run_for();run['records'][0]['envelope']['component_key']='outer'
++    alias_registry(run,[
++        {'collection_key':'C-001','alias':'outer','canonical':'inner','quantity_key':'Q-001'},
++        {'collection_key':'C-001','alias':'inner','canonical':'volume','quantity_key':'Q-CONTRADICTORY'},
++    ])
++    out=result(run)
++    assert out['run_status']=='withheld' and not includes(out)
++    assert 'ALIAS_UNRESOLVED' in out['run_reasons']
++
++
++def test_h1_converging_aliases_cannot_assign_two_quantities_to_target():
++    run=run_for();alias_registry(run,[
++        {'collection_key':'C-001','alias':'left','canonical':'volume','quantity_key':'Q-001'},
++        {'collection_key':'C-001','alias':'right','canonical':'volume','quantity_key':'Q-OTHER'},
++    ])
++    out=result(run)
++    assert out['run_status']=='withheld' and not includes(out)
++
++
++def test_h1_valid_chain_accepts_alias_and_canonical_separately():
++    run=run_for();alias_registry(run,[
++        {'collection_key':'C-001','alias':'outer','canonical':'inner','quantity_key':'Q-001'},
++        {'collection_key':'C-001','alias':'inner','canonical':'volume','quantity_key':'Q-001'},
++    ])
++    for component in ('outer','inner','volume'):
++        run['records'][0]['envelope']['component_key']=component
++        out=result(run)
++        assert out['run_status']=='evaluated' and len(includes(out))==1
++        assert includes(out)[0]['identity'][-2]=='volume'
++
++
++def test_h2_lineage_edge_is_predecessor_to_successor_not_digest_order():
++    run=run_for(('urine-original','urine-correction'))
++    a,b=[w['envelope'] for w in run['records']]
++    # Ensure an unordered/sorted implementation must reverse the causal direction.
++    for n in range(100):
++        a['uncertainty']=[f'Predecessor provenance fixture {n}']
++        if digest(a)>digest(b):break
++    assert digest(a)>digest(b)
++    out=result(run)
++    edge=next(e for e in out['relationships'] if e['type']=='LINEAGE')
++    assert edge['members']==[digest(a),digest(b)]
++    assert len(includes(out))==1
++
++
++def test_h2_summary_edge_is_summary_to_member_not_digest_order():
++    run=run_for(('urine-original','summary-known'))
++    member,summary=[w['envelope'] for w in run['records']]
++    for n in range(100):
++        summary['uncertainty']=[f'Summary provenance fixture {n}']
++        if digest(summary)>digest(member):break
++    assert digest(summary)>digest(member)
++    out=result(run)
++    edge=next(e for e in out['relationships'] if e['type']=='SUMMARY_MEMBER')
++    assert edge['members']==[digest(summary),digest(member)]
++    assert len(includes(out))==1 and not out['conflict_groups']
++
++
++def test_h3_singleton_cycle_group_has_causal_reasons_and_self_edge():
++    run=run_for();e=run['records'][0]['envelope']
++    e['supersedes']={k:e[k] for k in ('identity_namespace','collection_key','component_key','revision')}
++    out=result(run);h=digest(e)
++    assert not includes(out) and len(out['conflict_groups'])==1
++    group=out['conflict_groups'][0]
++    assert 'REVISION_CYCLE' in group['reason_codes']
++    assert any(edge['members']==[h,h] and edge['type']=='LINEAGE' for edge in group['typed_edges'])
++    assert any(edge['members']==[h,h] and edge['reason']=='REVISION_CYCLE' for edge in group['typed_edges'])
++
++
++def test_h123_permutations_preserve_directed_provenance():
++    run=run_for(('urine-original','urine-correction','summary-known','drain-B'))
++    before=result(run)
++    for records in itertools.permutations(run['records']):
++        varied=copy.deepcopy(run);varied['records']=list(records);varied['registries'].reverse()
++        after=result(varied)
++        for key in ('relationships','conflict_groups','decisions','run_status','run_reasons'):
++            assert before[key]==after[key]

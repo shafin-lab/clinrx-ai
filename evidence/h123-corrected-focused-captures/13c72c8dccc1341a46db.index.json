@@ -1,0 +1,12 @@
+{
+  "test": "tests/test_conformance.py::test_malformed_json_rejects[{]",
+  "calls": [
+    {
+      "input": "13c72c8dccc1341a46db-001.input.bin",
+      "input_sha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96",
+      "output": "13c72c8dccc1341a46db-001.output.json",
+      "output_sha256": "6d1e2ba7dc6aee76460b8783e0d33ae4571d76c293a6df0daaf9d13f783f3ddb"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

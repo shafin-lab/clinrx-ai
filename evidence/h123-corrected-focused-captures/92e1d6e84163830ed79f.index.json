@@ -1,0 +1,24 @@
+{
+  "test": "tests/test_director_h123.py::test_h1_valid_chain_accepts_alias_and_canonical_separately",
+  "calls": [
+    {
+      "input": "92e1d6e84163830ed79f-001.input.bin",
+      "input_sha256": "2f7a8858809ded93fe777feebfa034b723327f8ef786382c14ee6b2f10a6357a",
+      "output": "92e1d6e84163830ed79f-001.output.json",
+      "output_sha256": "fd80593f23fda40699a9741eed3dd3d396d25df25edcd5e0490476ed3cdeae1b"
+    },
+    {
+      "input": "92e1d6e84163830ed79f-002.input.bin",
+      "input_sha256": "42b662fe7fc7d84a758d34c1c82f1b78daa7850f6f50cbd5dd6e7beabf0c39ac",
+      "output": "92e1d6e84163830ed79f-002.output.json",
+      "output_sha256": "5740d3e704dbe4e4c2bf5868a234f17f55e4dcbf609158a8578d0f3d0ed89af4"
+    },
+    {
+      "input": "92e1d6e84163830ed79f-003.input.bin",
+      "input_sha256": "d1cf46d892b82d1ca462bf576017cc872343939e9315f6b57e10561fe75c5915",
+      "output": "92e1d6e84163830ed79f-003.output.json",
+      "output_sha256": "f7c0c7598d634103cce2979ea16157057699c7530c0768585fc29b2d2be2237d"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

@@ -1,0 +1,68 @@
+asons)
+
+    begin, end = instant(run['period']['start']), instant(run['period']['end'])
+    for h, n in nodes.items():
+        e, reasons = n['e'], n['reasons']
+        if not e['actual_recorded']:
+            reasons.add('NON_ACTUAL')
+        if e['quantity']['amount'] is None:
+            reasons.add('MISSING_QUANTITY')
+        if e['classification'] == 'summary':
+            reasons.add('SUMMARY')
+        if e['category'] == 'output_crrt_effluent':
+            reasons.add('EFFLUENT')
+        a, b = bounds(e)
+        contained = begin <= a < end if e['time']['kind'] == 'point' else begin <= a < b <= end
+        if not contained:
+            reasons.add('CROSSING_PERIOD' if a < end and b > begin else 'OUTSIDE_PERIOD')
+        if run['clinical_as_of'] is not None:
+            if e['available_at'] is None:
+                reasons.add('AVAILABILITY_UNRESOLVED')
+            elif instant(e['available_at']) > instant(run['clinical_as_of']):
+                reasons.add('AFTER_CLINICAL_AS_OF')
+    decisions = []
+    for h, n in sorted(nodes.items(), key=lambda item: (item[1]['identity'], item[0])):
+        reasons = sorted(n['reasons'])
+        decision = 'exclude' if reasons else 'unresolved' if withheld else 'candidate_include'
+        decisions.append({'identity': list(n['identity']), 'envelope_digest': h, 'knowledge_sequences': sorted(n['sequences']), 'decision': decision, 'reason_codes': reasons or sorted(withheld) or ['CANDIDATE_RULES_SATISFIED'], 'applicable_revision': nodes[n['applicable']]['identity'] if n.get('applicable') else None, 'conflict_group_ids': sorted(n['groups']), 'registry_pins': pins})
+    return {'run_status': 'withheld' if withheld else 'evaluated', 'run_reasons': sorted(withheld), 'decisions': decisions, 'conflict_groups': sorted(groups, key=lambda g: g['id']), 'relationships': [{'members': [a, b], 'type': t, 'reason': r or None} for a, b, t, r in sorted(edges)], 'selected_registries': pins}
+
+
+def evaluate(raw):
+    """Accept UTF-8 JSON bytes only; return decisions, never numerical eligibility."""
+    output = {'contract_version': CONTRACT, 'schema_digest': SCHEMA_DIGEST, 'resolver_version': RESOLVER, 'synthetic_only': True, 'input_digest': None, 'requested_scope': None, 'period': None, 'cutoff': None, 'clinical_as_of': None, 'selected_registries': [], 'run_status': 'rejected', 'run_reasons': [], 'decisions': [], 'conflict_groups': [], 'relationships': [], 'completeness': 'unresolved', 'numerical_eligibility_active': False}
+    try:
+        if type(raw) is not bytes:
+            raise Invalid()
+        if len(raw) > MAX_BYTES:
+            raise Limit('INPUT_LIMIT')
+        def pairs(items):
+            result = {}
+            for k, v in items:
+                if k in result:
+                    raise Invalid()
+                result[k] = v
+            return result
+        def bad_number(_):
+            raise Invalid()
+        run = json.loads(raw.decode('utf-8'), object_pairs_hook=pairs, parse_float=bad_number, parse_constant=bad_number)
+        preflight(run)
+        output['input_digest'] = digest(run)
+        validate(run)
+        output.update(requested_scope=run['expected_scope'], period=run['period'], cutoff=run['cutoff'], clinical_as_of=run['clinical_as_of'])
+        output.update(resolve(run))
+    except Limit as exc:
+        output.update(run_status='withheld', run_reasons=[exc.reason])
+    except (Invalid, ValueError, TypeError, UnicodeError, RecursionError, OverflowError) as exc:
+        output.update(run_status='rejected', run_reasons=[exc.reason if isinstance(exc, Invalid) else 'SCHEMA_REJECTED'], decisions=[], conflict_groups=[], relationships=[])
+    return output
+
+
+def main():
+    import sys
+    raw = sys.stdin.buffer.read(MAX_BYTES + 1)
+    sys.stdout.buffer.write(canonical(evaluate(raw)) + b'\n')
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,12 @@
+{
+  "test": "tests/test_conformance.py::test_period_boundaries[multi-hour]",
+  "calls": [
+    {
+      "input": "7554cbc2b6c35cf4a80f-001.input.bin",
+      "input_sha256": "c33f798315130bab43f9526049df3239ae82d400e61a565f721312b04906ccb7",
+      "output": "7554cbc2b6c35cf4a80f-001.output.json",
+      "output_sha256": "83b761505540cc285ed4162da9f162b658375aab6571a29a11224442885ff127"
+    }
+  ],
+  "scope": "in-memory synthetic harness calls, not clinical API or runtime observations"
+}

@@ -1,0 +1,32 @@
+{
+  "harness_source": "780112139c2a6f0224df5331600f3874e8b714c7",
+  "tree": "45365138ed1c85325c6f8887e156ffead6de1fa2",
+  "accepted_application_baseline": "d608ce8655a024cf7c9e4d78dbeb85b50d20fdc5",
+  "application_changed": false,
+  "tests": [
+    {
+      "run": "initial-focused",
+      "passed": 88,
+      "failed": 0,
+      "attribution": "Raw pytest log/JUnit. Detailed runner exit/timing/source manifest not captured for this exploratory run; resolver/schema snapshot retained. Initial test file is a reconstructed prefix before adding audit cases, not independently captured historical bytes."
+    },
+    {
+      "run": "expanded-audit",
+      "passed": 95,
+      "failed": 2,
+      "attribution": "Raw pytest log/JUnit and pre-fix source snapshot. Exact subprocess metadata not separately captured; outer exploratory shell ended with log display."
+    },
+    {
+      "run": "corrected-focused",
+      "passed": 110,
+      "failed": 0,
+      "attribution": "Controlled subprocess exit/timing/environment/tested source hashes, raw log/JUnit and exact captured harness inputs/results."
+    }
+  ],
+  "producer_conformance": "Synthetic fixture contract only; not authenticated physical-collection truth",
+  "application_test_rerun": false,
+  "database_browser_or_server_access": false,
+  "balance_calculation": false,
+  "numerical_eligibility_active": false,
+  "clinical_execution_enabled": false
+}

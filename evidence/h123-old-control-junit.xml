@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="8" time="0.136" timestamp="2026-10-20T22:52:01.739194+05:30" hostname="Mohammeds-MacBook-Air.local"><testcase classname="tests.test_director_h123" name="test_h1_canonical_target_quantity_mismatch_is_excluded" time="0.003"><failure message="AssertionError: assert not [{'identity': ['11111111-1111-4111-8111-111111111111', 'proposal-p1', 'proposal-e1', 'clinrx.proposed.synthetic-issuer...5a70fb1d7ca0ba0f0421ec996cf3831a5eaa21e94b4974dd', 'knowledge_sequences': [100], 'decision': 'candidate_include', ...}]&#10; +  where [{'identity': ['11111111-1111-4111-8111-111111111111', 'proposal-p1', 'proposal-e1', 'clinrx.proposed.synthetic-issuer...5a70fb1d7ca0ba0f0421ec996cf3831a5eaa21e94b4974dd', 'knowledge_sequences': [100], 'decision': 'candidate_include', ...}] = includes({'contract_version': 'rf2-harness/v1-proposal.2', 'schema_digest': '524c7abc6ec2ab7d50a0d2deb64f412b76ed616d5b0cffcc4be943abba10afc3', 'resolver_version': 'rf2-isolated-resolver/1.0.0', 'synthetic_only': True, ...})">def test_h1_canonical_target_quantity_mismatch_is_excluded():
+        run=run_for();run['records'][0]['envelope']['quantity_key']='CONTRADICTS-TARGET'
+        out=result(run)
+&gt;       assert not includes(out)
+E       AssertionError: assert not [{'identity': ['11111111-1111-4111-8111-111111111111', 'proposal-p1', 'proposal-e1', 'clinrx.proposed.synthetic-issuer...5a70fb1d7ca0ba0f0421ec996cf3831a5eaa21e94b4974dd', 'knowledge_sequences': [100], 'decision': 'candidate_include', ...}]
+E        +  where [{'identity': ['11111111-1111-4111-8111-111111111111', 'proposal-p1', 'proposal-e1', 'clinrx.proposed.synthetic-issuer...5a70fb1d7ca0ba0f0421ec996cf3831a5eaa21e94b4974dd', 'knowledge_sequences': [100], 'decision': 'candidate_include', ...}] = includes({'contract_version': 'rf2-harness/v1-proposal.2', 'schema_digest': '524c7abc6ec2ab7d50a0d2deb64f412b76ed616d5b0cffcc4be943abba10afc3', 'resolver_version': 'rf2-isolated-resolver/1.0.0', 'synthetic_only': True, ...})
+
+tests/test_director_h123.py:24: AssertionError</failure></testcase><testcase classname="tests.test_director_h123" name="test_h1_contradictory_alias_chain_withholds" time="0.003"><failure message="AssertionError: assert ('evaluated' == 'withheld'&#10;  &#10;  - withheld&#10;  + evaluated)">def test_h1_contradictory_alias_chain_withholds():
+        run=run_for();run['records'][0]['envelope']['component_key']='outer'
+        alias_registry(run,[
+            {'collection_key':'C-001','alias':'outer','canonical':'inner','quantity_key':'Q-001'},
+            {'collection_key':'C-001','alias':'inner','canonical':'volume','quantity_key':'Q-CONTRADICTORY'},
+        ])
+        out=result(run)
+&gt;       assert out['run_status']=='withheld' and not includes(out)
+E       AssertionError: assert ('evaluated' == 'withheld'
+E         
+E         - withheld
+E         + evaluated)
+
+tests/test_director_h123.py:35: AssertionError</failure></testcase><testcase classname="tests.test_director_h123" name="test_h1_converging_aliases_cannot_assign_two_quantities_to_target" time="0.002"><failure message="AssertionError: assert ('evaluated' == 'withheld'&#10;  &#10;  - withheld&#10;  + evaluated)">def test_h1_converging_aliases_cannot_assign_two_quantities_to_target():
+        run=run_for();alias_registry(run,[
+            {'collection_key':'C-001','alias':'left','canonical':'volume','quantity_key':'Q-001'},
+            {'collection_key':'C-001','alias':'right','canonical':'volume','quantity_key':'Q-OTHER'},
+        ])
+        out=result(run)
+&gt;       assert out['run_status']=='withheld' and not includes(out)
+E       AssertionError: assert ('evaluated' == 'withheld'
+E         
+E         - withheld
+E         + evaluated)
+
+tests/test_director_h123.py:45: AssertionError</failure></testcase><testcase classname="tests.test_director_h123" name="test_h1_valid_chain_accepts_alias_and_canonical_separately" time="0.005" /><testcase classname="tests.test_director_h123" name="test_h2_lineage_edge_is_predecessor_to_successor_not_digest_order" time="0.003"><failure message="AssertionError: assert ['00667be1d8b...328091d07165'] == ['5d834f3818a...4cd1989e4f3f']&#10;  &#10;  At index 0 diff: '00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f' != '5d834f3818a8b9eab48f517d88bd8f1b204245f0a628acaa618e328091d07165'&#10;  Use -v to get more diff">def test_h2_lineage_edge_is_predecessor_to_successor_not_digest_order():
+        run=run_for(('urine-original','urine-correction'))
+        a,b=[w['envelope'] for w in run['records']]
+        # Ensure an unordered/sorted implementation must reverse the causal direction.
+        for n in range(100):
+            a['uncertainty']=[f'Predecessor provenance fixture {n}']
+            if digest(a)&gt;digest(b):break
+        assert digest(a)&gt;digest(b)
+        out=result(run)
+        edge=next(e for e in out['relationships'] if e['type']=='LINEAGE')
+&gt;       assert edge['members']==[digest(a),digest(b)]
+E       AssertionError: assert ['00667be1d8b...328091d07165'] == ['5d834f3818a...4cd1989e4f3f']
+E         
+E         At index 0 diff: '00667be1d8bd0911903c56ae19c58cfb6071fb8aff06cb208dc44cd1989e4f3f' != '5d834f3818a8b9eab48f517d88bd8f1b204245f0a628acaa618e328091d07165'
+E         Use -v to get more diff
+
+tests/test_director_h123.py:70: AssertionError</failure></testcase><testcase classname="tests.test_director_h123" name="test_h2_summary_edge_is_summary_to_member_not_digest_order" time="0.002"><failure message="AssertionError: assert ['73f4d24239a...c3257693ae7a'] == ['af13b54da3f...71ca71cc2b3e']&#10;  &#10;  At index 0 diff: '73f4d24239ae4b25ebfebf046ed4a4efbdd572b83c15088f90b571ca71cc2b3e' != 'af13b54da3f409d9e9acfd698f315918184a18b72f66fb626933c3257693ae7a'&#10;  Use -v to get more diff">def test_h2_summary_edge_is_summary_to_member_not_digest_order():
+        run=run_for(('urine-original','summary-known'))
+        member,summary=[w['envelope'] for w in run['records']]
+        for n in range(100):
+            summary['uncertainty']=[f'Summary provenance fixture {n}']
+            if digest(summary)&gt;digest(member):break
+        assert digest(summary)&gt;digest(member)
+        out=result(run)
+        edge=next(e for e in out['relationships'] if e['type']=='SUMMARY_MEMBER')
+&gt;       assert edge['members']==[digest(summary),digest(member)]
+E       AssertionError: assert ['73f4d24239a...c3257693ae7a'] == ['af13b54da3f...71ca71cc2b3e']
+E         
+E         At index 0 diff: '73f4d24239ae4b25ebfebf046ed4a4efbdd572b83c15088f90b571ca71cc2b3e' != 'af13b54da3f409d9e9acfd698f315918184a18b72f66fb626933c3257693ae7a'
+E         Use -v to get more diff
+
+tests/test_director_h123.py:83: AssertionError</failure></testcase><testcase classname="tests.test_director_h123" name="test_h3_singleton_cycle_group_has_causal_reasons_and_self_edge" time="0.003"><failure message="AssertionError: assert 'REVISION_CYCLE' in []">def test_h3_singleton_cycle_group_has_causal_reasons_and_self_edge():
+        run=run_for();e=run['records'][0]['envelope']
+        e['supersedes']={k:e[k] for k in ('identity_namespace','collection_key','component_key','revision')}
+        out=result(run);h=digest(e)
+        assert not includes(out) and len(out['conflict_groups'])==1
+        group=out['conflict_groups'][0]
+&gt;       assert 'REVISION_CYCLE' in group['reason_codes']
+E       AssertionError: assert 'REVISION_CYCLE' in []
+
+tests/test_director_h123.py:93: AssertionError</failure></testcase><testcase classname="tests.test_director_h123" name="test_h123_permutations_preserve_directed_provenance" time="0.055" /></testsuite></testsuites>
