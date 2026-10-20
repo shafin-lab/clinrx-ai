@@ -1,0 +1,155 @@
+efinitions);if(result.fact.binding.target.patient_id!=='synthetic-p1'||result.fact.binding.target.encounter_id!=='synthetic-e1')reject();const es=(result.fact.external_evidence as {namespace:string;code:string}[]).filter(e=>e.namespace==='clinrx.local.rf2/v1');if(es.length!==1)reject();const m=object(canonical(es[0].code));if(!equal(m.chart,draft.chart))reject();if(draft.note){const n=object(m.note);if(!equal(n.pins,[]))reject();n.pins=(result.fact.external_evidence as {namespace:string;code:string}[]).filter(e=>e.namespace==='clinrx.local.rf2.pin/v1').map(e=>canonical(e.code));if(!equal(n,draft.note))reject();}else if(m.note!==null)reject();this.reviewed.clear();this.reviewed.set(stable(draft),result.fact);return result;}
++  if(action==='validate'){exactKeys(result,['status','request_digest','request_canonical','fact','replay_reference','execution_enabled',...(draft.note?['source_review']:[])]);if(draft.note){const rs=sourceReviews(result.source_review,draft.note.pins);if(draft.source_review&&!equal(rs,draft.source_review))reject();}else if(result.source_review!==undefined)reject();if(result.status!=='validated'||!result.fact||result.fact.id!==draft.id||result.fact.revision!==draft.revision)reject();const c=circulatory as unknown as {definitions:Record<string,Schema>};const factSchema=c.definitions.CirculatoryHistoricalFact.properties?.fact;if(!factSchema)reject();validateTransportSchema(result.fact,factSchema,c.definitions);if(result.fact.binding.target.patient_id!=='synthetic-p1'||result.fact.binding.target.encounter_id!=='synthetic-e1')reject();const es=(result.fact.external_evidence as {namespace:string;code:string}[]).filter(e=>e.namespace==='clinrx.local.rf2/v1');if(es.length!==1)reject();const m=object(canonical(es[0].code));if(!equal(m.chart,draft.chart))reject();if(draft.note){const n=object(m.note);if(!equal(n.pins,[]))reject();n.pins=(result.fact.external_evidence as {namespace:string;code:string}[]).filter(e=>e.namespace==='clinrx.local.rf2.pin/v1').map(e=>canonical(e.code));if(!equal(n,draft.note))reject();const rs=(result.fact.external_evidence as {namespace:string;code:string}[]).filter(e=>e.namespace==='clinrx.local.rf2.review/v1').map(e=>canonical(e.code));if(!equal(rs,draft.source_review??[]))reject();}else if(m.note!==null)reject();this.reviewed.clear();this.reviewed.set(stable(draft),result.fact);return result;}
+   if(result.status==='absent'){exactKeys(result,['status','request_digest','request_canonical','execution_enabled']);if(action!=='lookup'||result.evidence!==undefined)reject();return result;}
+   exactKeys(result,['status','request_digest','request_canonical','evidence','execution_enabled']);if(!['saved','source_replay'].includes(result.status)||!result.evidence)reject();await decodeEvidence(result.evidence,draft.repository);
+-  if(result.status==='saved'&&(result.evidence.fact.id!==draft.id||result.evidence.fact.revision!==draft.revision||this.reviewed.has(stable(draft))&&!equal(this.reviewed.get(stable(draft)),result.evidence.fact)||!equal(result.evidence.metadata?.chart,draft.chart)||!equal(result.evidence.metadata?.note,draft.note)))reject();
++  if(result.status==='saved'&&(result.evidence.fact.id!==draft.id||result.evidence.fact.revision!==draft.revision||this.reviewed.has(stable(draft))&&!equal(this.reviewed.get(stable(draft)),result.evidence.fact)||!equal(result.evidence.metadata?.chart,draft.chart)||!equal(result.evidence.metadata?.note,draft.note)||!equal(result.evidence.metadata?.source_review??null,draft.source_review??null)))reject();
+   if(result.status==='source_replay'){if(!draft.chart?.source_record||!result.evidence.metadata?.chart)reject();const a={...draft.chart},b={...result.evidence.metadata.chart};a.new_collection_reason=null;b.new_collection_reason=null;if(!equal(a,b))reject();}
+   return result;
+  }
+diff --git a/frontend/src/api/rf2Schemas.json b/frontend/src/api/rf2Schemas.json
+index 10d3632..db9567b 100644
+--- a/frontend/src/api/rf2Schemas.json
++++ b/frontend/src/api/rf2Schemas.json
+@@ -52,6 +52,23 @@
+           ],
+           "default": null
+         },
++        "source_review": {
++          "anyOf": [
++            {
++              "items": {
++                "$ref": "#/$defs/SourceReview"
++              },
++              "maxItems": 12,
++              "minItems": 1,
++              "type": "array"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Source Review"
++        },
+         "predecessor": {
+           "anyOf": [
+             {
+@@ -667,6 +684,54 @@
+       "title": "SourceRecord",
+       "type": "object"
+     },
++    "SourceReview": {
++      "additionalProperties": false,
++      "properties": {
++        "selected": {
++          "$ref": "#/$defs/Reference"
++        },
++        "terminal": {
++          "$ref": "#/$defs/Reference"
++        },
++        "terminal_digest": {
++          "pattern": "^[0-9a-f]{64}$",
++          "title": "Terminal Digest",
++          "type": "string"
++        },
++        "terminal_ingestion": {
++          "minimum": 1,
++          "title": "Terminal Ingestion",
++          "type": "integer"
++        },
++        "record_status": {
++          "anyOf": [
++            {
++              "maxLength": 128,
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "title": "Record Status"
++        },
++        "retain_historical": {
++          "default": false,
++          "title": "Retain Historical",
++          "type": "boolean"
++        }
++      },
++      "required": [
++        "selected",
++        "terminal",
++        "terminal_digest",
++        "terminal_ingestion",
++        "record_status"
++      ],
++      "title": "SourceReview",
++      "type": "object"
++    },
+     "Binding": {
+       "additionalProperties": false,
+       "properties": {
+diff --git a/frontend/src/demo/RenalFluidEntryWorkspace.tsx b/frontend/src/demo/RenalFluidEntryWorkspace.tsx
+index d0f1474..20b2e66 100644
+--- a/frontend/src/demo/RenalFluidEntryWorkspace.tsx
++++ b/frontend/src/demo/RenalFluidEntryWorkspace.tsx
+@@ -1,5 +1,5 @@
+ import {useEffect,useRef,useState} from 'react';
+-import {RF2Client,chartDefaults,type Chart,type Catalog,type Draft,type Evidence,type Pin,type RenalNote,pin,key} from '../api/rf2Client';
++import {RF2Client,RF2ReviewChanged,chartDefaults,type Chart,type Catalog,type Draft,type Evidence,type Pin,type RenalNote,type SourceReview,needsHistoricalReview,pin,key} from '../api/rf2Client';
+ import {decodeRF2Saved,storageKey,type SavedRF2} from './rf2Handover';
+ import {decodeSavedHandover,handoverStorageKey} from './localHandover';
+ import './rf2.css';
+@@ -31,14 +31,15 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  const [defaultTransport]=useState(()=>new RF2Client());const transport=providedTransport??defaultTransport;
+  const [chart,C]=useState<Chart>({...chartDefaults}),[note,N]=useState<RenalNote>({question:'',findings:'',possibilities:'',gaps:'',plan:'',pins:[]}),[mode,M]=useState<'chart'|'note'>('chart');
+  const [draftRepository,DraftRepository]=useState(catalog.repository);const [references,References]=useState<Evidence[]>([]);
+- const [actor,Actor]=useState(''),[reason,Reason]=useState(''),[selected,Selected]=useState<Evidence>(),[dirty,Dirty]=useState(false),[phase,Phase]=useState<'editing'|'review'|'saving'|'uncertain'|'absent'|'saved'>('editing'),[pending,Pending]=useState<Draft>(),[review,Review]=useState<unknown>(),[saved,Saved]=useState<Evidence>(),[error,ErrorMessage]=useState(''),[busy,Busy]=useState(false);
++ const [actor,Actor]=useState(''),[reason,Reason]=useState(''),[selected,Selected]=useState<Evidence>(),[dirty,Dirty]=useState(false),[phase,Phase]=useState<'editing'|'source-review'|'review-conflict'|'review'|'saving'|'uncertain'|'absent'|'saved'>('editing'),[pending,Pending]=useState<Draft>(),[review,Review]=useState<unknown>(),[saved,Saved]=useState<Evidence>(),[error,ErrorMessage]=useState(''),[busy,Busy]=useState(false);
++ const [sourceReview,SourceReviewState]=useState<SourceReview[]>([]);
+  const [history,History]=useState<Evidence[]>(),[inspected,Inspected]=useState<Evidence>(),generation=useRef(0);
+  const [pins,Pins]=useState<Pin[]>([]),[restored,Restored]=useState<Evidence[]>([]),[handoverDirty,HandoverDirty]=useState(false),[storageMessage,StorageMessage]=useState(''),[activeScope,ActiveScope]=useState(''),lastRaw=useRef<string|null>(null),restoreGeneration=useRef(0);
+  const [sourceKey,SourceKey]=useState(false),[identity,Identity]=useState({issuer_namespace:'clinrx.synthetic.chart',issuer:'',record_namespace:'chart-entry',record_id:'',component:''});
+  const scopeKey=JSON.stringify([catalog.repository,'synthetic-p1','synthetic-e1']);
+  const locked=phase==='saving'||phase==='uncertain'||phase==='absent',draftScope= pending?.repository??selected?.repository??draftRepository;
+  const mayWrite=gateConfirmed&&draftScope===catalog.repository&&!busy;
+- useEffect(()=>{onGuardChange(dirty||phase==='review'||locked);},[dirty,phase,locked,onGuardChange]);
++ useEffect(()=>{onGuardChange(dirty||phase==='review'||phase==='review-conflict'||phase==='source-review'||locked);},[dirty,phase,locked,onGuardChange]);
+  useEffect(()=>()=>{generation.current++;restoreGeneration.current++;onGuardChange(false);},[onGuardChange]);
+  async function hydrate(next:Pin[]){const ticket=++restoreGeneration.current;Restored([]);try{const values=await transport.resolve(catalog.repository,next);if(ticket===restoreGeneration.current)Restored(values);}catch{if(ticket===restoreGeneration.current)StorageMessage('Exact saved references could not all be confirmed. Pins are retained as unavailable; no successor was substituted.');}}
+  useEffect(()=>{restoreGeneration.current++;ActiveScope(scopeKey);Pins([]);Restored([]);HandoverDirty(false);StorageMessage('');lastRaw.current=null;
+@@ -49,14 +50,16 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  },[scopeKey]);
+  useEffect(()=>{generation.current++;History(undefined);Inspected(undefined);References([]);if(!dirty&&phase==='editing'&&!selected)DraftRepository(catalog.repository);},[scopeKey]);
+  function changeChart(k:keyof Chart,v:unknown){C(old=>({...old,[k]:v}));Dirty(true);ErrorMessage('');}
+- function reset(){if(locked)return;DraftRepository(catalog.repository);C({...chartDefaults});N({question:'',findings:'',possibilities:'',gaps:'',plan:'',pins:[]});Selected(undefined);Reason('');Pending(undefined);Review(undefined);Saved(undefined);Phase('editing');Dirty(false);SourceKey(false);}
++ function reset(){if(locked)return;DraftRepository(catalog.repository);C({...chartDefaults});N({question:'',findings:'',possibilities:'',gaps:'',plan:'',pins:[]});Selected(undefined);Reason('');Pending(undefined);Review(undefined);SourceReviewState([]);Saved(undefined);Phase('editing');Dirty(false);SourceKey(false);}
+  function reuse(e:Evidence){if(locked||busy||phase!=='editing'||selected||e.repository!==catalog.repository||draftRepository!==catalog.repository)return;N(old=>({...old,pins:old.pins.some(x=>key(x)===key(pin(e)))?old.pins:[...old.pins,pin(e)].slice(0,12)}));M('note');Dirty(true);}
+  function correct(e:Evidence){if(locked||dirty)return;if(!e.metadata?.chart){onLegacyCorrect(e);return;}Selected(e);C({...e.metadata.chart});M('chart');SourceKey(!!e.metadata.chart.source_record);if(e.metadata.chart.source_record)Identity(e.metadata.chart.source_record);Reason('');Phase('editing');Dirty(true);Saved(undefined);}
+  async function validate(){if(!mayWrite||locked)return;Busy(true);ErrorMessage('');try{
+   const draft:Draft={repository:catalog.repository,id:selected?.fact.id??crypto.randomUUID(),revision:crypto.randomUUID(),actor,recorded_at:new Date().toISOString(),chart:mode==='chart'?{...chart,source_record:sourceKey?identity:null}:null,note:mode==='note'?note:null,predecessor:selected?pin(selected):null,reason:selected?reason:null};
+-  const r=await transport.action('validate',draft);Pending(draft);Review(r);Phase('review');
++  const r=await transport.action('validate',draft);if(draft.note&&!r.source_review)throw Error('Selected-source review could not be confirmed.');Pending(draft);Review(r);SourceReviewState(r.source_review??[]);Phase(draft.note?'source-review':'review');
+  }catch(e){ErrorMessage(e instanceof Error?e.message:'Draft could not be validated.');}finally{Busy(false);}}
+- async function save(){if(!pending||!mayWrite)return;Busy(true);Phase('saving');ErrorMessage('');try{const r=await transport.action('save',pending);if(!r.evidence)throw Error('Unconfirmed save');Saved(r.evidence);Phase('saved');Dirty(false);try{await onRefresh();}catch{ErrorMessage('Saved confirmation retained; refresh failed. New writes remain blocked until scope is confirmed.');}}catch{Phase('uncertain');ErrorMessage('Save completion is uncertain. Keep this page open and check the exact original request; do not create another entry.');}finally{Busy(false);}}
++ async function confirmSourceReview(){if(!pending||!mayWrite||!pending.note||sourceReview.some(r=>needsHistoricalReview(r)&&!r.retain_historical))return;Busy(true);ErrorMessage('');try{const next={...pending,source_review:sourceReview};const result=await transport.action('validate',next);Pending(next);Review(result);Phase('review');}catch{ErrorMessage('Selected sources changed or the review could not be confirmed. No note was saved. Refresh the selected-source review explicitly; no successor was substituted.');}finally{Busy(false);}}
++ async function refreshSourceReview(){if(!pending||!mayWrite||locked)return;Busy(true);ErrorMessage('');try{const next={...pending};delete next.source_review;const result=await transport.action('validate',next);if(!result.source_review)throw Error();Pending(next);SourceReviewState(result.source_review);Review(result);Phase('source-review');}catch{ErrorMessage('Current selected-source status could not be confirmed; no note saved.');}finally{Busy(false);}}
++ async function save(){if(!pending||!mayWrite)return;Busy(true);Phase('saving');ErrorMessage('');try{const r=await transport.action('save',pending);if(!r.evidence)throw Error('Unconfirmed save');Saved(r.evidence);Phase('saved');Dirty(false);try{await onRefresh();}catch{ErrorMessage('Saved confirmation retained; refresh failed. New writes remain blocked until scope is confirmed.');}}catch(error){if(error instanceof RF2ReviewChanged){Phase('review-conflict');ErrorMessage('The exact request was rejected because selected sources changed. It is retained. Explicitly review again before any new append.');}else{Phase('uncertain');ErrorMessage('Save completion is uncertain. Keep this page open and check the exact original request; do not create another entry.');}}finally{Busy(false);}}
+  async function lookup(){if(!pending)return;Busy(true);ErrorMessage('');try{const r=await transport.action('lookup',pending);if(r.status==='absent'){Phase('absent');}else if(r.evidence){Saved(r.evidence);Phase('saved');Dirty(false);await onRefresh();}else throw Error();}catch{ErrorMessage('Exact lookup could not be confirmed. The original pending request is retained.');}finally{Busy(false);}}
+  async function inspectReferences(ps:Pin[]){const ticket=++generation.current;References([]);History(undefined);Inspected(undefined);try{const found=await transport.resolve(catalog.repository,ps);if(ticket===generation.current)References(found.map((e,n)=>({...e,cutoff:ps[n].cutoff})));}catch{if(ticket===generation.current)ErrorMessage('Exact note evidence could not be confirmed. No successor was substituted.');}}
+  async function inspect(e:Evidence){const t=++generation.current;Inspected(e);History(undefined);ErrorMessage('');try{const result=await transport.history(e);if(t===generation.current)History(result);}catch{if(t===generation.current)ErrorMessage('Exact history could not be confirmed. No different source revision was substituted.');}}
+@@ -66,7 +69,7 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  const field=(label:string,k:keyof Chart,optional=false)=><label>{label}<input value={String(chart[k]??'')} maxLength={k==='source_context'||k==='uncertainty'||k==='new_collection_reason'?512:128} onChange={e=>changeChart(k,e.target.value|| (optional?null:''))}/></label>;
+  const [search,Search]=useState('');const rows=catalog.items.filter(e=>[e.fact.id,e.fact.kind,evidenceText(e),e.metadata?.chart?.category??''].join(' ').toLowerCase().includes(search.toLowerCase()));
+  return <section className="rf2" aria-label="Renal charting and handover"><h2>Renal charting and handover</h2><p><strong>{gateConfirmed?'Clinical execution disabled.':'Execution gate not confirmed — new writes blocked.'}</strong> Local synthetic charting. No calculated balance, urine rate, AKI stage or treatment advice.</p><p>Repository {catalog.repository} · shared cutoff {catalog.cutoff.fact_watermark}. Reuse a recorded observation before entering another quantity. Acquisition and intended purpose are separate.</p>
+- {error&&<p role="alert">{error}</p>}<label>Find existing RF2 source<input type="search" value={search} onChange={e=>Search(e.target.value)} placeholder="Source ID, creatinine, weight, urine…"/></label><div className="rf2-scroll"><table><caption>Existing sources — use once across modules</caption><thead><tr><th>Exact record</th><th>Recorded assertion</th><th>Actions</th></tr></thead><tbody>{rows.map(e=><tr key={key(pin(e))}><th>{e.fact.id} / {e.fact.revision}</th><td>{evidenceText(e)}<br/><small>{sourceContext(e,catalog)}</small><br/>{e.metadata?.chart&&<>Acquisition: {e.metadata.chart.acquisition}; method {e.metadata.chart.method??'unavailable'}; purpose {e.metadata.chart.purpose??'unavailable'}</>}{e.fact.id==='fs-WEIGHT'&&<>Dosing-weight context; acquisition/method unavailable. Do not infer measured status.</>}<br/>{e.superseded?'Superseded historical revision':String(e.fact.record_status??'legacy source assertion')}</td><td><button onClick={()=>void inspect(e)}>Inspect exact history</button><button disabled={busy||locked||phase!=='editing'||!!selected||note.pins.length>=12} onClick={()=>reuse(e)}>Reuse for reassessment</button><button disabled={busy||dirty||phase==='review'||locked||e.fact.kind!=='circulatory_event'||!gateConfirmed} onClick={()=>correct(e)}>Correct original record</button><button disabled={activeScope!==scopeKey||!gateConfirmed} onClick={()=>addHandover(e)}>Add exact record to RF2 handover</button></td></tr>)}</tbody></table></div>
++ {error&&<p role="alert">{error}</p>}<label>Find existing RF2 source<input type="search" value={search} onChange={e=>Search(e.target.value)} placeholder="Source ID, creatinine, weight, urine…"/></label><div className="rf2-scroll"><table><caption>Existing sources — use once across modules</caption><thead><tr><th>Exact record</th><th>Recorded assertion</th><th>Actions</th></tr></thead><tbody>{rows.map(e=><tr key={key(pin(e))}><th>{e.fact.id} / {e.fact.revision}</th><td>{evidenceText(e)}<br/><small>{sourceContext(e,catalog)}</small><br/>{e.metadata?.chart&&<>Acquisition: {e.metadata.chart.acquisition}; method {e.metadata.chart.method??'unavailable'}; purpose {e.metadata.chart.purpose??'unavailable'}</>}{e.fact.id==='fs-WEIGHT'&&<>Dosing-weight context; acquisition/method unavailable. Do not infer measured status.</>}<br/>{e.superseded?'Superseded historical revision':String(e.fact.record_status??'legacy source assertion')}</td><td><button onClick={()=>void inspect(e)}>Inspect exact history</button><button disabled={busy||locked||phase!=='editing'||!!selected||note.pins.length>=12} onClick={()=>reuse(e)}>Reuse for reassessment</button><button disabled={busy||dirty||phase==='review'||phase==='review-conflict'||phase==='source-review'||locked||e.fact.kind!=='circulatory_event'||!gateConfirmed} onClick={()=>correct(e)}>Correct original record</button><button disabled={activeScope!==scopeKey||!gateConfirmed} onClick={()=>addHandover(e)}>Add exact record to RF2 handover</button></td></tr>)}</tbody></table></div>
+  {references.length>0&&references.every(e=>e.repository===catalog.repository)&&<section aria-label="Exact renal note evidence"><h3>Exact sources retained by the note</h3>{references.map(e=><article key={key(pin(e))}><p>{e.fact.kind} / {e.fact.id} / {e.fact.revision}: {evidenceText(e)}</p><button onClick={()=>void inspect(e)}>Inspect this retained source history</button><details><summary>Complete retained evidence and uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details></article>)}</section>}
+  {inspected&&inspected.repository===catalog.repository&&<section aria-label="RF2 exact source history"><h3>Selected {inspected.fact.id} / {inspected.fact.revision}</h3><button onClick={()=>{generation.current++;Inspected(undefined);History(undefined);}}>Close history</button><p>Corrections retain originals. A transcription correction is not improvement or a new sample.</p>{history?history.map(e=><article key={key(pin(e))}><h4>{e.fact.id} / {e.fact.revision}</h4><p>{evidenceText(e)} · {e.superseded?'historical superseded revision':'terminal at this cutoff'}</p><details><summary>Complete exact record and uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details><button onClick={()=>reuse(e)} disabled={locked||busy||phase!=='editing'||!!selected}>Use this exact historical revision in reassessment</button><button onClick={()=>addHandover(e)} disabled={!gateConfirmed}>Add this revision to RF2 handover</button></article>):<p>History loading or unconfirmed; no substitute shown.</p>}</section>}
+  <section aria-label="RF2 draft"><h3>{selected?'Correct '+selected.fact.id:'Record a genuinely new collection or authored review'}</h3><p>Same numbers do not identify the same collection. Source replay uses issuer, record and component identity; series IDs are not record IDs.</p>
+@@ -77,7 +80,7 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  {chart.category==='weight'&&<><label>Acquisition assertion<select value={chart.acquisition} onChange={e=>changeChart('acquisition',e.target.value)}><option value="unknown">Unknown</option><option value="measured">Measured</option><option value="reported">Reported</option></select></label>{field('Intended purpose (independent of acquisition)','purpose',true)}</>}{field('Collection or acquisition method (optional)','method',true)}{field('Source context and completeness limitations','source_context')}{field('Uncertainty and confirmation gaps','uncertainty')}
+  <label><input type="checkbox" checked={sourceKey} disabled={!!selected} onChange={e=>{SourceKey(e.target.checked);Dirty(true);}}/>An explicit source RECORD key is available (not series/context)</label>{sourceKey?Object.entries(identity).map(([k,v])=><label key={k}>{k}<input value={v} maxLength={128} onChange={e=>{Identity(old=>({...old,[k]:e.target.value}));Dirty(true);}}/></label>):field('Why this is a genuinely new collection (not a copy)','new_collection_reason')}
+  <p>Gaps, overlaps and reported totals are not reconciled. A challenge may already be included in an interval input. CRRT net removal is not effluent or proof of continuous treatment.</p></>:<><p>Select existing evidence above. No intervention is required. Recorded findings, possibilities and gaps remain separate.</p>{(['question','findings','possibilities','gaps','plan'] as const).map(k=><label key={k}>{k}<textarea maxLength={512} value={note[k]} onChange={e=>{N(old=>({...old,[k]:e.target.value}));Dirty(true);}}/></label>)}<ul>{note.pins.map(p=><li key={key(p)}>{p.reference.kind} / {p.reference.id} / {p.reference.version} · selected cutoff {p.cutoff}<button onClick={()=>{N(old=>({...old,pins:old.pins.filter(x=>key(x)!==key(p))}));Dirty(true);}}>Remove evidence reference</button></li>)}</ul><p>Plan is recorded text, not a scheduled action. This note does not establish causation or a validated diagnosis.</p></>}
+- {selected&&<l

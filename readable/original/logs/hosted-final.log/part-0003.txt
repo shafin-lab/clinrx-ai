@@ -1,0 +1,180 @@
+ instead of publishing a partial composite^[[33m 346^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:02.6179132Z    ^[[33m^[[2m✓^[[22m^[[39m withholds contradictory placement instead of publishing a partial composite^[[33m 387^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:02.6179957Z    ^[[33m^[[2m✓^[[22m^[[39m rejects incomplete or contradictory history: context^[[33m 316^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:02.6180858Z    ^[[33m^[[2m✓^[[22m^[[39m shows raw creatinine and fluid intervals, preserves uncertainty and opens both revisions^[[33m 786^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:02.6182195Z    ^[[33m^[[2m✓^[[22m^[[39m clears previous history immediately and ignores a late response after a new selection^[[33m 599^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:02.6183132Z    ^[[33m^[[2m✓^[[22m^[[39m uses one composite load and returns to the same hemodynamics workspace^[[33m 518^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:04.0662770Z  ^[[32m✓^[[39m tests/evidenceExplanation.test.tsx ^[[2m(^[[22m^[[2m5 tests^[[22m^[[2m)^[[22m^[[32m 274^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3597103Z  ^[[32m✓^[[39m tests/renalFluidHistory.test.tsx ^[[2m(^[[22m^[[2m14 tests^[[22m^[[2m)^[[22m^[[33m 7433^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3599283Z    ^[[33m^[[2m✓^[[22m^[[39m rejects selected creatinine content mismatch: self_consistent_value^[[33m 622^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3601174Z    ^[[33m^[[2m✓^[[22m^[[39m rejects selected creatinine content mismatch: ingestion_time^[[33m 562^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3602917Z    ^[[33m^[[2m✓^[[22m^[[39m rejects selected creatinine content mismatch: ingestion_sequence^[[33m 555^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3604881Z    ^[[33m^[[2m✓^[[22m^[[39m accepts unchanged selected creatinine history through the real client^[[33m 608^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3606875Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: cutoff^[[33m 740^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3608540Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: repository^[[33m 525^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3610163Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: window^[[33m 523^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3611774Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: assembly_digest^[[33m 477^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3613441Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: request_limits^[[33m 484^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3615139Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: selected_content^[[33m 447^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3617165Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: ingestion_time^[[33m 436^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3618878Z    ^[[33m^[[2m✓^[[22m^[[39m withholds fluid history at the UI boundary: ingestion_sequence^[[33m 486^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3621150Z    ^[[33m^[[2m✓^[[22m^[[39m accepts unchanged fluid history and clears it when the next history cannot be confirmed^[[33m 495^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.3623153Z    ^[[33m^[[2m✓^[[22m^[[39m does not resurrect valid fluid history after a later failed selection^[[33m 468^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:06.6524862Z  ^[[32m✓^[[39m tests/evidenceEntryClient.test.ts ^[[2m(^[[22m^[[2m9 tests^[[22m^[[2m)^[[22m^[[33m 1431^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:07.7838391Z  ^[[32m✓^[[39m tests/evidenceSearch.test.ts ^[[2m(^[[22m^[[2m9 tests^[[22m^[[2m)^[[22m^[[32m 10^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:09.2508763Z  ^[[32m✓^[[39m tests/localHandover.test.ts ^[[2m(^[[22m^[[2m9 tests^[[22m^[[2m)^[[22m^[[32m 68^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:10.6818572Z  ^[[32m✓^[[39m tests/sourceUnitMappings.test.tsx ^[[2m(^[[22m^[[2m4 tests^[[22m^[[2m)^[[22m^[[33m 2696^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:10.6848268Z    ^[[33m^[[2m✓^[[22m^[[39m displays the actual quantity mapping for fs-IO-output_urine-15^[[33m 1014^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:10.6872194Z    ^[[33m^[[2m✓^[[22m^[[39m displays the actual quantity mapping for fs-D-ORDER^[[33m 647^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:10.6988263Z    ^[[33m^[[2m✓^[[22m^[[39m displays the actual quantity mapping for fs-D-CHANGE^[[33m 524^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:10.7038530Z    ^[[33m^[[2m✓^[[22m^[[39m distinguishes rate and concentration and preserves missing quantities without inferring applicability^[[33m 508^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:10.9599906Z  ^[[32m✓^[[39m tests/rf2.integration.test.tsx ^[[2m(^[[22m^[[2m1 test^[[22m^[[2m)^[[22m^[[33m 474^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:10.9601901Z    ^[[33m^[[2m✓^[[22m^[[39m publishes one RF2/RF1 cutoff and keeps the prior workspace mounted^[[33m 472^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:12.2418358Z  ^[[32m✓^[[39m tests/rf2Transport.test.ts ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[32m 96^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:12.3836253Z  ^[[32m✓^[[39m tests/circulatoryLookup.test.tsx ^[[2m(^[[22m^[[2m3 tests^[[22m^[[2m)^[[22m^[[33m 472^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:13.4492377Z  ^[[32m✓^[[39m tests/hostedDemo.test.tsx ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[32m 150^[[2mms^[[22m^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:13.4535784Z 
+frontend	Full frontend tests	2026-10-20T04:21:13.4543159Z ^[[2m Test Files ^[[22m ^[[1m^[[32m27 passed^[[39m^[[22m^[[90m (27)^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:13.4546891Z ^[[2m      Tests ^[[22m ^[[1m^[[32m749 passed^[[39m^[[22m^[[90m (749)^[[39m
+frontend	Full frontend tests	2026-10-20T04:21:13.4547694Z ^[[2m   Start at ^[[22m 04:20:01
+frontend	Full frontend tests	2026-10-20T04:21:13.4552293Z ^[[2m   Duration ^[[22m 71.56s^[[2m (tests 76%, environment 16%, setup 3%, import 3%, transform 2%)^[[22m
+frontend	Full frontend tests	2026-10-20T04:21:13.4564758Z 
+frontend	Full frontend tests	2026-10-20T04:21:13.4565715Z ^[[2m    Isolate ^[[22m ^[[33m27 workers spawned^[[39m^[[2m · ~911ms startup each (spawn + environment, per file)^[[22m
+frontend	Full frontend tests	2026-10-20T04:21:13.4567520Z ^[[2m            ^[[22m ^[[2mat least ~11.38s faster with ^[[22m^[[33misolate: false^[[39m^[[2m — reuses workers across files instead of one per file^[[22m
+frontend	Full frontend tests	2026-10-20T04:21:13.4568189Z 
+frontend	TypeScript typecheck	﻿2026-10-20T04:21:13.5065220Z ##[group]Run set -o pipefail
+frontend	TypeScript typecheck	2026-10-20T04:21:13.5065569Z ^[[36;1mset -o pipefail^[[0m
+frontend	TypeScript typecheck	2026-10-20T04:21:13.5065978Z ^[[36;1mnpm run typecheck 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/typecheck.txt"^[[0m
+frontend	TypeScript typecheck	2026-10-20T04:21:13.5129561Z shell: /usr/bin/bash -e {0}
+frontend	TypeScript typecheck	2026-10-20T04:21:13.5129849Z ##[endgroup]
+frontend	TypeScript typecheck	2026-10-20T04:21:13.6104863Z 
+frontend	TypeScript typecheck	2026-10-20T04:21:13.6106234Z > clinrx-synthetic-review@0.1.0 typecheck
+frontend	TypeScript typecheck	2026-10-20T04:21:13.6107093Z > tsc --noEmit
+frontend	TypeScript typecheck	2026-10-20T04:21:13.6107316Z 
+frontend	Production build	﻿2026-10-20T04:21:15.1721047Z ##[group]Run set -o pipefail
+frontend	Production build	2026-10-20T04:21:15.1721604Z ^[[36;1mset -o pipefail^[[0m
+frontend	Production build	2026-10-20T04:21:15.1722248Z ^[[36;1mnpm run build 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/build.txt"^[[0m
+frontend	Production build	2026-10-20T04:21:15.1814132Z shell: /usr/bin/bash -e {0}
+frontend	Production build	2026-10-20T04:21:15.1814589Z ##[endgroup]
+frontend	Production build	2026-10-20T04:21:15.2849643Z 
+frontend	Production build	2026-10-20T04:21:15.2852265Z > clinrx-synthetic-review@0.1.0 build
+frontend	Production build	2026-10-20T04:21:15.2852997Z > tsc --noEmit && vite build
+frontend	Production build	2026-10-20T04:21:15.2853305Z 
+frontend	Production build	2026-10-20T04:21:17.1045934Z ^[[36mvite v8.3.4 ^[[32mbuilding client environment for production...^[[36m^[[39m
+frontend	Production build	2026-10-20T04:21:17.1144508Z transforming...
+frontend	Production build	2026-10-20T04:21:17.1995468Z ✓ 79 modules transformed.
+frontend	Production build	2026-10-20T04:21:17.2428595Z rendering chunks...
+frontend	Production build	2026-10-20T04:21:17.3286942Z computing gzip size...
+frontend	Production build	2026-10-20T04:21:17.3387289Z dist/index.html                     0.37 kB │ gzip:   0.27 kB
+frontend	Production build	2026-10-20T04:21:17.3388123Z dist/assets/index-Brb0kHhM.css     34.19 kB │ gzip:   7.54 kB
+frontend	Production build	2026-10-20T04:21:17.3388799Z dist/assets/index-DDQAFuuS.js   1,374.03 kB │ gzip: 174.31 kB
+frontend	Production build	2026-10-20T04:21:17.3389179Z 
+frontend	Production build	2026-10-20T04:21:17.3391761Z ^[[32m✓ built in 233ms^[[39m
+frontend	Production build	2026-10-20T04:21:17.3399282Z ^[[33m[plugin builtin:vite-reporter] 
+frontend	Production build	2026-10-20T04:21:17.3400055Z (!) Some chunks are larger than 500 kB after minification. Consider:
+frontend	Production build	2026-10-20T04:21:17.3400585Z - Using dynamic import() to code-split the application
+frontend	Production build	2026-10-20T04:21:17.3401489Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+frontend	Production build	2026-10-20T04:21:17.3402459Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.^[[39m
+frontend	Local synthetic RF2 authoring build	﻿2026-10-20T04:21:17.3634858Z ##[group]Run set -o pipefail
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.3635206Z ^[[36;1mset -o pipefail^[[0m
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.3635795Z ^[[36;1mnpm run build -- --outDir "$RUNNER_TEMP/clinrx-authoring-build" 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/authoring-build.txt"^[[0m
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.3699730Z shell: /usr/bin/bash -e {0}
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.3700019Z env:
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.3700236Z   VITE_SYNTHETIC_HOSTED: true
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.3700510Z   VITE_SYNTHETIC_AUTHORING: true
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.3700779Z   VITE_SYNTHETIC_RF1: true
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.3701041Z   VITE_SYNTHETIC_RF2: true
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.3701285Z ##[endgroup]
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.4702783Z 
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.4703444Z > clinrx-synthetic-review@0.1.0 build
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.4704339Z > tsc --noEmit && vite build --outDir /home/runner/work/_temp/clinrx-authoring-build
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:17.4704709Z 
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.2616114Z ^[[36mvite v8.3.4 ^[[32mbuilding client environment for production...^[[36m^[[39m
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.2728133Z transforming...
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.3641272Z ✓ 79 modules transformed.
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.3663557Z ^[[33m
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.3664705Z ^[[1m(!)^[[22m outDir ^[[37m^[[2m/home/runner/work/_temp/clinrx-authoring-build^[[22m^[[33m is not inside project root and will not be emptied.
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.3665615Z Use --emptyOutDir to override.
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.3665936Z ^[[39m
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.4074920Z rendering chunks...
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.4891548Z computing gzip size...
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.5001761Z ../../../_temp/clinrx-authoring-build/index.html                     0.37 kB │ gzip:   0.27 kB
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.5003395Z ../../../_temp/clinrx-authoring-build/assets/index-Brb0kHhM.css     34.19 kB │ gzip:   7.54 kB
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.5005002Z ../../../_temp/clinrx-authoring-build/assets/index-C-eCmxf4.js   1,522.09 kB │ gzip: 203.50 kB
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.5005749Z 
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.5006083Z ^[[32m✓ built in 238ms^[[39m
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.5013038Z ^[[33m[plugin builtin:vite-reporter] 
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.5013939Z (!) Some chunks are larger than 500 kB after minification. Consider:
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.5014944Z - Using dynamic import() to code-split the application
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.5016700Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+frontend	Local synthetic RF2 authoring build	2026-10-20T04:21:19.5018413Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.^[[39m
+frontend	Bound synthetic validation evidence	﻿2026-10-20T04:21:19.5194095Z ##[group]Run mkdir -p "$RUNNER_TEMP/clinrx-frontend-evidence"
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5194592Z ^[[36;1mmkdir -p "$RUNNER_TEMP/clinrx-frontend-evidence"^[[0m
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5195139Z ^[[36;1mprintf 'job_status=%s\n' "$VALIDATION_STATUS" > "$RUNNER_TEMP/clinrx-frontend-evidence/status.txt"^[[0m
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5195802Z ^[[36;1m# Five allowlisted files, at most 64 KiB each; preserve failure summaries at the tail.^[[0m
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5196351Z ^[[36;1mfor name in environment tests typecheck build authoring-build; do^[[0m
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5197457Z ^[[36;1m  source="$RUNNER_TEMP/clinrx-frontend-logs/$name.txt"^[[0m
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5198065Z ^[[36;1m  if test -f "$source"; then^[[0m
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5198483Z ^[[36;1m    tail -c 65536 "$source" > "$RUNNER_TEMP/clinrx-frontend-evidence/$name.txt"^[[0m
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5198884Z ^[[36;1m  fi^[[0m
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5199076Z ^[[36;1mdone^[[0m
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5260655Z shell: /usr/bin/bash -e {0}
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5260912Z env:
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5261116Z   VALIDATION_STATUS: success
+frontend	Bound synthetic validation evidence	2026-10-20T04:21:19.5261412Z ##[endgroup]
+frontend	Upload bounded synthetic validation evidence	﻿2026-10-20T04:21:19.5499514Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.5499959Z with:
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.5500234Z   name: synthetic-frontend-validation-39368985675-1
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.5500668Z   path: /home/runner/work/_temp/clinrx-frontend-evidence/*.txt
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.5501019Z   retention-days: 7
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.5501230Z   compression-level: 9
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.5501461Z   if-no-files-found: error
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.5501709Z   include-hidden-files: false
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.5501950Z   overwrite: false
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.5502153Z ##[endgroup]
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.7182767Z (node:2907) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.7184173Z (Use `node --trace-deprecation ...` to show where the warning was created)
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.7319206Z With the provided path, there will be 6 files uploaded
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.7320514Z Artifact name is valid!
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:19.7321178Z Root directory input is valid!
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:20.1299711Z Beginning upload of artifact content to blob storage
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:20.1595481Z (node:2907) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:20.4176890Z Uploaded bytes 7023
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:20.4902986Z Finished uploading artifact content to blob storage!
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:20.4904399Z SHA256 digest of uploaded artifact zip is 3b0cbd5433bb8be8bdf29cd44317cf3722dad65855734817803cbce5575546c1
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:20.4905600Z Finalizing artifact upload
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:20.7472687Z Artifact synthetic-frontend-validation-39368985675-1.zip successfully finalized. Artifact ID 12240259865
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:20.7474745Z Artifact synthetic-frontend-validation-39368985675-1 has been successfully uploaded! Final size is 7023 bytes. Artifact ID is 12240259865
+frontend	Upload bounded synthetic validation evidence	2026-10-20T04:21:20.7481133Z Artifact download URL: https://github.com/shafin-lab/clinrx-ai/actions/runs/39368985675/artifacts/12240259865
+frontend	Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	﻿2026-10-20T04:21:20.7667865Z Post job cleanup.
+frontend	Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:21:20.8898857Z (node:2919) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+frontend	Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:21:20.8899935Z (Use `node --trace-deprecation ...` to show where the warning was created)
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-10-20T04:21:20.9078717Z Post job cleanup.
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:21:20.9984973Z [command]/usr/bin/git version
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:21:21.0028513Z git version 2.55.0
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:21:21.0072722Z Temporarily overriding HOME='/home/runner/work/_temp/ac992380-c09c-4e49-b158-f39274d54299' before making global git config changes
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:21:21.0074366Z Adding repository directory to the temporary git global config as a safe directory
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:21:21.0079196Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/clinrx-ai/clinrx-ai
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:21:21.0123734Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:21:21.0210055Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:21:21.0537146Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+frontend	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:21:21.0605591Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+frontend	Complete job	﻿2026-10-20T04:21:21.1134277Z Cleaning up orphan processes
+frontend	Complete job	2026-10-20T04:21:21.1486112Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+backend	Set up job	﻿2026-10-20T04:19:49.1945927Z Current runner version: '2.337.0'
+backend	Set up job	2026-10-20T04:19:49.1969591Z ##[group]Runner Image Provisioner
+backend	Set up job	2026-10-20T04:19:49.1970425Z Hosted Compute Agent
+backend	Set up job	2026-10-20T04:19:49.1971056Z Version: 20261012.601
+backend	Set up job	2026-10-20T04:19:49.1971663Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+backend	Set up job	2026-10-20T04:19:49.1972341Z Build Date: 2026-10-12T17:48:21Z
+backend	Set up job	2026-10-20T04:19:49.1973117Z Worker ID: {def96d97-d5bb-4624-aafc-14658db3e49d}
+backend	Set up job	2026-10-20T04:19:49.1973973Z Region: eastus
+backend	Set up job	2026-10-20T04:19:49.1974552Z Cloud: Azure
+backend	Set up job	2026-10-20T04:19:49.1975058Z ##[endgroup]
+backend	Set up job	2026-10-20T04:19:49.1976372Z ##[group]Operating System
+backend	Set up job	2026-10-20T04:19:49.1977243Z Ubuntu
+backend	Set up job	2026-10-20T04:19:49.1977777Z 24.04.5
+backend	Set up job	2026-10-20T04:19:49.1978234Z LTS
+backend	Set up job	2026-10-20T04:19:49.1978783Z ##[endgroup]
+backend	Set up job	2026-10-20T04:19:49.1979295Z ##[group]Runner Image
+backend	Set up job	2026-10-20T04:19:49.1979925Z

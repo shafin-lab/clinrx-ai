@@ -1,0 +1,251 @@
+diff --git a/backend/app/api/schemas/renal_fluid_entry.py b/backend/app/api/schemas/renal_fluid_entry.py
+index 4529de9..f718869 100644
+--- a/backend/app/api/schemas/renal_fluid_entry.py
++++ b/backend/app/api/schemas/renal_fluid_entry.py
+@@ -87,6 +87,19 @@ class RenalNote(DTO):
+         if len(keys)!=len(set(keys)):raise ValueError('duplicate evidence pin')
+         return self
+ 
++class SourceReview(DTO):
++    selected: Reference
++    terminal: Reference
++    terminal_digest: Digest
++    terminal_ingestion: Annotated[int, Field(strict=True, ge=1)]
++    record_status: Short | None
++    retain_historical: Annotated[bool, Field(strict=True)] = False
++    @model_validator(mode='after')
++    def same_source(self):
++        if (self.selected.kind,self.selected.id)!=(self.terminal.kind,self.terminal.id):raise ValueError('review must retain source identity')
++        if any(len(v)>256 for ref in (self.selected,self.terminal) for v in (ref.kind,ref.id,ref.version)):raise ValueError('review reference bounds')
++        return self
++
+ class RF2Draft(DTO):
+     repository: UUID
+     id: UUID
+@@ -95,6 +108,7 @@ class RF2Draft(DTO):
+     recorded_at: Short
+     chart: Chart | None = None
+     note: RenalNote | None = None
++    source_review: Annotated[tuple[SourceReview,...], Field(min_length=1,max_length=12)] | None = Field(default=None, exclude_if=lambda value:value is None)
+     predecessor: Pin | None = None
+     reason: NoteText | None = None
+     @field_validator('recorded_at')
+@@ -105,6 +119,7 @@ class RF2Draft(DTO):
+     @model_validator(mode='after')
+     def shape(self):
+         if (self.chart is None)==(self.note is None):raise ValueError('one chart or note required')
++        if self.source_review is not None and (self.note is None or len(self.source_review)!=len(self.note.pins) or any(s.selected!=p.reference for s,p in zip(self.source_review,self.note.pins))):raise ValueError('review must match every exact selected pin in order')
+         if self.note and any(p.repository!=self.repository for p in self.note.pins):raise ValueError('note pins belong to the original repository')
+         if (self.predecessor is None)!=(self.reason is None):raise ValueError('correction needs predecessor and reason')
+         if self.predecessor and (self.predecessor.repository!=self.repository or self.predecessor.reference.kind!='circulatory_event' or self.predecessor.reference.id!=str(self.id)):
+diff --git a/backend/app/demo/renal_fluid_entry_gateway.py b/backend/app/demo/renal_fluid_entry_gateway.py
+index 0c89f6b..de6864e 100644
+--- a/backend/app/demo/renal_fluid_entry_gateway.py
++++ b/backend/app/demo/renal_fluid_entry_gateway.py
+@@ -9,7 +9,7 @@ from app.api.routes.circulatory import service as circulatory_service
+ from app.api.schemas.renal_fluid_entry import RF2Draft, ResolveRequest
+ from app.demo.renal_fluid_gateway import SyntheticRenalFluidGateway
+ from app.demo.hosting import PREFIX
+-from app.services.renal_fluid_entry_service import RF2Service
++from app.services.renal_fluid_entry_service import RF2Service,SourceReviewChanged
+ from app.persistence.repository import transaction
+ from app.persistence.shared_transaction import execution_transaction
+ 
+@@ -42,6 +42,9 @@ class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
+     def __init__(self,database,frontend,signing_key,origin):
+         super().__init__(database,frontend,signing_key,origin)
+         self.core.include_router(router)
++        async def review_changed(request,error):
++            return JSONResponse({'code':'rf2_source_review_changed','request_digest':error.request_digest,'execution_enabled':False},status_code=409,headers={'Cache-Control':'no-store'})
++        self.core.add_exception_handler(SourceReviewChanged,review_changed)
+     async def __call__(self,scope,receive,send):
+         # RF2 owns its structured facts even when the advanced legacy editor is used.
+         # Exact retained requests and read-only lookup preserve original recovery.
+@@ -66,10 +69,10 @@ class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
+                 from app.persistence.canonical import canonical_payload
+                 from app.persistence.history import FactIdentity
+                 from app.persistence.bounded_history import HistoryBudget,HistoryAccounting,AggregateHistoryBudget
+-                from app.services.renal_fluid_entry_service import exact_json,META,PIN
++                from app.services.renal_fluid_entry_service import exact_json,META,PIN,REVIEW
+                 proposed=EvidenceDraft.model_validate(exact_json(raw));fact=proposed.fact
+                 def rf2(f):
+-                    return any(e.namespace in (META,PIN) for e in f.external_evidence) if hasattr(f,'external_evidence') else False
++                    return any(e.namespace in (META,PIN,REVIEW) for e in f.external_evidence) if hasattr(f,'external_evidence') else False
+                 from app.persistence.errors import RecordNotFound
+                 exact=False
+                 try:
+diff --git a/backend/app/services/renal_fluid_entry_service.py b/backend/app/services/renal_fluid_entry_service.py
+index c90ecc6..631926e 100644
+--- a/backend/app/services/renal_fluid_entry_service.py
++++ b/backend/app/services/renal_fluid_entry_service.py
+@@ -3,7 +3,7 @@ import json
+ from decimal import Decimal
+ from hashlib import sha256
+ from pydantic import ValidationError
+-from app.api.schemas.renal_fluid_entry import Chart, RenalNote
++from app.api.schemas.renal_fluid_entry import Chart, RenalNote, SourceReview
+ from app.demo.authoring import TARGET, EvidenceConflict
+ from app.models.clinical.hemodynamics import CirculatoryEvent, ClinicalInstant, RecordedCirculatoryInterval, EvidenceBinding
+ from app.models.clinical.recorded_v2 import SourceCode, ExactQuantity, RecordedConcept
+@@ -15,7 +15,10 @@ from app.persistence.errors import RecordNotFound, StorageIntegrityError, Unsupp
+ from app.persistence.history import FactIdentity
+ from app.services.renal_fluid_product_service import RenalFluidProductService
+ 
+-META='clinrx.local.rf2/v1'; PIN='clinrx.local.rf2.pin/v1'
++META='clinrx.local.rf2/v1'; PIN='clinrx.local.rf2.pin/v1'; REVIEW='clinrx.local.rf2.review/v1'
++class SourceReviewChanged(EvidenceConflict):
++    def __init__(self,body):self.request_digest=sha256(canonical_payload(body).encode()).hexdigest()
++
+ CATEGORIES={'input_iv','input_blood','input_oral','input_enteral','output_urine','output_drain','output_other','output_crrt','weight','dosing_weight','net_balance_reported','urine_total_reported','balance_total_reported','fluid_challenge','crrt_context'}
+ def exact_json(raw):
+     def pairs(items):
+@@ -53,6 +56,12 @@ def metadata(fact):
+             if chart.start is not None or chart.end is not None:
+                 if interval is None or interval.start.source_timestamp!=chart.start or interval.end.source_timestamp!=chart.end:raise ValueError()
+             elif interval is not None:raise ValueError()
++        review_entries=[x for x in getattr(fact,'external_evidence',()) if x.namespace==REVIEW]
++        if review_entries:
++            if not note or len(review_entries)!=len(note.pins) or any(x.version!='1' for x in review_entries):raise ValueError()
++            reviews=[SourceReview.model_validate(exact_json(x.code)) for x in review_entries]
++            if any(v.selected!=p.reference or v.terminal_ingestion<p.ingestion or (v.selected==v.terminal and (v.terminal_digest!=p.digest or v.terminal_ingestion!=p.ingestion)) or ((v.selected!=v.terminal or v.record_status not in (None,'recorded')) and not v.retain_historical) for v,p in zip(reviews,note.pins)):raise ValueError()
++            d['source_review']=[v.model_dump(mode='json') for v in reviews]
+         if note:
+             expected='Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\n'+'\n'.join(k+': '+getattr(note,k) for k in ('question','findings','possibilities','gaps','plan'))
+             if fact.description.raw_display!=expected or len(fact.associations)!=len(note.pins):raise ValueError()
+@@ -106,6 +115,8 @@ class RF2Service(RenalFluidProductService):
+             out.append(self.evidence(repo,s,repo.capture_cutoff(),accounting))
+         return self.bounded_dict({'repository':str(body.repository),'items':out,'execution_enabled':False})
+     def history(self,repo,body):
++        self.require_repo(repo,body.repository)
++        if any(p.repository!=body.repository for p in body.pins):raise EvidenceConflict()
+         if len(body.pins)!=1:raise UnsupportedOperation('select one exact history')
+         a=self.accounting();p=body.pins[0];self.pin_record(repo,p,a)
+         cutoff=repo.capture_cutoff().model_copy(update={'fact_watermark':p.cutoff})
+@@ -130,6 +141,23 @@ class RF2Service(RenalFluidProductService):
+         base_keys={(i.fact.kind,i.fact.id,i.fact.revision) for i in base.circulatory.assembly.snapshot.items}|{(i.fact.kind,i.fact.id,i.fact.revision) for i in base.laboratory.observations}
+         extras=[s for s in selected if (s.fact.kind,s.fact.id,s.fact.revision) not in base_keys]
+         return self.bounded_dict({'repository':str(cutoff.repository_id),'cutoff':cutoff.model_dump(mode='json'),'combined':base.model_dump(mode='json'),'items':[self.evidence(repo,s,cutoff,a) for s in extras],'execution_enabled':False})
++    def source_review(self,repo,body,a):
++        now=repo.capture_cutoff();out=[]
++        for p in body.note.pins:
++            self.pin_record(repo,p,a)
++            terminal=self.history_rows(repo,now,a,p.reference)[-1]
++            out.append(SourceReview(selected=p.reference,terminal=terminal.fact.reference,terminal_digest=sha256(canonical_payload(terminal.fact).encode()).hexdigest(),terminal_ingestion=terminal.ingestion.ingestion_sequence,record_status=getattr(terminal.fact,'record_status',None)))
++        return tuple(out)
++    def require_review(self,repo,body,a):
++        current=self.source_review(repo,body,a)
++        if body.source_review is None:raise UnsupportedOperation('review current selected-source status before saving')
++        for accepted,latest in zip(body.source_review,current,strict=True):
++            if accepted.model_copy(update={'retain_historical':False})!=latest:raise SourceReviewChanged(body)
++            if (latest.selected!=latest.terminal or latest.record_status not in (None,'recorded')) and not accepted.retain_historical:raise EvidenceConflict()
++        return body.source_review
++    def require_owner(self,repo,body,a):
++        if body.predecessor and metadata(self.pin_record(repo,body.predecessor,a).fact) is None:
++            raise UnsupportedOperation('use the original source owner for this correction')
+     def build_fact(self,repo,body,a):
+         self.require_repo(repo,body.repository)
+         predecessor=self.pin_record(repo,body.predecessor,a) if body.predecessor else None
+@@ -143,13 +171,18 @@ class RF2Service(RenalFluidProductService):
+             oldcat=category(predecessor.fact)
+             if (body.note is not None)!=(oldcat=='note') or (body.chart and body.chart.category!=('weight' if oldcat=='dosing_weight' else oldcat)):raise EvidenceConflict()
+         data.update(id=str(body.id),revision=str(body.revision),provenance=prov,supersedes=body.predecessor.reference.model_dump() if predecessor else None,correction_reason=body.reason)
+-        entries=[x for x in getattr(predecessor.fact,'external_evidence',()) if x.namespace not in (META,PIN)] if predecessor else []
++        entries=[x for x in getattr(predecessor.fact,'external_evidence',()) if x.namespace not in (META,PIN,REVIEW)] if predecessor else []
+         if body.chart:
+             c=body.chart;prior=metadata(predecessor.fact) if predecessor else None
+             if prior and prior['chart']['source_record']!=c.model_dump(mode='json')['source_record']:raise EvidenceConflict()
+             if predecessor and not prior and c.source_record is not None:raise UnsupportedOperation('cannot assign upstream identity to historical record')
+-            data.update(recorded_amount=ExactQuantity(value=Decimal(c.amount),unit={'raw':c.unit,'status':'unresolved','limitation':'Raw source unit; no conversion.'}).model_dump(mode='json') if c.amount is not None else None,occurred=time(c.point).model_dump(mode='json'),available=time(None).model_dump(mode='json'))
+-            if c.start is not None or c.end is not None:data['recorded_interval']=RecordedCirculatoryInterval(start=time(c.start),end=time(c.end),provenance=prov,limitations=('Source bounds only; no calculated rate or duration.',)).model_dump(mode='json')
++            data.update(recorded_amount=ExactQuantity(value=Decimal(c.amount),unit={'raw':c.unit,'status':'unresolved','limitation':'Raw source unit; no conversion.'}).model_dump(mode='json') if c.amount is not None else None,**({'occurred':time(c.point).model_dump(mode='json')} if not prior or prior['chart']['point']!=c.point else {}))
++            # Retained legacy commands reconstruct their original bytes for lookup only.
++            # New cross-owner amendments are rejected before append. RF2-owned availability is not editable.
++            if not predecessor or prior is None:data['available']=time(None).model_dump(mode='json')
++            if c.start is not None or c.end is not None:
++                if not prior or (prior['chart']['start'],prior['chart']['end'])!=(c.start,c.end):
++                    data['recorded_interval']=RecordedCirculatoryInterval(start=predecessor.fact.recorded_interval.start if prior and predecessor.fact.recorded_interval and prior['chart']['start']==c.start else time(c.start),end=predecessor.fact.recorded_interval.end if prior and predecessor.fact.recorded_interval and prior['chart']['end']==c.end else time(c.end),provenance=prov,limitations=('Source bounds only; no calculated rate or duration.',)).model_dump(mode='json')
+             else:data.pop('recorded_interval',None)
+             if not predecessor:data['description']=RecordedConcept(raw_display=c.source_context,coding=SourceCode(namespace=META,code=c.category,version='1',raw_display=c.category)).model_dump(mode='json')
+             data['uncertainty']=[c.uncertainty]
+@@ -158,6 +191,7 @@ class RF2Service(RenalFluidProductService):
+             narrative='Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\n'+'\n'.join(k+': '+getattr(n,k) for k in ('question','findings','possibilities','gaps','plan'))
+             data['description']=RecordedConcept(raw_display=narrative,coding=SourceCode(namespace=META,code='note',version='1',raw_display='Authored renal review')).model_dump(mode='json')
+             entries.extend(encoded(PIN,p.model_dump(mode='json'),'Exact reviewed evidence') for p in n.pins)
++            if body.source_review is not None:entries.extend(encoded(REVIEW,v.model_dump(mode='json'),'Explicit selected-source review decision') for v in body.source_review)
+             data['associations']=[EvidenceBinding(role='context',scope=TARGET,status='resolved',exact=p.reference,provenance=prov).model_dump(mode='json') for p in n.pins]
+             data['uncertainty']=[n.gaps];data['occurred']=time(at).model_dump(mode='json')
+         meta={'version':1,'chart':body.chart.model_dump(mode='json') if body.chart else None,'note':body.note.model_dump(mode='json') if body.note else None}
+@@ -186,6 +220,8 @@ class RF2Service(RenalFluidProductService):
+         if old:
+             if canonical_payload(old.fact)!=canonical_payload(fact):raise EvidenceConflict()
+             return self.result(repo,body,old,a,'saved')
++        self.require_owner(repo,body,a)
++        if body.note:self.require_review(repo,body,a)
+         replay=self.replay(repo,body,a)
+         if replay:return self.result(repo,body,replay,a,'source_replay')
+         stored=repo.append_revision(fact,target=TARGET) if fact.supersedes else repo.append_fact(fact,target=TARGET)
+@@ -193,8 +229,9 @@ class RF2Service(RenalFluidProductService):
+     def result(self,repo,body,stored,a,status):
+         return self.bounded_dict({'status':status,'request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'request_canonical':canonical_payload(body),'evidence':self.evidence(repo,stored,repo.capture_cutoff(),a),'execution_enabled':False})
+     def validate(self,repo,body):
+-        a=self.accounting();fact=self.build_fact(repo,body,a);replay=self.replay(repo,body,a)
+-        return self.bounded_dict({'status':'validated','request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'request_canonical':canonical_payload(body),'fact':fact.model_dump(mode='json'),'replay_reference':replay.fact.reference.model_dump() if replay else None,'execution_enabled':False})
++        a=self.accounting();fact=self.build_fact(repo,body,a);self.require_owner(repo,body,a);replay=self.replay(repo,body,a)
++        review=self.require_review(repo,body,a) if body.note and body.source_review is not None else self.source_review(repo,body,a) if body.note else None
++        return self.bounded_dict({**({'source_review':[v.model_dump(mode='json') for v in review]} if review is not None else {}),'status':'validated','request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'request_canonical':canonical_payload(body),'fact':fact.model_dump(mode='json'),'replay_reference':replay.fact.reference.model_dump() if replay else None,'execution_enabled':False})
+     def lookup(self,repo,body):
+         a=self.accounting();fact=self.build_fact(repo,body,a)
+         retained=self.history_rows(repo,repo.capture_cutoff(),a,fact.reference)
+diff --git a/docs/rf2/F1-F3-CORRECTIONS.md b/docs/rf2/F1-F3-CORRECTIONS.md
+new file mode 100644
+index 0000000..51a13e6
+--- /dev/null
++++ b/docs/rf2/F1-F3-CORRECTIONS.md
+@@ -0,0 +1,41 @@
++# RF2 F1–F3 correction boundary
++
++Parent application 44294015e5439f581c8107bb7a0f72a77f328406 and published evidence 1c776ede26347bfb791c59e958d680a7fb380226 remain unchanged. The separate local browser-fetch correction 84c648211160963c7e14308bc86ef16dbd435fbe is retained in the candidate ancestry. These changes are local synthetic workflow controls, not clinical execution or new clinical-model fields.
++
++## F1 — outer repository isolation
++
++History checks the outer repository against the actual repository before resolving evidence. Every pin must agree. Matching/current-repository success and foreign outer/pin failures use real API/storage tests with unchanged rows.
++
++## F2 — correction ownership and unedited context
++
++New cross-owner RF2 amendments are rejected. Legacy records stay on the original-owner route already used by the UI. The result is not a conversion of a legacy record into a competing renal record. The original-owner route, original availability and exact old request recovery are covered.
++
++For RF2-owned corrections, availability is not editable in the Chart DTO and is preserved. Unchanged point/interval fields retain their complete original timestamp/clock/basis and interval context. Changed bounds do not erase the other unchanged bound. Provenance, revision links and explicit correction reason retain their existing correction semantics.
++
++Read-only lookup and exact retained retry are checked before applying the new admission restriction. The documented pre-fix cross-owner producer remains reconstructible solely for matching retained result recovery; that path cannot append a new cross-owner amendment. Tests label the synthetic historical producer reconstruction separately from an archived producer run. Separate local verification uses copies of the two actual old note requests and captured database, retaining all twelve tables unchanged.
++
++## F3 — explicit selected-source review and save guard
++
++A renal note keeps its exact selected pins. First validation returns each selected reference alongside the actual current terminal reference, digest, ingestion and typed record status where available. Generic observations do not acquire fabricated withdrawal/quality fields. An unchanged source or unavailable typed status is disclosed distinctly.
++
++The UI then requires an explicit review step. Historical or withdrawn/invalid terminal context requires an explicit per-source retention acknowledgement. It never substitutes the successor, forbids history indiscriminately or fabricates a clinical conclusion. Reviewed metadata is revalidated before the ordinary append confirmation.
++
++For new saves, the terminal identities/digests/ingestions/statuses are checked again inside the same BEGIN IMMEDIATE transaction as the append. A later change rejects the new append. Unrelated new patient records do not invalidate the reviewed source solely by advancing the global watermark.
++
++A command-bound `rf2_source_review_changed` rejection contains the exact request digest and disabled-execution assertion. The client only treats it as a definitive pre-append rejection when those fields validate. The original request remains displayed until explicit re-review; new acknowledgements are reset. No automatic replacement, retry or append occurs. Other unconfirmed/network/malformed failures retain the existing uncertain state, original request and exact lookup/identical-retry rules.
++
++Existing matching saved results are returned before the new current-source guard. A later correction cannot invalidate or rewrite a retained note or change its pending command identity. An old unsaved/unreviewed request cannot create a new note under the corrected rules; lookup stays available and the request is not silently upgraded.
++
++### Existing carrier fit
++
++Selected pins retain `clinrx.local.rf2.pin/v1`. Review decisions use separate bounded `clinrx.local.rf2.review/v1` entries, at most one per pin, with the authored actor/time in existing fact provenance. The unchanged clinical event supports 32 external entries and 32 associations. Maximum use is one metadata + twelve pins + twelve review decisions = 25/32 entries; twelve associations remain 12/32.
++
++The updated probe validates maximum supported source identifiers and twelve complete reviews through strict DTOs: 49,611-byte fact, 27,560-byte request and 2,672-byte largest entry. Caps remain 65,536 request bytes, 4,096 entry bytes and 2,097,152 response bytes. No implicit model/storage redesign or limit relaxation was needed. Older note metadata/bytes remain readable without adding a default review field to their request canonicalization.
++
++## Validation attribution and exclusions
++
++Regressions exercise correction/withdrawal between selection and validation and between validation and save, unchanged sources, explicit historical retention, later change after acknowledgement, command-bound rejection, exact pending request recovery and no successor substitution. Real disposable API fixtures additionally exercise frontend decoding of stored review decisions and the shared catalog. They are not live browser captures.
++
++Original publication manifests/checkpoints are retained. New tests use disposable repositories/copies; the local patient's source database and browser handover storage are not modified by regression execution. Evidence/report outside this source checkout records exact counts, failures and final source/CI identity.
++
++RF2-F4's nonblocking same-scope handover hydration race and RF2-12 live browser/usability gap are not closed by these F1–F3 changes. No merge, deployment, external hosting, execution activation, container or clinical-readiness acceptance follows. General durable browser-session command/draft recovery remains deferred.
+diff --git a/docs/rf2/OWNERSHIP-AND-CARRIERS.md b/docs/rf2/OWNERSHIP-AND-CARRIERS.md
+index 1853da9..45b076c 100644
+--- a/docs/rf2/OWNERSHIP-AND-CARRIERS.md
++++ b/docs/rf2/OWNERSHIP-AND-CARRIERS.md
+@@ -25,3 +25,7 @@ No-key manual entry requires a new_collection_reason and visible possible-duplic
+ Existing CirculatoryEvent admits 32 external_evidence entries and 32 associations. Use one RF2 metadata entry plus at most twelve separate pin entries (13/32); pins have tw

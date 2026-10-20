@@ -1,0 +1,2017 @@
+diff --git a/backend/app/api/schemas/renal_fluid_entry.py b/backend/app/api/schemas/renal_fluid_entry.py
+index 4529de9..f718869 100644
+--- a/backend/app/api/schemas/renal_fluid_entry.py
++++ b/backend/app/api/schemas/renal_fluid_entry.py
+@@ -87,6 +87,19 @@ class RenalNote(DTO):
+         if len(keys)!=len(set(keys)):raise ValueError('duplicate evidence pin')
+         return self
+ 
++class SourceReview(DTO):
++    selected: Reference
++    terminal: Reference
++    terminal_digest: Digest
++    terminal_ingestion: Annotated[int, Field(strict=True, ge=1)]
++    record_status: Short | None
++    retain_historical: Annotated[bool, Field(strict=True)] = False
++    @model_validator(mode='after')
++    def same_source(self):
++        if (self.selected.kind,self.selected.id)!=(self.terminal.kind,self.terminal.id):raise ValueError('review must retain source identity')
++        if any(len(v)>256 for ref in (self.selected,self.terminal) for v in (ref.kind,ref.id,ref.version)):raise ValueError('review reference bounds')
++        return self
++
+ class RF2Draft(DTO):
+     repository: UUID
+     id: UUID
+@@ -95,6 +108,7 @@ class RF2Draft(DTO):
+     recorded_at: Short
+     chart: Chart | None = None
+     note: RenalNote | None = None
++    source_review: Annotated[tuple[SourceReview,...], Field(min_length=1,max_length=12)] | None = Field(default=None, exclude_if=lambda value:value is None)
+     predecessor: Pin | None = None
+     reason: NoteText | None = None
+     @field_validator('recorded_at')
+@@ -105,6 +119,7 @@ class RF2Draft(DTO):
+     @model_validator(mode='after')
+     def shape(self):
+         if (self.chart is None)==(self.note is None):raise ValueError('one chart or note required')
++        if self.source_review is not None and (self.note is None or len(self.source_review)!=len(self.note.pins) or any(s.selected!=p.reference for s,p in zip(self.source_review,self.note.pins))):raise ValueError('review must match every exact selected pin in order')
+         if self.note and any(p.repository!=self.repository for p in self.note.pins):raise ValueError('note pins belong to the original repository')
+         if (self.predecessor is None)!=(self.reason is None):raise ValueError('correction needs predecessor and reason')
+         if self.predecessor and (self.predecessor.repository!=self.repository or self.predecessor.reference.kind!='circulatory_event' or self.predecessor.reference.id!=str(self.id)):
+diff --git a/backend/app/demo/renal_fluid_entry_gateway.py b/backend/app/demo/renal_fluid_entry_gateway.py
+index 0c89f6b..de6864e 100644
+--- a/backend/app/demo/renal_fluid_entry_gateway.py
++++ b/backend/app/demo/renal_fluid_entry_gateway.py
+@@ -9,7 +9,7 @@ from app.api.routes.circulatory import service as circulatory_service
+ from app.api.schemas.renal_fluid_entry import RF2Draft, ResolveRequest
+ from app.demo.renal_fluid_gateway import SyntheticRenalFluidGateway
+ from app.demo.hosting import PREFIX
+-from app.services.renal_fluid_entry_service import RF2Service
++from app.services.renal_fluid_entry_service import RF2Service,SourceReviewChanged
+ from app.persistence.repository import transaction
+ from app.persistence.shared_transaction import execution_transaction
+ 
+@@ -42,6 +42,9 @@ class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
+     def __init__(self,database,frontend,signing_key,origin):
+         super().__init__(database,frontend,signing_key,origin)
+         self.core.include_router(router)
++        async def review_changed(request,error):
++            return JSONResponse({'code':'rf2_source_review_changed','request_digest':error.request_digest,'execution_enabled':False},status_code=409,headers={'Cache-Control':'no-store'})
++        self.core.add_exception_handler(SourceReviewChanged,review_changed)
+     async def __call__(self,scope,receive,send):
+         # RF2 owns its structured facts even when the advanced legacy editor is used.
+         # Exact retained requests and read-only lookup preserve original recovery.
+@@ -66,10 +69,10 @@ class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
+                 from app.persistence.canonical import canonical_payload
+                 from app.persistence.history import FactIdentity
+                 from app.persistence.bounded_history import HistoryBudget,HistoryAccounting,AggregateHistoryBudget
+-                from app.services.renal_fluid_entry_service import exact_json,META,PIN
++                from app.services.renal_fluid_entry_service import exact_json,META,PIN,REVIEW
+                 proposed=EvidenceDraft.model_validate(exact_json(raw));fact=proposed.fact
+                 def rf2(f):
+-                    return any(e.namespace in (META,PIN) for e in f.external_evidence) if hasattr(f,'external_evidence') else False
++                    return any(e.namespace in (META,PIN,REVIEW) for e in f.external_evidence) if hasattr(f,'external_evidence') else False
+                 from app.persistence.errors import RecordNotFound
+                 exact=False
+                 try:
+diff --git a/backend/app/services/renal_fluid_entry_service.py b/backend/app/services/renal_fluid_entry_service.py
+index c90ecc6..631926e 100644
+--- a/backend/app/services/renal_fluid_entry_service.py
++++ b/backend/app/services/renal_fluid_entry_service.py
+@@ -3,7 +3,7 @@ import json
+ from decimal import Decimal
+ from hashlib import sha256
+ from pydantic import ValidationError
+-from app.api.schemas.renal_fluid_entry import Chart, RenalNote
++from app.api.schemas.renal_fluid_entry import Chart, RenalNote, SourceReview
+ from app.demo.authoring import TARGET, EvidenceConflict
+ from app.models.clinical.hemodynamics import CirculatoryEvent, ClinicalInstant, RecordedCirculatoryInterval, EvidenceBinding
+ from app.models.clinical.recorded_v2 import SourceCode, ExactQuantity, RecordedConcept
+@@ -15,7 +15,10 @@ from app.persistence.errors import RecordNotFound, StorageIntegrityError, Unsupp
+ from app.persistence.history import FactIdentity
+ from app.services.renal_fluid_product_service import RenalFluidProductService
+ 
+-META='clinrx.local.rf2/v1'; PIN='clinrx.local.rf2.pin/v1'
++META='clinrx.local.rf2/v1'; PIN='clinrx.local.rf2.pin/v1'; REVIEW='clinrx.local.rf2.review/v1'
++class SourceReviewChanged(EvidenceConflict):
++    def __init__(self,body):self.request_digest=sha256(canonical_payload(body).encode()).hexdigest()
++
+ CATEGORIES={'input_iv','input_blood','input_oral','input_enteral','output_urine','output_drain','output_other','output_crrt','weight','dosing_weight','net_balance_reported','urine_total_reported','balance_total_reported','fluid_challenge','crrt_context'}
+ def exact_json(raw):
+     def pairs(items):
+@@ -53,6 +56,12 @@ def metadata(fact):
+             if chart.start is not None or chart.end is not None:
+                 if interval is None or interval.start.source_timestamp!=chart.start or interval.end.source_timestamp!=chart.end:raise ValueError()
+             elif interval is not None:raise ValueError()
++        review_entries=[x for x in getattr(fact,'external_evidence',()) if x.namespace==REVIEW]
++        if review_entries:
++            if not note or len(review_entries)!=len(note.pins) or any(x.version!='1' for x in review_entries):raise ValueError()
++            reviews=[SourceReview.model_validate(exact_json(x.code)) for x in review_entries]
++            if any(v.selected!=p.reference or v.terminal_ingestion<p.ingestion or (v.selected==v.terminal and (v.terminal_digest!=p.digest or v.terminal_ingestion!=p.ingestion)) or ((v.selected!=v.terminal or v.record_status not in (None,'recorded')) and not v.retain_historical) for v,p in zip(reviews,note.pins)):raise ValueError()
++            d['source_review']=[v.model_dump(mode='json') for v in reviews]
+         if note:
+             expected='Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\n'+'\n'.join(k+': '+getattr(note,k) for k in ('question','findings','possibilities','gaps','plan'))
+             if fact.description.raw_display!=expected or len(fact.associations)!=len(note.pins):raise ValueError()
+@@ -106,6 +115,8 @@ class RF2Service(RenalFluidProductService):
+             out.append(self.evidence(repo,s,repo.capture_cutoff(),accounting))
+         return self.bounded_dict({'repository':str(body.repository),'items':out,'execution_enabled':False})
+     def history(self,repo,body):
++        self.require_repo(repo,body.repository)
++        if any(p.repository!=body.repository for p in body.pins):raise EvidenceConflict()
+         if len(body.pins)!=1:raise UnsupportedOperation('select one exact history')
+         a=self.accounting();p=body.pins[0];self.pin_record(repo,p,a)
+         cutoff=repo.capture_cutoff().model_copy(update={'fact_watermark':p.cutoff})
+@@ -130,6 +141,23 @@ class RF2Service(RenalFluidProductService):
+         base_keys={(i.fact.kind,i.fact.id,i.fact.revision) for i in base.circulatory.assembly.snapshot.items}|{(i.fact.kind,i.fact.id,i.fact.revision) for i in base.laboratory.observations}
+         extras=[s for s in selected if (s.fact.kind,s.fact.id,s.fact.revision) not in base_keys]
+         return self.bounded_dict({'repository':str(cutoff.repository_id),'cutoff':cutoff.model_dump(mode='json'),'combined':base.model_dump(mode='json'),'items':[self.evidence(repo,s,cutoff,a) for s in extras],'execution_enabled':False})
++    def source_review(self,repo,body,a):
++        now=repo.capture_cutoff();out=[]
++        for p in body.note.pins:
++            self.pin_record(repo,p,a)
++            terminal=self.history_rows(repo,now,a,p.reference)[-1]
++            out.append(SourceReview(selected=p.reference,terminal=terminal.fact.reference,terminal_digest=sha256(canonical_payload(terminal.fact).encode()).hexdigest(),terminal_ingestion=terminal.ingestion.ingestion_sequence,record_status=getattr(terminal.fact,'record_status',None)))
++        return tuple(out)
++    def require_review(self,repo,body,a):
++        current=self.source_review(repo,body,a)
++        if body.source_review is None:raise UnsupportedOperation('review current selected-source status before saving')
++        for accepted,latest in zip(body.source_review,current,strict=True):
++            if accepted.model_copy(update={'retain_historical':False})!=latest:raise SourceReviewChanged(body)
++            if (latest.selected!=latest.terminal or latest.record_status not in (None,'recorded')) and not accepted.retain_historical:raise EvidenceConflict()
++        return body.source_review
++    def require_owner(self,repo,body,a):
++        if body.predecessor and metadata(self.pin_record(repo,body.predecessor,a).fact) is None:
++            raise UnsupportedOperation('use the original source owner for this correction')
+     def build_fact(self,repo,body,a):
+         self.require_repo(repo,body.repository)
+         predecessor=self.pin_record(repo,body.predecessor,a) if body.predecessor else None
+@@ -143,13 +171,18 @@ class RF2Service(RenalFluidProductService):
+             oldcat=category(predecessor.fact)
+             if (body.note is not None)!=(oldcat=='note') or (body.chart and body.chart.category!=('weight' if oldcat=='dosing_weight' else oldcat)):raise EvidenceConflict()
+         data.update(id=str(body.id),revision=str(body.revision),provenance=prov,supersedes=body.predecessor.reference.model_dump() if predecessor else None,correction_reason=body.reason)
+-        entries=[x for x in getattr(predecessor.fact,'external_evidence',()) if x.namespace not in (META,PIN)] if predecessor else []
++        entries=[x for x in getattr(predecessor.fact,'external_evidence',()) if x.namespace not in (META,PIN,REVIEW)] if predecessor else []
+         if body.chart:
+             c=body.chart;prior=metadata(predecessor.fact) if predecessor else None
+             if prior and prior['chart']['source_record']!=c.model_dump(mode='json')['source_record']:raise EvidenceConflict()
+             if predecessor and not prior and c.source_record is not None:raise UnsupportedOperation('cannot assign upstream identity to historical record')
+-            data.update(recorded_amount=ExactQuantity(value=Decimal(c.amount),unit={'raw':c.unit,'status':'unresolved','limitation':'Raw source unit; no conversion.'}).model_dump(mode='json') if c.amount is not None else None,occurred=time(c.point).model_dump(mode='json'),available=time(None).model_dump(mode='json'))
+-            if c.start is not None or c.end is not None:data['recorded_interval']=RecordedCirculatoryInterval(start=time(c.start),end=time(c.end),provenance=prov,limitations=('Source bounds only; no calculated rate or duration.',)).model_dump(mode='json')
++            data.update(recorded_amount=ExactQuantity(value=Decimal(c.amount),unit={'raw':c.unit,'status':'unresolved','limitation':'Raw source unit; no conversion.'}).model_dump(mode='json') if c.amount is not None else None,**({'occurred':time(c.point).model_dump(mode='json')} if not prior or prior['chart']['point']!=c.point else {}))
++            # Retained legacy commands reconstruct their original bytes for lookup only.
++            # New cross-owner amendments are rejected before append. RF2-owned availability is not editable.
++            if not predecessor or prior is None:data['available']=time(None).model_dump(mode='json')
++            if c.start is not None or c.end is not None:
++                if not prior or (prior['chart']['start'],prior['chart']['end'])!=(c.start,c.end):
++                    data['recorded_interval']=RecordedCirculatoryInterval(start=predecessor.fact.recorded_interval.start if prior and predecessor.fact.recorded_interval and prior['chart']['start']==c.start else time(c.start),end=predecessor.fact.recorded_interval.end if prior and predecessor.fact.recorded_interval and prior['chart']['end']==c.end else time(c.end),provenance=prov,limitations=('Source bounds only; no calculated rate or duration.',)).model_dump(mode='json')
+             else:data.pop('recorded_interval',None)
+             if not predecessor:data['description']=RecordedConcept(raw_display=c.source_context,coding=SourceCode(namespace=META,code=c.category,version='1',raw_display=c.category)).model_dump(mode='json')
+             data['uncertainty']=[c.uncertainty]
+@@ -158,6 +191,7 @@ class RF2Service(RenalFluidProductService):
+             narrative='Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\n'+'\n'.join(k+': '+getattr(n,k) for k in ('question','findings','possibilities','gaps','plan'))
+             data['description']=RecordedConcept(raw_display=narrative,coding=SourceCode(namespace=META,code='note',version='1',raw_display='Authored renal review')).model_dump(mode='json')
+             entries.extend(encoded(PIN,p.model_dump(mode='json'),'Exact reviewed evidence') for p in n.pins)
++            if body.source_review is not None:entries.extend(encoded(REVIEW,v.model_dump(mode='json'),'Explicit selected-source review decision') for v in body.source_review)
+             data['associations']=[EvidenceBinding(role='context',scope=TARGET,status='resolved',exact=p.reference,provenance=prov).model_dump(mode='json') for p in n.pins]
+             data['uncertainty']=[n.gaps];data['occurred']=time(at).model_dump(mode='json')
+         meta={'version':1,'chart':body.chart.model_dump(mode='json') if body.chart else None,'note':body.note.model_dump(mode='json') if body.note else None}
+@@ -186,6 +220,8 @@ class RF2Service(RenalFluidProductService):
+         if old:
+             if canonical_payload(old.fact)!=canonical_payload(fact):raise EvidenceConflict()
+             return self.result(repo,body,old,a,'saved')
++        self.require_owner(repo,body,a)
++        if body.note:self.require_review(repo,body,a)
+         replay=self.replay(repo,body,a)
+         if replay:return self.result(repo,body,replay,a,'source_replay')
+         stored=repo.append_revision(fact,target=TARGET) if fact.supersedes else repo.append_fact(fact,target=TARGET)
+@@ -193,8 +229,9 @@ class RF2Service(RenalFluidProductService):
+     def result(self,repo,body,stored,a,status):
+         return self.bounded_dict({'status':status,'request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'request_canonical':canonical_payload(body),'evidence':self.evidence(repo,stored,repo.capture_cutoff(),a),'execution_enabled':False})
+     def validate(self,repo,body):
+-        a=self.accounting();fact=self.build_fact(repo,body,a);replay=self.replay(repo,body,a)
+-        return self.bounded_dict({'status':'validated','request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'request_canonical':canonical_payload(body),'fact':fact.model_dump(mode='json'),'replay_reference':replay.fact.reference.model_dump() if replay else None,'execution_enabled':False})
++        a=self.accounting();fact=self.build_fact(repo,body,a);self.require_owner(repo,body,a);replay=self.replay(repo,body,a)
++        review=self.require_review(repo,body,a) if body.note and body.source_review is not None else self.source_review(repo,body,a) if body.note else None
++        return self.bounded_dict({**({'source_review':[v.model_dump(mode='json') for v in review]} if review is not None else {}),'status':'validated','request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'request_canonical':canonical_payload(body),'fact':fact.model_dump(mode='json'),'replay_reference':replay.fact.reference.model_dump() if replay else None,'execution_enabled':False})
+     def lookup(self,repo,body):
+         a=self.accounting();fact=self.build_fact(repo,body,a)
+         retained=self.history_rows(repo,repo.capture_cutoff(),a,fact.reference)
+diff --git a/docs/rf2/F1-F3-CORRECTIONS.md b/docs/rf2/F1-F3-CORRECTIONS.md
+new file mode 100644
+index 0000000..51a13e6
+--- /dev/null
++++ b/docs/rf2/F1-F3-CORRECTIONS.md
+@@ -0,0 +1,41 @@
++# RF2 F1–F3 correction boundary
++
++Parent application 44294015e5439f581c8107bb7a0f72a77f328406 and published evidence 1c776ede26347bfb791c59e958d680a7fb380226 remain unchanged. The separate local browser-fetch correction 84c648211160963c7e14308bc86ef16dbd435fbe is retained in the candidate ancestry. These changes are local synthetic workflow controls, not clinical execution or new clinical-model fields.
++
++## F1 — outer repository isolation
++
++History checks the outer repository against the actual repository before resolving evidence. Every pin must agree. Matching/current-repository success and foreign outer/pin failures use real API/storage tests with unchanged rows.
++
++## F2 — correction ownership and unedited context
++
++New cross-owner RF2 amendments are rejected. Legacy records stay on the original-owner route already used by the UI. The result is not a conversion of a legacy record into a competing renal record. The original-owner route, original availability and exact old request recovery are covered.
++
++For RF2-owned corrections, availability is not editable in the Chart DTO and is preserved. Unchanged point/interval fields retain their complete original timestamp/clock/basis and interval context. Changed bounds do not erase the other unchanged bound. Provenance, revision links and explicit correction reason retain their existing correction semantics.
++
++Read-only lookup and exact retained retry are checked before applying the new admission restriction. The documented pre-fix cross-owner producer remains reconstructible solely for matching retained result recovery; that path cannot append a new cross-owner amendment. Tests label the synthetic historical producer reconstruction separately from an archived producer run. Separate local verification uses copies of the two actual old note requests and captured database, retaining all twelve tables unchanged.
++
++## F3 — explicit selected-source review and save guard
++
++A renal note keeps its exact selected pins. First validation returns each selected reference alongside the actual current terminal reference, digest, ingestion and typed record status where available. Generic observations do not acquire fabricated withdrawal/quality fields. An unchanged source or unavailable typed status is disclosed distinctly.
++
++The UI then requires an explicit review step. Historical or withdrawn/invalid terminal context requires an explicit per-source retention acknowledgement. It never substitutes the successor, forbids history indiscriminately or fabricates a clinical conclusion. Reviewed metadata is revalidated before the ordinary append confirmation.
++
++For new saves, the terminal identities/digests/ingestions/statuses are checked again inside the same BEGIN IMMEDIATE transaction as the append. A later change rejects the new append. Unrelated new patient records do not invalidate the reviewed source solely by advancing the global watermark.
++
++A command-bound `rf2_source_review_changed` rejection contains the exact request digest and disabled-execution assertion. The client only treats it as a definitive pre-append rejection when those fields validate. The original request remains displayed until explicit re-review; new acknowledgements are reset. No automatic replacement, retry or append occurs. Other unconfirmed/network/malformed failures retain the existing uncertain state, original request and exact lookup/identical-retry rules.
++
++Existing matching saved results are returned before the new current-source guard. A later correction cannot invalidate or rewrite a retained note or change its pending command identity. An old unsaved/unreviewed request cannot create a new note under the corrected rules; lookup stays available and the request is not silently upgraded.
++
++### Existing carrier fit
++
++Selected pins retain `clinrx.local.rf2.pin/v1`. Review decisions use separate bounded `clinrx.local.rf2.review/v1` entries, at most one per pin, with the authored actor/time in existing fact provenance. The unchanged clinical event supports 32 external entries and 32 associations. Maximum use is one metadata + twelve pins + twelve review decisions = 25/32 entries; twelve associations remain 12/32.
++
++The updated probe validates maximum supported source identifiers and twelve complete reviews through strict DTOs: 49,611-byte fact, 27,560-byte request and 2,672-byte largest entry. Caps remain 65,536 request bytes, 4,096 entry bytes and 2,097,152 response bytes. No implicit model/storage redesign or limit relaxation was needed. Older note metadata/bytes remain readable without adding a default review field to their request canonicalization.
++
++## Validation attribution and exclusions
++
++Regressions exercise correction/withdrawal between selection and validation and between validation and save, unchanged sources, explicit historical retention, later change after acknowledgement, command-bound rejection, exact pending request recovery and no successor substitution. Real disposable API fixtures additionally exercise frontend decoding of stored review decisions and the shared catalog. They are not live browser captures.
++
++Original publication manifests/checkpoints are retained. New tests use disposable repositories/copies; the local patient's source database and browser handover storage are not modified by regression execution. Evidence/report outside this source checkout records exact counts, failures and final source/CI identity.
++
++RF2-F4's nonblocking same-scope handover hydration race and RF2-12 live browser/usability gap are not closed by these F1–F3 changes. No merge, deployment, external hosting, execution activation, container or clinical-readiness acceptance follows. General durable browser-session command/draft recovery remains deferred.
+diff --git a/docs/rf2/OWNERSHIP-AND-CARRIERS.md b/docs/rf2/OWNERSHIP-AND-CARRIERS.md
+index 1853da9..45b076c 100644
+--- a/docs/rf2/OWNERSHIP-AND-CARRIERS.md
++++ b/docs/rf2/OWNERSHIP-AND-CARRIERS.md
+@@ -25,3 +25,7 @@ No-key manual entry requires a new_collection_reason and visible possible-duplic
+ Existing CirculatoryEvent admits 32 external_evidence entries and 32 associations. Use one RF2 metadata entry plus at most twelve separate pin entries (13/32); pins have twelve associations (12/32). Enforce each encoded metadata/pin <=4096 UTF-8 bytes, narrative <=4096 characters, incoming DTO <=65536 bytes, shared response cap unchanged at 2097152 bytes. Strict schemas further restrict identifier/text lengths. The pre-implementation probe built a maximal 4096-character narrative with twelve conservatively sized pins and source identity metadata through the unchanged model: 31156 serialized bytes, largest metadata entry 988 bytes. No model, migration or limit changes are needed. Runtime admission and shared history accounting still reject over-budget responses; this proof does not waive those checks.
+ 
+ Historical source records outside the local entry profile remain inspectable and cannot be silently converted by the guided form. Corrections of original legacy event amounts preserve other fields and do not promote prose into typed acquisition context. No generic clinical contract, production route or execution policy is extended.
++
++## F3 review-decision carrier extension within existing bounds
++
++The original 13-entry preflight above remains historical prerequisite evidence. The corrected note workflow uses up to twelve additional review-decision entries under clinrx.local.rf2.review/v1, for 25/32 external entries and 12/32 associations. The current strict twelve-pin/review probe reports 49,611 fact bytes, 27,560 request bytes and largest entry 2,672 bytes. All original caps and clinical/storage models remain unchanged. Older notes and original request bytes do not gain a default review declaration. See F1-F3-CORRECTIONS.md.
+diff --git a/docs/rf2/README.md b/docs/rf2/README.md
+index 47529a7..7431a37 100644
+--- a/docs/rf2/README.md
++++ b/docs/rf2/README.md
+@@ -17,7 +17,7 @@ Run app.demo.renal_fluid_entry_gateway:from_environment with one worker bound to
+ - Source-record replay uses scoped issuer/record/component identity and exact validated chart material independently of generated local IDs. Context/series namespaces are excluded. Same-key changed content requires correction; ambiguous/multiple matches or exhausted budgets cannot insert. Replaying an original after correction returns it with supersession disclosed, not resurrection.
+ - In the opt-in RF2 gateway, advanced legacy entry cannot create or amend an RF2-owned record. Exact already-retained requests and read-only lookup remain available first, preserving original recovery and the legacy request-size limit. Other legacy source records retain their original owner.
+ - Request retry/lookup instead retains the exact pending draft. Validation is separate from save. After uncertainty, lookup first; absence is not rollback proof and only an explicit identical retry is offered. General durable pending-command recovery after closure remains deferred.
+-- Existing metadata carriers hold one bounded RF2 entry and up to twelve separately encoded note pins, with matching context associations. Strict source metadata, canonical/digest and exact-history correspondence fail closed. No clinical model or database schema was changed.
++- Existing metadata carriers hold one bounded RF2 entry and up to twelve separately encoded note pins, with matching context associations. New renal notes additionally carry up to twelve explicit source-review decisions in existing carriers (25/32 external entries maximum); see F1-F3-CORRECTIONS.md. Strict source metadata, canonical/digest and exact-history correspondence fail closed. No clinical model or database schema was changed.
+ - New entry accepts exact ordinary decimal strings such as 35.0000 or 0.50. Historical values/units outside this local entry profile remain inspectable; no implicit conversion or number extraction from source text is performed.
+ - A single repository cutoff and shared history accounting feed both RF1 and RF2 views. Facts already in the composite travel once, then are adapted for display. Existing response/history caps stay unchanged; duplicate payloads are not used to evade caps.
+ - Handover v1 remains byte-preserved. An explicit copy to the working v2 set does not save it automatically or overwrite v1. Version 2 stores bounded exact pins, never raw commands or signed contexts. Historical resolution retains originals, visible unavailable pins and repository scope. Source deletion, automatic successor substitution and cross-device synchronisation are excluded.
+@@ -33,3 +33,7 @@ The explicit tools/validate_rf2_journey.py runner works against an already runni
+ One combined validation report/evidence package is maintained outside the source checkout. Browser access was denied by the available browser tool policy; no alternative browser or headless workaround was used. API/component validation does not establish live browser, narrow-layout, pointer/accessibility, uncoached usability or clinical acceptance. Independent Director review remains required.
+ 
+ No merge, deployment, external hosting or execution activation is part of this milestone.
++
++## Corrected selected-source review
++
++See [F1–F3 corrections](F1-F3-CORRECTIONS.md). New note validation shows exact selected versus current terminal source status. Explicit historical retention and final revalidation are required before save. Later source changes reject the append without successor substitution. Exact already-retained results remain recoverable. The original legacy owner retains legacy corrections; RF2 cannot use an amount edit to erase availability or other unedited source context.
+diff --git a/docs/rf2/carrier_probe.py b/docs/rf2/carrier_probe.py
+index d9de80b..51e83a9 100644
+--- a/docs/rf2/carrier_probe.py
++++ b/docs/rf2/carrier_probe.py
+@@ -1,12 +1,19 @@
++"""Validate maximum bounded RF2 note/pin/review carriers without storage changes."""
+ import json
++from app.api.schemas.renal_fluid_entry import RF2Draft
+ from app.models.clinical.hemodynamics import CirculatoryEvent, EvidenceBinding
+ from app.models.clinical.recorded_v2 import SourceCode
+ from app.models.clinical.common import Reference
+ from app.demo.circulatory import fields, concept, PROV, TARGET
+-pins=[{'reference':{'kind':'circulatory_event','id':str(n)*256,'version':'v'*256},'digest':'a'*64,'ingestion':100,'cutoff':200,'repository':'f'*36} for n in range(12)]
+-entries=[SourceCode(namespace='clinrx.local.rf2.pin/v1',code=json.dumps(p,separators=(',',':')),raw_display='Exact selected evidence pin') for p in pins]
+-meta={'version':1,'category':'weight','acquisition':'unknown','purpose':'dosing','method':None,'source_record':{'issuer_namespace':'x'*128,'issuer':'y'*128,'record_namespace':'z'*128,'record_id':'r'*128,'component':'c'*128},'missing_reason':None}
+-entries.append(SourceCode(namespace='clinrx.local.rf2/v1',code=json.dumps(meta,separators=(',',':')),raw_display='Structured local source assertions'))
++repository='ffffffff-ffff-4fff-bfff-ffffffffffff'
++pins=[{'reference':{'kind':'circulatory_event','id':chr(97+n)*256,'version':'v'*256},'digest':'a'*64,'ingestion':100,'cutoff':200,'repository':repository} for n in range(12)]
++reviews=[{'selected':p['reference'],'terminal':{**p['reference'],'version':'w'*256},'terminal_digest':'b'*64,'terminal_ingestion':200,'record_status':'withdrawn','retain_historical':True} for p in pins]
++body=RF2Draft.model_validate({'repository':repository,'id':'ffffffff-ffff-4fff-bfff-ffffffffffff','revision':'eeeeeeee-eeee-4eee-beee-eeeeeeeeeeee','actor':'x'*128,'recorded_at':'2026-10-08T10:00:00Z','chart':None,'note':{**{k:'x'*512 for k in ('question','findings','possibilities','gaps','plan')},'pins':pins},'source_review':reviews,'predecessor':None,'reason':None})
++entries=[SourceCode(namespace='clinrx.local.rf2.pin/v1',version='1',code=json.dumps(p,separators=(',',':')),raw_display='Exact selected evidence pin') for p in pins]
++entries.extend(SourceCode(namespace='clinrx.local.rf2.review/v1',version='1',code=json.dumps(v,separators=(',',':')),raw_display='Explicit selected-source review decision') for v in reviews)
++meta={'version':1,'chart':None,'note':{**body.note.model_dump(mode='json'),'pins':[]}}
++entries.append(SourceCode(namespace='clinrx.local.rf2/v1',version='1',code=json.dumps(meta,separators=(',',':')),raw_display='Structured local source assertions'))
+ note=CirculatoryEvent(**fields('rf2-carrier-proof'),event_type='other',description=concept('x'*4096),external_evidence=tuple(entries),associations=tuple(EvidenceBinding(role='context',scope=TARGET,status='resolved',exact=Reference.model_validate(p['reference']),provenance=PROV) for p in pins))
+-size=len(note.model_dump_json().encode());assert len(entries)==13<=32 and len(note.associations)==12<=32 and max(len(e.code.encode()) for e in entries)<=4096 and size<65536
+-print(json.dumps({'status':'PASS','pins':12,'carrier_entries':13,'max_entry_bytes':max(len(e.code.encode()) for e in entries),'fact_bytes':size,'local_body_budget':65536,'existing_response_limit':2097152,'no_model_or_limit_changes':True},indent=2))
++size=len(note.model_dump_json().encode());request=len(body.model_dump_json().encode());largest=max(len(e.code.encode()) for e in entries)
++assert len(entries)==25<=32 and len(note.associations)==12<=32 and largest<=4096 and request<=65536 and size<=65536
++print(json.dumps({'status':'PASS','pins':12,'review_decisions':12,'carrier_entries':25,'max_entry_bytes':largest,'fact_bytes':size,'request_bytes':request,'local_body_budget':65536,'existing_response_limit':2097152,'no_model_or_limit_changes':True},indent=2))
+diff --git a/docs/rf2/generate_review_fixture.py b/docs/rf2/generate_review_fixture.py
+new file mode 100644
+index 0000000..f98e80f
+--- /dev/null
++++ b/docs/rf2/generate_review_fixture.py
+@@ -0,0 +1,28 @@
++"""Disposable real-API fixture for F3 transport decoding; not browser evidence."""
++import json
++from copy import deepcopy
++from pathlib import Path
++from tempfile import TemporaryDirectory
++from uuid import uuid4
++from fastapi.testclient import TestClient
++from app.demo.patient_state import bootstrap
++from app.persistence.database import create_database
++from app.demo.renal_fluid_entry_gateway import SyntheticRF2Gateway
++from tests.test_renal_fluid_entry import draft,saved,pin,post,ORIGIN
++from tests.test_rf2_review_corrections import note,reviewed
++
++def redact(v):
++    if isinstance(v,dict):return {k:'TEST_REDACTED_CONTEXT' if k=='state_context' else redact(x) for k,x in v.items()}
++    if isinstance(v,list):return [redact(x) for x in v]
++    return v
++
++with TemporaryDirectory() as temp:
++    root=Path(temp);db=root/'db.sqlite3';engine=create_database(db);bootstrap(engine);engine.dispose();front=root/'frontend';(front/'assets').mkdir(parents=True);(front/'index.html').write_text('synthetic')
++    app=SyntheticRF2Gateway(db,front,'ab'*32,ORIGIN)
++    with TestClient(app,base_url=ORIGIN,client=('127.0.0.1',1),headers={'Origin':ORIGIN}) as c:
++        b=draft(c,'weight');original=saved(c,b);n=note(c,original)
++        correction=deepcopy(b);correction.update(revision=str(uuid4()),predecessor=pin(original),reason='Synthetic source correction');correction['chart']['amount']='71.0000';successor=saved(c,correction)
++        n=reviewed(c,n,True);validated=post(c,'/validate',n);assert validated.status_code==200,validated.text
++        response=post(c,'/save',n);assert response.status_code==200,response.text
++        payload=redact({'attribution':'Generated through actual disposable API/storage; not a browser capture; context tokens redacted','draft':n,'validated':validated.json(),'saved':response.json(),'catalog':c.get('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2').json()})
++        out=Path('frontend/tests/fixtures/rf2-reviewed-api.json');out.write_text(json.dumps(payload,indent=2)+'\n');print(out,out.stat().st_size)
+diff --git a/frontend/src/api/rf2Client.ts b/frontend/src/api/rf2Client.ts
+index 3e0d5aa..59f35b5 100644
+--- a/frontend/src/api/rf2Client.ts
++++ b/frontend/src/api/rf2Client.ts
+@@ -9,17 +9,24 @@ export interface Pin {repository:string;reference:Ref;digest:string;ingestion:nu
+ export interface SourceRecord {issuer_namespace:string;issuer:string;record_namespace:string;record_id:string;component:string}
+ export interface Chart {category:string;amount:string|null;unit:string|null;missing_reason:string|null;point:string|null;start:string|null;end:string|null;acquisition:'measured'|'reported'|'unknown';method:string|null;purpose:string|null;source_context:string;uncertainty:string;source_record:SourceRecord|null;source_version:string|null;new_collection_reason:string|null}
+ export interface RenalNote {question:string;findings:string;possibilities:string;gaps:string;plan:string;pins:Pin[]}
+-export interface Draft {repository:string;id:string;revision:string;actor:string;recorded_at:string;chart:Chart|null;note:RenalNote|null;predecessor:Pin|null;reason:string|null}
++export interface SourceReview {selected:Ref;terminal:Ref;terminal_digest:string;terminal_ingestion:number;record_status:string|null;retain_historical:boolean}
++export const needsHistoricalReview=(r:SourceReview)=>!equal(r.selected,r.terminal)||(r.record_status!==null&&r.record_status!=='recorded');
++export interface Draft {source_review?:SourceReview[];repository:string;id:string;revision:string;actor:string;recorded_at:string;chart:Chart|null;note:RenalNote|null;predecessor:Pin|null;reason:string|null}
+ export interface Fact {kind:string;id:string;revision:string;binding:{target:{patient_id:string;encounter_id:string}};[key:string]:unknown}
+-export interface Evidence {repository:string;fact:Fact;canonical_fact:string;digest:string;ingestion:{repository_id:string;ingestion_sequence:number;[key:string]:unknown};cutoff:number;terminal_reference:Ref;superseded:boolean;metadata:{version:1;chart:Chart|null;note:RenalNote|null}|null}
++export interface Evidence {repository:string;fact:Fact;canonical_fact:string;digest:string;ingestion:{repository_id:string;ingestion_sequence:number;[key:string]:unknown};cutoff:number;terminal_reference:Ref;superseded:boolean;metadata:{version:1;chart:Chart|null;note:RenalNote|null;source_review?:SourceReview[]}|null}
+ export interface Catalog {repository:string;cutoff:{repository_id:string;fact_watermark:number;captured_at:string};items:Evidence[];combined:RenalFluidState;execution_enabled:false}
+-export interface Result {status:'validated'|'saved'|'source_replay'|'absent';request_digest:string;request_canonical:string;evidence?:Evidence;fact?:Fact;replay_reference?:Ref|null;execution_enabled:false}
++export interface Result {source_review?:SourceReview[];status:'validated'|'saved'|'source_replay'|'absent';request_digest:string;request_canonical:string;evidence?:Evidence;fact?:Fact;replay_reference?:Ref|null;execution_enabled:false}
+ const bundle=schemas as unknown as {roots:Record<string,Schema>;definitions:Record<string,Schema>};
+ export const stable=(v:unknown):string=>JSON.stringify(v,(_k,x:unknown)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.entries(x).sort(([a],[b])=>a<b?-1:a>b?1:0)):x);
+ export const hash=async(s:string)=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,'0')).join('');
+ export const pin=(e:Evidence):Pin=>({repository:e.repository,reference:{kind:e.fact.kind,id:e.fact.id,version:e.fact.revision},digest:e.digest,ingestion:e.ingestion.ingestion_sequence,cutoff:e.cutoff});
+ export const key=(p:Pin)=>JSON.stringify([p.repository,p.reference.kind,p.reference.id,p.reference.version]);
+ export const chartDefaults:Chart={category:'output_urine',amount:'',unit:'mL',missing_reason:null,point:null,start:null,end:null,acquisition:'unknown',method:null,purpose:null,source_context:'',uncertainty:'',source_record:null,source_version:null,new_collection_reason:null};
++function sourceReviews(raw:unknown,pins:Pin[]):SourceReview[]{
++ if(!Array.isArray(raw)||raw.length!==pins.length)reject();
++ return raw.map((v,n)=>{validateTransportSchema(v,bundle.definitions.SourceReview,bundle.definitions);const r=v as SourceReview;
++  if(!equal(r.selected,pins[n].reference)||r.terminal.kind!==r.selected.kind||r.terminal.id!==r.selected.id||r.terminal_ingestion<pins[n].ingestion||equal(r.selected,r.terminal)&&(r.terminal_digest!==pins[n].digest||r.terminal_ingestion!==pins[n].ingestion))reject();return r;});
++}
+ function exactKeys(v:object,names:string[]){if(Object.keys(v).sort().join()!==names.sort().join())reject();}
+ function canonical(raw:string){const v:unknown=parseRF2JSON(raw);if(stable(v)!==raw)reject();return v;}
+ export async function decodeEvidence(raw:unknown,repository:string,expected?:Pin):Promise<Evidence>{
+@@ -33,6 +40,8 @@ export async function decodeEvidence(raw:unknown,repository:string,expected?:Pin
+  if(expected&&(expected.repository!==repository||!equal(expected.reference,{kind:e.fact.kind,id:e.fact.id,version:e.fact.revision})||expected.digest!==e.digest||expected.ingestion!==e.ingestion.ingestion_sequence||expected.cutoff>e.cutoff))reject();
+  const entries=Array.isArray(f.external_evidence)?f.external_evidence.map(object):[];const meta=entries.filter(x=>x.namespace==='clinrx.local.rf2/v1');
+  if(meta.length){if(meta.length!==1)reject();const m=object(canonical(String(meta[0].code)));if(m.version!==1)reject();if(m.note){const n=object(m.note);if(!equal(n.pins,[]))reject();n.pins=entries.filter(x=>x.namespace==='clinrx.local.rf2.pin/v1').map(x=>canonical(String(x.code)));m.note=n;}
++  const reviews=entries.filter(x=>x.namespace==='clinrx.local.rf2.review/v1');
++  if(reviews.length){if(!m.note||reviews.some(x=>x.version!=='1'))reject();const rs=sourceReviews(reviews.map(x=>canonical(String(x.code))),(m.note as RenalNote).pins);if(rs.some(r=>needsHistoricalReview(r)&&!r.retain_historical))reject();m.source_review=rs;}
+   if(!equal(m,e.metadata))reject();
+   // Validate the reconstructed metadata with the same strict request schema.
+   const d={repository,id:'00000000-0000-4000-8000-000000000001',revision:'00000000-0000-4000-8000-000000000002',actor:'metadata decoder',recorded_at:'2026-10-08T10:00:00Z',chart:m.chart,note:m.note,predecessor:null,reason:null};validateTransportSchema(d,bundle.roots.RF2Draft,bundle.definitions);
+@@ -41,13 +50,15 @@ export async function decodeEvidence(raw:unknown,repository:string,expected?:Pin
+  }else if(e.metadata!==null)reject();
+  return e;
+ }
++export class RF2ReviewChanged extends Error {constructor(){super('Selected-source review changed; this request was rejected before append.');}}
+ export class RF2Client {
+  private reviewed=new Map<string,Fact>();
+  constructor(private send:typeof fetch=fetch){}
+  private async request(path:string,body?:unknown){
++  const send=this.send;
+   const abort=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
+   const deadline=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{abort.abort();reject(Error('Request timed out; completion is unconfirmed.'));},15000);});
+-  try{return await Promise.race([(async()=>{const r=await this.send('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'same-origin',redirect:'error',signal:abort.signal});if(!r.ok)throw Error(r.status===409?'Source conflict: review the original record; no replacement was inserted.':'The exact result could not be confirmed.');return readRF2JSON(r);})(),deadline]);}finally{clearTimeout(timer);}
++  try{return await Promise.race([(async()=>{const r=await send('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'same-origin',redirect:'error',signal:abort.signal});if(r.status===409&&body!==undefined&&(path==='/save'||path==='/validate')){const failure=object(await readRF2JSON(r));if(failure.code==='rf2_source_review_changed'){exactKeys(failure,['code','request_digest','execution_enabled']);if(failure.execution_enabled!==false||failure.request_digest!==await hash(stable(body)))reject();throw new RF2ReviewChanged();}throw Error('Source conflict: review the original record; no replacement was inserted.');}if(!r.ok)throw Error(r.status===409?'Source conflict: review the original record; no replacement was inserted.':'The exact result could not be confirmed.');return readRF2JSON(r);})(),deadline]);}finally{clearTimeout(timer);}
+  }
+  async catalog(start:string,end:string):Promise<Catalog>{const c=object(await this.request('?'+new URLSearchParams({review_start:start,review_end:end}))) as unknown as Catalog;
+   exactKeys(c,['repository','cutoff','items','combined','execution_enabled']);validateTransportSchema(c.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);if(c.execution_enabled!==false||c.repository!==c.cutoff.repository_id||!Array.isArray(c.items)||c.items.length>4096)reject();const combined=await decodeRenalFluid(c.combined,{patient_id:'synthetic-p1',encounter_id:'synthetic-e1',start,end});if(!equal(combined.context.scope.repository_cutoff,c.cutoff))reject();
+@@ -55,7 +66,7 @@ export class RF2Client {
+   const baseFacts=[...combined.circulatory.assembly.snapshot.items,...combined.laboratory.observations];
+   const derived:Evidence[]=[];
+   for(const item of baseFacts){const f=item.fact as unknown as Fact;const raw=stable(f);const entries=Array.isArray(f.external_evidence)?f.external_evidence.map(object):[];const ms=entries.filter(x=>x.namespace==='clinrx.local.rf2/v1');let metadata:Evidence['metadata']=null;
+-   if(ms.length){if(ms.length!==1)reject();metadata=canonical(String(ms[0].code)) as Evidence['metadata'];if(metadata?.note){if(!equal(metadata.note.pins,[]))reject();metadata.note.pins=entries.filter(x=>x.namespace==='clinrx.local.rf2.pin/v1').map(x=>canonical(String(x.code)) as Pin);}}
++   if(ms.length){if(ms.length!==1)reject();metadata=canonical(String(ms[0].code)) as Evidence['metadata'];if(metadata?.note){if(!equal(metadata.note.pins,[]))reject();metadata.note.pins=entries.filter(x=>x.namespace==='clinrx.local.rf2.pin/v1').map(x=>canonical(String(x.code)) as Pin);const reviews=entries.filter(x=>x.namespace==='clinrx.local.rf2.review/v1');if(reviews.length)metadata.source_review=sourceReviews(reviews.map(x=>canonical(String(x.code))),metadata.note.pins);}}
+    derived.push({repository:c.repository,fact:f,canonical_fact:raw,digest:item.expected_digest,ingestion:item.ingestion,cutoff:c.cutoff.fact_watermark,terminal_reference:{kind:f.kind,id:f.id,version:f.revision},superseded:false,metadata});
+   }
+   c.items=[...derived,...c.items];
+@@ -65,10 +76,10 @@ export class RF2Client {
+  async resolve(repository:string,pins:Pin[]){const r=object(await this.request('/resolve',{repository,pins}));exactKeys(r,['repository','items','execution_enabled']);if(r.repository!==repository||r.execution_enabled!==false||!Array.isArray(r.items)||r.items.length!==pins.length)reject();return Promise.all(r.items.map((x,n)=>decodeEvidence(x,repository,pins[n])));}
+  async action(action:'validate'|'save'|'lookup',draft:Draft):Promise<Result>{validateTransportSchema(draft,bundle.roots.RF2Draft,bundle.definitions);const result=object(await this.request('/'+action,draft)) as unknown as Result;
+   if(result.execution_enabled!==false||typeof result.request_canonical!=='string'||!equal(canonical(result.request_canonical),draft)||await hash(result.request_canonical)!==result.request_digest)reject();
+-  if(action==='validate'){exactKeys(result,['status','request_digest','request_canonical','fact','replay_reference','execution_enabled']);if(result.status!=='validated'||!result.fact||result.fact.id!==draft.id||result.fact.revision!==draft.revision)reject();const c=circulatory as unknown as {definitions:Record<string,Schema>};const factSchema=c.definitions.CirculatoryHistoricalFact.properties?.fact;if(!factSchema)reject();validateTransportSchema(result.fact,factSchema,c.definitions);if(result.fact.binding.target.patient_id!=='synthetic-p1'||result.fact.binding.target.encounter_id!=='synthetic-e1')reject();const es=(result.fact.external_evidence as {namespace:string;code:string}[]).filter(e=>e.namespace==='clinrx.local.rf2/v1');if(es.length!==1)reject();const m=object(canonical(es[0].code));if(!equal(m.chart,draft.chart))reject();if(draft.note){const n=object(m.note);if(!equal(n.pins,[]))reject();n.pins=(result.fact.external_evidence as {namespace:string;code:string}[]).filter(e=>e.namespace==='clinrx.local.rf2.pin/v1').map(e=>canonical(e.code));if(!equal(n,draft.note))reject();}else if(m.note!==null)reject();this.reviewed.clear();this.reviewed.set(stable(draft),result.fact);return result;}
++  if(action==='validate'){exactKeys(result,['status','request_digest','request_canonical','fact','replay_reference','execution_enabled',...(draft.note?['source_review']:[])]);if(draft.note){const rs=sourceReviews(result.source_review,draft.note.pins);if(draft.source_review&&!equal(rs,draft.source_review))reject();}else if(result.source_review!==undefined)reject();if(result.status!=='validated'||!result.fact||result.fact.id!==draft.id||result.fact.revision!==draft.revision)reject();const c=circulatory as unknown as {definitions:Record<string,Schema>};const factSchema=c.definitions.CirculatoryHistoricalFact.properties?.fact;if(!factSchema)reject();validateTransportSchema(result.fact,factSchema,c.definitions);if(result.fact.binding.target.patient_id!=='synthetic-p1'||result.fact.binding.target.encounter_id!=='synthetic-e1')reject();const es=(result.fact.external_evidence as {namespace:string;code:string}[]).filter(e=>e.namespace==='clinrx.local.rf2/v1');if(es.length!==1)reject();const m=object(canonical(es[0].code));if(!equal(m.chart,draft.chart))reject();if(draft.note){const n=object(m.note);if(!equal(n.pins,[]))reject();n.pins=(result.fact.external_evidence as {namespace:string;code:string}[]).filter(e=>e.namespace==='clinrx.local.rf2.pin/v1').map(e=>canonical(e.code));if(!equal(n,draft.note))reject();const rs=(result.fact.external_evidence as {namespace:string;code:string}[]).filter(e=>e.namespace==='clinrx.local.rf2.review/v1').map(e=>canonical(e.code));if(!equal(rs,draft.source_review??[]))reject();}else if(m.note!==null)reject();this.reviewed.clear();this.reviewed.set(stable(draft),result.fact);return result;}
+   if(result.status==='absent'){exactKeys(result,['status','request_digest','request_canonical','execution_enabled']);if(action!=='lookup'||result.evidence!==undefined)reject();return result;}
+   exactKeys(result,['status','request_digest','request_canonical','evidence','execution_enabled']);if(!['saved','source_replay'].includes(result.status)||!result.evidence)reject();await decodeEvidence(result.evidence,draft.repository);
+-  if(result.status==='saved'&&(result.evidence.fact.id!==draft.id||result.evidence.fact.revision!==draft.revision||this.reviewed.has(stable(draft))&&!equal(this.reviewed.get(stable(draft)),result.evidence.fact)||!equal(result.evidence.metadata?.chart,draft.chart)||!equal(result.evidence.metadata?.note,draft.note)))reject();
++  if(result.status==='saved'&&(result.evidence.fact.id!==draft.id||result.evidence.fact.revision!==draft.revision||this.reviewed.has(stable(draft))&&!equal(this.reviewed.get(stable(draft)),result.evidence.fact)||!equal(result.evidence.metadata?.chart,draft.chart)||!equal(result.evidence.metadata?.note,draft.note)||!equal(result.evidence.metadata?.source_review??null,draft.source_review??null)))reject();
+   if(result.status==='source_replay'){if(!draft.chart?.source_record||!result.evidence.metadata?.chart)reject();const a={...draft.chart},b={...result.evidence.metadata.chart};a.new_collection_reason=null;b.new_collection_reason=null;if(!equal(a,b))reject();}
+   return result;
+  }
+diff --git a/frontend/src/api/rf2Schemas.json b/frontend/src/api/rf2Schemas.json
+index 10d3632..db9567b 100644
+--- a/frontend/src/api/rf2Schemas.json
++++ b/frontend/src/api/rf2Schemas.json
+@@ -52,6 +52,23 @@
+           ],
+           "default": null
+         },
++        "source_review": {
++          "anyOf": [
++            {
++              "items": {
++                "$ref": "#/$defs/SourceReview"
++              },
++              "maxItems": 12,
++              "minItems": 1,
++              "type": "array"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Source Review"
++        },
+         "predecessor": {
+           "anyOf": [
+             {
+@@ -667,6 +684,54 @@
+       "title": "SourceRecord",
+       "type": "object"
+     },
++    "SourceReview": {
++      "additionalProperties": false,
++      "properties": {
++        "selected": {
++          "$ref": "#/$defs/Reference"
++        },
++        "terminal": {
++          "$ref": "#/$defs/Reference"
++        },
++        "terminal_digest": {
++          "pattern": "^[0-9a-f]{64}$",
++          "title": "Terminal Digest",
++          "type": "string"
++        },
++        "terminal_ingestion": {
++          "minimum": 1,
++          "title": "Terminal Ingestion",
++          "type": "integer"
++        },
++        "record_status": {
++          "anyOf": [
++            {
++              "maxLength": 128,
++              "minLength": 1,
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "title": "Record Status"
++        },
++        "retain_historical": {
++          "default": false,
++          "title": "Retain Historical",
++          "type": "boolean"
++        }
++      },
++      "required": [
++        "selected",
++        "terminal",
++        "terminal_digest",
++        "terminal_ingestion",
++        "record_status"
++      ],
++      "title": "SourceReview",
++      "type": "object"
++    },
+     "Binding": {
+       "additionalProperties": false,
+       "properties": {
+diff --git a/frontend/src/demo/RenalFluidEntryWorkspace.tsx b/frontend/src/demo/RenalFluidEntryWorkspace.tsx
+index d0f1474..20b2e66 100644
+--- a/frontend/src/demo/RenalFluidEntryWorkspace.tsx
++++ b/frontend/src/demo/RenalFluidEntryWorkspace.tsx
+@@ -1,5 +1,5 @@
+ import {useEffect,useRef,useState} from 'react';
+-import {RF2Client,chartDefaults,type Chart,type Catalog,type Draft,type Evidence,type Pin,type RenalNote,pin,key} from '../api/rf2Client';
++import {RF2Client,RF2ReviewChanged,chartDefaults,type Chart,type Catalog,type Draft,type Evidence,type Pin,type RenalNote,type SourceReview,needsHistoricalReview,pin,key} from '../api/rf2Client';
+ import {decodeRF2Saved,storageKey,type SavedRF2} from './rf2Handover';
+ import {decodeSavedHandover,handoverStorageKey} from './localHandover';
+ import './rf2.css';
+@@ -31,14 +31,15 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  const [defaultTransport]=useState(()=>new RF2Client());const transport=providedTransport??defaultTransport;
+  const [chart,C]=useState<Chart>({...chartDefaults}),[note,N]=useState<RenalNote>({question:'',findings:'',possibilities:'',gaps:'',plan:'',pins:[]}),[mode,M]=useState<'chart'|'note'>('chart');
+  const [draftRepository,DraftRepository]=useState(catalog.repository);const [references,References]=useState<Evidence[]>([]);
+- const [actor,Actor]=useState(''),[reason,Reason]=useState(''),[selected,Selected]=useState<Evidence>(),[dirty,Dirty]=useState(false),[phase,Phase]=useState<'editing'|'review'|'saving'|'uncertain'|'absent'|'saved'>('editing'),[pending,Pending]=useState<Draft>(),[review,Review]=useState<unknown>(),[saved,Saved]=useState<Evidence>(),[error,ErrorMessage]=useState(''),[busy,Busy]=useState(false);
++ const [actor,Actor]=useState(''),[reason,Reason]=useState(''),[selected,Selected]=useState<Evidence>(),[dirty,Dirty]=useState(false),[phase,Phase]=useState<'editing'|'source-review'|'review-conflict'|'review'|'saving'|'uncertain'|'absent'|'saved'>('editing'),[pending,Pending]=useState<Draft>(),[review,Review]=useState<unknown>(),[saved,Saved]=useState<Evidence>(),[error,ErrorMessage]=useState(''),[busy,Busy]=useState(false);
++ const [sourceReview,SourceReviewState]=useState<SourceReview[]>([]);
+  const [history,History]=useState<Evidence[]>(),[inspected,Inspected]=useState<Evidence>(),generation=useRef(0);
+  const [pins,Pins]=useState<Pin[]>([]),[restored,Restored]=useState<Evidence[]>([]),[handoverDirty,HandoverDirty]=useState(false),[storageMessage,StorageMessage]=useState(''),[activeScope,ActiveScope]=useState(''),lastRaw=useRef<string|null>(null),restoreGeneration=useRef(0);
+  const [sourceKey,SourceKey]=useState(false),[identity,Identity]=useState({issuer_namespace:'clinrx.synthetic.chart',issuer:'',record_namespace:'chart-entry',record_id:'',component:''});
+  const scopeKey=JSON.stringify([catalog.repository,'synthetic-p1','synthetic-e1']);
+  const locked=phase==='saving'||phase==='uncertain'||phase==='absent',draftScope= pending?.repository??selected?.repository??draftRepository;
+  const mayWrite=gateConfirmed&&draftScope===catalog.repository&&!busy;
+- useEffect(()=>{onGuardChange(dirty||phase==='review'||locked);},[dirty,phase,locked,onGuardChange]);
++ useEffect(()=>{onGuardChange(dirty||phase==='review'||phase==='review-conflict'||phase==='source-review'||locked);},[dirty,phase,locked,onGuardChange]);
+  useEffect(()=>()=>{generation.current++;restoreGeneration.current++;onGuardChange(false);},[onGuardChange]);
+  async function hydrate(next:Pin[]){const ticket=++restoreGeneration.current;Restored([]);try{const values=await transport.resolve(catalog.repository,next);if(ticket===restoreGeneration.current)Restored(values);}catch{if(ticket===restoreGeneration.current)StorageMessage('Exact saved references could not all be confirmed. Pins are retained as unavailable; no successor was substituted.');}}
+  useEffect(()=>{restoreGeneration.current++;ActiveScope(scopeKey);Pins([]);Restored([]);HandoverDirty(false);StorageMessage('');lastRaw.current=null;
+@@ -49,14 +50,16 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  },[scopeKey]);
+  useEffect(()=>{generation.current++;History(undefined);Inspected(undefined);References([]);if(!dirty&&phase==='editing'&&!selected)DraftRepository(catalog.repository);},[scopeKey]);
+  function changeChart(k:keyof Chart,v:unknown){C(old=>({...old,[k]:v}));Dirty(true);ErrorMessage('');}
+- function reset(){if(locked)return;DraftRepository(catalog.repository);C({...chartDefaults});N({question:'',findings:'',possibilities:'',gaps:'',plan:'',pins:[]});Selected(undefined);Reason('');Pending(undefined);Review(undefined);Saved(undefined);Phase('editing');Dirty(false);SourceKey(false);}
++ function reset(){if(locked)return;DraftRepository(catalog.repository);C({...chartDefaults});N({question:'',findings:'',possibilities:'',gaps:'',plan:'',pins:[]});Selected(undefined);Reason('');Pending(undefined);Review(undefined);SourceReviewState([]);Saved(undefined);Phase('editing');Dirty(false);SourceKey(false);}
+  function reuse(e:Evidence){if(locked||busy||phase!=='editing'||selected||e.repository!==catalog.repository||draftRepository!==catalog.repository)return;N(old=>({...old,pins:old.pins.some(x=>key(x)===key(pin(e)))?old.pins:[...old.pins,pin(e)].slice(0,12)}));M('note');Dirty(true);}
+  function correct(e:Evidence){if(locked||dirty)return;if(!e.metadata?.chart){onLegacyCorrect(e);return;}Selected(e);C({...e.metadata.chart});M('chart');SourceKey(!!e.metadata.chart.source_record);if(e.metadata.chart.source_record)Identity(e.metadata.chart.source_record);Reason('');Phase('editing');Dirty(true);Saved(undefined);}
+  async function validate(){if(!mayWrite||locked)return;Busy(true);ErrorMessage('');try{
+   const draft:Draft={repository:catalog.repository,id:selected?.fact.id??crypto.randomUUID(),revision:crypto.randomUUID(),actor,recorded_at:new Date().toISOString(),chart:mode==='chart'?{...chart,source_record:sourceKey?identity:null}:null,note:mode==='note'?note:null,predecessor:selected?pin(selected):null,reason:selected?reason:null};
+-  const r=await transport.action('validate',draft);Pending(draft);Review(r);Phase('review');
++  const r=await transport.action('validate',draft);if(draft.note&&!r.source_review)throw Error('Selected-source review could not be confirmed.');Pending(draft);Review(r);SourceReviewState(r.source_review??[]);Phase(draft.note?'source-review':'review');
+  }catch(e){ErrorMessage(e instanceof Error?e.message:'Draft could not be validated.');}finally{Busy(false);}}
+- async function save(){if(!pending||!mayWrite)return;Busy(true);Phase('saving');ErrorMessage('');try{const r=await transport.action('save',pending);if(!r.evidence)throw Error('Unconfirmed save');Saved(r.evidence);Phase('saved');Dirty(false);try{await onRefresh();}catch{ErrorMessage('Saved confirmation retained; refresh failed. New writes remain blocked until scope is confirmed.');}}catch{Phase('uncertain');ErrorMessage('Save completion is uncertain. Keep this page open and check the exact original request; do not create another entry.');}finally{Busy(false);}}
++ async function confirmSourceReview(){if(!pending||!mayWrite||!pending.note||sourceReview.some(r=>needsHistoricalReview(r)&&!r.retain_historical))return;Busy(true);ErrorMessage('');try{const next={...pending,source_review:sourceReview};const result=await transport.action('validate',next);Pending(next);Review(result);Phase('review');}catch{ErrorMessage('Selected sources changed or the review could not be confirmed. No note was saved. Refresh the selected-source review explicitly; no successor was substituted.');}finally{Busy(false);}}
++ async function refreshSourceReview(){if(!pending||!mayWrite||locked)return;Busy(true);ErrorMessage('');try{const next={...pending};delete next.source_review;const result=await transport.action('validate',next);if(!result.source_review)throw Error();Pending(next);SourceReviewState(result.source_review);Review(result);Phase('source-review');}catch{ErrorMessage('Current selected-source status could not be confirmed; no note saved.');}finally{Busy(false);}}
++ async function save(){if(!pending||!mayWrite)return;Busy(true);Phase('saving');ErrorMessage('');try{const r=await transport.action('save',pending);if(!r.evidence)throw Error('Unconfirmed save');Saved(r.evidence);Phase('saved');Dirty(false);try{await onRefresh();}catch{ErrorMessage('Saved confirmation retained; refresh failed. New writes remain blocked until scope is confirmed.');}}catch(error){if(error instanceof RF2ReviewChanged){Phase('review-conflict');ErrorMessage('The exact request was rejected because selected sources changed. It is retained. Explicitly review again before any new append.');}else{Phase('uncertain');ErrorMessage('Save completion is uncertain. Keep this page open and check the exact original request; do not create another entry.');}}finally{Busy(false);}}
+  async function lookup(){if(!pending)return;Busy(true);ErrorMessage('');try{const r=await transport.action('lookup',pending);if(r.status==='absent'){Phase('absent');}else if(r.evidence){Saved(r.evidence);Phase('saved');Dirty(false);await onRefresh();}else throw Error();}catch{ErrorMessage('Exact lookup could not be confirmed. The original pending request is retained.');}finally{Busy(false);}}
+  async function inspectReferences(ps:Pin[]){const ticket=++generation.current;References([]);History(undefined);Inspected(undefined);try{const found=await transport.resolve(catalog.repository,ps);if(ticket===generation.current)References(found.map((e,n)=>({...e,cutoff:ps[n].cutoff})));}catch{if(ticket===generation.current)ErrorMessage('Exact note evidence could not be confirmed. No successor was substituted.');}}
+  async function inspect(e:Evidence){const t=++generation.current;Inspected(e);History(undefined);ErrorMessage('');try{const result=await transport.history(e);if(t===generation.current)History(result);}catch{if(t===generation.current)ErrorMessage('Exact history could not be confirmed. No different source revision was substituted.');}}
+@@ -66,7 +69,7 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  const field=(label:string,k:keyof Chart,optional=false)=><label>{label}<input value={String(chart[k]??'')} maxLength={k==='source_context'||k==='uncertainty'||k==='new_collection_reason'?512:128} onChange={e=>changeChart(k,e.target.value|| (optional?null:''))}/></label>;
+  const [search,Search]=useState('');const rows=catalog.items.filter(e=>[e.fact.id,e.fact.kind,evidenceText(e),e.metadata?.chart?.category??''].join(' ').toLowerCase().includes(search.toLowerCase()));
+  return <section className="rf2" aria-label="Renal charting and handover"><h2>Renal charting and handover</h2><p><strong>{gateConfirmed?'Clinical execution disabled.':'Execution gate not confirmed — new writes blocked.'}</strong> Local synthetic charting. No calculated balance, urine rate, AKI stage or treatment advice.</p><p>Repository {catalog.repository} · shared cutoff {catalog.cutoff.fact_watermark}. Reuse a recorded observation before entering another quantity. Acquisition and intended purpose are separate.</p>
+- {error&&<p role="alert">{error}</p>}<label>Find existing RF2 source<input type="search" value={search} onChange={e=>Search(e.target.value)} placeholder="Source ID, creatinine, weight, urine…"/></label><div className="rf2-scroll"><table><caption>Existing sources — use once across modules</caption><thead><tr><th>Exact record</th><th>Recorded assertion</th><th>Actions</th></tr></thead><tbody>{rows.map(e=><tr key={key(pin(e))}><th>{e.fact.id} / {e.fact.revision}</th><td>{evidenceText(e)}<br/><small>{sourceContext(e,catalog)}</small><br/>{e.metadata?.chart&&<>Acquisition: {e.metadata.chart.acquisition}; method {e.metadata.chart.method??'unavailable'}; purpose {e.metadata.chart.purpose??'unavailable'}</>}{e.fact.id==='fs-WEIGHT'&&<>Dosing-weight context; acquisition/method unavailable. Do not infer measured status.</>}<br/>{e.superseded?'Superseded historical revision':String(e.fact.record_status??'legacy source assertion')}</td><td><button onClick={()=>void inspect(e)}>Inspect exact history</button><button disabled={busy||locked||phase!=='editing'||!!selected||note.pins.length>=12} onClick={()=>reuse(e)}>Reuse for reassessment</button><button disabled={busy||dirty||phase==='review'||locked||e.fact.kind!=='circulatory_event'||!gateConfirmed} onClick={()=>correct(e)}>Correct original record</button><button disabled={activeScope!==scopeKey||!gateConfirmed} onClick={()=>addHandover(e)}>Add exact record to RF2 handover</button></td></tr>)}</tbody></table></div>
++ {error&&<p role="alert">{error}</p>}<label>Find existing RF2 source<input type="search" value={search} onChange={e=>Search(e.target.value)} placeholder="Source ID, creatinine, weight, urine…"/></label><div className="rf2-scroll"><table><caption>Existing sources — use once across modules</caption><thead><tr><th>Exact record</th><th>Recorded assertion</th><th>Actions</th></tr></thead><tbody>{rows.map(e=><tr key={key(pin(e))}><th>{e.fact.id} / {e.fact.revision}</th><td>{evidenceText(e)}<br/><small>{sourceContext(e,catalog)}</small><br/>{e.metadata?.chart&&<>Acquisition: {e.metadata.chart.acquisition}; method {e.metadata.chart.method??'unavailable'}; purpose {e.metadata.chart.purpose??'unavailable'}</>}{e.fact.id==='fs-WEIGHT'&&<>Dosing-weight context; acquisition/method unavailable. Do not infer measured status.</>}<br/>{e.superseded?'Superseded historical revision':String(e.fact.record_status??'legacy source assertion')}</td><td><button onClick={()=>void inspect(e)}>Inspect exact history</button><button disabled={busy||locked||phase!=='editing'||!!selected||note.pins.length>=12} onClick={()=>reuse(e)}>Reuse for reassessment</button><button disabled={busy||dirty||phase==='review'||phase==='review-conflict'||phase==='source-review'||locked||e.fact.kind!=='circulatory_event'||!gateConfirmed} onClick={()=>correct(e)}>Correct original record</button><button disabled={activeScope!==scopeKey||!gateConfirmed} onClick={()=>addHandover(e)}>Add exact record to RF2 handover</button></td></tr>)}</tbody></table></div>
+  {references.length>0&&references.every(e=>e.repository===catalog.repository)&&<section aria-label="Exact renal note evidence"><h3>Exact sources retained by the note</h3>{references.map(e=><article key={key(pin(e))}><p>{e.fact.kind} / {e.fact.id} / {e.fact.revision}: {evidenceText(e)}</p><button onClick={()=>void inspect(e)}>Inspect this retained source history</button><details><summary>Complete retained evidence and uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details></article>)}</section>}
+  {inspected&&inspected.repository===catalog.repository&&<section aria-label="RF2 exact source history"><h3>Selected {inspected.fact.id} / {inspected.fact.revision}</h3><button onClick={()=>{generation.current++;Inspected(undefined);History(undefined);}}>Close history</button><p>Corrections retain originals. A transcription correction is not improvement or a new sample.</p>{history?history.map(e=><article key={key(pin(e))}><h4>{e.fact.id} / {e.fact.revision}</h4><p>{evidenceText(e)} · {e.superseded?'historical superseded revision':'terminal at this cutoff'}</p><details><summary>Complete exact record and uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details><button onClick={()=>reuse(e)} disabled={locked||busy||phase!=='editing'||!!selected}>Use this exact historical revision in reassessment</button><button onClick={()=>addHandover(e)} disabled={!gateConfirmed}>Add this revision to RF2 handover</button></article>):<p>History loading or unconfirmed; no substitute shown.</p>}</section>}
+  <section aria-label="RF2 draft"><h3>{selected?'Correct '+selected.fact.id:'Record a genuinely new collection or authored review'}</h3><p>Same numbers do not identify the same collection. Source replay uses issuer, record and component identity; series IDs are not record IDs.</p>
+@@ -77,7 +80,7 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  {chart.category==='weight'&&<><label>Acquisition assertion<select value={chart.acquisition} onChange={e=>changeChart('acquisition',e.target.value)}><option value="unknown">Unknown</option><option value="measured">Measured</option><option value="reported">Reported</option></select></label>{field('Intended purpose (independent of acquisition)','purpose',true)}</>}{field('Collection or acquisition method (optional)','method',true)}{field('Source context and completeness limitations','source_context')}{field('Uncertainty and confirmation gaps','uncertainty')}
+  <label><input type="checkbox" checked={sourceKey} disabled={!!selected} onChange={e=>{SourceKey(e.target.checked);Dirty(true);}}/>An explicit source RECORD key is available (not series/context)</label>{sourceKey?Object.entries(identity).map(([k,v])=><label key={k}>{k}<input value={v} maxLength={128} onChange={e=>{Identity(old=>({...old,[k]:e.target.value}));Dirty(true);}}/></label>):field('Why this is a genuinely new collection (not a copy)','new_collection_reason')}
+  <p>Gaps, overlaps and reported totals are not reconciled. A challenge may already be included in an interval input. CRRT net removal is not effluent or proof of continuous treatment.</p></>:<><p>Select existing evidence above. No intervention is required. Recorded findings, possibilities and gaps remain separate.</p>{(['question','findings','possibilities','gaps','plan'] as const).map(k=><label key={k}>{k}<textarea maxLength={512} value={note[k]} onChange={e=>{N(old=>({...old,[k]:e.target.value}));Dirty(true);}}/></label>)}<ul>{note.pins.map(p=><li key={key(p)}>{p.reference.kind} / {p.reference.id} / {p.reference.version} · selected cutoff {p.cutoff}<button onClick={()=>{N(old=>({...old,pins:old.pins.filter(x=>key(x)!==key(p))}));Dirty(true);}}>Remove evidence reference</button></li>)}</ul><p>Plan is recorded text, not a scheduled action. This note does not establish causation or a validated diagnosis.</p></>}
+- {selected&&<label>Reason for correction<input value={reason} maxLength={512} onChange={e=>Reason(e.target.value)}/></label>}<button onClick={()=>void validate()}>Validate RF2 draft</button><button onClick={reset}>Discard unsaved RF2 draft</button></fieldset>:<><h4>Exact request review</h4><pre>{JSON.stringify(review??pending,null,2)}</pre>{phase==='review'&&<><button disabled={!mayWrite} onClick={()=>void save()}>Confirm RF2 append</button><button onClick={()=>{Phase('editing');Pending(undefined);}}>Edit reviewed draft</button><button onClick={reset}>Discard reviewed draft</button></>}{(phase==='uncertain'||phase==='absent')&&<><p>Original request retained. Do not close/reload. Absence is not rollback proof.</p><button disabled={busy} onClick={()=>void lookup()}>Check exact RF2 saved result</button>{phase==='absent'&&<button disabled={!mayWrite} onClick={()=>void save()}>Explicitly retry identical RF2 request</button>}</>}{phase==='saving'&&<p role="status">Saving exact RF2 request…</p>}{phase==='saved'&&saved&&<><p role="status">RF2 result confirmed: {saved.fact.id} / {saved.fact.revision} · ingestion {saved.ingestion.ingestion_sequence}{saved.superseded?' · historical source replay; superseded, not restored as current':''}</p><button disabled={!gateConfirmed||saved.repository!==catalog.repository} onClick={()=>addHandover(saved)}>Add confirmed RF2 result to handover</button><button onClick={reset} disabled={!gateConfirmed}>Start another RF2 record</button></>}</>}
++ {selected&&<label>Reason for correction<input value={reason} maxLength={512} onChange={e=>Reason(e.target.value)}/></label>}<button onClick={()=>void validate()}>Validate RF2 draft</button><button onClick={reset}>Discard unsaved RF2 draft</button></fieldset>:<><h4>Exact request review</h4><pre>{JSON.stringify(review??pending,null,2)}</pre>{phase==='review-conflict'&&<><p>No source successor was selected. The rejected original request remains above.</p><button disabled={!mayWrite} onClick={()=>void refreshSourceReview()}>Explicitly re-review rejected request sources</button></>}{phase==='source-review'&&<section aria-label="Review selected source changes"><h4>Review selected revisions against current source status</h4><p>Your original selections remain exact. Current status is a review checkpoint, not a substituted measurement. New changes before save will block the append.</p>{sourceReview.map((r,n)=><article key={n}><p>Selected {r.selected.kind} / {r.selected.id} / {r.selected.version}</p><p>Current terminal {r.terminal.version}; record status {r.record_status??'typed status unavailable'}; ingestion {r.terminal_ingestion}; digest {r.terminal_digest}</p>{needsHistoricalReview(r)?<label><input type="checkbox" checked={r.retain_historical} onChange={e=>SourceReviewState(old=>old.map((v,i)=>i===n?{...v,retain_historical:e.target.checked}:v))}/>Explicitly retain selected historical or withdrawn evidence {r.selected.id} / {r.selected.version}</label>:<p>Selected revision is unchanged and recorded, or has no typed status.</p>}</article>)}<button disabled={!mayWrite||sourceReview.some(r=>needsHistoricalReview(r)&&!r.retain_historical)} onClick={()=>void confirmSourceReview()}>Validate reviewed sources</button><button disabled={!mayWrite} onClick={()=>void refreshSourceReview()}>Refresh selected-source review</button><button disabled={busy} onClick={()=>{Phase('editing');Pending(undefined);SourceReviewState([]);}}>Edit reassessment draft</button></section>}{phase==='review'&&<><button disabled={!mayWrite} onClick={()=>void save()}>Confirm RF2 append</button><button onClick={()=>{Phase('editing');Pending(undefined);}}>Edit reviewed draft</button><button onClick={reset}>Discard reviewed draft</button></>}{(phase==='uncertain'||phase==='absent')&&<><p>Original request retained. Do not close/reload. Absence is not rollback proof.</p><button disabled={busy} onClick={()=>void lookup()}>Check exact RF2 saved result</button>{phase==='absent'&&<button disabled={!mayWrite} onClick={()=>void save()}>Explicitly retry identical RF2 request</button>}</>}{phase==='saving'&&<p role="status">Saving exact RF2 request…</p>}{phase==='saved'&&saved&&<><p role="status">RF2 result confirmed: {saved.fact.id} / {saved.fact.revision} · ingestion {saved.ingestion.ingestion_sequence}{saved.superseded?' · historical source replay; superseded, not restored as current':''}</p><button disabled={!gateConfirmed||saved.repository!==catalog.repository} onClick={()=>addHandover(saved)}>Add confirmed RF2 result to handover</button><button onClick={reset} disabled={!gateConfirmed}>Start another RF2 record</button></>}</>}
+  <p>General draft/command recovery after reload is deferred. Saved handover does not save a pending command.</p></section>
+  <NoteComparison key={scopeKey} items={catalog.items} onResolve={ps=>void inspectReferences(ps)}/>
+  <section aria-label="RF2 saved handover"><h3>Saved local RF2 handover</h3><p role="status">{storageMessage||'No RF2 saved selection restored.'}</p>{handoverDirty&&<p>Unsaved changes — save explicitly before reload.</p>}<button disabled={!gateConfirmed||activeScope!==scopeKey||busy} onClick={saveHandover}>Save RF2 handover locally</button><button disabled={!gateConfirmed||activeScope!==scopeKey} onClick={()=>void importV1()}>Explicitly copy version 1 into working version 2</button><p>If both versions exist, each remains separate. This view is version 2; the existing Handover tab shows version 1. Copying never saves or overwrites v1.</p>{activeScope===scopeKey&&pins.map(p=>{const e=restored.find(x=>key(pin(x))===key(p));return <article key={key(p)}><h4>{p.reference.kind} / {p.reference.id} / {p.reference.version}</h4><p>Original selected cutoff {p.cutoff}; digest {p.digest}</p>{e?<><p>{evidenceText(e)} · {e.superseded?'superseded historical revision retained':'exact source confirmed'}</p><details><summary>Retained source and note uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details></>:<p>Exact source unavailable/unconfirmed; pin retained without substitution.</p>}<button onClick={()=>{Pins(old=>old.filter(x=>key(x)!==key(p)));Restored(old=>old.filter(x=>key(pin(x))!==key(p)));HandoverDirty(true);}}>Remove selection only</button></article>;})}</section>
+diff --git a/frontend/tests/fixtures/rf2-reviewed-api.json b/frontend/tests/fixtures/rf2-reviewed-api.json
+new file mode 100644
+index 0000000..73ba84d
+--- /dev/null
++++ b/frontend/tests/fixtures/rf2-reviewed-api.json
+@@ -0,0 +1,1149 @@
++{
++  "attribution": "Generated through actual disposable API/storage; not a browser capture; context tokens redacted",
++  "draft": {
++    "repository": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++    "id": "784b63e4-914a-45f1-aef7-6262eda84784",
++    "revision": "e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca",
++    "actor": "Synthetic nurse",
++    "recorded_at": "2026-10-08T10:00:00Z",
++    "chart": null,
++    "note": {
++      "question": "Review exact selected evidence",
++      "findings": "Recorded source assertions",
++      "possibilities": "Not established",
++      "gaps": "Source uncertainty retained",
++      "plan": "Unscheduled review",
++      "pins": [
++        {
++          "repository": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++          "reference": {
++            "kind": "circulatory_event",
++            "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++            "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++          },
++          "digest": "282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e",
++          "ingestion": 4,
++          "cutoff": 4
++        }
++      ]
++    },
++    "predecessor": null,
++    "reason": null,
++    "source_review": [
++      {
++        "selected": {
++          "kind": "circulatory_event",
++          "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++          "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++        },
++        "terminal": {
++          "kind": "circulatory_event",
++          "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++          "version": "1ac538bc-8272-4bf1-9f5e-cb7e0b920018"
++        },
++        "terminal_digest": "14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2",
++        "terminal_ingestion": 5,
++        "record_status": "recorded",
++        "retain_historical": true
++      }
++    ]
++  },
++  "validated": {
++    "source_review": [
++      {
++        "selected": {
++          "kind": "circulatory_event",
++          "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++          "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++        },
++        "terminal": {
++          "kind": "circulatory_event",
++          "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++          "version": "1ac538bc-8272-4bf1-9f5e-cb7e0b920018"
++        },
++        "terminal_digest": "14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2",
++        "terminal_ingestion": 5,
++        "record_status": "recorded",
++        "retain_historical": true
++      }
++    ],
++    "status": "validated",
++    "request_digest": "27e2882f5f87a00194d23b10ea4663a6ea935b6d91fb813743b4d34462759cb5",
++    "request_canonical": "{\"actor\":\"Synthetic nurse\",\"chart\":null,\"id\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"note\":{\"findings\":\"Recorded source assertions\",\"gaps\":\"Source uncertainty retained\",\"pins\":[{\"cutoff\":4,\"digest\":\"282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e\",\"ingestion\":4,\"reference\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"repository\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}],\"plan\":\"Unscheduled review\",\"possibilities\":\"Not established\",\"question\":\"Review exact selected evidence\"},\"predecessor\":null,\"reason\":null,\"recorded_at\":\"2026-10-08T10:00:00Z\",\"repository\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\",\"revision\":\"e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca\",\"source_review\":[{\"record_status\":\"recorded\",\"retain_historical\":true,\"selected\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"terminal\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\"},\"terminal_digest\":\"14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2\",\"terminal_ingestion\":5}]}",
++    "fact": {
++      "kind": "circulatory_event",
++      "id": "784b63e4-914a-45f1-aef7-6262eda84784",
++      "revision": "e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca",
++      "binding": {
++        "target": {
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1",
++          "longitudinal_context_id": null
++        },
++        "verification": {
++          "status": "unresolved",
++          "method": "Synthetic scope selection",
++          "verifier": "Synthetic nurse",
++          "assessed_at": "2026-10-08T10:00:00Z",
++          "source": {
++            "namespace": "clinrx.local.synthetic.rf2",
++            "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++            "version": null,
++            "channel": "clinician"
++          },
++          "ambiguity": "Local synthetic patient only."
++        }
++      },
++      "origin": "reported",
++      "provenance": {
++        "source": {
++          "namespace": "clinrx.local.synthetic.rf2",
++          "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++          "version": null,
++          "channel": "clinician"
++        },
++        "actor": "Synthetic nurse",
++        "recorded_at": "2026-10-08T10:00:00Z",
++        "upstream": [],
++        "lineage": "incomplete",
++        "limitations": [
++          "Unauthenticated local synthetic source assertion."
++        ]
++      },
++      "time": {
++        "event": null,
++        "recorded": null,
++        "effective_start": null,
++        "effective_end": null,
++        "retrieved": null,
++        "processed": null,
++        "precision": "unknown",
++        "uncertainty": null
++      },
++      "verification": "unverified",
++      "conflict": "unknown",
++      "temporal_status": "unknown",
++      "uncertainty": [
++        "Source uncertainty retained"
++      ],
++      "supersedes": null,
++      "correction_reason": null,
++      "contract_version": "3",
++      "occurred": {
++        "timestamp_precision": "M7ExactTimestampInput/v1",
++        "recorded": {
++          "status": "known",
++          "precision": "instant",
++          "value": "2026-10-08T10:00:00Z",
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "source_timestamp": "2026-10-08T10:00:00Z",
++        "clock": "unknown",
++        "clock_basis": null,
++        "conflicting": [],
++        "alternative_sources": [],
++        "alignment": null
++      },
++      "available": {
++        "recorded": {
++          "status": "not_recorded",
++          "precision": "unknown",
++          "value": null,
++          "lower": null,
++          "upper": null,
++          "uncertainty": null
++        },
++        "source_timestamp": null,
++        "clock": "unknown",
++        "clock_basis": null,
++        "conflicting": [],
++        "alternative_sources": [],
++        "alignment": null
++      },
++      "associations": [
++        {
++          "role": "context",
++          "scope": {
++            "patient_id": "synthetic-p1",
++            "encounter_id": "synthetic-e1",
++            "longitudinal_context_id": null
++          },
++          "status": "resolved",
++          "exact": {
++            "kind": "circulatory_event",
++            "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++            "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++          },
++          "candidates": [],
++          "provenance": {
++            "source": {
++              "namespace": "clinrx.local.synthetic.rf2",
++              "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++              "version": null,
++              "channel": "clinician"
++            },
++            "actor": "Synthetic nurse",
++            "recorded_at": "2026-10-08T10:00:00Z",
++            "upstream": [],
++            "lineage": "incomplete",
++            "limitations": [
++              "Unauthenticated local synthetic source assertion."
++            ]
++          },
++          "limitation": null
++        }
++      ],
++      "source_identifiers": [],
++      "disclosures": [],
++      "record_status": "recorded",
++      "event_type": "other",
++      "description": {
++        "raw_display": "Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\nquestion: Review exact selected evidence\nfindings: Recorded source assertions\npossibilities: Not established\ngaps: Source uncertainty retained\nplan: Unscheduled review",
++        "coding": {
++          "namespace": "clinrx.local.rf2/v1",
++          "code": "note",
++          "version": "1",
++          "raw_display": "Authored renal review"
++        }
++      },
++      "external_evidence": [
++        {
++          "namespace": "clinrx.local.rf2.pin/v1",
++          "code": "{\"cutoff\":4,\"digest\":\"282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e\",\"ingestion\":4,\"reference\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"repository\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}",
++          "version": "1",
++          "raw_display": "Exact reviewed evidence"
++        },
++        {
++          "namespace": "clinrx.local.rf2.review/v1",
++          "code": "{\"record_status\":\"recorded\",\"retain_historical\":true,\"selected\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"terminal\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\"},\"terminal_digest\":\"14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2\",\"terminal_ingestion\":5}",
++          "version": "1",
++          "raw_display": "Explicit selected-source review decision"
++        },
++        {
++          "namespace": "clinrx.local.rf2/v1",
++          "code": "{\"chart\":null,\"note\":{\"findings\":\"Recorded source assertions\",\"gaps\":\"Source uncertainty retained\",\"pins\":[],\"plan\":\"Unscheduled review\",\"possibilities\":\"Not established\",\"question\":\"Review exact selected evidence\"},\"version\":1}",
++          "version": "1",
++          "raw_display": "Structured RF2 source assertions"
++        }
++      ],
++      "recorded_amount": null
++    },
++    "replay_reference": null,
++    "execution_enabled": false
++  },
++  "saved": {
++    "status": "saved",
++    "request_digest": "27e2882f5f87a00194d23b10ea4663a6ea935b6d91fb813743b4d34462759cb5",
++    "request_canonical": "{\"actor\":\"Synthetic nurse\",\"chart\":null,\"id\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"note\":{\"findings\":\"Recorded source assertions\",\"gaps\":\"Source uncertainty retained\",\"pins\":[{\"cutoff\":4,\"digest\":\"282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e\",\"ingestion\":4,\"reference\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"repository\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}],\"plan\":\"Unscheduled review\",\"possibilities\":\"Not established\",\"question\":\"Review exact selected evidence\"},\"predecessor\":null,\"reason\":null,\"recorded_at\":\"2026-10-08T10:00:00Z\",\"repository\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\",\"revision\":\"e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca\",\"source_review\":[{\"record_status\":\"recorded\",\"retain_historical\":true,\"selected\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"terminal\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\"},\"terminal_digest\":\"14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2\",\"terminal_ingestion\":5}]}",
++    "evidence": {
++      "repository": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++      "fact": {
++        "kind": "circulatory_event",
++        "id": "784b63e4-914a-45f1-aef7-6262eda84784",
++        "revision": "e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca",
++        "binding": {
++          "target": {
++            "patient_id": "synthetic-p1",
++            "encounter_id": "synthetic-e1",
++            "longitudinal_context_id": null
++          },
++          "verification": {
++            "status": "unresolved",
++            "method": "Synthetic scope selection",
++            "verifier": "Synthetic nurse",
++            "assessed_at": "2026-10-08T10:00:00Z",
++            "source": {
++              "namespace": "clinrx.local.synthetic.rf2",
++              "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++              "version": null,
++              "channel": "clinician"
++            },
++            "ambiguity": "Local synthetic patient only."
++          }
++        },
++        "origin": "reported",
++        "provenance": {
++          "source": {
++            "namespace": "clinrx.local.synthetic.rf2",
++            "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++            "version": null,
++            "channel": "clinician"
++          },
++          "actor": "Synthetic nurse",
++          "recorded_at": "2026-10-08T10:00:00Z",
++          "upstream": [],
++          "lineage": "incomplete",
++          "limitations": [
++            "Unauthenticated local synthetic source assertion."
++          ]
++        },
++        "time": {
++          "event": null,
++          "recorded": null,
++          "effective_start": null,
++          "effective_end": null,
++          "retrieved": null,
++          "processed": null,
++          "precision": "unknown",
++          "uncertainty": null
++        },
++        "verification": "unverified",
++        "conflict": "unknown",
++        "temporal_status": "unknown",
++        "uncertainty": [
++          "Source uncertainty retained"
++        ],
++        "supersedes": null,
++        "correction_reason": null,
++        "contract_version": "3",
++        "occurred": {
++          "timestamp_precision": "M7ExactTimestampInput/v1",
++          "recorded": {
++            "status": "known",
++            "precision": "instant",
++            "value": "2026-10-08T10:00:00Z",
++            "lower": null,
++            "upper": null,
++            "uncertainty": null
++          },
++          "source_timestamp": "2026-10-08T10:00:00Z",
++          "clock": "unknown",
++          "clock_basis": null,
++          "conflicting": [],
++          "alternative_sources": [],
++          "alignment": null
++        },
++        "available": {
++          "recorded": {
++            "status": "not_recorded",
++            "precision": "unknown",
++            "value": null,
++            "lower": null,
++            "upper": null,
++            "uncertainty": null
++          },
++          "source_timestamp": null,
++          "clock": "unknown",
++          "clock_basis": null,
++          "conflicting": [],
++          "alternative_sources": [],
++          "alignment": null
++        },
++        "associations": [
++          {
++            "role": "context",
++            "scope": {
++              "patient_id": "synthetic-p1",
++              "encounter_id": "synthetic-e1",
++              "longitudinal_context_id": null
++            },
++            "status": "resolved",
++            "exact": {
++              "kind": "circulatory_event",
++              "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++              "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++            },
++            "candidates": [],
++            "provenance": {
++              "source": {
++                "namespace": "clinrx.local.synthetic.rf2",
++                "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++                "version": null,
++                "channel": "clinician"
++              },
++              "actor": "Synthetic nurse",
++              "recorded_at": "2026-10-08T10:00:00Z",
++              "upstream": [],
++              "lineage": "incomplete",
++              "limitations": [
++                "Unauthenticated local synthetic source assertion."
++              ]
++            },
++            "limitation": null
++          }
++        ],
++        "source_identifiers": [],
++        "disclosures": [],
++        "record_status": "recorded",
++        "event_type": "other",
++        "description": {
++          "raw_display": "Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\nquestion: Review exact selected evidence\nfindings: Recorded source assertions\npossibilities: Not established\ngaps: Source uncertainty retained\nplan: Unscheduled review",
++          "coding": {
++            "namespace": "clinrx.local.rf2/v1",
++            "code": "note",
++            "version": "1",
++            "raw_display": "Authored renal review"
++          }
++        },
++        "external_evidence": [
++          {
++            "namespace": "clinrx.local.rf2.pin/v1",
++            "code": "{\"cutoff\":4,\"digest\":\"282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e\",\"ingestion\":4,\"reference\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"repository\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}",
++            "version": "1",
++            "raw_display": "Exact reviewed evidence"
++          },
++          {
++            "namespace": "clinrx.local.rf2.review/v1",
++            "code": "{\"record_status\":\"recorded\",\"retain_historical\":true,\"selected\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"terminal\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\"},\"terminal_digest\":\"14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2\",\"terminal_ingestion\":5}",
++            "version": "1",
++            "raw_display": "Explicit selected-source review decision"
++          },
++          {
++            "namespace": "clinrx.local.rf2/v1",
++            "code": "{\"chart\":null,\"note\":{\"findings\":\"Recorded source assertions\",\"gaps\":\"Source uncertainty retained\",\"pins\":[],\"plan\":\"Unscheduled review\",\"possibilities\":\"Not established\",\"question\":\"Review exact selected evidence\"},\"version\":1}",
++            "version": "1",
++            "raw_display": "Structured RF2 source assertions"
++          }
++        ],
++        "recorded_amount": null
++      },
++      "canonical_fact": "{\"associations\":[{\"candidates\":[],\"exact\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"limitation\":null,\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"role\":\"context\",\"scope\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"status\":\"resolved\"}],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-08T10:00:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic nurse\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"note\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Authored renal review\",\"version\":\"1\"},\"raw_display\":\"Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\\nquestion: Review exact selected evidence\\nfindings: Recorded source assertions\\npossibilities: Not established\\ngaps: Source uncertainty retained\\nplan: Unscheduled review\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"cutoff\\\":4,\\\"digest\\\":\\\"282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e\\\",\\\"ingestion\\\":4,\\\"reference\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"cf29bf85-8429-4986-b55b-b41f5b248dae\\\"},\\\"repository\\\":\\\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"record_status\\\":\\\"recorded\\\",\\\"retain_historical\\\":true,\\\"selected\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"cf29bf85-8429-4986-b55b-b41f5b248dae\\\"},\\\"terminal\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\\\"},\\\"terminal_digest\\\":\\\"14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2\\\",\\\"terminal_ingestion\\\":5}\",\"namespace\":\"clinrx.local.rf2.review/v1\",\"raw_display\":\"Explicit selected-source review decision\",\"version\":\"1\"},{\"code\":\"{\\\"chart\\\":null,\\\"note\\\":{\\\"findings\\\":\\\"Recorded source assertions\\\",\\\"gaps\\\":\\\"Source uncertainty retained\\\",\\\"pins\\\":[],\\\"plan\\\":\\\"Unscheduled review\\\",\\\"possibilities\\\":\\\"Not established\\\",\\\"question\\\":\\\"Review exact selected evidence\\\"},\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T10:00:00Z\"},\"source_timestamp\":\"2026-10-08T10:00:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":null,\"revision\":\"e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Source uncertainty retained\"],\"verification\":\"unverified\"}",
++      "digest": "d8cc4737f295a04d97ef61032f0cffe077604df38813633cff433defb4681c4d",
++      "ingestion": {
++        "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++        "ingestion_sequence": 6,
++        "ingested_at": "2026-10-20T01:35:49.643138Z",
++        "payload_version": 1
++      },
++      "cutoff": 6,
++      "terminal_reference": {
++        "kind": "circulatory_event",
++        "id": "784b63e4-914a-45f1-aef7-6262eda84784",
++        "version": "e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca"
++      },
++      "superseded": false,
++      "metadata": {
++        "chart": null,
++        "note": {
++          "findings": "Recorded source assertions",
++          "gaps": "Source uncertainty retained",
++          "pins": [
++            {
++              "cutoff": 4,
++              "digest": "282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e",
++              "ingestion": 4,
++              "reference": {
++                "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                "kind": "circulatory_event",
++                "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++              },
++              "repository": "232b4a6b-39cb-45e3-895a-a00c1699f7dc"
++            }
++          ],
++          "plan": "Unscheduled review",
++          "possibilities": "Not established",
++          "question": "Review exact selected evidence"
++        },
++        "version": 1,
++        "source_review": [
++          {
++            "selected": {
++              "kind": "circulatory_event",
++              "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++              "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++            },
++            "terminal": {
++              "kind": "circulatory_event",
++              "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++              "version": "1ac538bc-8272-4bf1-9f5e-cb7e0b920018"
++            },
++            "terminal_digest": "14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2",
++            "terminal_ingestion": 5,
++            "record_status": "recorded",
++            "retain_historical": true
++          }
++        ]
++      }
++    },
++    "execution_enabled": false
++  },
++  "catalog": {
++    "repository": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++    "cutoff": {
++      "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++      "fact_watermark": 6,
++      "captured_at": "2026-10-20T01:35:49.650993Z"
++    },
++    "combined": {
++      "context": {
++        "transport_version": "SyntheticRenalFluidReview/v1",
++        "scope": {
++          "contract_version": "3",
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1",
++          "review_start": "2026-10-08T08:00:00Z",
++          "review_end": "2026-10-08T10:00:00Z",
++          "repository_cutoff": {
++            "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++            "fact_watermark": 6,
++            "captured_at": "2026-10-20T01:35:49.650993Z"
++          }
++        },
++        "circulatory_digest": "ae3c47670bb24162c2d34450f946098d59b42d5865276320a32fdfbd7a8c5be3",
++        "observations_digest": "ffda0818d70e66fd7752936e8f75e34c75528f06c31a1260d07ea685d3c7d971"
++      },
++      "state_context": "TEST_REDACTED_CONTEXT",
++      "circulatory": {
++        "transport_version": "m7-c/1",
++        "assembly_request": {
++          "scope": {
++            "contract_version": "3",
++            "patient_id": "synthetic-p1",
++            "encounter_id": "synthetic-e1",
++            "review_start": "2026-10-08T08:00:00Z",
++            "review_end": "2026-10-08T10:00:00Z",
++            "repository_cutoff": {
++              "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++              "fact_watermark": 6,
++              "captured_at": "2026-10-20T01:35:49.650993Z"
++            }
++          },
++          "profile_id": "RecordedCirculatoryEvidence",
++          "profile_version": "1",
++          "limits": {
++            "history": {
++              "max_rows": 4096,
++              "max_payload_bytes": 16777216
++            },
++            "max_items": 512,
++            "max_relationships": 2048,
++            "max_contextual": 256,
++            "max_groups": 256,
++            "max_signals": 64,
++            "max_depth": 8,
++            "max_fanout": 64,
++            "max_steps": 8192,
++            "max_issues": 1024,
++            "max_result_bytes": 16777216
++          }
++        },
++        "assembly_digest": "ae3c47670bb24162c2d34450f946098d59b42d5865276320a32fdfbd7a8c5be3",
++        "assembly": {
++          "request": {
++            "scope": {
++              "contract_version": "3",
++              "patient_id": "synthetic-p1",
++              "encounter_id": "synthetic-e1",
++              "review_start": "2026-10-08T08:00:00Z",
++              "review_end": "2026-10-08T10:00:00Z",
++              "repository_cutoff": {
++                "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++                "fact_watermark": 6,
++                "captured_at": "2026-10-20T01:35:49.650993Z"
++              }
++            },
++            "profile_id": "RecordedCirculatoryEvidence",
++            "profile_version": "1",
++            "limits": {
++              "history": {
++                "max_rows": 4096,
++                "max_payload_bytes": 16777216
++              },
++              "max_items": 512,
++              "max_relationships": 2048,
++              "max_contextual": 256,
++              "max_groups": 256,
++              "max_signals": 64,
++              "max_depth": 8,
++              "max_fanout": 64,
++              "max_steps": 8192,
++              "max_issues": 1024,
++              "max_result_bytes": 16777216
++            }
++          },
++          "snapshot": {
++            "contract_version": "3",
++            "scope": {
++              "contract_version": "3",
++              "patient_id": "synthetic-p1",
++              "encounter_id": "synthetic-e1",
++              "review_start": "2026-10-08T08:00:00Z",
++              "review_end": "2026-10-08T10:00:00Z",
++              "repository_cutoff": {
++                "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++                "fact_watermark": 6,
++                "captured_at": "2026-10-20T01:35:49.650993Z"
++              }
++            },
++            "profile_id": "RecordedCirculatoryEvidence",
++            "profile_version": "1",
++            "items": [
++              {
++                "fact": {
++                  "kind": "circulatory_event",
++                  "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                  "revision": "1ac538bc-8272-4bf1-9f5e-cb7e0b920018",
++                  "binding": {
++                    "target": {
++                      "patient_id": "synthetic-p1",
++                      "encounter_id": "synthetic-e1",
++                      "longitudinal_context_id": null
++                    },
++                    "verification": {
++                      "status": "unresolved",
++                      "method": "Synthetic scope selection",
++                      "verifier": "Synthetic nurse",
++                      "assessed_at": "2026-10-08T10:00:00Z",
++                      "source": {
++                        "namespace": "clinrx.local.synthetic.rf2",
++                        "identifier": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                        "version": null,
++                        "channel": "clinician"
++                      },
++                      "ambiguity": "Local synthetic patient only."
++                    }
++                  },
++                  "origin": "reported",
++                  "provenance": {
++                    "source": {
++                      "namespace": "clinrx.local.synthetic.rf2",
++                      "identifier": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                      "version": null,
++                      "channel": "clinician"
++                    },
++                    "actor": "Synthetic nurse",
++                    "recorded_at": "2026-10-08T10:00:00Z",
++                    "upstream": [],
++                    "lineage": "incomplete",
++                    "limitations": [
++                      "Unauthenticated local synthetic source assertion."
++                    ]
++                  },
++                  "time": {
++                    "event": null,
++                    "recorded": null,
++                    "effective_start": null,
++                    "effective_end": null,
++                    "retrieved": null,
++                    "processed": null,
++                    "precision": "unknown",
++                    "uncertainty": null
++                  },
++                  "verification": "unverified",
++                  "conflict": "unknown",
++                  "temporal_status": "unknown",
++                  "uncertainty": [
++                    "Collection method not verified"
++                  ],
++                  "supersedes": {
++                    "kind": "circulatory_event",
++                    "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                    "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++                  },
++                  "correction_reason": "Synthetic source correction",
++                  "contract_version": "3",
++                  "occurred": {
++                    "timestamp_precision": "M7ExactTimestampInput/v1",
++                    "recorded": {
++                      "status": "known",
++                      "precision": "instant",
++                      "value": "2026-10-08T09:45:00Z",
++                      "lower": null,
++                      "upper": null,
++                      "uncertainty": null
++                    },
++                    "source_timestamp": "2026-10-08T09:45:00Z",
++                    "clock": "unknown",
++                    "clock_basis": null,
++                    "conflicting": [],
++                    "alternative_sources": [],
++                    "alignment": null
++                  },
++                  "available": {
++                    "recorded": {
++                      "status": "not_recorded",
++                      "precision": "unknown",
++                      "value": null,
++                      "lower": null,
++                      "upper": null,
++                      "uncertainty": null
++                    },
++                    "source_timestamp": null,
++                    "clock": "unknown",
++                    "clock_basis": null,
++                    "conflicting": [],
++                    "alternative_sources": [],
++                    "alignment": null
++                  },
++                  "associations": [],
++                  "source_identifiers": [],
++                  "disclosures": [],
++                  "record_status": "recorded",
++                  "event_type": "other",
++                  "description": {
++                    "raw_display": "Explicit local fictional measurement",
++                    "coding": {
++                      "namespace": "clinrx.local.rf2/v1",
++                      "code": "weight",
++                      "version": "1",
++                      "raw_display": "weight"
++                    }
++                  },
++                  "external_evidence": [
++                    {
++                      "namespace": "clinrx.local.rf2/v1",
++                      "code": "{\"chart\":{\"acquisition\":\"measured\",\"amount\":\"71.0000\",\"category\":\"weight\",\"end\":null,\"method\":null,\"missing_reason\":null,\"new_collection_reason\":null,\"point\":\"2026-10-08T09:45:00Z\",\"purpose\":\"body weight\",\"source_context\":\"Explicit local fictional measurement\",\"source_record\":{\"component\":\"weight\",\"issuer\":\"nurse-chart-A\",\"issuer_namespace\":\"clinrx.synthetic.chart\",\"record_id\":\"weight-0945\",\"record_namespace\":\"chart-entry\"},\"source_version\":null,\"start\":null,\"uncertainty\":\"Collection method not verified\",\"unit\":\"kg\"},\"note\":null,\"version\":1}",
++                      "version": "1",
++                      "raw_display": "Structured RF2 source assertions"
++                    }
++                  ],
++                  "recorded_amount": {
++                    "value": "71.0000",
++                    "unit": {
++                      "raw": "kg",
++                      "status": "unresolved",
++                      "system": null,
++                      "code": null,
++                      "limitation": "Raw source unit; no conversion."
++                    }
++                  }
++                },
++                "expected_digest": "14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2",
++                "ingestion": {
++                  "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++                  "ingestion_sequence": 5,
++                  "ingested_at": "2026-10-20T01:35:49.595740Z",
++                  "payload_version": 1
++                },
++                "inclusion": "in_window",
++                "contextual_for": [],
++                "disclosures": [
++                  "Recorded evidence only; source availability, continuity and completeness require separate assessment."
++                ]
++              },
++              {
++                "fact": {
++                  "kind": "circulatory_event",
++                  "id": "784b63e4-914a-45f1-aef7-6262eda84784",
++                  "revision": "e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca",
++                  "binding": {
++                    "target": {
++                      "patient_id": "synthetic-p1",
++                      "encounter_id": "synthetic-e1",
++                      "longitudinal_context_id": null
++                    },
++                    "verification": {
++                      "status": "unresolved",
++                      "method": "Synthetic scope selection",
++                      "verifier": "Synthetic nurse",
++                      "assessed_at": "2026-10-08T10:00:00Z",
++                      "source": {
++                        "namespace": "clinrx.local.synthetic.rf2",
++                        "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++                        "version": null,
++                        "channel": "clinician"
++                      },
++                      "ambiguity": "Local synthetic patient only."
++                    }
++                  },
++                  "origin": "reported",
++                  "provenance": {
++                    "source": {
++                      "namespace": "clinrx.local.synthetic.rf2",
++                      "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++                      "version": null,
++                      "channel": "clinician"
++                    },
++                    "actor": "Synthetic nurse",
++                    "recorded_at": "2026-10-08T10:00:00Z",
++                    "upstream": [],
++                    "lineage": "incomplete",
++                    "limitations": [
++                      "Unauthenticated local synthetic source assertion."
++                    ]
++                  },
++                  "time": {
++                    "event": null,
++                    "recorded": null,
++                    "effective_start": null,
++                    "effective_end": null,
++                    "retrieved": null,
++                    "processed": null,
++                    "precision": "unknown",
++                    "uncertainty": null
++                  },
++                  "verification": "unverified",
++                  "conflict": "unknown",
++                  "temporal_status": "unknown",
++                  "uncertainty": [
++                    "Source uncertainty retained"
++                  ],
++                  "supersedes": null,
++                  "correction_reason": null,
++                  "contract_version": "3",
++                  "occurred": {
++                    "timestamp_precision": "M7ExactTimestampInput/v1",
++                    "recorded": {
++                      "status": "known",
++                      "precision": "instant",
++                      "value": "2026-10-08T10:00:00Z",
++                      "lower": null,
++                      "upper": null,
++                      "uncertainty": null
++                    },
++                    "source_timestamp": "2026-10-08T10:00:00Z",
++                    "clock": "unknown",
++                    "clock_basis": null,
++                    "conflicting": [],
++                    "alternative_sources": [],
++                    "alignment": null
++                  },
++                  "available": {
++                    "recorded": {
++                      "status": "not_recorded",
++                      "precision": "unknown",
++                      "value": null,
++                      "lower": null,
++                      "upper": null,
++                      "uncertainty": null
++                    },
++                    "source_timestamp": null,
++                    "clock": "unknown",
++                    "clock_basis": null,
++                    "conflicting": [],
++                    "alternative_sources": [],
++                    "alignment": null
++                  },
++                  "associations": [
++                    {
++                      "role": "context",
++                      "scope": {
++                        "patient_id": "synthetic-p1",
++                        "encounter_id": "synthetic-e1",
++                        "longitudinal_context_id": null
++                      },
++                      "status": "resolved",
++                      "exact": {
++                        "kind": "circulatory_event",
++                        "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                        "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++                      },
++                      "candidates": [],
++                      "provenance": {
++                        "source": {
++                          "namespace": "clinrx.local.synthetic.rf2",
++                          "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++                          "version": null,
++                          "channel": "clinician"
++                        },
++                        "actor": "Synthetic nurse",
++                        "recorded_at": "2026-10-08T10:00:00Z",
++                        "upstream": [],
++                        "lineage": "incomplete",
++                        "limitations": [
++                          "Unauthenticated local synthetic source assertion."
++                        ]
++                      },
++                      "limitation": null
++                    }
++                  ],
++                  "source_identifiers": [],
++                  "disclosures": [],
++                  "record_status": "recorded",
++                  "event_type": "other",
++                  "description": {
++                    "raw_display": "Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\nquestion: Review exact selected evidence\nfindings: Recorded source assertions\npossibilities: Not established\ngaps: Source uncertainty retained\nplan: Unscheduled review",
++                    "coding": {
++                      "namespace": "clinrx.local.rf2/v1",
++                      "code": "note",
++                      "version": "1",
++                      "raw_display": "Authored renal review"
++                    }
++                  },
++                  "external_evidence": [
++                    {
++                      "namespace": "clinrx.local.rf2.pin/v1",
++                      "code": "{\"cutoff\":4,\"digest\":\"282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e\",\"ingestion\":4,\"reference\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"repository\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}",
++                      "version": "1",
++                      "raw_display": "Exact reviewed evidence"
++                    },
++                    {
++                      "namespace": "clinrx.local.rf2.review/v1",
++                      "code": "{\"record_status\":\"recorded\",\"retain_historical\":true,\"selected\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"terminal\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\"},\"terminal_digest\":\"14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2\",\"terminal_ingestion\":5}",
++                      "version": "1",
++                      "raw_display": "Explicit selected-source review decision"
++                    },
++                    {
++                      "namespace": "clinrx.local.rf2/v1",
++                      "code": "{\"chart\":null,\"note\":{\"findings\":\"Recorded source assertions\",\"gaps\":\"Source uncertainty retained\",\"pins\":[],\"plan\":\"Unscheduled review\",\"possibilities\":\"Not established\",\"question\":\"Review exact selected evidence\"},\"version\":1}",
++                      "version": "1",
++                      "raw_display": "Structured RF2 source assertions"
++                    }
++                  ],
++                  "recorded_amount": null
++                },
++                "expected_digest": "d8cc4737f295a04d97ef61032f0cffe077604df38813633cff433defb4681c4d",
++                "ingestion": {
++                  "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++                  "ingestion_sequence": 6,
++                  "ingested_at": "2026-10-20T01:35:49.643138Z",
++                  "payload_version": 1
++                },
++                "inclusion": "in_window",
++                "contextual_for": [],
++                "disclosures": [
++                  "Recorded evidence only; source availability, continuity and completeness require separate assessment."
++                ]
++              }
++            ],
++            "issues": [
++              {
++                "reference": {
++                  "kind": "circulatory_event",
++                  "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                  "version": "1ac538bc-8272-4bf1-9f5e-cb7e0b920018"
++                },
++                "reason": "temporal_uncertainty"
++              },
++              {
++                "reference": {
++                  "kind": "circulatory_event",
++                  "id": "784b63e4-914a-45f1-aef7-6262eda84784",
++                  "version": "e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca"
++                },
++                "reason": "historical_association"
++              },
++              {
++                "reference": {
++                  "kind": "circulatory_event",
++                  "id": "784b63e4-914a-45f1-aef7-6262eda84784",
++                  "version": "e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca"
++                },
++                "reason": "temporal_uncertainty"
++              },
++              {
++                "reference": {
++                  "kind": "medication_order",
++                  "id": "demo-medication-M",
++                  "version": "1"
++                },
++                "reason": "outside_profile"
++              },
++              {
++                "reference": {
++                  "kind": "observation",
++                  "id": "demo-creatinine-A",
++                  "version": "1"
++                },
++                "reason": "outside_profile"
++              },
++              {
++                "reference": {
++                  "kind": "observation",
++                  "id": "demo-creatinine-B",
++                  "version": "1"
++                },
++                "reason": "outside_profile"
++              }
++            ],
++            "coverage": {
++              "source_completeness": "unknown",
++              "continuity": "not_established",
++              "candidate_rows": 6,
++              "terminal_count": 5,
++              "retained_count": 2,
++              "limitations": [
++                "Only declared recorded M7 evidence; absence and continuous physiology are not established."
++              ]
++            }
++          }
++        },
++        "state_context": "TEST_REDACTED_CONTEXT",
++        "execution_enabled": false
++      },
++      "laboratory": {
++        "scope": {
++          "contract_version": "3",
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1",
++          "review_start": "2026-10-08T08:00:00Z",
++          "review_end": "2026-10-08T10:00:00Z",
++          "repository_cutoff": {
++            "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++            "fact_watermark": 6,
++            "captured_at": "2026-10-20T01:35:49.650993Z"
++          }
++        },
++        "observations": [
++          {
++            "fact": {
++              "kind": "observation",
++              "id": "demo-creatinine-A",
++              "revision": "1",
++              "binding": {
++                "target": {
++                  "patient_id": "synthetic-p1",
++                  "encounter_id": "synthetic-e1",
++                  "longitudinal_context_id": null
++                },
++                "verification": {
++                  "status": "verified",
++                  "method": "synthetic-demo",
++                  "verifier": "synthetic-system",
++                  "assessed_at": "2026-10-08T08:00:00Z",
++                  "source": {
++                    "namespace": "clinrx.synthetic.demo",
++                    "identifier": "patient-state-v1",
++                    "version": "1",
++                    "channel": "system"
++                  },
++                  "ambiguity": null
++                }
++              },
++              "origin": "reported",
++              "provenance": {
++                "source": {
++                  "namespace": "clinrx.synthetic.serum-creatinine",
++                  "identifier": "demo-sample-A",
++                  "version": "1",
++                  "channel": "measurement"
++                },
++                "actor": "synthetic-demo",
++                "recorded_at": "2026-10-08T08:00:00Z",
++                "upstream": [],
++                "lineage": "unknown",
++                "limitations": [
++                  "Synthetic demonstration only; no clinical feed."
++                ]
++              },
++              "time": {
++                "event": "2026-10-08T08:00:00Z",
++                "recorded": "2026-10-08T08:00:00Z",
++                "effective_start": null,
++                "effective_end": null,
++                "retrieved": null,
++                "processed": null,
++                "precision": "instant",
++                "uncertainty": null
++              },
++              "verification": "verified",
++              "conflict": "none_known",
++              "temporal_status": "historical",
++              "uncertainty": [
++                "Synthetic recorded evidence only."
++              ],
++              "supersedes": null,
++              "correction_reason": null,
++              "concept_id": "synthetic-serum-creatinine",
++              "value": {
++                "status": "known",
++                "value": {
++                  "value": "1.00",
++                  "unit": {
++                    "raw": "mg/dL",
++                    "status": "assessed",
++                    "system": "UCUM",
++                    "code": "mg/dL",
++                    "limitation": null
++                  }
++                },
++                "reason": null
++              }
++            },
++            "expected_digest": "47725732962a14527b5867dd525393d46ecc03276528c7fa2428767beefbe4e1",
++            "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.00\"}},\"verification\":\"verified\"}",
++            "ingestion": {
++              "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++              "ingestion_sequence": 1,
++              "ingested_at": "2026-10-20T01:35:49.267469Z",
++              "payload_version": 1
++            },
++            "inclusion": "in_window"
++          },
++          {
++            "fact": {
++              "kind": "observation",
++              "id": "demo-creatinine-B",
++              "revision": "1",
++              "binding": {
++                "target": {
++                  "patient_id": "synthetic-p1",
++                  "encounter_id": "synthetic-e1",
++                  "longitudinal_context_id": null
++                },
++                "verification": {
++                  "status": "verified",
++                  "method": "synthetic-demo",
++                  "verifier": "synthetic-system",
++                  "assessed_at": "2026-10-08T08:00:00Z",
++                  "source": {
++                    "namespace": "clinrx.synthetic.demo",
++                    "identifier": "patient-state-v1",
++                    "version": "1",
++                    "channel": "system"
++                  },
++                  "ambiguity": null
++                }
++              },
++              "origin": "reported",
++              "provenance": {
++                "source": {
++                  "namespace": "clinrx.synthetic.serum-creatinine",
++                  "identifier": "demo-sample-B",
++                  "version": "1",
++                  "channel": "measurement"
++                },
++                "actor": "synthetic-demo",
++                "recorded_at": "2026-10-08T10:00:00Z",
++                "upstream": [],
++                "lineage": "unknown",
++                "limitations": [
++                  "Synthetic demonstration only; no clinical feed."
++                ]
++              },
++              "time": {
++                "event": "2026-10-08T10:00:00Z",
++                "recorded": "2026-10-08T10:00:00Z",
++                "effective_start": null,
++                "effective_end": null,
++                "retrieved": null,
++                "processed": null,
++                "precision": "instant",
++                "uncertainty": null
++              },
++              "verification": "verified",
++              "conflict": "none_known",
++              "temporal_status": "historical",
++              "uncertainty": [
++                "Synthetic recorded evidence only."
++              ],
++              "supersedes": null,
++              "correction_reason": null,
++              "concept_id": "synthetic-serum-creatinine",
++              "value": {
++                "status": "known",
++                "value": {
++                  "value": "2.000",
++                  "unit": {
++                    "raw": "mg/dL",
++                    "status": "assessed",
++                    "system": "UCUM",
++                    "code": "mg/dL",
++                    "limitation": null
++                  }
++                },
++                "reason": null
++              }
++            },
++            "expected_digest": "17833f40e3d34a11b4a3ddec12fea45b54b45bdbfa0f181c22960cd7e9b42c2f",
++            "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-B\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-B\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T10:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T10:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"2.000\"}},\"verification\":\"verified\"}",
++            "ingestion": {
++              "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++              "ingestion_sequence": 3,
++              "ingested_at": "2026-10-20T01:35:49.271363Z",
++              "payload_version": 1
++            },
++            "inclusion": "in_window"
++          }
++        ]
++      },
++      "canonical_assembly": "{\"request\":{\"limits\":{\"history\":{\"max_payload_bytes\":16777216,\"max_rows\":4096},\"max_contextual\":256,\"max_depth\":8,\"max_fanout\":64,\"max_groups\":256,\"max_issues\":1024,\"max_items\":512,\"max_relationships\":2048,\"max_result_bytes\":16777216,\"max_signals\":64,\"max_steps\":8192},\"profile_id\":\"RecordedCirculatoryEvidence\",\"profile_version\":\"1\",\"scope\":{\"contract_version\":\"3\",\"encounter_id\":\"synthetic-e1\",\"patient_id\":\"synthetic-p1\",\"repository_cutoff\":{\"captured_at\":\"2026-10-20T01:35:49.650993Z\",\"fact_watermark\":6,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"},\"review_end\":\"2026-10-08T10:00:00Z\",\"review_start\":\"2026-10-08T08:00:00Z\"}},\"snapshot\":{\"contract_version\":\"3\",\"coverage\":{\"candidate_rows\":6,\"continuity\":\"not_established\",\"limitations\":[\"Only declared recorded M7 evidence; absence and continuous physiology are not established.\"],\"retained_count\":2,\"source_completeness\":\"unknown\",\"terminal_count\":5},\"issues\":[{\"reason\":\"temporal_uncertainty\",\"reference\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\"}},{\"reason\":\"historical_association\",\"reference\":{\"id\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"kind\":\"circulatory_event\",\"version\":\"e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca\"}},{\"reason\":\"temporal_uncertainty\",\"reference\":{\"id\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"kind\":\"circulatory_event\",\"version\":\"e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca\"}},{\"reason\":\"outside_profile\",\"reference\":{\"id\":\"demo-medication-M\",\"kind\":\"medication_order\",\"version\":\"1\"}},{\"reason\":\"outside_profile\",\"reference\":{\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"version\":\"1\"}},{\"reason\":\"outside_profile\",\"reference\":{\"id\":\"demo-creatinine-B\",\"kind\":\"observation\",\"version\":\"1\"}}],\"items\":[{\"contextual_for\":[],\"disclosures\":[\"Recorded evidence only; source availability, continuity and completeness require separate assessment.\"],\"expected_digest\":\"14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2\",\"fact\":{\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-08T10:00:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic nurse\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":\"Synthetic source correction\",\"description\":{\"coding\":{\"code\":\"weight\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"weight\",\"version\":\"1\"},\"raw_display\":\"Explicit local fictional measurement\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"chart\\\":{\\\"acquisition\\\":\\\"measured\\\",\\\"amount\\\":\\\"71.0000\\\",\\\"category\\\":\\\"weight\\\",\\\"end\\\":null,\\\"method\\\":null,\\\"missing_reason\\\":null,\\\"new_collection_reason\\\":null,\\\"point\\\":\\\"2026-10-08T09:45:00Z\\\",\\\"purpose\\\":\\\"body weight\\\",\\\"source_context\\\":\\\"Explicit local fictional measurement\\\",\\\"source_record\\\":{\\\"component\\\":\\\"weight\\\",\\\"issuer\\\":\\\"nurse-chart-A\\\",\\\"issuer_namespace\\\":\\\"clinrx.synthetic.chart\\\",\\\"record_id\\\":\\\"weight-0945\\\",\\\"record_namespace\\\":\\\"chart-entry\\\"},\\\"source_version\\\":null,\\\"start\\\":null,\\\"uncertainty\\\":\\\"Collection method not verified\\\",\\\"unit\\\":\\\"kg\\\"},\\\"note\\\":null,\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:45:00Z\"},\"source_timestamp\":\"2026-10-08T09:45:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":{\"unit\":{\"code\":null,\"limitation\":\"Raw source unit; no conversion.\",\"raw\":\"kg\",\"status\":\"unresolved\",\"system\":null},\"value\":\"71.0000\"},\"revision\":\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\",\"source_identifiers\":[],\"supersedes\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Collection method not verified\"],\"verification\":\"unverified\"},\"inclusion\":\"in_window\",\"ingestion\":{\"ingested_at\":\"2026-10-20T01:35:49.595740Z\",\"ingestion_sequence\":5,\"payload_version\":1,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}},{\"contextual_for\":[],\"disclosures\":[\"Recorded evidence only; source availability, continuity and completeness require separate assessment.\"],\"expected_digest\":\"d8cc4737f295a04d97ef61032f0cffe077604df38813633cff433defb4681c4d\",\"fact\":{\"associations\":[{\"candidates\":[],\"exact\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"limitation\":null,\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"role\":\"context\",\"scope\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"status\":\"resolved\"}],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-08T10:00:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic nurse\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"note\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Authored renal review\",\"version\":\"1\"},\"raw_display\":\"Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\\nquestion: Review exact selected evidence\\nfindings: Recorded source assertions\\npossibilities: Not established\\ngaps: Source uncertainty retained\\nplan: Unscheduled review\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"cutoff\\\":4,\\\"digest\\\":\\\"282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e\\\",\\\"ingestion\\\":4,\\\"reference\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"cf29bf85-8429-4986-b55b-b41f5b248dae\\\"},\\\"repository\\\":\\\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"record_status\\\":\\\"recorded\\\",\\\"retain_historical\\\":true,\\\"selected\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"cf29bf85-8429-4986-b55b-b41f5b248dae\\\"},\\\"terminal\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\\\"},\\\"terminal_digest\\\":\\\"14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2\\\",\\\"terminal_ingestion\\\":5}\",\"namespace\":\"clinrx.local.rf2.review/v1\",\"raw_display\":\"Explicit selected-source review decision\",\"version\":\"1\"},{\"code\":\"{\\\"chart\\\":null,\\\"note\\\":{\\\"findings\\\":\\\"Recorded source assertions\\\",\\\"gaps\\\":\\\"Source uncertainty retained\\\",\\\"pins\\\":[],\\\"plan\\\":\\\"Unscheduled review\\\",\\\"possibilities\\\":\\\"Not established\\\",\\\"question\\\":\\\"Review exact selected evidence\\\"},\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T10:00:00Z\"},\"source_timestamp\":\"2026-10-08T10:00:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":null,\"revision\":\"e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Source uncertainty retained\"],\"verification\":\"unverified\"},\"inclusion\":\"in_window\",\"ingestion\":{\"ingested_at\":\"2026-10-20T01:35:49.643138Z\",\"ingestion_sequence\":6,\"payload_version\":1,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}}],\"profile_id\":\"RecordedCirculatoryEvidence\",\"profile_version\":\"1\",\"scope\":{\"contract_version\":\"3\",\"encounter_id\":\"synthetic-e1\",\"patient_id\":\"synthetic-p1\",\"repository_cutoff\":{\"captured_at\":\"2026-10-20T01:35:49.650993Z\",\"fact_watermark\":6,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"},\"review_end\":\"2026-10-08T10:00:00Z\",\"review_start\":\"2026-10-08T08:00:00Z\"}}}",
++      "canonical_laboratory": "{\"observations\":[{\"canonical_fact\":\"{\\\"binding\\\":{\\\"target\\\":{\\\"encounter_id\\\":\\\"synthetic-e1\\\",\\\"longitudinal_context_id\\\":null,\\\"patient_id\\\":\\\"synthetic-p1\\\"},\\\"verification\\\":{\\\"ambiguity\\\":null,\\\"assessed_at\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"method\\\":\\\"synthetic-demo\\\",\\\"source\\\":{\\\"channel\\\":\\\"system\\\",\\\"identifier\\\":\\\"patient-state-v1\\\",\\\"namespace\\\":\\\"clinrx.synthetic.demo\\\",\\\"version\\\":\\\"1\\\"},\\\"status\\\":\\\"verified\\\",\\\"verifier\\\":\\\"synthetic-system\\\"}},\\\"concept_id\\\":\\\"synthetic-serum-creatinine\\\",\\\"conflict\\\":\\\"none_known\\\",\\\"correction_reason\\\":null,\\\"id\\\":\\\"demo-creatinine-A\\\",\\\"kind\\\":\\\"observation\\\",\\\"origin\\\":\\\"reported\\\",\\\"provenance\\\":{\\\"actor\\\":\\\"synthetic-demo\\\",\\\"limitations\\\":[\\\"Synthetic demonstration only; no clinical feed.\\\"],\\\"lineage\\\":\\\"unknown\\\",\\\"recorded_at\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"source\\\":{\\\"channel\\\":\\\"measurement\\\",\\\"identifier\\\":\\\"demo-sample-A\\\",\\\"namespace\\\":\\\"clinrx.synthetic.serum-creatinine\\\",\\\"version\\\":\\\"1\\\"},\\\"upstream\\\":[]},\\\"revision\\\":\\\"1\\\",\\\"supersedes\\\":null,\\\"temporal_status\\\":\\\"historical\\\",\\\"time\\\":{\\\"effective_end\\\":null,\\\"effective_start\\\":null,\\\"event\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"precision\\\":\\\"instant\\\",\\\"processed\\\":null,\\\"recorded\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"retrieved\\\":null,\\\"uncertainty\\\":null},\\\"uncertainty\\\":[\\\"Synthetic recorded evidence only.\\\"],\\\"value\\\":{\\\"reason\\\":null,\\\"status\\\":\\\"known\\\",\\\"value\\\":{\\\"unit\\\":{\\\"code\\\":\\\"mg/dL\\\",\\\"limitation\\\":null,\\\"raw\\\":\\\"mg/dL\\\",\\\"status\\\":\\\"assessed\\\",\\\"system\\\":\\\"UCUM\\\"},\\\"value\\\":\\\"1.00\\\"}},\\\"verification\\\":\\\"verified\\\"}\",\"expected_digest\":\"47725732962a14527b5867dd525393d46ecc03276528c7fa2428767beefbe4e1\",\"fact\":{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.00\"}},\"verification\":\"verified\"},\"inclusion\":\"in_window\",\"ingestion\":{\"ingested_at\":\"2026-10-20T01:35:49.267469Z\",\"ingestion_sequence\":1,\"payload_version\":1,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}},{\"canonical_fact\":\"{\\\"binding\\\":{\\\"target\\\":{\\\"encounter_id\\\":\\\"synthetic-e1\\\",\\\"longitudinal_context_id\\\":null,\\\"patient_id\\\":\\\"synthetic-p1\\\"},\\\"verification\\\":{\\\"ambiguity\\\":null,\\\"assessed_at\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"method\\\":\\\"synthetic-demo\\\",\\\"source\\\":{\\\"channel\\\":\\\"system\\\",\\\"identifier\\\":\\\"patient-state-v1\\\",\\\"namespace\\\":\\\"clinrx.synthetic.demo\\\",\\\"version\\\":\\\"1\\\"},\\\"status\\\":\\\"verified\\\",\\\"verifier\\\":\\\"synthetic-system\\\"}},\\\"concept_id\\\":\\\"synthetic-serum-creatinine\\\",\\\"conflict\\\":\\\"none_known\\\",\\\"correction_reason\\\":null,\\\"id\\\":\\\"demo-creatinine-B\\\",\\\"kind\\\":\\\"observation\\\",\\\"origin\\\":\\\"reported\\\",\\\"provenance\\\":{\\\"actor\\\":\\\"synthetic-demo\\\",\\\"limitations\\\":[\\\"Synthetic demonstration only; no clinical feed.\\\"],\\\"lineage\\\":\\\"unknown\\\",\\\"recorded_at\\\":\\\"2026-10-08T10:00:00Z\\\",\\\"source\\\":{\\\"channel\\\":\\\"measurement\\\",\\\"identifier\\\":\\\"demo-sample-B\\\",\\\"namespace\\\":\\\"clinrx.synthetic.serum-creatinine\\\",\\\"version\\\":\\\"1\\\"},\\\"upstream\\\":[]},\\\"revision\\\":\\\"1\\\",\\\"supersedes\\\":null,\\\"temporal_status\\\":\\\"historical\\\",\\\"time\\\":{\\\"effective_end\\\":null,\\\"effective_start\\\":null,\\\"event\\\":\\\"2026-10-08T10:00:00Z\\\",\\\"precision\\\":\\\"instant\\\",\\\"processed\\\":null,\\\"recorded\\\":\\\"2026-10-08T10:00:00Z\\\",\\\"retrieved\\\":null,\\\"uncertainty\\\":null},\\\"uncertainty\\\":[\\\"Synthetic recorded evidence only.\\\"],\\\"value\\\":{\\\"reason\\\":null,\\\"status\\\":\\\"known\\\",\\\"value\\\":{\\\"unit\\\":{\\\"code\\\":\\\"mg/dL\\\",\\\"limitation\\\":null,\\\"raw\\\":\\\"mg/dL\\\",\\\"status\\\":\\\"assessed\\\",\\\"system\\\":\\\"UCUM\\\"},\\\"value\\\":\\\"2.000\\\"}},\\\"verification\\\":\\\"verified\\\"}\",\"expected_digest\":\"17833f40e3d34a11b4a3ddec12fea45b54b45bdbfa0f181c22960cd7e9b42c2f\",\"fact\":{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-B\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-B\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T10:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T10:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"2.000\"}},\"verification\":\"verified\"},\"inclusion\":\"in_window\",\"ingestion\":{\"ingested_at\":\"2026-10-20T01:35:49.271363Z\",\"ingestion_sequence\":3,\"payload_version\":1,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}}],\"scope\":{\"contract_version\":\"3\",\"encounter_id\":\"synthetic-e1\",\"patient_id\":\"synthetic-p1\",\"repository_cutoff\":{\"captured_at\":\"2026-10-20T01:35:49.650993Z\",\"fact_watermark\":6,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"},\"review_end\":\"2026-10-08T10:00:00Z\",\"review_start\":\"2026-10-08T08:00:00Z\"}}",
++      "execution_enabled": false
++    },
++    "items": [],
++    "execution_enabled": false
++  }
++}
+diff --git a/frontend/tests/rf2SourceReview.test.tsx b/frontend/tests/rf2SourceReview.test.tsx
+new file mode 100644
+index 0000000..316f555
+--- /dev/null
++++ b/frontend/tests/rf2SourceReview.test.tsx
+@@ -0,0 +1,63 @@
++import {afterAll,beforeAll,beforeEach,expect,it,vi} from 'vitest';
++import {fireEvent,render,screen,within} from '@testing-library/react';
++import fixture from './fixtures/rf2-api.json';
++import {RF2Client,RF2ReviewChanged,pin,stable,hash,type Draft,type SourceReview,type Evidence,type Result} from '../src/api/rf2Client';
++import {RenalFluidEntryWorkspace} from '../src/demo/RenalFluidEntryWorkspace';
++const {webcrypto}=await vi.importActual<{webcrypto:Crypto}>('node:crypto');const old=globalThis.crypto;
++beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}));afterAll(()=>Object.defineProperty(globalThis,'crypto',{value:old,configurable:true}));beforeEach(()=>localStorage.clear());
++async function setup(changed=true){
++ const catalog=await new RF2Client(vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(fixture.catalog)))).catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');
++ const selected=catalog.items.find(x=>x.fact.id===fixture.weight.fact.id)!;
++ const review:SourceReview={selected:pin(selected).reference,terminal:{...pin(selected).reference,version:changed?'later-withdrawn-revision':selected.fact.revision},terminal_digest:'a'.repeat(64),terminal_ingestion:selected.ingestion.ingestion_sequence+Number(changed),record_status:changed?'withdrawn':'recorded',retain_historical:false};
++ const action=vi.fn().mockImplementation(async(kind:string,b:Draft)=>({status:kind==='lookup'?'absent':'validated',source_review:b.source_review??[review],fact:fixture.note.fact,execution_enabled:false}));
++ const transport={action,resolve:vi.fn(),history:vi.fn()} as unknown as RF2Client;
++ const rendered=render(<RenalFluidEntryWorkspace catalog={catalog} gateConfirmed onGuardChange={()=>{}} onRefresh={async()=>{}} onLegacyCorrect={()=>{}} transport={transport}/>);
++ const row=screen.getByRole('row',{name:new RegExp(selected.fact.id)});fireEvent.click(within(row).getByRole('button',{name:'Reuse for reassessment'}));fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Synthetic reviewer'}});
++ for(const k of ['question','findings','possibilities','gaps','plan'])fireEvent.change(screen.getByLabelText(k),{target:{value:k}});
++ fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));await screen.findByRole('region',{name:'Review selected source changes'});
++ return {action,selected,review,catalog,rendered,transport};
++}
++it('requires explicit historical retention and retains the original reviewed request through uncertainty',async()=>{
++ const {action,selected}=await setup();const confirm=screen.getByRole('button',{name:'Validate reviewed sources'});expect(confirm).toBeDisabled();expect(screen.queryByRole('button',{name:'Confirm RF2 append'})).not.toBeInTheDocument();
++ const region=screen.getByRole('region',{name:'Review selected source changes'});expect(region).toHaveTextContent(selected.fact.revision);expect(region).toHaveTextContent('later-withdrawn-revision');expect(region).toHaveTextContent('withdrawn');
++ fireEvent.click(within(region).getByRole('checkbox'));fireEvent.click(confirm);await screen.findByRole('button',{name:'Confirm RF2 append'});
++ const accepted=action.mock.calls[1][1] as Draft;expect(accepted.source_review?.[0].retain_historical).toBe(true);expect(accepted.note?.pins[0]).toEqual(pin(selected));
++ action.mockImplementation(async kind=>{if(kind==='save')throw Error('lost delivery');return {status:'absent',execution_enabled:false};});fireEvent.click(screen.getByRole('button',{name:'Confirm RF2 append'}));fireEvent.click(await screen.findByRole('button',{name:'Check exact RF2 saved result'}));
++ const retry=await screen.findByRole('button',{name:'Explicitly retry identical RF2 request'});expect(action.mock.calls.filter(x=>x[0]==='save')).toHaveLength(1);fireEvent.click(retry);await screen.findByRole('button',{name:'Check exact RF2 saved result'});
++ for(const call of action.mock.calls.slice(2))expect(call[1]).toBe(accepted);
++});
++it('unchanged selections still pass an explicit source-review step without a historical checkbox',async()=>{
++ const {action}=await setup(false);expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'Validate reviewed sources'}));await screen.findByRole('button',{name:'Confirm RF2 append'});expect(action.mock.calls[1][1].source_review[0].retain_historical).toBe(false);expect(action.mock.calls.filter(x=>x[0]==='save')).toHaveLength(0);
++});
++it('a changed review cannot silently reuse an acknowledgement; refresh is explicit and resets it',async()=>{
++ const {action,review,selected}=await setup();fireEvent.click(screen.getByRole('checkbox'));action.mockRejectedValueOnce(Error('Source changed again'));fireEvent.click(screen.getByRole('button',{name:'Validate reviewed sources'}));await screen.findByText(/Selected sources changed or the review could not be confirmed/);expect(screen.queryByRole('button',{name:'Confirm RF2 append'})).not.toBeInTheDocument();
++ action.mockResolvedValueOnce({status:'validated',source_review:[{...review,terminal:{...review.terminal,version:'newer-revision'},retain_historical:false}],execution_enabled:false});fireEvent.click(screen.getByRole('button',{name:'Refresh selected-source review'}));await screen.findByText(/Current terminal newer-revision/);expect(screen.getByRole('checkbox')).not.toBeChecked();expect(screen.getByRole('button',{name:'Validate reviewed sources'})).toBeDisabled();expect((action.mock.calls.at(-1)![1] as Draft).note?.pins[0]).toEqual(pin(selected));expect(action.mock.calls.filter(x=>x[0]==='save')).toHaveLength(0);
++});
++it('rejects a contradictory selected-source review before treating validation as confirmed',async()=>{
++ const b=structuredClone(fixture.note_draft) as Draft;const canonical=stable(b);const review=b.note!.pins.map(p=>({selected:p.reference,terminal:p.reference,terminal_digest:p.digest,terminal_ingestion:p.ingestion,record_status:'recorded',retain_historical:false}));review[0].selected={...review[0].selected,id:'foreign-record'};
++ const response:Result={status:'validated',request_canonical:canonical,request_digest:await hash(canonical),source_review:review,fact:fixture.note.fact as Evidence['fact'],replay_reference:null,execution_enabled:false};
++ const api=new RF2Client(vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(response))));await expect(api.action('validate',b)).rejects.toThrow();
++});
++
++it('decodes real-API validation, persisted review decisions and shared catalog without rewriting legacy notes',async()=>{
++ const actual=(await import('./fixtures/rf2-reviewed-api.json')).default;
++ const send=vi.fn<typeof fetch>().mockResolvedValueOnce(new Response(JSON.stringify(actual.validated))).mockResolvedValueOnce(new Response(JSON.stringify(actual.saved))).mockResolvedValueOnce(new Response(JSON.stringify(actual.catalog)));
++ const api=new RF2Client(send);const draft=actual.draft as Draft;
++ const validation=await api.action('validate',draft);expect(validation.source_review).toEqual(draft.source_review);
++ const out=await api.action('save',draft);expect(out.evidence?.metadata?.source_review).toEqual(draft.source_review);
++ const c=await api.catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');const note=c.items.find(x=>x.fact.id===draft.id)!;expect(note.metadata?.source_review).toEqual(draft.source_review);expect(note.metadata?.note?.pins).toEqual(draft.note?.pins);
++});
++
++it.each([true,false])('accepts a definitive pre-append review rejection only with matching command digest: %s',async matching=>{
++ const b=structuredClone(fixture.note_draft) as Draft;
++ const response={code:'rf2_source_review_changed',request_digest:matching?await hash(stable(b)):'a'.repeat(64),execution_enabled:false};
++ const api=new RF2Client(vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(response),{status:409})));
++ try{await api.action('save',b);throw Error('Unexpected success');}catch(error){expect(error instanceof RF2ReviewChanged).toBe(matching);}
++});
++it('preserves a definitively rejected pending request until explicit re-review resets historical consent',async()=>{
++ const {action,review,selected}=await setup();fireEvent.click(screen.getByRole('checkbox'));fireEvent.click(screen.getByRole('button',{name:'Validate reviewed sources'}));await screen.findByRole('button',{name:'Confirm RF2 append'});
++ const pending=action.mock.calls[1][1];action.mockRejectedValueOnce(new RF2ReviewChanged());fireEvent.click(screen.getByRole('button',{name:'Confirm RF2 append'}));const button=await screen.findByRole('button',{name:'Explicitly re-review rejected request sources'});
++ expect(action.mock.calls.at(-1)![1]).toBe(pending);expect(action.mock.calls.filter(x=>x[0]==='save')).toHaveLength(1);expect(screen.queryByRole('button',{name:'Explicitly retry identical RF2 request'})).not.toBeInTheDocument();
++ action.mockResolvedValueOnce({status:'validated',source_review:[{...review,terminal:{...review.terminal,version:'newer-reviewed-terminal'},retain_historical:false}],execution_enabled:false});fireEvent.click(button);await screen.findByText(/Current terminal newer-reviewed-terminal/);
++ expect(screen.getByRole('checkbox')).not.toBeChecked();expect(screen.getByRole('button',{name:'Validate reviewed sources'})).toBeDisabled();expect(action.mock.calls.at(-1)![1].note.pins[0]).toEqual(pin(selected));expect(action.mock.calls.filter(x=>x[0]==='save')).toHaveLength(1);
++});
+diff --git a/frontend/tests/rf2Transport.test.ts b/frontend/tests/rf2Transport.test.ts
+new file mode 100644
+index 0000000..d34b31e
+--- /dev/null
++++ b/frontend/tests/rf2Transport.test.ts
+@@ -0,0 +1,29 @@
++import {afterAll,beforeAll,afterEach,expect,it,vi} from 'vitest';
++import fixture from './fixtures/rf2-api.json';
++import {RF2Client,stable,hash,type Draft} from '../src/api/rf2Client';
++const {webcrypto}=await vi.importActual<{webcrypto:Crypto}>('node:crypto');
++const oldCrypto=globalThis.crypto;
++beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}));
++afterAll(()=>Object.defineProperty(globalThis,'crypto',{value:oldCrypto,configurable:true}));
++afterEach(()=>vi.unstubAllGlobals());
++it.each(['default','injected'] as const)('calls %s fetch without rebinding its receiver on catalog and pending lookup',async source=>{
++ const calls:{url:string;body:unknown}[]=[];
++ const draft=structuredClone(fixture.weight_draft) as Draft;
++ const canonical=stable(draft);
++ const absent={status:'absent',request_canonical:canonical,request_digest:await hash(canonical),execution_enabled:false};
++ const send=async function(this:unknown,input:RequestInfo|URL,init?:RequestInit){
++  // Model native fetch rejecting an arbitrary class instance as its receiver.
++  if(this!==undefined&&this!==globalThis)throw new TypeError('Illegal invocation');
++  calls.push({url:String(input),body:init?.body});
++  return new Response(JSON.stringify(calls.length===1?structuredClone(fixture.catalog):absent));
++ } satisfies typeof fetch;
++ vi.stubGlobal('fetch',send);
++ const api=source==='default'?new RF2Client():new RF2Client(send);
++ const catalog=await api.catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');
++ expect(catalog.execution_enabled).toBe(false);
++ expect((await api.action('lookup',draft)).status).toBe('absent');
++ expect(calls).toHaveLength(2);
++ expect(calls[0].url).toContain('/synthetic-rf2?');
++ expect(calls[1].url).toMatch(/\/synthetic-rf2\/lookup$/);
++ expect(calls[1].body).toBe(JSON.stringify(draft));
++});
+diff --git a/tests/test_renal_fluid_entry.py b/tests/test_renal_fluid_entry.py
+index a8e3c29..c9cb7e8 100644
+--- a/tests/test_renal_fluid_entry.py
++++ b/tests/test_renal_fluid_entry.py
+@@ -35,6 +35,9 @@ def pin(e):
+ def post(c,path,b):return c.post(RF2+path,json=b)
+ def saved(c,b):
+     v=post(c,'/validate',b);assert v.status_code==200,v.text
++    if b.get('note') and b.get('source_review') is None:
++        b['source_review']=v.json()['source_review']
++        v=post(c,'/validate',b);assert v.status_code==200,v.text
+     r=post(c,'/save',b);assert r.status_code==200,r.text
+     return r.json()['evidence']
+ def test_chart_correction_replay_and_read_preservation(ws):
+@@ -131,7 +134,7 @@ def test_twelve_pins_fit_and_schema_export_is_current(ws):
+     pins=[{'repository':cat['repository'],'reference':{'kind':x['fact']['kind'],'id':x['fact']['id'],'version':x['fact']['revision']},'digest':x['expected_digest'],'ingestion':x['ingestion']['ingestion_sequence'],'cutoff':cat['cutoff']['fact_watermark']} for x in items]
+     assert len(pins)==12
+     b=draft(c);b['chart']=None;b['note']={'question':'Review twelve sources','findings':'Recorded assertions','possibilities':'Not established','gaps':'Unknown source context','plan':'Unscheduled','pins':pins};e=saved(c,b)
+-    assert len(e['fact']['external_evidence'])==13 and len(e['fact']['associations'])==12
++    assert len(e['fact']['external_evidence'])==25 and len(e['fact']['associations'])==12
+     assert max(len(x['code'].encode()) for x in e['fact']['external_evidence'])<=4096
+     assert bundle()==json.loads((Path(__file__).resolve().parents[1]/'frontend/src/api/rf2Schemas.json').read_text())
+ 
+@@ -191,7 +194,10 @@ def test_old_legacy_command_recovers_after_rf2_correction(ws):
+     fact=entry(id,'input_iv',15,'Historical source interval', '20','mL',start=0).model_dump(mode='json')
+     original={'repository_id':repository,'fact':fact,'predecessor_digest':None}
+     r=c.post(ENTRY,json=original);assert r.status_code==200,r.text;old=r.json()
+-    d=draft(c,'input_iv',False);d.update(id=id,revision=str(uuid4()),predecessor={'repository':repository,'reference':{'kind':'circulatory_event','id':id,'version':'1'},'digest':old['expected_digest'],'ingestion':old['ingestion']['ingestion_sequence'],'cutoff':old['ingestion']['ingestion_sequence']},reason='Explicit amendment through RF2 owner');saved(c,d)
++    d=draft(c,'input_iv',False);d.update(id=id,revision=str(uuid4()),predecessor={'repository':repository,'reference':{'kind':'circulatory_event','id':id,'version':'1'},'digest':old['expected_digest'],'ingestion':old['ingestion']['ingestion_sequence'],'cutoff':old['ingestion']['ingestion_sequence']},reason='Cross-owner amendment must be rejected');before=rows(db);assert post(c,'/save',d).status_code==422;assert rows(db)==before
++    successor=deepcopy(fact);successor.update(revision=str(uuid4()),supersedes={'kind':'circulatory_event','id':id,'version':'1'},correction_reason='Original-owner amount correction');successor['recorded_amount']['value']='21'
++    updated=c.post(ENTRY,json={'repository_id':repository,'fact':successor,'predecessor_digest':old['expected_digest']});assert updated.status_code==200,updated.text
++    assert updated.json()['fact']['available']==fact['available']
+     before=rows(db)
+     assert c.post(ENTRY+'/lookup',json=original).json()['evidence']['fact']==fact
+     assert c.post(ENTRY,json=original).json()['fact']==fact
+diff --git a/tests/test_rf2_review_corrections.py b/tests/test_rf2_review_corrections.py
+new file mode 100644
+index 0000000..5743ebc
+--- /dev/null
++++ b/tests/test_rf2_review_corrections.py
+@@ -0,0 +1,128 @@
++"""F1/F2/F3 real-API and persistence regressions on disposable repositories."""
++from copy import deepcopy
++from uuid import uuid4
++import pytest
++from app.api.schemas.renal_fluid_entry import RF2Draft
++from app.demo.renal_fluid_entry_gateway import RF2
++from app.demo.authoring import TARGET
++from app.demo.circulatory import stamp,AT
++from app.persistence.repository import transaction
++from app.services.renal_fluid_entry_service import RF2Service
++from tests.test_synthetic_hosting import rows
++from tests.test_renal_fluid_entry import seed,ws,draft,pin,post,saved
++
++def note(c,e):
++    b=draft(c);b['chart']=None;b['note']={'question':'Review exact selected evidence','findings':'Recorded source assertions','possibilities':'Not established','gaps':'Source uncertainty retained','plan':'Unscheduled review','pins':[pin(e)]};return b
++
++def reviewed(c,b,retain=False):
++    b=deepcopy(b);b.pop('source_review',None);r=post(c,'/validate',b);assert r.status_code==200,r.text
++    b['source_review']=r.json()['source_review']
++    for x in b['source_review']:x['retain_historical']=retain
++    return b
++
++def change(c,app,b,e,kind):
++    if kind=='correction':
++        d=deepcopy(b);d.update(revision=str(uuid4()),predecessor=pin(e),reason='New writer correction');d['chart']['amount']='72.0000';return saved(c,d)
++    svc=RF2Service(app.core.state.dependencies)
++    with transaction(svc.dependencies.engine) as repo:
++        # Simulates a separate source writer through real revision admission, not the RF2 form.
++        f=svc.pin_record(repo,__import__('app.api.schemas.renal_fluid_entry',fromlist=['Pin']).Pin.model_validate(pin(e)),svc.accounting()).fact
++        successor=f.model_copy(update={'revision':str(uuid4()),'supersedes':f.reference,'record_status':'withdrawn','correction_reason':'Source writer withdrew evidence'})
++        stored=repo.append_revision(successor,target=TARGET)
++        return svc.evidence(repo,stored,repo.capture_cutoff(),svc.accounting())
++
++@pytest.mark.parametrize('mismatch',['outer','pin'])
++def test_history_outer_and_pin_repository_isolation(ws,mismatch):
++    c,db,_=ws;e=saved(c,draft(c));body={'repository':e['repository'],'pins':[pin(e)]};before=rows(db)
++    if mismatch=='outer':body['repository']=str(uuid4())
++    else:body['pins'][0]['repository']=str(uuid4())
++    r=post(c,'/history',body);assert r.status_code==409,r.text;assert 'items' not in r.json();assert rows(db)==before
++
++
++def test_rf2_amount_correction_preserves_unedited_availability_and_context(ws):
++    c,db,app=ws;b=draft(c);svc=RF2Service(app.core.state.dependencies)
++    with transaction(svc.dependencies.engine) as repo:
++        base=svc.build_fact(repo,RF2Draft.model_validate(b),svc.accounting())
++        f=base.model_copy(update={'available':stamp(AT),'occurred':base.occurred.model_copy(update={'clock':'verified','clock_basis':base.provenance}),'recorded_interval':base.recorded_interval.model_copy(update={'limitations':('Original interval completeness caveat.',)}),'disclosures':('Original availability and source disclosure must persist.',)})
++        stored=repo.append_fact(f,target=TARGET);e=svc.evidence(repo,stored,repo.capture_cutoff(),svc.accounting())
++    correction=deepcopy(b);correction.update(revision=str(uuid4()),predecessor=pin(e),reason='Amount-only transcription correction');correction['chart']['amount']='36.0000';new=saved(c,correction)
++    for k in ('available','occurred','recorded_interval','disclosures','description','binding','origin','source_identifiers','acquisition','event_type'):
++        assert new['fact'].get(k)==e['fact'].get(k),k
++    assert new['fact']['recorded_amount']['value']=='36.0000'
++    original=post(c,'/resolve',{'repository':b['repository'],'pins':[pin(e)]}).json()['items'][0];assert original['fact']==e['fact']
++
++
++def test_retained_pre_fix_cross_owner_command_lookup_and_retry_still_exact(ws):
++    from app.demo.authoring import ENTRY
++    from app.demo.icu_chart_entries import entry
++    c,db,app=ws;repository=c.get(RF2).json()['repository'];id=str(uuid4());f=entry(id,'input_iv',15,'Retained pre-fix fixture','20','mL',start=0).model_dump(mode='json')
++    old=c.post(ENTRY,json={'repository_id':repository,'fact':f,'predecessor_digest':None}).json()
++    b=draft(c,'input_iv',False);b.update(id=id,predecessor={'repository':repository,'reference':{'kind':'circulatory_event','id':id,'version':'1'},'digest':old['expected_digest'],'ingestion':old['ingestion']['ingestion_sequence'],'cutoff':old['ingestion']['ingestion_sequence']},reason='Historical pre-fix cross-owner command')
++    svc=RF2Service(app.core.state.dependencies)
++    with transaction(svc.dependencies.engine) as repo:
++        # Reconstructs the documented pre-fix producer behavior. Not an archived producer run.
++        legacy=svc.build_fact(repo,RF2Draft.model_validate(b),svc.accounting());stored=repo.append_revision(legacy,target=TARGET);expected=stored.fact.model_dump(mode='json')
++    before=rows(db)
++    for path in ('/lookup','/save'):
++        r=post(c,path,b);assert r.status_code==200,r.text;assert r.json()['evidence']['fact']==expected
++    assert rows(db)==before
++
++@pytest.mark.parametrize('kind',['correction','withdrawal'])
++@pytest.mark.parametrize('stage',['selection_to_validation','validation_to_save'])
++def test_selected_source_change_requires_explicit_current_review(ws,kind,stage):
++    c,db,app=ws;b=draft(c,'weight');e=saved(c,b);n=note(c,e)
++    if stage=='validation_to_save':n=reviewed(c,n)
++    successor=change(c,app,b,e,kind);before=rows(db)
++    if stage=='validation_to_save':
++        assert post(c,'/validate',n).status_code==409
++        rejected=post(c,'/save',n);assert rejected.status_code==409
++        from hashlib import sha256
++        from app.persistence.canonical import canonical_payload
++        assert rejected.json()=={'code':'rf2_source_review_changed','request_digest':sha256(canonical_payload(RF2Draft.model_validate(n)).encode()).hexdigest(),'execution_enabled':False}
++        absent=post(c,'/lookup',n);assert absent.status_code==200 and absent.json()['status']=='absent'
++        assert rows(db)==before
++    explicit=reviewed(c,n);r=explicit['source_review'][0]
++    assert r['selected']==pin(e)['reference'] and r['terminal']==pin(successor)['reference']
++    assert r['record_status']==('withdrawn' if kind=='withdrawal' else 'recorded')
++    assert post(c,'/validate',explicit).status_code==409
++    assert post(c,'/save',explicit).status_code==409 and rows(db)==before
++    explicit['source_review'][0]['retain_historical']=True
++    result=saved(c,explicit);assert result['metadata']['note']['pins']==n['note']['pins']
++    assert result['metadata']['source_review']==explicit['source_review']
++    assert result['fact']['associations'][0]['exact']==pin(e)['reference']
++    assert rows(db)['fact_revision'][:-1]==before['fact_revision']
++    committed=rows(db)
++    for path in ('/lookup','/save'):
++        recovery=post(c,path,explicit);assert recovery.status_code==200 and recovery.json()['evidence']['fact']==result['fact']
++    assert rows(db)==committed
++
++
++def test_unchanged_review_and_unrelated_write_do_not_require_historical_ack(ws):
++    c,db,_=ws;e=saved(c,draft(c,'weight'));n=note(c,e);before=rows(db)
++    assert post(c,'/save',n).status_code==422 and rows(db)==before
++    final=reviewed(c,n);assert final['source_review'][0]['retain_historical'] is False
++    other=draft(c,key=False);saved(c,other)
++    result=saved(c,final);assert result['metadata']['source_review']==final['source_review']
++
++
++def test_later_change_after_ack_blocks_save_and_committed_lookup_ignores_new_changes(ws):
++    c,db,app=ws;b=draft(c,'weight');a=saved(c,b);first=change(c,app,b,a,'correction');n=reviewed(c,note(c,a),True)
++    second=change(c,app,b,first,'withdrawal');before=rows(db);assert post(c,'/save',n).status_code==409;assert rows(db)==before
++    n=reviewed(c,n,True);out=saved(c,n);committed=rows(db)
++    # Even a newer source state cannot replace a retained matching note/result.
++    with transaction(app.core.state.dependencies.engine) as repo:
++        from app.models.clinical.common import Reference
++        f=repo.load_fact(Reference.model_validate(pin(second)['reference']),target=TARGET).fact
++        repo.append_revision(f.model_copy(update={'revision':str(uuid4()),'supersedes':f.reference,'correction_reason':'Later source correction'}),target=TARGET)
++    stable=rows(db)
++    for path in ('/lookup','/save'):
++        r=post(c,path,n);assert r.status_code==200 and r.json()['evidence']['fact']==out['fact']
++    assert rows(db)==stable and stable['circulatory_execution']==committed['circulatory_execution']
++
++@pytest.mark.parametrize('kind',['correction','withdrawal'])
++def test_old_unreviewed_request_cannot_save_after_source_changes(ws,kind):
++    c,db,app=ws;b=draft(c,'weight');e=saved(c,b);n=note(c,e)
++    assert post(c,'/validate',n).status_code==200
++    change(c,app,b,e,kind);before=rows(db)
++    assert post(c,'/save',n).status_code in (409,422)
++    assert rows(db)==before
+diff --git a/tools/validate_rf2_journey.py b/tools/validate_rf2_journey.py
+index 353e1c1..d63c7b0 100644
+--- a/tools/validate_rf2_journey.py
++++ b/tools/validate_rf2_journey.py
+@@ -42,7 +42,11 @@ def run(origin,database,output):
+     def draft(c=None,n=None):
+         return {'repository':catalog['repository'],'id':str(uuid.uuid4()),'revision':str(uuid.uuid4()),'actor':'Synthetic journey operator','recorded_at':'2026-10-08T09:50:00Z','chart':c,'note':n,'predecessor':None,'reason':None}
+     def save(body,label,discard_delivery=False):
+-        before=rows(database);api('/validate',body);assert rows(database)==before
++        before=rows(database);review=api('/validate',body);assert rows(database)==before
++        if body.get('note'):
++            # Explicit operator-run exercise: unchanged sources only; never auto-acknowledge history.
++            statuses=review['source_review'];assert all(x['selected']==x['terminal'] and x['record_status'] in (None,'recorded') for x in statuses)
++            body['source_review']=statuses;api('/validate',body);assert rows(database)==before
+         result=api('/save',body);assert result['status']=='saved';e=result['evidence'];after=rows(database)
+         assert len(after['fact_revision'])==len(before['fact_revision'])+1
+         ledger.append({'label':label,'reference':pin(e)['reference'],'sequence':e['ingestion']['ingestion_sequence'],'delivery_fault':'successful response discarded by validation client after actual API returned' if discard_delivery else None})

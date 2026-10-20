@@ -1,0 +1,164 @@
+elve associations (12/32). Enforce each encoded metadata/pin <=4096 UTF-8 bytes, narrative <=4096 characters, incoming DTO <=65536 bytes, shared response cap unchanged at 2097152 bytes. Strict schemas further restrict identifier/text lengths. The pre-implementation probe built a maximal 4096-character narrative with twelve conservatively sized pins and source identity metadata through the unchanged model: 31156 serialized bytes, largest metadata entry 988 bytes. No model, migration or limit changes are needed. Runtime admission and shared history accounting still reject over-budget responses; this proof does not waive those checks.
+ 
+ Historical source records outside the local entry profile remain inspectable and cannot be silently converted by the guided form. Corrections of original legacy event amounts preserve other fields and do not promote prose into typed acquisition context. No generic clinical contract, production route or execution policy is extended.
++
++## F3 review-decision carrier extension within existing bounds
++
++The original 13-entry preflight above remains historical prerequisite evidence. The corrected note workflow uses up to twelve additional review-decision entries under clinrx.local.rf2.review/v1, for 25/32 external entries and 12/32 associations. The current strict twelve-pin/review probe reports 49,611 fact bytes, 27,560 request bytes and largest entry 2,672 bytes. All original caps and clinical/storage models remain unchanged. Older notes and original request bytes do not gain a default review declaration. See F1-F3-CORRECTIONS.md.
+diff --git a/docs/rf2/README.md b/docs/rf2/README.md
+index 47529a7..7431a37 100644
+--- a/docs/rf2/README.md
++++ b/docs/rf2/README.md
+@@ -17,7 +17,7 @@ Run app.demo.renal_fluid_entry_gateway:from_environment with one worker bound to
+ - Source-record replay uses scoped issuer/record/component identity and exact validated chart material independently of generated local IDs. Context/series namespaces are excluded. Same-key changed content requires correction; ambiguous/multiple matches or exhausted budgets cannot insert. Replaying an original after correction returns it with supersession disclosed, not resurrection.
+ - In the opt-in RF2 gateway, advanced legacy entry cannot create or amend an RF2-owned record. Exact already-retained requests and read-only lookup remain available first, preserving original recovery and the legacy request-size limit. Other legacy source records retain their original owner.
+ - Request retry/lookup instead retains the exact pending draft. Validation is separate from save. After uncertainty, lookup first; absence is not rollback proof and only an explicit identical retry is offered. General durable pending-command recovery after closure remains deferred.
+-- Existing metadata carriers hold one bounded RF2 entry and up to twelve separately encoded note pins, with matching context associations. Strict source metadata, canonical/digest and exact-history correspondence fail closed. No clinical model or database schema was changed.
++- Existing metadata carriers hold one bounded RF2 entry and up to twelve separately encoded note pins, with matching context associations. New renal notes additionally carry up to twelve explicit source-review decisions in existing carriers (25/32 external entries maximum); see F1-F3-CORRECTIONS.md. Strict source metadata, canonical/digest and exact-history correspondence fail closed. No clinical model or database schema was changed.
+ - New entry accepts exact ordinary decimal strings such as 35.0000 or 0.50. Historical values/units outside this local entry profile remain inspectable; no implicit conversion or number extraction from source text is performed.
+ - A single repository cutoff and shared history accounting feed both RF1 and RF2 views. Facts already in the composite travel once, then are adapted for display. Existing response/history caps stay unchanged; duplicate payloads are not used to evade caps.
+ - Handover v1 remains byte-preserved. An explicit copy to the working v2 set does not save it automatically or overwrite v1. Version 2 stores bounded exact pins, never raw commands or signed contexts. Historical resolution retains originals, visible unavailable pins and repository scope. Source deletion, automatic successor substitution and cross-device synchronisation are excluded.
+@@ -33,3 +33,7 @@ The explicit tools/validate_rf2_journey.py runner works against an already runni
+ One combined validation report/evidence package is maintained outside the source checkout. Browser access was denied by the available browser tool policy; no alternative browser or headless workaround was used. API/component validation does not establish live browser, narrow-layout, pointer/accessibility, uncoached usability or clinical acceptance. Independent Director review remains required.
+ 
+ No merge, deployment, external hosting or execution activation is part of this milestone.
++
++## Corrected selected-source review
++
++See [F1–F3 corrections](F1-F3-CORRECTIONS.md). New note validation shows exact selected versus current terminal source status. Explicit historical retention and final revalidation are required before save. Later source changes reject the append without successor substitution. Exact already-retained results remain recoverable. The original legacy owner retains legacy corrections; RF2 cannot use an amount edit to erase availability or other unedited source context.
+diff --git a/docs/rf2/carrier_probe.py b/docs/rf2/carrier_probe.py
+index d9de80b..51e83a9 100644
+--- a/docs/rf2/carrier_probe.py
++++ b/docs/rf2/carrier_probe.py
+@@ -1,12 +1,19 @@
++"""Validate maximum bounded RF2 note/pin/review carriers without storage changes."""
+ import json
++from app.api.schemas.renal_fluid_entry import RF2Draft
+ from app.models.clinical.hemodynamics import CirculatoryEvent, EvidenceBinding
+ from app.models.clinical.recorded_v2 import SourceCode
+ from app.models.clinical.common import Reference
+ from app.demo.circulatory import fields, concept, PROV, TARGET
+-pins=[{'reference':{'kind':'circulatory_event','id':str(n)*256,'version':'v'*256},'digest':'a'*64,'ingestion':100,'cutoff':200,'repository':'f'*36} for n in range(12)]
+-entries=[SourceCode(namespace='clinrx.local.rf2.pin/v1',code=json.dumps(p,separators=(',',':')),raw_display='Exact selected evidence pin') for p in pins]
+-meta={'version':1,'category':'weight','acquisition':'unknown','purpose':'dosing','method':None,'source_record':{'issuer_namespace':'x'*128,'issuer':'y'*128,'record_namespace':'z'*128,'record_id':'r'*128,'component':'c'*128},'missing_reason':None}
+-entries.append(SourceCode(namespace='clinrx.local.rf2/v1',code=json.dumps(meta,separators=(',',':')),raw_display='Structured local source assertions'))
++repository='ffffffff-ffff-4fff-bfff-ffffffffffff'
++pins=[{'reference':{'kind':'circulatory_event','id':chr(97+n)*256,'version':'v'*256},'digest':'a'*64,'ingestion':100,'cutoff':200,'repository':repository} for n in range(12)]
++reviews=[{'selected':p['reference'],'terminal':{**p['reference'],'version':'w'*256},'terminal_digest':'b'*64,'terminal_ingestion':200,'record_status':'withdrawn','retain_historical':True} for p in pins]
++body=RF2Draft.model_validate({'repository':repository,'id':'ffffffff-ffff-4fff-bfff-ffffffffffff','revision':'eeeeeeee-eeee-4eee-beee-eeeeeeeeeeee','actor':'x'*128,'recorded_at':'2026-10-08T10:00:00Z','chart':None,'note':{**{k:'x'*512 for k in ('question','findings','possibilities','gaps','plan')},'pins':pins},'source_review':reviews,'predecessor':None,'reason':None})
++entries=[SourceCode(namespace='clinrx.local.rf2.pin/v1',version='1',code=json.dumps(p,separators=(',',':')),raw_display='Exact selected evidence pin') for p in pins]
++entries.extend(SourceCode(namespace='clinrx.local.rf2.review/v1',version='1',code=json.dumps(v,separators=(',',':')),raw_display='Explicit selected-source review decision') for v in reviews)
++meta={'version':1,'chart':None,'note':{**body.note.model_dump(mode='json'),'pins':[]}}
++entries.append(SourceCode(namespace='clinrx.local.rf2/v1',version='1',code=json.dumps(meta,separators=(',',':')),raw_display='Structured local source assertions'))
+ note=CirculatoryEvent(**fields('rf2-carrier-proof'),event_type='other',description=concept('x'*4096),external_evidence=tuple(entries),associations=tuple(EvidenceBinding(role='context',scope=TARGET,status='resolved',exact=Reference.model_validate(p['reference']),provenance=PROV) for p in pins))
+-size=len(note.model_dump_json().encode());assert len(entries)==13<=32 and len(note.associations)==12<=32 and max(len(e.code.encode()) for e in entries)<=4096 and size<65536
+-print(json.dumps({'status':'PASS','pins':12,'carrier_entries':13,'max_entry_bytes':max(len(e.code.encode()) for e in entries),'fact_bytes':size,'local_body_budget':65536,'existing_response_limit':2097152,'no_model_or_limit_changes':True},indent=2))
++size=len(note.model_dump_json().encode());request=len(body.model_dump_json().encode());largest=max(len(e.code.encode()) for e in entries)
++assert len(entries)==25<=32 and len(note.associations)==12<=32 and largest<=4096 and request<=65536 and size<=65536
++print(json.dumps({'status':'PASS','pins':12,'review_decisions':12,'carrier_entries':25,'max_entry_bytes':largest,'fact_bytes':size,'request_bytes':request,'local_body_budget':65536,'existing_response_limit':2097152,'no_model_or_limit_changes':True},indent=2))
+diff --git a/docs/rf2/generate_review_fixture.py b/docs/rf2/generate_review_fixture.py
+new file mode 100644
+index 0000000..f98e80f
+--- /dev/null
++++ b/docs/rf2/generate_review_fixture.py
+@@ -0,0 +1,28 @@
++"""Disposable real-API fixture for F3 transport decoding; not browser evidence."""
++import json
++from copy import deepcopy
++from pathlib import Path
++from tempfile import TemporaryDirectory
++from uuid import uuid4
++from fastapi.testclient import TestClient
++from app.demo.patient_state import bootstrap
++from app.persistence.database import create_database
++from app.demo.renal_fluid_entry_gateway import SyntheticRF2Gateway
++from tests.test_renal_fluid_entry import draft,saved,pin,post,ORIGIN
++from tests.test_rf2_review_corrections import note,reviewed
++
++def redact(v):
++    if isinstance(v,dict):return {k:'TEST_REDACTED_CONTEXT' if k=='state_context' else redact(x) for k,x in v.items()}
++    if isinstance(v,list):return [redact(x) for x in v]
++    return v
++
++with TemporaryDirectory() as temp:
++    root=Path(temp);db=root/'db.sqlite3';engine=create_database(db);bootstrap(engine);engine.dispose();front=root/'frontend';(front/'assets').mkdir(parents=True);(front/'index.html').write_text('synthetic')
++    app=SyntheticRF2Gateway(db,front,'ab'*32,ORIGIN)
++    with TestClient(app,base_url=ORIGIN,client=('127.0.0.1',1),headers={'Origin':ORIGIN}) as c:
++        b=draft(c,'weight');original=saved(c,b);n=note(c,original)
++        correction=deepcopy(b);correction.update(revision=str(uuid4()),predecessor=pin(original),reason='Synthetic source correction');correction['chart']['amount']='71.0000';successor=saved(c,correction)
++        n=reviewed(c,n,True);validated=post(c,'/validate',n);assert validated.status_code==200,validated.text
++        response=post(c,'/save',n);assert response.status_code==200,response.text
++        payload=redact({'attribution':'Generated through actual disposable API/storage; not a browser capture; context tokens redacted','draft':n,'validated':validated.json(),'saved':response.json(),'catalog':c.get('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2').json()})
++        out=Path('frontend/tests/fixtures/rf2-reviewed-api.json');out.write_text(json.dumps(payload,indent=2)+'\n');print(out,out.stat().st_size)
+diff --git a/frontend/src/api/rf2Client.ts b/frontend/src/api/rf2Client.ts
+index 3e0d5aa..59f35b5 100644
+--- a/frontend/src/api/rf2Client.ts
++++ b/frontend/src/api/rf2Client.ts
+@@ -9,17 +9,24 @@ export interface Pin {repository:string;reference:Ref;digest:string;ingestion:nu
+ export interface SourceRecord {issuer_namespace:string;issuer:string;record_namespace:string;record_id:string;component:string}
+ export interface Chart {category:string;amount:string|null;unit:string|null;missing_reason:string|null;point:string|null;start:string|null;end:string|null;acquisition:'measured'|'reported'|'unknown';method:string|null;purpose:string|null;source_context:string;uncertainty:string;source_record:SourceRecord|null;source_version:string|null;new_collection_reason:string|null}
+ export interface RenalNote {question:string;findings:string;possibilities:string;gaps:string;plan:string;pins:Pin[]}
+-export interface Draft {repository:string;id:string;revision:string;actor:string;recorded_at:string;chart:Chart|null;note:RenalNote|null;predecessor:Pin|null;reason:string|null}
++export interface SourceReview {selected:Ref;terminal:Ref;terminal_digest:string;terminal_ingestion:number;record_status:string|null;retain_historical:boolean}
++export const needsHistoricalReview=(r:SourceReview)=>!equal(r.selected,r.terminal)||(r.record_status!==null&&r.record_status!=='recorded');
++export interface Draft {source_review?:SourceReview[];repository:string;id:string;revision:string;actor:string;recorded_at:string;chart:Chart|null;note:RenalNote|null;predecessor:Pin|null;reason:string|null}
+ export interface Fact {kind:string;id:string;revision:string;binding:{target:{patient_id:string;encounter_id:string}};[key:string]:unknown}
+-export interface Evidence {repository:string;fact:Fact;canonical_fact:string;digest:string;ingestion:{repository_id:string;ingestion_sequence:number;[key:string]:unknown};cutoff:number;terminal_reference:Ref;superseded:boolean;metadata:{version:1;chart:Chart|null;note:RenalNote|null}|null}
++export interface Evidence {repository:string;fact:Fact;canonical_fact:string;digest:string;ingestion:{repository_id:string;ingestion_sequence:number;[key:string]:unknown};cutoff:number;terminal_reference:Ref;superseded:boolean;metadata:{version:1;chart:Chart|null;note:RenalNote|null;source_review?:SourceReview[]}|null}
+ export interface Catalog {repository:string;cutoff:{repository_id:string;fact_watermark:number;captured_at:string};items:Evidence[];combined:RenalFluidState;execution_enabled:false}
+-export interface Result {status:'validated'|'saved'|'source_replay'|'absent';request_digest:string;request_canonical:string;evidence?:Evidence;fact?:Fact;replay_reference?:Ref|null;execution_enabled:false}
++export interface Result {source_review?:SourceReview[];status:'validated'|'saved'|'source_replay'|'absent';request_digest:string;request_canonical:string;evidence?:Evidence;fact?:Fact;replay_reference?:Ref|null;execution_enabled:false}
+ const bundle=schemas as unknown as {roots:Record<string,Schema>;definitions:Record<string,Schema>};
+ export const stable=(v:unknown):string=>JSON.stringify(v,(_k,x:unknown)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.entries(x).sort(([a],[b])=>a<b?-1:a>b?1:0)):x);
+ export const hash=async(s:string)=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,'0')).join('');
+ export const pin=(e:Evidence):Pin=>({repository:e.repository,reference:{kind:e.fact.kind,id:e.fact.id,version:e.fact.revision},digest:e.digest,ingestion:e.ingestion.ingestion_sequence,cutoff:e.cutoff});
+ export const key=(p:Pin)=>JSON.stringify([p.repository,p.reference.kind,p.reference.id,p.reference.version]);
+ export const chartDefaults:Chart={category:'output_urine',amount:'',unit:'mL',missing_reason:null,point:null,start:null,end:null,acquisition:'unknown',method:null,purpose:null,source_context:'',uncertainty:'',source_record:null,source_version:null,new_collection_reason:null};
++function sourceReviews(raw:unknown,pins:Pin[]):SourceReview[]{
++ if(!Array.isArray(raw)||raw.length!==pins.length)reject();
++ return raw.map((v,n)=>{validateTransportSchema(v,bundle.definitions.SourceReview,bundle.definitions);const r=v as SourceReview;
++  if(!equal(r.selected,pins[n].reference)||r.terminal.kind!==r.selected.kind||r.terminal.id!==r.selected.id||r.terminal_ingestion<pins[n].ingestion||equal(r.selected,r.terminal)&&(r.terminal_digest!==pins[n].digest||r.terminal_ingestion!==pins[n].ingestion))reject();return r;});
++}
+ function exactKeys(v:object,names:string[]){if(Object.keys(v).sort().join()!==names.sort().join())reject();}
+ function canonical(raw:string){const v:unknown=parseRF2JSON(raw);if(stable(v)!==raw)reject();return v;}
+ export async function decodeEvidence(raw:unknown,repository:string,expected?:Pin):Promise<Evidence>{
+@@ -33,6 +40,8 @@ export async function decodeEvidence(raw:unknown,repository:string,expected?:Pin
+  if(expected&&(expected.repository!==repository||!equal(expected.reference,{kind:e.fact.kind,id:e.fact.id,version:e.fact.revision})||expected.digest!==e.digest||expected.ingestion!==e.ingestion.ingestion_sequence||expected.cutoff>e.cutoff))reject();
+  const entries=Array.isArray(f.external_evidence)?f.external_evidence.map(object):[];const meta=entries.filter(x=>x.namespace==='clinrx.local.rf2/v1');
+  if(meta.length){if(meta.length!==1)reject();const m=object(canonical(String(meta[0].code)));if(m.version!==1)reject();if(m.note){const n=object(m.note);if(!equal(n.pins,[]))reject();n.pins=entries.filter(x=>x.namespace==='clinrx.local.rf2.pin/v1').map(x=>canonical(String(x.code)));m.note=n;}
++  const reviews=entries.filter(x=>x.namespace==='clinrx.local.rf2.review/v1');
++  if(reviews.length){if(!m.note||reviews.some(x=>x.version!=='1'))reject();const rs=sourceReviews(reviews.map(x=>canonical(String(x.code))),(m.note as RenalNote).pins);if(rs.some(r=>needsHistoricalReview(r)&&!r.retain_historical))reject();m.source_review=rs;}
+   if(!equal(m,e.metadata))reject();
+   // Validate the reconstructed metadata with the same strict request schema.
+   const d={repository,id:'00000000-0000-4000-8000-000000000001',revision:'00000000-0000-4000-8000-000000000002',actor:'metadata decoder',recorded_at:'2026-10-08T10:00:00Z',chart:m.chart,note:m.note,predecessor:null,reason:null};validateTransportSchema(d,bundle.roots.RF2Draft,bundle.definitions);
+@@ -41,13 +50,15 @@ export async function decodeEvidence(raw:unknown,repository:string,expected?:Pin
+  }else if(e.metadata!==null)reject();
+  return e;
+ }
++export class RF2ReviewChanged extends Error {constructor(){super('Selected-source review changed; this request was rejected before append.');}}
+ export class RF2Client {
+  private reviewed=new Map<string,Fact>();
+  constructor(private send:typeof fetch=fetch){}
+  private async request(path:string,body?:unknown){
++  const send=this.send;
+   const abort=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
+   const deadline=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{abort.abort();reject(Error('Request timed out; completion is unconfirmed.'));},15000);});
+-  try{return await Promise.race([(async()=>{const r=await this.send('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'same-origin',redirect:'error',signal:abort.signal});if(!r.ok)throw Error(r.status===409?'Source conflict: review the original record; no replacement was inserted.':'The exact result could not be confirmed.');return readRF2JSON(r);})(),deadline]);}finally{clearTimeout(timer);}
++  try{return await Promise.race([(async()=>{const r=await send('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'same-origin',redirect:'error',signal:abort.signal});if(r.status===409&&body!==undefined&&(path==='/save'||path==='/validate')){const failure=object(await readRF2JSON(r));if(failure.code==='rf2_source_review_changed'){exactKeys(failure,['code','request_digest','execution_enabled']);if(failure.execution_enabled!==false||failure.request_digest!==await hash(stable(body)))reject();throw new RF2ReviewChanged();}throw Error('Source conflict: review the original record; no replacement was inserted.');}if(!r.ok)throw Error(r.status===409?'Source conflict: review the original record; no replacement was inserted.':'The exact result could not be confirmed.');return readRF2JSON(r);})(),deadline]);}finally{clearTimeout(timer);}
+  }
+  async catalog(start:string,end:string):Promise<Catalog>{const c=object(await this.request('?'+new URLSearchParams({review_start:start,review_end:end}))) as unknown as Catalog;
+   exactKeys(c,['repository','cutoff','items','combined','execution_enabled']);validateTransportSchema(c.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);if(c.execution_enabled!==false||c.repository!==c.cutoff.repository_id||!Array.isArray(c.items)||c.items.length>4096)reject();const combined=await decodeRenalFluid(c.combined,{patient_id:'synthetic-p1',encounter_id:'synthetic-e1',start,end});if(!equal(combined.context.scope.repository_cutoff,c.cutoff))reject();
+@@ -55,7 +66,7 @@ export class RF2Client {
+   const baseFacts=[...combined.circulatory.assembly.snapshot.items,...combined.laboratory.observations];
+   const derived:Evidence[]=[];
+   for(const item of baseFacts){const f=item.fact as unknown as Fact;const raw=stable(f);const entries=Array.isArray(f.external_evidence)?f.external_evidence.map(object):[];const ms=entries.filter(x=>x.namespace==='clinrx.local.rf2/v1');let metadata:Evidence['metadata']=null;
+-   if(ms.length){if(ms.length!==1)reject();metadata=canonical(String(ms[0].code)) as Evidence['metadata'];if(metadata?.note){if(!equal(metadata.note.pins,[]))reject();metadata.note.pins=entries.filter(x=>x.namespace==='clinrx.local.rf2.pin/v1').map(x=>canonical(String(x.code)) as Pin);}}
++   if(ms.length){if(ms.length!==1)reject();metadata=canonical(String(ms[0].code)) as Evidence['metadata'];if(metadata?.note){if(!equal(metadata.note.pins,[]))reject();metadata.note.pins=entries.filter(x=>x.namespace==='clinrx.local.rf2.pin/v1').map(x=>canonical(String(x.code)) as Pin);const reviews=entries.filter(x=>x.namespace==='clinrx.local.rf2.review/v1');if(reviews.length)metadata.source_review=sourceReviews(reviews.map(x=>canonical(String(x.code))),metadata.note.pins);}}
+    derived.push({repository:c.repository,fact:f,canonical_fact:raw,digest:item.expected_digest,ingestion:item.ingestion,cutoff:c.cutoff.fact_watermark,terminal_reference:{kind:f.kind,id:f.id,version:f.revision},superseded:false,metadata});
+   }
+   c.items=[...derived,...c.items];
+@@ -65,10 +76,10 @@ export class RF2Client {
+  async resolve(repository:string,pins:Pin[]){const r=object(await this.request('/resolve',{repository,pins}));exactKeys(r,['repository','items','execution_enabled']);if(r.repository!==repository||r.execution_enabled!==false||!Array.isArray(r.items)||r.items.length!==pins.length)reject();return Promise.all(r.items.map((x,n)=>decodeEvidence(x,repository,pins[n])));}
+  async action(action:'validate'|'save'|'lookup',draft:Draft):Promise<Result>{validateTransportSchema(draft,bundle.roots.RF2Draft,bundle.definitions);const result=object(await this.request('/'+action,draft)) as unknown as Result;
+   if(result.execution_enabled!==false||typeof result.request_canonical!=='string'||!equal(canonical(result.request_canonical),draft)||await hash(result.request_canonical)!==result.request_digest)reject();
+-  if(action==='validate'){exactKeys(result,['status','request_digest','request_canonical','fact','replay_reference','execution_enabled']);if(result.status!=='validated'||!result.fact||result.fact.id!==draft.id||result.fact.revision!==draft.revision)reject();const c=circulatory as unknown as {definitions:Record<string,Schema>};const factSchema=c.definitions.CirculatoryHistoricalFact.properties?.fact;if(!factSchema)reject();validateTransportSchema(result.fact,factSchema,c.d

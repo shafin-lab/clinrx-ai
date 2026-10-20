@@ -1,0 +1,443 @@
+\"kind\":\"circulatory_event\",\"version\":\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\"},\"terminal_digest\":\"14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2\",\"terminal_ingestion\":5}",
++            "version": "1",
++            "raw_display": "Explicit selected-source review decision"
++          },
++          {
++            "namespace": "clinrx.local.rf2/v1",
++            "code": "{\"chart\":null,\"note\":{\"findings\":\"Recorded source assertions\",\"gaps\":\"Source uncertainty retained\",\"pins\":[],\"plan\":\"Unscheduled review\",\"possibilities\":\"Not established\",\"question\":\"Review exact selected evidence\"},\"version\":1}",
++            "version": "1",
++            "raw_display": "Structured RF2 source assertions"
++          }
++        ],
++        "recorded_amount": null
++      },
++      "canonical_fact": "{\"associations\":[{\"candidates\":[],\"exact\":{\"id\":\"0f022383-6421-4989-94bc-f8c5f2d7f935\",\"kind\":\"circulatory_event\",\"version\":\"cf29bf85-8429-4986-b55b-b41f5b248dae\"},\"limitation\":null,\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"role\":\"context\",\"scope\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"status\":\"resolved\"}],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-08T10:00:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic nurse\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"note\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Authored renal review\",\"version\":\"1\"},\"raw_display\":\"Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\\nquestion: Review exact selected evidence\\nfindings: Recorded source assertions\\npossibilities: Not established\\ngaps: Source uncertainty retained\\nplan: Unscheduled review\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"cutoff\\\":4,\\\"digest\\\":\\\"282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e\\\",\\\"ingestion\\\":4,\\\"reference\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"cf29bf85-8429-4986-b55b-b41f5b248dae\\\"},\\\"repository\\\":\\\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"record_status\\\":\\\"recorded\\\",\\\"retain_historical\\\":true,\\\"selected\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"cf29bf85-8429-4986-b55b-b41f5b248dae\\\"},\\\"terminal\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\\\"},\\\"terminal_digest\\\":\\\"14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2\\\",\\\"terminal_ingestion\\\":5}\",\"namespace\":\"clinrx.local.rf2.review/v1\",\"raw_display\":\"Explicit selected-source review decision\",\"version\":\"1\"},{\"code\":\"{\\\"chart\\\":null,\\\"note\\\":{\\\"findings\\\":\\\"Recorded source assertions\\\",\\\"gaps\\\":\\\"Source uncertainty retained\\\",\\\"pins\\\":[],\\\"plan\\\":\\\"Unscheduled review\\\",\\\"possibilities\\\":\\\"Not established\\\",\\\"question\\\":\\\"Review exact selected evidence\\\"},\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T10:00:00Z\"},\"source_timestamp\":\"2026-10-08T10:00:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":null,\"revision\":\"e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Source uncertainty retained\"],\"verification\":\"unverified\"}",
++      "digest": "d8cc4737f295a04d97ef61032f0cffe077604df38813633cff433defb4681c4d",
++      "ingestion": {
++        "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++        "ingestion_sequence": 6,
++        "ingested_at": "2026-10-20T01:35:49.643138Z",
++        "payload_version": 1
++      },
++      "cutoff": 6,
++      "terminal_reference": {
++        "kind": "circulatory_event",
++        "id": "784b63e4-914a-45f1-aef7-6262eda84784",
++        "version": "e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca"
++      },
++      "superseded": false,
++      "metadata": {
++        "chart": null,
++        "note": {
++          "findings": "Recorded source assertions",
++          "gaps": "Source uncertainty retained",
++          "pins": [
++            {
++              "cutoff": 4,
++              "digest": "282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e",
++              "ingestion": 4,
++              "reference": {
++                "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                "kind": "circulatory_event",
++                "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++              },
++              "repository": "232b4a6b-39cb-45e3-895a-a00c1699f7dc"
++            }
++          ],
++          "plan": "Unscheduled review",
++          "possibilities": "Not established",
++          "question": "Review exact selected evidence"
++        },
++        "version": 1,
++        "source_review": [
++          {
++            "selected": {
++              "kind": "circulatory_event",
++              "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++              "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++            },
++            "terminal": {
++              "kind": "circulatory_event",
++              "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++              "version": "1ac538bc-8272-4bf1-9f5e-cb7e0b920018"
++            },
++            "terminal_digest": "14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2",
++            "terminal_ingestion": 5,
++            "record_status": "recorded",
++            "retain_historical": true
++          }
++        ]
++      }
++    },
++    "execution_enabled": false
++  },
++  "catalog": {
++    "repository": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++    "cutoff": {
++      "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++      "fact_watermark": 6,
++      "captured_at": "2026-10-20T01:35:49.650993Z"
++    },
++    "combined": {
++      "context": {
++        "transport_version": "SyntheticRenalFluidReview/v1",
++        "scope": {
++          "contract_version": "3",
++          "patient_id": "synthetic-p1",
++          "encounter_id": "synthetic-e1",
++          "review_start": "2026-10-08T08:00:00Z",
++          "review_end": "2026-10-08T10:00:00Z",
++          "repository_cutoff": {
++            "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++            "fact_watermark": 6,
++            "captured_at": "2026-10-20T01:35:49.650993Z"
++          }
++        },
++        "circulatory_digest": "ae3c47670bb24162c2d34450f946098d59b42d5865276320a32fdfbd7a8c5be3",
++        "observations_digest": "ffda0818d70e66fd7752936e8f75e34c75528f06c31a1260d07ea685d3c7d971"
++      },
++      "state_context": "TEST_REDACTED_CONTEXT",
++      "circulatory": {
++        "transport_version": "m7-c/1",
++        "assembly_request": {
++          "scope": {
++            "contract_version": "3",
++            "patient_id": "synthetic-p1",
++            "encounter_id": "synthetic-e1",
++            "review_start": "2026-10-08T08:00:00Z",
++            "review_end": "2026-10-08T10:00:00Z",
++            "repository_cutoff": {
++              "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++              "fact_watermark": 6,
++              "captured_at": "2026-10-20T01:35:49.650993Z"
++            }
++          },
++          "profile_id": "RecordedCirculatoryEvidence",
++          "profile_version": "1",
++          "limits": {
++            "history": {
++              "max_rows": 4096,
++              "max_payload_bytes": 16777216
++            },
++            "max_items": 512,
++            "max_relationships": 2048,
++            "max_contextual": 256,
++            "max_groups": 256,
++            "max_signals": 64,
++            "max_depth": 8,
++            "max_fanout": 64,
++            "max_steps": 8192,
++            "max_issues": 1024,
++            "max_result_bytes": 16777216
++          }
++        },
++        "assembly_digest": "ae3c47670bb24162c2d34450f946098d59b42d5865276320a32fdfbd7a8c5be3",
++        "assembly": {
++          "request": {
++            "scope": {
++              "contract_version": "3",
++              "patient_id": "synthetic-p1",
++              "encounter_id": "synthetic-e1",
++              "review_start": "2026-10-08T08:00:00Z",
++              "review_end": "2026-10-08T10:00:00Z",
++              "repository_cutoff": {
++                "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++                "fact_watermark": 6,
++                "captured_at": "2026-10-20T01:35:49.650993Z"
++              }
++            },
++            "profile_id": "RecordedCirculatoryEvidence",
++            "profile_version": "1",
++            "limits": {
++              "history": {
++                "max_rows": 4096,
++                "max_payload_bytes": 16777216
++              },
++              "max_items": 512,
++              "max_relationships": 2048,
++              "max_contextual": 256,
++              "max_groups": 256,
++              "max_signals": 64,
++              "max_depth": 8,
++              "max_fanout": 64,
++              "max_steps": 8192,
++              "max_issues": 1024,
++              "max_result_bytes": 16777216
++            }
++          },
++          "snapshot": {
++            "contract_version": "3",
++            "scope": {
++              "contract_version": "3",
++              "patient_id": "synthetic-p1",
++              "encounter_id": "synthetic-e1",
++              "review_start": "2026-10-08T08:00:00Z",
++              "review_end": "2026-10-08T10:00:00Z",
++              "repository_cutoff": {
++                "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++                "fact_watermark": 6,
++                "captured_at": "2026-10-20T01:35:49.650993Z"
++              }
++            },
++            "profile_id": "RecordedCirculatoryEvidence",
++            "profile_version": "1",
++            "items": [
++              {
++                "fact": {
++                  "kind": "circulatory_event",
++                  "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                  "revision": "1ac538bc-8272-4bf1-9f5e-cb7e0b920018",
++                  "binding": {
++                    "target": {
++                      "patient_id": "synthetic-p1",
++                      "encounter_id": "synthetic-e1",
++                      "longitudinal_context_id": null
++                    },
++                    "verification": {
++                      "status": "unresolved",
++                      "method": "Synthetic scope selection",
++                      "verifier": "Synthetic nurse",
++                      "assessed_at": "2026-10-08T10:00:00Z",
++                      "source": {
++                        "namespace": "clinrx.local.synthetic.rf2",
++                        "identifier": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                        "version": null,
++                        "channel": "clinician"
++                      },
++                      "ambiguity": "Local synthetic patient only."
++                    }
++                  },
++                  "origin": "reported",
++                  "provenance": {
++                    "source": {
++                      "namespace": "clinrx.local.synthetic.rf2",
++                      "identifier": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                      "version": null,
++                      "channel": "clinician"
++                    },
++                    "actor": "Synthetic nurse",
++                    "recorded_at": "2026-10-08T10:00:00Z",
++                    "upstream": [],
++                    "lineage": "incomplete",
++                    "limitations": [
++                      "Unauthenticated local synthetic source assertion."
++                    ]
++                  },
++                  "time": {
++                    "event": null,
++                    "recorded": null,
++                    "effective_start": null,
++                    "effective_end": null,
++                    "retrieved": null,
++                    "processed": null,
++                    "precision": "unknown",
++                    "uncertainty": null
++                  },
++                  "verification": "unverified",
++                  "conflict": "unknown",
++                  "temporal_status": "unknown",
++                  "uncertainty": [
++                    "Collection method not verified"
++                  ],
++                  "supersedes": {
++                    "kind": "circulatory_event",
++                    "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                    "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++                  },
++                  "correction_reason": "Synthetic source correction",
++                  "contract_version": "3",
++                  "occurred": {
++                    "timestamp_precision": "M7ExactTimestampInput/v1",
++                    "recorded": {
++                      "status": "known",
++                      "precision": "instant",
++                      "value": "2026-10-08T09:45:00Z",
++                      "lower": null,
++                      "upper": null,
++                      "uncertainty": null
++                    },
++                    "source_timestamp": "2026-10-08T09:45:00Z",
++                    "clock": "unknown",
++                    "clock_basis": null,
++                    "conflicting": [],
++                    "alternative_sources": [],
++                    "alignment": null
++                  },
++                  "available": {
++                    "recorded": {
++                      "status": "not_recorded",
++                      "precision": "unknown",
++                      "value": null,
++                      "lower": null,
++                      "upper": null,
++                      "uncertainty": null
++                    },
++                    "source_timestamp": null,
++                    "clock": "unknown",
++                    "clock_basis": null,
++                    "conflicting": [],
++                    "alternative_sources": [],
++                    "alignment": null
++                  },
++                  "associations": [],
++                  "source_identifiers": [],
++                  "disclosures": [],
++                  "record_status": "recorded",
++                  "event_type": "other",
++                  "description": {
++                    "raw_display": "Explicit local fictional measurement",
++                    "coding": {
++                      "namespace": "clinrx.local.rf2/v1",
++                      "code": "weight",
++                      "version": "1",
++                      "raw_display": "weight"
++                    }
++                  },
++                  "external_evidence": [
++                    {
++                      "namespace": "clinrx.local.rf2/v1",
++                      "code": "{\"chart\":{\"acquisition\":\"measured\",\"amount\":\"71.0000\",\"category\":\"weight\",\"end\":null,\"method\":null,\"missing_reason\":null,\"new_collection_reason\":null,\"point\":\"2026-10-08T09:45:00Z\",\"purpose\":\"body weight\",\"source_context\":\"Explicit local fictional measurement\",\"source_record\":{\"component\":\"weight\",\"issuer\":\"nurse-chart-A\",\"issuer_namespace\":\"clinrx.synthetic.chart\",\"record_id\":\"weight-0945\",\"record_namespace\":\"chart-entry\"},\"source_version\":null,\"start\":null,\"uncertainty\":\"Collection method not verified\",\"unit\":\"kg\"},\"note\":null,\"version\":1}",
++                      "version": "1",
++                      "raw_display": "Structured RF2 source assertions"
++                    }
++                  ],
++                  "recorded_amount": {
++                    "value": "71.0000",
++                    "unit": {
++                      "raw": "kg",
++                      "status": "unresolved",
++                      "system": null,
++                      "code": null,
++                      "limitation": "Raw source unit; no conversion."
++                    }
++                  }
++                },
++                "expected_digest": "14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2",
++                "ingestion": {
++                  "repository_id": "232b4a6b-39cb-45e3-895a-a00c1699f7dc",
++                  "ingestion_sequence": 5,
++                  "ingested_at": "2026-10-20T01:35:49.595740Z",
++                  "payload_version": 1
++                },
++                "inclusion": "in_window",
++                "contextual_for": [],
++                "disclosures": [
++                  "Recorded evidence only; source availability, continuity and completeness require separate assessment."
++                ]
++              },
++              {
++                "fact": {
++                  "kind": "circulatory_event",
++                  "id": "784b63e4-914a-45f1-aef7-6262eda84784",
++                  "revision": "e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca",
++                  "binding": {
++                    "target": {
++                      "patient_id": "synthetic-p1",
++                      "encounter_id": "synthetic-e1",
++                      "longitudinal_context_id": null
++                    },
++                    "verification": {
++                      "status": "unresolved",
++                      "method": "Synthetic scope selection",
++                      "verifier": "Synthetic nurse",
++                      "assessed_at": "2026-10-08T10:00:00Z",
++                      "source": {
++                        "namespace": "clinrx.local.synthetic.rf2",
++                        "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++                        "version": null,
++                        "channel": "clinician"
++                      },
++                      "ambiguity": "Local synthetic patient only."
++                    }
++                  },
++                  "origin": "reported",
++                  "provenance": {
++                    "source": {
++                      "namespace": "clinrx.local.synthetic.rf2",
++                      "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++                      "version": null,
++                      "channel": "clinician"
++                    },
++                    "actor": "Synthetic nurse",
++                    "recorded_at": "2026-10-08T10:00:00Z",
++                    "upstream": [],
++                    "lineage": "incomplete",
++                    "limitations": [
++                      "Unauthenticated local synthetic source assertion."
++                    ]
++                  },
++                  "time": {
++                    "event": null,
++                    "recorded": null,
++                    "effective_start": null,
++                    "effective_end": null,
++                    "retrieved": null,
++                    "processed": null,
++                    "precision": "unknown",
++                    "uncertainty": null
++                  },
++                  "verification": "unverified",
++                  "conflict": "unknown",
++                  "temporal_status": "unknown",
++                  "uncertainty": [
++                    "Source uncertainty retained"
++                  ],
++                  "supersedes": null,
++                  "correction_reason": null,
++                  "contract_version": "3",
++                  "occurred": {
++                    "timestamp_precision": "M7ExactTimestampInput/v1",
++                    "recorded": {
++                      "status": "known",
++                      "precision": "instant",
++                      "value": "2026-10-08T10:00:00Z",
++                      "lower": null,
++                      "upper": null,
++                      "uncertainty": null
++                    },
++                    "source_timestamp": "2026-10-08T10:00:00Z",
++                    "clock": "unknown",
++                    "clock_basis": null,
++                    "conflicting": [],
++                    "alternative_sources": [],
++                    "alignment": null
++                  },
++                  "available": {
++                    "recorded": {
++                      "status": "not_recorded",
++                      "precision": "unknown",
++                      "value": null,
++                      "lower": null,
++                      "upper": null,
++                      "uncertainty": null
++                    },
++                    "source_timestamp": null,
++                    "clock": "unknown",
++                    "clock_basis": null,
++                    "conflicting": [],
++                    "alternative_sources": [],
++                    "alignment": null
++                  },
++                  "associations": [
++                    {
++                      "role": "context",
++                      "scope": {
++                        "patient_id": "synthetic-p1",
++                        "encounter_id": "synthetic-e1",
++                        "longitudinal_context_id": null
++                      },
++                      "status": "resolved",
++                      "exact": {
++                        "kind": "circulatory_event",
++                        "id": "0f022383-6421-4989-94bc-f8c5f2d7f935",
++                        "version": "cf29bf85-8429-4986-b55b-b41f5b248dae"
++                      },
++                      "candidates": [],
++                      "provenance": {
++                        "source": {
++                          "namespace": "clinrx.local.synthetic.rf2",
++                          "identifier": "784b63e4-914a-45f1-aef7-6262eda84784",
++                          "version": null,
++                          "channel": "clinician"
++                        },
++          

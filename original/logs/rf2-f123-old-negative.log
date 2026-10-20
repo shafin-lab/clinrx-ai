@@ -1,0 +1,176 @@
+F.FFFFF                                                                  [100%]
+=================================== FAILURES ===================================
+____________ test_history_outer_and_pin_repository_isolation[outer] ____________
+
+ws = (<starlette.testclient.TestClient object at 0x125bbf950>, PosixPath('/private/var/folders/r9/4k0mh4sd5vgghvrds28byzqw0...story_outer_and_pin_rep0/rf2.sqlite3'), <app.demo.renal_fluid_entry_gateway.SyntheticRF2Gateway object at 0x122658cd0>)
+mismatch = 'outer'
+
+    @pytest.mark.parametrize('mismatch',['outer','pin'])
+    def test_history_outer_and_pin_repository_isolation(ws,mismatch):
+        c,db,_=ws;e=saved(c,draft(c));body={'repository':e['repository'],'pins':[pin(e)]};before=rows(db)
+        if mismatch=='outer':body['repository']=str(uuid4())
+        else:body['pins'][0]['repository']=str(uuid4())
+>       r=post(c,'/history',body);assert r.status_code==409,r.text;assert 'items' not in r.json();assert rows(db)==before
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"repository":"f7a1a251-2f84-408d-8caf-d09145dad71b","selected":{"repository":"16ba16d9-2efd-4188-906d-b82023cecd8e","reference":{"kind":"circulatory_event","id":"a90e56f6-a73f-4cf0-af2d-19d96749bbe9","version":"133417c9-dbbf-4d88-9397-03ad8039352c"},"digest":"6e3e4d6a97dc80d71d951ed7f60db84d5d62deeb3ca0793a32a85ab142c81522","ingestion":18,"cutoff":18},"items":[{"repository":"16ba16d9-2efd-4188-906d-b82023cecd8e","fact":{"kind":"circulatory_event","id":"a90e56f6-a73f-4cf0-af2d-19d96749bbe9","revision":"133417c9-dbbf-4d88-9397-03ad8039352c","binding":{"target":{"patient_id":"synthetic-p1","encounter_id":"synthetic-e1","longitudinal_context_id":null},"verification":{"status":"unresolved","method":"Synthetic scope selection","verifier":"Synthetic nurse","assessed_at":"2026-10-08T10:00:00Z","source":{"namespace":"clinrx.local.synthetic.rf2","identifier":"a90e56f6-a73f-4cf0-af2d-19d96749bbe9","version":null,"channel":"clinician"},"ambiguity":"Local synthetic patient only."}},"origin":"reported","provenance":{"source":{"namespace":"clinrx.local.synthetic.rf2","identifier":"a90e56f6-a73f-4cf0-af2d-19d96749bbe9","version":null,"channel":"clinician"},"actor":"Synthetic nurse","recorded_at":"2026-10-08T10:00:00Z","upstream":[],"lineage":"incomplete","limitations":["Unauthenticated local synthetic source assertion."]},"time":{"event":null,"recorded":null,"effective_start":null,"effective_end":null,"retrieved":null,"processed":null,"precision":"unknown","uncertainty":null},"verification":"unverified","conflict":"unknown","temporal_status":"unknown","uncertainty":["Collection method not verified"],"supersedes":null,"correction_reason":null,"contract_version":"3","occurred":{"timestamp_precision":"M7ExactTimestampInput/v1","recorded":{"status":"known","precision":"instant","value":"2026-10-08T09:45:00Z","lower":null,"upper":null,"uncertainty":null},"source_timestamp":"2026-10-08T09:45:00Z","clock":"unknown","clock_basis":null,"conflicting":[],"alternative_sources":[],"alignment":null},"available":{"recorded":{"status":"not_recorded","precision":"unknown","value":null,"lower":null,"upper":null,"uncertainty":null},"source_timestamp":null,"clock":"unknown","clock_basis":null,"conflicting":[],"alternative_sources":[],"alignment":null},"associations":[],"source_identifiers":[],"disclosures":[],"record_status":"recorded","event_type":"other","description":{"raw_display":"Explicit local fictional measurement","coding":{"namespace":"clinrx.local.rf2/v1","code":"output_urine","version":"1","raw_display":"output_urine"}},"external_evidence":[{"namespace":"clinrx.local.rf2/v1","code":"{\"chart\":{\"acquisition\":\"unknown\",\"amount\":\"35.0000\",\"category\":\"output_urine\",\"end\":\"2026-10-08T09:45:00Z\",\"method\":null,\"missing_reason\":null,\"new_collection_reason\":null,\"point\":\"2026-10-08T09:45:00Z\",\"purpose\":null,\"source_context\":\"Explicit local fictional measurement\",\"source_record\":{\"component\":\"volume\",\"issuer\":\"nurse-chart-A\",\"issuer_namespace\":\"clinrx.synthetic.chart\",\"record_id\":\"urine-0945\",\"record_namespace\":\"chart-entry\"},\"source_version\":null,\"start\":\"2026-10-08T09:30:00Z\",\"uncertainty\":\"Collection method not verified\",\"unit\":\"mL\"},\"note\":null,\"version\":1}","version":"1","raw_display":"Structured RF2 source assertions"}],"recorded_amount":{"value":"35.0000","unit":{"raw":"mL","status":"unresolved","system":null,"code":null,"limitation":"Raw source unit; no conversion."}},"recorded_interval":{"start":{"timestamp_precision":"M7ExactTimestampInput/v1","recorded":{"status":"known","precision":"instant","value":"2026-10-08T09:30:00Z","lower":null,"upper":null,"uncertainty":null},"source_timestamp":"2026-10-08T09:30:00Z","clock":"unknown","clock_basis":null,"conflicting":[],"alternative_sources":[],"alignment":null},"end":{"timestamp_precision":"M7ExactTimestampInput/v1","recorded":{"status":"known","precision":"instant","value":"2026-10-08T09:45:00Z","lower":null,"upper":null,"uncertainty":null},"source_timestamp":"2026-10-08T09:45:00Z","clock":"unknown","clock_basis":null,"conflicting":[],"alternative_sources":[],"alignment":null},"provenance":{"source":{"namespace":"clinrx.local.synthetic.rf2","identifier":"a90e56f6-a73f-4cf0-af2d-19d96749bbe9","version":null,"channel":"clinician"},"actor":"Synthetic nurse","recorded_at":"2026-10-08T10:00:00Z","upstream":[],"lineage":"incomplete","limitations":["Unauthenticated local synthetic source assertion."]},"limitations":["Source bounds only; no calculated rate or duration."]}},"canonical_fact":"{\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-08T10:00:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"a90e56f6-a73f-4cf0-af2d-19d96749bbe9\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic nurse\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"output_urine\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"output_urine\",\"version\":\"1\"},\"raw_display\":\"Explicit local fictional measurement\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"chart\\\":{\\\"acquisition\\\":\\\"unknown\\\",\\\"amount\\\":\\\"35.0000\\\",\\\"category\\\":\\\"output_urine\\\",\\\"end\\\":\\\"2026-10-08T09:45:00Z\\\",\\\"method\\\":null,\\\"missing_reason\\\":null,\\\"new_collection_reason\\\":null,\\\"point\\\":\\\"2026-10-08T09:45:00Z\\\",\\\"purpose\\\":null,\\\"source_context\\\":\\\"Explicit local fictional measurement\\\",\\\"source_record\\\":{\\\"component\\\":\\\"volume\\\",\\\"issuer\\\":\\\"nurse-chart-A\\\",\\\"issuer_namespace\\\":\\\"clinrx.synthetic.chart\\\",\\\"record_id\\\":\\\"urine-0945\\\",\\\"record_namespace\\\":\\\"chart-entry\\\"},\\\"source_version\\\":null,\\\"start\\\":\\\"2026-10-08T09:30:00Z\\\",\\\"uncertainty\\\":\\\"Collection method not verified\\\",\\\"unit\\\":\\\"mL\\\"},\\\"note\\\":null,\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"a90e56f6-a73f-4cf0-af2d-19d96749bbe9\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:45:00Z\"},\"source_timestamp\":\"2026-10-08T09:45:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"a90e56f6-a73f-4cf0-af2d-19d96749bbe9\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":{\"unit\":{\"code\":null,\"limitation\":\"Raw source unit; no conversion.\",\"raw\":\"mL\",\"status\":\"unresolved\",\"system\":null},\"value\":\"35.0000\"},\"recorded_interval\":{\"end\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:45:00Z\"},\"source_timestamp\":\"2026-10-08T09:45:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"limitations\":[\"Source bounds only; no calculated rate or duration.\"],\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"a90e56f6-a73f-4cf0-af2d-19d96749bbe9\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"start\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:30:00Z\"},\"source_timestamp\":\"2026-10-08T09:30:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"}},\"revision\":\"133417c9-dbbf-4d88-9397-03ad8039352c\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Collection method not verified\"],\"verification\":\"unverified\"}","digest":"6e3e4d6a97dc80d71d951ed7f60db84d5d62deeb3ca0793a32a85ab142c81522","ingestion":{"repository_id":"16ba16d9-2efd-4188-906d-b82023cecd8e","ingestion_sequence":18,"ingested_at":"2026-10-19T19:45:27.983703Z","payload_version":1},"cutoff":18,"terminal_reference":{"kind":"circulatory_event","id":"a90e56f6-a73f-4cf0-af2d-19d96749bbe9","version":"133417c9-dbbf-4d88-9397-03ad8039352c"},"superseded":false,"metadata":{"chart":{"acquisition":"unknown","amount":"35.0000","category":"output_urine","end":"2026-10-08T09:45:00Z","method":null,"missing_reason":null,"new_collection_reason":null,"point":"2026-10-08T09:45:00Z","purpose":null,"source_context":"Explicit local fictional measurement","source_record":{"component":"volume","issuer":"nurse-chart-A","issuer_namespace":"clinrx.synthetic.chart","record_id":"urine-0945","record_namespace":"chart-entry"},"source_version":null,"start":"2026-10-08T09:30:00Z","uncertainty":"Collection method not verified","unit":"mL"},"note":null,"version":1}}],"execution_enabled":false}
+E       assert 200 == 409
+E        +  where 200 = <Response [200 OK]>.status_code
+
+/tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py:39: AssertionError
+____ test_rf2_amount_correction_preserves_unedited_availability_and_context ____
+
+ws = (<starlette.testclient.TestClient object at 0x145f53d10>, PosixPath('/private/var/folders/r9/4k0mh4sd5vgghvrds28byzqw0...2_amount_correction_pre0/rf2.sqlite3'), <app.demo.renal_fluid_entry_gateway.SyntheticRF2Gateway object at 0x12582be90>)
+
+    def test_rf2_amount_correction_preserves_unedited_availability_and_context(ws):
+        c,db,app=ws;b=draft(c);svc=RF2Service(app.core.state.dependencies)
+        with transaction(svc.dependencies.engine) as repo:
+            f=svc.build_fact(repo,RF2Draft.model_validate(b),svc.accounting()).model_copy(update={'available':stamp(AT),'disclosures':('Original availability and source disclosure must persist.',)})
+            stored=repo.append_fact(f,target=TARGET);e=svc.evidence(repo,stored,repo.capture_cutoff(),svc.accounting())
+        correction=deepcopy(b);correction.update(revision=str(uuid4()),predecessor=pin(e),reason='Amount-only transcription correction');correction['chart']['amount']='36.0000';new=saved(c,correction)
+        for k in ('available','disclosures','description','binding','origin','source_identifiers','acquisition','event_type'):
+>           assert new['fact'].get(k)==e['fact'].get(k),k
+E           AssertionError: available
+E           assert {'recorded': ...s': None, ...} == {'timestamp_p...erified', ...}
+E             
+E             Omitting 3 identical items, use -vv to show
+E             Differing items:
+E             {'recorded': {'status': 'not_recorded', 'precision': 'unknown', 'value': None, 'lower': None, ...}} != {'recorded': {'status': 'known', 'precision': 'instant', 'value': '2026-10-08T08:00:00Z', 'lower': None, ...}}
+E             {'clock': 'unknown'} != {'clock': 'verified'}
+E             {'source_timestamp': None} != {'source_timestamp': '2026-10-08T08:00:00+00:00'}
+E             {'clock_basis': None} != {'clock_basis': {'source': {'namespace': 'clinrx.synthetic.demo', 'identifier': 'patient-state-v1', 'version': '1', 'channel': 'system'}, 'actor': 'synthetic-demo', 'recorded_at': '2026-10-08T08:00:00Z', 'upstream': [], ...}}...
+E             
+E             ...Full output truncated (3 lines hidden), use '-vv' to show
+
+/tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py:49: AssertionError
+_ test_selected_source_change_requires_explicit_current_review[selection_to_validation-correction] _
+
+ws = (<starlette.testclient.TestClient object at 0x149940bd0>, PosixPath('/private/var/folders/r9/4k0mh4sd5vgghvrds28byzqw0...lected_source_change_re0/rf2.sqlite3'), <app.demo.renal_fluid_entry_gateway.SyntheticRF2Gateway object at 0x141b6d2d0>)
+kind = 'correction', stage = 'selection_to_validation'
+
+    @pytest.mark.parametrize('kind',['correction','withdrawal'])
+    @pytest.mark.parametrize('stage',['selection_to_validation','validation_to_save'])
+    def test_selected_source_change_requires_explicit_current_review(ws,kind,stage):
+        c,db,app=ws;b=draft(c,'weight');e=saved(c,b);n=note(c,e)
+        if stage=='validation_to_save':n=reviewed(c,n)
+        successor=change(c,app,b,e,kind);before=rows(db)
+        if stage=='validation_to_save':
+            assert post(c,'/validate',n).status_code==409
+            assert post(c,'/save',n).status_code==409
+            absent=post(c,'/lookup',n);assert absent.status_code==200 and absent.json()['status']=='absent'
+            assert rows(db)==before
+>       explicit=reviewed(c,n);r=explicit['source_review'][0]
+                 ^^^^^^^^^^^^^
+
+/tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+c = <starlette.testclient.TestClient object at 0x149940bd0>
+b = {'repository': '16ba16d9-2efd-4188-906d-b82023cecd8e', 'id': '9837b64b-8be9-41c9-a394-9d88e381d8a4', 'revision': 'c6c16a31-283f-4aa4-8d45-252f4c2e45dd', 'actor': 'Synthetic nurse', ...}
+retain = False
+
+    def reviewed(c,b,retain=False):
+        b=deepcopy(b);b.pop('source_review',None);r=post(c,'/validate',b);assert r.status_code==200,r.text
+>       b['source_review']=r.json()['source_review']
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'source_review'
+
+/tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py:19: KeyError
+_ test_selected_source_change_requires_explicit_current_review[selection_to_validation-withdrawal] _
+
+ws = (<starlette.testclient.TestClient object at 0x14c7b2b10>, PosixPath('/private/var/folders/r9/4k0mh4sd5vgghvrds28byzqw0...lected_source_change_re1/rf2.sqlite3'), <app.demo.renal_fluid_entry_gateway.SyntheticRF2Gateway object at 0x149942f10>)
+kind = 'withdrawal', stage = 'selection_to_validation'
+
+    @pytest.mark.parametrize('kind',['correction','withdrawal'])
+    @pytest.mark.parametrize('stage',['selection_to_validation','validation_to_save'])
+    def test_selected_source_change_requires_explicit_current_review(ws,kind,stage):
+        c,db,app=ws;b=draft(c,'weight');e=saved(c,b);n=note(c,e)
+        if stage=='validation_to_save':n=reviewed(c,n)
+        successor=change(c,app,b,e,kind);before=rows(db)
+        if stage=='validation_to_save':
+            assert post(c,'/validate',n).status_code==409
+            assert post(c,'/save',n).status_code==409
+            absent=post(c,'/lookup',n);assert absent.status_code==200 and absent.json()['status']=='absent'
+            assert rows(db)==before
+>       explicit=reviewed(c,n);r=explicit['source_review'][0]
+                 ^^^^^^^^^^^^^
+
+/tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+c = <starlette.testclient.TestClient object at 0x14c7b2b10>
+b = {'repository': '16ba16d9-2efd-4188-906d-b82023cecd8e', 'id': 'cb5cbf41-d9d6-4129-9003-580eab3ef38e', 'revision': '8009b10f-a1df-407c-8e65-14dbb51db378', 'actor': 'Synthetic nurse', ...}
+retain = False
+
+    def reviewed(c,b,retain=False):
+        b=deepcopy(b);b.pop('source_review',None);r=post(c,'/validate',b);assert r.status_code==200,r.text
+>       b['source_review']=r.json()['source_review']
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'source_review'
+
+/tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py:19: KeyError
+_ test_selected_source_change_requires_explicit_current_review[validation_to_save-correction] _
+
+ws = (<starlette.testclient.TestClient object at 0x141bf2f50>, PosixPath('/private/var/folders/r9/4k0mh4sd5vgghvrds28byzqw0...lected_source_change_re2/rf2.sqlite3'), <app.demo.renal_fluid_entry_gateway.SyntheticRF2Gateway object at 0x14641bed0>)
+kind = 'correction', stage = 'validation_to_save'
+
+    @pytest.mark.parametrize('kind',['correction','withdrawal'])
+    @pytest.mark.parametrize('stage',['selection_to_validation','validation_to_save'])
+    def test_selected_source_change_requires_explicit_current_review(ws,kind,stage):
+        c,db,app=ws;b=draft(c,'weight');e=saved(c,b);n=note(c,e)
+>       if stage=='validation_to_save':n=reviewed(c,n)
+                                         ^^^^^^^^^^^^^
+
+/tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+c = <starlette.testclient.TestClient object at 0x141bf2f50>
+b = {'repository': '16ba16d9-2efd-4188-906d-b82023cecd8e', 'id': '1abfc24c-1531-416c-82be-91ddd7932620', 'revision': 'bdce1b74-f9b9-4caa-a535-44961a5037a1', 'actor': 'Synthetic nurse', ...}
+retain = False
+
+    def reviewed(c,b,retain=False):
+        b=deepcopy(b);b.pop('source_review',None);r=post(c,'/validate',b);assert r.status_code==200,r.text
+>       b['source_review']=r.json()['source_review']
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'source_review'
+
+/tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py:19: KeyError
+_ test_selected_source_change_requires_explicit_current_review[validation_to_save-withdrawal] _
+
+ws = (<starlette.testclient.TestClient object at 0x12589aa50>, PosixPath('/private/var/folders/r9/4k0mh4sd5vgghvrds28byzqw0...lected_source_change_re3/rf2.sqlite3'), <app.demo.renal_fluid_entry_gateway.SyntheticRF2Gateway object at 0x1258a69d0>)
+kind = 'withdrawal', stage = 'validation_to_save'
+
+    @pytest.mark.parametrize('kind',['correction','withdrawal'])
+    @pytest.mark.parametrize('stage',['selection_to_validation','validation_to_save'])
+    def test_selected_source_change_requires_explicit_current_review(ws,kind,stage):
+        c,db,app=ws;b=draft(c,'weight');e=saved(c,b);n=note(c,e)
+>       if stage=='validation_to_save':n=reviewed(c,n)
+                                         ^^^^^^^^^^^^^
+
+/tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+c = <starlette.testclient.TestClient object at 0x12589aa50>
+b = {'repository': '16ba16d9-2efd-4188-906d-b82023cecd8e', 'id': 'cb300811-5cf1-40ec-bea9-ef70056eef39', 'revision': '5967ca0e-dd54-474f-af30-5794e2d9685d', 'actor': 'Synthetic nurse', ...}
+retain = False
+
+    def reviewed(c,b,retain=False):
+        b=deepcopy(b);b.pop('source_review',None);r=post(c,'/validate',b);assert r.status_code==200,r.text
+>       b['source_review']=r.json()['source_review']
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'source_review'
+
+/tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py:19: KeyError
+=============================== warnings summary ===============================
+tests/test_synthetic_hosting.py:8
+  /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/tests/test_synthetic_hosting.py:8: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../../../tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py::test_history_outer_and_pin_repository_isolation[outer]
+FAILED ../../../../../../tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py::test_rf2_amount_correction_preserves_unedited_availability_and_context
+FAILED ../../../../../../tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py::test_selected_source_change_requires_explicit_current_review[selection_to_validation-correction]
+FAILED ../../../../../../tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py::test_selected_source_change_requires_explicit_current_review[selection_to_validation-withdrawal]
+FAILED ../../../../../../tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py::test_selected_source_change_requires_explicit_current_review[validation_to_save-correction]
+FAILED ../../../../../../tmp/clinrx-rf2-f123-old-source/tests/test_rf2_review_corrections.py::test_selected_source_change_requires_explicit_current_review[validation_to_save-withdrawal]
+6 failed, 1 passed, 3 deselected, 1 warning in 6.83s

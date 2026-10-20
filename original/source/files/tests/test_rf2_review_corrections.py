@@ -1,0 +1,128 @@
+"""F1/F2/F3 real-API and persistence regressions on disposable repositories."""
+from copy import deepcopy
+from uuid import uuid4
+import pytest
+from app.api.schemas.renal_fluid_entry import RF2Draft
+from app.demo.renal_fluid_entry_gateway import RF2
+from app.demo.authoring import TARGET
+from app.demo.circulatory import stamp,AT
+from app.persistence.repository import transaction
+from app.services.renal_fluid_entry_service import RF2Service
+from tests.test_synthetic_hosting import rows
+from tests.test_renal_fluid_entry import seed,ws,draft,pin,post,saved
+
+def note(c,e):
+    b=draft(c);b['chart']=None;b['note']={'question':'Review exact selected evidence','findings':'Recorded source assertions','possibilities':'Not established','gaps':'Source uncertainty retained','plan':'Unscheduled review','pins':[pin(e)]};return b
+
+def reviewed(c,b,retain=False):
+    b=deepcopy(b);b.pop('source_review',None);r=post(c,'/validate',b);assert r.status_code==200,r.text
+    b['source_review']=r.json()['source_review']
+    for x in b['source_review']:x['retain_historical']=retain
+    return b
+
+def change(c,app,b,e,kind):
+    if kind=='correction':
+        d=deepcopy(b);d.update(revision=str(uuid4()),predecessor=pin(e),reason='New writer correction');d['chart']['amount']='72.0000';return saved(c,d)
+    svc=RF2Service(app.core.state.dependencies)
+    with transaction(svc.dependencies.engine) as repo:
+        # Simulates a separate source writer through real revision admission, not the RF2 form.
+        f=svc.pin_record(repo,__import__('app.api.schemas.renal_fluid_entry',fromlist=['Pin']).Pin.model_validate(pin(e)),svc.accounting()).fact
+        successor=f.model_copy(update={'revision':str(uuid4()),'supersedes':f.reference,'record_status':'withdrawn','correction_reason':'Source writer withdrew evidence'})
+        stored=repo.append_revision(successor,target=TARGET)
+        return svc.evidence(repo,stored,repo.capture_cutoff(),svc.accounting())
+
+@pytest.mark.parametrize('mismatch',['outer','pin'])
+def test_history_outer_and_pin_repository_isolation(ws,mismatch):
+    c,db,_=ws;e=saved(c,draft(c));body={'repository':e['repository'],'pins':[pin(e)]};before=rows(db)
+    if mismatch=='outer':body['repository']=str(uuid4())
+    else:body['pins'][0]['repository']=str(uuid4())
+    r=post(c,'/history',body);assert r.status_code==409,r.text;assert 'items' not in r.json();assert rows(db)==before
+
+
+def test_rf2_amount_correction_preserves_unedited_availability_and_context(ws):
+    c,db,app=ws;b=draft(c);svc=RF2Service(app.core.state.dependencies)
+    with transaction(svc.dependencies.engine) as repo:
+        base=svc.build_fact(repo,RF2Draft.model_validate(b),svc.accounting())
+        f=base.model_copy(update={'available':stamp(AT),'occurred':base.occurred.model_copy(update={'clock':'verified','clock_basis':base.provenance}),'recorded_interval':base.recorded_interval.model_copy(update={'limitations':('Original interval completeness caveat.',)}),'disclosures':('Original availability and source disclosure must persist.',)})
+        stored=repo.append_fact(f,target=TARGET);e=svc.evidence(repo,stored,repo.capture_cutoff(),svc.accounting())
+    correction=deepcopy(b);correction.update(revision=str(uuid4()),predecessor=pin(e),reason='Amount-only transcription correction');correction['chart']['amount']='36.0000';new=saved(c,correction)
+    for k in ('available','occurred','recorded_interval','disclosures','description','binding','origin','source_identifiers','acquisition','event_type'):
+        assert new['fact'].get(k)==e['fact'].get(k),k
+    assert new['fact']['recorded_amount']['value']=='36.0000'
+    original=post(c,'/resolve',{'repository':b['repository'],'pins':[pin(e)]}).json()['items'][0];assert original['fact']==e['fact']
+
+
+def test_retained_pre_fix_cross_owner_command_lookup_and_retry_still_exact(ws):
+    from app.demo.authoring import ENTRY
+    from app.demo.icu_chart_entries import entry
+    c,db,app=ws;repository=c.get(RF2).json()['repository'];id=str(uuid4());f=entry(id,'input_iv',15,'Retained pre-fix fixture','20','mL',start=0).model_dump(mode='json')
+    old=c.post(ENTRY,json={'repository_id':repository,'fact':f,'predecessor_digest':None}).json()
+    b=draft(c,'input_iv',False);b.update(id=id,predecessor={'repository':repository,'reference':{'kind':'circulatory_event','id':id,'version':'1'},'digest':old['expected_digest'],'ingestion':old['ingestion']['ingestion_sequence'],'cutoff':old['ingestion']['ingestion_sequence']},reason='Historical pre-fix cross-owner command')
+    svc=RF2Service(app.core.state.dependencies)
+    with transaction(svc.dependencies.engine) as repo:
+        # Reconstructs the documented pre-fix producer behavior. Not an archived producer run.
+        legacy=svc.build_fact(repo,RF2Draft.model_validate(b),svc.accounting());stored=repo.append_revision(legacy,target=TARGET);expected=stored.fact.model_dump(mode='json')
+    before=rows(db)
+    for path in ('/lookup','/save'):
+        r=post(c,path,b);assert r.status_code==200,r.text;assert r.json()['evidence']['fact']==expected
+    assert rows(db)==before
+
+@pytest.mark.parametrize('kind',['correction','withdrawal'])
+@pytest.mark.parametrize('stage',['selection_to_validation','validation_to_save'])
+def test_selected_source_change_requires_explicit_current_review(ws,kind,stage):
+    c,db,app=ws;b=draft(c,'weight');e=saved(c,b);n=note(c,e)
+    if stage=='validation_to_save':n=reviewed(c,n)
+    successor=change(c,app,b,e,kind);before=rows(db)
+    if stage=='validation_to_save':
+        assert post(c,'/validate',n).status_code==409
+        rejected=post(c,'/save',n);assert rejected.status_code==409
+        from hashlib import sha256
+        from app.persistence.canonical import canonical_payload
+        assert rejected.json()=={'code':'rf2_source_review_changed','request_digest':sha256(canonical_payload(RF2Draft.model_validate(n)).encode()).hexdigest(),'execution_enabled':False}
+        absent=post(c,'/lookup',n);assert absent.status_code==200 and absent.json()['status']=='absent'
+        assert rows(db)==before
+    explicit=reviewed(c,n);r=explicit['source_review'][0]
+    assert r['selected']==pin(e)['reference'] and r['terminal']==pin(successor)['reference']
+    assert r['record_status']==('withdrawn' if kind=='withdrawal' else 'recorded')
+    assert post(c,'/validate',explicit).status_code==409
+    assert post(c,'/save',explicit).status_code==409 and rows(db)==before
+    explicit['source_review'][0]['retain_historical']=True
+    result=saved(c,explicit);assert result['metadata']['note']['pins']==n['note']['pins']
+    assert result['metadata']['source_review']==explicit['source_review']
+    assert result['fact']['associations'][0]['exact']==pin(e)['reference']
+    assert rows(db)['fact_revision'][:-1]==before['fact_revision']
+    committed=rows(db)
+    for path in ('/lookup','/save'):
+        recovery=post(c,path,explicit);assert recovery.status_code==200 and recovery.json()['evidence']['fact']==result['fact']
+    assert rows(db)==committed
+
+
+def test_unchanged_review_and_unrelated_write_do_not_require_historical_ack(ws):
+    c,db,_=ws;e=saved(c,draft(c,'weight'));n=note(c,e);before=rows(db)
+    assert post(c,'/save',n).status_code==422 and rows(db)==before
+    final=reviewed(c,n);assert final['source_review'][0]['retain_historical'] is False
+    other=draft(c,key=False);saved(c,other)
+    result=saved(c,final);assert result['metadata']['source_review']==final['source_review']
+
+
+def test_later_change_after_ack_blocks_save_and_committed_lookup_ignores_new_changes(ws):
+    c,db,app=ws;b=draft(c,'weight');a=saved(c,b);first=change(c,app,b,a,'correction');n=reviewed(c,note(c,a),True)
+    second=change(c,app,b,first,'withdrawal');before=rows(db);assert post(c,'/save',n).status_code==409;assert rows(db)==before
+    n=reviewed(c,n,True);out=saved(c,n);committed=rows(db)
+    # Even a newer source state cannot replace a retained matching note/result.
+    with transaction(app.core.state.dependencies.engine) as repo:
+        from app.models.clinical.common import Reference
+        f=repo.load_fact(Reference.model_validate(pin(second)['reference']),target=TARGET).fact
+        repo.append_revision(f.model_copy(update={'revision':str(uuid4()),'supersedes':f.reference,'correction_reason':'Later source correction'}),target=TARGET)
+    stable=rows(db)
+    for path in ('/lookup','/save'):
+        r=post(c,path,n);assert r.status_code==200 and r.json()['evidence']['fact']==out['fact']
+    assert rows(db)==stable and stable['circulatory_execution']==committed['circulatory_execution']
+
+@pytest.mark.parametrize('kind',['correction','withdrawal'])
+def test_old_unreviewed_request_cannot_save_after_source_changes(ws,kind):
+    c,db,app=ws;b=draft(c,'weight');e=saved(c,b);n=note(c,e)
+    assert post(c,'/validate',n).status_code==200
+    change(c,app,b,e,kind);before=rows(db)
+    assert post(c,'/save',n).status_code in (409,422)
+    assert rows(db)==before

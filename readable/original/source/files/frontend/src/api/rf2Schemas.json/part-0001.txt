@@ -1,0 +1,1073 @@
+{
+  "roots": {
+    "RF2Draft": {
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "format": "uuid",
+          "title": "Repository",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "format": "uuid",
+          "title": "Revision",
+          "type": "string"
+        },
+        "actor": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Actor",
+          "type": "string"
+        },
+        "recorded_at": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "chart": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Chart"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "note": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RenalNote"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "source_review": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/SourceReview"
+              },
+              "maxItems": 12,
+              "minItems": 1,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Review"
+        },
+        "predecessor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Pin"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "repository",
+        "id",
+        "revision",
+        "actor",
+        "recorded_at"
+      ],
+      "title": "RF2Draft",
+      "type": "object"
+    },
+    "ResolveRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "format": "uuid",
+          "title": "Repository",
+          "type": "string"
+        },
+        "pins": {
+          "items": {
+            "$ref": "#/$defs/Pin"
+          },
+          "maxItems": 32,
+          "title": "Pins",
+          "type": "array"
+        }
+      },
+      "required": [
+        "repository",
+        "pins"
+      ],
+      "title": "ResolveRequest",
+      "type": "object"
+    },
+    "ClinicalObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "observation",
+          "default": "observation",
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "origin": {
+          "enum": [
+            "observed",
+            "reported"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "time": {
+          "$ref": "#/$defs/ClinicalTime"
+        },
+        "verification": {
+          "default": "unverified",
+          "enum": [
+            "unverified",
+            "verified",
+            "clinician_confirmed"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "conflict": {
+          "default": "unknown",
+          "enum": [
+            "none_known",
+            "unresolved",
+            "resolved",
+            "unknown"
+          ],
+          "title": "Conflict",
+          "type": "string"
+        },
+        "temporal_status": {
+          "enum": [
+            "current",
+            "historical",
+            "unknown"
+          ],
+          "title": "Temporal Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "correction_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        },
+        "concept_id": {
+          "minLength": 1,
+          "title": "Concept Id",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/ClinicalValue"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "binding",
+        "origin",
+        "provenance",
+        "time",
+        "temporal_status",
+        "concept_id",
+        "value"
+      ],
+      "title": "ClinicalObservation",
+      "type": "object"
+    },
+    "IngestionMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "repository_id": {
+          "format": "uuid",
+          "title": "Repository Id",
+          "type": "string"
+        },
+        "ingestion_sequence": {
+          "exclusiveMinimum": 0,
+          "title": "Ingestion Sequence",
+          "type": "integer"
+        },
+        "ingested_at": {
+          "format": "date-time",
+          "title": "Ingested At",
+          "type": "string"
+        },
+        "payload_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Payload Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repository_id",
+        "ingestion_sequence",
+        "ingested_at"
+      ],
+      "title": "IngestionMetadata",
+      "type": "object"
+    },
+    "RepositoryCutoff": {
+      "additionalProperties": false,
+      "description": "Fact-ingestion prefix in ONE repository, not a clinical event-time cutoff.",
+      "properties": {
+        "repository_id": {
+          "format": "uuid",
+          "title": "Repository Id",
+          "type": "string"
+        },
+        "fact_watermark": {
+          "minimum": 0,
+          "title": "Fact Watermark",
+          "type": "integer"
+        },
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository_id",
+        "fact_watermark",
+        "captured_at"
+      ],
+      "title": "RepositoryCutoff",
+      "type": "object"
+    }
+  },
+  "definitions": {
+    "Chart": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "output_urine",
+            "input_oral",
+            "input_enteral",
+            "input_iv",
+            "input_blood",
+            "output_drain",
+            "output_other",
+            "output_crrt",
+            "weight",
+            "net_balance_reported",
+            "urine_total_reported",
+            "balance_total_reported"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "pattern": "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "enum": [
+                "mL",
+                "L",
+                "kg",
+                "g"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "missing_reason": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Missing Reason"
+        },
+        "point": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Point"
+        },
+        "start": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End"
+        },
+        "acquisition": {
+          "default": "unknown",
+          "enum": [
+            "measured",
+            "reported",
+            "unknown"
+          ],
+          "title": "Acquisition",
+          "type": "string"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Method"
+        },
+        "purpose": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Purpose"
+        },
+        "source_context": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Source Context",
+          "type": "string"
+        },
+        "uncertainty": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Uncertainty",
+          "type": "string"
+        },
+        "source_record": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceRecord"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "source_version": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Version"
+        },
+        "new_collection_reason": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "New Collection Reason"
+        }
+      },
+      "required": [
+        "category",
+        "source_context",
+        "uncertainty"
+      ],
+      "title": "Chart",
+      "type": "object"
+    },
+    "Pin": {
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "format": "uuid",
+          "title": "Repository",
+          "type": "string"
+        },
+        "reference": {
+          "$ref": "#/$defs/Reference"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "ingestion": {
+          "minimum": 1,
+          "title": "Ingestion",
+          "type": "integer"
+        },
+        "cutoff": {
+          "minimum": 1,
+          "title": "Cutoff",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repository",
+        "reference",
+        "digest",
+        "ingestion",
+        "cutoff"
+      ],
+      "title": "Pin",
+      "type": "object"
+    },
+    "Reference": {
+      "additionalProperties": false,
+      "description": "An exact internal record revision, never a pointer to mutable 'latest'.",
+      "properties": {
+        "kind": {
+          "minLength": 1,
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version"
+      ],
+      "title": "Reference",
+      "type": "object"
+    },
+    "RenalNote": {
+      "additionalProperties": false,
+      "properties": {
+        "question": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        },
+        "findings": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Findings",
+          "type": "string"
+        },
+        "possibilities": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Possibilities",
+          "type": "string"
+        },
+        "gaps": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Gaps",
+          "type": "string"
+        },
+        "plan": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Plan",
+          "type": "string"
+        },
+        "pins": {
+          "items": {
+            "$ref": "#/$defs/Pin"
+          },
+          "maxItems": 12,
+          "minItems": 1,
+          "title": "Pins",
+          "type": "array"
+        }
+      },
+      "required": [
+        "question",
+        "findings",
+        "possibilities",
+        "gaps",
+        "plan",
+        "pins"
+      ],
+      "title": "RenalNote",
+      "type": "object"
+    },
+    "SourceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "issuer_namespace": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Issuer Namespace",
+          "type": "string"
+        },
+        "issuer": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Issuer",
+          "type": "string"
+        },
+        "record_namespace": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Record Namespace",
+          "type": "string"
+        },
+        "record_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Record Id",
+          "type": "string"
+        },
+        "component": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Component",
+          "type": "string"
+        }
+      },
+      "required": [
+        "issuer_namespace",
+        "issuer",
+        "record_namespace",
+        "record_id",
+        "component"
+      ],
+      "title": "SourceRecord",
+      "type": "object"
+    },
+    "SourceReview": {
+      "additionalProperties": false,
+      "properties": {
+        "selected": {
+          "$ref": "#/$defs/Reference"
+        },
+        "terminal": {
+          "$ref": "#/$defs/Reference"
+        },
+        "terminal_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Terminal Digest",
+          "type": "string"
+        },
+        "terminal_ingestion": {
+          "minimum": 1,
+          "title": "Terminal Ingestion",
+          "type": "integer"
+        },
+        "record_status": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Record Status"
+        },
+        "retain_historical": {
+          "default": false,
+          "title": "Retain Historical",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "selected",
+        "terminal",
+        "terminal_digest",
+        "terminal_ingestion",
+        "record_status"
+      ],
+      "title": "SourceReview",
+      "type": "object"
+    },
+    "Binding": {
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/ContextTarget"
+        },
+        "verification": {
+          "$ref": "#/$defs/IdentityVerification"
+        }
+      },
+      "required": [
+        "target",
+        "verification"
+      ],
+      "title": "Binding",
+      "type": "object"
+    },
+    "ClinicalTime": {
+      "additionalProperties": false,
+      "properties": {
+        "event": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event"
+        },
+        "recorded": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recorded"
+        },
+        "effective_start": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Start"
+        },
+        "effective_end": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective End"
+        },
+        "retrieved": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved"
+        },
+        "processed": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Processed"
+        },
+        "precision": {
+          "enum": [
+            "instant",
+            "day",
+            "approximate",
+            "unknown"
+          ],
+          "title": "Precision",
+          "type": "string"
+        },
+        "uncertainty": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uncertainty"
+        }
+      },
+      "required": [
+        "precision"
+      ],
+      "title": "ClinicalTime",
+      "type": "object"
+    },
+    "ClinicalValue": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "known",
+            "unknown",
+            "missing",
+            "not_measured",
+            "not_applicable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "ClinicalValue",
+      "type": "object"
+    },
+    "ContextTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "patient_id": {
+          "minLength": 1,
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "encounter_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Encounter Id"
+        },
+        "longitudinal_context_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Longitudinal Context Id"
+        }
+      },
+      "required": [
+        "patient_id"
+      ],
+      "title": "ContextTarget",
+      "type": "object"
+    },
+    "IdentityVerification": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "verified",
+            "unresolved"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "method": {
+          "minLength": 1,
+          "title": "Method",
+          "type": "string"
+        },
+        "verifier": {
+          "minLength": 1,
+          "title": "Verifier",
+          "type": "string"
+        },
+        "assessed_at": {
+          "format": "date-time",
+          "title": "Assessed At",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "ambiguity": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ambiguity"
+        }
+      },
+      "required": [
+        "status",
+        "method",
+        "verifier",
+        "assessed_at",
+        "source"
+      ],
+      "title": "IdentityVerification",
+      "type": "object"
+    },
+    "LineageEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/Reference"
+        },
+        "relationship": {
+          "enum": [
+            "copied_from",
+            "derived_from",
+            "calculated_from",
+            "independent_confirmation",
+            "fulfills_order"
+          ],
+          "title": "Relationship",
+          "type": "string"
+        },
+        "basis": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "title": "Basis",
+          "type": "array"
+        },
+        "rationale": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rationale"
+        }
+      },
+      "required": [
+        "target",
+        "relationship"
+      ],
+      "title": "LineageEdge",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "actor": {
+          "minLength": 1,
+          "title": "Actor",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "upstream": {
+          "default

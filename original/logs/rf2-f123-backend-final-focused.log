@@ -1,0 +1,42 @@
+..F.............................                                         [100%]
+=================================== FAILURES ===================================
+____ test_rf2_amount_correction_preserves_unedited_availability_and_context ____
+
+ws = (<starlette.testclient.TestClient object at 0x14ba2be10>, PosixPath('/private/var/folders/r9/4k0mh4sd5vgghvrds28byzqw0...2_amount_correction_pre0/rf2.sqlite3'), <app.demo.renal_fluid_entry_gateway.SyntheticRF2Gateway object at 0x14ba4b210>)
+
+    def test_rf2_amount_correction_preserves_unedited_availability_and_context(ws):
+        c,db,app=ws;b=draft(c);svc=RF2Service(app.core.state.dependencies)
+        with transaction(svc.dependencies.engine) as repo:
+            base=svc.build_fact(repo,RF2Draft.model_validate(b),svc.accounting())
+            f=base.model_copy(update={'available':stamp(AT),'occurred':base.occurred.model_copy(update={'clock':'verified'}),'recorded_interval':base.recorded_interval.model_copy(update={'limitations':('Original interval completeness caveat.',)}),'disclosures':('Original availability and source disclosure must persist.',)})
+>           stored=repo.append_fact(f,target=TARGET);e=svc.evidence(repo,stored,repo.capture_cutoff(),svc.accounting())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_rf2_review_corrections.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <app.persistence.repository.PatientRepository object at 0x14ba50050>
+args = (CirculatoryEvent(kind='circulatory_event', id='34e37a8c-436e-432a-a6d8-6a96456827cf', revision='17b0d899-485c-4689-99...ns=('Unauthenticated local synthetic source assertion.',)), limitations=('Original interval completeness caveat.',))),)
+kwargs = {'target': ContextTarget(patient_id='synthetic-p1', encounter_id='synthetic-e1', longitudinal_context_id=None)}
+
+    @wraps(method)
+    def checked(self, *args, **kwargs):
+        state = self._lifecycle
+        state.check()
+        try:
+            return method(self, *args, **kwargs)
+        except (ValidationError, PydanticSerializationError):
+            state.fail()
+>           raise PersistenceInputError(f'invalid domain input for {method.__name__}') from None
+E           app.persistence.errors.PersistenceInputError: invalid domain input for append_fact
+
+backend/app/persistence/shared_transaction.py:52: PersistenceInputError
+=============================== warnings summary ===============================
+tests/test_synthetic_hosting.py:8
+  /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/tests/test_synthetic_hosting.py:8: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_rf2_review_corrections.py::test_rf2_amount_correction_preserves_unedited_availability_and_context
+1 failed, 31 passed, 1 warning in 43.76s

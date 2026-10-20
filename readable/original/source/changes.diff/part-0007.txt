@@ -1,0 +1,120 @@
+:{\"code\":\"note\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Authored renal review\",\"version\":\"1\"},\"raw_display\":\"Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\\nquestion: Review exact selected evidence\\nfindings: Recorded source assertions\\npossibilities: Not established\\ngaps: Source uncertainty retained\\nplan: Unscheduled review\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"cutoff\\\":4,\\\"digest\\\":\\\"282facccdb173b002561b97750c91e258aa5354e5dfcfa7af5e5f12aa19fb63e\\\",\\\"ingestion\\\":4,\\\"reference\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"cf29bf85-8429-4986-b55b-b41f5b248dae\\\"},\\\"repository\\\":\\\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"record_status\\\":\\\"recorded\\\",\\\"retain_historical\\\":true,\\\"selected\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"cf29bf85-8429-4986-b55b-b41f5b248dae\\\"},\\\"terminal\\\":{\\\"id\\\":\\\"0f022383-6421-4989-94bc-f8c5f2d7f935\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"1ac538bc-8272-4bf1-9f5e-cb7e0b920018\\\"},\\\"terminal_digest\\\":\\\"14ffd67d861461c2b3e3c35f7e92dd20c8ef17ed721ae3a47f8880bfdc288ee2\\\",\\\"terminal_ingestion\\\":5}\",\"namespace\":\"clinrx.local.rf2.review/v1\",\"raw_display\":\"Explicit selected-source review decision\",\"version\":\"1\"},{\"code\":\"{\\\"chart\\\":null,\\\"note\\\":{\\\"findings\\\":\\\"Recorded source assertions\\\",\\\"gaps\\\":\\\"Source uncertainty retained\\\",\\\"pins\\\":[],\\\"plan\\\":\\\"Unscheduled review\\\",\\\"possibilities\\\":\\\"Not established\\\",\\\"question\\\":\\\"Review exact selected evidence\\\"},\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T10:00:00Z\"},\"source_timestamp\":\"2026-10-08T10:00:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"784b63e4-914a-45f1-aef7-6262eda84784\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":null,\"revision\":\"e9f8e75e-6bf6-4bb4-8cf2-7d31f2c4cfca\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Source uncertainty retained\"],\"verification\":\"unverified\"},\"inclusion\":\"in_window\",\"ingestion\":{\"ingested_at\":\"2026-10-20T01:35:49.643138Z\",\"ingestion_sequence\":6,\"payload_version\":1,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}}],\"profile_id\":\"RecordedCirculatoryEvidence\",\"profile_version\":\"1\",\"scope\":{\"contract_version\":\"3\",\"encounter_id\":\"synthetic-e1\",\"patient_id\":\"synthetic-p1\",\"repository_cutoff\":{\"captured_at\":\"2026-10-20T01:35:49.650993Z\",\"fact_watermark\":6,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"},\"review_end\":\"2026-10-08T10:00:00Z\",\"review_start\":\"2026-10-08T08:00:00Z\"}}}",
++      "canonical_laboratory": "{\"observations\":[{\"canonical_fact\":\"{\\\"binding\\\":{\\\"target\\\":{\\\"encounter_id\\\":\\\"synthetic-e1\\\",\\\"longitudinal_context_id\\\":null,\\\"patient_id\\\":\\\"synthetic-p1\\\"},\\\"verification\\\":{\\\"ambiguity\\\":null,\\\"assessed_at\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"method\\\":\\\"synthetic-demo\\\",\\\"source\\\":{\\\"channel\\\":\\\"system\\\",\\\"identifier\\\":\\\"patient-state-v1\\\",\\\"namespace\\\":\\\"clinrx.synthetic.demo\\\",\\\"version\\\":\\\"1\\\"},\\\"status\\\":\\\"verified\\\",\\\"verifier\\\":\\\"synthetic-system\\\"}},\\\"concept_id\\\":\\\"synthetic-serum-creatinine\\\",\\\"conflict\\\":\\\"none_known\\\",\\\"correction_reason\\\":null,\\\"id\\\":\\\"demo-creatinine-A\\\",\\\"kind\\\":\\\"observation\\\",\\\"origin\\\":\\\"reported\\\",\\\"provenance\\\":{\\\"actor\\\":\\\"synthetic-demo\\\",\\\"limitations\\\":[\\\"Synthetic demonstration only; no clinical feed.\\\"],\\\"lineage\\\":\\\"unknown\\\",\\\"recorded_at\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"source\\\":{\\\"channel\\\":\\\"measurement\\\",\\\"identifier\\\":\\\"demo-sample-A\\\",\\\"namespace\\\":\\\"clinrx.synthetic.serum-creatinine\\\",\\\"version\\\":\\\"1\\\"},\\\"upstream\\\":[]},\\\"revision\\\":\\\"1\\\",\\\"supersedes\\\":null,\\\"temporal_status\\\":\\\"historical\\\",\\\"time\\\":{\\\"effective_end\\\":null,\\\"effective_start\\\":null,\\\"event\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"precision\\\":\\\"instant\\\",\\\"processed\\\":null,\\\"recorded\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"retrieved\\\":null,\\\"uncertainty\\\":null},\\\"uncertainty\\\":[\\\"Synthetic recorded evidence only.\\\"],\\\"value\\\":{\\\"reason\\\":null,\\\"status\\\":\\\"known\\\",\\\"value\\\":{\\\"unit\\\":{\\\"code\\\":\\\"mg/dL\\\",\\\"limitation\\\":null,\\\"raw\\\":\\\"mg/dL\\\",\\\"status\\\":\\\"assessed\\\",\\\"system\\\":\\\"UCUM\\\"},\\\"value\\\":\\\"1.00\\\"}},\\\"verification\\\":\\\"verified\\\"}\",\"expected_digest\":\"47725732962a14527b5867dd525393d46ecc03276528c7fa2428767beefbe4e1\",\"fact\":{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T08:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-A\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T08:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T08:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"1.00\"}},\"verification\":\"verified\"},\"inclusion\":\"in_window\",\"ingestion\":{\"ingested_at\":\"2026-10-20T01:35:49.267469Z\",\"ingestion_sequence\":1,\"payload_version\":1,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}},{\"canonical_fact\":\"{\\\"binding\\\":{\\\"target\\\":{\\\"encounter_id\\\":\\\"synthetic-e1\\\",\\\"longitudinal_context_id\\\":null,\\\"patient_id\\\":\\\"synthetic-p1\\\"},\\\"verification\\\":{\\\"ambiguity\\\":null,\\\"assessed_at\\\":\\\"2026-10-08T08:00:00Z\\\",\\\"method\\\":\\\"synthetic-demo\\\",\\\"source\\\":{\\\"channel\\\":\\\"system\\\",\\\"identifier\\\":\\\"patient-state-v1\\\",\\\"namespace\\\":\\\"clinrx.synthetic.demo\\\",\\\"version\\\":\\\"1\\\"},\\\"status\\\":\\\"verified\\\",\\\"verifier\\\":\\\"synthetic-system\\\"}},\\\"concept_id\\\":\\\"synthetic-serum-creatinine\\\",\\\"conflict\\\":\\\"none_known\\\",\\\"correction_reason\\\":null,\\\"id\\\":\\\"demo-creatinine-B\\\",\\\"kind\\\":\\\"observation\\\",\\\"origin\\\":\\\"reported\\\",\\\"provenance\\\":{\\\"actor\\\":\\\"synthetic-demo\\\",\\\"limitations\\\":[\\\"Synthetic demonstration only; no clinical feed.\\\"],\\\"lineage\\\":\\\"unknown\\\",\\\"recorded_at\\\":\\\"2026-10-08T10:00:00Z\\\",\\\"source\\\":{\\\"channel\\\":\\\"measurement\\\",\\\"identifier\\\":\\\"demo-sample-B\\\",\\\"namespace\\\":\\\"clinrx.synthetic.serum-creatinine\\\",\\\"version\\\":\\\"1\\\"},\\\"upstream\\\":[]},\\\"revision\\\":\\\"1\\\",\\\"supersedes\\\":null,\\\"temporal_status\\\":\\\"historical\\\",\\\"time\\\":{\\\"effective_end\\\":null,\\\"effective_start\\\":null,\\\"event\\\":\\\"2026-10-08T10:00:00Z\\\",\\\"precision\\\":\\\"instant\\\",\\\"processed\\\":null,\\\"recorded\\\":\\\"2026-10-08T10:00:00Z\\\",\\\"retrieved\\\":null,\\\"uncertainty\\\":null},\\\"uncertainty\\\":[\\\"Synthetic recorded evidence only.\\\"],\\\"value\\\":{\\\"reason\\\":null,\\\"status\\\":\\\"known\\\",\\\"value\\\":{\\\"unit\\\":{\\\"code\\\":\\\"mg/dL\\\",\\\"limitation\\\":null,\\\"raw\\\":\\\"mg/dL\\\",\\\"status\\\":\\\"assessed\\\",\\\"system\\\":\\\"UCUM\\\"},\\\"value\\\":\\\"2.000\\\"}},\\\"verification\\\":\\\"verified\\\"}\",\"expected_digest\":\"17833f40e3d34a11b4a3ddec12fea45b54b45bdbfa0f181c22960cd7e9b42c2f\",\"fact\":{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T08:00:00Z\",\"method\":\"synthetic-demo\",\"source\":{\"channel\":\"system\",\"identifier\":\"patient-state-v1\",\"namespace\":\"clinrx.synthetic.demo\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-system\"}},\"concept_id\":\"synthetic-serum-creatinine\",\"conflict\":\"none_known\",\"correction_reason\":null,\"id\":\"demo-creatinine-B\",\"kind\":\"observation\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-demo\",\"limitations\":[\"Synthetic demonstration only; no clinical feed.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"measurement\",\"identifier\":\"demo-sample-B\",\"namespace\":\"clinrx.synthetic.serum-creatinine\",\"version\":\"1\"},\"upstream\":[]},\"revision\":\"1\",\"supersedes\":null,\"temporal_status\":\"historical\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":\"2026-10-08T10:00:00Z\",\"precision\":\"instant\",\"processed\":null,\"recorded\":\"2026-10-08T10:00:00Z\",\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Synthetic recorded evidence only.\"],\"value\":{\"reason\":null,\"status\":\"known\",\"value\":{\"unit\":{\"code\":\"mg/dL\",\"limitation\":null,\"raw\":\"mg/dL\",\"status\":\"assessed\",\"system\":\"UCUM\"},\"value\":\"2.000\"}},\"verification\":\"verified\"},\"inclusion\":\"in_window\",\"ingestion\":{\"ingested_at\":\"2026-10-20T01:35:49.271363Z\",\"ingestion_sequence\":3,\"payload_version\":1,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"}}],\"scope\":{\"contract_version\":\"3\",\"encounter_id\":\"synthetic-e1\",\"patient_id\":\"synthetic-p1\",\"repository_cutoff\":{\"captured_at\":\"2026-10-20T01:35:49.650993Z\",\"fact_watermark\":6,\"repository_id\":\"232b4a6b-39cb-45e3-895a-a00c1699f7dc\"},\"review_end\":\"2026-10-08T10:00:00Z\",\"review_start\":\"2026-10-08T08:00:00Z\"}}",
++      "execution_enabled": false
++    },
++    "items": [],
++    "execution_enabled": false
++  }
++}
+diff --git a/frontend/tests/rf2SourceReview.test.tsx b/frontend/tests/rf2SourceReview.test.tsx
+new file mode 100644
+index 0000000..316f555
+--- /dev/null
++++ b/frontend/tests/rf2SourceReview.test.tsx
+@@ -0,0 +1,63 @@
++import {afterAll,beforeAll,beforeEach,expect,it,vi} from 'vitest';
++import {fireEvent,render,screen,within} from '@testing-library/react';
++import fixture from './fixtures/rf2-api.json';
++import {RF2Client,RF2ReviewChanged,pin,stable,hash,type Draft,type SourceReview,type Evidence,type Result} from '../src/api/rf2Client';
++import {RenalFluidEntryWorkspace} from '../src/demo/RenalFluidEntryWorkspace';
++const {webcrypto}=await vi.importActual<{webcrypto:Crypto}>('node:crypto');const old=globalThis.crypto;
++beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}));afterAll(()=>Object.defineProperty(globalThis,'crypto',{value:old,configurable:true}));beforeEach(()=>localStorage.clear());
++async function setup(changed=true){
++ const catalog=await new RF2Client(vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(fixture.catalog)))).catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');
++ const selected=catalog.items.find(x=>x.fact.id===fixture.weight.fact.id)!;
++ const review:SourceReview={selected:pin(selected).reference,terminal:{...pin(selected).reference,version:changed?'later-withdrawn-revision':selected.fact.revision},terminal_digest:'a'.repeat(64),terminal_ingestion:selected.ingestion.ingestion_sequence+Number(changed),record_status:changed?'withdrawn':'recorded',retain_historical:false};
++ const action=vi.fn().mockImplementation(async(kind:string,b:Draft)=>({status:kind==='lookup'?'absent':'validated',source_review:b.source_review??[review],fact:fixture.note.fact,execution_enabled:false}));
++ const transport={action,resolve:vi.fn(),history:vi.fn()} as unknown as RF2Client;
++ const rendered=render(<RenalFluidEntryWorkspace catalog={catalog} gateConfirmed onGuardChange={()=>{}} onRefresh={async()=>{}} onLegacyCorrect={()=>{}} transport={transport}/>);
++ const row=screen.getByRole('row',{name:new RegExp(selected.fact.id)});fireEvent.click(within(row).getByRole('button',{name:'Reuse for reassessment'}));fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Synthetic reviewer'}});
++ for(const k of ['question','findings','possibilities','gaps','plan'])fireEvent.change(screen.getByLabelText(k),{target:{value:k}});
++ fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));await screen.findByRole('region',{name:'Review selected source changes'});
++ return {action,selected,review,catalog,rendered,transport};
++}
++it('requires explicit historical retention and retains the original reviewed request through uncertainty',async()=>{
++ const {action,selected}=await setup();const confirm=screen.getByRole('button',{name:'Validate reviewed sources'});expect(confirm).toBeDisabled();expect(screen.queryByRole('button',{name:'Confirm RF2 append'})).not.toBeInTheDocument();
++ const region=screen.getByRole('region',{name:'Review selected source changes'});expect(region).toHaveTextContent(selected.fact.revision);expect(region).toHaveTextContent('later-withdrawn-revision');expect(region).toHaveTextContent('withdrawn');
++ fireEvent.click(within(region).getByRole('checkbox'));fireEvent.click(confirm);await screen.findByRole('button',{name:'Confirm RF2 append'});
++ const accepted=action.mock.calls[1][1] as Draft;expect(accepted.source_review?.[0].retain_historical).toBe(true);expect(accepted.note?.pins[0]).toEqual(pin(selected));
++ action.mockImplementation(async kind=>{if(kind==='save')throw Error('lost delivery');return {status:'absent',execution_enabled:false};});fireEvent.click(screen.getByRole('button',{name:'Confirm RF2 append'}));fireEvent.click(await screen.findByRole('button',{name:'Check exact RF2 saved result'}));
++ const retry=await screen.findByRole('button',{name:'Explicitly retry identical RF2 request'});expect(action.mock.calls.filter(x=>x[0]==='save')).toHaveLength(1);fireEvent.click(retry);await screen.findByRole('button',{name:'Check exact RF2 saved result'});
++ for(const call of action.mock.calls.slice(2))expect(call[1]).toBe(accepted);
++});
++it('unchanged selections still pass an explicit source-review step without a historical checkbox',async()=>{
++ const {action}=await setup(false);expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'Validate reviewed sources'}));await screen.findByRole('button',{name:'Confirm RF2 append'});expect(action.mock.calls[1][1].source_review[0].retain_historical).toBe(false);expect(action.mock.calls.filter(x=>x[0]==='save')).toHaveLength(0);
++});
++it('a changed review cannot silently reuse an acknowledgement; refresh is explicit and resets it',async()=>{
++ const {action,review,selected}=await setup();fireEvent.click(screen.getByRole('checkbox'));action.mockRejectedValueOnce(Error('Source changed again'));fireEvent.click(screen.getByRole('button',{name:'Validate reviewed sources'}));await screen.findByText(/Selected sources changed or the review could not be confirmed/);expect(screen.queryByRole('button',{name:'Confirm RF2 append'})).not.toBeInTheDocument();
++ action.mockResolvedValueOnce({status:'validated',source_review:[{...review,terminal:{...review.terminal,version:'newer-revision'},retain_historical:false}],execution_enabled:false});fireEvent.click(screen.getByRole('button',{name:'Refresh selected-source review'}));await screen.findByText(/Current terminal newer-revision/);expect(screen.getByRole('checkbox')).not.toBeChecked();expect(screen.getByRole('button',{name:'Validate reviewed sources'})).toBeDisabled();expect((action.mock.calls.at(-1)![1] as Draft).note?.pins[0]).toEqual(pin(selected));expect(action.mock.calls.filter(x=>x[0]==='save')).toHaveLength(0);
++});
++it('rejects a contradictory selected-source review before treating validation as confirmed',async()=>{
++ const b=structuredClone(fixture.note_draft) as Draft;const canonical=stable(b);const review=b.note!.pins.map(p=>({selected:p.reference,terminal:p.reference,terminal_digest:p.digest,terminal_ingestion:p.ingestion,record_status:'recorded',retain_historical:false}));review[0].selected={...review[0].selected,id:'foreign-record'};
++ const response:Result={status:'validated',request_canonical:canonical,request_digest:await hash(canonical),source_review:review,fact:fixture.note.fact as Evidence['fact'],replay_reference:null,execution_enabled:false};
++ const api=new RF2Client(vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(response))));await expect(api.action('validate',b)).rejects.toThrow();
++});
++
++it('decodes real-API validation, persisted review decisions and shared catalog without rewriting legacy notes',async()=>{
++ const actual=(await import('./fixtures/rf2-reviewed-api.json')).default;
++ const send=vi.fn<typeof fetch>().mockResolvedValueOnce(new Response(JSON.stringify(actual.validated))).mockResolvedValueOnce(new Response(JSON.stringify(actual.saved))).mockResolvedValueOnce(new Response(JSON.stringify(actual.catalog)));
++ const api=new RF2Client(send);const draft=actual.draft as Draft;
++ const validation=await api.action('validate',draft);expect(validation.source_review).toEqual(draft.source_review);
++ const out=await api.action('save',draft);expect(out.evidence?.metadata?.source_review).toEqual(draft.source_review);
++ const c=await api.catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');const note=c.items.find(x=>x.fact.id===draft.id)!;expect(note.metadata?.source_review).toEqual(draft.source_review);expect(note.metadata?.note?.pins).toEqual(draft.note?.pins);
++});
++
++it.each([true,false])('accepts a definitive pre-append review rejection only with matching command digest: %s',async matching=>{
++ const b=structuredClone(fixture.note_draft) as Draft;
++ const response={code:'rf2_source_review_changed',request_digest:matching?await hash(stable(b)):'a'.repeat(64),execution_enabled:false};
++ const api=new RF2Client(vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(response),{status:409})));
++ try{await api.action('save',b);throw Error('Unexpected success');}catch(error){expect(error instanceof RF2ReviewChanged).toBe(matching);}
++});
++it('preserves a definitively rejected pending request until explicit re-review resets historical consent',async()=>{
++ const {action,review,selected}=await setup();fireEvent.click(screen.getByRole('checkbox'));fireEvent.click(screen.getByRole('button',{name:'Validate reviewed sources'}));await screen.findByRole('button',{name:'Confirm RF2 append'});
++ const pending=action.mock.calls[1][1];action.mockRejectedValueOnce(new RF2ReviewChanged());fireEvent.click(screen.getByRole('button',{name:'Confirm RF2 append'}));const button=await screen.findByRole('button',{name:'Explicitly re-review rejected request sources'});
++ expect(action.mock.calls.at(-1)![1]).toBe(pending);expect(action.mock.calls.filter(x=>x[0]==='save')).toHaveLength(1);expect(screen.queryByRole('button',{name:'Explicitly retry identical RF2 request'})).not.toBeInTheDocument();
++ action.mockResolvedValueOnce({status:'validated',source_review:[{...review,terminal:{...review.terminal,version:'newer-reviewed-terminal'},retain_historical:false}],execution_enabled:false});fireEvent.click(button);await screen.findByText(/Current terminal newer-reviewed-terminal/);
++ expect(screen.getByRole('checkbox')).not.toBeChecked();expect(screen.getByRole('button',{name:'Validate reviewed sources'})).toBeDisabled();expect(action.mock.calls.at(-1)![1].note.pins[0]).toEqual(pin(selected));expect(action.mock.calls.filter(x=>x[0]==='save')).toHaveLength(1);
++});
+diff --git a/frontend/tests/rf2Transport.test.ts b/frontend/tests/rf2Transport.test.ts
+new file mode 100644
+index 0000000..d34b31e
+--- /dev/null
++++ b/frontend/tests/rf2Transport.test.ts
+@@ -0,0 +1,29 @@
++import {afterAll,beforeAll,afterEach,expect,it,vi} from 'vitest';
++import fixture from './fixtures/rf2-api.json';
++import {RF2Client,stable,hash,type Draft} from '../src/api/rf2Client';
++const {webcrypto}=await vi.importActual<{webcrypto:Crypto}>('node:crypto');
++const oldCrypto=globalThis.crypto;
++beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}));
++afterAll(()=>Object.defineProperty(globalThis,'crypto',{value:oldCrypto,configurable:true}));
++afterEach(()=>vi.unstubAllGlobals());
++it.each(['default','injected'] as const)('calls %s fetch without rebinding its receiver on catalog and pending lookup',async source=>{
++ const calls:{url:string;body:unknown}[]=[];
++ const draft=structuredClone(fixture.weight_draft) as Draft;
++ const canonical=stable(draft);
++ const absent={status:'absent',request_canonical:canonical,request_digest:await hash(canonical),execution_enabled:false};
++ const send=async function(this:unknown,input:RequestInfo|URL,init?:RequestInit){
++  // Model native fetch rejecting an arbitrary class instance as its receiver.
++  if(this!==undefined&&this!==globalThis)throw new TypeError('Illegal invocation');
++  calls.push({url:String(input),body:init?.body});
++  return new Response(JSON.stringify(calls.length===1?structuredClone(fixture.catalog):absent));
++ } satisfies typeof fetch;
++ vi.stubGlobal('fetch',send);
++ const api=source==='default'?new RF2Client():new RF2Client(send);
++ const catalog=await api.catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');
++ expect(catalog.execution_enabled).toBe(false);
++ expect((await api.action('lookup',draft)).status).toBe('absent');
++ expect(calls).toHaveLength(2);
++ expect(calls[0].url).toContain('/synthetic-rf2?');
++ expect(calls[1].url).toMatch(/\/synthetic-rf2\/lookup$/);
++ expect(calls[1].body).toBe(JSON.stringify(draft));
++});
+diff --git a/tests/test_renal_fluid_entry.py b/tests/test_renal_fluid_entry.py
+index a8e3c29..c9cb7e8 100644
+--- a/tests/test_renal_fluid_entry.py
++++ b/tests/test_renal_fluid_entry.py
+@@ -35,6 +35,9 @@ def pin(e):
+ def post(c,path,b):return c.post(RF2+path,json=b)
+ def saved(c,b):
+     v=post(c,'/validate',b);assert v.statu

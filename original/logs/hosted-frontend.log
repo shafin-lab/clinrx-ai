@@ -1,0 +1,482 @@
+﻿2026-10-20T04:19:50.5188512Z Current runner version: '2.337.0'
+2026-10-20T04:19:50.5214326Z ##[group]Runner Image Provisioner
+2026-10-20T04:19:50.5215229Z Hosted Compute Agent
+2026-10-20T04:19:50.5215881Z Version: 20261012.601
+2026-10-20T04:19:50.5216806Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-20T04:19:50.5217555Z Build Date: 2026-10-12T17:48:21Z
+2026-10-20T04:19:50.5218314Z Worker ID: {edf16704-d7dc-461d-ae6e-0831bf0fb078}
+2026-10-20T04:19:50.5219064Z Region: westus2
+2026-10-20T04:19:50.5219638Z Cloud: Azure
+2026-10-20T04:19:50.5220192Z ##[endgroup]
+2026-10-20T04:19:50.5221812Z ##[group]Operating System
+2026-10-20T04:19:50.5222567Z Ubuntu
+2026-10-20T04:19:50.5223128Z 24.04.5
+2026-10-20T04:19:50.5223619Z LTS
+2026-10-20T04:19:50.5224201Z ##[endgroup]
+2026-10-20T04:19:50.5224786Z ##[group]Runner Image
+2026-10-20T04:19:50.5225427Z Image: ubuntu-24.04
+2026-10-20T04:19:50.5226022Z Version: 20261012.334.1
+2026-10-20T04:19:50.5227875Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-20T04:19:50.5229513Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-20T04:19:50.5230538Z ##[endgroup]
+2026-10-20T04:19:50.5231643Z ##[group]GITHUB_TOKEN Permissions
+2026-10-20T04:19:50.5233872Z Contents: read
+2026-10-20T04:19:50.5234483Z Metadata: read
+2026-10-20T04:19:50.5235017Z ##[endgroup]
+2026-10-20T04:19:50.5237659Z Secret source: Actions
+2026-10-20T04:19:50.5238691Z Cache mode: write
+2026-10-20T04:19:50.5239743Z Prepare workflow directory
+2026-10-20T04:19:50.5704840Z Prepare all required actions
+2026-10-20T04:19:50.5752713Z Getting action download info
+2026-10-20T04:19:50.9043904Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+2026-10-20T04:19:51.0103875Z Download action repository 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-20T04:19:51.0961488Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-20T04:19:51.3028374Z Complete job name: frontend
+2026-10-20T04:19:51.3947577Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+2026-10-20T04:19:51.3949382Z with:
+2026-10-20T04:19:51.3950171Z   persist-credentials: false
+2026-10-20T04:19:51.3951092Z   repository: shafin-lab/clinrx-ai
+2026-10-20T04:19:51.3958303Z   token: ***
+2026-10-20T04:19:51.3959036Z   ssh-strict: true
+2026-10-20T04:19:51.3959767Z   ssh-user: git
+2026-10-20T04:19:51.3960479Z   clean: true
+2026-10-20T04:19:51.3961275Z   sparse-checkout-cone-mode: true
+2026-10-20T04:19:51.3962175Z   fetch-depth: 1
+2026-10-20T04:19:51.3962775Z   fetch-tags: false
+2026-10-20T04:19:51.3963235Z   show-progress: true
+2026-10-20T04:19:51.3963680Z   lfs: false
+2026-10-20T04:19:51.3964086Z   submodules: false
+2026-10-20T04:19:51.3964534Z   set-safe-directory: true
+2026-10-20T04:19:51.3965403Z ##[endgroup]
+2026-10-20T04:19:51.4987152Z Syncing repository: shafin-lab/clinrx-ai
+2026-10-20T04:19:51.4990871Z ##[group]Getting Git version info
+2026-10-20T04:19:51.4992675Z Working directory is '/home/runner/work/clinrx-ai/clinrx-ai'
+2026-10-20T04:19:51.5011690Z [command]/usr/bin/git version
+2026-10-20T04:19:51.5144893Z git version 2.55.0
+2026-10-20T04:19:51.5166722Z ##[endgroup]
+2026-10-20T04:19:51.5182723Z Temporarily overriding HOME='/home/runner/work/_temp/ac18ad62-a734-460d-ba6d-3556d78b4901' before making global git config changes
+2026-10-20T04:19:51.5185012Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-20T04:19:51.5189138Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/clinrx-ai/clinrx-ai
+2026-10-20T04:19:51.5245004Z Deleting the contents of '/home/runner/work/clinrx-ai/clinrx-ai'
+2026-10-20T04:19:51.5249438Z ##[group]Initializing the repository
+2026-10-20T04:19:51.5253774Z [command]/usr/bin/git init /home/runner/work/clinrx-ai/clinrx-ai
+2026-10-20T04:19:51.5389336Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-20T04:19:51.5391014Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-20T04:19:51.5392673Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-20T04:19:51.5393980Z hint: call:
+2026-10-20T04:19:51.5394654Z hint:
+2026-10-20T04:19:51.5395822Z hint: 	git config --global init.defaultBranch <name>
+2026-10-20T04:19:51.5396821Z hint:
+2026-10-20T04:19:51.5397595Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-20T04:19:51.5398936Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-20T04:19:51.5399878Z hint:
+2026-10-20T04:19:51.5400577Z hint: 	git branch -m <name>
+2026-10-20T04:19:51.5401212Z hint:
+2026-10-20T04:19:51.5401894Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-20T04:19:51.5402926Z Initialized empty Git repository in /home/runner/work/clinrx-ai/clinrx-ai/.git/
+2026-10-20T04:19:51.5406963Z [command]/usr/bin/git remote add origin https://github.com/shafin-lab/clinrx-ai
+2026-10-20T04:19:51.5461938Z ##[endgroup]
+2026-10-20T04:19:51.5462729Z ##[group]Disabling automatic garbage collection
+2026-10-20T04:19:51.5466666Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-20T04:19:51.5507862Z ##[endgroup]
+2026-10-20T04:19:51.5511838Z ##[group]Setting up auth
+2026-10-20T04:19:51.5519460Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-20T04:19:51.5558383Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-20T04:19:51.5980499Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-20T04:19:51.6042330Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-20T04:19:51.6309675Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-20T04:19:51.6364222Z ##[endgroup]
+2026-10-20T04:19:51.6365481Z ##[group]Fetching the repository
+2026-10-20T04:19:51.6381092Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +757b163f0f56f1343a32455fc0c4427460dfdd71:refs/tags/clinrx-rf2-f123-757b163
+2026-10-20T04:19:52.1767994Z From https://github.com/shafin-lab/clinrx-ai
+2026-10-20T04:19:52.1780609Z  * [new ref]         757b163f0f56f1343a32455fc0c4427460dfdd71 -> clinrx-rf2-f123-757b163
+2026-10-20T04:19:52.1782902Z ##[endgroup]
+2026-10-20T04:19:52.1783672Z ##[group]Determining the checkout info
+2026-10-20T04:19:52.1784516Z ##[endgroup]
+2026-10-20T04:19:52.1787132Z [command]/usr/bin/git sparse-checkout disable
+2026-10-20T04:19:52.1845317Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-20T04:19:52.1878776Z ##[group]Checking out the ref
+2026-10-20T04:19:52.1883922Z [command]/usr/bin/git checkout --progress --force refs/tags/clinrx-rf2-f123-757b163
+2026-10-20T04:19:52.2347569Z Note: switching to 'refs/tags/clinrx-rf2-f123-757b163'.
+2026-10-20T04:19:52.2348324Z 
+2026-10-20T04:19:52.2348842Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-20T04:19:52.2349902Z changes and commit them, and you can discard any commits you make in this
+2026-10-20T04:19:52.2350910Z state without impacting any branches by switching back to a branch.
+2026-10-20T04:19:52.2351513Z 
+2026-10-20T04:19:52.2351939Z If you want to create a new branch to retain commits you create, you may
+2026-10-20T04:19:52.2352863Z do so (now or later) by using -c with the switch command. Example:
+2026-10-20T04:19:52.2353403Z 
+2026-10-20T04:19:52.2353645Z   git switch -c <new-branch-name>
+2026-10-20T04:19:52.2354007Z 
+2026-10-20T04:19:52.2354564Z Or undo this operation with:
+2026-10-20T04:19:52.2354947Z 
+2026-10-20T04:19:52.2355220Z   git switch -
+2026-10-20T04:19:52.2355537Z 
+2026-10-20T04:19:52.2355986Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-20T04:19:52.2356935Z 
+2026-10-20T04:19:52.2357458Z HEAD is now at 757b163 Enforce RF2 repository ownership and explicit changed-source review
+2026-10-20T04:19:52.2377828Z ##[endgroup]
+2026-10-20T04:19:52.2429011Z [command]/usr/bin/git log -1 --format=%H
+2026-10-20T04:19:52.2459530Z 757b163f0f56f1343a32455fc0c4427460dfdd71
+2026-10-20T04:19:52.2469079Z ##[group]Removing auth
+2026-10-20T04:19:52.2472744Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-20T04:19:52.2505718Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-20T04:19:52.2743259Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-20T04:19:52.2779284Z http.https://github.com/.extraheader
+2026-10-20T04:19:52.2798147Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-20T04:19:52.2833420Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-20T04:19:52.3078189Z ##[endgroup]
+2026-10-20T04:19:52.3391911Z ##[group]Run test -z "$(git status --porcelain=v1 --untracked-files=all)"
+2026-10-20T04:19:52.3394323Z [36;1mtest -z "$(git status --porcelain=v1 --untracked-files=all)"[0m
+2026-10-20T04:19:52.3680737Z shell: /usr/bin/bash -e {0}
+2026-10-20T04:19:52.3682151Z ##[endgroup]
+2026-10-20T04:19:52.4405033Z ##[group]Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+2026-10-20T04:19:52.4407022Z with:
+2026-10-20T04:19:52.4407898Z   node-version: 22.13.0
+2026-10-20T04:19:52.4408913Z   always-auth: false
+2026-10-20T04:19:52.4409872Z   check-latest: false
+2026-10-20T04:19:52.4419269Z   token: ***
+2026-10-20T04:19:52.4420156Z ##[endgroup]
+2026-10-20T04:19:52.5827164Z Attempting to download 22.13.0...
+2026-10-20T04:19:52.5942730Z (node:2335) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-20T04:19:52.5945985Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-20T04:19:53.1647227Z Acquiring 22.13.0 - x64 from https://github.com/actions/node-versions/releases/download/22.13.0-12683784390/node-22.13.0-linux-x64.tar.gz
+2026-10-20T04:19:53.6275244Z Extracting ...
+2026-10-20T04:19:53.6399521Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/a4d01d91-3155-4dcf-ac51-40faebcd74fe -f /home/runner/work/_temp/4c6a751c-fe99-4f46-b4c5-6915783b537b
+2026-10-20T04:19:54.8350930Z Adding to the cache ...
+2026-10-20T04:19:58.2284109Z ##[group]Environment details
+2026-10-20T04:19:58.4602734Z node: v22.13.0
+2026-10-20T04:19:58.4603238Z npm: 10.9.2
+2026-10-20T04:19:58.4603440Z yarn: 1.22.22
+2026-10-20T04:19:58.4603969Z ##[endgroup]
+2026-10-20T04:19:58.4757618Z ##[group]Run set -o pipefail
+2026-10-20T04:19:58.4757978Z [36;1mset -o pipefail[0m
+2026-10-20T04:19:58.4758285Z [36;1mmkdir -p "$RUNNER_TEMP/clinrx-frontend-logs"[0m
+2026-10-20T04:19:58.4758614Z [36;1m{[0m
+2026-10-20T04:19:58.4758827Z [36;1m  git rev-parse HEAD[0m
+2026-10-20T04:19:58.4759260Z [36;1m  printf 'event=%s source_sha=%s ref=%s\n' "$GITHUB_EVENT_NAME" "$GITHUB_SHA" "$GITHUB_REF"[0m
+2026-10-20T04:19:58.4759844Z [36;1m  printf 'runner_image=%s image_version=%s\n' "$ImageOS" "$ImageVersion"[0m
+2026-10-20T04:19:58.4760243Z [36;1m  cat /etc/os-release[0m
+2026-10-20T04:19:58.4760489Z [36;1m  uname -m[0m
+2026-10-20T04:19:58.4760708Z [36;1m  node --version[0m
+2026-10-20T04:19:58.4760949Z [36;1m  npm --version[0m
+2026-10-20T04:19:58.4761467Z [36;1m  sha256sum package.json package-lock.json[0m
+2026-10-20T04:19:58.4761869Z [36;1m} 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/environment.txt"[0m
+2026-10-20T04:19:58.4829382Z shell: /usr/bin/bash -e {0}
+2026-10-20T04:19:58.4829689Z ##[endgroup]
+2026-10-20T04:19:58.4948094Z 757b163f0f56f1343a32455fc0c4427460dfdd71
+2026-10-20T04:19:58.4948935Z event=workflow_dispatch source_sha=757b163f0f56f1343a32455fc0c4427460dfdd71 ref=refs/tags/clinrx-rf2-f123-757b163
+2026-10-20T04:19:58.4949654Z runner_image=ubuntu24 image_version=20261012.334.1
+2026-10-20T04:19:58.4954883Z PRETTY_NAME="Ubuntu 24.04.5 LTS"
+2026-10-20T04:19:58.4955242Z NAME="Ubuntu"
+2026-10-20T04:19:58.4955742Z VERSION_ID="24.04"
+2026-10-20T04:19:58.4956310Z VERSION="24.04.5 LTS (Noble Numbat)"
+2026-10-20T04:19:58.4957234Z VERSION_CODENAME=noble
+2026-10-20T04:19:58.4957708Z ID=ubuntu
+2026-10-20T04:19:58.4958091Z ID_LIKE=debian
+2026-10-20T04:19:58.4958533Z HOME_URL="https://www.ubuntu.com/"
+2026-10-20T04:19:58.4958952Z SUPPORT_URL="https://help.ubuntu.com/"
+2026-10-20T04:19:58.4959450Z BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+2026-10-20T04:19:58.4960086Z PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+2026-10-20T04:19:58.4960614Z UBUNTU_CODENAME=noble
+2026-10-20T04:19:58.4960896Z LOGO=ubuntu-logo
+2026-10-20T04:19:58.4965289Z x86_64
+2026-10-20T04:19:58.5002712Z v22.13.0
+2026-10-20T04:19:58.5707539Z 10.9.2
+2026-10-20T04:19:58.5763184Z 786e4abafbe4e25ebd2f9f11b233566a63c6e0c60e3883a8c8ae0b1e2a741c08  package.json
+2026-10-20T04:19:58.5764020Z 29fec0b288521d6bbb0cc188c5d56a3b0a10cc13e400564d8852ee13b6c5be23  package-lock.json
+2026-10-20T04:19:58.5806931Z ##[group]Run npm ci
+2026-10-20T04:19:58.5807234Z [36;1mnpm ci[0m
+2026-10-20T04:19:58.5874452Z shell: /usr/bin/bash -e {0}
+2026-10-20T04:19:58.5874794Z ##[endgroup]
+2026-10-20T04:20:01.3795555Z 
+2026-10-20T04:20:01.3796368Z added 108 packages, and audited 109 packages in 3s
+2026-10-20T04:20:01.3797078Z 
+2026-10-20T04:20:01.3797379Z 22 packages are looking for funding
+2026-10-20T04:20:01.3797968Z   run `npm fund` for details
+2026-10-20T04:20:01.3805327Z 
+2026-10-20T04:20:01.3805622Z found 0 vulnerabilities
+2026-10-20T04:20:01.4330211Z ##[group]Run set -o pipefail
+2026-10-20T04:20:01.4330552Z [36;1mset -o pipefail[0m
+2026-10-20T04:20:01.4330966Z [36;1mnpm test -- --maxWorkers=2 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/tests.txt"[0m
+2026-10-20T04:20:01.4396840Z shell: /usr/bin/bash -e {0}
+2026-10-20T04:20:01.4397129Z ##[endgroup]
+2026-10-20T04:20:01.5438667Z 
+2026-10-20T04:20:01.5439425Z > clinrx-synthetic-review@0.1.0 test
+2026-10-20T04:20:01.5439957Z > vitest run --maxWorkers=2
+2026-10-20T04:20:01.5440159Z 
+2026-10-20T04:20:01.8835505Z 
+2026-10-20T04:20:01.8840510Z [1m[30m[46m RUN [49m[39m[22m [36mv5.0.3 [39m[90m/home/runner/work/clinrx-ai/clinrx-ai/frontend[39m
+2026-10-20T04:20:01.8841253Z 
+2026-10-20T04:20:13.3170516Z  [32m✓[39m tests/comprehensiveDemo.test.tsx [2m([22m[2m30 tests[22m[2m)[22m[33m 8915[2mms[22m[39m
+2026-10-20T04:20:13.3171616Z    [32m✓[39m comprehensive read-only synthetic demo [2m(8)[22m
+2026-10-20T04:20:13.3172538Z      [33m[2m✓[22m[39m opens with cardiac output and echo, preserves exact values and makes no execution request[33m 544[2mms[22m[39m
+2026-10-20T04:20:13.3178864Z      [33m[2m✓[22m[39m browses all fifteen families and filters by source, family and method without hiding unknowns[33m 436[2mms[22m[39m
+2026-10-20T04:20:13.3180662Z      [33m[2m✓[22m[39m guided gaps retain unknown-quality and unplaced evidence[33m 316[2mms[22m[39m
+2026-10-20T04:20:13.3182406Z      [33m[2m✓[22m[39m inspects real bounded history using the exact signed context and selected reference[33m 352[2mms[22m[39m
+2026-10-20T04:20:13.3184185Z      [33m[2m✓[22m[39m does not attach a late history response to a different selected source[33m 315[2mms[22m[39m
+2026-10-20T04:20:13.3186005Z    [33m[2m✓[22m[39m browses ABG independently of lactate, retains exact quantities and sample context[33m 374[2mms[22m[39m
+2026-10-20T04:20:13.3188630Z    [33m[2m✓[22m[39m combines ABG, cardiac output and echo in one patient summary with exact source inspection[33m 777[2mms[22m[39m
+2026-10-20T04:20:13.3190330Z    [33m[2m✓[22m[39m withholds case-specific possibilities on changed records while keeping recorded browsing available[33m 312[2mms[22m[39m
+2026-10-20T04:20:13.3191468Z    [33m[2m✓[22m[39m opens the persisted flowsheet with exact infusion inspection without preparing or executing[33m 587[2mms[22m[39m
+2026-10-20T04:20:13.3192465Z    [33m[2m✓[22m[39m uses the separately authored expanded case rather than reusing the old case[33m 527[2mms[22m[39m
+2026-10-20T04:20:13.3193477Z    [33m[2m✓[22m[39m opens expanded authored possibilities and serial sources without preparing or executing a review[33m 807[2mms[22m[39m
+2026-10-20T04:20:23.3951097Z  [32m✓[39m tests/micro.test.tsx [2m([22m[2m41 tests[22m[2m)[22m[33m 8831[2mms[22m[39m
+2026-10-20T04:20:23.3952617Z    [33m[2m✓[22m[39m renders backend hierarchy, source precision, and separate antimicrobial categories[33m 548[2mms[22m[39m
+2026-10-20T04:20:23.3969381Z    [33m[2m✓[22m[39m retrieves retained session IDs without enriching from current state[33m 305[2mms[22m[39m
+2026-10-20T04:20:23.3970851Z    [33m[2m✓[22m[39m malformed micro reconciliation 0 keeps uncertainty until a valid result[33m 338[2mms[22m[39m
+2026-10-20T04:20:24.9967729Z  [32m✓[39m tests/patientWorkspace.test.tsx [2m([22m[2m28 tests[22m[2m)[22m[33m 20516[2mms[22m[39m
+2026-10-20T04:20:24.9969648Z    [33m[2m✓[22m[39m uses one shared snapshot and hands off the exact selected revision and digest without enabling execution[33m 1435[2mms[22m[39m
+2026-10-20T04:20:24.9971616Z    [33m[2m✓[22m[39m preserves a guided unsaved draft by blocking navigation and refresh until explicit discard[33m 880[2mms[22m[39m
+2026-10-20T04:20:24.9973545Z    [33m[2m✓[22m[39m retains original pending draft through committed recovery, without navigation or automatic retry[33m 959[2mms[22m[39m
+2026-10-20T04:20:24.9975083Z    [33m[2m✓[22m[39m retains original pending draft through absent recovery, without navigation or automatic retry[33m 885[2mms[22m[39m
+2026-10-20T04:20:24.9976686Z    [33m[2m✓[22m[39m keeps exact pending identity and blocks navigation when lookup fails[33m 793[2mms[22m[39m
+2026-10-20T04:20:24.9978263Z    [33m[2m✓[22m[39m fails closed on unconfirmed gate and recovers only after an explicit refresh[33m 433[2mms[22m[39m
+2026-10-20T04:20:24.9979920Z    [33m[2m✓[22m[39m fails closed on unconfirmed patient and recovers only after an explicit refresh[33m 494[2mms[22m[39m
+2026-10-20T04:20:24.9981621Z    [33m[2m✓[22m[39m fails closed on unconfirmed encounter and recovers only after an explicit refresh[33m 420[2mms[22m[39m
+2026-10-20T04:20:24.9983502Z    [33m[2m✓[22m[39m reviews handover from exact selections, retaining historical identity when the latest snapshot changes[33m 645[2mms[22m[39m
+2026-10-20T04:20:24.9985567Z    [33m[2m✓[22m[39m invalidates an in-flight inspector history on shared refresh and does not show stale data[33m 514[2mms[22m[39m
+2026-10-20T04:20:24.9988558Z    [33m[2m✓[22m[39m completes correction, separate authored reassessment, comparison and handover without rewriting the original note[33m 1470[2mms[22m[39m
+2026-10-20T04:20:24.9990796Z    [33m[2m✓[22m[39m preserves exact comparison selection across refresh and discloses a disappeared note[33m 621[2mms[22m[39m
+2026-10-20T04:20:24.9992809Z    [33m[2m✓[22m[39m retains confirmed save identity when the subsequent shared refresh fails, while blocking new writes[33m 732[2mms[22m[39m
+2026-10-20T04:20:24.9994962Z    [33m[2m✓[22m[39m finds an ABG by plain name and source time from comparison, resets stale filters and opens the exact source[33m 642[2mms[22m[39m
+2026-10-20T04:20:24.9997133Z    [33m[2m✓[22m[39m blocks the workspace finder while an entry is unresolved or unsaved[33m 406[2mms[22m[39m
+2026-10-20T04:20:24.9999212Z    [33m[2m✓[22m[39m saves exact handover pins and restores their verified API records after remount[33m 907[2mms[22m[39m
+2026-10-20T04:20:25.0001234Z    [33m[2m✓[22m[39m restores a historical pin as unavailable when a successor exists, preserving the original storage[33m 777[2mms[22m[39m
+2026-10-20T04:20:25.0003307Z    [33m[2m✓[22m[39m reports storage failure without claiming a saved handover or discarding selections[33m 476[2mms[22m[39m
+2026-10-20T04:20:25.0005247Z    [33m[2m✓[22m[39m blocks overwriting a handover changed in another tab and retains current selections[33m 685[2mms[22m[39m
+2026-10-20T04:20:25.0007982Z    [33m[2m✓[22m[39m gives an explicit next step for each part of the patient workflow without claiming clinical completion[33m 470[2mms[22m[39m
+2026-10-20T04:20:25.0009919Z    [33m[2m✓[22m[39m starts a separate reassessment after confirmation with no copied evidence selections or automatic finding[33m 634[2mms[22m[39m
+2026-10-20T04:20:25.0011902Z    [33m[2m✓[22m[39m withholds post-save handover navigation if the refreshed snapshot does not confirm the exact saved digest[33m 687[2mms[22m[39m
+2026-10-20T04:20:25.0013588Z    [33m[2m✓[22m[39m keeps post-save actions blocked after an unconfirmed refresh[33m 623[2mms[22m[39m
+2026-10-20T04:20:25.0015540Z    [33m[2m✓[22m[39m completes a cardiac-output correction through readable history, separate note, exact comparison and saved handover recovery[33m 1874[2mms[22m[39m
+2026-10-20T04:20:25.0018120Z    [33m[2m✓[22m[39m M1: repository replacement cannot rebind a selected comparison note into the new handover[33m 844[2mms[22m[39m
+2026-10-20T04:20:25.0020264Z    [33m[2m✓[22m[39m M1: retains repository A saved confirmation but withholds continuation against B with identical reference and digest[33m 687[2mms[22m[39m
+2026-10-20T04:20:25.0022247Z    [33m[2m✓[22m[39m M1: repository refresh does not remount the editor or replace an uncertain pending revision[33m 305[2mms[22m[39m
+2026-10-20T04:20:26.7661410Z  [32m✓[39m tests/microDecoders.test.ts [2m([22m[2m116 tests[22m[2m)[22m[33m 526[2mms[22m[39m
+2026-10-20T04:20:32.2208573Z  [32m✓[39m tests/review.test.tsx [2m([22m[2m36 tests[22m[2m)[22m[33m 7668[2mms[22m[39m
+2026-10-20T04:20:32.2227848Z    [32m✓[39m evidence and preparation [2m(7)[22m
+2026-10-20T04:20:32.2245338Z      [33m[2m✓[22m[39m loads exact strings and ten explicit coverage entries[33m 452[2mms[22m[39m
+2026-10-20T04:20:35.1311316Z  [32m✓[39m tests/evidenceEntry.test.tsx [2m([22m[2m17 tests[22m[2m)[22m[33m 7044[2mms[22m[39m
+2026-10-20T04:20:35.1313357Z    [33m[2m✓[22m[39m reviews a reasoned exact correction before any append and preserves original time and sample context[33m 711[2mms[22m[39m
+2026-10-20T04:20:35.1315501Z    [33m[2m✓[22m[39m retains the exact reviewed draft after a lost response and requires explicit absent-case retry[33m 539[2mms[22m[39m
+2026-10-20T04:20:35.1317585Z    [33m[2m✓[22m[39m recovers a committed exact revision without another save[33m 394[2mms[22m[39m
+2026-10-20T04:20:35.1319248Z    [33m[2m✓[22m[39m keeps a stale conflict in review without automatic replacement or retry[33m 333[2mms[22m[39m
+2026-10-20T04:20:35.1321072Z    [33m[2m✓[22m[39m keeps JSON-only and interleaved shortcut edits in the single authoritative draft[33m 395[2mms[22m[39m
+2026-10-20T04:20:35.1322848Z    [33m[2m✓[22m[39m retains exact calculation inputs and declared lineage for correct[33m 324[2mms[22m[39m
+2026-10-20T04:20:35.1324538Z    [33m[2m✓[22m[39m retains exact calculation inputs and declared lineage for withdraw[33m 316[2mms[22m[39m
+2026-10-20T04:20:35.1326159Z    [33m[2m✓[22m[39m blocks stale actionable state after a failed gate refresh and makes the header conditional[33m 340[2mms[22m[39m
+2026-10-20T04:20:35.1328502Z    [33m[2m✓[22m[39m ignores an older refresh result after a newer response and selects exact revisions only[33m 657[2mms[22m[39m
+2026-10-20T04:20:35.1330927Z    [33m[2m✓[22m[39m creates a guided BP source without JSON editing and reviews exact context before append[33m 464[2mms[22m[39m
+2026-10-20T04:20:35.1333053Z    [33m[2m✓[22m[39m prepares a clinician-authored reassessment with exact linked revisions and no automatic conclusion[33m 737[2mms[22m[39m
+2026-10-20T04:20:35.1335231Z    [33m[2m✓[22m[39m does not mark a refreshed successor selected when the original revision remains the correction target[33m 394[2mms[22m[39m
+2026-10-20T04:20:35.1337551Z    [33m[2m✓[22m[39m preserves admitted colliding stage selections through preview and submission: false / 0[33m 386[2mms[22m[39m
+2026-10-20T04:20:35.1339549Z    [33m[2m✓[22m[39m preserves admitted colliding stage selections through preview and submission: false / 1[33m 328[2mms[22m[39m
+2026-10-20T04:20:35.1341536Z    [33m[2m✓[22m[39m preserves admitted colliding stage selections through preview and submission: true / 1[33m 303[2mms[22m[39m
+2026-10-20T04:20:35.4460630Z  [32m✓[39m tests/rf2.test.tsx [2m([22m[2m28 tests[22m[2m)[22m[33m 2051[2mms[22m[39m
+2026-10-20T04:20:35.4462454Z    [33m[2m✓[22m[39m keeps acquisition separate when reusing measured weight in an authored dosing review[33m 442[2mms[22m[39m
+2026-10-20T04:20:35.4472530Z    [33m[2m✓[22m[39m retains the identical pending request after uncertain save and across repository replacement[33m 392[2mms[22m[39m
+2026-10-20T04:20:35.4474782Z    [33m[2m✓[22m[39m keeps original pending bytes through explicit absent lookup and retry without an automatic save[33m 322[2mms[22m[39m
+2026-10-20T04:20:36.5662359Z  [32m✓[39m tests/client.test.ts [2m([22m[2m88 tests[22m[2m)[22m[33m 302[2mms[22m[39m
+2026-10-20T04:20:42.0464804Z  [32m✓[39m tests/circulatory.test.tsx [2m([22m[2m52 tests[22m[2m)[22m[33m 5381[2mms[22m[39m
+2026-10-20T04:20:42.0465915Z    [32m✓[39m M7 explicit review state [2m(9)[22m
+2026-10-20T04:20:42.0467478Z      [33m[2m✓[22m[39m browses all families and corrections even with execution gate closed[33m 894[2mms[22m[39m
+2026-10-20T04:20:42.0469291Z      [33m[2m✓[22m[39m retains command and reconciles after network loss[33m 456[2mms[22m[39m
+2026-10-20T04:20:42.0470624Z      [33m[2m✓[22m[39m retains command and reconciles after timeout[33m 357[2mms[22m[39m
+2026-10-20T04:20:42.0471968Z      [33m[2m✓[22m[39m retains command and reconciles after malformed receipt[33m 361[2mms[22m[39m
+2026-10-20T04:20:42.0473470Z      [33m[2m✓[22m[39m retains command and reconciles after post-commit projection failure[33m 349[2mms[22m[39m
+2026-10-20T04:20:42.0475277Z      [33m[2m✓[22m[39m preserves uncertainty after failed reconciliation and retries only explicitly after absence[33m 466[2mms[22m[39m
+2026-10-20T04:20:42.0477181Z      [33m[2m✓[22m[39m locks view changes during delayed retained-history requests[33m 372[2mms[22m[39m
+2026-10-20T04:20:42.0478413Z    [32m✓[39m PR23 retained provenance correspondence [2m(19)[22m
+2026-10-20T04:20:42.0479905Z      [33m[2m✓[22m[39m keeps the original identity uncertain after malformed reconciliation[33m 329[2mms[22m[39m
+2026-10-20T04:20:43.6350625Z  [32m✓[39m tests/caseInterpretation.test.tsx [2m([22m[2m43 tests[22m[2m)[22m[33m 5607[2mms[22m[39m
+2026-10-20T04:20:43.6353388Z    [33m[2m✓[22m[39m resolves expanded sources exactly despite an optional colliding real HPI placed first[33m 310[2mms[22m[39m
+2026-10-20T04:20:43.6355587Z    [33m[2m✓[22m[39m resolves expanded sources exactly despite an optional colliding real HPI placed last[33m 310[2mms[22m[39m
+2026-10-20T04:20:49.0551289Z  [32m✓[39m tests/flowsheetOverview.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 4301[2mms[22m[39m
+2026-10-20T04:20:49.0566727Z    [33m[2m✓[22m[39m defaults to a compact overview with all eight groups and exact source selection[33m 628[2mms[22m[39m
+2026-10-20T04:20:49.0569002Z    [33m[2m✓[22m[39m makes every overview event reachable through time pages and through all-times mode[33m 876[2mms[22m[39m
+2026-10-20T04:20:49.0571691Z    [33m[2m✓[22m[39m keeps full-detail records and unknown or withdrawn source status available[33m 617[2mms[22m[39m
+2026-10-20T04:20:49.0573928Z    [33m[2m✓[22m[39m keeps pressure, method-specific flow and source rhythm on exact times with inspectable uncertainty[33m 615[2mms[22m[39m
+2026-10-20T04:20:49.0576388Z    [33m[2m✓[22m[39m keeps ABG samples and older echo at their original columns, with exact inspectors and source caveats[33m 614[2mms[22m[39m
+2026-10-20T04:20:49.0578934Z    [33m[2m✓[22m[39m does not place ambiguous gas or echo timing on the axis or hide suspect and withdrawn findings[33m 449[2mms[22m[39m
+2026-10-20T04:20:49.7224087Z  [32m✓[39m tests/reassessmentComparison.test.tsx [2m([22m[2m36 tests[22m[2m)[22m[33m 6540[2mms[22m[39m
+2026-10-20T04:20:49.7227046Z    [33m[2m✓[22m[39m compares exact original and successor references without replacing missing historical measurements or mutating notes[33m 470[2mms[22m[39m
+2026-10-20T04:20:50.9368128Z  [32m✓[39m tests/decoders.test.ts [2m([22m[2m94 tests[22m[2m)[22m[32m 87[2mms[22m[39m
+2026-10-20T04:20:53.9780859Z  [32m✓[39m tests/rf2SourceReview.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[33m 1944[2mms[22m[39m
+2026-10-20T04:20:53.9793063Z    [33m[2m✓[22m[39m requires explicit historical retention and retains the original reviewed request through uncertainty[33m 860[2mms[22m[39m
+2026-10-20T04:20:53.9795061Z    [33m[2m✓[22m[39m a changed review cannot silently reuse an acknowledgement; refresh is explicit and resets it[33m 364[2mms[22m[39m
+2026-10-20T04:20:53.9797272Z    [33m[2m✓[22m[39m preserves a definitively rejected pending request until explicit re-review resets historical consent[33m 404[2mms[22m[39m
+2026-10-20T04:20:56.3980318Z  [32m✓[39m tests/flowsheet.test.tsx [2m([22m[2m24 tests[22m[2m)[22m[33m 6168[2mms[22m[39m
+2026-10-20T04:20:56.3982314Z    [33m[2m✓[22m[39m does not carry forward a dose or replace a pause/stop with zero[33m 578[2mms[22m[39m
+2026-10-20T04:20:56.3984411Z    [33m[2m✓[22m[39m preserves exact drug units, event distinctions and source links[33m 1291[2mms[22m[39m
+2026-10-20T04:20:56.4038353Z    [33m[2m✓[22m[39m distinguishes interval volumes, explicit zero and source-reported balances without calculating[33m 365[2mms[22m[39m
+2026-10-20T04:20:56.4098143Z    [33m[2m✓[22m[39m retains top-level assessment and signal quality rather than labeling it missing[33m 483[2mms[22m[39m
+2026-10-20T04:20:57.7334091Z  [32m✓[39m tests/guidedEvidence.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+2026-10-20T04:21:02.6167111Z  [32m✓[39m tests/renalFluid.test.tsx [2m([22m[2m21 tests[22m[2m)[22m[33m 7061[2mms[22m[39m
+2026-10-20T04:21:02.6172360Z    [33m[2m✓[22m[39m decodes the real composite, four original terminal observations and exact two-revision history[33m 362[2mms[22m[39m
+2026-10-20T04:21:02.6174141Z    [33m[2m✓[22m[39m withholds contradictory repository instead of publishing a partial composite[33m 340[2mms[22m[39m
+2026-10-20T04:21:02.6175835Z    [33m[2m✓[22m[39m withholds contradictory digest instead of publishing a partial composite[33m 373[2mms[22m[39m
+2026-10-20T04:21:02.6177232Z    [33m[2m✓[22m[39m withholds contradictory fact_digest instead of publishing a partial composite[33m 355[2mms[22m[39m
+2026-10-20T04:21:02.6178182Z    [33m[2m✓[22m[39m withholds contradictory duplicate instead of publishing a partial composite[33m 346[2mms[22m[39m
+2026-10-20T04:21:02.6179135Z    [33m[2m✓[22m[39m withholds contradictory placement instead of publishing a partial composite[33m 387[2mms[22m[39m
+2026-10-20T04:21:02.6179960Z    [33m[2m✓[22m[39m rejects incomplete or contradictory history: context[33m 316[2mms[22m[39m
+2026-10-20T04:21:02.6180861Z    [33m[2m✓[22m[39m shows raw creatinine and fluid intervals, preserves uncertainty and opens both revisions[33m 786[2mms[22m[39m
+2026-10-20T04:21:02.6182214Z    [33m[2m✓[22m[39m clears previous history immediately and ignores a late response after a new selection[33m 599[2mms[22m[39m
+2026-10-20T04:21:02.6183135Z    [33m[2m✓[22m[39m uses one composite load and returns to the same hemodynamics workspace[33m 518[2mms[22m[39m
+2026-10-20T04:21:04.0662816Z  [32m✓[39m tests/evidenceExplanation.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 274[2mms[22m[39m
+2026-10-20T04:21:06.3597150Z  [32m✓[39m tests/renalFluidHistory.test.tsx [2m([22m[2m14 tests[22m[2m)[22m[33m 7433[2mms[22m[39m
+2026-10-20T04:21:06.3599291Z    [33m[2m✓[22m[39m rejects selected creatinine content mismatch: self_consistent_value[33m 622[2mms[22m[39m
+2026-10-20T04:21:06.3601183Z    [33m[2m✓[22m[39m rejects selected creatinine content mismatch: ingestion_time[33m 562[2mms[22m[39m
+2026-10-20T04:21:06.3602927Z    [33m[2m✓[22m[39m rejects selected creatinine content mismatch: ingestion_sequence[33m 555[2mms[22m[39m
+2026-10-20T04:21:06.3604910Z    [33m[2m✓[22m[39m accepts unchanged selected creatinine history through the real client[33m 608[2mms[22m[39m
+2026-10-20T04:21:06.3606885Z    [33m[2m✓[22m[39m withholds fluid history at the UI boundary: cutoff[33m 740[2mms[22m[39m
+2026-10-20T04:21:06.3608555Z    [33m[2m✓[22m[39m withholds fluid history at the UI boundary: repository[33m 525[2mms[22m[39m
+2026-10-20T04:21:06.3610169Z    [33m[2m✓[22m[39m withholds fluid history at the UI boundary: window[33m 523[2mms[22m[39m
+2026-10-20T04:21:06.3611781Z    [33m[2m✓[22m[39m withholds fluid history at the UI boundary: assembly_digest[33m 477[2mms[22m[39m
+2026-10-20T04:21:06.3613448Z    [33m[2m✓[22m[39m withholds fluid history at the UI boundary: request_limits[33m 484[2mms[22m[39m
+2026-10-20T04:21:06.3615154Z    [33m[2m✓[22m[39m withholds fluid history at the UI boundary: selected_content[33m 447[2mms[22m[39m
+2026-10-20T04:21:06.3617174Z    [33m[2m✓[22m[39m withholds fluid history at the UI boundary: ingestion_time[33m 436[2mms[22m[39m
+2026-10-20T04:21:06.3619178Z    [33m[2m✓[22m[39m withholds fluid history at the UI boundary: ingestion_sequence[33m 486[2mms[22m[39m
+2026-10-20T04:21:06.3621158Z    [33m[2m✓[22m[39m accepts unchanged fluid history and clears it when the next history cannot be confirmed[33m 495[2mms[22m[39m
+2026-10-20T04:21:06.3623161Z    [33m[2m✓[22m[39m does not resurrect valid fluid history after a later failed selection[33m 468[2mms[22m[39m
+2026-10-20T04:21:06.6524904Z  [32m✓[39m tests/evidenceEntryClient.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 1431[2mms[22m[39m
+2026-10-20T04:21:07.7838438Z  [32m✓[39m tests/evidenceSearch.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+2026-10-20T04:21:09.2508809Z  [32m✓[39m tests/localHandover.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+2026-10-20T04:21:10.6818617Z  [32m✓[39m tests/sourceUnitMappings.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 2696[2mms[22m[39m
+2026-10-20T04:21:10.6848326Z    [33m[2m✓[22m[39m displays the actual quantity mapping for fs-IO-output_urine-15[33m 1014[2mms[22m[39m
+2026-10-20T04:21:10.6872222Z    [33m[2m✓[22m[39m displays the actual quantity mapping for fs-D-ORDER[33m 647[2mms[22m[39m
+2026-10-20T04:21:10.6988309Z    [33m[2m✓[22m[39m displays the actual quantity mapping for fs-D-CHANGE[33m 524[2mms[22m[39m
+2026-10-20T04:21:10.7038566Z    [33m[2m✓[22m[39m distinguishes rate and concentration and preserves missing quantities without inferring applicability[33m 508[2mms[22m[39m
+2026-10-20T04:21:10.9599947Z  [32m✓[39m tests/rf2.integration.test.tsx [2m([22m[2m1 test[22m[2m)[22m[33m 474[2mms[22m[39m
+2026-10-20T04:21:10.9601912Z    [33m[2m✓[22m[39m publishes one RF2/RF1 cutoff and keeps the prior workspace mounted[33m 472[2mms[22m[39m
+2026-10-20T04:21:12.2418400Z  [32m✓[39m tests/rf2Transport.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 96[2mms[22m[39m
+2026-10-20T04:21:12.3836334Z  [32m✓[39m tests/circulatoryLookup.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 472[2mms[22m[39m
+2026-10-20T04:21:13.4492419Z  [32m✓[39m tests/hostedDemo.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 150[2mms[22m[39m
+2026-10-20T04:21:13.4535801Z 
+2026-10-20T04:21:13.4543169Z [2m Test Files [22m [1m[32m27 passed[39m[22m[90m (27)[39m
+2026-10-20T04:21:13.4546902Z [2m      Tests [22m [1m[32m749 passed[39m[22m[90m (749)[39m
+2026-10-20T04:21:13.4547701Z [2m   Start at [22m 04:20:01
+2026-10-20T04:21:13.4552302Z [2m   Duration [22m 71.56s[2m (tests 76%, environment 16%, setup 3%, import 3%, transform 2%)[22m
+2026-10-20T04:21:13.4564769Z 
+2026-10-20T04:21:13.4565723Z [2m    Isolate [22m [33m27 workers spawned[39m[2m · ~911ms startup each (spawn + environment, per file)[22m
+2026-10-20T04:21:13.4567530Z [2m            [22m [2mat least ~11.38s faster with [22m[33misolate: false[39m[2m — reuses workers across files instead of one per file[22m
+2026-10-20T04:21:13.4568195Z 
+2026-10-20T04:21:13.5065231Z ##[group]Run set -o pipefail
+2026-10-20T04:21:13.5065572Z [36;1mset -o pipefail[0m
+2026-10-20T04:21:13.5065982Z [36;1mnpm run typecheck 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/typecheck.txt"[0m
+2026-10-20T04:21:13.5129569Z shell: /usr/bin/bash -e {0}
+2026-10-20T04:21:13.5129852Z ##[endgroup]
+2026-10-20T04:21:13.6104913Z 
+2026-10-20T04:21:13.6106250Z > clinrx-synthetic-review@0.1.0 typecheck
+2026-10-20T04:21:13.6107099Z > tsc --noEmit
+2026-10-20T04:21:13.6107320Z 
+2026-10-20T04:21:15.1721065Z ##[group]Run set -o pipefail
+2026-10-20T04:21:15.1721609Z [36;1mset -o pipefail[0m
+2026-10-20T04:21:15.1722256Z [36;1mnpm run build 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/build.txt"[0m
+2026-10-20T04:21:15.1814145Z shell: /usr/bin/bash -e {0}
+2026-10-20T04:21:15.1814594Z ##[endgroup]
+2026-10-20T04:21:15.2849694Z 
+2026-10-20T04:21:15.2852281Z > clinrx-synthetic-review@0.1.0 build
+2026-10-20T04:21:15.2853007Z > tsc --noEmit && vite build
+2026-10-20T04:21:15.2853312Z 
+2026-10-20T04:21:17.1045977Z [36mvite v8.3.4 [32mbuilding client environment for production...[36m[39m
+2026-10-20T04:21:17.1144531Z transforming...
+2026-10-20T04:21:17.1995511Z ✓ 79 modules transformed.
+2026-10-20T04:21:17.2428635Z rendering chunks...
+2026-10-20T04:21:17.3286987Z computing gzip size...
+2026-10-20T04:21:17.3387327Z dist/index.html                     0.37 kB │ gzip:   0.27 kB
+2026-10-20T04:21:17.3388127Z dist/assets/index-Brb0kHhM.css     34.19 kB │ gzip:   7.54 kB
+2026-10-20T04:21:17.3388867Z dist/assets/index-DDQAFuuS.js   1,374.03 kB │ gzip: 174.31 kB
+2026-10-20T04:21:17.3389183Z 
+2026-10-20T04:21:17.3391778Z [32m✓ built in 233ms[39m
+2026-10-20T04:21:17.3399296Z [33m[plugin builtin:vite-reporter] 
+2026-10-20T04:21:17.3400059Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-10-20T04:21:17.3400588Z - Using dynamic import() to code-split the application
+2026-10-20T04:21:17.3401492Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+2026-10-20T04:21:17.3402461Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-10-20T04:21:17.3634872Z ##[group]Run set -o pipefail
+2026-10-20T04:21:17.3635209Z [36;1mset -o pipefail[0m
+2026-10-20T04:21:17.3635798Z [36;1mnpm run build -- --outDir "$RUNNER_TEMP/clinrx-authoring-build" 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/authoring-build.txt"[0m
+2026-10-20T04:21:17.3699742Z shell: /usr/bin/bash -e {0}
+2026-10-20T04:21:17.3700021Z env:
+2026-10-20T04:21:17.3700239Z   VITE_SYNTHETIC_HOSTED: true
+2026-10-20T04:21:17.3700513Z   VITE_SYNTHETIC_AUTHORING: true
+2026-10-20T04:21:17.3700783Z   VITE_SYNTHETIC_RF1: true
+2026-10-20T04:21:17.3701043Z   VITE_SYNTHETIC_RF2: true
+2026-10-20T04:21:17.3701288Z ##[endgroup]
+2026-10-20T04:21:17.4702836Z 
+2026-10-20T04:21:17.4703452Z > clinrx-synthetic-review@0.1.0 build
+2026-10-20T04:21:17.4704344Z > tsc --noEmit && vite build --outDir /home/runner/work/_temp/clinrx-authoring-build
+2026-10-20T04:21:17.4704712Z 
+2026-10-20T04:21:19.2616156Z [36mvite v8.3.4 [32mbuilding client environment for production...[36m[39m
+2026-10-20T04:21:19.2728264Z transforming...
+2026-10-20T04:21:19.3641323Z ✓ 79 modules transformed.
+2026-10-20T04:21:19.3663572Z [33m
+2026-10-20T04:21:19.3664714Z [1m(!)[22m outDir [37m[2m/home/runner/work/_temp/clinrx-authoring-build[22m[33m is not inside project root and will not be emptied.
+2026-10-20T04:21:19.3665631Z Use --emptyOutDir to override.
+2026-10-20T04:21:19.3665939Z [39m
+2026-10-20T04:21:19.4074965Z rendering chunks...
+2026-10-20T04:21:19.4891593Z computing gzip size...
+2026-10-20T04:21:19.5001789Z ../../../_temp/clinrx-authoring-build/index.html                     0.37 kB │ gzip:   0.27 kB
+2026-10-20T04:21:19.5003416Z ../../../_temp/clinrx-authoring-build/assets/index-Brb0kHhM.css     34.19 kB │ gzip:   7.54 kB
+2026-10-20T04:21:19.5005015Z ../../../_temp/clinrx-authoring-build/assets/index-C-eCmxf4.js   1,522.09 kB │ gzip: 203.50 kB
+2026-10-20T04:21:19.5005757Z 
+2026-10-20T04:21:19.5006089Z [32m✓ built in 238ms[39m
+2026-10-20T04:21:19.5013055Z [33m[plugin builtin:vite-reporter] 
+2026-10-20T04:21:19.5013976Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-10-20T04:21:19.5014953Z - Using dynamic import() to code-split the application
+2026-10-20T04:21:19.5016715Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+2026-10-20T04:21:19.5018422Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-10-20T04:21:19.5194105Z ##[group]Run mkdir -p "$RUNNER_TEMP/clinrx-frontend-evidence"
+2026-10-20T04:21:19.5194595Z [36;1mmkdir -p "$RUNNER_TEMP/clinrx-frontend-evidence"[0m
+2026-10-20T04:21:19.5195142Z [36;1mprintf 'job_status=%s\n' "$VALIDATION_STATUS" > "$RUNNER_TEMP/clinrx-frontend-evidence/status.txt"[0m
+2026-10-20T04:21:19.5195805Z [36;1m# Five allowlisted files, at most 64 KiB each; preserve failure summaries at the tail.[0m
+2026-10-20T04:21:19.5196354Z [36;1mfor name in environment tests typecheck build authoring-build; do[0m
+2026-10-20T04:21:19.5197463Z [36;1m  source="$RUNNER_TEMP/clinrx-frontend-logs/$name.txt"[0m
+2026-10-20T04:21:19.5198071Z [36;1m  if test -f "$source"; then[0m
+2026-10-20T04:21:19.5198486Z [36;1m    tail -c 65536 "$source" > "$RUNNER_TEMP/clinrx-frontend-evidence/$name.txt"[0m
+2026-10-20T04:21:19.5198886Z [36;1m  fi[0m
+2026-10-20T04:21:19.5199078Z [36;1mdone[0m
+2026-10-20T04:21:19.5260662Z shell: /usr/bin/bash -e {0}
+2026-10-20T04:21:19.5260914Z env:
+2026-10-20T04:21:19.5261168Z   VALIDATION_STATUS: success
+2026-10-20T04:21:19.5261414Z ##[endgroup]
+2026-10-20T04:21:19.5499525Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+2026-10-20T04:21:19.5499963Z with:
+2026-10-20T04:21:19.5500238Z   name: synthetic-frontend-validation-39368985675-1
+2026-10-20T04:21:19.5500671Z   path: /home/runner/work/_temp/clinrx-frontend-evidence/*.txt
+2026-10-20T04:21:19.5501021Z   retention-days: 7
+2026-10-20T04:21:19.5501232Z   compression-level: 9
+2026-10-20T04:21:19.5501463Z   if-no-files-found: error
+2026-10-20T04:21:19.5501712Z   include-hidden-files: false
+2026-10-20T04:21:19.5501952Z   overwrite: false
+2026-10-20T04:21:19.5502156Z ##[endgroup]
+2026-10-20T04:21:19.7182806Z (node:2907) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-20T04:21:19.7184180Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-20T04:21:19.7319245Z With the provided path, there will be 6 files uploaded
+2026-10-20T04:21:19.7320521Z Artifact name is valid!
+2026-10-20T04:21:19.7321246Z Root directory input is valid!
+2026-10-20T04:21:20.1299745Z Beginning upload of artifact content to blob storage
+2026-10-20T04:21:20.1595525Z (node:2907) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-20T04:21:20.4176936Z Uploaded bytes 7023
+2026-10-20T04:21:20.4903027Z Finished uploading artifact content to blob storage!
+2026-10-20T04:21:20.4904411Z SHA256 digest of uploaded artifact zip is 3b0cbd5433bb8be8bdf29cd44317cf3722dad65855734817803cbce5575546c1
+2026-10-20T04:21:20.4905613Z Finalizing artifact upload
+2026-10-20T04:21:20.7472733Z Artifact synthetic-frontend-validation-39368985675-1.zip successfully finalized. Artifact ID 12240259865
+2026-10-20T04:21:20.7474757Z Artifact synthetic-frontend-validation-39368985675-1 has been successfully uploaded! Final size is 7023 bytes. Artifact ID is 12240259865
+2026-10-20T04:21:20.7481179Z Artifact download URL: https://github.com/shafin-lab/clinrx-ai/actions/runs/39368985675/artifacts/12240259865
+2026-10-20T04:21:20.7667876Z Post job cleanup.
+2026-10-20T04:21:20.8898897Z (node:2919) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-20T04:21:20.8899939Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-20T04:21:20.9078728Z Post job cleanup.
+2026-10-20T04:21:20.9985012Z [command]/usr/bin/git version
+2026-10-20T04:21:21.0028549Z git version 2.55.0
+2026-10-20T04:21:21.0072756Z Temporarily overriding HOME='/home/runner/work/_temp/ac992380-c09c-4e49-b158-f39274d54299' before making global git config changes
+2026-10-20T04:21:21.0074372Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-20T04:21:21.0079212Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/clinrx-ai/clinrx-ai
+2026-10-20T04:21:21.0123754Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-20T04:21:21.0210101Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-20T04:21:21.0537195Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-20T04:21:21.0605689Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-20T04:21:21.1134291Z Cleaning up orphan processes
+2026-10-20T04:21:21.1486135Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

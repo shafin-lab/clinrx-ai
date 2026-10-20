@@ -1,0 +1,453 @@
+at\":\"2026-10-08T09:50:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"4efa2f1c-81d2-44c1-9e68-d84fb5e62e3a\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic journey operator\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"note\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Authored renal review\",\"version\":\"1\"},\"raw_display\":\"Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\\nquestion: Review corrected source references\\nfindings: Corrected recorded sources; original note retains original revisions. Corrections do not establish treatment response or improvement.\\npossibilities: Patient-level relationship not established.\\ngaps: Unknown source quality and incomplete fluid accounting remain.\\nplan: Unscheduled clinician review; no action scheduled.\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"cutoff\\\":180,\\\"digest\\\":\\\"613aee353ff303747085bb39445b53afa6fcd3636be7fc740c01323db506ebaf\\\",\\\"ingestion\\\":180,\\\"reference\\\":{\\\"id\\\":\\\"8ed66203-db30-4029-8853-e714ec103d92\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"5d74953c-c2ac-4e91-8082-839ecf6f9a98\\\"},\\\"repository\\\":\\\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"cutoff\\\":181,\\\"digest\\\":\\\"cb594f2ed8b53a02699185d0394621456e2f3d5a949a5e977aee74225a490f62\\\",\\\"ingestion\\\":181,\\\"reference\\\":{\\\"id\\\":\\\"4669259b-f7b2-4a85-b93b-9743381ea10d\\\",\\\"kind\\\":\\\"circulatory_event\\\",\\\"version\\\":\\\"2a764832-ebfe-4903-83a1-06f1726824f4\\\"},\\\"repository\\\":\\\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"cutoff\\\":175,\\\"digest\\\":\\\"06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa\\\",\\\"ingestion\\\":168,\\\"reference\\\":{\\\"id\\\":\\\"demo-creatinine-A\\\",\\\"kind\\\":\\\"observation\\\",\\\"version\\\":\\\"2\\\"},\\\"repository\\\":\\\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\\\"}\",\"namespace\":\"clinrx.local.rf2.pin/v1\",\"raw_display\":\"Exact reviewed evidence\",\"version\":\"1\"},{\"code\":\"{\\\"chart\\\":null,\\\"note\\\":{\\\"findings\\\":\\\"Corrected recorded sources; original note retains original revisions. Corrections do not establish treatment response or improvement.\\\",\\\"gaps\\\":\\\"Unknown source quality and incomplete fluid accounting remain.\\\",\\\"pins\\\":[],\\\"plan\\\":\\\"Unscheduled clinician review; no action scheduled.\\\",\\\"possibilities\\\":\\\"Patient-level relationship not established.\\\",\\\"question\\\":\\\"Review corrected source references\\\"},\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"4efa2f1c-81d2-44c1-9e68-d84fb5e62e3a\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:50:00Z\"},\"source_timestamp\":\"2026-10-08T09:50:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic journey operator\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T09:50:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"4efa2f1c-81d2-44c1-9e68-d84fb5e62e3a\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":null,\"revision\":\"7ce7601f-73e6-4fbe-b27c-2f13ffe0e758\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Unknown source quality and incomplete fluid accounting remain.\"],\"verification\":\"unverified\"}",
+        "digest": "db7190f066bfe5d8b3466a1388d508c3b47457a69220dc851afbcf086bf98cad",
+        "ingestion": {
+          "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+          "ingestion_sequence": 182,
+          "ingested_at": "2026-10-19T18:40:27.375812Z",
+          "payload_version": 1
+        },
+        "cutoff": 182,
+        "terminal_reference": {
+          "kind": "circulatory_event",
+          "id": "4efa2f1c-81d2-44c1-9e68-d84fb5e62e3a",
+          "version": "7ce7601f-73e6-4fbe-b27c-2f13ffe0e758"
+        },
+        "superseded": false,
+        "metadata": {
+          "chart": null,
+          "note": {
+            "findings": "Corrected recorded sources; original note retains original revisions. Corrections do not establish treatment response or improvement.",
+            "gaps": "Unknown source quality and incomplete fluid accounting remain.",
+            "pins": [
+              {
+                "cutoff": 180,
+                "digest": "613aee353ff303747085bb39445b53afa6fcd3636be7fc740c01323db506ebaf",
+                "ingestion": 180,
+                "reference": {
+                  "id": "8ed66203-db30-4029-8853-e714ec103d92",
+                  "kind": "circulatory_event",
+                  "version": "5d74953c-c2ac-4e91-8082-839ecf6f9a98"
+                },
+                "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5"
+              },
+              {
+                "cutoff": 181,
+                "digest": "cb594f2ed8b53a02699185d0394621456e2f3d5a949a5e977aee74225a490f62",
+                "ingestion": 181,
+                "reference": {
+                  "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+                  "kind": "circulatory_event",
+                  "version": "2a764832-ebfe-4903-83a1-06f1726824f4"
+                },
+                "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5"
+              },
+              {
+                "cutoff": 175,
+                "digest": "06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa",
+                "ingestion": 168,
+                "reference": {
+                  "id": "demo-creatinine-A",
+                  "kind": "observation",
+                  "version": "2"
+                },
+                "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5"
+              }
+            ],
+            "plan": "Unscheduled clinician review; no action scheduled.",
+            "possibilities": "Patient-level relationship not established.",
+            "question": "Review corrected source references"
+          },
+          "version": 1
+        }
+      },
+      "execution_enabled": false
+    }
+  },
+  {
+    "path": "/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2/validate",
+    "request": {
+      "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+      "id": "db57c81b-2231-4f77-a47b-8b85f07f0b43",
+      "revision": "39cdedb4-f22f-4a62-a752-26d0aa246b89",
+      "actor": "Synthetic journey operator",
+      "recorded_at": "2026-10-08T09:50:00Z",
+      "chart": null,
+      "note": {
+        "question": "Review existing kidney and newly recorded interval evidence",
+        "findings": "Recorded sources only; measured weight is referenced for dosing review without another quantity row.",
+        "possibilities": "Patient-level relationship not established.",
+        "gaps": "Unknown source quality and incomplete fluid accounting remain.",
+        "plan": "Unscheduled clinician review; no action scheduled.",
+        "pins": [
+          {
+            "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+            "reference": {
+              "kind": "circulatory_event",
+              "id": "8ed66203-db30-4029-8853-e714ec103d92",
+              "version": "ccf69899-2ba2-454b-a449-ee47550088c7"
+            },
+            "digest": "3c177536490bbb405375c6ab5ef9b786489027b5fb5af635bccbe0fd3f55352d",
+            "ingestion": 176,
+            "cutoff": 176
+          },
+          {
+            "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+            "reference": {
+              "kind": "circulatory_event",
+              "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+              "version": "10f64596-a8bb-4a8e-b748-206ce97f056f"
+            },
+            "digest": "b9a598657709813728f9748b027ffdf56550eb12e5be509cd975423d3bfb28d8",
+            "ingestion": 177,
+            "cutoff": 177
+          },
+          {
+            "repository": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+            "reference": {
+              "kind": "observation",
+              "id": "demo-creatinine-A",
+              "version": "2"
+            },
+            "digest": "06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa",
+            "ingestion": 168,
+            "cutoff": 175
+          }
+        ]
+      },
+      "predecessor": null,
+      "reason": null,
+      "source_review": [
+        {
+          "selected": {
+            "kind": "circulatory_event",
+            "id": "8ed66203-db30-4029-8853-e714ec103d92",
+            "version": "ccf69899-2ba2-454b-a449-ee47550088c7"
+          },
+          "terminal": {
+            "kind": "circulatory_event",
+            "id": "8ed66203-db30-4029-8853-e714ec103d92",
+            "version": "5d74953c-c2ac-4e91-8082-839ecf6f9a98"
+          },
+          "terminal_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "terminal_ingestion": 180,
+          "record_status": "recorded",
+          "retain_historical": true
+        },
+        {
+          "selected": {
+            "kind": "circulatory_event",
+            "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+            "version": "10f64596-a8bb-4a8e-b748-206ce97f056f"
+          },
+          "terminal": {
+            "kind": "circulatory_event",
+            "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+            "version": "2a764832-ebfe-4903-83a1-06f1726824f4"
+          },
+          "terminal_digest": "cb594f2ed8b53a02699185d0394621456e2f3d5a949a5e977aee74225a490f62",
+          "terminal_ingestion": 181,
+          "record_status": "recorded",
+          "retain_historical": true
+        },
+        {
+          "selected": {
+            "kind": "observation",
+            "id": "demo-creatinine-A",
+            "version": "2"
+          },
+          "terminal": {
+            "kind": "observation",
+            "id": "demo-creatinine-A",
+            "version": "2"
+          },
+          "terminal_digest": "06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa",
+          "terminal_ingestion": 168,
+          "record_status": null,
+          "retain_historical": true
+        }
+      ]
+    },
+    "status": 200,
+    "response": {
+      "source_review": [
+        {
+          "selected": {
+            "kind": "circulatory_event",
+            "id": "8ed66203-db30-4029-8853-e714ec103d92",
+            "version": "ccf69899-2ba2-454b-a449-ee47550088c7"
+          },
+          "terminal": {
+            "kind": "circulatory_event",
+            "id": "8ed66203-db30-4029-8853-e714ec103d92",
+            "version": "5d74953c-c2ac-4e91-8082-839ecf6f9a98"
+          },
+          "terminal_digest": "613aee353ff303747085bb39445b53afa6fcd3636be7fc740c01323db506ebaf",
+          "terminal_ingestion": 180,
+          "record_status": "recorded",
+          "retain_historical": false
+        },
+        {
+          "selected": {
+            "kind": "circulatory_event",
+            "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+            "version": "10f64596-a8bb-4a8e-b748-206ce97f056f"
+          },
+          "terminal": {
+            "kind": "circulatory_event",
+            "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+            "version": "2a764832-ebfe-4903-83a1-06f1726824f4"
+          },
+          "terminal_digest": "cb594f2ed8b53a02699185d0394621456e2f3d5a949a5e977aee74225a490f62",
+          "terminal_ingestion": 181,
+          "record_status": "recorded",
+          "retain_historical": false
+        },
+        {
+          "selected": {
+            "kind": "observation",
+            "id": "demo-creatinine-A",
+            "version": "2"
+          },
+          "terminal": {
+            "kind": "observation",
+            "id": "demo-creatinine-A",
+            "version": "2"
+          },
+          "terminal_digest": "06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa",
+          "terminal_ingestion": 168,
+          "record_status": null,
+          "retain_historical": false
+        }
+      ],
+      "status": "validated",
+      "request_digest": "f5bdc324e3d7d33925dca0f45d98d2edb144d7fcdb22fab8de7a2f2ddc3b6aa2",
+      "request_canonical": "{\"actor\":\"Synthetic journey operator\",\"chart\":null,\"id\":\"db57c81b-2231-4f77-a47b-8b85f07f0b43\",\"note\":{\"findings\":\"Recorded sources only; measured weight is referenced for dosing review without another quantity row.\",\"gaps\":\"Unknown source quality and incomplete fluid accounting remain.\",\"pins\":[{\"cutoff\":176,\"digest\":\"3c177536490bbb405375c6ab5ef9b786489027b5fb5af635bccbe0fd3f55352d\",\"ingestion\":176,\"reference\":{\"id\":\"8ed66203-db30-4029-8853-e714ec103d92\",\"kind\":\"circulatory_event\",\"version\":\"ccf69899-2ba2-454b-a449-ee47550088c7\"},\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\"},{\"cutoff\":177,\"digest\":\"b9a598657709813728f9748b027ffdf56550eb12e5be509cd975423d3bfb28d8\",\"ingestion\":177,\"reference\":{\"id\":\"4669259b-f7b2-4a85-b93b-9743381ea10d\",\"kind\":\"circulatory_event\",\"version\":\"10f64596-a8bb-4a8e-b748-206ce97f056f\"},\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\"},{\"cutoff\":175,\"digest\":\"06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa\",\"ingestion\":168,\"reference\":{\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"version\":\"2\"},\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\"}],\"plan\":\"Unscheduled clinician review; no action scheduled.\",\"possibilities\":\"Patient-level relationship not established.\",\"question\":\"Review existing kidney and newly recorded interval evidence\"},\"predecessor\":null,\"reason\":null,\"recorded_at\":\"2026-10-08T09:50:00Z\",\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\",\"revision\":\"39cdedb4-f22f-4a62-a752-26d0aa246b89\"}",
+      "fact": {
+        "kind": "circulatory_event",
+        "id": "db57c81b-2231-4f77-a47b-8b85f07f0b43",
+        "revision": "39cdedb4-f22f-4a62-a752-26d0aa246b89",
+        "binding": {
+          "target": {
+            "patient_id": "synthetic-p1",
+            "encounter_id": "synthetic-e1",
+            "longitudinal_context_id": null
+          },
+          "verification": {
+            "status": "unresolved",
+            "method": "Synthetic scope selection",
+            "verifier": "Synthetic journey operator",
+            "assessed_at": "2026-10-08T09:50:00Z",
+            "source": {
+              "namespace": "clinrx.local.synthetic.rf2",
+              "identifier": "db57c81b-2231-4f77-a47b-8b85f07f0b43",
+              "version": null,
+              "channel": "clinician"
+            },
+            "ambiguity": "Local synthetic patient only."
+          }
+        },
+        "origin": "reported",
+        "provenance": {
+          "source": {
+            "namespace": "clinrx.local.synthetic.rf2",
+            "identifier": "db57c81b-2231-4f77-a47b-8b85f07f0b43",
+            "version": null,
+            "channel": "clinician"
+          },
+          "actor": "Synthetic journey operator",
+          "recorded_at": "2026-10-08T09:50:00Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Unauthenticated local synthetic source assertion."
+          ]
+        },
+        "time": {
+          "event": null,
+          "recorded": null,
+          "effective_start": null,
+          "effective_end": null,
+          "retrieved": null,
+          "processed": null,
+          "precision": "unknown",
+          "uncertainty": null
+        },
+        "verification": "unverified",
+        "conflict": "unknown",
+        "temporal_status": "unknown",
+        "uncertainty": [
+          "Unknown source quality and incomplete fluid accounting remain."
+        ],
+        "supersedes": null,
+        "correction_reason": null,
+        "contract_version": "3",
+        "occurred": {
+          "timestamp_precision": "M7ExactTimestampInput/v1",
+          "recorded": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T09:50:00Z",
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "source_timestamp": "2026-10-08T09:50:00Z",
+          "clock": "unknown",
+          "clock_basis": null,
+          "conflicting": [],
+          "alternative_sources": [],
+          "alignment": null
+        },
+        "available": {
+          "recorded": {
+            "status": "not_recorded",
+            "precision": "unknown",
+            "value": null,
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "source_timestamp": null,
+          "clock": "unknown",
+          "clock_basis": null,
+          "conflicting": [],
+          "alternative_sources": [],
+          "alignment": null
+        },
+        "associations": [
+          {
+            "role": "context",
+            "scope": {
+              "patient_id": "synthetic-p1",
+              "encounter_id": "synthetic-e1",
+              "longitudinal_context_id": null
+            },
+            "status": "resolved",
+            "exact": {
+              "kind": "circulatory_event",
+              "id": "8ed66203-db30-4029-8853-e714ec103d92",
+              "version": "ccf69899-2ba2-454b-a449-ee47550088c7"
+            },
+            "candidates": [],
+            "provenance": {
+              "source": {
+                "namespace": "clinrx.local.synthetic.rf2",
+                "identifier": "db57c81b-2231-4f77-a47b-8b85f07f0b43",
+                "version": null,
+                "channel": "clinician"
+              },
+              "actor": "Synthetic journey operator",
+              "recorded_at": "2026-10-08T09:50:00Z",
+              "upstream": [],
+              "lineage": "incomplete",
+              "limitations": [
+                "Unauthenticated local synthetic source assertion."
+              ]
+            },
+            "limitation": null
+          },
+          {
+            "role": "context",
+            "scope": {
+              "patient_id": "synthetic-p1",
+              "encounter_id": "synthetic-e1",
+              "longitudinal_context_id": null
+            },
+            "status": "resolved",
+            "exact": {
+              "kind": "circulatory_event",
+              "id": "4669259b-f7b2-4a85-b93b-9743381ea10d",
+              "version": "10f64596-a8bb-4a8e-b748-206ce97f056f"
+            },
+            "candidates": [],
+            "provenance": {
+              "source": {
+                "namespace": "clinrx.local.synthetic.rf2",
+                "identifier": "db57c81b-2231-4f77-a47b-8b85f07f0b43",
+                "version": null,
+                "channel": "clinician"
+              },
+              "actor": "Synthetic journey operator",
+              "recorded_at": "2026-10-08T09:50:00Z",
+              "upstream": [],
+              "lineage": "incomplete",
+              "limitations": [
+                "Unauthenticated local synthetic source assertion."
+              ]
+            },
+            "limitation": null
+          },
+          {
+            "role": "context",
+            "scope": {
+              "patient_id": "synthetic-p1",
+              "encounter_id": "synthetic-e1",
+              "longitudinal_context_id": null
+            },
+            "status": "resolved",
+            "exact": {
+              "kind": "observation",
+              "id": "demo-creatinine-A",
+              "version": "2"
+            },
+            "candidates": [],
+            "provenance": {
+              "source": {
+                "namespace": "clinrx.local.synthetic.rf2",
+                "identifier": "db57c81b-2231-4f77-a47b-8b85f07f0b43",
+                "version": null,
+                "channel": "clinician"
+              },
+              "actor": "Synthetic journey operator",
+              "recorded_at": "2026-10-08T09:50:00Z",
+              "upstream": [],
+              "lineage": "incomplete",
+              "limitations": [
+                "Unauthenticated local synthetic source assertion."
+              ]
+            },
+            "limitation": null
+          }
+        ],
+        "source_identifiers": [],
+        "disclosures": [],
+        "record_status": "recorded",
+        "event_type": "other",
+        "description": {
+          "raw_display": "Clinician-authored renal/fluid reassessment; not a generated clinical conclusion.\nquestion: Review existing kidney and newly recorded interval evidence\nfindings: Recorded sources only; measured weight is referenced for dosing review without another quantity row.\npossibilities: Patient-level relationship not established.\ngaps: Unknown source quality and incomplete fluid accounting remain.\nplan: Unscheduled clinician review; no action scheduled.",
+          "coding": {
+            "namespace": "clinrx.local.rf2/v1",
+            "code": "note",
+            "version": "1",
+            "raw_display": "Authored renal review"
+          }
+        },
+        "external_evidence": [
+          {
+            "namespace": "clinrx.local.rf2.pin/v1",
+            "code": "{\"cutoff\":176,\"digest\":\"3c177536490bbb405375c6ab5ef9b786489027b5fb5af635bccbe0fd3f55352d\",\"ingestion\":176,\"reference\":{\"id\":\"8ed66203-db30-4029-8853-e714ec103d92\",\"kind\":\"circulatory_event\",\"version\":\"ccf69899-2ba2-454b-a449-ee47550088c7\"},\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\"}",
+            "version": "1",
+            "raw_display": "Exact reviewed evidence"
+          },
+          {
+            "namespace": "clinrx.local.rf2.pin/v1",
+            "code": "{\"cutoff\":177,\"digest\":\"b9a598657709813728f9748b027ffdf56550eb12e5be509cd975423d3bfb28d8\",\"ingestion\":177,\"reference\":{\"id\":\"4669259b-f7b2-4a85-b93b-9743381ea10d\",\"kind\":\"circulatory_event\",\"version\":\"10f64596-a8bb-4a8e-b748-206ce97f056f\"},\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\"}",
+            "version": "1",
+            "raw_display": "Exact reviewed evidence"
+          },
+          {
+            "namespace": "clinrx.local.rf2.pin/v1",
+            "code": "{\"cutoff\":175,\"digest\":\"06d15e235c2414dc8b54f090b9eaccdaa2217de4c3dfb11aa14fca43af3433fa\",\"ingestion\":168,\"reference\":{\"id\":\"demo-creatinine-A\",\"kind\":\"observation\",\"version\":\"2\"},\"repository\":\"eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5\"}",
+            "version": "1",
+            "raw_display": "Exact reviewed evidence"
+          },
+          {
+            "namespace": "clinrx.local.rf2/v1",
+            "code": "{\"chart\":null,\"note\":{\"findings\":\"Recorded sources only; measured weight is referenced for dosing review without another quantity row.\",\"gaps\":\"Unknown source quality and incomplete fluid accounting remain.\",\"pins\":[],\"plan\":\"Unscheduled clinician review; no action scheduled.\",\"possibilities\":\"Patient-level relationship not established.\",\"question\":\"Review existing kidney and newly recorded interval evidence\"},\"version\":1}",
+            "version": "1",
+            "raw_display": "Structured RF2 source assertions"
+          }
+        ],
+        "recorded_amount": null
+      },
+      "replay_referenc

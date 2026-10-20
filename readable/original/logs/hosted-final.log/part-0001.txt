@@ -1,0 +1,184 @@
+frontend	Set up job	﻿2026-10-20T04:19:50.5187832Z Current runner version: '2.337.0'
+frontend	Set up job	2026-10-20T04:19:50.5214303Z ##[group]Runner Image Provisioner
+frontend	Set up job	2026-10-20T04:19:50.5215224Z Hosted Compute Agent
+frontend	Set up job	2026-10-20T04:19:50.5215877Z Version: 20261012.601
+frontend	Set up job	2026-10-20T04:19:50.5216756Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+frontend	Set up job	2026-10-20T04:19:50.5217552Z Build Date: 2026-10-12T17:48:21Z
+frontend	Set up job	2026-10-20T04:19:50.5218311Z Worker ID: {edf16704-d7dc-461d-ae6e-0831bf0fb078}
+frontend	Set up job	2026-10-20T04:19:50.5219061Z Region: westus2
+frontend	Set up job	2026-10-20T04:19:50.5219635Z Cloud: Azure
+frontend	Set up job	2026-10-20T04:19:50.5220189Z ##[endgroup]
+frontend	Set up job	2026-10-20T04:19:50.5221798Z ##[group]Operating System
+frontend	Set up job	2026-10-20T04:19:50.5222563Z Ubuntu
+frontend	Set up job	2026-10-20T04:19:50.5223125Z 24.04.5
+frontend	Set up job	2026-10-20T04:19:50.5223616Z LTS
+frontend	Set up job	2026-10-20T04:19:50.5224198Z ##[endgroup]
+frontend	Set up job	2026-10-20T04:19:50.5224783Z ##[group]Runner Image
+frontend	Set up job	2026-10-20T04:19:50.5225423Z Image: ubuntu-24.04
+frontend	Set up job	2026-10-20T04:19:50.5226019Z Version: 20261012.334.1
+frontend	Set up job	2026-10-20T04:19:50.5227268Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+frontend	Set up job	2026-10-20T04:19:50.5229507Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+frontend	Set up job	2026-10-20T04:19:50.5230534Z ##[endgroup]
+frontend	Set up job	2026-10-20T04:19:50.5231639Z ##[group]GITHUB_TOKEN Permissions
+frontend	Set up job	2026-10-20T04:19:50.5233852Z Contents: read
+frontend	Set up job	2026-10-20T04:19:50.5234479Z Metadata: read
+frontend	Set up job	2026-10-20T04:19:50.5235014Z ##[endgroup]
+frontend	Set up job	2026-10-20T04:19:50.5237639Z Secret source: Actions
+frontend	Set up job	2026-10-20T04:19:50.5238687Z Cache mode: write
+frontend	Set up job	2026-10-20T04:19:50.5239735Z Prepare workflow directory
+frontend	Set up job	2026-10-20T04:19:50.5704802Z Prepare all required actions
+frontend	Set up job	2026-10-20T04:19:50.5752685Z Getting action download info
+frontend	Set up job	2026-10-20T04:19:50.9043869Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+frontend	Set up job	2026-10-20T04:19:51.0103837Z Download action repository 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+frontend	Set up job	2026-10-20T04:19:51.0961447Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+frontend	Set up job	2026-10-20T04:19:51.3028346Z Complete job name: frontend
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-10-20T04:19:51.3947546Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3949364Z with:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3950158Z   persist-credentials: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3951085Z   repository: shafin-lab/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3958290Z   token: ***
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3959030Z   ssh-strict: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3959760Z   ssh-user: git
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3960470Z   clean: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3961261Z   sparse-checkout-cone-mode: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3962169Z   fetch-depth: 1
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3962771Z   fetch-tags: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3963231Z   show-progress: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3963677Z   lfs: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3964084Z   submodules: false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3964531Z   set-safe-directory: true
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.3965395Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.4987103Z Syncing repository: shafin-lab/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.4990620Z ##[group]Getting Git version info
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.4992584Z Working directory is '/home/runner/work/clinrx-ai/clinrx-ai'
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5011662Z [command]/usr/bin/git version
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5144840Z git version 2.55.0
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5166703Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5182698Z Temporarily overriding HOME='/home/runner/work/_temp/ac18ad62-a734-460d-ba6d-3556d78b4901' before making global git config changes
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5185005Z Adding repository directory to the temporary git global config as a safe directory
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5189123Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/clinrx-ai/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5244971Z Deleting the contents of '/home/runner/work/clinrx-ai/clinrx-ai'
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5249419Z ##[group]Initializing the repository
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5253765Z [command]/usr/bin/git init /home/runner/work/clinrx-ai/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5389284Z hint: Using 'master' as the name for the initial branch. This default branch name
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5390955Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5392661Z hint: to use in all of your new repositories, which will suppress this warning,
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5393971Z hint: call:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5394642Z hint:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5395815Z hint: 	git config --global init.defaultBranch <name>
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5396810Z hint:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5397587Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5398927Z hint: 'development'. The just-created branch can be renamed via this command:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5399868Z hint:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5400571Z hint: 	git branch -m <name>
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5401208Z hint:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5401891Z hint: Disable this message with "git config set advice.defaultBranchName false"
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5402923Z Initialized empty Git repository in /home/runner/work/clinrx-ai/clinrx-ai/.git/
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5406942Z [command]/usr/bin/git remote add origin https://github.com/shafin-lab/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5461900Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5462726Z ##[group]Disabling automatic garbage collection
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5466646Z [command]/usr/bin/git config --local gc.auto 0
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5507835Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5511816Z ##[group]Setting up auth
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5519435Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5558345Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.5980423Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.6042288Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.6309192Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.6364197Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.6365467Z ##[group]Fetching the repository
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:51.6381060Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +757b163f0f56f1343a32455fc0c4427460dfdd71:refs/tags/clinrx-rf2-f123-757b163
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.1767894Z From https://github.com/shafin-lab/clinrx-ai
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.1780575Z  * [new ref]         757b163f0f56f1343a32455fc0c4427460dfdd71 -> clinrx-rf2-f123-757b163
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.1782890Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.1783667Z ##[group]Determining the checkout info
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.1784512Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.1787081Z [command]/usr/bin/git sparse-checkout disable
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.1845282Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.1878737Z ##[group]Checking out the ref
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.1883829Z [command]/usr/bin/git checkout --progress --force refs/tags/clinrx-rf2-f123-757b163
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2347474Z Note: switching to 'refs/tags/clinrx-rf2-f123-757b163'.
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2348317Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2348835Z You are in 'detached HEAD' state. You can look around, make experimental
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2349897Z changes and commit them, and you can discard any commits you make in this
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2350883Z state without impacting any branches by switching back to a branch.
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2351495Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2351934Z If you want to create a new branch to retain commits you create, you may
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2352859Z do so (now or later) by using -c with the switch command. Example:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2353400Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2353640Z   git switch -c <new-branch-name>
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2354003Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2354556Z Or undo this operation with:
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2354942Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2355214Z   git switch -
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2355533Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2355967Z Turn off this advice by setting config variable advice.detachedHead to false
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2356925Z 
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2357452Z HEAD is now at 757b163 Enforce RF2 repository ownership and explicit changed-source review
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2377800Z ##[endgroup]
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2428974Z [command]/usr/bin/git log -1 --format=%H
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2459496Z 757b163f0f56f1343a32455fc0c4427460dfdd71
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2469055Z ##[group]Removing auth
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2472719Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2505691Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2743176Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2779238Z http.https://github.com/.extraheader
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2798085Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.2833380Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+frontend	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-10-20T04:19:52.3078122Z ##[endgroup]
+frontend	Verify clean source checkout	﻿2026-10-20T04:19:52.3391887Z ##[group]Run test -z "$(git status --porcelain=v1 --untracked-files=all)"
+frontend	Verify clean source checkout	2026-10-20T04:19:52.3394316Z ^[[36;1mtest -z "$(git status --porcelain=v1 --untracked-files=all)"^[[0m
+frontend	Verify clean source checkout	2026-10-20T04:19:52.3680709Z shell: /usr/bin/bash -e {0}
+frontend	Verify clean source checkout	2026-10-20T04:19:52.3682145Z ##[endgroup]
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	﻿2026-10-20T04:19:52.4405005Z ##[group]Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:52.4407011Z with:
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:52.4407893Z   node-version: 22.13.0
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:52.4408909Z   always-auth: false
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:52.4409868Z   check-latest: false
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:52.4419262Z   token: ***
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:52.4420152Z ##[endgroup]
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:52.5827088Z Attempting to download 22.13.0...
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:52.5942697Z (node:2335) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:52.5945972Z (Use `node --trace-deprecation ...` to show where the warning was created)
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:53.1647158Z Acquiring 22.13.0 - x64 from https://github.com/actions/node-versions/releases/download/22.13.0-12683784390/node-22.13.0-linux-x64.tar.gz
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:53.6275181Z Extracting ...
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:53.6399344Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/a4d01d91-3155-4dcf-ac51-40faebcd74fe -f /home/runner/work/_temp/4c6a751c-fe99-4f46-b4c5-6915783b537b
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:54.8350745Z Adding to the cache ...
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:58.2284040Z ##[group]Environment details
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:58.4602683Z node: v22.13.0
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:58.4603232Z npm: 10.9.2
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:58.4603436Z yarn: 1.22.22
+frontend	Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020	2026-10-20T04:19:58.4603961Z ##[endgroup]
+frontend	Record checkout and environment	﻿2026-10-20T04:19:58.4757601Z ##[group]Run set -o pipefail
+frontend	Record checkout and environment	2026-10-20T04:19:58.4757965Z ^[[36;1mset -o pipefail^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4758280Z ^[[36;1mmkdir -p "$RUNNER_TEMP/clinrx-frontend-logs"^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4758610Z ^[[36;1m{^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4758823Z ^[[36;1m  git rev-parse HEAD^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4759250Z ^[[36;1m  printf 'event=%s source_sha=%s ref=%s\n' "$GITHUB_EVENT_NAME" "$GITHUB_SHA" "$GITHUB_REF"^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4759839Z ^[[36;1m  printf 'runner_image=%s image_version=%s\n' "$ImageOS" "$ImageVersion"^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4760239Z ^[[36;1m  cat /etc/os-release^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4760486Z ^[[36;1m  uname -m^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4760705Z ^[[36;1m  node --version^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4760940Z ^[[36;1m  npm --version^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4761462Z ^[[36;1m  sha256sum package.json package-lock.json^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4761865Z ^[[36;1m} 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/environment.txt"^[[0m
+frontend	Record checkout and environment	2026-10-20T04:19:58.4829370Z shell: /usr/bin/bash -e {0}
+frontend	Record checkout and environment	2026-10-20T04:19:58.4829650Z ##[endgroup]
+frontend	Record checkout and environment	2026-10-20T04:19:58.4948074Z 757b163f0f56f1343a32455fc0c4427460dfdd71
+frontend	Record checkout and environment	2026-10-20T04:19:58.4948929Z event=workflow_dispatch source_sha=757b163f0f56f1343a32455fc0c4427460dfdd71 ref=refs/tags/clinrx-rf2-f123-757b163
+frontend	Record checkout and environment	2026-10-20T04:19:58.4949650Z runner_image=ubuntu24 image_version=20261012.334.1
+frontend	Record checkout and environment	2026-10-20T04:19:58.4954866Z PRETTY_NAME="Ubuntu 24.04.5 LTS"
+frontend	Record checkout and environment	2026-10-20T04:19:58.4955233Z NAME="Ubuntu"
+frontend	Record checkout and environment	2026-10-20T04:19:58.4955730Z VERSION_ID="24.04"
+frontend	Record checkout and environment	2026-10-20T04:19:58.4956302Z VERSION="24.04.5 LTS (Noble Numbat)"
+frontend	Record checkout and environment	2026-10-20T04:19:58.4957222Z VERSION_CODENAME=noble
+frontend	Record checkout and environment	2026-10-20T04:19:58.4957699Z ID=ubuntu
+frontend	Record checkout and environment	2026-10-20T04:19:58.4958085Z ID_LIKE=debian
+frontend	Record checkout and environment	2026-10-20T04:19:58.4958528Z HOME_URL="https://www.ubuntu.com/"
+frontend	Record checkout and environment	2026-10-20T04:19:58.4958948Z SUPPORT_URL="https://help.ubuntu.com/"
+frontend	Record checkout and environment	2026-10-20T04:19:58.4959445Z BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+frontend	Record checkout and environment	2026-10-20T04:19:58.4960081Z PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+frontend	Record checkout and environment	2026-10-20T04:19:58.4960602Z UBUNTU_CODENAME=noble
+frontend	Record checkout and environment	2026-10-20T04:19:58.4960891Z LOGO=ubuntu-logo
+frontend	Record checkout and environment	2026-10-20T04:19:58.4965278Z x86_64
+frontend	Record checkout and environment	2026-10-20T04:19:58.5002690Z v

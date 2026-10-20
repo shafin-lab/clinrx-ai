@@ -1,0 +1,543 @@
+                            "channel": "system"
+                          },
+                          "actor": "synthetic-demo",
+                          "recorded_at": "2026-10-08T08:00:00Z",
+                          "upstream": [],
+                          "lineage": "unknown",
+                          "limitations": [
+                            "Synthetic source assertion only."
+                          ]
+                        }
+                      },
+                      "limitations": []
+                    },
+                    "production": "direct_measurement",
+                    "calculation_method": null,
+                    "calculation_inputs": [],
+                    "concept": "cvp"
+                  },
+                  "expected_digest": "84b5a2177969a7d26369e3f8a317fcfc13f4b9b2caa8406dd74ebfe4ffd0c4a8",
+                  "ingestion": {
+                    "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+                    "ingestion_sequence": 104,
+                    "ingested_at": "2026-10-19T07:52:24.331161Z",
+                    "payload_version": 1
+                  },
+                  "inclusion": "in_window",
+                  "contextual_for": [],
+                  "disclosures": [
+                    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+                  ]
+                },
+                {
+                  "fact": {
+                    "kind": "circulatory_pressure",
+                    "id": "fs-MAP-15",
+                    "revision": "915ae2cb-99f9-47e6-883e-9fc51725a7f0",
+                    "binding": {
+                      "target": {
+                        "patient_id": "synthetic-p1",
+                        "encounter_id": "synthetic-e1",
+                        "longitudinal_context_id": null
+                      },
+                      "verification": {
+                        "status": "verified",
+                        "method": "synthetic-demo",
+                        "verifier": "synthetic-system",
+                        "assessed_at": "2026-10-08T08:00:00Z",
+                        "source": {
+                          "namespace": "clinrx.synthetic.demo",
+                          "identifier": "patient-state-v1",
+                          "version": "1",
+                          "channel": "system"
+                        },
+                        "ambiguity": null
+                      }
+                    },
+                    "origin": "reported",
+                    "provenance": {
+                      "source": {
+                        "namespace": "clinrx-local-synthetic-entry",
+                        "identifier": "915ae2cb-99f9-47e6-883e-9fc51725a7f0",
+                        "version": null,
+                        "channel": "clinician"
+                      },
+                      "actor": "Synthetic demo operator (assisted)",
+                      "recorded_at": "2026-10-19T10:14:22.865000Z",
+                      "upstream": [],
+                      "lineage": "incomplete",
+                      "limitations": [
+                        "Local synthetic correction; copied source context requires explicit review."
+                      ]
+                    },
+                    "time": {
+                      "event": null,
+                      "recorded": null,
+                      "effective_start": null,
+                      "effective_end": null,
+                      "retrieved": null,
+                      "processed": null,
+                      "precision": "unknown",
+                      "uncertainty": null
+                    },
+                    "verification": "unverified",
+                    "conflict": "unknown",
+                    "temporal_status": "unknown",
+                    "uncertainty": [],
+                    "supersedes": {
+                      "kind": "circulatory_pressure",
+                      "id": "fs-MAP-15",
+                      "version": "41675deb-aa68-444f-a5fe-6ed8770c2c0c"
+                    },
+                    "correction_reason": "User-requested synthetic transcription correction: 08:15 MAP corrected from 62.0000 to 63.0000 mmHg. Same source observation and acquisition context; not a new measurement or evidence of physiological improvement or treatment response.",
+                    "contract_version": "3",
+                    "occurred": {
+                      "timestamp_precision": "M7ExactTimestampInput/v1",
+                      "recorded": {
+                        "status": "known",
+                        "precision": "instant",
+                        "value": "2026-10-08T08:15:00Z",
+                        "lower": null,
+                        "upper": null,
+                        "uncertainty": null
+                      },
+                      "source_timestamp": "2026-10-08T08:15:00+00:00",
+                      "clock": "verified",
+                      "clock_basis": {
+                        "source": {
+                          "namespace": "clinrx.synthetic.demo",
+                          "identifier": "patient-state-v1",
+                          "version": "1",
+                          "channel": "system"
+                        },
+                        "actor": "synthetic-demo",
+                        "recorded_at": "2026-10-08T08:00:00Z",
+                        "upstream": [],
+                        "lineage": "unknown",
+                        "limitations": [
+                          "Synthetic source assertion only."
+                        ]
+                      },
+                      "conflicting": [],
+                      "alternative_sources": [],
+                      "alignment": null
+                    },
+                    "available": {
+                      "timestamp_precision": "M7ExactTimestampInput/v1",
+                      "recorded": {
+                        "status": "known",
+                        "precision": "instant",
+                        "value": "2026-10-08T08:18:00Z",
+                        "lower": null,
+                        "upper": null,
+                        "uncertainty": null
+                      },
+                      "source_timestamp": "2026-10-08T08:18:00+00:00",
+                      "clock": "verified",
+                      "clock_basis": {
+                        "source": {
+                          "namespace": "clinrx.synthetic.demo",
+                          "identifier": "patient-state-v1",
+                          "version": "1",
+                          "channel": "system"
+                        },
+                        "actor": "synthetic-demo",
+                        "recorded_at": "2026-10-08T08:00:00Z",
+                        "upstream": [],
+                        "lineage": "unknown",
+                        "limitations": [
+                          "Synthetic source assertion only."
+                        ]
+                      },
+                      "conflicting": [],
+                      "alternative_sources": [],
+                      "alignment": null
+                    },
+                    "associations": [],
+                    "source_identifiers": [],
+                    "disclosures": [],
+                    "record_status": "recorded",
+                    "result": {
+                      "result_type": "numeric",
+                      "quantity": {
+                        "value": "63.0000",
+                        "unit": {
+                          "raw": "mmHg",
+                          "status": "unresolved",
+                          "system": null,
+                          "code": null,
+                          "limitation": "Synthetic source unit."
+                        }
+                      },
+                      "comparator": "="
+                    },
+                    "acquisition": {
+                      "method": "invasive_arterial",
+                      "source_method": null,
+                      "device": null,
+                      "episode": null,
+                      "parameter": null,
+                      "parameter_concept": null,
+                      "algorithm": null,
+                      "parameter_support": "unknown",
+                      "support_provenance": null,
+                      "site": {
+                        "raw_display": "Synthetic radial arterial line",
+                        "coding": null
+                      },
+                      "compartment": "unknown",
+                      "laterality": "unknown",
+                      "respiratory_phase": null,
+                      "position": null,
+                      "reference_level": null,
+                      "calibration": "unknown",
+                      "zeroing": "unknown",
+                      "calibration_provenance": null,
+                      "zeroing_provenance": null,
+                      "interval_start": {
+                        "status": "not_recorded",
+                        "precision": "unknown",
+                        "value": null,
+                        "lower": null,
+                        "upper": null,
+                        "uncertainty": null
+                      },
+                      "interval_end": {
+                        "status": "not_recorded",
+                        "precision": "unknown",
+                        "value": null,
+                        "lower": null,
+                        "upper": null,
+                        "uncertainty": null
+                      },
+                      "averaging": null,
+                      "indexing_denominator": null,
+                      "indexing_basis": null,
+                      "indicator": null,
+                      "injection": null,
+                      "quality": {
+                        "status": "acceptable",
+                        "artifacts": [],
+                        "limitations": [],
+                        "provenance": {
+                          "source": {
+                            "namespace": "clinrx.synthetic.demo",
+                            "identifier": "patient-state-v1",
+                            "version": "1",
+                            "channel": "system"
+                          },
+                          "actor": "synthetic-demo",
+                          "recorded_at": "2026-10-08T08:00:00Z",
+                          "upstream": [],
+                          "lineage": "unknown",
+                          "limitations": [
+                            "Synthetic source assertion only."
+                          ]
+                        }
+                      },
+                      "limitations": []
+                    },
+                    "production": "direct_measurement",
+                    "calculation_method": null,
+                    "calculation_inputs": [],
+                    "concept": "systemic_mean"
+                  },
+                  "expected_digest": "25e795a695f1377d89cdefc712595a95d1f8ba79c10eac1fa87c8308a49508f7",
+                  "ingestion": {
+                    "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+                    "ingestion_sequence": 166,
+                    "ingested_at": "2026-10-19T10:14:40.747797Z",
+                    "payload_version": 1
+                  },
+                  "inclusion": "in_window",
+                  "contextual_for": [],
+                  "disclosures": [
+                    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+                  ]
+                },
+                {
+                  "fact": {
+                    "kind": "circulatory_pressure",
+                    "id": "fs-systemic_diastolic-15",
+                    "revision": "1",
+                    "binding": {
+                      "target": {
+                        "patient_id": "synthetic-p1",
+                        "encounter_id": "synthetic-e1",
+                        "longitudinal_context_id": null
+                      },
+                      "verification": {
+                        "status": "verified",
+                        "method": "synthetic-demo",
+                        "verifier": "synthetic-system",
+                        "assessed_at": "2026-10-08T08:00:00Z",
+                        "source": {
+                          "namespace": "clinrx.synthetic.demo",
+                          "identifier": "patient-state-v1",
+                          "version": "1",
+                          "channel": "system"
+                        },
+                        "ambiguity": null
+                      }
+                    },
+                    "origin": "reported",
+                    "provenance": {
+                      "source": {
+                        "namespace": "clinrx.synthetic.demo",
+                        "identifier": "patient-state-v1",
+                        "version": "1",
+                        "channel": "system"
+                      },
+                      "actor": "synthetic-demo",
+                      "recorded_at": "2026-10-08T08:00:00Z",
+                      "upstream": [],
+                      "lineage": "unknown",
+                      "limitations": [
+                        "Synthetic source assertion only."
+                      ]
+                    },
+                    "time": {
+                      "event": null,
+                      "recorded": null,
+                      "effective_start": null,
+                      "effective_end": null,
+                      "retrieved": null,
+                      "processed": null,
+                      "precision": "unknown",
+                      "uncertainty": null
+                    },
+                    "verification": "unverified",
+                    "conflict": "unknown",
+                    "temporal_status": "unknown",
+                    "uncertainty": [],
+                    "supersedes": null,
+                    "correction_reason": null,
+                    "contract_version": "3",
+                    "occurred": {
+                      "timestamp_precision": "M7ExactTimestampInput/v1",
+                      "recorded": {
+                        "status": "known",
+                        "precision": "instant",
+                        "value": "2026-10-08T08:15:00Z",
+                        "lower": null,
+                        "upper": null,
+                        "uncertainty": null
+                      },
+                      "source_timestamp": "2026-10-08T08:15:00+00:00",
+                      "clock": "verified",
+                      "clock_basis": {
+                        "source": {
+                          "namespace": "clinrx.synthetic.demo",
+                          "identifier": "patient-state-v1",
+                          "version": "1",
+                          "channel": "system"
+                        },
+                        "actor": "synthetic-demo",
+                        "recorded_at": "2026-10-08T08:00:00Z",
+                        "upstream": [],
+                        "lineage": "unknown",
+                        "limitations": [
+                          "Synthetic source assertion only."
+                        ]
+                      },
+                      "conflicting": [],
+                      "alternative_sources": [],
+                      "alignment": null
+                    },
+                    "available": {
+                      "timestamp_precision": "M7ExactTimestampInput/v1",
+                      "recorded": {
+                        "status": "known",
+                        "precision": "instant",
+                        "value": "2026-10-08T08:15:00Z",
+                        "lower": null,
+                        "upper": null,
+                        "uncertainty": null
+                      },
+                      "source_timestamp": "2026-10-08T08:15:00+00:00",
+                      "clock": "verified",
+                      "clock_basis": {
+                        "source": {
+                          "namespace": "clinrx.synthetic.demo",
+                          "identifier": "patient-state-v1",
+                          "version": "1",
+                          "channel": "system"
+                        },
+                        "actor": "synthetic-demo",
+                        "recorded_at": "2026-10-08T08:00:00Z",
+                        "upstream": [],
+                        "lineage": "unknown",
+                        "limitations": [
+                          "Synthetic source assertion only."
+                        ]
+                      },
+                      "conflicting": [],
+                      "alternative_sources": [],
+                      "alignment": null
+                    },
+                    "associations": [],
+                    "source_identifiers": [],
+                    "disclosures": [],
+                    "record_status": "recorded",
+                    "result": {
+                      "result_type": "numeric",
+                      "quantity": {
+                        "value": "47",
+                        "unit": {
+                          "raw": "mmHg",
+                          "status": "unresolved",
+                          "system": null,
+                          "code": null,
+                          "limitation": "Synthetic source unit."
+                        }
+                      },
+                      "comparator": "="
+                    },
+                    "acquisition": {
+                      "method": "invasive_arterial",
+                      "source_method": null,
+                      "device": null,
+                      "episode": null,
+                      "parameter": null,
+                      "parameter_concept": null,
+                      "algorithm": null,
+                      "parameter_support": "unknown",
+                      "support_provenance": null,
+                      "site": {
+                        "raw_display": "Synthetic radial arterial line",
+                        "coding": null
+                      },
+                      "compartment": "unknown",
+                      "laterality": "unknown",
+                      "respiratory_phase": null,
+                      "position": null,
+                      "reference_level": null,
+                      "calibration": "unknown",
+                      "zeroing": "unknown",
+                      "calibration_provenance": null,
+                      "zeroing_provenance": null,
+                      "interval_start": {
+                        "status": "not_recorded",
+                        "precision": "unknown",
+                        "value": null,
+                        "lower": null,
+                        "upper": null,
+                        "uncertainty": null
+                      },
+                      "interval_end": {
+                        "status": "not_recorded",
+                        "precision": "unknown",
+                        "value": null,
+                        "lower": null,
+                        "upper": null,
+                        "uncertainty": null
+                      },
+                      "averaging": null,
+                      "indexing_denominator": null,
+                      "indexing_basis": null,
+                      "indicator": null,
+                      "injection": null,
+                      "quality": {
+                        "status": "acceptable",
+                        "artifacts": [],
+                        "limitations": [],
+                        "provenance": {
+                          "source": {
+                            "namespace": "clinrx.synthetic.demo",
+                            "identifier": "patient-state-v1",
+                            "version": "1",
+                            "channel": "system"
+                          },
+                          "actor": "synthetic-demo",
+                          "recorded_at": "2026-10-08T08:00:00Z",
+                          "upstream": [],
+                          "lineage": "unknown",
+                          "limitations": [
+                            "Synthetic source assertion only."
+                          ]
+                        }
+                      },
+                      "limitations": []
+                    },
+                    "production": "direct_measurement",
+                    "calculation_method": null,
+                    "calculation_inputs": [],
+                    "concept": "systemic_diastolic"
+                  },
+                  "expected_digest": "f646d92846eaaedeb75afc7cd2187e37b7b080885cc8fc4ee066ee79b7132211",
+                  "ingestion": {
+                    "repository_id": "eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5",
+                    "ingestion_sequence": 110,
+                    "ingested_at": "2026-10-19T07:52:24.349275Z",
+                    "payload_version": 1
+                  },
+                  "inclusion": "in_window",
+                  "contextual_for": [],
+                  "disclosures": [
+                    "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+                  ]
+                },
+                {
+                  "fact": {
+                    "kind": "circulatory_pressure",
+                    "id": "fs-systemic_systolic-15",
+                    "revision": "1",
+                    "binding": {
+                      "target": {
+                        "patient_id": "synthetic-p1",
+                        "encounter_id": "synthetic-e1",
+                        "longitudinal_context_id": null
+                      },
+                      "verification": {
+                        "status": "verified",
+                        "method": "synthetic-demo",
+                        "verifier": "synthetic-system",
+                        "assessed_at": "2026-10-08T08:00:00Z",
+                        "source": {
+                          "namespace": "clinrx.synthetic.demo",
+                          "identifier": "patient-state-v1",
+                          "version": "1",
+                          "channel": "system"
+                        },
+                        "ambiguity": null
+                      }
+                    },
+                    "origin": "reported",
+                    "provenance": {
+                      "source": {
+                        "namespace": "clinrx.synthetic.demo",
+                        "identifier": "patient-state-v1",
+                        "version": "1",
+                        "channel": "system"
+                      },
+                      "actor": "synthetic-demo",
+                      "recorded_at": "2026-10-08T08:00:00Z",
+                      "upstream": [],
+                      "lineage": "unknown",
+                      "limitations": [
+                        "Synthetic source assertion only."
+                      ]
+                    },
+                    "time": {
+                      "event": null,
+                      "recorded": null,
+                      "effective_start": null,
+                      "effective_end": null,
+                      "retrieved": null,
+                      "processed": null,
+                      "precision": "unknown",
+                      "uncertainty": null
+                    },
+                    "verification": "unverified",
+                    "conflict": "unknown",
+                    "temporal_status": "unknown",
+                    "uncertainty": [],
+                    "supersedes": null,
+                    "correction_reason": null,
+                    "contract_version": "3",
+                    "occurred": {
+                      "timestamp_precision": "M7ExactTimestampInput/v1",
+                      "recorded": {
+                        "status": "known",
+                        "precision": "instant",
+                 

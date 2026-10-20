@@ -1,0 +1,16 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend
+
+
+ Test Files  27 passed (27)
+      Tests  746 passed (746)
+   Start at  09:44:12
+   Duration  85.07s (tests 78%, environment 15%, import 3%, setup 2%, transform 2%)
+
+    Isolate  27 workers spawned · ~1.05s startup each (spawn + environment, per file)
+             at least ~13.11s faster with isolate: false — reuses workers across files instead of one per file
+
