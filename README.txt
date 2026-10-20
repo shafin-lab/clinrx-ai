@@ -57,7 +57,12 @@ Initial focused run: 88 passed.
 Expanded audit: 95 passed, 2 failed. Duplicate registry relationships were not
 rejected; single-node revision self-cycle lacked a conflict-group diagnostic.
 Both corrected; additional edge assertions added.
-Corrected final focused run: 110 passed. See separate raw logs, JUnit, source hashes,
+Original 7801121 corrected run: 110 passed, retained under its original evidence.
+H1-H3 correction candidate: 118 passed. Its old-source focused control is 6 failed /
+2 passed with resolver bytes matching 7801121; raw logs and captures are separate.
+H1 enforces canonical-target and chain-wide quantity constraints; H2 preserves
+directed provenance; H3 reports singleton cycle reasons and self-edges.
+See separate raw logs, JUnit, source hashes,
 exact synthetic input/output captures and environment metadata.
 No full application suite, hosted CI, browser, live database/server or installation
 was exercised. Application code and running workspace were not modified.

@@ -12,7 +12,7 @@ from uuid import UUID
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 CONTRACT = 'rf2-harness/v1-proposal.2'
-RESOLVER = 'rf2-isolated-resolver/1.0.0'
+RESOLVER = 'rf2-isolated-resolver/1.0.1'
 SCHEMA_BYTES = Path(__file__).with_name('schema.json').read_bytes()
 SCHEMA = json.loads(SCHEMA_BYTES)
 SCHEMA_DIGEST = hashlib.sha256(SCHEMA_BYTES).hexdigest()
@@ -300,25 +300,30 @@ def resolve(run):
         n = nodes.setdefault(h, {'e': e, 'sequences': set(), 'reasons': set(), 'groups': set()})
         n['sequences'].add(w['knowledge_sequence'])
     aliases = defaultdict(set)
-    alias_quantities = defaultdict(set)
+    component_quantities = defaultdict(set)
     for a in regs.get('component_aliases', []):
         aliases[(a['collection_key'], a['alias'])].add(a['canonical'])
-        alias_quantities[(a['collection_key'], a['alias'])].add(a['quantity_key'])
+        # Every edge asserts the physical quantity at BOTH endpoints. This also
+        # constrains envelopes using a canonical target without an alias spelling.
+        for key in (a['alias'], a['canonical']):
+            component_quantities[(a['collection_key'], key)].add(a['quantity_key'])
 
     def component(collection, key):
-        seen = set()
+        seen, quantities_on_path = set(), set()
         while (collection, key) in aliases:
             if key in seen or len(aliases[(collection, key)]) != 1:
                 raise ValueError('alias conflict')
             seen.add(key)
+            quantities_on_path.update(component_quantities[(collection, key)])
             key = next(iter(aliases[(collection, key)]))
+        quantities_on_path.update(component_quantities.get((collection, key), ()))
+        if len(quantities_on_path) > 1:
+            raise ValueError('contradictory alias quantity')
         return key
 
-    for (collection, key) in aliases:
+    for (collection, key) in component_quantities:
         try:
             component(collection, key)
-            if len(alias_quantities[(collection, key)]) != 1:
-                raise ValueError()
         except ValueError:
             # Alias registry scope is global; no unsupported assumption about unaffected input.
             withheld.add('ALIAS_UNRESOLVED')
@@ -330,7 +335,7 @@ def resolve(run):
             c = e['component_key']
             n['reasons'].add('ALIAS_UNRESOLVED')
         n['identity'] = (*scope(e), e['collection_key'], c, e['revision'])
-        alias_q = alias_quantities.get((e['collection_key'], e['component_key']))
+        alias_q = component_quantities.get((e['collection_key'], c))
         if alias_q and e['quantity_key'] not in alias_q:
             n['reasons'].add('ALIAS_UNRESOLVED')
         if not supports(e):
@@ -340,9 +345,11 @@ def resolve(run):
     conflict = Union()
 
     def edge(a, b, typ, reason=None):
-        if a == b:
+        if a == b and typ not in ('LINEAGE', 'CONFLICT'):
             return
-        x, y = sorted((a, b))
+        # LINEAGE is predecessor -> successor; SUMMARY_MEMBER is summary -> member.
+        # Only symmetric relationships are canonically ordered by endpoint digest.
+        x, y = (a, b) if typ in ('LINEAGE', 'SUMMARY_MEMBER') else sorted((a, b))
         edges.add((x, y, typ, reason or ''))
         if typ == 'CONFLICT':
             conflict.join(x, y)
@@ -356,6 +363,8 @@ def resolve(run):
             conflict.root(h)  # A one-node self-cycle is still a reportable group.
         for a, b in itertools.combinations(ids, 2):
             edge(a, b, 'CONFLICT', reason)
+        if len(ids) == 1:
+            edge(ids[0], ids[0], 'CONFLICT', reason)
 
     families = defaultdict(list)
     for h, n in nodes.items():

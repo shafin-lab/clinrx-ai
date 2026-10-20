@@ -12,7 +12,8 @@ ROOT=Path(__file__).resolve().parent
 name=sys.argv[1] if len(sys.argv)>1 else 'final-focused'
 folder=ROOT/'evidence'
 if (folder/(name+'.log')).exists():raise SystemExit('Refusing to overwrite existing run evidence')
-command=[sys.executable,'-m','pytest','tests','-q',f'--junitxml=evidence/{name}-junit.xml']
+test_paths=sys.argv[2:] or ['tests']
+command=[sys.executable,'-m','pytest',*test_paths,'-q',f'--junitxml=evidence/{name}-junit.xml']
 source={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(ROOT.rglob('*')) if p.is_file() and (p.suffix=='.py' or p.name=='schema.json') and 'evidence' not in p.parts and '__pycache__' not in p.parts}
 env=dict(os.environ,RF2_HARNESS_CAPTURE_DIR=str(folder/(name+'-captures')))
 start=time.monotonic()
