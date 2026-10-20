@@ -1,0 +1,14 @@
+
+> clinrx-synthetic-review@0.1.0 typecheck
+> tsc --noEmit
+
+tests/rf2FluidChart.test.tsx(17,2): error TS2839: This condition will always return 'true' since JavaScript compares objects by reference, not value.
+tests/rf2FluidChart.test.tsx(84,65): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+tests/rf2FluidChart.test.tsx(88,668): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+tests/rf2FluidChart.test.tsx(91,457): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.

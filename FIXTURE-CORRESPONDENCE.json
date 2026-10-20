@@ -1,0 +1,35 @@
+{
+  "fixtures": {
+    "frontend/tests/fixtures/rf2-api.json": "101cc0a7658ffb9744a88f5f5f0175dcae7872f127252fb93d0bf330ca09d056",
+    "frontend/tests/fixtures/rf2-reviewed-api.json": "e5ba065a507d808ed14c2852080ac229d2b3051eb82701e71fc96ac0df5662f7",
+    "frontend/tests/fixtures/icuFlowsheet.json": "317bb057de379a7316e5e3b967e045911693743bf2c7ee755a2533053334ce36"
+  },
+  "new_test_file": "frontend/tests/rf2FluidChart.test.tsx",
+  "new_cases": 23,
+  "focused_total": 76,
+  "focus_files": 5,
+  "component_derivations": "load() decodes preserved rf2-api catalog through existing RF2Client; entry() constructs explicitly synthetic presentation variants in memory. These variants are component fixtures, not new issuer/API/runtime evidence. Some tests change amounts or timing directly to probe display-only behavior; no source-profile eligibility is implied.",
+  "covered_variants": [
+    "raw decimal text/mL/L/zero/missing",
+    "multiple records in one cell",
+    "source summaries separate",
+    "hour/period crossing and partial intervals",
+    "interval-end versus point-end",
+    "CRRT net removal and effluent labels",
+    "legacy coding and source caveats",
+    "unknown source category",
+    "repeated local hour with explicit offsets",
+    "repository/cutoff/scope/duplicate correspondence failure",
+    "retained/loading/prior period",
+    "keyboard region scroll and static 360px CSS",
+    "Tab to urine source / Enter / exact history / focus return",
+    "draft and pin retention",
+    "uncertain-save exact-request preservation",
+    "handover bytes unchanged",
+    "conflicting/finer timestamp precision unplaced",
+    "historical revision without successor substitution"
+  ],
+  "integration": "Existing PatientWorkspace integration fixture extended with explicit-refresh failure, using mocked fetch only; no network or application runtime exercised.",
+  "rendered_360px_verified": false,
+  "unassisted_usability_verified": false
+}

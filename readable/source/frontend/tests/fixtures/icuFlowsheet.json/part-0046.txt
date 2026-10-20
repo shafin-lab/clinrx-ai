@@ -1,0 +1,664 @@
+rce": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "actor": "synthetic-demo",
+                "recorded_at": "2026-10-08T08:00:00Z",
+                "upstream": [],
+                "lineage": "unknown",
+                "limitations": [
+                  "Synthetic source assertion only."
+                ]
+              },
+              "conflicting": [],
+              "alternative_sources": [],
+              "alignment": null
+            },
+            "available": {
+              "timestamp_precision": "M7ExactTimestampInput/v1",
+              "recorded": {
+                "status": "known",
+                "precision": "instant",
+                "value": "2026-10-08T08:45:00Z",
+                "lower": null,
+                "upper": null,
+                "uncertainty": null
+              },
+              "source_timestamp": "2026-10-08T08:45:00+00:00",
+              "clock": "verified",
+              "clock_basis": {
+                "source": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "actor": "synthetic-demo",
+                "recorded_at": "2026-10-08T08:00:00Z",
+                "upstream": [],
+                "lineage": "unknown",
+                "limitations": [
+                  "Synthetic source assertion only."
+                ]
+              },
+              "conflicting": [],
+              "alternative_sources": [],
+              "alignment": null
+            },
+            "associations": [],
+            "source_identifiers": [],
+            "disclosures": [],
+            "record_status": "recorded",
+            "result": {
+              "result_type": "numeric",
+              "quantity": {
+                "value": "110",
+                "unit": {
+                  "raw": "mmHg",
+                  "status": "unresolved",
+                  "system": null,
+                  "code": null,
+                  "limitation": "Synthetic source unit."
+                }
+              },
+              "comparator": "="
+            },
+            "acquisition": {
+              "method": "invasive_arterial",
+              "source_method": null,
+              "device": null,
+              "episode": null,
+              "parameter": null,
+              "parameter_concept": null,
+              "algorithm": null,
+              "parameter_support": "unknown",
+              "support_provenance": null,
+              "site": {
+                "raw_display": "Synthetic radial arterial line",
+                "coding": null
+              },
+              "compartment": "unknown",
+              "laterality": "unknown",
+              "respiratory_phase": null,
+              "position": null,
+              "reference_level": null,
+              "calibration": "unknown",
+              "zeroing": "unknown",
+              "calibration_provenance": null,
+              "zeroing_provenance": null,
+              "interval_start": {
+                "status": "not_recorded",
+                "precision": "unknown",
+                "value": null,
+                "lower": null,
+                "upper": null,
+                "uncertainty": null
+              },
+              "interval_end": {
+                "status": "not_recorded",
+                "precision": "unknown",
+                "value": null,
+                "lower": null,
+                "upper": null,
+                "uncertainty": null
+              },
+              "averaging": null,
+              "indexing_denominator": null,
+              "indexing_basis": null,
+              "indicator": null,
+              "injection": null,
+              "quality": {
+                "status": "acceptable",
+                "artifacts": [],
+                "limitations": [],
+                "provenance": {
+                  "source": {
+                    "namespace": "clinrx.synthetic.demo",
+                    "identifier": "patient-state-v1",
+                    "version": "1",
+                    "channel": "system"
+                  },
+                  "actor": "synthetic-demo",
+                  "recorded_at": "2026-10-08T08:00:00Z",
+                  "upstream": [],
+                  "lineage": "unknown",
+                  "limitations": [
+                    "Synthetic source assertion only."
+                  ]
+                }
+              },
+              "limitations": []
+            },
+            "production": "direct_measurement",
+            "calculation_method": null,
+            "calculation_inputs": [],
+            "concept": "systemic_systolic"
+          },
+          "expected_digest": "83fa057dbd36e9d64678504f4cba4eda9ce0b0700254ba8058c4c1f5291ecd19",
+          "ingestion": {
+            "repository_id": "0689fc82-e802-4664-b72a-509b022717f7",
+            "ingestion_sequence": 131,
+            "ingested_at": "2026-10-16T17:34:00.962603Z",
+            "payload_version": 1
+          },
+          "inclusion": "in_window",
+          "contextual_for": [],
+          "disclosures": [
+            "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+          ]
+        },
+        {
+          "fact": {
+            "kind": "circulatory_vasoactive",
+            "id": "fs-D-CHANGE",
+            "revision": "1",
+            "binding": {
+              "target": {
+                "patient_id": "synthetic-p1",
+                "encounter_id": "synthetic-e1",
+                "longitudinal_context_id": null
+              },
+              "verification": {
+                "status": "verified",
+                "method": "synthetic-demo",
+                "verifier": "synthetic-system",
+                "assessed_at": "2026-10-08T08:00:00Z",
+                "source": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "ambiguity": null
+              }
+            },
+            "origin": "reported",
+            "provenance": {
+              "source": {
+                "namespace": "clinrx.synthetic.demo",
+                "identifier": "patient-state-v1",
+                "version": "1",
+                "channel": "system"
+              },
+              "actor": "synthetic-demo",
+              "recorded_at": "2026-10-08T08:00:00Z",
+              "upstream": [],
+              "lineage": "unknown",
+              "limitations": [
+                "Synthetic source assertion only."
+              ]
+            },
+            "time": {
+              "event": null,
+              "recorded": null,
+              "effective_start": null,
+              "effective_end": null,
+              "retrieved": null,
+              "processed": null,
+              "precision": "unknown",
+              "uncertainty": null
+            },
+            "verification": "unverified",
+            "conflict": "unknown",
+            "temporal_status": "unknown",
+            "uncertainty": [],
+            "supersedes": null,
+            "correction_reason": null,
+            "contract_version": "3",
+            "occurred": {
+              "timestamp_precision": "M7ExactTimestampInput/v1",
+              "recorded": {
+                "status": "known",
+                "precision": "instant",
+                "value": "2026-10-08T08:45:00Z",
+                "lower": null,
+                "upper": null,
+                "uncertainty": null
+              },
+              "source_timestamp": "2026-10-08T08:45:00+00:00",
+              "clock": "verified",
+              "clock_basis": {
+                "source": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "actor": "synthetic-demo",
+                "recorded_at": "2026-10-08T08:00:00Z",
+                "upstream": [],
+                "lineage": "unknown",
+                "limitations": [
+                  "Synthetic source assertion only."
+                ]
+              },
+              "conflicting": [],
+              "alternative_sources": [],
+              "alignment": null
+            },
+            "available": {
+              "timestamp_precision": "M7ExactTimestampInput/v1",
+              "recorded": {
+                "status": "known",
+                "precision": "instant",
+                "value": "2026-10-08T08:45:00Z",
+                "lower": null,
+                "upper": null,
+                "uncertainty": null
+              },
+              "source_timestamp": "2026-10-08T08:45:00+00:00",
+              "clock": "verified",
+              "clock_basis": {
+                "source": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "actor": "synthetic-demo",
+                "recorded_at": "2026-10-08T08:00:00Z",
+                "upstream": [],
+                "lineage": "unknown",
+                "limitations": [
+                  "Synthetic source assertion only."
+                ]
+              },
+              "conflicting": [],
+              "alternative_sources": [],
+              "alignment": null
+            },
+            "associations": [
+              {
+                "role": "delivery",
+                "scope": {
+                  "patient_id": "synthetic-p1",
+                  "encounter_id": "synthetic-e1",
+                  "longitudinal_context_id": null
+                },
+                "status": "resolved",
+                "exact": {
+                  "kind": "circulatory_event",
+                  "id": "fs-PUMP-RATE-D-CHANGE",
+                  "version": "1"
+                },
+                "candidates": [],
+                "provenance": {
+                  "source": {
+                    "namespace": "clinrx.synthetic.demo",
+                    "identifier": "patient-state-v1",
+                    "version": "1",
+                    "channel": "system"
+                  },
+                  "actor": "synthetic-demo",
+                  "recorded_at": "2026-10-08T08:00:00Z",
+                  "upstream": [],
+                  "lineage": "unknown",
+                  "limitations": [
+                    "Synthetic source assertion only."
+                  ]
+                },
+                "limitation": null
+              }
+            ],
+            "source_identifiers": [
+              {
+                "namespace": "clinrx.synthetic.infusion-series/v1",
+                "code": "fs-infusion-dobutamine",
+                "version": "1",
+                "raw_display": "fs-infusion-dobutamine"
+              }
+            ],
+            "disclosures": [
+              "Fictional example, not a treatment protocol or dosing advice. Dosing weight and pump-rate context retain exact source references when supplied; no conversion or continuous exposure is inferred."
+            ],
+            "record_status": "recorded",
+            "drug": {
+              "identity_version": "1",
+              "source": {
+                "namespace": "clinrx.synthetic.micro",
+                "code": "dobutamine",
+                "version": "1",
+                "raw_display": "dobutamine"
+              },
+              "canonical_id": "dobutamine",
+              "mapping": "mapped",
+              "mapping_provenance": {
+                "source": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "actor": "synthetic-demo",
+                "recorded_at": "2026-10-08T08:00:00Z",
+                "upstream": [],
+                "lineage": "unknown",
+                "limitations": [
+                  "Synthetic source assertion only."
+                ]
+              },
+              "formulation": null,
+              "limitation": null
+            },
+            "action": {
+              "event_type": "rate_change",
+              "delivery": {
+                "route": {
+                  "raw_display": "Synthetic central venous infusion",
+                  "coding": null
+                },
+                "concentration": {
+                  "value": "5",
+                  "unit": {
+                    "raw": "mg/mL",
+                    "status": "unresolved",
+                    "system": null,
+                    "code": null,
+                    "limitation": "Synthetic source unit."
+                  }
+                },
+                "rate": {
+                  "value": "3.0",
+                  "unit": {
+                    "raw": "mcg/kg/min",
+                    "status": "unresolved",
+                    "system": null,
+                    "code": null,
+                    "limitation": "Synthetic source unit."
+                  }
+                },
+                "amount": null,
+                "dosing_weight_basis": "actual",
+                "dosing_weight": {
+                  "kind": "circulatory_event",
+                  "id": "fs-WEIGHT",
+                  "version": "1"
+                },
+                "pump": {
+                  "namespace": "clinrx.synthetic.micro",
+                  "code": "fs-pump-dobutamine",
+                  "version": "1",
+                  "raw_display": "fs-pump-dobutamine"
+                },
+                "channel": {
+                  "namespace": "clinrx.synthetic.micro",
+                  "code": "fs-channel-dobutamine",
+                  "version": "1",
+                  "raw_display": "fs-channel-dobutamine"
+                },
+                "infusion": {
+                  "namespace": "clinrx.synthetic.infusion-series/v1",
+                  "code": "fs-infusion-dobutamine",
+                  "version": "1",
+                  "raw_display": "fs-infusion-dobutamine"
+                },
+                "attestation": {
+                  "source": {
+                    "namespace": "clinrx.synthetic.demo",
+                    "identifier": "patient-state-v1",
+                    "version": "1",
+                    "channel": "system"
+                  },
+                  "actor": "synthetic-demo",
+                  "recorded_at": "2026-10-08T08:00:00Z",
+                  "upstream": [],
+                  "lineage": "unknown",
+                  "limitations": [
+                    "Synthetic source assertion only."
+                  ]
+                }
+              }
+            },
+            "source_status": {
+              "raw_display": "Fictional charted event",
+              "coding": null
+            }
+          },
+          "expected_digest": "36dce6af664e80c4d503d63c3cd75854ddd59b6f613b980bd701f47344ac5cfe",
+          "ingestion": {
+            "repository_id": "0689fc82-e802-4664-b72a-509b022717f7",
+            "ingestion_sequence": 156,
+            "ingested_at": "2026-10-16T17:34:01.032897Z",
+            "payload_version": 1
+          },
+          "inclusion": "in_window",
+          "contextual_for": [],
+          "disclosures": [
+            "Recorded evidence only; source availability, continuity and completeness require separate assessment."
+          ]
+        },
+        {
+          "fact": {
+            "kind": "circulatory_vasoactive",
+            "id": "fs-N-REDUCE",
+            "revision": "1",
+            "binding": {
+              "target": {
+                "patient_id": "synthetic-p1",
+                "encounter_id": "synthetic-e1",
+                "longitudinal_context_id": null
+              },
+              "verification": {
+                "status": "verified",
+                "method": "synthetic-demo",
+                "verifier": "synthetic-system",
+                "assessed_at": "2026-10-08T08:00:00Z",
+                "source": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "ambiguity": null
+              }
+            },
+            "origin": "reported",
+            "provenance": {
+              "source": {
+                "namespace": "clinrx.synthetic.demo",
+                "identifier": "patient-state-v1",
+                "version": "1",
+                "channel": "system"
+              },
+              "actor": "synthetic-demo",
+              "recorded_at": "2026-10-08T08:00:00Z",
+              "upstream": [],
+              "lineage": "unknown",
+              "limitations": [
+                "Synthetic source assertion only."
+              ]
+            },
+            "time": {
+              "event": null,
+              "recorded": null,
+              "effective_start": null,
+              "effective_end": null,
+              "retrieved": null,
+              "processed": null,
+              "precision": "unknown",
+              "uncertainty": null
+            },
+            "verification": "unverified",
+            "conflict": "unknown",
+            "temporal_status": "unknown",
+            "uncertainty": [],
+            "supersedes": null,
+            "correction_reason": null,
+            "contract_version": "3",
+            "occurred": {
+              "timestamp_precision": "M7ExactTimestampInput/v1",
+              "recorded": {
+                "status": "known",
+                "precision": "instant",
+                "value": "2026-10-08T08:45:00Z",
+                "lower": null,
+                "upper": null,
+                "uncertainty": null
+              },
+              "source_timestamp": "2026-10-08T08:45:00+00:00",
+              "clock": "verified",
+              "clock_basis": {
+                "source": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "actor": "synthetic-demo",
+                "recorded_at": "2026-10-08T08:00:00Z",
+                "upstream": [],
+                "lineage": "unknown",
+                "limitations": [
+                  "Synthetic source assertion only."
+                ]
+              },
+              "conflicting": [],
+              "alternative_sources": [],
+              "alignment": null
+            },
+            "available": {
+              "timestamp_precision": "M7ExactTimestampInput/v1",
+              "recorded": {
+                "status": "known",
+                "precision": "instant",
+                "value": "2026-10-08T08:45:00Z",
+                "lower": null,
+                "upper": null,
+                "uncertainty": null
+              },
+              "source_timestamp": "2026-10-08T08:45:00+00:00",
+              "clock": "verified",
+              "clock_basis": {
+                "source": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "actor": "synthetic-demo",
+                "recorded_at": "2026-10-08T08:00:00Z",
+                "upstream": [],
+                "lineage": "unknown",
+                "limitations": [
+                  "Synthetic source assertion only."
+                ]
+              },
+              "conflicting": [],
+              "alternative_sources": [],
+              "alignment": null
+            },
+            "associations": [
+              {
+                "role": "delivery",
+                "scope": {
+                  "patient_id": "synthetic-p1",
+                  "encounter_id": "synthetic-e1",
+                  "longitudinal_context_id": null
+                },
+                "status": "resolved",
+                "exact": {
+                  "kind": "circulatory_event",
+                  "id": "fs-PUMP-RATE-N-REDUCE",
+                  "version": "1"
+                },
+                "candidates": [],
+                "provenance": {
+                  "source": {
+                    "namespace": "clinrx.synthetic.demo",
+                    "identifier": "patient-state-v1",
+                    "version": "1",
+                    "channel": "system"
+                  },
+                  "actor": "synthetic-demo",
+                  "recorded_at": "2026-10-08T08:00:00Z",
+                  "upstream": [],
+                  "lineage": "unknown",
+                  "limitations": [
+                    "Synthetic source assertion only."
+                  ]
+                },
+                "limitation": null
+              }
+            ],
+            "source_identifiers": [
+              {
+                "namespace": "clinrx.synthetic.infusion-series/v1",
+                "code": "fs-infusion-norepinephrine",
+                "version": "1",
+                "raw_display": "fs-infusion-norepinephrine"
+              }
+            ],
+            "disclosures": [
+              "Fictional example, not a treatment protocol or dosing advice. Dosing weight and pump-rate context retain exact source references when supplied; no conversion or continuous exposure is inferred."
+            ],
+            "record_status": "recorded",
+            "drug": {
+              "identity_version": "1",
+              "source": {
+                "namespace": "clinrx.synthetic.micro",
+                "code": "norepinephrine",
+                "version": "1",
+                "raw_display": "norepinephrine"
+              },
+              "canonical_id": "norepinephrine",
+              "mapping": "mapped",
+              "mapping_provenance": {
+                "source": {
+                  "namespace": "clinrx.synthetic.demo",
+                  "identifier": "patient-state-v1",
+                  "version": "1",
+                  "channel": "system"
+                },
+                "actor": "synthetic-demo",
+                "recorded_at": "2026-10-08T08:00:00Z",
+                "upstream": [],
+                "lineage": "unknown",
+                "limitations": [
+                  "Synthetic source assertion only."
+                ]
+              },
+              "formulation": null,
+              "limitation": null
+            },
+            "action": {
+              "event_type": "rate_change",
+              "delivery": {
+                "route": {
+                  "raw_display": "Synthetic central venous infusion",
+                  "coding": null
+                },
+                "concentration": {
+                  "value": "0.08",
+                  "unit": {
+                    "raw": "mg/mL",
+                    "status": "unresolved",
+                    "system": null,
+                    "code": null,
+                    "limitation": "Synthetic source unit."
+                  }
+                },
+                "rate": {
+                  "value": "6",
+                  "unit": {
+                    "raw": "mcg/min",
+                    "status": "unresolved",
+                    "system": null,
+                    "code": null,
+                    "limitation": "Synthetic source unit."
+                  }
+                },
+                "amount": null,
+                "dosing_weight_basis": "actual",
+                "dosing_weight": {
+                  "kind": "circulatory_event",
+                  "id": "fs-WEIGHT",
+                  "version": "1"
+                },
+                "pump": {
+                  "namespace": "clinrx.synthetic.micro",
+                  "code": "fs-pump-norepinephrine",
+                  "version": "1",
+                  "raw_display": "fs-pump-norepinephrine"
+ 

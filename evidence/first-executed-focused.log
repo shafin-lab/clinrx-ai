@@ -1,0 +1,335 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --configLoader runner --no-cache --maxWorkers=2 tests/rf2FluidChart.test.tsx tests/rf2.test.tsx tests/rf2SourceReview.test.tsx tests/rf2HandoverRace.test.tsx tests/rf2.integration.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend
+
+ ❯ tests/rf2FluidChart.test.tsx (21 tests | 2 failed) 1264ms
+   × supports keyboard scrolling and provides 360px CSS rules without claiming rendered layout 20ms
+   × opens exact history by keyboard and returns focus while preserving the mounted draft and evidence selection 358ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/rf2FluidChart.test.tsx > supports keyboard scrolling and provides 360px CSS rules without claiming rendered layout
+AssertionError: expected '' to contain '@media(max-width:360px)'
+
+- Expected
++ Received
+
+- @media(max-width:360px)
+
+ ❯ tests/rf2FluidChart.test.tsx:80:410
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/rf2FluidChart.test.tsx > opens exact history by keyboard and returns focus while preserving the mounted draft and evidence selection
+TestingLibraryElementError: Found multiple elements with the role "button" and name `/Open exact source/`
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<button[39m
+  [33mtype[39m=[32m"button"[39m
+[36m>[39m
+  [0mOpen exact source [0m
+  [0mde0f05cf-bb25-4f0a-952b-5934743a9b83[0m
+  [0m / [0m
+  [0m5b3081f9-ad8f-4389-b968-68e701e95256[0m
+[36m</button>[39m
+
+Ignored nodes: comments, script, style
+[36m<button[39m
+  [33mtype[39m=[32m"button"[39m
+[36m>[39m
+  [0mOpen exact source [0m
+  [0m9a9281f7-d7d5-4315-a6f6-ee516801d354[0m
+  [0m / [0m
+  [0md97b3a2b-d285-4021-92ae-c319506d41c0[0m
+[36m</button>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<section[39m
+  [33maria-label[39m=[32m"Fluid chart"[39m
+  [33mclass[39m=[32m"rf2-fluid-chart"[39m
+[36m>[39m
+  [36m<h3>[39m
+    [0mFluid chart — recorded entries[0m
+  [36m</h3>[39m
+  [36m<p>[39m
+    [36m<strong>[39m
+      [0mCalculations unavailable — source eligibility not established[0m
+    [36m</strong>[39m
+  [36m</p>[39m
+  [36m<p>[39m
+    [36m<strong>[39m
+      [0mCompleteness unresolved[0m
+    [36m</strong>[39m
+  [36m</p>[39m
+  [36m<p>[39m
+    [0mSelected source period: [0m
+    [0m2026-10-08T08:00:00Z[0m
+    [0m → [0m
+    [0m2026-10-08T10:00:00Z[0m
+    [0m. Hour groups use UTC (+00:00); source timestamps keep their recorded offsets. Groups are navigation only, not measured hourly volumes.[0m
+  [36m</p>[39m
+  [36m<p>[39m
+    [0mRepository [0m
+    [0mda23ef6d-d22b-4963-bb32-cdd8e53fe1c7[0m
+    [0m · source cutoff [0m
+    [0m6[0m
+    [0m. Recorded entries do not establish complete intake/output coverage.[0m
+  [36m</p>[39m
+  [36m<p>[39m
+    [0mThe existing selected period is retained. No additional 24-hour retrieval is introduced in this view; no period total is calculated.[0m
+  [36m</p>[39m
+  [36m<p[39m
+    [33mid[39m=[32m"rf2-fluid-scroll-help"[39m
+  [36m>[39m
+    [0mAt narrow widths, focus the chart region and use Left/Right arrow keys to scroll. Each source button is keyboard-accessible. Amounts are separate source assertions, with no summing, conversion or allocation.[0m
+  [36m</p>[39m
+  [36m<div[39m
+    [33maria-describedby[39m=[32m"rf2-fluid-scroll-help"[39m
+    [33maria-label[39m=[32m"Scrollable recorded fluid chart"[39m
+    [33mclass[39m=[32m"rf2-fluid-scroll"[39m
+    [33mrole[39m=[32m"region"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m>[39m
+    [36m<table>[39m
+      [36m<caption>[39m
+        [0mRecorded entries side by side — no hourly totals[0m
+      [36m</caption>[39m
+      [36m<thead>[39m
+        [36m<tr>[39m
+          [36m<th[39m
+            [33mscope[39m=[32m"col"[39m
+          [36m>[39m
+            [0mHour group / actual interval[0m
+          [36m</th>[39m
+          [36m<th[39m
+            [33mscope[39m=[32m"col"[39m
+          [36m>[39m
+            [0mIntake[0m
+          [36m</th>[39m
+          [36m<th[39m
+            [33mscope[39m=[32m"col"[39m
+          [36m>[39m
+            [0mUrine[0m
+          [36m</th>[39m
+          [36m<th[39m
+            [33mscope[39m=[32m"col"[39m
+          [36m>[39m
+            [0mDrain output[0m
+          [36m</th>[39m
+          [36m<th[39m
+            [33mscope[39m=[32m"col"[39m
+          [36m>[39m
+            [0mOther output[0m
+          [36m</th>[39m
+        [36m</tr>[39m
+      [36m</thead>[39m
+      [36m<tbody>[39m
+        [36m<tr>[39m
+          [36m<th[39m
+            [33mscope[39m=[32m"row"[39m
+          [36m>[39m
+            [0m2026-10-08T09:00:00Z[0m
+            [0m · UTC +00:00[0m
+          [36m</th>[39m
+          [36m<td>[39m
+            [36m<p>[39m
+              [0mNo recorded entry shown[0m
+            [36m</p>[39m
+          [36m</td>[39m
+          [36m<td>[39m
+            [36m<article[39m
+              [33maria-label[39m=[32m"Urine output de0f05cf-bb25-4f0a-952b-5934743a9b83 / 5b3081f9-ad8f-4389-b968-68e701e95256"[39m
+              [33mclass[39m=[32m"rf2-fluid-entry"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mUrine output[0m
+                [36m<small>[39m
+                  [0mSource category: [0m
+                  [0moutput_urine[0m
+                [36m</small>[39m
+              [36m</strong>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"rf2-fluid-amount"[39m
+              [36m>[39m
+                [0m35.0000 mL[0m
+              [36m</p>[39m
+              [36m<p>[39m
+                [0mRecorded interval: [0m
+                [0m2026-10-08T09:30:00Z[0m
+                [0m → [0m
+                [0m2026-10-08T09:45:00Z[0m
+              [36m</p>[39m
+              [36m<p>[39m
+                [0mRecord status: [0m
+                [0mrecorded[0m
+              [36m</p>[39m
+              [36m<p>[39m
+                [0mExplicit local fictional measurement[0m
+              [36m</p>[39m
+              [36m<p>[39m
+                [0mUncertainty: [0m
+                [0mCollection method not verified[0m
+              [36m</p>[39m
+              [36m<p>[39m
+                [0mSource caveat: [0m
+                [0mCollection method not verified[0m
+              [36m</p>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"rf2-fluid-reference"[39m
+              [36m>[39m
+                [0mExact source: [0m
+                [0mde0f05cf-bb25-4f0a-952b-5934743a9b83[0m
+                [0m / [0m
+                [0m5b3081f9-ad8f-4389-b968-68e701e95256[0m
+              [36m</p>[39m
+              [36m<button[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0mOpen exact source [0m
+                [0mde0f05cf-bb25-4f0a-952b-5934743a9b83[0m
+                [0m / [0m
+                [0m5b3081f9-ad8f-4389-b968-68e701e95256[0m
+              [36m</button>[39m
+              [36m<details>[39m
+                [36m<summary>[39m
+                  [0mSource timing, verification and exact pin[0m
+                [36m</summary>[39m
+                [36m<p>[39m
+                  [0m2026-10-08T09:45:00Z · in_window · Source clock unknown; acquisition quality not recorded · Source interval 2026-10-08T09:30:00Z → 2026-10-08T09:45:00Z; no rate or duration inferred · Verification unverified; conflict unknown[0m
+                [36m</p>[39m
+                [36m<p>[39m
+                  [0mRepository [0m
+                  [0mda23ef6d-d22b-4963-bb32-cdd8e53fe1c7[0m
+                  [0m · cutoff [0m
+                  [0m6[0m
+                  [0m · ingestion [0m
+                  [0m5[0m
+                  [0m · digest [0m
+                  [0mf072460d4f7eaf5cc3294179d4962f52090db6bdd8ffbde85576688ca645f402[0m
+                [36m</p>[39m
+              [36m</details>[39m
+            [36m</article>[39m
+          [36m</td>[39m
+          [36m<td>[39m
+            [36m<p>[39m
+              [0mNo recorded entry shown[0m
+            [36m</p>[39m
+          [36m</td>[39m
+          [36m<td>[39m
+            [36m<p>[39m
+              [0mNo recorded entry shown[0m
+            [36m</p>[39m
+          [36m</td>[39m
+        [36m</tr>[39m
+      [36m</tbody>[39m
+    [36m</table>[39m
+  [36m</div>[39m
+  [36m<section[39m
+    [33maria-label[39m=[32m"Other source assertions — category not mapped to the chart"[39m
+  [36m>[39m
+    [36m<h4>[39m
+      [0mOther source assertions — category not mapped to the chart[0m
+    [36m</h4>[39m
+    [36m<p>[39m
+      [0mSource-category meaning has not been established for these entries. They are not silently placed into a generic output column.[0m
+    [36m</p>[39m
+    [36m<article[39m
+      [33maria-label[39m=[32m"Unclassified recorded assertion 9a9281f7-d7d5-4315-a6f6-ee516801d354 / d97b3a2b-d285-4021-92ae-c319506d41c0"[39m
+      [33mclass[39m=[32m"rf2-fluid-entry"[39m
+    [36m>[39m
+      [36m<strong>[39m
+        [0mUnclassified recorded assertion[0m
+        [36m<small>[39m
+          [0mSource category: [0m
+          [0mweight[0m
+        [36m</small>[39m
+      [36m</strong>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"rf2-fluid-amount"[39m
+      [36m>[39m
+        [0m70.0000 kg[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRecorded point: [0m
+        [0m2026-10-08T09:45:00Z[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mRecord status: [0m
+        [0mrecorded[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mExplicit local fictional measurement[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mUncertainty: [0m
+        [0mCollection method not verified[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mSource caveat: [0m
+        [0mCollection method not verified[0m
+      [36m</p>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"rf2-fluid-reference"[39m
+      [36m>[39m
+        [0mExact source: [0m
+        [0m9a9281f7-d7d5-4315-a6f6-ee516801d354[0m
+        [0m / [0m
+        [0md97b3a2b-d285-4021-92ae-c319506d41c0[0m
+      [36m</p>[39m
+      [36m<button[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0mOpen exact source [0m
+        [0m9a9281f7-d7d5-4315-a6f6-ee516801d354[0m
+        [0m / [0m
+        [0md97b3a2b-d285-4021-92ae-c319506d41c0[0m
+      [36m</button>[39m
+      [36m<details>[39m
+        [36m<summary>[39m
+          [0mSource timing, verification and exact pin[0m
+        [36m</summary>[39m
+        [36m<p>[39m
+          [0m2026-10-08T09:45:00Z · in_window · Source clock unknown; acquisition quality not recorded · Verification unverified; conflict unknown[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [0mRepository [0m
+          [0mda23ef6d-d22b-4963-bb32-cdd8e53fe1c7[0m
+          [0m · cutoff [0m
+          [0m6[0m
+          [0m · ingestion [0m
+          [0m4[0m
+          [0m · digest [0m
+          [0m4d31b977aa662a2cdfd32f08c09794beff1dfdb3b4c98a7b107c2f30ae7f9534[0m
+        [36m</p>[39m
+      [36m</details>[39m
+    [36m</article>[39m
+  [36m</section>[39m
+[36m</section>[39m
+ ❯ Object.getElementError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getElementError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:20:35
+ ❯ getMultipleElementsFoundError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:23:10
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:55:13
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/rf2FluidChart.test.tsx:84:137
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  2 failed | 71 passed (73)
+   Start at  00:10:22
+   Duration  5.68s (tests 54%, environment 31%, transform 5%, setup 5%, import 4%)
+
+Environment  jsdom was created 5 times · 3.17s total, 31% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+

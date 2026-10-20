@@ -1,0 +1,356 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --configLoader runner --no-cache --maxWorkers=2 tests/rf2FluidChart.test.tsx tests/rf2.test.tsx tests/rf2SourceReview.test.tsx tests/rf2HandoverRace.test.tsx tests/rf2.integration.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend
+
+ ❯ tests/rf2FluidChart.test.tsx (0 test)
+ ❯ tests/rf2.integration.test.tsx (2 tests | 1 failed) 371ms
+   × marks the mounted chart as retained prior data after an explicit refresh fails 74ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/rf2FluidChart.test.tsx [ tests/rf2FluidChart.test.tsx ]
+TypeError: The URL must be of scheme file
+ ❯ tests/rf2FluidChart.test.tsx:10:14
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/rf2.integration.test.tsx > marks the mounted chart as retained prior data after an explicit refresh fails
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "Fluid chart"
+
+Here are the accessible roles:
+
+  link:
+
+  Name "Skip to patient workflow":
+  [36m<a[39m
+    [33mhref[39m=[32m"#patient-workflow"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  banner:
+
+  Name "":
+  [36m<header />[39m
+
+  --------------------------------------------------
+  heading:
+
+  Name "Synthetic ICU patient workspace":
+  [36m<h1[39m
+    [33mtabindex[39m=[32m"-1"[39m
+  [36m/>[39m
+
+  Name "Renal charting and handover":
+  [36m<h2 />[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+  search:
+
+  Name "Find patient evidence":
+  [36m<form[39m
+    [33maria-label[39m=[32m"Find patient evidence"[39m
+    [33mrole[39m=[32m"search"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  searchbox:
+
+  Name "Find recorded evidence":
+  [36m<input[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mplaceholder[39m=[32m"ABG 09:45, cardiac output, RVSP…"[39m
+    [33mtype[39m=[32m"search"[39m
+    [33mvalue[39m=[32m""[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "Find evidence":
+  [36m<button[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mtype[39m=[32m"submit"[39m
+  [36m/>[39m
+
+  Name "Patient and evidence":
+  [36m<button />[39m
+
+  Name "Source entry and reassessment":
+  [36m<button />[39m
+
+  Name "Compare notes":
+  [36m<button />[39m
+
+  Name "Handover":
+  [36m<button />[39m
+
+  Name "Renal and fluid review":
+  [36m<button />[39m
+
+  Name "Renal charting and handover":
+  [36m<button[39m
+    [33maria-current[39m=[32m"page"[39m
+  [36m/>[39m
+
+  Name "Refresh patient evidence":
+  [36m<button />[39m
+
+  --------------------------------------------------
+  navigation:
+
+  Name "Patient workflow":
+  [36m<nav[39m
+    [33maria-label[39m=[32m"Patient workflow"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  region:
+
+  Name "Current workflow step":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Current workflow step"[39m
+    [33mclass[39m=[32m"workflow-guide"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  group:
+
+  Name "":
+  [36m<details />[39m
+
+  --------------------------------------------------
+  list:
+
+  Name "":
+  [36m<ol />[39m
+
+  --------------------------------------------------
+  listitem:
+
+  Name "":
+  [36m<li />[39m
+
+  Name "":
+  [36m<li />[39m
+
+  Name "":
+  [36m<li />[39m
+
+  Name "":
+  [36m<li />[39m
+
+  Name "":
+  [36m<li />[39m
+
+  --------------------------------------------------
+  alert:
+
+  Name "":
+  [36m<p[39m
+    [33mrole[39m=[32m"alert"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"patient-workspace"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mhref[39m=[32m"#patient-workflow"[39m
+      [36m>[39m
+        [0mSkip to patient workflow[0m
+      [36m</a>[39m
+      [36m<header>[39m
+        [36m<h1[39m
+          [33mtabindex[39m=[32m"-1"[39m
+        [36m>[39m
+          [0mSynthetic ICU patient workspace[0m
+        [36m</h1>[39m
+        [36m<p>[39m
+          [0mPatient [0m
+          [0msynthetic-p1[0m
+          [0m · Encounter [0m
+          [0msynthetic-e1[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [36m<strong>[39m
+            [0mExecution gate not confirmed — new writes blocked.[0m
+          [36m</strong>[39m
+          [0m Local synthetic evidence only; no treatment advice.[0m
+        [36m</p>[39m
+        [36m<form[39m
+          [33maria-label[39m=[32m"Find patient evidence"[39m
+          [33mrole[39m=[32m"search"[39m
+        [36m>[39m
+          [36m<label>[39m
+            [0mFind recorded evidence[0m
+            [36m<input[39m
+              [33mdisabled[39m=[32m""[39m
+              [33mplaceholder[39m=[32m"ABG 09:45, cardiac output, RVSP…"[39m
+              [33mtype[39m=[32m"search"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</label>[39m
+          [36m<button[39m
+            [33mdisabled[39m=[32m""[39m
+            [33mtype[39m=[32m"submit"[39m
+          [36m>[39m
+            [0mFind evidence[0m
+          [36m</button>[39m
+        [36m</form>[39m
+        [36m<p>[39m
+          [0mRecorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.[0m
+        [36m</p>[39m
+        [36m<p>[39m
+          [0mRecorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.[0m
+        [36m</p>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Patient workflow"[39m
+        [36m>[39m
+          [36m<button>[39m
+            [0mPatient and evidence[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mSource entry and reassessment[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mCompare notes[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mHandover[0m
+          [36m</button>[39m
+          [36m<button>[39m
+            [0mRenal and fluid review[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"page"[39m
+          [36m>[39m
+            [0mRenal charting and handover[0m
+          [36m</button>[39m
+        [36m</nav>[39m
+        [36m<section[39m
+          [33maria-label[39m=[32m"Current workflow step"[39m
+          [33mclass[39m=[32m"workflow-guide"[39m
+        [36m>[39m
+          [36m<h2>[39m
+            [0mRenal charting and handover[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0mReuse existing sources; record genuinely new urine/fluid/weight evidence, preserve corrections, author a renal review and explicitly save a version 2 handover.[0m
+          [36m</p>[39m
+          [36m<details>[39m
+            [36m<summary>[39m
+              [0mHow to complete this synthetic patient workflow[0m
+            [36m</summary>[39m
+            [36m<ol>[39m
+              [36m<li>[39m
+                [0mBrowse pressures, flow, rhythm, gases, echo, infusions and perfusion together. Source times and gaps remain explicit.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mInspect the exact source and revision history. A correction appends a successor; it never overwrites the original.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mAuthor a separate reassessment with exact baseline, intervention and follow-up selections. Keep recorded findings, possibilities and gaps distinct.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mCompare two exact notes and their original references. Add the records/notes needed for handover.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mReview and explicitly save the handover selection locally; reload and open the saved view to recover it.[0m
+              [36m</li>[39m
+            [36m</ol>[39m
+            [36m<p>[39m
+              [0mThis workspace is for synthetic workflow testing. A saved selection is not a clinical handover sign-off. Pending clinical drafts and commands are not durably recovered after reload.[0m
+            [36m</p>[39m
+          [36m</details>[39m
+        [36m</section>[39m
+      [36m</header>[39m
+      [36m<p[39m
+        [33mrole[39m=[32m"alert"[39m
+      [36m>[39m
+        [0mThe patient evidence or disabled execution gate could not be confirmed. Refresh to check again; no source was replaced.[0m
+      [36m</p>[39m
+      [36m<button>[39m
+        [0mRefresh patient evidence[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mid[39m=[32m"patient-workflow"[39m
+        [33mtabindex[39m=[32m"-1"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mhidden[39m=[32m""[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mUnchanged comprehensive view[0m
+          [36m</p>[39m
+          [36m<button>[39m
+            [0mTest explicit refresh[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mhidden[39m=[32m""[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mExisting hemodynamic editor stays mounted[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/rf2.integration.test.tsx:15:372
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 3 passed (5)
+      Tests  1 failed | 52 passed (53)
+   Start at  00:11:40
+   Duration  5.19s (tests 51%, environment 33%, setup 7%, transform 5%, import 4%)
+
+Environment  jsdom was created 5 times · 2.96s total, 33% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+

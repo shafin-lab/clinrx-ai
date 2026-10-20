@@ -1,0 +1,86 @@
+CLINRX DIRECTOR — DISPLAY-ONLY RF2 FLUID CHART REVIEW
+
+Source 74414c29f52a9f2e87f96feb6dee386ba5ee8999
+Tree cb412451402d43f0defddc0a13c1b64c09eab483
+Parent d608ce8655a024cf7c9e4d78dbeb85b50d20fdc5
+Four production frontend files + two test files changed; no backend/API/contract,
+persistence, package dependency, policy or execution-gate changes.
+
+READ
+changes.diff, source/frontend/src/demo/RF2FluidChart.tsx and updated workspace.
+SOURCE-MANIFEST.json includes exact changed files and supporting fixtures/client.
+Raw source/parent commit objects and exact candidate Git source tag are supplied.
+
+BEHAVIOR
+Source list and Fluid chart are presentation toggles. Existing editor, pending
+request, source review, recovery and handover remain mounted. Chart entry opens
+existing exact-history operation using the original Evidence/revision; no terminal
+substitution. Keyboard Tab to region/source, Enter, heading focus and focus return
+are component-tested while authored text and exact selected pins remain intact.
+
+Amounts/raw units remain text: no summing, conversion, balance, rate, allocation,
+new cell editor or write path. Source categories and caveats stay visible, including
+CRRT net removal vs effluent. Drain identity remains explicitly unresolved.
+Groups use UTC (+00:00); original offsets stay visible. Repeated local-hour entries
+are distinct UTC groups. Intervals spanning boundaries/outside period, missing/
+ambiguous timing and finer-than-millisecond precision are retained separately;
+no rounded browser placement or interval-end fallback is invented.
+Summaries remain separate; unknown categories are not generic outputs.
+Failure/loading/prior-view warnings remain prominent. Scope/cutoff mismatch
+withholds the chart, not a false empty-current display. Requested period mismatch
+is exposed; retained prior data explicitly says not confirmed current.
+
+PERIOD LIMITATION
+This increment retains the existing selected period and makes no additional
+24-hour retrieval or period-selection flow. It does not claim the backend cannot
+support 24 hours (the configured window is runtime-dependent). No new capability
+or retrieval-limit assumption is introduced. Existing period/UTC offsets shown.
+
+VALIDATION AND FAILURE ATTRIBUTION
+- First startup attempt: filesystem EPERM in symlinked dependency .vite-temp;
+  no tests executed. Preserved in initial-focused.log.
+- Initial typecheck: test-helper assignment token and unsupported query options
+  failed; preserved initial-typecheck.log/JSON. These were corrected.
+- First executed focused run: 71 passed / 2 failed. Test raw-CSS import was empty
+  and source-button query was overly broad. First executed source snapshot retained.
+- Next run: one suite failed loading node:fs URL, one integration assertion failed
+  because it refreshed before the first snapshot had been confirmed; 52 tests passed,
+  one failed among loaded suites. Preserved corrected-focused.log/JSON.
+- Intermediate 76-pass runs remain attributed to their respective files/logs.
+- verified-typecheck.log failed because test node:fs import lacked TS node types.
+  Corrected via existing typed Vitest importActual; no dependency/config change.
+- FINAL: 76 focused tests / five files passed, typecheck passed, default and
+  explicit RF2-enabled builds passed on matching final source hashes.
+  See final-candidate-focused.*, final-typecheck.*, default-build.*, rf2-build.*.
+
+Final tests/builds use configLoader runner to avoid writes through the existing
+node_modules symlink; test cache disabled. No dependency installation occurred.
+Default and RF2 build bytes/modes are distinct and preserved. Existing large-bundle
+warnings remain. No full-suite, backend rerun, hosted CI or container claim.
+
+360PX / BROWSER LIMITS
+Target is 360 CSS pixels. CSS sets max-width/overflow containment, narrow rules,
+wrapping and visible focus; essential status lies outside the horizontal scroller.
+The region is focusable, labelled and handles Left/Right keys without intercepting
+keys on source buttons. DOM keyboard/draft tests and STATIC CSS checks passed.
+jsdom does NOT render layout: no desktop/360px screenshot, real overflow geometry,
+real-browser focus scrolling, screen-reader or unassisted-usability acceptance is
+claimed. Live browser operation was unavailable under the session restriction;
+no alternate browser route was attempted. Rendered viewport checks remain open.
+
+SCOPE AND REVIEW REQUEST
+Request bounded source/component/build review and explicit disposition of the
+remaining rendered viewport evidence. Implementation results await acceptance.
+Accepted isolated harness 5830cdc is not imported, executed or integrated.
+No live database/server/browser or browser storage was accessed. Storage assertions
+use isolated test localStorage only, not the user's browser. No before/after row
+preservation check is claimed or attempted under this frontend-only authorization.
+No runtime installation occurred; the user's existing running build was not
+replaced. No migration, durable storage, eligibility activation, deployment,
+external hosting, merge or clinical-readiness claim. Execution remains disabled.
+
+INTEGRITY
+Data-only verify_evidence.py checks source identities, raw commit objects, final
+source/command correspondence and preserved build checksums without running tests.
+MIRRORS.json provides lossless parts for large artifacts. PUBLICATION-SHA256SUMS
+covers publication bytes except itself. No ZIP or Mac access required.

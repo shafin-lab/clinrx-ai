@@ -1,0 +1,33 @@
+{
+  "command": [
+    "npm",
+    "test",
+    "--prefix",
+    "frontend",
+    "--",
+    "--configLoader",
+    "runner",
+    "--no-cache",
+    "--maxWorkers=2",
+    "tests/rf2FluidChart.test.tsx",
+    "tests/rf2.test.tsx",
+    "tests/rf2SourceReview.test.tsx",
+    "tests/rf2HandoverRace.test.tsx",
+    "tests/rf2.integration.test.tsx"
+  ],
+  "exit_code": 0,
+  "seconds": 6.4427728750160895,
+  "vite_flags": {},
+  "source_sha256": {
+    "frontend/src/demo/PatientWorkspace.tsx": "880ae087fc04aeb639342f0f17f8f9e3fe5dee60127a5eaa3cead4f213ffdac8",
+    "frontend/src/demo/RF2FluidChart.tsx": "0441886cd5a33a92ce2b6e9d043f6ed930a1bb4a5b1789ea5686c4fd60e9c4cf",
+    "frontend/src/demo/RenalFluidEntryWorkspace.tsx": "dab4ab53c2764a86e2b507f5a553c5086d89ee814dd0b3a0c75b624005c1f26b",
+    "frontend/src/demo/rf2.css": "e8a18f680dc1c26290ddd0759f40136abf26a71e128df3725c7ed9b25761a191",
+    "frontend/tests/rf2.integration.test.tsx": "7a62ab9643037a9810835fe7012998b8eefaca0729439fb7cc8942d19f4afce0",
+    "frontend/tests/rf2FluidChart.test.tsx": "008414447d7a50120d54b3156299919d7ba2a6c21c96e5b3bcb801980920e46b"
+  },
+  "started_utc": "2026-10-20T18:43:37.720846+00:00",
+  "node": "v24.12.0",
+  "npm": "11.6.2",
+  "scope": "frontend component/DOM tests or build only; no browser runtime/database or installation"
+}

@@ -1,0 +1,318 @@
+diff --git a/frontend/src/demo/PatientWorkspace.tsx b/frontend/src/demo/PatientWorkspace.tsx
+index caf39bf..74132e1 100644
+--- a/frontend/src/demo/PatientWorkspace.tsx
++++ b/frontend/src/demo/PatientWorkspace.tsx
+@@ -37,7 +37,7 @@ export function PatientWorkspace({client,entry,config}:{client:CirculatoryClient
+  }
+  return <div className="patient-workspace"><a href="#patient-workflow">Skip to patient workflow</a><header><h1 ref={heading} tabIndex={-1}>Synthetic ICU patient workspace</h1><p>Patient {config.patient} · Encounter {config.encounter}</p><p><strong>{shared.state?'Clinical execution disabled.':'Execution gate not confirmed — new writes blocked.'}</strong> Local synthetic evidence only; no treatment advice.</p><form role="search" aria-label="Find patient evidence" onSubmit={event=>{event.preventDefault();findEvidence();}}><label>Find recorded evidence<input type="search" value={findQuery} onChange={event=>setFindQuery(event.target.value)} placeholder="ABG 09:45, cardiac output, RVSP…" disabled={guarded||!shared.state}/></label><button disabled={guarded||!shared.state} type="submit">Find evidence</button></form>{handover.hasSaved&&!handover.dirty&&view!=='handover'&&<p><button disabled={guarded||!handover.ready} onClick={()=>navigate('handover')}>Open saved handover</button> Saved on this browser.</p>}<p>Recorded evidence → inspect source/history → append correction → author reassessment → compare notes → review handover.</p><p>Recorded source assertions, clinician-authored notes and retained derived examples are labelled separately. A note is not an automatically validated conclusion.</p><nav aria-label="Patient workflow">{Object.entries(steps).filter(([key])=>(key!=='renal'||client instanceof RenalFluidClient)&&(key!=='rf2'||import.meta.env.VITE_SYNTHETIC_RF2==='true')).map(([key,label])=><button key={key} aria-current={view===key?'page':undefined} disabled={guarded&&view!==key} onClick={()=>navigate(key as keyof typeof steps)}>{label}</button>)}</nav><section className="workflow-guide" aria-label="Current workflow step"><h2>{steps[view]}</h2><p>{stepHelp[view]}</p><details><summary>How to complete this synthetic patient workflow</summary><ol><li>Browse pressures, flow, rhythm, gases, echo, infusions and perfusion together. Source times and gaps remain explicit.</li><li>Inspect the exact source and revision history. A correction appends a successor; it never overwrites the original.</li><li>Author a separate reassessment with exact baseline, intervention and follow-up selections. Keep recorded findings, possibilities and gaps distinct.</li><li>Compare two exact notes and their original references. Add the records/notes needed for handover.</li><li>Review and explicitly save the handover selection locally; reload and open the saved view to recover it.</li></ol><p>This workspace is for synthetic workflow testing. A saved selection is not a clinical handover sign-off. Pending clinical drafts and commands are not durably recovered after reload.</p></details></section>{guarded&&<p role="status">Finish, recover or explicitly discard the entry before leaving this step. The editor and exact pending revision remain mounted. Do not reload or close while completion is unknown.</p>}</header>
+  {actionError&&<p role="alert">{actionError}</p>}{shared.error&&<p role="alert">{shared.error}</p>}{!shared.state&&<button disabled={shared.loading||guarded} onClick={()=>void shared.refresh().catch(()=>{})}>Refresh patient evidence</button>}
+- <div id="patient-workflow" tabIndex={-1}>{(shared.rf2??shared.retainedRF2)&&<div hidden={view!=='rf2'}><RenalFluidEntryWorkspace catalog={(shared.rf2??shared.retainedRF2)!} gateConfirmed={!!shared.state} onGuardChange={setGuarded} onRefresh={shared.refresh} onLegacyCorrect={e=>{const item=shared.state?.assembly.snapshot.items.find(i=>i.fact.kind===e.fact.kind&&i.fact.id===e.fact.id&&i.fact.revision===e.fact.revision&&i.expected_digest===e.digest);if(item)correct(item);else setActionError('This source belongs to an existing owner that is not available for correction here. It was not cloned.');}}/></div>}{view==='renal'&&shared.renalFluid&&client instanceof RenalFluidClient&&<RenalFluidReview key={JSON.stringify(shared.renalFluid.context)} state={shared.renalFluid} client={client}/>}<div hidden={view!=='evidence'}><ComprehensiveDemo client={client} config={config} shared={shared} embedded searchRequest={searchRequest} onCorrect={correct} onHandover={add}/></div>
++ <div id="patient-workflow" tabIndex={-1}>{(shared.rf2??shared.retainedRF2)&&<div hidden={view!=='rf2'}><RenalFluidEntryWorkspace catalogStatus={shared.loading?'loading':shared.error||!shared.rf2||!shared.state?'retained':'current'} retrievalMessage={shared.error} requestedPeriod={{start:config.start,end:config.end}} catalog={(shared.rf2??shared.retainedRF2)!} gateConfirmed={!!shared.state} onGuardChange={setGuarded} onRefresh={shared.refresh} onLegacyCorrect={e=>{const item=shared.state?.assembly.snapshot.items.find(i=>i.fact.kind===e.fact.kind&&i.fact.id===e.fact.id&&i.fact.revision===e.fact.revision&&i.expected_digest===e.digest);if(item)correct(item);else setActionError('This source belongs to an existing owner that is not available for correction here. It was not cloned.');}}/></div>}{view==='renal'&&shared.renalFluid&&client instanceof RenalFluidClient&&<RenalFluidReview key={JSON.stringify(shared.renalFluid.context)} state={shared.renalFluid} client={client}/>}<div hidden={view!=='evidence'}><ComprehensiveDemo client={client} config={config} shared={shared} embedded searchRequest={searchRequest} onCorrect={correct} onHandover={add}/></div>
+  <div hidden={view!=='entry'}><EvidenceEntryWorkspace client={client} entry={entry} config={config} shared={shared} handoff={handoff} onGuardChange={setGuarded} onSavedEvidence={savedEvidence}/></div>
+  {snapshot&&<><div hidden={view!=='compare'||!shared.state}><ReassessmentComparison state={snapshot} onHandover={item=>{if(!guarded&&shared.state){add(item);navigate('handover');}}}/><p>Choose two exact notes. Original references remain unchanged when a measurement is corrected.</p></div><div hidden={view!=='handover'||!shared.state}><HandoverReview state={snapshot} selections={selections} onRemove={key=>handover.change(selections.filter(s=>s.repository+evidenceKey(s.item.fact)!==key))} persistence={handover}/></div></>}
+  </div></div>;
+diff --git a/frontend/src/demo/RF2FluidChart.tsx b/frontend/src/demo/RF2FluidChart.tsx
+new file mode 100644
+index 0000000..7258d54
+--- /dev/null
++++ b/frontend/src/demo/RF2FluidChart.tsx
+@@ -0,0 +1,110 @@
++import {useMemo,type MouseEvent} from 'react';
++import {key,pin,type Catalog,type Evidence} from '../api/rf2Client';
++
++export type CatalogStatus='current'|'loading'|'retained';
++type Column='Intake'|'Urine'|'Drain output'|'Other output';
++const columns:Column[]=['Intake','Urine','Drain output','Other output'];
++const categories:Record<string,{label:string;column?:Column;summary?:boolean}>={
++ input_oral:{label:'Oral intake',column:'Intake'},input_enteral:{label:'Enteral intake',column:'Intake'},input_iv:{label:'IV fluid intake',column:'Intake'},input_blood:{label:'Blood-product intake',column:'Intake'},
++ output_urine:{label:'Urine output',column:'Urine'},output_drain:{label:'Drain output',column:'Drain output'},output_other:{label:'Other recorded loss',column:'Other output'},
++ output_crrt:{label:'Recorded CRRT net removal',column:'Other output'},output_crrt_net:{label:'Recorded CRRT net removal',column:'Other output'},output_crrt_effluent:{label:'Recorded CRRT effluent',column:'Other output'},
++ net_balance_reported:{label:'Source-reported interval balance',summary:true},urine_total_reported:{label:'Source-reported urine total',summary:true},balance_total_reported:{label:'Source-reported cumulative balance',summary:true},
++};
++const object=(v:unknown):Record<string,unknown>=>v&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,unknown>:{};
++function category(e:Evidence){
++ if(e.metadata?.chart)return e.metadata.chart.category;
++ const coding=object(object(e.fact.description).coding);
++ return coding.namespace==='clinrx.synthetic.hemodynamic-chart/v1'?String(coding.code):undefined;
++}
++function rawTime(v:unknown){const t=object(v),r=object(t.recorded);return typeof t.source_timestamp==='string'?t.source_timestamp:r.status==='known'&&r.precision==='instant'&&typeof r.value==='string'?r.value:undefined;}
++function timeValue(raw:string|undefined){
++ // Grouping is presentation only. Retain finer-than-millisecond assertions unplaced
++ // rather than assigning them to a rounded hour or falling back to interval-end time.
++ if(!raw||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(raw))return undefined;
++ const n=Date.parse(raw);return Number.isFinite(n)?n:undefined;
++}
++export function chartTiming(e:Evidence){
++ const interval=object(e.fact.recorded_interval),chart=e.metadata?.chart;
++ const hasInterval=Object.keys(interval).length>0||chart?.start!=null||chart?.end!=null;
++ const start=chart?.start??rawTime(interval.start),end=chart?.end??rawTime(interval.end);
++ const point=chart?.point??rawTime(e.fact.occurred);
++ const ambiguous=(v:unknown)=>Array.isArray(object(v).conflicting)&&(object(v).conflicting as unknown[]).length>0;
++ if(hasInterval&&(ambiguous(interval.start)||ambiguous(interval.end)))return {kind:'interval' as const,start,end,a:undefined,b:undefined};
++ if(!hasInterval&&ambiguous(e.fact.occurred))return {kind:'point' as const,start:point,end:undefined,a:undefined,b:undefined};
++ if(hasInterval)return {kind:'interval' as const,start,end,a:timeValue(start),b:timeValue(end)};
++ return {kind:'point' as const,start:point,end:undefined,a:timeValue(point),b:undefined};
++}
++function correspondence(c:Catalog){
++ const scope=c.combined.context.scope,circ=c.combined.circulatory.assembly.request.scope;
++ if(c.execution_enabled!==false||c.cutoff.repository_id!==c.repository||scope.patient_id!=='synthetic-p1'||scope.encounter_id!=='synthetic-e1'||scope.repository_cutoff.repository_id!==c.repository||scope.repository_cutoff.fact_watermark!==c.cutoff.fact_watermark||circ.repository_cutoff.repository_id!==c.repository||circ.repository_cutoff.fact_watermark!==c.cutoff.fact_watermark||circ.review_start!==scope.review_start||circ.review_end!==scope.review_end||circ.patient_id!==scope.patient_id||circ.encounter_id!==scope.encounter_id)return false;
++ const seen=new Set<string>();
++ for(const e of c.items){const k=key(pin(e));if(seen.has(k)||e.repository!==c.repository||e.ingestion.repository_id!==c.repository||e.cutoff!==c.cutoff.fact_watermark||e.ingestion.ingestion_sequence>e.cutoff||e.fact.binding.target.patient_id!==scope.patient_id||e.fact.binding.target.encounter_id!==scope.encounter_id)return false;seen.add(k);}
++ return true;
++}
++export function fluidChartModel(c:Catalog){
++ const scope=c.combined.context.scope,start=timeValue(scope.review_start),end=timeValue(scope.review_end);
++ const groups=new Map<string,Evidence[]>(),unplaced:Evidence[]=[],separate:Evidence[]=[],summaries:Evidence[]=[],unclassified:Evidence[]=[];
++ const valid=correspondence(c)&&start!==undefined&&end!==undefined&&start<end;
++ if(!valid)return {valid,groups:[] as [string,Evidence[]][],unplaced,separate,summaries,unclassified};
++ for(const e of c.items){
++  if(e.fact.kind!=='circulatory_event'||e.metadata?.note)continue;
++  const cat=category(e),info=cat?categories[cat]:undefined;
++  if(info?.summary){summaries.push(e);continue;}
++  if(!info?.column){unclassified.push(e);continue;}
++  const t=chartTiming(e),a=t.a,b=t.b;
++  if(a===undefined||(t.kind==='interval'&&(b===undefined||b<=a))){unplaced.push(e);continue;}
++  const hour=new Date(a).toISOString().slice(0,13)+':00:00Z';
++  const boundary=Date.parse(hour)+3600000;
++  const contained=t.kind==='interval'?a>=start&&b!<=end:a>=start&&a<end;
++  if(!contained||(t.kind==='interval'&&b!>boundary)){separate.push(e);continue;}
++  groups.set(hour,[...(groups.get(hour)??[]),e]);
++ }
++ const order=(a:Evidence,b:Evidence)=>(chartTiming(a).a??Infinity)-(chartTiming(b).a??Infinity)||key(pin(a)).localeCompare(key(pin(b)));
++ return {valid,groups:[...groups.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([h,es])=>[h,es.sort(order)] as [string,Evidence[]]),unplaced:unplaced.sort(order),separate:separate.sort(order),summaries:summaries.sort(order),unclassified:unclassified.sort(order)};
++}
++interface Props {catalog:Catalog;status:CatalogStatus;retrievalMessage?:string;requestedPeriod?:{start:string;end:string};text:(e:Evidence)=>string;context:(e:Evidence)=>string;onInspect:(e:Evidence,button:HTMLButtonElement)=>void}
++export function RF2FluidChart({catalog,status,retrievalMessage,requestedPeriod,text,context,onInspect}:Props){
++ const model=useMemo(()=>fluidChartModel(catalog),[catalog]);
++ const scope=catalog.combined.context.scope;
++ const requestedMatches=!requestedPeriod||(timeValue(requestedPeriod.start)===timeValue(scope.review_start)&&timeValue(requestedPeriod.end)===timeValue(scope.review_end));
++ const valid=model.valid&&(status!=='current'||requestedMatches);
++ const current=status==='current';
++ const card=(e:Evidence)=>{
++  const cat=category(e),info=cat?categories[cat]:undefined,t=chartTiming(e);
++  return <article className="rf2-fluid-entry" key={key(pin(e))} aria-label={`${info?.label??'Unclassified recorded assertion'} ${e.fact.id} / ${e.fact.revision}`}>
++   <strong>{info?.label??'Unclassified recorded assertion'}{cat&&<small>Source category: {cat}</small>}</strong><p className="rf2-fluid-amount">{text(e)}</p>
++   <p>{t.kind==='interval'?<>Recorded interval: {t.start??'start unknown'} → {t.end??'end unknown'}</>:<>Recorded point: {t.start??'unknown'}</>}</p>
++   {cat==='output_drain'&&<p>Drain identity unresolved — individual drains are not inferred.</p>}
++   <p>Record status: {String(e.fact.record_status??'unavailable')}{e.superseded?' · Superseded historical revision retained':''}</p>
++   <p>{e.metadata?.chart?.source_context??String(object(e.fact.description).raw_display??'Source context unavailable')}</p>
++   {e.metadata?.chart?.uncertainty&&<p>Uncertainty: {e.metadata.chart.uncertainty}</p>}
++   {Array.isArray(e.fact.disclosures)&&e.fact.disclosures.map((x,n)=><p key={n}>{String(x)}</p>)}
++   {Array.isArray(e.fact.uncertainty)&&e.fact.uncertainty.map((x,n)=><p key={n}>Source caveat: {String(x)}</p>)}
++   <p className="rf2-fluid-reference">Exact source: {e.fact.id} / {e.fact.revision}</p>
++   <button type="button" onClick={(event:MouseEvent<HTMLButtonElement>)=>onInspect(e,event.currentTarget)}>Open exact source {e.fact.id} / {e.fact.revision}</button>
++   <details><summary>Source timing, verification and exact pin</summary><p>{context(e)}</p><p>Repository {e.repository} · cutoff {e.cutoff} · ingestion {e.ingestion.ingestion_sequence} · digest {e.digest}</p></details>
++  </article>;
++ };
++ const extra=(name:string,items:Evidence[],description:string)=>items.length>0?<section aria-label={name}><h4>{name}</h4><p>{description}</p>{items.map(card)}</section>:null;
++ return <section className="rf2-fluid-chart" aria-label="Fluid chart">
++  <h3>Fluid chart — recorded entries</h3>
++  <p><strong>Calculations unavailable — source eligibility not established</strong></p><p><strong>Completeness unresolved</strong></p>
++  <p>Selected source period: {scope.review_start} → {scope.review_end}. Hour groups use UTC (+00:00); source timestamps keep their recorded offsets. Groups are navigation only, not measured hourly volumes.</p>
++  <p>Repository {catalog.repository} · source cutoff {catalog.cutoff.fact_watermark}. Recorded entries do not establish complete intake/output coverage.</p>
++  <p>The existing selected period is retained. No additional 24-hour retrieval is introduced in this view; no period total is calculated.</p>
++  {!current&&<p role="alert">{status==='loading'?'Refresh in progress.':'Retrieval is unconfirmed or failed.'} Retained prior catalog — not confirmed current. {retrievalMessage} Empty cells cannot establish that records are absent.{!requestedMatches&&requestedPeriod&&<> Requested period: {requestedPeriod.start} → {requestedPeriod.end}.</>}</p>}
++  {!valid?<p role="alert">Chart unavailable — scope, cutoff or selected-period correspondence could not be confirmed. No empty chart is substituted.</p>:<>
++   <p id="rf2-fluid-scroll-help">At narrow widths, focus the chart region and use Left/Right arrow keys to scroll. Each source button is keyboard-accessible. Amounts are separate source assertions, with no summing, conversion or allocation.</p>
++   <div className="rf2-fluid-scroll" role="region" aria-label="Scrollable recorded fluid chart" aria-describedby="rf2-fluid-scroll-help" tabIndex={0} onKeyDown={e=>{if(e.target!==e.currentTarget)return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();e.currentTarget.scrollLeft+=e.key==='ArrowRight'?80:-80;}}}>
++    <table><caption>Recorded entries side by side — no hourly totals</caption><thead><tr><th scope="col">Hour group / actual interval</th>{columns.map(c=><th scope="col" key={c}>{c}</th>)}</tr></thead><tbody>
++    {model.groups.map(([hour,es])=><tr key={hour}><th scope="row">{hour} · UTC +00:00</th>{columns.map(col=><td key={col}>{es.filter(e=>categories[category(e)!]?.column===col).length?es.filter(e=>categories[category(e)!]?.column===col).map(card):<p>{current?'No recorded entry shown':'Unavailable while catalog is unconfirmed'}</p>}</td>)}</tr>)}
++    </tbody></table>
++   </div>
++   {!model.groups.length&&<p>{current?'No individually placed source entries shown for this period. Inspect the separate sections below; this is not a zero-volume assertion.':'Prior catalog contains no individually placed entries; current retrieval is unconfirmed.'}</p>}
++   {extra('Intervals spanning hour boundaries or outside the selected period',model.separate,'Original intervals remain intact. No hourly allocation or prorating is performed.')}
++   {extra('Unplaced entries',model.unplaced,'Timing is missing, ambiguous, invalid or too precise for safe browser grouping. No fallback to a collection completion point is used.')}
++   {extra('Source-reported summaries',model.summaries,'Recorded aggregate assertions are displayed separately, never combined with individual entries or treated as calculated totals.')}
++   {extra('Other source assertions — category not mapped to the chart',model.unclassified,'Source-category meaning has not been established for these entries. They are not silently placed into a generic output column.')}
++  </>}
++ </section>;
++}
+diff --git a/frontend/src/demo/RenalFluidEntryWorkspace.tsx b/frontend/src/demo/RenalFluidEntryWorkspace.tsx
+index 1238e10..b6dfe99 100644
+--- a/frontend/src/demo/RenalFluidEntryWorkspace.tsx
++++ b/frontend/src/demo/RenalFluidEntryWorkspace.tsx
+@@ -2,6 +2,7 @@ import {useEffect,useRef,useState} from 'react';
+ import {RF2Client,RF2ReviewChanged,chartDefaults,type Chart,type Catalog,type Draft,type Evidence,type Pin,type RenalNote,type SourceReview,needsHistoricalReview,pin,key} from '../api/rf2Client';
+ import {decodeRF2Saved,storageKey,type SavedRF2} from './rf2Handover';
+ import {decodeSavedHandover,handoverStorageKey} from './localHandover';
++import {RF2FluidChart,type CatalogStatus} from './RF2FluidChart';
+ import './rf2.css';
+ const labels:Record<string,string>={output_urine:'Urine output',input_oral:'Oral intake',input_enteral:'Enteral intake',input_iv:'IV fluid intake',input_blood:'Blood-product intake',output_drain:'Drain output',output_other:'Other measured loss',output_crrt:'Recorded CRRT net removal',weight:'Weight',net_balance_reported:'Source-reported interval balance',urine_total_reported:'Source-reported urine total',balance_total_reported:'Source-reported cumulative balance'};
+ export function evidenceText(e:Evidence){
+@@ -30,7 +31,9 @@ function matchesHandoverPin(e:Evidence,p:Pin){
+  return key(pin(e))===key(p)&&e.digest===p.digest&&e.ingestion.ingestion_sequence===p.ingestion&&e.cutoff>=p.cutoff;
+ }
+ function NoteComparison({items,onResolve}:{items:Evidence[];onResolve:(pins:Pin[])=>void}){const [a,A]=useState(''),[b,B]=useState('');return <section aria-label="Compare renal reassessments"><h3>Compare retained renal notes</h3>{(['A','B'] as const).map((label,n)=><label key={label}>Note {label}<select value={n?b:a} onChange={e=>(n?B:A)(e.target.value)}><option value="">Choose an exact note</option>{items.filter(x=>x.metadata?.note).map(x=><option key={key(pin(x))} value={key(pin(x))}>{x.fact.id} / {x.fact.revision}</option>)}</select></label>)}<div className="rf2-compare">{[a,b].map((k,n)=>{const e=items.find(x=>key(pin(x))===k);return <article key={n}><h4>Note {n?'B':'A'}</h4>{e?<><p>{e.fact.id} / {e.fact.revision}</p><p>Clinician-authored; not a validated clinical conclusion.</p><pre>{JSON.stringify(e.metadata?.note,null,2)}</pre><button onClick={()=>onResolve(e.metadata!.note!.pins)}>Inspect exact evidence retained by this note</button></>:<p>No note selected</p>}</article>;})}</div><p>Each note retains its original references. No source successor or calculated change is substituted.</p></section>;}
+-export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,onRefresh,onLegacyCorrect,transport:providedTransport}:{catalog:Catalog;gateConfirmed:boolean;onGuardChange:(v:boolean)=>void;onRefresh:()=>Promise<void>;onLegacyCorrect:(i:Evidence)=>void;transport?:RF2Client}){
++export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,onRefresh,onLegacyCorrect,transport:providedTransport,catalogStatus,retrievalMessage,requestedPeriod}:{catalogStatus?:CatalogStatus;retrievalMessage?:string;requestedPeriod?:{start:string;end:string};catalog:Catalog;gateConfirmed:boolean;onGuardChange:(v:boolean)=>void;onRefresh:()=>Promise<void>;onLegacyCorrect:(i:Evidence)=>void;transport?:RF2Client}){
++ const [sourceView,SourceView]=useState<'list'|'chart'>('list');
++ const sourceReturn=useRef<HTMLButtonElement|null>(null),historyHeading=useRef<HTMLHeadingElement>(null),chartToggle=useRef<HTMLButtonElement>(null);
+  const [defaultTransport]=useState(()=>new RF2Client());const transport=providedTransport??defaultTransport;
+  const [chart,C]=useState<Chart>({...chartDefaults}),[note,N]=useState<RenalNote>({question:'',findings:'',possibilities:'',gaps:'',plan:'',pins:[]}),[mode,M]=useState<'chart'|'note'>('chart');
+  const [draftRepository,DraftRepository]=useState(catalog.repository);const [references,References]=useState<Evidence[]>([]);
+@@ -79,6 +82,8 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[scopeKey]);
+  useEffect(()=>{generation.current++;History(undefined);Inspected(undefined);References([]);if(!dirty&&phase==='editing'&&!selected)DraftRepository(catalog.repository);},[scopeKey]);
++ useEffect(()=>{if(inspected&&sourceReturn.current)historyHeading.current?.focus();},[inspected]);
++ function closeSource(){generation.current++;Inspected(undefined);History(undefined);const button=sourceReturn.current;sourceReturn.current=null;if(button?.isConnected&&!button.closest('[hidden]'))button.focus();else chartToggle.current?.focus();}
+  function changeChart(k:keyof Chart,v:unknown){C(old=>({...old,[k]:v}));Dirty(true);ErrorMessage('');}
+  function reset(){if(locked)return;DraftRepository(catalog.repository);C({...chartDefaults});N({question:'',findings:'',possibilities:'',gaps:'',plan:'',pins:[]});Selected(undefined);Reason('');Pending(undefined);Review(undefined);SourceReviewState([]);Saved(undefined);Phase('editing');Dirty(false);SourceKey(false);}
+  function reuse(e:Evidence){if(locked||busy||phase!=='editing'||selected||e.repository!==catalog.repository||draftRepository!==catalog.repository)return;N(old=>({...old,pins:old.pins.some(x=>key(x)===key(pin(e)))?old.pins:[...old.pins,pin(e)].slice(0,12)}));M('note');Dirty(true);}
+@@ -108,9 +113,11 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  const field=(label:string,k:keyof Chart,optional=false)=><label>{label}<input value={String(chart[k]??'')} maxLength={k==='source_context'||k==='uncertainty'||k==='new_collection_reason'?512:128} onChange={e=>changeChart(k,e.target.value|| (optional?null:''))}/></label>;
+  const [search,Search]=useState('');const rows=catalog.items.filter(e=>[e.fact.id,e.fact.kind,evidenceText(e),e.metadata?.chart?.category??''].join(' ').toLowerCase().includes(search.toLowerCase()));
+  return <section className="rf2" aria-label="Renal charting and handover"><h2>Renal charting and handover</h2><p><strong>{gateConfirmed?'Clinical execution disabled.':'Execution gate not confirmed — new writes blocked.'}</strong> Local synthetic charting. No calculated balance, urine rate, AKI stage or treatment advice.</p><p>Repository {catalog.repository} · shared cutoff {catalog.cutoff.fact_watermark}. Reuse a recorded observation before entering another quantity. Acquisition and intended purpose are separate.</p>
+- {error&&feedback.area==='source'&&<p role="alert">{error}</p>}<label>Find existing RF2 source<input type="search" value={search} onChange={e=>Search(e.target.value)} placeholder="Source ID, creatinine, weight, urine…"/></label>{correctionBlocked&&<p id="rf2-correction-help" role="status">{correctionBlocked}</p>}<div className="rf2-scroll"><table><caption>Existing sources — use once across modules</caption><thead><tr><th>Exact record</th><th>Recorded assertion</th><th>Actions</th></tr></thead><tbody>{rows.map(e=><tr key={key(pin(e))}><th>{e.fact.id} / {e.fact.revision}</th><td>{evidenceText(e)}<br/><small>{sourceContext(e,catalog)}</small><br/>{e.metadata?.chart&&<>Acquisition: {e.metadata.chart.acquisition}; method {e.metadata.chart.method??'unavailable'}; purpose {e.metadata.chart.purpose??'unavailable'}</>}{e.fact.id==='fs-WEIGHT'&&<>Dosing-weight context; acquisition/method unavailable. Do not infer measured status.</>}<br/>{e.superseded?'Superseded historical revision':String(e.fact.record_status??'legacy source assertion')}</td><td><button onClick={()=>void inspect(e)}>Inspect exact history</button><button disabled={busy||locked||phase!=='editing'||!!selected||note.pins.length>=12} onClick={()=>reuse(e)}>Reuse for reassessment</button><button disabled={!!correctionBlocked||e.fact.kind!=='circulatory_event'} aria-describedby={correctionBlocked?'rf2-correction-help':undefined} onClick={()=>correct(e)}>Correct original record</button><button disabled={activeScope!==scopeKey||!gateConfirmed} onClick={()=>addHandover(e)}>Add exact record to RF2 handover</button></td></tr>)}</tbody></table></div>
++ <div role="group" aria-label="Recorded source presentation"><button type="button" aria-pressed={sourceView==='list'} onClick={()=>SourceView('list')}>Source list</button><button type="button" ref={chartToggle} aria-pressed={sourceView==='chart'} onClick={()=>SourceView('chart')}>Fluid chart</button></div>
++ {sourceView==='chart'&&<RF2FluidChart catalog={catalog} status={catalogStatus??(gateConfirmed?'current':'retained')} retrievalMessage={retrievalMessage} requestedPeriod={requestedPeriod} text={evidenceText} context={e=>sourceContext(e,catalog)} onInspect={(e,button)=>{sourceReturn.current=button;void inspect(e);historyHeading.current?.focus();}}/>}
++ {error&&feedback.area==='source'&&<p role="alert">{error}</p>}<div hidden={sourceView!=='list'}><label>Find existing RF2 source<input type="search" value={search} onChange={e=>Search(e.target.value)} placeholder="Source ID, creatinine, weight, urine…"/></label>{correctionBlocked&&<p id="rf2-correction-help" role="status">{correctionBlocked}</p>}<div className="rf2-scroll"><table><caption>Existing sources — use once across modules</caption><thead><tr><th>Exact record</th><th>Recorded assertion</th><th>Actions</th></tr></thead><tbody>{rows.map(e=><tr key={key(pin(e))}><th>{e.fact.id} / {e.fact.revision}</th><td>{evidenceText(e)}<br/><small>{sourceContext(e,catalog)}</small><br/>{e.metadata?.chart&&<>Acquisition: {e.metadata.chart.acquisition}; method {e.metadata.chart.method??'unavailable'}; purpose {e.metadata.chart.purpose??'unavailable'}</>}{e.fact.id==='fs-WEIGHT'&&<>Dosing-weight context; acquisition/method unavailable. Do not infer measured status.</>}<br/>{e.superseded?'Superseded historical revision':String(e.fact.record_status??'legacy source assertion')}</td><td><button onClick={()=>void inspect(e)}>Inspect exact history</button><button disabled={busy||locked||phase!=='editing'||!!selected||note.pins.length>=12} onClick={()=>reuse(e)}>Reuse for reassessment</button><button disabled={!!correctionBlocked||e.fact.kind!=='circulatory_event'} aria-describedby={correctionBlocked?'rf2-correction-help':undefined} onClick={()=>correct(e)}>Correct original record</button><button disabled={activeScope!==scopeKey||!gateConfirmed} onClick={()=>addHandover(e)}>Add exact record to RF2 handover</button></td></tr>)}</tbody></table></div></div>
+  {references.length>0&&references.every(e=>e.repository===catalog.repository)&&<section aria-label="Exact renal note evidence"><h3>Exact sources retained by the note</h3>{references.map(e=><article key={key(pin(e))}><p>{e.fact.kind} / {e.fact.id} / {e.fact.revision}: {evidenceText(e)}</p><button onClick={()=>void inspect(e)}>Inspect this retained source history</button><details><summary>Complete retained evidence and uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details></article>)}</section>}
+- {inspected&&inspected.repository===catalog.repository&&<section aria-label="RF2 exact source history"><h3>Selected {inspected.fact.id} / {inspected.fact.revision}</h3><button onClick={()=>{generation.current++;Inspected(undefined);History(undefined);}}>Close history</button><p>Corrections retain originals. A transcription correction is not improvement or a new sample.</p>{history?history.map(e=><article key={key(pin(e))}><h4>{e.fact.id} / {e.fact.revision}</h4><p>{evidenceText(e)} · {e.superseded?'historical superseded revision':'terminal at this cutoff'}</p><details><summary>Complete exact record and uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details><button onClick={()=>reuse(e)} disabled={locked||busy||phase!=='editing'||!!selected}>Use this exact historical revision in reassessment</button><button onClick={()=>addHandover(e)} disabled={!gateConfirmed}>Add this revision to RF2 handover</button></article>):<p>History loading or unconfirmed; no substitute shown.</p>}</section>}
++ {inspected&&inspected.repository===catalog.repository&&<section aria-label="RF2 exact source history"><h3 ref={historyHeading} tabIndex={-1}>Selected {inspected.fact.id} / {inspected.fact.revision}</h3><button onClick={closeSource}>Close history</button><p>Corrections retain originals. A transcription correction is not improvement or a new sample.</p>{history?history.map(e=><article key={key(pin(e))}><h4>{e.fact.id} / {e.fact.revision}</h4><p>{evidenceText(e)} · {e.superseded?'historical superseded revision':'terminal at this cutoff'}</p><details><summary>Complete exact record and uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details><button onClick={()=>reuse(e)} disabled={locked||busy||phase!=='editing'||!!selected}>Use this exact historical revision in reassessment</button><button onClick={()=>addHandover(e)} disabled={!gateConfirmed}>Add this revision to RF2 handover</button></article>):<p>History loading or unconfirmed; no substitute shown.</p>}</section>}
+  <section aria-label="RF2 draft"><h3>{selected?'Correct '+selected.fact.id:'Record a genuinely new collection or authored review'}</h3><p>Same numbers do not identify the same collection. Source replay uses issuer, record and component identity; series IDs are not record IDs.</p>
+  {draftScope!==catalog.repository&&<><p role="alert">Repository changed. The original draft/request remains retained; new save is blocked.</p>{phase==='editing'&&!locked&&<button onClick={reset}>Explicitly discard the retained draft from the previous repository</button>}</>}
+  {phase==='editing'?<fieldset disabled={!gateConfirmed||busy||draftScope!==catalog.repository}><label>Actor<input value={actor} maxLength={128} onChange={e=>{Actor(e.target.value);Dirty(true);}}/></label><label>Entry type<select value={mode} disabled={!!selected} onChange={e=>{M(e.target.value as 'chart'|'note');Dirty(true);}}><option value="chart">Source chart record</option><option value="note">Clinician-authored renal reassessment</option></select></label>
+diff --git a/frontend/src/demo/rf2.css b/frontend/src/demo/rf2.css
+index 895c0db..0fc73a1 100644
+--- a/frontend/src/demo/rf2.css
++++ b/frontend/src/demo/rf2.css
+@@ -1 +1,14 @@
+ .rf2 {max-width:100%; overflow-wrap:anywhere}.rf2 label {display:block;margin:.7rem 0}.rf2 input:not([type=checkbox]),.rf2 select,.rf2 textarea {display:block;max-width:100%;width:32rem;box-sizing:border-box}.rf2 button {margin:.25rem;padding:.45rem}.rf2-scroll {max-height:28rem;overflow:auto;max-width:100%;border:1px solid #8b9cac}.rf2 table {border-collapse:collapse;min-width:42rem}.rf2 th,.rf2 td {text-align:left;vertical-align:top;padding:.6rem;border-bottom:1px solid #b7c2cb}.rf2 th {max-width:20rem}.rf2 thead th {position:sticky;top:0;background:#e8eef3;color:#14212d}.rf2 pre {white-space:pre-wrap;overflow-wrap:anywhere;max-height:24rem;overflow:auto}.rf2 article,.rf2 fieldset {margin:.8rem 0;padding:.8rem;border:1px solid #9aabb8}.rf2-compare {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}@media(max-width:600px){.rf2-compare{grid-template-columns:1fr}}
++/* Read-only chart: keep status/caveats outside the keyboard-scrollable table. */
++.rf2-fluid-chart {min-width:0;max-width:100%;overflow-wrap:anywhere}
++.rf2-fluid-chart>p,.rf2-fluid-chart>section {max-width:100%}
++.rf2-fluid-scroll {overflow:auto;max-width:100%;max-height:36rem;border:1px solid #8b9cac;overscroll-behavior-inline:contain}
++.rf2-fluid-scroll:focus-visible,.rf2-fluid-chart button:focus-visible {outline:3px solid #154c67;outline-offset:3px}
++.rf2 .rf2-fluid-scroll table {min-width:64rem;width:100%;table-layout:fixed}
++.rf2-fluid-scroll th:first-child {width:10rem}
++.rf2 .rf2-fluid-entry {min-width:0;margin:.4rem 0;padding:.55rem;overflow-wrap:anywhere}
++.rf2-fluid-entry small {display:block;font-weight:normal}
++.rf2-fluid-entry p {margin:.45rem 0}
++.rf2-fluid-amount {font-weight:bold}
++.rf2-fluid-entry button {max-width:100%;white-space:normal}
++@media(max-width:360px){.rf2-fluid-chart>p {font-size:.95rem}.rf2-fluid-chart {width:100%}.rf2 .rf2-fluid-entry {padding:.4rem}}
+diff --git a/frontend/tests/rf2.integration.test.tsx b/frontend/tests/rf2.integration.test.tsx
+index 3eee10d..de4c333 100644
+--- a/frontend/tests/rf2.integration.test.tsx
++++ b/frontend/tests/rf2.integration.test.tsx
+@@ -4,8 +4,13 @@ import fixture from './fixtures/rf2-api.json';
+ import {PatientWorkspace} from '../src/demo/PatientWorkspace';
+ import {RenalFluidClient} from '../src/api/renalFluidClient';
+ import {EvidenceEntryClient} from '../src/api/evidenceEntryClient';
+-vi.mock('../src/demo/ComprehensiveDemo',()=>({ComprehensiveDemo:()=> <p>Unchanged comprehensive view</p>}));
++vi.mock('../src/demo/ComprehensiveDemo',()=>({ComprehensiveDemo:({shared}:{shared:{refresh:()=>Promise<void>}})=> <><p>Unchanged comprehensive view</p><button onClick={()=>void shared.refresh().catch(()=>{})}>Test explicit refresh</button></>}));
+ vi.mock('../src/demo/EvidenceEntryWorkspace',()=>({EvidenceEntryWorkspace:()=> <p>Existing hemodynamic editor stays mounted</p>}));
+ const {webcrypto}=await vi.importActual<{webcrypto:Crypto}>('node:crypto');const original=globalThis.crypto;
+ beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}));afterAll(()=>Object.defineProperty(globalThis,'crypto',{value:original,configurable:true}));afterEach(()=>{vi.unstubAllEnvs();vi.unstubAllGlobals();localStorage.clear();});
+ it('publishes one RF2/RF1 cutoff and keeps the prior workspace mounted',async()=>{vi.stubEnv('VITE_SYNTHETIC_RF2','true');const send=vi.fn<typeof fetch>().mockImplementation(async url=>{if(String(url).includes('/synthetic-rf2?'))return new Response(JSON.stringify(structuredClone(fixture.catalog)));throw Error('unexpected second state read');});vi.stubGlobal('fetch',send);const client=new RenalFluidClient('http://127.0.0.1:5201','synthetic-p1','synthetic-e1');render(<PatientWorkspace client={client} entry={new EvidenceEntryClient()} config={{patient:'synthetic-p1',encounter:'synthetic-e1',start:'2026-10-08T08:00:00Z',end:'2026-10-08T10:00:00Z',releasedExample:'a',withheldExample:'b'}}/>);const nav=await screen.findByRole('button',{name:'Renal charting and handover'});await waitFor(()=>expect(nav).toBeEnabled());fireEvent.click(nav);expect(await screen.findByRole('region',{name:'Renal charting and handover'})).toBeVisible();expect(screen.getByText(/shared cutoff/)).toHaveTextContent(String(fixture.catalog.cutoff.fact_watermark));expect(send).toHaveBeenCalledTimes(1);expect(screen.getByText('Existing hemodynamic editor stays mounted')).toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'Renal and fluid review'}));expect(await screen.findByRole('region',{name:'Renal and fluid review'})).toBeVisible();expect(send).toHaveBeenCalledTimes(1);});
++
++it('marks the mounted chart as retained prior data after an explicit refresh fails',async()=>{
++ vi.stubEnv('VITE_SYNTHETIC_RF2','true');const send=vi.fn<typeof fetch>().mockResolvedValueOnce(new Response(JSON.stringify(structuredClone(fixture.catalog)))).mockRejectedValueOnce(Error('Unavailable'));vi.stubGlobal('fetch',send);const client=new RenalFluidClient('http://127.0.0.1:5201','synthetic-p1','synthetic-e1');render(<PatientWorkspace client={client} entry={new EvidenceEntryClient()} config={{patient:'synthetic-p1',encounter:'synthetic-e1',start:'2026-10-08T08:00:00Z',end:'2026-10-08T10:00:00Z',releasedExample:'a',withheldExample:'b'}}/>);
++ const nav=await screen.findByRole('button',{name:'Renal charting and handover'});await screen.findByText(/shared cutoff/);fireEvent.click(screen.getByRole('button',{name:'Test explicit refresh'}));await screen.findByRole('button',{name:'Refresh patient evidence'});await waitFor(()=>expect(send).toHaveBeenCalledTimes(2));fireEvent.click(nav);fireEvent.click(screen.getByRole('button',{name:'Fluid chart'}));expect(await screen.findByText(/Retained prior catalog — not confirmed current/)).toBeVisible();expect(screen.queryByText('No recorded entry shown')).not.toBeInTheDocument();expect(send).toHaveBeenCalledTimes(2);
++});
+diff --git a/frontend/tests/rf2FluidChart.test.tsx b/frontend/tests/rf2FluidChart.test.tsx
+new file mode 100644
+index 0000000..2d1da1c
+--- /dev/null
++++ b/frontend/tests/rf2FluidChart.test.tsx
+@@ -0,0 +1,99 @@
++import {afterAll,beforeAll,beforeEach,expect,it,vi} from 'vitest';
++import {act,fireEvent,render,screen,within} from '@testing-library/react';
++import userEvent from '@testing-library/user-event';
++import fixture from './fixtures/rf2-api.json';
++import {RF2Client,pin,stable,hash,type Catalog,type Evidence} from '../src/api/rf2Client';
++import {RenalFluidEntryWorkspace,evidenceText,sourceContext} from '../src/demo/RenalFluidEntryWorkspace';
++import {RF2FluidChart,fluidChartModel} from '../src/demo/RF2FluidChart';
++import {storageKey} from '../src/demo/rf2Handover';
++const {readFileSync}=await vi.importActual<{readFileSync:(path:string,encoding:'utf8')=>string}>('node:fs');
++const styles=readFileSync('src/demo/rf2.css','utf8');
++const {webcrypto}=await vi.importActual<{webcrypto:Crypto}>('node:crypto');const oldCrypto=globalThis.crypto;
++beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}));afterAll(()=>Object.defineProperty(globalThis,'crypto',{value:oldCrypto,configurable:true}));beforeEach(()=>localStorage.clear());
++const load=()=>new RF2Client(vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(fixture.catalog)))).catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');
++function mountChart(c:Catalog,props:Partial<Parameters<typeof RF2FluidChart>[0]>={}){const inspect=vi.fn();return {inspect,...render(<RF2FluidChart catalog={c} status="current" text={evidenceText} context={e=>sourceContext(e,c)} onInspect={inspect} {...props}/>)};}
++function original(c:Catalog){return c.items.find(e=>e.fact.id===fixture.urine.fact.id)!;}
++async function entry(c:Catalog,id:string,category='output_urine',start:string|null='2026-10-08T08:00:00Z',end:string|null='2026-10-08T08:15:00Z'){
++ const e=structuredClone(original(c));e.fact.id=id;e.terminal_reference.id=id;e.fact.record_status='recorded';
++ e.metadata!.chart = {...e.metadata!.chart!,category,start,end,point:end};
++ e.fact.occurred={...(e.fact.occurred as object),source_timestamp:end};
++ e.fact.recorded_interval=start!==null||end!==null?{start:{source_timestamp:start},end:{source_timestamp:end}}:null;
++ e.canonical_fact=stable(e.fact);e.digest=await hash(e.canonical_fact);return e;
++}
++function withEntries(c:Catalog,items:Evidence[]){return {...c,items};}
++function props(c:Catalog,t:RF2Client){return {catalog:c,gateConfirmed:true,onGuardChange:vi.fn(),onRefresh:vi.fn(async()=>{}),onLegacyCorrect:vi.fn(),transport:t};}
++function transport(c:Catalog){return {history:vi.fn(async(e:Evidence)=>[e]),resolve:vi.fn(async()=>[]),action:vi.fn()} as unknown as RF2Client;}
++
++it('shows original decimal text/unit/interval/category without any arithmetic or new request',async()=>{
++ const c=await load(),e=original(c),before=stable(c);const {inspect}=mountChart(c);
++ const card=screen.getByRole('article',{name:`Urine output ${e.fact.id} / ${e.fact.revision}`});
++ expect(card).toHaveTextContent('35.0000 mL');expect(card).toHaveTextContent('2026-10-08T09:30:00Z');expect(card).toHaveTextContent('Source category: output_urine');expect(card).toHaveTextContent(e.metadata!.chart!.uncertainty);
++ expect(screen.getByText('Completeness unresolved')).toBeVisible();expect(screen.getByText('Calculations unavailable — source eligibility not established')).toBeVisible();expect(screen.queryByText(/included-record subtotal/i)).not.toBeInTheDocument();
++ fireEvent.click(within(card).getByRole('button',{name:/Open exact source/}));expect(inspect.mock.calls[0][0]).toBe(e);expect(stable(c)).toBe(before);
++});
++it('retains multiple entries, explicit zero and L raw units separately with no inferred zeros',async()=>{
++ const c=await load(),a=await entry(c,'source-A','input_iv'),b=await entry(c,'source-B','input_iv');a.fact.recorded_amount={value:'0.0000',unit:{raw:'mL'}};b.fact.recorded_amount={value:'1.2500',unit:{raw:'L'}};
++ mountChart(withEntries(c,[a,b]));const row=screen.getByRole('row',{name:/2026-10-08T08:00:00Z/});expect(within(row).getAllByRole('article')).toHaveLength(2);expect(row).toHaveTextContent('0.0000 mL');expect(row).toHaveTextContent('1.2500 L');expect(row).not.toHaveTextContent('1250');expect(within(row).getAllByText('No recorded entry shown')).toHaveLength(3);
++});
++it('does not guess zero when amount is unknown or when the selected period is empty',async()=>{
++ const c=await load(),e=await entry(c,'missing');e.fact.recorded_amount=null;e.metadata!.chart!.amount=null;e.metadata!.chart!.unit=null;e.metadata!.chart!.missing_reason='Not measured';
++ const r=mountChart(withEntries(c,[e]));expect(screen.getByText('Not measured')).toBeVisible();r.rerender(<RF2FluidChart catalog={withEntries(c,[])} status="current" text={evidenceText} context={()=>''} onInspect={()=>{}}/>);
++ expect(screen.getByText(/No individually placed source entries/)).toHaveTextContent('not a zero-volume assertion');
++});
++it('keeps known source summaries separate from collection hour groups',async()=>{
++ const c=await load(),actual=await entry(c,'collection'),summary=await entry(c,'total','urine_total_reported');mountChart(withEntries(c,[actual,summary]));
++ expect(within(screen.getByRole('region',{name:'Source-reported summaries'})).getByRole('article')).toHaveTextContent('total');expect(within(screen.getByRole('table')).getAllByRole('article')).toHaveLength(1);
++});
++it('keeps spanning/crossing/outside intervals separate and never uses interval end to invent a point',async()=>{
++ const c=await load(),spanning=await entry(c,'spanning','output_urine','2026-10-08T08:30:00Z','2026-10-08T09:30:00Z'),crossing=await entry(c,'crossing','output_urine','2026-10-08T07:45:00Z','2026-10-08T08:15:00Z'),partial=await entry(c,'partial','output_urine',null,'2026-10-08T08:15:00Z');mountChart(withEntries(c,[spanning,crossing,partial]));
++ expect(within(screen.getByRole('region',{name:'Intervals spanning hour boundaries or outside the selected period'})).getAllByRole('article')).toHaveLength(2);expect(within(screen.getByRole('region',{name:'Unplaced entries'})).getByRole('article')).toHaveTextContent('start unknown');expect(within(screen.getByRole('table')).queryByRole('article')).not.toBeInTheDocument();
++});
++it('distinguishes exact interval end from point end without asserting inclusion in a calculation',async()=>{
++ const c=await load(),interval=await entry(c,'interval-end','output_urine','2026-10-08T09:45:00Z','2026-10-08T10:00:00Z'),point=await entry(c,'point-end','output_urine',null,null);point.metadata!.chart!.point='2026-10-08T10:00:00Z';point.fact.occurred={source_timestamp:'2026-10-08T10:00:00Z'};
++ const model=fluidChartModel(withEntries(c,[interval,point]));expect(model.groups.flatMap(([,es])=>es).map(e=>e.fact.id)).toEqual(['interval-end']);expect(model.separate.map(e=>e.fact.id)).toEqual(['point-end']);
++});
++it('keeps CRRT net removal, effluent and unresolved drain identity explicit',async()=>{
++ const c=await load(),net=await entry(c,'net','output_crrt'),effluent=await entry(c,'effluent','output_crrt_effluent'),drain=await entry(c,'drain','output_drain');mountChart(withEntries(c,[net,effluent,drain]));
++ expect(screen.getByRole('article',{name:'Recorded CRRT net removal net / '+net.fact.revision})).toHaveTextContent('output_crrt');expect(screen.getByRole('article',{name:'Recorded CRRT effluent effluent / '+effluent.fact.revision})).toHaveTextContent('output_crrt_effluent');expect(screen.getByText(/Drain identity unresolved/)).toBeVisible();
++});
++it('preserves legacy source-category coding and visible source caveats',async()=>{
++ const c=await load(),e=await entry(c,'legacy','output_crrt');e.metadata=null;e.fact.description={coding:{namespace:'clinrx.synthetic.hemodynamic-chart/v1',code:'output_crrt'},raw_display:'NET removal only; not effluent'};e.fact.disclosures=['Recorded volume is not reconciled.'];mountChart(withEntries(c,[e]));
++ expect(screen.getByRole('article')).toHaveTextContent('Recorded CRRT net removal');expect(screen.getByRole('article')).toHaveTextContent('NET removal only; not effluent');expect(screen.getByText('Recorded volume is not reconciled.')).toBeVisible();
++});
++it('does not categorize unknown coding from fact IDs or silently move it into output',async()=>{
++ const c=await load(),e=await entry(c,'fs-IO-output_urine-looking-name','unknown-code');e.metadata=null;e.fact.description={coding:{namespace:'unmapped',code:'output_urine'},raw_display:'Unmapped source'};mountChart(withEntries(c,[e]));expect(within(screen.getByRole('region',{name:'Other source assertions — category not mapped to the chart'})).getByRole('article')).toHaveTextContent('Unmapped source');expect(within(screen.getByRole('table')).queryByRole('article')).not.toBeInTheDocument();
++});
++it('shows repeated local times with original offsets in distinct UTC hour groups',async()=>{
++ const c=await load();c.combined.context.scope.review_start='2026-11-01T04:00:00Z';c.combined.context.scope.review_end='2026-11-01T08:00:00Z';Object.assign(c.combined.circulatory.assembly.request.scope,{review_start:'2026-11-01T04:00:00Z',review_end:'2026-11-01T08:00:00Z'});
++ const a=await entry(c,'first','output_urine',null,null),b=await entry(c,'second','output_urine',null,null);a.metadata!.chart!.point='2026-11-01T01:30:00-04:00';b.metadata!.chart!.point='2026-11-01T01:30:00-05:00';mountChart(withEntries(c,[a,b]));
++ expect(screen.getByRole('row',{name:/2026-11-01T05:00:00Z/})).toHaveTextContent('01:30:00-04:00');expect(screen.getByRole('row',{name:/2026-11-01T06:00:00Z/})).toHaveTextContent('01:30:00-05:00');expect(screen.getByText(/Hour groups use UTC/)).toBeVisible();
++});
++it.each(['repository','cutoff','scope','duplicate'])('does not disguise %s mismatch as empty chart',async fault=>{
++ const c=await load();if(fault==='repository')c.repository='foreign';if(fault==='cutoff')c.items[0].cutoff++;if(fault==='scope')c.items[0].fact.binding.target.patient_id='foreign';if(fault==='duplicate')c.items.push(c.items[0]);mountChart(c);expect(screen.getByRole('alert')).toHaveTextContent('Chart unavailable');expect(screen.queryByRole('table')).not.toBeInTheDocument();expect(screen.queryByText('No recorded entry shown')).not.toBeInTheDocument();
++});
++it.each(['retained','loading'] as const)('labels %s prior data prominently and never presents empty cells as current absence',async status=>{
++ const c=await load();mountChart(c,{status,retrievalMessage:'Request failed'});expect(screen.getByRole('alert')).toHaveTextContent('Retained prior catalog — not confirmed current');expect(screen.getByRole('alert')).toHaveTextContent('Request failed');expect(screen.queryByText('No recorded entry shown')).not.toBeInTheDocument();expect(screen.getAllByText('Unavailable while catalog is unconfirmed').length).toBeGreaterThan(0);
++});
++it('withholds a current mismatched requested period but identifies a retained prior period',async()=>{
++ const c=await load(),period={start:'2026-10-09T08:00:00Z',end:'2026-10-09T10:00:00Z'};const r=mountChart(c,{requestedPeriod:period});expect(screen.getByRole('alert')).toHaveTextContent('Chart unavailable');r.rerender(<RF2FluidChart catalog={c} status="retained" requestedPeriod={period} text={evidenceText} context={()=>''} onInspect={()=>{}}/>);expect(screen.getByRole('alert')).toHaveTextContent('Requested period: 2026-10-09');expect(screen.getByRole('table')).toBeVisible();
++});
++it('supports keyboard scrolling and provides 360px CSS rules without claiming rendered layout',async()=>{
++ const c=await load();mountChart(c);const region=screen.getByRole('region',{name:'Scrollable recorded fluid chart'});region.focus();expect(region).toHaveFocus();fireEvent.keyDown(region,{key:'ArrowRight'});expect(region.scrollLeft).toBe(80);fireEvent.keyDown(region,{key:'ArrowLeft'});expect(region.scrollLeft).toBe(0);expect(region).toHaveAttribute('aria-describedby','rf2-fluid-scroll-help');expect(styles).toContain('@media(max-width:360px)');expect(styles).toContain('.rf2-fluid-scroll {overflow:auto;max-width:100%');
++});
++it('opens exact history by keyboard and returns focus while preserving the mounted draft and evidence selection',async()=>{
++ const c=await load(),t=transport(c),p=props(c,t);render(<RenalFluidEntryWorkspace {...p}/>);const user=userEvent.setup();const row=screen.getByRole('row',{name:new RegExp(fixture.urine.fact.id)});await user.click(within(row).getByRole('button',{name:'Reuse for reassessment'}));await user.type(screen.getByLabelText('Actor'),'Recorder');await user.type(screen.getByLabelText('question'),'Keep this authored question');const actor=screen.getByLabelText('Actor');const selected=within(screen.getByRole('region',{name:'RF2 draft'})).getByText(new RegExp(fixture.urine.fact.id)).textContent;
++ await user.click(screen.getByRole('button',{name:'Fluid chart'}));const button=within(screen.getByRole('region',{name:'Fluid chart'})).getByRole('button',{name:'Open exact source '+fixture.urine.fact.id+' / '+fixture.urine.fact.revision});await user.tab();expect(screen.getByRole('region',{name:'Scrollable recorded fluid chart'})).toHaveFocus();await user.tab();expect(button).toHaveFocus();await user.keyboard('{Enter}');expect(await screen.findByRole('heading',{name:'Selected '+fixture.urine.fact.id+' / '+fixture.urine.fact.revision})).toHaveFocus();expect(t.history).toHaveBeenCalledWith(original(c));await user.click(screen.getByRole('button',{name:'Close history'}));expect(button).toHaveFocus();await user.click(screen.getByRole('button',{name:'Source list'}));expect(screen.getByLabelText('Actor')).toBe(actor);expect(actor).toHaveValue('Recorder');expect(screen.getByLabelText('question')).toHaveValue('Keep this authored question');expect(within(screen.getByRole('region',{name:'RF2 draft'})).getByText(new RegExp(fixture.urine.fact.id))).toHaveTextContent(selected!);expect(t.action).not.toHaveBeenCalled();expect(p.onRefresh).not.toHaveBeenCalled();
++});
++it('preserves the exact pending request and recovery controls when chart/list changes after uncertain save',async()=>{
++ const c=await load(),t=transport(c);vi.mocked(t.action).mockImplementation(async(action)=>{if(action==='save')throw Error('Uncertain');return {status:action==='lookup'?'absent':'validated',fact:fixture.weight.fact,execution_enabled:false} as never;});render(<RenalFluidEntryWorkspace {...props(c,t)}/>);
++ const row=screen.getByRole('row',{name:new RegExp(fixture.weight.fact.id)});fireEvent.click(within(row).getByRole('button',{name:'Correct original record'}));fireEvent.change(screen.getByLabelText('Actor'),{target:{value:'Recorder'}});fireEvent.change(screen.getByLabelText('Reason for correction'),{target:{value:'Correction'}});fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));fireEvent.click(await screen.findByRole('button',{name:'Confirm RF2 append'}));await screen.findByRole('button',{name:'Check exact RF2 saved result'});const pending=vi.mocked(t.action).mock.calls[1][1];fireEvent.click(screen.getByRole('button',{name:'Fluid chart'}));fireEvent.click(screen.getByRole('button',{name:'Source list'}));fireEvent.click(screen.getByRole('button',{name:'Check exact RF2 saved result'}));await screen.findByRole('button',{name:'Explicitly retry identical RF2 request'});expect(vi.mocked(t.action).mock.calls.at(-1)![1]).toBe(pending);expect(vi.mocked(t.action).mock.calls.filter(([action])=>action==='save')).toHaveLength(1);
++});
++it('retains exact handover selection and storage bytes through chart navigation',async()=>{
++ const c=await load(),t=transport(c);render(<RenalFluidEntryWorkspace {...props(c,t)}/>);const row=screen.getByRole('row',{name:new RegExp(fixture.urine.fact.id)});fireEvent.click(within(row).getByRole('button',{name:'Add exact record to RF2 handover'}));fireEvent.click(screen.getByRole('button',{name:'Save RF2 handover locally'}));const before=localStorage.getItem(storageKey(c.repository));fireEvent.click(screen.getByRole('button',{name:'Fluid chart'}));fireEvent.click(screen.getByRole('button',{name:'Source list'}));expect(localStorage.getItem(storageKey(c.repository))).toBe(before);expect(JSON.parse(before!).pins).toEqual([pin(original(c))]);
++});
++it('keeps conflicting or finer-precision timing unplaced without hiding the raw assertion',async()=>{
++ const c=await load(),a=await entry(c,'ambiguous'),b=await entry(c,'precise','output_urine','2026-10-08T08:00:00.0000001Z','2026-10-08T08:15:00Z');a.fact.recorded_interval={start:{source_timestamp:'2026-10-08T08:00:00Z',conflicting:[{source_timestamp:'2026-10-08T07:00:00Z'}]},end:{source_timestamp:'2026-10-08T08:15:00Z'}};mountChart(withEntries(c,[a,b]));const section=screen.getByRole('region',{name:'Unplaced entries'});expect(within(section).getAllByRole('article')).toHaveLength(2);expect(section).toHaveTextContent('08:00:00.0000001Z');expect(within(screen.getByRole('table')).queryByRole('article')).not.toBeInTheDocument();
++});
++it('keeps a historical revision exact even when its terminal revision is newer',async()=>{
++ const c=await load(),e=original(c);e.superseded=true;e.terminal_reference.version='newer';const t=transport(c);render(<RenalFluidEntryWorkspace {...props(c,t)}/>);fireEvent.click(screen.getByRole('button',{name:'Fluid chart'}));fireEvent.click(screen.getByRole('button',{name:'Open exact source '+e.fact.id+' / '+e.fact.revision}));await screen.findByRole('heading',{name:'Selected '+e.fact.id+' / '+e.fact.revision});expect(t.history).toHaveBeenCalledWith(e);expect(pin(vi.mocked(t.history).mock.calls[0][0]).reference.version).toBe(e.fact.revision);expect(t.action).not.toHaveBeenCalled();
++});
