@@ -1,0 +1,177 @@
+diff --git a/frontend/src/demo/RenalFluidEntryWorkspace.tsx b/frontend/src/demo/RenalFluidEntryWorkspace.tsx
+index c822a56..1238e10 100644
+--- a/frontend/src/demo/RenalFluidEntryWorkspace.tsx
++++ b/frontend/src/demo/RenalFluidEntryWorkspace.tsx
+@@ -26,6 +26,9 @@ export function sourceContext(e:Evidence,catalog:Catalog){
+  return [String(timestamp??'Source event time unavailable'),scopeItem?.inclusion??lab?.inclusion??'Exact source outside the shared snapshot; inspect timing',e.fact.kind==='observation'?'Specimen/collection time and typed quality unavailable':`Source clock ${String(occurred.clock??'unknown')}; acquisition quality ${String(quality.status??'not recorded')}`,...(Object.keys(interval).length?[`Source interval ${text(interval.start)} → ${text(interval.end)}; no rate or duration inferred`]:[]),`Verification ${String(e.fact.verification??'unknown')}; conflict ${String(e.fact.conflict??'unknown')}`].join(' · ');
+ }
+ 
++function matchesHandoverPin(e:Evidence,p:Pin){
++ return key(pin(e))===key(p)&&e.digest===p.digest&&e.ingestion.ingestion_sequence===p.ingestion&&e.cutoff>=p.cutoff;
++}
+ function NoteComparison({items,onResolve}:{items:Evidence[];onResolve:(pins:Pin[])=>void}){const [a,A]=useState(''),[b,B]=useState('');return <section aria-label="Compare renal reassessments"><h3>Compare retained renal notes</h3>{(['A','B'] as const).map((label,n)=><label key={label}>Note {label}<select value={n?b:a} onChange={e=>(n?B:A)(e.target.value)}><option value="">Choose an exact note</option>{items.filter(x=>x.metadata?.note).map(x=><option key={key(pin(x))} value={key(pin(x))}>{x.fact.id} / {x.fact.revision}</option>)}</select></label>)}<div className="rf2-compare">{[a,b].map((k,n)=>{const e=items.find(x=>key(pin(x))===k);return <article key={n}><h4>Note {n?'B':'A'}</h4>{e?<><p>{e.fact.id} / {e.fact.revision}</p><p>Clinician-authored; not a validated clinical conclusion.</p><pre>{JSON.stringify(e.metadata?.note,null,2)}</pre><button onClick={()=>onResolve(e.metadata!.note!.pins)}>Inspect exact evidence retained by this note</button></>:<p>No note selected</p>}</article>;})}</div><p>Each note retains its original references. No source successor or calculated change is substituted.</p></section>;}
+ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,onRefresh,onLegacyCorrect,transport:providedTransport}:{catalog:Catalog;gateConfirmed:boolean;onGuardChange:(v:boolean)=>void;onRefresh:()=>Promise<void>;onLegacyCorrect:(i:Evidence)=>void;transport?:RF2Client}){
+  const [defaultTransport]=useState(()=>new RF2Client());const transport=providedTransport??defaultTransport;
+@@ -38,6 +41,9 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  const [sourceReview,SourceReviewState]=useState<SourceReview[]>([]);
+  const [history,History]=useState<Evidence[]>(),[inspected,Inspected]=useState<Evidence>(),generation=useRef(0);
+  const [pins,Pins]=useState<Pin[]>([]),[restored,Restored]=useState<Evidence[]>([]),[handoverDirty,HandoverDirty]=useState(false),[storageMessage,StorageMessage]=useState(''),[activeScope,ActiveScope]=useState(''),lastRaw=useRef<string|null>(null),restoreGeneration=useRef(0);
++ const workingSelection=useRef<{scope:string;pins:Pin[]}>({scope:'',pins:[]});
++ const [restoreMessage,RestoreMessage]=useState('');
++ function selectHandover(next:Pin[]){workingSelection.current={scope:scopeKey,pins:next};Pins(next);}
+  const [sourceKey,SourceKey]=useState(false),[identity,Identity]=useState({issuer_namespace:'clinrx.synthetic.chart',issuer:'',record_namespace:'chart-entry',record_id:'',component:''});
+  const scopeKey=JSON.stringify([catalog.repository,'synthetic-p1','synthetic-e1']);
+  const locked=phase==='saving'||phase==='uncertain'||phase==='absent',draftScope= pending?.repository??selected?.repository??draftRepository;
+@@ -49,10 +55,25 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+   dirty?'An unsaved draft is open. Finish it or use Discard unsaved RF2 draft below before selecting a correction. Stored records will not be deleted.':'';
+ 
+  useEffect(()=>{onGuardChange(dirty||phase==='review'||phase==='review-conflict'||phase==='source-review'||locked);},[dirty,phase,locked,onGuardChange]);
+- useEffect(()=>()=>{generation.current++;restoreGeneration.current++;onGuardChange(false);},[onGuardChange]);
+- async function hydrate(next:Pin[]){const ticket=++restoreGeneration.current;Restored([]);try{const values=await transport.resolve(catalog.repository,next);if(ticket===restoreGeneration.current)Restored(values);}catch{if(ticket===restoreGeneration.current)StorageMessage('Exact saved references could not all be confirmed. Pins are retained as unavailable; no successor was substituted.');}}
+- useEffect(()=>{restoreGeneration.current++;ActiveScope(scopeKey);Pins([]);Restored([]);HandoverDirty(false);StorageMessage('');lastRaw.current=null;
+-  try{const raw=localStorage.getItem(storageKey(catalog.repository));lastRaw.current=raw;if(raw!==null){const v=decodeRF2Saved(raw,catalog.repository);Pins(v.pins);StorageMessage('Restored saved RF2 handover: '+v.pins.length+' selection(s). Saved '+v.savedAt);void hydrate(v.pins);}}
++ useEffect(()=>()=>{generation.current++;onGuardChange(false);},[onGuardChange]);
++ useEffect(()=>()=>{restoreGeneration.current++;},[]);
++ async function hydrate(next:Pin[]){
++  const ticket=++restoreGeneration.current,scope=scopeKey;RestoreMessage('Confirming retained handover references…');
++  try{const values=await transport.resolve(catalog.repository,next);
++   if(ticket!==restoreGeneration.current||workingSelection.current.scope!==scope)return;
++   Restored(current=>{
++    if(ticket!==restoreGeneration.current||workingSelection.current.scope!==scope)return current;
++    // Restore only selections still present. Explicit additions/current confirmations
++    // take precedence over a delayed result for an older selection snapshot.
++    return workingSelection.current.pins.flatMap(p=>{
++     const e=current.find(v=>matchesHandoverPin(v,p))??values.find(v=>matchesHandoverPin(v,p));
++     return e?[e]:[];
++    });
++   });RestoreMessage('');
++  }catch{if(ticket===restoreGeneration.current&&workingSelection.current.scope===scope)RestoreMessage('Saved-reference lookup failed. Current selections are retained; unresolved pins remain unavailable without substitution.');}
++ }
++ useEffect(()=>{restoreGeneration.current++;ActiveScope(scopeKey);selectHandover([]);Restored([]);RestoreMessage('');HandoverDirty(false);StorageMessage('');lastRaw.current=null;
++  try{const raw=localStorage.getItem(storageKey(catalog.repository));lastRaw.current=raw;if(raw!==null){const v=decodeRF2Saved(raw,catalog.repository);selectHandover(v.pins);StorageMessage('Restored saved RF2 handover: '+v.pins.length+' selection(s). Saved '+v.savedAt);void hydrate(v.pins);}}
+   catch{StorageMessage('Saved RF2 handover is unavailable. Original storage bytes were not changed.');}
+  // Scope identity, not refresh watermark, owns saved selection state.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+@@ -76,9 +97,14 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  async function lookup(){if(!pending)return;Busy(true);ErrorMessage('');try{const r=await transport.action('lookup',pending);if(r.status==='absent'){Phase('absent');}else if(r.evidence){Saved(r.evidence);Phase('saved');Dirty(false);await onRefresh();}else throw Error();}catch{ErrorMessage('Exact lookup could not be confirmed. The original pending request is retained.');}finally{Busy(false);}}
+  async function inspectReferences(ps:Pin[]){const ticket=++generation.current;References([]);History(undefined);Inspected(undefined);try{const found=await transport.resolve(catalog.repository,ps);if(ticket===generation.current)References(found.map((e,n)=>({...e,cutoff:ps[n].cutoff})));}catch{if(ticket===generation.current)SourceErrorMessage('Exact note evidence could not be confirmed. No successor was substituted.');}}
+  async function inspect(e:Evidence){const t=++generation.current;Inspected(e);History(undefined);SourceErrorMessage('');try{const result=await transport.history(e);if(t===generation.current)History(result);}catch{if(t===generation.current)SourceErrorMessage('Exact history could not be confirmed. No different source revision was substituted.');}}
+- function addHandover(e:Evidence){if(activeScope!==scopeKey||e.repository!==catalog.repository)return;const p=pin(e);if(pins.some(x=>key(x)===key(p)))return;if(pins.length===32){StorageMessage('Handover limit reached; no selection was dropped.');return;}const next=[...pins,p];Pins(next);Restored(old=>[...old,e]);HandoverDirty(true);StorageMessage('Unsaved handover changes. Save explicitly before reload.');}
+- function saveHandover(){if(activeScope!==scopeKey||!gateConfirmed)return;try{const k=storageKey(catalog.repository);if(localStorage.getItem(k)!==lastRaw.current)throw Error('Another tab changed the saved set. Reload it before replacing it.');const value:SavedRF2={version:2,repository:catalog.repository,patient:'synthetic-p1',encounter:'synthetic-e1',savedAt:new Date().toISOString(),pins};const raw=JSON.stringify(value);decodeRF2Saved(raw,catalog.repository);localStorage.setItem(k,raw);lastRaw.current=raw;HandoverDirty(false);StorageMessage('Saved RF2 handover locally: '+pins.length+' selection(s). '+value.savedAt);}catch(e){StorageMessage(e instanceof Error?e.message:'Local save failed. Existing saved bytes were not intentionally replaced.');}}
+- async function importV1(){if(activeScope!==scopeKey||pins.length||handoverDirty){StorageMessage('Keep v1 and v2 separate: clear the working v2 selection explicitly before copying v1. No saved bytes were changed.');return;}try{const raw=localStorage.getItem(handoverStorageKey(catalog.combined.circulatory));if(raw===null)throw Error('No version 1 saved set exists.');const v=decodeSavedHandover(raw,catalog.combined.circulatory);const next=v.pins.map(p=>({...p,repository:catalog.repository}));Pins(next);HandoverDirty(true);StorageMessage('Copied v1 selections into the working v2 set. Save explicitly; v1 bytes remain unchanged.');await hydrate(next);}catch(e){StorageMessage(e instanceof Error?e.message:'Version 1 copy failed; originals unchanged.');}}
++ function addHandover(e:Evidence){if(activeScope!==scopeKey||workingSelection.current.scope!==scopeKey||e.repository!==catalog.repository)return;
++  const p=pin(e),current=workingSelection.current.pins;if(current.some(x=>key(x)===key(p)))return;
++  if(current.length===32){StorageMessage('Handover limit reached; no selection was dropped.');return;}
++  selectHandover([...current,p]);Restored(old=>[...old.filter(v=>key(pin(v))!==key(p)),e]);HandoverDirty(true);StorageMessage('Unsaved handover changes. Save explicitly before reload.');
++ }
++ function removeHandover(p:Pin){if(activeScope!==scopeKey||workingSelection.current.scope!==scopeKey)return;selectHandover(workingSelection.current.pins.filter(x=>key(x)!==key(p)));Restored(old=>old.filter(x=>key(pin(x))!==key(p)));HandoverDirty(true);}
++ function saveHandover(){if(activeScope!==scopeKey||workingSelection.current.scope!==scopeKey||!gateConfirmed)return;const pins=workingSelection.current.pins;try{const k=storageKey(catalog.repository);if(localStorage.getItem(k)!==lastRaw.current)throw Error('Another tab changed the saved set. Reload it before replacing it.');const value:SavedRF2={version:2,repository:catalog.repository,patient:'synthetic-p1',encounter:'synthetic-e1',savedAt:new Date().toISOString(),pins};const raw=JSON.stringify(value);decodeRF2Saved(raw,catalog.repository);localStorage.setItem(k,raw);lastRaw.current=raw;HandoverDirty(false);StorageMessage('Saved RF2 handover locally: '+pins.length+' selection(s). '+value.savedAt);}catch(e){StorageMessage(e instanceof Error?e.message:'Local save failed. Existing saved bytes were not intentionally replaced.');}}
++ async function importV1(){if(activeScope!==scopeKey||workingSelection.current.scope!==scopeKey||workingSelection.current.pins.length||handoverDirty){StorageMessage('Keep v1 and v2 separate: clear the working v2 selection explicitly before copying v1. No saved bytes were changed.');return;}try{const raw=localStorage.getItem(handoverStorageKey(catalog.combined.circulatory));if(raw===null)throw Error('No version 1 saved set exists.');const v=decodeSavedHandover(raw,catalog.combined.circulatory);const next=v.pins.map(p=>({...p,repository:catalog.repository}));selectHandover(next);HandoverDirty(true);StorageMessage('Copied v1 selections into the working v2 set. Save explicitly; v1 bytes remain unchanged.');await hydrate(next);}catch(e){StorageMessage(e instanceof Error?e.message:'Version 1 copy failed; originals unchanged.');}}
+  const field=(label:string,k:keyof Chart,optional=false)=><label>{label}<input value={String(chart[k]??'')} maxLength={k==='source_context'||k==='uncertainty'||k==='new_collection_reason'?512:128} onChange={e=>changeChart(k,e.target.value|| (optional?null:''))}/></label>;
+  const [search,Search]=useState('');const rows=catalog.items.filter(e=>[e.fact.id,e.fact.kind,evidenceText(e),e.metadata?.chart?.category??''].join(' ').toLowerCase().includes(search.toLowerCase()));
+  return <section className="rf2" aria-label="Renal charting and handover"><h2>Renal charting and handover</h2><p><strong>{gateConfirmed?'Clinical execution disabled.':'Execution gate not confirmed — new writes blocked.'}</strong> Local synthetic charting. No calculated balance, urine rate, AKI stage or treatment advice.</p><p>Repository {catalog.repository} · shared cutoff {catalog.cutoff.fact_watermark}. Reuse a recorded observation before entering another quantity. Acquisition and intended purpose are separate.</p>
+@@ -97,6 +123,6 @@ export function RenalFluidEntryWorkspace({catalog,gateConfirmed,onGuardChange,on
+  {error&&feedback.area==='draft'&&<p role="alert" id="rf2-draft-feedback">{error}</p>}
+  <p>General draft/command recovery after reload is deferred. Saved handover does not save a pending command.</p></section>
+  <NoteComparison key={scopeKey} items={catalog.items} onResolve={ps=>void inspectReferences(ps)}/>
+- <section aria-label="RF2 saved handover"><h3>Saved local RF2 handover</h3><p role="status">{storageMessage||'No RF2 saved selection restored.'}</p>{handoverDirty&&<p>Unsaved changes — save explicitly before reload.</p>}<button disabled={!gateConfirmed||activeScope!==scopeKey||busy} onClick={saveHandover}>Save RF2 handover locally</button><button disabled={!gateConfirmed||activeScope!==scopeKey} onClick={()=>void importV1()}>Explicitly copy version 1 into working version 2</button><p>If both versions exist, each remains separate. This view is version 2; the existing Handover tab shows version 1. Copying never saves or overwrites v1.</p>{activeScope===scopeKey&&pins.map(p=>{const e=restored.find(x=>key(pin(x))===key(p));return <article key={key(p)}><h4>{p.reference.kind} / {p.reference.id} / {p.reference.version}</h4><p>Original selected cutoff {p.cutoff}; digest {p.digest}</p>{e?<><p>{evidenceText(e)} · {e.superseded?'superseded historical revision retained':'exact source confirmed'}</p><details><summary>Retained source and note uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details></>:<p>Exact source unavailable/unconfirmed; pin retained without substitution.</p>}<button onClick={()=>{Pins(old=>old.filter(x=>key(x)!==key(p)));Restored(old=>old.filter(x=>key(pin(x))!==key(p)));HandoverDirty(true);}}>Remove selection only</button></article>;})}</section>
++ <section aria-label="RF2 saved handover"><h3>Saved local RF2 handover</h3><p role="status">{storageMessage||'No RF2 saved selection restored.'}</p>{restoreMessage&&<p role="status">{restoreMessage}</p>}{handoverDirty&&<p>Unsaved changes — save explicitly before reload.</p>}<button disabled={!gateConfirmed||activeScope!==scopeKey||busy} onClick={saveHandover}>Save RF2 handover locally</button><button disabled={!gateConfirmed||activeScope!==scopeKey} onClick={()=>void importV1()}>Explicitly copy version 1 into working version 2</button><p>If both versions exist, each remains separate. This view is version 2; the existing Handover tab shows version 1. Copying never saves or overwrites v1.</p>{activeScope===scopeKey&&pins.map(p=>{const e=restored.find(x=>matchesHandoverPin(x,p));return <article key={key(p)}><h4>{p.reference.kind} / {p.reference.id} / {p.reference.version}</h4><p>Original selected cutoff {p.cutoff}; digest {p.digest}</p>{e?<><p>{evidenceText(e)} · {e.superseded?'superseded historical revision retained':'exact source confirmed'}</p><details><summary>Retained source and note uncertainty</summary><pre>{JSON.stringify(e,null,2)}</pre></details></>:<p>Exact source unavailable/unconfirmed; pin retained without substitution.</p>}<button onClick={()=>removeHandover(p)}>Remove selection only</button></article>;})}</section>
+  </section>;
+ }
+diff --git a/frontend/tests/rf2HandoverRace.test.tsx b/frontend/tests/rf2HandoverRace.test.tsx
+new file mode 100644
+index 0000000..14d5030
+--- /dev/null
++++ b/frontend/tests/rf2HandoverRace.test.tsx
+@@ -0,0 +1,91 @@
++import {afterAll,afterEach,beforeAll,beforeEach,expect,it,vi} from 'vitest';
++import {act,fireEvent,render,screen,within} from '@testing-library/react';
++import fixture from './fixtures/rf2-api.json';
++import {RF2Client,pin,type Evidence,type Catalog} from '../src/api/rf2Client';
++import {RenalFluidEntryWorkspace} from '../src/demo/RenalFluidEntryWorkspace';
++import {decodeRF2Saved,storageKey} from '../src/demo/rf2Handover';
++import {handoverStorageKey} from '../src/demo/localHandover';
++const {webcrypto}=await vi.importActual<{webcrypto:Crypto}>('node:crypto');const original=globalThis.crypto;
++beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}));afterAll(()=>Object.defineProperty(globalThis,'crypto',{value:original,configurable:true}));beforeEach(()=>localStorage.clear());afterEach(()=>vi.restoreAllMocks());
++const deferred=()=>{let resolve!:(value:Evidence[])=>void,reject!:(reason:Error)=>void;const promise=new Promise<Evidence[]>((yes,no)=>{resolve=yes;reject=no;});return {promise,resolve,reject};};
++async function setup(extraSaved=0){
++ const catalog=await new RF2Client(vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(fixture.catalog)))).catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');
++ const weight=catalog.items.find(e=>e.fact.id===fixture.weight.fact.id)!,urine=catalog.items.find(e=>e.fact.id===fixture.urine.fact.id)!;
++ const raw=JSON.stringify({version:2,repository:catalog.repository,patient:'synthetic-p1',encounter:'synthetic-e1',savedAt:'2026-10-20T08:39:58.910Z',pins:[pin(weight),...Array.from({length:extraSaved},()=>({...pin(weight),reference:{...pin(weight).reference,id:crypto.randomUUID()}}))]});
++ localStorage.setItem(storageKey(catalog.repository),raw);
++ const pending=deferred(),resolve=vi.fn().mockReturnValue(pending.promise),action=vi.fn();const transport={resolve,action,history:vi.fn()} as unknown as RF2Client;
++ const props={catalog,gateConfirmed:true,onGuardChange:vi.fn(),onRefresh:async()=>{},onLegacyCorrect:vi.fn(),transport};
++ const rendered=render(<RenalFluidEntryWorkspace {...props}/>);
++ const handover=()=>screen.getByRole('region',{name:'RF2 saved handover'});
++ const add=(e:Evidence)=>fireEvent.click(within(screen.getByRole('row',{name:new RegExp(e.fact.id)})).getByRole('button',{name:'Add exact record to RF2 handover'}));
++ return {catalog,weight,urine,raw,pending,resolve,action,props,rendered,handover,add};
++}
++function confirmed(region:HTMLElement,e:Evidence){const card=within(region).getByRole('heading',{name:`${e.fact.kind} / ${e.fact.id} / ${e.fact.revision}`}).closest('article')!;expect(card).toHaveTextContent(/exact source confirmed|superseded historical revision retained/);return card;}
++it('retains a newly added exact record when saved-source hydration completes later',async()=>{
++ const s=await setup();s.add(s.urine);confirmed(s.handover(),s.urine);
++ await act(async()=>s.pending.resolve([s.weight]));confirmed(s.handover(),s.weight);confirmed(s.handover(),s.urine);
++ expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(s.raw);expect(s.action).not.toHaveBeenCalled();expect(s.resolve).toHaveBeenCalledTimes(1);
++ fireEvent.click(within(s.handover()).getByRole('button',{name:'Save RF2 handover locally'}));
++ expect(decodeRF2Saved(localStorage.getItem(storageKey(s.catalog.repository))!,s.catalog.repository).pins).toEqual([pin(s.weight),pin(s.urine)]);
++});
++it('keeps a concurrently added source confirmed when hydration fails',async()=>{
++ const s=await setup();s.add(s.urine);await act(async()=>s.pending.reject(Error('Unavailable')));confirmed(s.handover(),s.urine);
++ expect(s.handover()).toHaveTextContent('Exact source unavailable/unconfirmed; pin retained without substitution.');
++ expect(s.handover()).toHaveTextContent('Unsaved changes — save explicitly before reload.');
++ expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(s.raw);expect(s.resolve).toHaveBeenCalledTimes(1);expect(s.action).not.toHaveBeenCalled();
++});
++it('does not bring a removed selection back when its delayed hydration returns',async()=>{
++ const s=await setup();fireEvent.click(within(s.handover()).getByRole('button',{name:'Remove selection only'}));s.add(s.urine);
++ await act(async()=>s.pending.resolve([s.weight]));expect(within(s.handover()).queryByRole('heading',{name:new RegExp(s.weight.fact.id)})).not.toBeInTheDocument();confirmed(s.handover(),s.urine);
++ fireEvent.click(within(s.handover()).getByRole('button',{name:'Save RF2 handover locally'}));expect(decodeRF2Saved(localStorage.getItem(storageKey(s.catalog.repository))!,s.catalog.repository).pins).toEqual([pin(s.urine)]);
++});
++it('does not overwrite a newer exact-source confirmation when an older restore finishes',async()=>{
++ const s=await setup();fireEvent.click(within(s.handover()).getByRole('button',{name:'Remove selection only'}));
++ const newer=structuredClone(s.weight);newer.cutoff++;newer.superseded=true;newer.terminal_reference={...newer.terminal_reference,version:'later-terminal'};
++ const catalog={...s.catalog,cutoff:{...s.catalog.cutoff,fact_watermark:newer.cutoff},items:s.catalog.items.map(e=>e.fact.id===newer.fact.id?newer:e)};
++ s.rendered.rerender(<RenalFluidEntryWorkspace {...s.props} catalog={catalog}/>);s.add(newer);
++ await act(async()=>s.pending.resolve([s.weight]));const card=confirmed(s.handover(),newer);expect(card).toHaveTextContent('superseded historical revision retained');
++ expect(card).toHaveTextContent('Original selected cutoff '+newer.cutoff);expect(localStorage.getItem(storageKey(catalog.repository))).toBe(s.raw);
++});
++it('keeps restoration alive during same-scope refresh and callback replacement',async()=>{
++ const s=await setup();s.rendered.rerender(<RenalFluidEntryWorkspace {...s.props} onGuardChange={vi.fn()} catalog={{...s.catalog,items:[...s.catalog.items].reverse()}}/>);
++ await act(async()=>s.pending.resolve([s.weight]));confirmed(s.handover(),s.weight);expect(s.resolve).toHaveBeenCalledTimes(1);expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(s.raw);
++});
++it('ignores a late restoration from the previous repository',async()=>{
++ const s=await setup();const repository=crypto.randomUUID();const catalog={...s.catalog,repository,items:[]};
++ s.rendered.rerender(<RenalFluidEntryWorkspace {...s.props} catalog={catalog}/>);
++ await act(async()=>s.pending.resolve([s.weight]));expect(within(s.handover()).queryByRole('article')).not.toBeInTheDocument();expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(s.raw);expect(localStorage.getItem(storageKey(repository))).toBeNull();
++});
++it('does not drop either source when two additions occur before React renders',async()=>{
++ const s=await setup();fireEvent.click(within(s.handover()).getByRole('button',{name:'Remove selection only'}));
++ act(()=>{s.add(s.weight);s.add(s.urine);});await act(async()=>s.pending.resolve([s.weight]));confirmed(s.handover(),s.weight);confirmed(s.handover(),s.urine);
++ fireEvent.click(within(s.handover()).getByRole('button',{name:'Save RF2 handover locally'}));expect(decodeRF2Saved(localStorage.getItem(storageKey(s.catalog.repository))!,s.catalog.repository).pins).toEqual([pin(s.weight),pin(s.urine)]);
++});
++it('merges concurrent additions during explicit v1 copying without modifying saved v1/v2 bytes',async()=>{
++ const s=await setup();fireEvent.click(within(s.handover()).getByRole('button',{name:'Remove selection only'}));
++ fireEvent.click(within(s.handover()).getByRole('button',{name:'Save RF2 handover locally'}));const empty=localStorage.getItem(storageKey(s.catalog.repository));
++ const {repository:_,...v1pin}=pin(s.weight);const v1=JSON.stringify({version:1,repository:s.catalog.repository,patient:'synthetic-p1',encounter:'synthetic-e1',savedAt:'2026-10-20T08:39:58.910Z',pins:[v1pin]});
++ const v1key=handoverStorageKey(s.catalog.combined.circulatory);localStorage.setItem(v1key,v1);
++ const copy=deferred();s.resolve.mockReturnValueOnce(copy.promise);fireEvent.click(within(s.handover()).getByRole('button',{name:'Explicitly copy version 1 into working version 2'}));s.add(s.urine);
++ await act(async()=>s.pending.resolve([s.weight]));confirmed(s.handover(),s.urine); // superseded initial restore cannot apply
++ await act(async()=>copy.resolve([s.weight]));confirmed(s.handover(),s.weight);confirmed(s.handover(),s.urine);
++ expect(localStorage.getItem(v1key)).toBe(v1);expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(empty);expect(s.action).not.toHaveBeenCalled();expect(s.resolve).toHaveBeenCalledTimes(2);
++});
++it('preserves the 32-pin limit while restoration is pending',async()=>{
++ const s=await setup(31);s.add(s.urine);expect(s.handover()).toHaveTextContent('Handover limit reached; no selection was dropped.');
++ expect(within(s.handover()).getAllByRole('article')).toHaveLength(32);expect(within(s.handover()).queryByRole('heading',{name:new RegExp(s.urine.fact.id)})).not.toBeInTheDocument();
++ await act(async()=>s.pending.resolve([s.weight]));confirmed(s.handover(),s.weight);expect(within(s.handover()).getAllByRole('article')).toHaveLength(32);expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(s.raw);
++});
++it('does not deliver an unmounted instance restoration into a newly mounted workspace',async()=>{
++ const s=await setup();s.rendered.unmount();const next=deferred();const resolve=vi.fn().mockReturnValue(next.promise);
++ render(<RenalFluidEntryWorkspace {...s.props} transport={{...s.props.transport,resolve} as unknown as RF2Client}/>);
++ await act(async()=>s.pending.resolve([s.weight]));expect(s.handover()).toHaveTextContent('Exact source unavailable/unconfirmed; pin retained without substitution.');
++ await act(async()=>next.resolve([s.weight]));confirmed(s.handover(),s.weight);expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(s.raw);expect(s.action).not.toHaveBeenCalled();
++});
++it('preserves an explicit save confirmation and exact saved pins if an earlier lookup later fails',async()=>{
++ const s=await setup();s.add(s.urine);fireEvent.click(within(s.handover()).getByRole('button',{name:'Save RF2 handover locally'}));
++ const saved=localStorage.getItem(storageKey(s.catalog.repository));expect(decodeRF2Saved(saved!,s.catalog.repository).pins).toEqual([pin(s.weight),pin(s.urine)]);
++ await act(async()=>s.pending.reject(Error('Lost response')));confirmed(s.handover(),s.urine);
++ expect(s.handover()).toHaveTextContent('Saved RF2 handover locally: 2 selection(s).');expect(s.handover()).toHaveTextContent('Saved-reference lookup failed.');
++ expect(s.handover()).not.toHaveTextContent('Unsaved changes — save explicitly before reload.');expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(saved);expect(s.resolve).toHaveBeenCalledTimes(1);expect(s.action).not.toHaveBeenCalled();
++});

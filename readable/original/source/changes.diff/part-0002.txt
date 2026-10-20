@@ -1,0 +1,32 @@
+ selection only'}));
++ act(()=>{s.add(s.weight);s.add(s.urine);});await act(async()=>s.pending.resolve([s.weight]));confirmed(s.handover(),s.weight);confirmed(s.handover(),s.urine);
++ fireEvent.click(within(s.handover()).getByRole('button',{name:'Save RF2 handover locally'}));expect(decodeRF2Saved(localStorage.getItem(storageKey(s.catalog.repository))!,s.catalog.repository).pins).toEqual([pin(s.weight),pin(s.urine)]);
++});
++it('merges concurrent additions during explicit v1 copying without modifying saved v1/v2 bytes',async()=>{
++ const s=await setup();fireEvent.click(within(s.handover()).getByRole('button',{name:'Remove selection only'}));
++ fireEvent.click(within(s.handover()).getByRole('button',{name:'Save RF2 handover locally'}));const empty=localStorage.getItem(storageKey(s.catalog.repository));
++ const {repository:_,...v1pin}=pin(s.weight);const v1=JSON.stringify({version:1,repository:s.catalog.repository,patient:'synthetic-p1',encounter:'synthetic-e1',savedAt:'2026-10-20T08:39:58.910Z',pins:[v1pin]});
++ const v1key=handoverStorageKey(s.catalog.combined.circulatory);localStorage.setItem(v1key,v1);
++ const copy=deferred();s.resolve.mockReturnValueOnce(copy.promise);fireEvent.click(within(s.handover()).getByRole('button',{name:'Explicitly copy version 1 into working version 2'}));s.add(s.urine);
++ await act(async()=>s.pending.resolve([s.weight]));confirmed(s.handover(),s.urine); // superseded initial restore cannot apply
++ await act(async()=>copy.resolve([s.weight]));confirmed(s.handover(),s.weight);confirmed(s.handover(),s.urine);
++ expect(localStorage.getItem(v1key)).toBe(v1);expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(empty);expect(s.action).not.toHaveBeenCalled();expect(s.resolve).toHaveBeenCalledTimes(2);
++});
++it('preserves the 32-pin limit while restoration is pending',async()=>{
++ const s=await setup(31);s.add(s.urine);expect(s.handover()).toHaveTextContent('Handover limit reached; no selection was dropped.');
++ expect(within(s.handover()).getAllByRole('article')).toHaveLength(32);expect(within(s.handover()).queryByRole('heading',{name:new RegExp(s.urine.fact.id)})).not.toBeInTheDocument();
++ await act(async()=>s.pending.resolve([s.weight]));confirmed(s.handover(),s.weight);expect(within(s.handover()).getAllByRole('article')).toHaveLength(32);expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(s.raw);
++});
++it('does not deliver an unmounted instance restoration into a newly mounted workspace',async()=>{
++ const s=await setup();s.rendered.unmount();const next=deferred();const resolve=vi.fn().mockReturnValue(next.promise);
++ render(<RenalFluidEntryWorkspace {...s.props} transport={{...s.props.transport,resolve} as unknown as RF2Client}/>);
++ await act(async()=>s.pending.resolve([s.weight]));expect(s.handover()).toHaveTextContent('Exact source unavailable/unconfirmed; pin retained without substitution.');
++ await act(async()=>next.resolve([s.weight]));confirmed(s.handover(),s.weight);expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(s.raw);expect(s.action).not.toHaveBeenCalled();
++});
++it('preserves an explicit save confirmation and exact saved pins if an earlier lookup later fails',async()=>{
++ const s=await setup();s.add(s.urine);fireEvent.click(within(s.handover()).getByRole('button',{name:'Save RF2 handover locally'}));
++ const saved=localStorage.getItem(storageKey(s.catalog.repository));expect(decodeRF2Saved(saved!,s.catalog.repository).pins).toEqual([pin(s.weight),pin(s.urine)]);
++ await act(async()=>s.pending.reject(Error('Lost response')));confirmed(s.handover(),s.urine);
++ expect(s.handover()).toHaveTextContent('Saved RF2 handover locally: 2 selection(s).');expect(s.handover()).toHaveTextContent('Saved-reference lookup failed.');
++ expect(s.handover()).not.toHaveTextContent('Unsaved changes — save explicitly before reload.');expect(localStorage.getItem(storageKey(s.catalog.repository))).toBe(saved);expect(s.resolve).toHaveBeenCalledTimes(1);expect(s.action).not.toHaveBeenCalled();
++});

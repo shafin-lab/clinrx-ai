@@ -1,0 +1,199 @@
+
+> clinrx-synthetic-review@0.1.0 test
+> vitest run --maxWorkers=2 tests/rf2HandoverRace.test.tsx
+
+
+ RUN  v5.0.3 /Users/mohammedshafiqshajahan/.codex/.chatgpt-projects/g-p-6a7341f8cd3c8191b8bc642d3c0a06e6/rf2-implementation/frontend
+
+ ❯ tests/rf2HandoverRace.test.tsx (7 tests | 5 failed) 557ms
+   × retains a newly added exact record when saved-source hydration completes later 192ms
+   × does not bring a removed selection back when its delayed hydration returns 70ms
+   × does not overwrite a newer exact-source confirmation when an older restore finishes 77ms
+   × keeps restoration alive during same-scope refresh and callback replacement 32ms
+   × does not drop either source when two additions occur before React renders 81ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/rf2HandoverRace.test.tsx > retains a newly added exact record when saved-source hydration completes later
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  /exact source confirmed|superseded historical revision retained/
+Received:
+  circulatory_event / de0f05cf-bb25-4f0a-952b-5934743a9b83 / 5b3081f9-ad8f-4389-b968-68e701e95256Original selected cutoff 6; digest f072460d4f7eaf5cc3294179d4962f52090db6bdd8ffbde85576688ca645f402Exact source unavailable/unconfirmed; pin retained without substitution.Remove selection only
+ ❯ confirmed tests/rf2HandoverRace.test.tsx:22:191
+
+ ❯ tests/rf2HandoverRace.test.tsx:25:85
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/rf2HandoverRace.test.tsx > does not bring a removed selection back when its delayed hydration returns
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  /exact source confirmed|superseded historical revision retained/
+Received:
+  circulatory_event / de0f05cf-bb25-4f0a-952b-5934743a9b83 / 5b3081f9-ad8f-4389-b968-68e701e95256Original selected cutoff 6; digest f072460d4f7eaf5cc3294179d4962f52090db6bdd8ffbde85576688ca645f402Exact source unavailable/unconfirmed; pin retained without substitution.Remove selection only
+ ❯ confirmed tests/rf2HandoverRace.test.tsx:22:191
+
+ ❯ tests/rf2HandoverRace.test.tsx:38:164
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/rf2HandoverRace.test.tsx > does not overwrite a newer exact-source confirmation when an older restore finishes
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  superseded historical revision retained
+Received:
+  circulatory_event / 9a9281f7-d7d5-4315-a6f6-ee516801d354 / d97b3a2b-d285-4021-92ae-c319506d41c0Original selected cutoff 7; digest 4d31b977aa662a2cdfd32f08c09794beff1dfdb3b4c98a7b107c2f30ae7f953470.0000 kg · exact source confirmedRetained source and note uncertainty{ "repository": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7", "fact": { "kind": "circulatory_event", "id": "9a9281f7-d7d5-4315-a6f6-ee516801d354", "revision": "d97b3a2b-d285-4021-92ae-c319506d41c0", "binding": { "target": { "patient_id": "synthetic-p1", "encounter_id": "synthetic-e1", "longitudinal_context_id": null }, "verification": { "status": "unresolved", "method": "Synthetic scope selection", "verifier": "Synthetic nurse", "assessed_at": "2026-10-08T10:00:00Z", "source": { "namespace": "clinrx.local.synthetic.rf2", "identifier": "9a9281f7-d7d5-4315-a6f6-ee516801d354", "version": null, "channel": "clinician" }, "ambiguity": "Local synthetic patient only." } }, "origin": "reported", "provenance": { "source": { "namespace": "clinrx.local.synthetic.rf2", "identifier": "9a9281f7-d7d5-4315-a6f6-ee516801d354", "version": null, "channel": "clinician" }, "actor": "Synthetic nurse", "recorded_at": "2026-10-08T10:00:00Z", "upstream": [], "lineage": "incomplete", "limitations": [ "Unauthenticated local synthetic source assertion." ] }, "time": { "event": null, "recorded": null, "effective_start": null, "effective_end": null, "retrieved": null, "processed": null, "precision": "unknown", "uncertainty": null }, "verification": "unverified", "conflict": "unknown", "temporal_status": "unknown", "uncertainty": [ "Collection method not verified" ], "supersedes": null, "correction_reason": null, "contract_version": "3", "occurred": { "timestamp_precision": "M7ExactTimestampInput/v1", "recorded": { "status": "known", "precision": "instant", "value": "2026-10-08T09:45:00Z", "lower": null, "upper": null, "uncertainty": null }, "source_timestamp": "2026-10-08T09:45:00Z", "clock": "unknown", "clock_basis": null, "conflicting": [], "alternative_sources": [], "alignment": null }, "available": { "recorded": { "status": "not_recorded", "precision": "unknown", "value": null, "lower": null, "upper": null, "uncertainty": null }, "source_timestamp": null, "clock": "unknown", "clock_basis": null, "conflicting": [], "alternative_sources": [], "alignment": null }, "associations": [], "source_identifiers": [], "disclosures": [], "record_status": "recorded", "event_type": "other", "description": { "raw_display": "Explicit local fictional measurement", "coding": { "namespace": "clinrx.local.rf2/v1", "code": "weight", "version": "1", "raw_display": "weight" } }, "external_evidence": [ { "namespace": "clinrx.local.rf2/v1", "code": "{\"chart\":{\"acquisition\":\"measured\",\"amount\":\"70.0000\",\"category\":\"weight\",\"end\":null,\"method\":null,\"missing_reason\":null,\"new_collection_reason\":null,\"point\":\"2026-10-08T09:45:00Z\",\"purpose\":\"body weight\",\"source_context\":\"Explicit local fictional measurement\",\"source_record\":{\"component\":\"weight\",\"issuer\":\"nurse-chart-A\",\"issuer_namespace\":\"clinrx.synthetic.chart\",\"record_id\":\"weight-0945\",\"record_namespace\":\"chart-entry\"},\"source_version\":null,\"start\":null,\"uncertainty\":\"Collection method not verified\",\"unit\":\"kg\"},\"note\":null,\"version\":1}", "version": "1", "raw_display": "Structured RF2 source assertions" } ], "recorded_amount": { "value": "70.0000", "unit": { "raw": "kg", "status": "unresolved", "system": null, "code": null, "limitation": "Raw source unit; no conversion." } } }, "canonical_fact": "{\"associations\":[],\"available\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"source_timestamp\":null},\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":\"Local synthetic patient only.\",\"assessed_at\":\"2026-10-08T10:00:00Z\",\"method\":\"Synthetic scope selection\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"9a9281f7-d7d5-4315-a6f6-ee516801d354\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"status\":\"unresolved\",\"verifier\":\"Synthetic nurse\"}},\"conflict\":\"unknown\",\"contract_version\":\"3\",\"correction_reason\":null,\"description\":{\"coding\":{\"code\":\"weight\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"weight\",\"version\":\"1\"},\"raw_display\":\"Explicit local fictional measurement\"},\"disclosures\":[],\"event_type\":\"other\",\"external_evidence\":[{\"code\":\"{\\\"chart\\\":{\\\"acquisition\\\":\\\"measured\\\",\\\"amount\\\":\\\"70.0000\\\",\\\"category\\\":\\\"weight\\\",\\\"end\\\":null,\\\"method\\\":null,\\\"missing_reason\\\":null,\\\"new_collection_reason\\\":null,\\\"point\\\":\\\"2026-10-08T09:45:00Z\\\",\\\"purpose\\\":\\\"body weight\\\",\\\"source_context\\\":\\\"Explicit local fictional measurement\\\",\\\"source_record\\\":{\\\"component\\\":\\\"weight\\\",\\\"issuer\\\":\\\"nurse-chart-A\\\",\\\"issuer_namespace\\\":\\\"clinrx.synthetic.chart\\\",\\\"record_id\\\":\\\"weight-0945\\\",\\\"record_namespace\\\":\\\"chart-entry\\\"},\\\"source_version\\\":null,\\\"start\\\":null,\\\"uncertainty\\\":\\\"Collection method not verified\\\",\\\"unit\\\":\\\"kg\\\"},\\\"note\\\":null,\\\"version\\\":1}\",\"namespace\":\"clinrx.local.rf2/v1\",\"raw_display\":\"Structured RF2 source assertions\",\"version\":\"1\"}],\"id\":\"9a9281f7-d7d5-4315-a6f6-ee516801d354\",\"kind\":\"circulatory_event\",\"occurred\":{\"alignment\":null,\"alternative_sources\":[],\"clock\":\"unknown\",\"clock_basis\":null,\"conflicting\":[],\"recorded\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:45:00Z\"},\"source_timestamp\":\"2026-10-08T09:45:00Z\",\"timestamp_precision\":\"M7ExactTimestampInput/v1\"},\"origin\":\"reported\",\"provenance\":{\"actor\":\"Synthetic nurse\",\"limitations\":[\"Unauthenticated local synthetic source assertion.\"],\"lineage\":\"incomplete\",\"recorded_at\":\"2026-10-08T10:00:00Z\",\"source\":{\"channel\":\"clinician\",\"identifier\":\"9a9281f7-d7d5-4315-a6f6-ee516801d354\",\"namespace\":\"clinrx.local.synthetic.rf2\",\"version\":null},\"upstream\":[]},\"record_status\":\"recorded\",\"recorded_amount\":{\"unit\":{\"code\":null,\"limitation\":\"Raw source unit; no conversion.\",\"raw\":\"kg\",\"status\":\"unresolved\",\"system\":null},\"value\":\"70.0000\"},\"revision\":\"d97b3a2b-d285-4021-92ae-c319506d41c0\",\"source_identifiers\":[],\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"uncertainty\":[\"Collection method not verified\"],\"verification\":\"unverified\"}", "digest": "4d31b977aa662a2cdfd32f08c09794beff1dfdb3b4c98a7b107c2f30ae7f9534", "ingestion": { "repository_id": "da23ef6d-d22b-4963-bb32-cdd8e53fe1c7", "ingestion_sequence": 4, "ingested_at": "2026-10-19T18:35:22.660440Z", "payload_version": 1 }, "cutoff": 6, "terminal_reference": { "kind": "circulatory_event", "id": "9a9281f7-d7d5-4315-a6f6-ee516801d354", "version": "d97b3a2b-d285-4021-92ae-c319506d41c0" }, "superseded": false, "metadata": { "chart": { "acquisition": "measured", "amount": "70.0000", "category": "weight", "end": null, "method": null, "missing_reason": null, "new_collection_reason": null, "point": "2026-10-08T09:45:00Z", "purpose": "body weight", "source_context": "Explicit local fictional measurement", "source_record": { "component": "weight", "issuer": "nurse-chart-A", "issuer_namespace": "clinrx.synthetic.chart", "record_id": "weight-0945", "record_namespace": "chart-entry" }, "source_version": null, "start": null, "uncertainty": "Collection method not verified", "unit": "kg" }, "note": null, "version": 1 } }Remove selection only
+ ❯ tests/rf2HandoverRace.test.tsx:46:106
+     44|  const catalog={...s.catalog,cutoff:{...s.catalog.cutoff,fact_watermar…
+     45|  s.rendered.rerender(<RenalFluidEntryWorkspace {...s.props} catalog={c…
+     46|  await act(async()=>s.pending.resolve([s.weight]));const card=confirme…
+       |                                                                                                          ^
+     47|  expect(card).toHaveTextContent('Original selected cutoff '+newer.cuto…
+     48| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/rf2HandoverRace.test.tsx > keeps restoration alive during same-scope refresh and callback replacement
+Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  /exact source confirmed|superseded historical revision retained/
+Received:
+  circulatory_event / 9a9281f7-d7d5-4315-a6f6-ee516801d354 / d97b3a2b-d285-4021-92ae-c319506d41c0Original selected cutoff 6; digest 4d31b977aa662a2cdfd32f08c09794beff1dfdb3b4c98a7b107c2f30ae7f9534Exact source unavailable/unconfirmed; pin retained without substitution.Remove selection only
+ ❯ confirmed tests/rf2HandoverRace.test.tsx:22:191
+
+ ❯ tests/rf2HandoverRace.test.tsx:51:52
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/rf2HandoverRace.test.tsx > does not drop either source when two additions occur before React renders
+TestingLibraryElementError: Unable to find an accessible element with the role "heading" and name "circulatory_event / 9a9281f7-d7d5-4315-a6f6-ee516801d354 / d97b3a2b-d285-4021-92ae-c319506d41c0"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Saved local RF2 handover":
+  [36m<h3 />[39m
+
+  --------------------------------------------------status:
+
+  Name "":
+  [36m<p[39m
+    [33mrole[39m=[32m"status"[39m
+  [36m/>[39m
+
+  --------------------------------------------------paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------button:
+
+  Name "Save RF2 handover locally":
+  [36m<button />[39m
+
+  --------------------------------------------------button:
+
+  Name "Explicitly copy version 1 into working version 2":
+  [36m<button />[39m
+
+  --------------------------------------------------paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------article:
+
+  Name "":
+  [36m<article />[39m
+
+  --------------------------------------------------
+  heading:
+
+  Name "circulatory_event / de0f05cf-bb25-4f0a-952b-5934743a9b83 / 5b3081f9-ad8f-4389-b968-68e701e95256":
+  [36m<h4 />[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "Remove selection only":
+  [36m<button />[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<section[39m
+  [33maria-label[39m=[32m"RF2 saved handover"[39m
+[36m>[39m
+  [36m<h3>[39m
+    [0mSaved local RF2 handover[0m
+  [36m</h3>[39m
+  [36m<p[39m
+    [33mrole[39m=[32m"status"[39m
+  [36m>[39m
+    [0mUnsaved handover changes. Save explicitly before reload.[0m
+  [36m</p>[39m
+  [36m<p>[39m
+    [0mUnsaved changes — save explicitly before reload.[0m
+  [36m</p>[39m
+  [36m<button>[39m
+    [0mSave RF2 handover locally[0m
+  [36m</button>[39m
+  [36m<button>[39m
+    [0mExplicitly copy version 1 into working version 2[0m
+  [36m</button>[39m
+  [36m<p>[39m
+    [0mIf both versions exist, each remains separate. This view is version 2; the existing Handover tab shows version 1. Copying never saves or overwrites v1.[0m
+  [36m</p>[39m
+  [36m<article>[39m
+    [36m<h4>[39m
+      [0mcirculatory_event[0m
+      [0m / [0m
+      [0mde0f05cf-bb25-4f0a-952b-5934743a9b83[0m
+      [0m / [0m
+      [0m5b3081f9-ad8f-4389-b968-68e701e95256[0m
+    [36m</h4>[39m
+    [36m<p>[39m
+      [0mOriginal selected cutoff [0m
+      [0m6[0m
+      [0m; digest [0m
+      [0mf072460d4f7eaf5cc3294179d4962f52090db6bdd8ffbde85576688ca645f402[0m
+    [36m</p>[39m
+    [36m<p>[39m
+      [0mExact source unavailable/unconfirmed; pin retained without substitution.[0m
+    [36m</p>[39m
+    [36m<button>[39m
+      [0mRemove selection only[0m
+    [36m</button>[39m
+  [36m</article>[39m
+[36m</section>[39m
+ ❯ Object.getElementError ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../../../../Documents/clinrx-ai/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ confirmed tests/rf2HandoverRace.test.tsx:22:77
+
+ ❯ tests/rf2HandoverRace.test.tsx:60:95
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 2 passed (7)
+   Start at  18:10:47
+   Duration  1.82s (environment 44%, tests 33%, transform 12%, setup 8%, import 4%)
+
