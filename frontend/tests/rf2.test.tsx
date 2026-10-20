@@ -65,3 +65,20 @@ it('names missing reassessment fields before transport and retains exact source 
  fireEvent.click(screen.getByRole('button',{name:'Validate RF2 draft'}));await screen.findByRole('region',{name:'Review selected source changes'});
  expect(t.action).toHaveBeenCalledTimes(1);expect(vi.mocked(t.action).mock.calls[0][1].note?.pins).toEqual([pin(source)]);
 });
+
+it('places missing-field feedback beside the RF2 draft controls rather than above the source search',async()=>{
+ const c=await load(),t=apiMock();mount(c,t);const source=c.items.find(e=>e.fact.id===fixture.weight.fact.id)!;
+ fireEvent.click(within(screen.getByRole('row',{name:new RegExp(source.fact.id)})).getByRole('button',{name:'Reuse for reassessment'}));
+ const draftRegion=screen.getByRole('region',{name:'RF2 draft'}),validate=within(draftRegion).getByRole('button',{name:'Validate RF2 draft'});
+ fireEvent.click(validate);const alert=within(draftRegion).getByRole('alert');expect(alert).toHaveTextContent('Complete these required fields: Actor, Question, Findings, Possibilities, Gaps, Plan.');
+ expect(screen.getAllByRole('alert')).toHaveLength(1);expect(validate.compareDocumentPosition(alert)&Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+ expect(draftRegion).toHaveTextContent(source.fact.revision);expect(t.action).not.toHaveBeenCalled();
+});
+it('keeps history confirmation failures beside the source area instead of labelling them draft validation',async()=>{
+ const c=await load(),t=apiMock();vi.mocked(t.history).mockRejectedValue(Error('Unavailable'));
+ mount(c,t);const source=c.items.find(e=>e.fact.id===fixture.weight.fact.id)!;
+ fireEvent.click(within(screen.getByRole('row',{name:new RegExp(source.fact.id)})).getByRole('button',{name:'Inspect exact history'}));
+ const alert=await screen.findByRole('alert');expect(alert).toHaveTextContent('Exact history could not be confirmed');
+ expect(within(screen.getByRole('region',{name:'RF2 draft'})).queryByRole('alert')).not.toBeInTheDocument();
+ expect(t.action).not.toHaveBeenCalled();
+});
