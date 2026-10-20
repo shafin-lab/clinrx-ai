@@ -1,1 +1,14 @@
 .rf2 {max-width:100%; overflow-wrap:anywhere}.rf2 label {display:block;margin:.7rem 0}.rf2 input:not([type=checkbox]),.rf2 select,.rf2 textarea {display:block;max-width:100%;width:32rem;box-sizing:border-box}.rf2 button {margin:.25rem;padding:.45rem}.rf2-scroll {max-height:28rem;overflow:auto;max-width:100%;border:1px solid #8b9cac}.rf2 table {border-collapse:collapse;min-width:42rem}.rf2 th,.rf2 td {text-align:left;vertical-align:top;padding:.6rem;border-bottom:1px solid #b7c2cb}.rf2 th {max-width:20rem}.rf2 thead th {position:sticky;top:0;background:#e8eef3;color:#14212d}.rf2 pre {white-space:pre-wrap;overflow-wrap:anywhere;max-height:24rem;overflow:auto}.rf2 article,.rf2 fieldset {margin:.8rem 0;padding:.8rem;border:1px solid #9aabb8}.rf2-compare {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}@media(max-width:600px){.rf2-compare{grid-template-columns:1fr}}
+/* Read-only chart: keep status/caveats outside the keyboard-scrollable table. */
+.rf2-fluid-chart {min-width:0;max-width:100%;overflow-wrap:anywhere}
+.rf2-fluid-chart>p,.rf2-fluid-chart>section {max-width:100%}
+.rf2-fluid-scroll {overflow:auto;max-width:100%;max-height:36rem;border:1px solid #8b9cac;overscroll-behavior-inline:contain}
+.rf2-fluid-scroll:focus-visible,.rf2-fluid-chart button:focus-visible {outline:3px solid #154c67;outline-offset:3px}
+.rf2 .rf2-fluid-scroll table {min-width:64rem;width:100%;table-layout:fixed}
+.rf2-fluid-scroll th:first-child {width:10rem}
+.rf2 .rf2-fluid-entry {min-width:0;margin:.4rem 0;padding:.55rem;overflow-wrap:anywhere}
+.rf2-fluid-entry small {display:block;font-weight:normal}
+.rf2-fluid-entry p {margin:.45rem 0}
+.rf2-fluid-amount {font-weight:bold}
+.rf2-fluid-entry button {max-width:100%;white-space:normal}
+@media(max-width:360px){.rf2-fluid-chart>p {font-size:.95rem}.rf2-fluid-chart {width:100%}.rf2 .rf2-fluid-entry {padding:.4rem}}
