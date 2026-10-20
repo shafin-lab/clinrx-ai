@@ -1,0 +1,71 @@
+CLINRX RF2 SOURCE-PROFILE EVIDENCE — VERSION 1.0
+Prepared 20 October 2026. Specification evidence only.
+
+VERDICT REQUESTED
+Accept or amend this bounded mapping assessment. This package does NOT establish
+an eligible source profile. It does not request implementation authorization.
+No unsupported record becomes numerically eligible through this publication.
+
+BASELINE
+Application d608ce8655a024cf7c9e4d78dbeb85b50d20fdc5
+Tree 2d6ba2e912f5a847825ebd3485cd0639ea67c6e8
+Candidate producer: app.demo.icu_chart_entries.context_facts
+Producer coding namespace: clinrx.synthetic.hemodynamic-chart/v1
+Profile assessment: rf2-legacy-chart-profile-assessment/v1
+This assessment covers the synthetic producer, RF2 contracts and replay service.
+It is not an issuer attestation or a real clinical chart-system integration.
+
+CONTENTS
+profile.json: explicit unapproved profile status.
+source/: nine exact baseline source/test files, unmodified.
+source-manifest.json: Git blob identities, SHA-256 hashes, sizes, commit/tree.
+application-commit.raw: raw accepted application commit object content.
+examples/producer-examples.json: 28 baseline-generated CirculatoryEvent payloads,
+exact canonical payload strings and SHA-256 digests.
+fixtures/dispositions.json: 24 authored inclusion/exclusion rule scenarios.
+FIELD-MAPPING.txt: exact mappings, limitations and evidence needed.
+GENERATION-LOG.txt: actions performed and explicit exclusions.
+generation-dependencies.json: 39 loaded application modules checked against Git.
+generate.py: example-generation script (requires baseline checkout
+and its existing Python dependencies; uses this workspace's absolute paths).
+The generator creates 22 core fixtures; two supplemental timezone/elapsed-time
+fixtures are preserved in the final dispositions file. It is not a one-command
+rebuild of the complete editorial package.
+SHA256SUMS: content checksums; verification is integrity checking, not testing.
+
+WHAT WAS ACTUALLY EXECUTED
+Verified clean checkout and exact HEAD. Read baseline Git objects. Called the
+pure synthetic context_facts producer to generate representative examples in
+memory and canonicalized them using the existing canonical serializer. Checked
+loaded application module bytes against the accepted commit.
+No application suite or calculator test was run. No database, browser, server,
+local storage or production execution was exercised. Example generation is not
+historical-runtime capture. Expected fixtures are not implemented behavior.
+Existing tests copied here were inspected only; their earlier pass results are
+not rerun or reattributed to this package.
+
+PROFILE DISPOSITION
+NOT READY FOR NUMERICAL ELIGIBILITY.
+Some volume meanings and explicit summary categories are source-confirmed.
+Collection uniqueness, persistent drain identity and aggregate membership are
+not established. RF2 tuple replay semantics are not physical uniqueness.
+Even records with valid quantities and intervals remain excluded until a
+source-specific mapping receives separate approval.
+No positive numerical inclusion example is honestly supportable under the
+current gate. Conditional positive fixtures explain future rule behavior;
+they do not approve the source or calculate an actual patient subtotal.
+
+NEXT EVIDENCE NEEDED
+Issuer/producer-owned versioned semantics for collection uniqueness, key scope,
+reuse, replay and correction; drain identity lifecycle; point-vs-interval meaning;
+collection-vs-summary classification; aggregate/component ambiguity; cross-source
+and cross-category duplication, including CRRT. Supply representative immutable
+positive/negative examples and execute focused tests only after an eligible
+profile contract and implementation are separately authorized.
+Do not retrofit identities into existing historical records from names or IDs.
+
+BOUNDARIES
+Subtotal-only contract remains approved; completeness always unresolved.
+No new persistence contract, coverage assertion, calculated fact, application
+change, implementation approval, merge, deployment or hosting is established.
+Prior acceptances are unchanged. Execution remains disabled.

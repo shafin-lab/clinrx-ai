@@ -1,0 +1,90 @@
+FIELD MAPPING AND PRODUCER SEMANTICS
+All paths below refer to the exact baseline source/ snapshots.
+
+1. SCOPE AND RECORD IDENTITY
+RF2 Pin: repository, reference(kind/id/version), digest, ingestion, cutoff.
+Clinical fact: binding.target(patient_id/encounter_id), id/revision.
+Supports stored evidence correspondence only. Distinct IDs are not distinct
+physical collections. Fixture naming such as fs-IO-output_urine-45 is a producer
+label, not an issuer-defined unique collection contract.
+
+2. LEGACY CATEGORY AND VOLUME
+icu_chart_entries.py entry(): description.coding namespace/code, recorded_amount
+and optional recorded_interval. context_facts() generates four consecutive
+15-minute rows for IV input, blood input, urine, drain, CRRT and reported balance.
+Raw quantity: recorded_amount.value and recorded_amount.unit.raw.
+Candidate actual volume codes: input_iv/input_blood/output_urine/output_drain.
+Code output_crrt is explicitly labelled NET removal by this producer, confirmed
+also by fs-CRRT-NOTE. This does not universally define all output_crrt sources.
+No oral/enteral/other-output examples are established by this producer package.
+No CRRT replacement-fluid reconciliation is established.
+
+3. SUMMARY AND CROSS-CATEGORY AMBIGUITY
+net_balance_reported, urine_total_reported, balance_total_reported explicitly
+identify source-reported summaries and are excluded.
+No exact membership list binds totals to component references. Numerical equality
+or adjacent times must not be used to invent membership.
+fs-FLUID-CHALLENGE expressly warns its administration may already be included in
+interval IV input. Exclude the challenge; where the affected IV collection set
+cannot be resolved, exclude that unresolved group too, not just the challenge.
+No universal aggregate/component role exists in EvidenceBinding. Existing
+context/delivery/episode roles are not automatically membership or drain links.
+
+4. DRAIN IDENTITY
+Legacy output_drain rows say measured drain output but supply no stable drain
+identifier and no guarantee whether multiple drains are combined. Do not split
+or name them as independent devices. Clinical source_identifiers and associations
+are generic carriers; no inspected profile assigns them stable drain semantics.
+RF2 Chart likewise has no dedicated drain identity. source_record.component
+must not be repurposed as one without reviewed issuer semantics.
+
+5. RF2 UPSTREAM IDENTITY, REPLAY AND CORRECTION
+SourceRecord fields: issuer_namespace, issuer, record_namespace, record_id,
+component. SourceRecord rejects generic whole-record/collection/series/context
+components and series/context/channel/device record namespaces.
+RF2Service.replay(): same tuple across bounded history defines ownership;
+material() excludes only new_collection_reason. Same material may return a
+retained row, even after supersession; multiple owners or ambiguous matches
+conflict. This API behavior is not a physical-collection uniqueness guarantee.
+source_version is chart material, not a drain or physical collection key.
+New collection reason is required when no tuple exists; free text is not proof.
+RF2-owned corrections preserve source_record identity; original-owner historical
+records cannot be assigned upstream identity by cross-owner correction.
+Correction supersedes retains predecessor identity. Exact retained retry is not
+permission to count an old revision in a current subtotal.
+
+6. TIME, STATUS AND AVAILABILITY
+Legacy interval start/end use RecordedCirculatoryInterval and explicit instants.
+Legacy occurred equals interval end: it must NOT be treated as an additional
+point-recorded quantity. No amount is counted twice by two time representations.
+The producer generates adjacent intervals, but source absence/completeness is
+not established. It explicitly disclaims inferred completeness.
+Legacy available is set at the generated event instant. RF2 new chart facts may
+have unknown availability; corrections preserve RF2-owned availability.
+Chart accepts aware timestamps but does not enforce all proposed calculation
+rules (for example equal bounds can pass authoring). Calculator eligibility must
+separately enforce strict a < b and reject partial intervals.
+record_status: recorded/withdrawn/invalid/unknown; calculation requires applicable
+recorded status and known eligible timing. Unknown is not confirmed recorded.
+History eligibility requires ingestion <= pinned cutoff and the applicable
+revision within that history. Never use current terminal metadata to overwrite
+a historical cutoff. Competing revisions exclude the whole unresolved family.
+Cutoff availability is repository knowledge, not proof of complete real-world
+collection coverage. Missing clinical availability remains explicitly disclosed;
+a clinical as-of filter cannot be satisfied by guessing a timestamp.
+
+7. VALUES AND UNITS
+Chart accepts exact decimal text; actual-volume categories reject negatives.
+Legacy ExactQuantity/raw units are source evidence. Unsupported/qualitative/
+negative/absent values cannot silently become zero or be converted.
+No conversion or balance calculation currently occurs in this producer.
+Proposed mL/L arithmetic and rounding remain new implementation work.
+
+8. RULE-ONLY ACCEPTANCE FIXTURES
+Current expected disposition: unsupported profile always excluded.
+Conditional positive fixtures are proposals after profile approval, not approved
+mappings. Existing source replay/preservation tests do not test subtotal logic,
+real collection uniqueness, stable drains or aggregate membership.
+Add future executable cases for DST repeated/nonexistent times, 24 elapsed hours,
+point/end distinction, multi-hour unallocated rows, zero vs unknown, cross-category
+ambiguity, cutoff revisions and no override by user acknowledgment.

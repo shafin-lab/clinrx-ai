@@ -1,0 +1,332 @@
+[
+  {
+    "id": "actual-fs-IO-output_urine-45",
+    "input": {
+      "example_reference": {
+        "kind": "circulatory_event",
+        "id": "fs-IO-output_urine-45",
+        "version": "1"
+      },
+      "digest": "18a1f64ae34626456c08d844fed9c7a56a1aaeff3209e14aa608b5fb0d938376"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "No approved collection identity; drain identity absent where relevant",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "actual-fs-IO-output_drain-15",
+    "input": {
+      "example_reference": {
+        "kind": "circulatory_event",
+        "id": "fs-IO-output_drain-15",
+        "version": "1"
+      },
+      "digest": "fb60e0e8ee67a1380f1d89e749b0b24dcb502cfe9e25bb93a8a3b0468180232f"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "No approved collection identity; drain identity absent where relevant",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "actual-fs-IO-output_crrt-30",
+    "input": {
+      "example_reference": {
+        "kind": "circulatory_event",
+        "id": "fs-IO-output_crrt-30",
+        "version": "1"
+      },
+      "digest": "9711db9425f9229e4131d90984024009a065a41de6120c16a999b2793f67d4de"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "No approved collection identity; drain identity absent where relevant",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "actual-fs-URINE-TOTAL",
+    "input": {
+      "example_reference": {
+        "kind": "circulatory_event",
+        "id": "fs-URINE-TOTAL",
+        "version": "1"
+      },
+      "digest": "d856b339043bd707facabc2e17f427b59d4b9d627f2a8434c01267976d091e12"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Summary category",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "actual-fs-BALANCE-TOTAL",
+    "input": {
+      "example_reference": {
+        "kind": "circulatory_event",
+        "id": "fs-BALANCE-TOTAL",
+        "version": "1"
+      },
+      "digest": "96511c37370f30cfb1cd84b6d8d4fb0fbe8b05b68b350fbe3d6fe2d54f895486"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Summary category",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "actual-fs-FLUID-CHALLENGE",
+    "input": {
+      "example_reference": {
+        "kind": "circulatory_event",
+        "id": "fs-FLUID-CHALLENGE",
+        "version": "1"
+      },
+      "digest": "3687b06a9e356bd877508f0c3a017d3558d778c39a432266eb8eeadfcf2e921e"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "No approved collection identity; drain identity absent where relevant; fluid challenge may duplicate IV interval intake",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "eligible-zero",
+    "input": {
+      "amount": "0",
+      "unit": "mL"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Profile gate remains closed",
+    "conditional_rule_expectation": "With approved identity and all other checks satisfied, include a genuine zero",
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "unknown",
+    "input": {
+      "amount": null,
+      "unit": null
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Missing quantity",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "absence",
+    "input": {
+      "label": "No drain present"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "No approved durable absence contract; never a volume observation",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "litres",
+    "input": {
+      "amount": "1.25",
+      "unit": "L"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Profile gate remains closed",
+    "conditional_rule_expectation": "With all gates satisfied, exact conversion is 1250 mL",
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "independent-drains",
+    "input": {
+      "drain_labels": [
+        "A",
+        "B"
+      ],
+      "same_interval": true
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Names do not establish independent drain identity",
+    "conditional_rule_expectation": "With separately approved stable identities and collection keys, both may contribute",
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "duplicate-across-category",
+    "input": {
+      "categories": [
+        "input_iv",
+        "input_blood"
+      ],
+      "different_fact_ids": true
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Unresolved shared-collection identity: exclude all affected records",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "overlap",
+    "input": {
+      "same_source": true,
+      "overlapping_intervals": true
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Unresolved overlap group: exclude all affected records",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "aggregate-component",
+    "input": {
+      "categories": [
+        "output_urine",
+        "urine_total_reported"
+      ]
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Exclude summary; exclude candidate collections too if relationship is unresolved",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "correction-chain",
+    "input": {
+      "predecessor": "r1",
+      "successor": "r2",
+      "supersedes": "r1"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Identity gate still applies",
+    "conditional_rule_expectation": "At cutoff containing only r1 select r1; at cutoff containing r2 select only r2",
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "withdrawn-terminal",
+    "input": {
+      "r2_status": "withdrawn"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Exclude; no fallback to r1",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "competing-revisions",
+    "input": {
+      "successors": [
+        "r2a",
+        "r2b"
+      ],
+      "resolved": false
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Exclude unresolved competing group",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "interval-end",
+    "input": {
+      "window": [
+        "2026-10-08T08:00:00Z",
+        "2026-10-08T09:00:00Z"
+      ],
+      "interval": [
+        "2026-10-08T08:30:00Z",
+        "2026-10-08T09:00:00Z"
+      ]
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Profile gate remains closed",
+    "conditional_rule_expectation": "Contained interval qualifies temporally; genuine point at 09:00 does not",
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "crossing",
+    "input": {
+      "window": [
+        "2026-10-08T08:00:00Z",
+        "2026-10-08T09:00:00Z"
+      ],
+      "interval": [
+        "2026-10-08T07:30:00Z",
+        "2026-10-08T08:30:00Z"
+      ]
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Exclude crossing collection; no proration",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "near-zero",
+    "input": {
+      "hypothetical_exact_subtotal_mL": "-0.004"
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "No calculated runtime result is claimed",
+    "conditional_rule_expectation": "Negative, less than 0.01 mL; never Zero",
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "retrieval-truncated",
+    "input": {
+      "retrieval_complete": false
+    },
+    "expected_current_disposition": "withhold",
+    "reason": "Withhold numeric subtotal",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "coverage-checkbox",
+    "input": {
+      "user_acknowledged": true
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Cannot override any eligibility failure or establish coverage",
+    "conditional_rule_expectation": null,
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "timezone-unresolved-local",
+    "input": {
+      "local_time": "repeated or nonexistent wall-clock time",
+      "offset_resolved": false
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Resolve explicit instant; never guess timezone offset",
+    "fixture_only": true,
+    "calculator_test_executed": false
+  },
+  {
+    "id": "24-elapsed-hours",
+    "input": {
+      "selected_duration_seconds": 86400,
+      "local_calendar_duration_may_differ": true
+    },
+    "expected_current_disposition": "exclude",
+    "reason": "Profile gate remains closed",
+    "conditional_rule_expectation": "Use exactly 86400 elapsed seconds; label different calendar durations accurately",
+    "fixture_only": true,
+    "calculator_test_executed": false
+  }
+]
