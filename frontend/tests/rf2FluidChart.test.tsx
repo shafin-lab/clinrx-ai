@@ -13,11 +13,12 @@ beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configu
 const load=()=>new RF2Client(vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(fixture.catalog)))).catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');
 function mountChart(c:Catalog,props:Partial<Parameters<typeof RF2FluidChart>[0]>={}){const inspect=vi.fn();return {inspect,...render(<RF2FluidChart catalog={c} status="current" text={evidenceText} context={e=>sourceContext(e,c)} onInspect={inspect} {...props}/>)};}
 function original(c:Catalog){return c.items.find(e=>e.fact.id===fixture.urine.fact.id)!;}
+function typedTime(raw:string|null){return {source_timestamp:raw,recorded:{status:raw?'known':'not_recorded',precision:raw?'instant':'unknown',value:raw,lower:null,upper:null,uncertainty:null},clock:'unknown',conflicting:[],alternative_sources:[]};}
 async function entry(c:Catalog,id:string,category='output_urine',start:string|null='2026-10-08T08:00:00Z',end:string|null='2026-10-08T08:15:00Z'){
  const e=structuredClone(original(c));e.fact.id=id;e.terminal_reference.id=id;e.fact.record_status='recorded';
  e.metadata!.chart = {...e.metadata!.chart!,category,start,end,point:end};
- e.fact.occurred={...(e.fact.occurred as object),source_timestamp:end};
- e.fact.recorded_interval=start!==null||end!==null?{start:{source_timestamp:start},end:{source_timestamp:end}}:null;
+ e.fact.occurred=typedTime(end);
+ e.fact.recorded_interval=start!==null||end!==null?{start:typedTime(start),end:typedTime(end)}:null;
  e.canonical_fact=stable(e.fact);e.digest=await hash(e.canonical_fact);return e;
 }
 function withEntries(c:Catalog,items:Evidence[]){return {...c,items};}
@@ -49,7 +50,7 @@ it('keeps spanning/crossing/outside intervals separate and never uses interval e
  expect(within(screen.getByRole('region',{name:'Intervals spanning hour boundaries or outside the selected period'})).getAllByRole('article')).toHaveLength(2);expect(within(screen.getByRole('region',{name:'Unplaced entries'})).getByRole('article')).toHaveTextContent('start unknown');expect(within(screen.getByRole('table')).queryByRole('article')).not.toBeInTheDocument();
 });
 it('distinguishes exact interval end from point end without asserting inclusion in a calculation',async()=>{
- const c=await load(),interval=await entry(c,'interval-end','output_urine','2026-10-08T09:45:00Z','2026-10-08T10:00:00Z'),point=await entry(c,'point-end','output_urine',null,null);point.metadata!.chart!.point='2026-10-08T10:00:00Z';point.fact.occurred={source_timestamp:'2026-10-08T10:00:00Z'};
+ const c=await load(),interval=await entry(c,'interval-end','output_urine','2026-10-08T09:45:00Z','2026-10-08T10:00:00Z'),point=await entry(c,'point-end','output_urine',null,null);point.metadata!.chart!.point='2026-10-08T10:00:00Z';point.fact.occurred=typedTime('2026-10-08T10:00:00Z');
  const model=fluidChartModel(withEntries(c,[interval,point]));expect(model.groups.flatMap(([,es])=>es).map(e=>e.fact.id)).toEqual(['interval-end']);expect(model.separate.map(e=>e.fact.id)).toEqual(['point-end']);
 });
 it('keeps CRRT net removal, effluent and unresolved drain identity explicit',async()=>{
@@ -65,7 +66,7 @@ it('does not categorize unknown coding from fact IDs or silently move it into ou
 });
 it('shows repeated local times with original offsets in distinct UTC hour groups',async()=>{
  const c=await load();c.combined.context.scope.review_start='2026-11-01T04:00:00Z';c.combined.context.scope.review_end='2026-11-01T08:00:00Z';Object.assign(c.combined.circulatory.assembly.request.scope,{review_start:'2026-11-01T04:00:00Z',review_end:'2026-11-01T08:00:00Z'});
- const a=await entry(c,'first','output_urine',null,null),b=await entry(c,'second','output_urine',null,null);a.metadata!.chart!.point='2026-11-01T01:30:00-04:00';b.metadata!.chart!.point='2026-11-01T01:30:00-05:00';mountChart(withEntries(c,[a,b]));
+ const a=await entry(c,'first','output_urine',null,null),b=await entry(c,'second','output_urine',null,null);a.metadata!.chart!.point='2026-11-01T01:30:00-04:00';b.metadata!.chart!.point='2026-11-01T01:30:00-05:00';a.fact.occurred=typedTime(a.metadata!.chart!.point);b.fact.occurred=typedTime(b.metadata!.chart!.point);mountChart(withEntries(c,[a,b]));
  expect(screen.getByRole('row',{name:/2026-11-01T05:00:00Z/})).toHaveTextContent('01:30:00-04:00');expect(screen.getByRole('row',{name:/2026-11-01T06:00:00Z/})).toHaveTextContent('01:30:00-05:00');expect(screen.getByText(/Hour groups use UTC/)).toBeVisible();
 });
 it.each(['repository','cutoff','scope','duplicate'])('does not disguise %s mismatch as empty chart',async fault=>{

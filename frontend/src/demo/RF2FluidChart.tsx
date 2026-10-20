@@ -16,23 +16,46 @@ function category(e:Evidence){
  const coding=object(object(e.fact.description).coding);
  return coding.namespace==='clinrx.synthetic.hemodynamic-chart/v1'?String(coding.code):undefined;
 }
-function rawTime(v:unknown){const t=object(v),r=object(t.recorded);return typeof t.source_timestamp==='string'?t.source_timestamp:r.status==='known'&&r.precision==='instant'&&typeof r.value==='string'?r.value:undefined;}
+function rawTime(v:unknown){const t=object(v),r=object(t.recorded);return typeof t.source_timestamp==='string'?t.source_timestamp:typeof r.value==='string'?r.value:undefined;}
 function timeValue(raw:string|undefined){
  // Grouping is presentation only. Retain finer-than-millisecond assertions unplaced
  // rather than assigning them to a rounded hour or falling back to interval-end time.
  if(!raw||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(raw))return undefined;
  const n=Date.parse(raw);return Number.isFinite(n)?n:undefined;
 }
+function exactRecordedTime(value:unknown){
+ const t=object(value),r=object(t.recorded);
+ // A representative source string does not override the typed assertion.
+ // Clock verification is deliberately NOT a placement requirement.
+ if(r.status!=='known'||r.precision!=='instant'||r.lower!=null||r.upper!=null||r.uncertainty!=null)return undefined;
+ const recorded=timeValue(typeof r.value==='string'?r.value:undefined);
+ if(recorded===undefined)return undefined;
+ if(t.source_timestamp!=null&&(typeof t.source_timestamp!=='string'||timeValue(t.source_timestamp)!==recorded))return undefined;
+ return recorded;
+}
+function placedTime(value:unknown){
+ const t=object(value),recorded=exactRecordedTime(value);
+ if(recorded===undefined||(Array.isArray(t.conflicting)&&t.conflicting.length)||(Array.isArray(t.conflicting_source_timestamps)&&t.conflicting_source_timestamps.length))return undefined;
+ if(t.alternative_sources!=null&&!Array.isArray(t.alternative_sources))return undefined;
+ if(Array.isArray(t.alternative_sources)&&t.alternative_sources.some(a=>exactRecordedTime(a)!==recorded))return undefined;
+ return recorded;
+}
 export function chartTiming(e:Evidence){
  const interval=object(e.fact.recorded_interval),chart=e.metadata?.chart;
  const hasInterval=Object.keys(interval).length>0||chart?.start!=null||chart?.end!=null;
  const start=chart?.start??rawTime(interval.start),end=chart?.end??rawTime(interval.end);
  const point=chart?.point??rawTime(e.fact.occurred);
- const ambiguous=(v:unknown)=>Array.isArray(object(v).conflicting)&&(object(v).conflicting as unknown[]).length>0;
- if(hasInterval&&(ambiguous(interval.start)||ambiguous(interval.end)))return {kind:'interval' as const,start,end,a:undefined,b:undefined};
- if(!hasInterval&&ambiguous(e.fact.occurred))return {kind:'point' as const,start:point,end:undefined,a:undefined,b:undefined};
- if(hasInterval)return {kind:'interval' as const,start,end,a:timeValue(start),b:timeValue(end)};
- return {kind:'point' as const,start:point,end:undefined,a:timeValue(point),b:undefined};
+ if(hasInterval)return {kind:'interval' as const,start,end,a:placedTime(interval.start),b:placedTime(interval.end)};
+ return {kind:'point' as const,start:point,end:undefined,a:placedTime(e.fact.occurred),b:undefined};
+}
+function TimingSummary({label,value}:{label:string;value:unknown}){
+ const r=object(object(value).recorded);
+ return <p>{label}: precision {String(r.precision??'unknown')} · uncertainty: {String(r.uncertainty??'not supplied')}{r.lower!=null&&<> · lower bound: {String(r.lower)}</>}{r.upper!=null&&<> · upper bound: {String(r.upper)}</>}</p>;
+}
+function TimingDetails({label,value}:{label:string;value:unknown}){
+ const t=object(value),r=object(t.recorded);
+ const describe=(name:string,v:Record<string,unknown>)=>{const recorded=object(v.recorded),source=object(v.source);return <p>{name}: raw timestamp {String(v.source_timestamp??'not supplied')} · status {String(recorded.status??'unavailable')} · precision {String(recorded.precision??'unknown')} · representative value {String(recorded.value??'not supplied')} · lower bound {String(recorded.lower??'not supplied')} · upper bound {String(recorded.upper??'not supplied')} · uncertainty {String(recorded.uncertainty??'not supplied')} · clock {String(v.clock??'unknown')}{source.namespace!=null&&<> · source {String(source.namespace)} / {String(source.code)}: {String(source.raw_display??'')}</>}</p>;};
+ return <>{describe(label,{...t,recorded:r})}{Array.isArray(t.conflicting)&&t.conflicting.length>0&&<p>Conflicting timestamps: {t.conflicting.map(String).join(' · ')}</p>}{Array.isArray(t.conflicting_source_timestamps)&&t.conflicting_source_timestamps.length>0&&<p>Raw conflicting timestamps: {t.conflicting_source_timestamps.map(String).join(' · ')}</p>}{Array.isArray(t.alternative_sources)&&t.alternative_sources.map((v,n)=><div key={n}>{describe('Alternative source assertion '+(n+1),object(v))}</div>)}</>;
 }
 function correspondence(c:Catalog){
  const scope=c.combined.context.scope,circ=c.combined.circulatory.assembly.request.scope;
@@ -70,10 +93,11 @@ export function RF2FluidChart({catalog,status,retrievalMessage,requestedPeriod,t
  const valid=model.valid&&(status!=='current'||requestedMatches);
  const current=status==='current';
  const card=(e:Evidence)=>{
-  const cat=category(e),info=cat?categories[cat]:undefined,t=chartTiming(e);
+  const cat=category(e),info=cat?categories[cat]:undefined,t=chartTiming(e),interval=object(e.fact.recorded_interval);
   return <article className="rf2-fluid-entry" key={key(pin(e))} aria-label={`${info?.label??'Unclassified recorded assertion'} ${e.fact.id} / ${e.fact.revision}`}>
    <strong>{info?.label??'Unclassified recorded assertion'}{cat&&<small>Source category: {cat}</small>}</strong><p className="rf2-fluid-amount">{text(e)}</p>
    <p>{t.kind==='interval'?<>Recorded interval: {t.start??'start unknown'} → {t.end??'end unknown'}</>:<>Recorded point: {t.start??'unknown'}</>}</p>
+   {t.kind==='interval'?<><TimingSummary label="Interval start" value={interval.start}/><TimingSummary label="Interval end" value={interval.end}/></>:<TimingSummary label="Recorded point" value={e.fact.occurred}/>}
    {cat==='output_drain'&&<p>Drain identity unresolved — individual drains are not inferred.</p>}
    <p>Record status: {String(e.fact.record_status??'unavailable')}{e.superseded?' · Superseded historical revision retained':''}</p>
    <p>{e.metadata?.chart?.source_context??String(object(e.fact.description).raw_display??'Source context unavailable')}</p>
@@ -82,7 +106,7 @@ export function RF2FluidChart({catalog,status,retrievalMessage,requestedPeriod,t
    {Array.isArray(e.fact.uncertainty)&&e.fact.uncertainty.map((x,n)=><p key={n}>Source caveat: {String(x)}</p>)}
    <p className="rf2-fluid-reference">Exact source: {e.fact.id} / {e.fact.revision}</p>
    <button type="button" onClick={(event:MouseEvent<HTMLButtonElement>)=>onInspect(e,event.currentTarget)}>Open exact source {e.fact.id} / {e.fact.revision}</button>
-   <details><summary>Source timing, verification and exact pin</summary><p>{context(e)}</p><p>Repository {e.repository} · cutoff {e.cutoff} · ingestion {e.ingestion.ingestion_sequence} · digest {e.digest}</p></details>
+   <details><summary>Source timing, verification and exact pin</summary>{t.kind==='interval'?<><TimingDetails label="Interval start" value={interval.start}/><TimingDetails label="Interval end" value={interval.end}/></>:<TimingDetails label="Recorded point" value={e.fact.occurred}/>}<p>{context(e)}</p><p>Repository {e.repository} · cutoff {e.cutoff} · ingestion {e.ingestion.ingestion_sequence} · digest {e.digest}</p></details>
   </article>;
  };
  const extra=(name:string,items:Evidence[],description:string)=>items.length>0?<section aria-label={name}><h4>{name}</h4><p>{description}</p>{items.map(card)}</section>:null;
