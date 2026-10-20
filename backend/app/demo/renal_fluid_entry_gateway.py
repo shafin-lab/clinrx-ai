@@ -9,7 +9,7 @@ from app.api.routes.circulatory import service as circulatory_service
 from app.api.schemas.renal_fluid_entry import RF2Draft, ResolveRequest
 from app.demo.renal_fluid_gateway import SyntheticRenalFluidGateway
 from app.demo.hosting import PREFIX
-from app.services.renal_fluid_entry_service import RF2Service
+from app.services.renal_fluid_entry_service import RF2Service,SourceReviewChanged
 from app.persistence.repository import transaction
 from app.persistence.shared_transaction import execution_transaction
 
@@ -42,6 +42,9 @@ class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
     def __init__(self,database,frontend,signing_key,origin):
         super().__init__(database,frontend,signing_key,origin)
         self.core.include_router(router)
+        async def review_changed(request,error):
+            return JSONResponse({'code':'rf2_source_review_changed','request_digest':error.request_digest,'execution_enabled':False},status_code=409,headers={'Cache-Control':'no-store'})
+        self.core.add_exception_handler(SourceReviewChanged,review_changed)
     async def __call__(self,scope,receive,send):
         # RF2 owns its structured facts even when the advanced legacy editor is used.
         # Exact retained requests and read-only lookup preserve original recovery.
@@ -66,10 +69,10 @@ class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
                 from app.persistence.canonical import canonical_payload
                 from app.persistence.history import FactIdentity
                 from app.persistence.bounded_history import HistoryBudget,HistoryAccounting,AggregateHistoryBudget
-                from app.services.renal_fluid_entry_service import exact_json,META,PIN
+                from app.services.renal_fluid_entry_service import exact_json,META,PIN,REVIEW
                 proposed=EvidenceDraft.model_validate(exact_json(raw));fact=proposed.fact
                 def rf2(f):
-                    return any(e.namespace in (META,PIN) for e in f.external_evidence) if hasattr(f,'external_evidence') else False
+                    return any(e.namespace in (META,PIN,REVIEW) for e in f.external_evidence) if hasattr(f,'external_evidence') else False
                 from app.persistence.errors import RecordNotFound
                 exact=False
                 try:

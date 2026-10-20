@@ -87,6 +87,19 @@ class RenalNote(DTO):
         if len(keys)!=len(set(keys)):raise ValueError('duplicate evidence pin')
         return self
 
+class SourceReview(DTO):
+    selected: Reference
+    terminal: Reference
+    terminal_digest: Digest
+    terminal_ingestion: Annotated[int, Field(strict=True, ge=1)]
+    record_status: Short | None
+    retain_historical: Annotated[bool, Field(strict=True)] = False
+    @model_validator(mode='after')
+    def same_source(self):
+        if (self.selected.kind,self.selected.id)!=(self.terminal.kind,self.terminal.id):raise ValueError('review must retain source identity')
+        if any(len(v)>256 for ref in (self.selected,self.terminal) for v in (ref.kind,ref.id,ref.version)):raise ValueError('review reference bounds')
+        return self
+
 class RF2Draft(DTO):
     repository: UUID
     id: UUID
@@ -95,6 +108,7 @@ class RF2Draft(DTO):
     recorded_at: Short
     chart: Chart | None = None
     note: RenalNote | None = None
+    source_review: Annotated[tuple[SourceReview,...], Field(min_length=1,max_length=12)] | None = Field(default=None, exclude_if=lambda value:value is None)
     predecessor: Pin | None = None
     reason: NoteText | None = None
     @field_validator('recorded_at')
@@ -105,6 +119,7 @@ class RF2Draft(DTO):
     @model_validator(mode='after')
     def shape(self):
         if (self.chart is None)==(self.note is None):raise ValueError('one chart or note required')
+        if self.source_review is not None and (self.note is None or len(self.source_review)!=len(self.note.pins) or any(s.selected!=p.reference for s,p in zip(self.source_review,self.note.pins))):raise ValueError('review must match every exact selected pin in order')
         if self.note and any(p.repository!=self.repository for p in self.note.pins):raise ValueError('note pins belong to the original repository')
         if (self.predecessor is None)!=(self.reason is None):raise ValueError('correction needs predecessor and reason')
         if self.predecessor and (self.predecessor.repository!=self.repository or self.predecessor.reference.kind!='circulatory_event' or self.predecessor.reference.id!=str(self.id)):

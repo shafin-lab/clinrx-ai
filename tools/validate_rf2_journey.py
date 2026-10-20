@@ -42,7 +42,11 @@ def run(origin,database,output):
     def draft(c=None,n=None):
         return {'repository':catalog['repository'],'id':str(uuid.uuid4()),'revision':str(uuid.uuid4()),'actor':'Synthetic journey operator','recorded_at':'2026-10-08T09:50:00Z','chart':c,'note':n,'predecessor':None,'reason':None}
     def save(body,label,discard_delivery=False):
-        before=rows(database);api('/validate',body);assert rows(database)==before
+        before=rows(database);review=api('/validate',body);assert rows(database)==before
+        if body.get('note'):
+            # Explicit operator-run exercise: unchanged sources only; never auto-acknowledge history.
+            statuses=review['source_review'];assert all(x['selected']==x['terminal'] and x['record_status'] in (None,'recorded') for x in statuses)
+            body['source_review']=statuses;api('/validate',body);assert rows(database)==before
         result=api('/save',body);assert result['status']=='saved';e=result['evidence'];after=rows(database)
         assert len(after['fact_revision'])==len(before['fact_revision'])+1
         ledger.append({'label':label,'reference':pin(e)['reference'],'sequence':e['ingestion']['ingestion_sequence'],'delivery_fault':'successful response discarded by validation client after actual API returned' if discard_delivery else None})

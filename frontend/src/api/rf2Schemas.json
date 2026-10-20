@@ -52,6 +52,23 @@
           ],
           "default": null
         },
+        "source_review": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/SourceReview"
+              },
+              "maxItems": 12,
+              "minItems": 1,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Review"
+        },
         "predecessor": {
           "anyOf": [
             {
@@ -665,6 +682,54 @@
         "component"
       ],
       "title": "SourceRecord",
+      "type": "object"
+    },
+    "SourceReview": {
+      "additionalProperties": false,
+      "properties": {
+        "selected": {
+          "$ref": "#/$defs/Reference"
+        },
+        "terminal": {
+          "$ref": "#/$defs/Reference"
+        },
+        "terminal_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Terminal Digest",
+          "type": "string"
+        },
+        "terminal_ingestion": {
+          "minimum": 1,
+          "title": "Terminal Ingestion",
+          "type": "integer"
+        },
+        "record_status": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Record Status"
+        },
+        "retain_historical": {
+          "default": false,
+          "title": "Retain Historical",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "selected",
+        "terminal",
+        "terminal_digest",
+        "terminal_ingestion",
+        "record_status"
+      ],
+      "title": "SourceReview",
       "type": "object"
     },
     "Binding": {

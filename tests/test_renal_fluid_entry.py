@@ -35,6 +35,9 @@ def pin(e):
 def post(c,path,b):return c.post(RF2+path,json=b)
 def saved(c,b):
     v=post(c,'/validate',b);assert v.status_code==200,v.text
+    if b.get('note') and b.get('source_review') is None:
+        b['source_review']=v.json()['source_review']
+        v=post(c,'/validate',b);assert v.status_code==200,v.text
     r=post(c,'/save',b);assert r.status_code==200,r.text
     return r.json()['evidence']
 def test_chart_correction_replay_and_read_preservation(ws):
@@ -131,7 +134,7 @@ def test_twelve_pins_fit_and_schema_export_is_current(ws):
     pins=[{'repository':cat['repository'],'reference':{'kind':x['fact']['kind'],'id':x['fact']['id'],'version':x['fact']['revision']},'digest':x['expected_digest'],'ingestion':x['ingestion']['ingestion_sequence'],'cutoff':cat['cutoff']['fact_watermark']} for x in items]
     assert len(pins)==12
     b=draft(c);b['chart']=None;b['note']={'question':'Review twelve sources','findings':'Recorded assertions','possibilities':'Not established','gaps':'Unknown source context','plan':'Unscheduled','pins':pins};e=saved(c,b)
-    assert len(e['fact']['external_evidence'])==13 and len(e['fact']['associations'])==12
+    assert len(e['fact']['external_evidence'])==25 and len(e['fact']['associations'])==12
     assert max(len(x['code'].encode()) for x in e['fact']['external_evidence'])<=4096
     assert bundle()==json.loads((Path(__file__).resolve().parents[1]/'frontend/src/api/rf2Schemas.json').read_text())
 
@@ -191,7 +194,10 @@ def test_old_legacy_command_recovers_after_rf2_correction(ws):
     fact=entry(id,'input_iv',15,'Historical source interval', '20','mL',start=0).model_dump(mode='json')
     original={'repository_id':repository,'fact':fact,'predecessor_digest':None}
     r=c.post(ENTRY,json=original);assert r.status_code==200,r.text;old=r.json()
-    d=draft(c,'input_iv',False);d.update(id=id,revision=str(uuid4()),predecessor={'repository':repository,'reference':{'kind':'circulatory_event','id':id,'version':'1'},'digest':old['expected_digest'],'ingestion':old['ingestion']['ingestion_sequence'],'cutoff':old['ingestion']['ingestion_sequence']},reason='Explicit amendment through RF2 owner');saved(c,d)
+    d=draft(c,'input_iv',False);d.update(id=id,revision=str(uuid4()),predecessor={'repository':repository,'reference':{'kind':'circulatory_event','id':id,'version':'1'},'digest':old['expected_digest'],'ingestion':old['ingestion']['ingestion_sequence'],'cutoff':old['ingestion']['ingestion_sequence']},reason='Cross-owner amendment must be rejected');before=rows(db);assert post(c,'/save',d).status_code==422;assert rows(db)==before
+    successor=deepcopy(fact);successor.update(revision=str(uuid4()),supersedes={'kind':'circulatory_event','id':id,'version':'1'},correction_reason='Original-owner amount correction');successor['recorded_amount']['value']='21'
+    updated=c.post(ENTRY,json={'repository_id':repository,'fact':successor,'predecessor_digest':old['expected_digest']});assert updated.status_code==200,updated.text
+    assert updated.json()['fact']['available']==fact['available']
     before=rows(db)
     assert c.post(ENTRY+'/lookup',json=original).json()['evidence']['fact']==fact
     assert c.post(ENTRY,json=original).json()['fact']==fact
