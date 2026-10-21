@@ -27,6 +27,7 @@ function ExactRenalSource({source,state,client,transport,onClose}:{source:RenalS
 export function RenalBedsideReview({state,catalog,requested,loading,error,guarded=false,onRefresh,client,historyTransport,embedded=false,active=true}:Props){
  const model=useMemo(()=>renalBedsideModel(state,requested,catalog),[state,catalog,requested.patient,requested.encounter,requested.start,requested.end]);
  const current=model.valid&&!loading&&!error&&!guarded;
+ const latestEvidence=useRef({signature:model.signature,current});latestEvidence.current={signature:model.signature,current};
  const reviewScope=useMemo<ReviewScope|undefined>(()=>{const scope=state?.context.scope;if(!scope)return undefined;return {domain:'M8',patient:scope.patient_id,encounter:scope.encounter_id,repository:scope.repository_cutoff.repository_id};},[state]);
  const lastConfirmedScope=useRef<ReviewScope|undefined>(undefined);if(reviewScope)lastConfirmedScope.current=reviewScope;
  const saved=useSavedReviews<RenalDraft>(reviewScope??lastConfirmedScope.current);
@@ -43,7 +44,7 @@ export function RenalBedsideReview({state,catalog,requested,loading,error,guarde
  function change(key:keyof RenalDraft,text:string){if(!draftSignature)setDraftSignature(model.signature);setDraft(d=>({...d,[key]:text}));setFormError('');}
  async function submit(event:FormEvent){event.preventDefault();const failure=validateRenalReview(draft,current,!!draftSignature&&draftSignature===model.signature);if(failure){setFormError(failure);return;}if(!reviewScope||!state){setFormError('Confirmed patient and repository scope is unavailable. No review was saved.');return;}
   const scope=state.context.scope,signature=model.signature,review:SessionReview={format:'clinrx-local-review',version:1,id:crypto.randomUUID(),domain:'M8',patient:scope.patient_id,encounter:scope.encounter_id,repository:scope.repository_cutoff.repository_id,period:{start:requested.start,end:requested.end},snapshot:{signature,cutoff:scope.repository_cutoff,pins:model.sources.map(s=>({...s.pin}))},draft:{...draft},recordedAt:new Date().toISOString()};
-  setSaving(true);setFormError('');try{await saved.save(review,()=>current&&model.signature===signature);setDraft(newRenalDraft());setDraftSignature('');}catch(failure){setFormError(failure instanceof Error?failure.message:'Review storage failed. No saved confirmation is available.');}finally{setSaving(false);}}
+  setSaving(true);setFormError('');try{await saved.save(review,()=>latestEvidence.current.current&&latestEvidence.current.signature===signature);setDraft(newRenalDraft());setDraftSignature('');}catch(failure){setFormError(failure instanceof Error?failure.message:'Review storage failed. No saved confirmation is available.');}finally{setSaving(false);}}
  const count=(n:number,one:string,many:string)=>n===1?one:`${n} ${many}`;
  return <div className={'m7-bedside m8-bedside'+(embedded?' m7-embedded':'')}>
   {!embedded&&<header className="m7-topbar"><a href="?workspace=renal" className="m7-brand">ClinRx <span>AI</span></a><span>Kidney review</span><span className="m7-topbar-end">M8 · Renal physiology & KRT</span></header>}

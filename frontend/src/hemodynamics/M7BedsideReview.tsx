@@ -65,6 +65,7 @@ function SourceDetails({item,state,client,onBack,onInspect}:{item:CirculatoryIte
 export function M7BedsideReview({state,requested,loading,retrievalError,onRefresh,client,embedded=false}:Props){
  const model=useMemo(()=>bedsideModel(state,requested),[state,requested.patient,requested.encounter,requested.start,requested.end]);
  const current=model.valid&&!loading&&!retrievalError;
+ const latestEvidence=useRef({signature:model.signature,current});latestEvidence.current={signature:model.signature,current};
  const reviewScope=useMemo<ReviewScope|undefined>(()=>{const scope=state?.assembly.request.scope;if(!scope)return undefined;return {domain:'M7',patient:scope.patient_id,encounter:scope.encounter_id,repository:scope.repository_cutoff.repository_id};},[state]);
  const lastConfirmedScope=useRef<ReviewScope|undefined>(undefined);if(reviewScope)lastConfirmedScope.current=reviewScope;
  const saved=useSavedReviews<ReviewDraft>(reviewScope??lastConfirmedScope.current);
@@ -84,7 +85,7 @@ export function M7BedsideReview({state,requested,loading,retrievalError,onRefres
  function change(field:keyof ReviewDraft,text:string){if(!draftSnapshot)setDraftSnapshot(model.signature);setDraft(old=>({...old,[field]:text}));setError('');}
  async function submit(event:FormEvent){event.preventDefault();const message=validateReview(draft,current,!!draftSnapshot&&draftSnapshot===model.signature);if(message){setError(message);return;}if(!reviewScope||!state){setError('Confirmed patient and repository scope is unavailable. No review was saved.');return;}
   const scope=state.assembly.request.scope,signature=model.signature,review:SessionReview={format:'clinrx-local-review',version:1,id:crypto.randomUUID(),domain:'M7',patient:scope.patient_id,encounter:scope.encounter_id,repository:scope.repository_cutoff.repository_id,period:{start:requested.start,end:requested.end},snapshot:{signature,cutoff:scope.repository_cutoff,pins:model.items.map(exactPin)},draft:{...draft},recordedAt:new Date().toISOString()};
-  setSaving(true);setError('');try{await saved.save(review,()=>current&&model.signature===signature);setDraft(emptyReview());setDraftSnapshot('');}catch(failure){setError(failure instanceof Error?failure.message:'Review storage failed. No saved confirmation is available.');}finally{setSaving(false);}}
+  setSaving(true);setError('');try{await saved.save(review,()=>latestEvidence.current.current&&latestEvidence.current.signature===signature);setDraft(emptyReview());setDraftSnapshot('');}catch(failure){setError(failure instanceof Error?failure.message:'Review storage failed. No saved confirmation is available.');}finally{setSaving(false);}}
  const eventItems=model.windowItems.filter(i=>i.fact.kind==='circulatory_vasoactive'||i.fact.kind==='circulatory_event');
  const headline=currentReview?reviewActions[currentReview.draft.action as keyof typeof reviewActions]:'Review pressure and organ perfusion';
  return <div className={'m7-bedside'+(embedded?' m7-embedded':'')}>

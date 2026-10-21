@@ -69,6 +69,20 @@ it('shows only four bedside questions and clear inactive clinical capability lab
 it('saves a manual review without invoking a transport write and keeps the note copy immutable',async()=>{
  const p=props(),send=vi.fn();vi.stubGlobal('fetch',send);render(<RenalBedsideReview {...p}/>);fill();recordReview();const notes=await screen.findByRole('region',{name:'Renal session review records'});expect(notes).toHaveTextContent('Check the documented collection gap');expect(notes).toHaveTextContent('original evidence pins');fireEvent.change(screen.getByLabelText('Renal rationale'),{target:{value:'Different draft text'}});expect(notes).not.toHaveTextContent('Different draft text');expect(send).not.toHaveBeenCalled();expect(screen.queryByRole('button',{name:/^(start dialysis|titrate|prescribe)$/i})).not.toBeInTheDocument();
 });
+it('rechecks the latest evidence after a renal review save waits for its Web Lock',async()=>{
+ let release!:()=>void;const waiting=new Promise<void>(resolve=>{release=resolve;});
+ vi.stubGlobal('navigator',{locks:{request:async(_name:string,callback:()=>unknown)=>{await waiting;return callback();}}});
+ const p=props(),r=render(<RenalBedsideReview {...p}/>);fill();recordReview();
+ expect(await screen.findByRole('button',{name:'Saving…'})).toBeDisabled();
+ const changed=fresh(),watermark=changed.context.scope.repository_cutoff.fact_watermark+1;
+ changed.state_context+='changed';changed.context.scope.repository_cutoff.fact_watermark=watermark;
+ changed.circulatory.assembly.request.scope.repository_cutoff.fact_watermark=watermark;changed.laboratory.scope.repository_cutoff.fact_watermark=watermark;
+ r.rerender(<RenalBedsideReview {...p} state={changed}/>);
+ await act(async()=>{release();await Promise.resolve();});
+ expect(await screen.findByRole('alert')).toHaveTextContent(/Evidence changed before the review could be saved/i);
+ expect(screen.queryByRole('region',{name:'Renal session review records'})).not.toBeInTheDocument();
+ expect(screen.getByLabelText('Renal rationale')).toHaveValue('Check the documented collection gap');
+});
 it('retains draft text after a changed snapshot and blocks recording until explicit discard',()=>{
  const p=props(),r=render(<RenalBedsideReview {...p}/>);fill();const s=fresh(),watermark=s.context.scope.repository_cutoff.fact_watermark+1;s.state_context+='changed';s.context.scope.repository_cutoff.fact_watermark=watermark;s.circulatory.assembly.request.scope.repository_cutoff.fact_watermark=watermark;s.laboratory.scope.repository_cutoff.fact_watermark=watermark;r.rerender(<RenalBedsideReview {...p} state={s}/>);recordReview();expect(screen.getByRole('alert')).toHaveTextContent('Evidence changed');expect(screen.getByLabelText('Renal rationale')).toHaveValue('Check the documented collection gap');expect(screen.queryByRole('region',{name:'Renal session review records'})).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'Discard stale renal draft'}));expect(screen.getByLabelText('Renal rationale')).toHaveValue('');
 });

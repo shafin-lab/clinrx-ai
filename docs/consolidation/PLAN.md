@@ -29,7 +29,7 @@ Work stays in the existing isolated candidate; production and synced sources are
 - [x] Add failing regression tests for history race, refresh invalidation, antibiotic failure,
   snapshot disclosure and reload persistence/isolation/storage failures.
 - [x] Implement each repair and verify focused tests.
-- [x] Run full frontend suite (981 passed), typecheck and combined preview build. The full
+- [x] Run full frontend suite (983 passed), typecheck and combined preview build. The full
   backend suite reported 4,363 passed and two schema-export import failures because the
   repository root was omitted from `PYTHONPATH`; both failures passed when rerun with the
   repository root included. Backend source was unchanged. The installed Starlette/httpx
@@ -41,7 +41,12 @@ Work stays in the existing isolated candidate; production and synced sources are
   overview navigation, antibiotic patient review/reference separation, and the test-only
   non-delivery entry in patient overview. M8 and M7 reviews stayed tied to repository
   watermark 171 after reload. Simulated lost-response recovery is covered by regression
-  tests; narrow-layout browser verification remains open.
+  tests. A targeted Web Lock regression reproduced stale evidence callbacks in both M7 and
+  M8; saves now recheck the latest rendered evidence identity when the lock is acquired.
+  Both regression tests pass. Narrow-layout review at 390×844 confirmed M7/M8 forms and
+  source drawers fit, antibiotic controls and entry form have no horizontal overflow, and
+  the 24-hour fluid chart advances horizontally to later hours. No review, dose, or source
+  entry was saved during browser verification.
 - [x] Review final diff, run `git diff --check`, and commit source, tests and this handoff
   on the local consolidation branch. No PR or deployment was created.
 

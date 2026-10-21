@@ -106,6 +106,18 @@ describe('M7 bedside clinician workflow',()=>{
   expect(within(notes).getByText(/exact evidence pins/)).toBeInTheDocument();expect(JSON.stringify(state)).toBe(before);
   expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
  });
+ it('rechecks the latest evidence after a review save waits for its Web Lock',async()=>{
+  let release!:()=>void;const waiting=new Promise<void>(resolve=>{release=resolve;});
+  vi.stubGlobal('navigator',{locks:{request:async(_name:string,callback:()=>unknown)=>{await waiting;return callback();}}});
+  const x=mount();fill();fireEvent.click(screen.getByRole('button',{name:'Record session review'}));
+  expect(await screen.findByRole('button',{name:'Saving…'})).toBeDisabled();
+  const changed=original();changed.assembly.request.scope.repository_cutoff.fact_watermark++;
+  x.rerender(<M7BedsideReview {...x.props} state={changed}/>);
+  await act(async()=>{release();await Promise.resolve();});
+  expect(await screen.findByRole('alert')).toHaveTextContent(/Evidence changed before the review could be saved/i);
+  expect(screen.queryByRole('region',{name:'Session review records'})).not.toBeInTheDocument();
+  expect(screen.getByLabelText('Rationale')).toHaveValue('Repeat bedside assessment and confirm source quality.');
+ });
  it('blocks a stale draft after new evidence, without silently rebasing the clinician assessment',()=>{
   const x=mount();fill();const state=original();state.assembly.request.scope.repository_cutoff.fact_watermark++;
   x.rerender(<M7BedsideReview {...x.props} state={state}/>);
