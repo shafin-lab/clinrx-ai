@@ -58,7 +58,9 @@ export function bedsideModel(state:CirculatoryState|undefined, requested:Bedside
     seen.add(key);
   }
   const windowItems=items.filter(item=>item.inclusion==='in_window');
-  const signature=JSON.stringify([scope.patient_id,scope.encounter_id,scope.review_start,scope.review_end,scope.repository_cutoff,state.assembly_digest,state.state_context]);
+  // The immutable repository watermark identifies this exact bounded source
+  // snapshot. Signed tokens, capture times and assembly digests are per-request.
+  const signature=JSON.stringify([scope.patient_id,scope.encounter_id,scope.review_start,scope.review_end,scope.repository_cutoff.repository_id,scope.repository_cutoff.fact_watermark]);
   return {valid:true,signature,items,windowItems,
     heartRates:windowItems.filter(i=>['circulatory_cardiac','circulatory_ecg'].includes(i.fact.kind)&&i.fact.concept==='heart_rate'),
     spo2:windowItems.filter(i=>i.fact.kind==='circulatory_oxygen'&&i.fact.concept==='spo2'),

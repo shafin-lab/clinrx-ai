@@ -5,22 +5,36 @@ import type {RenalFluidState} from '../api/renalFluidTypes';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import type {CirculatoryClient} from '../api/circulatoryClient';
 import type {CirculatoryState} from '../api/circulatoryTypes';
-export interface PatientEvidenceState {antibiotics?:AntibioticBundle;rf2?:Catalog;retainedRF2?:Catalog;state?:CirculatoryState;renalFluid?:RenalFluidState;retainedState?:CirculatoryState;loading:boolean;error:string;refresh:()=>Promise<void>}
+export interface PatientEvidenceState {antibiotics?:AntibioticBundle;antibioticError?:string;rf2?:Catalog;retainedRF2?:Catalog;state?:CirculatoryState;renalFluid?:RenalFluidState;retainedState?:CirculatoryState;loading:boolean;error:string;refresh:()=>Promise<void>}
 export function usePatientEvidenceState(client:CirculatoryClient,config:{patient:string;encounter:string;start:string;end:string}):PatientEvidenceState{
- const [antibiotics,setAntibiotics]=useState<AntibioticBundle>();
- const [rf2,setRF2]=useState<Catalog>();const retainedRF2=useRef<Catalog|undefined>(undefined);
- const [renalFluid,setRenalFluid]=useState<RenalFluidState>();
+ const [antibiotics,setAntibiotics]=useState<AntibioticBundle>();const [antibioticError,setAntibioticError]=useState('');
+ const [rf2,setRF2]=useState<Catalog>();const retainedRF2=useRef<Catalog|undefined>(undefined);const [renalFluid,setRenalFluid]=useState<RenalFluidState>();
  const [state,setState]=useState<CirculatoryState>(),[loading,setLoading]=useState(true),[error,setError]=useState('');
  const generation=useRef(0),retained=useRef<CirculatoryState|undefined>(undefined);
  const refresh=useCallback(async()=>{
-  const token=++generation.current;setLoading(true);setAntibiotics(undefined);setState(undefined);setRenalFluid(undefined);setRF2(undefined);setError('');
-  try{const abx=import.meta.env.VITE_SYNTHETIC_ANTIBIOTICS==='true'?await new AntibioticClient().catalog(config.start,config.end):undefined;const catalog=abx?abx.renal:import.meta.env.VITE_SYNTHETIC_RF2==='true'?await new RF2Client().catalog(config.start,config.end):undefined;const combined=catalog?{data:catalog.combined}:client instanceof RenalFluidClient?await client.combinedState(config.start,config.end):undefined;const reply=combined?{...combined,data:combined.data.circulatory}:await client.circulatoryState(config.start,config.end);if(token!==generation.current)return;
+  const token=++generation.current;setLoading(true);setAntibiotics(undefined);setAntibioticError('');setState(undefined);setRenalFluid(undefined);setRF2(undefined);setError('');
+  let abx:AntibioticBundle|undefined,catalog:Catalog|undefined,abxFailure='';
+  if(import.meta.env.VITE_SYNTHETIC_ANTIBIOTICS==='true')try{abx=await new AntibioticClient().catalog(config.start,config.end);}catch{abxFailure='The antibiotic patient bundle is unavailable. Antibiotic review, culture matching and source actions are blocked until it can be confirmed.';}
+  const rf2Enabled=import.meta.env.VITE_SYNTHETIC_RF2==='true';
+  if(!abx&&rf2Enabled)try{catalog=await new RF2Client().catalog(config.start,config.end);}catch{/* Core circulatory retrieval can still be checked independently. */}
+  if(abx)catalog=abx.renal;
+  let renalFluid:RenalFluidState|undefined;
+  let reply:{data:CirculatoryState}|undefined;
+  try{
+   if(catalog)renalFluid=catalog.combined;
+   else if(client instanceof RenalFluidClient&&!rf2Enabled)try{renalFluid=(await client.combinedState(config.start,config.end)).data;}catch{/* M7 remains independently available through circulatoryState. */}
+   if(renalFluid)reply={data:renalFluid.circulatory};else reply=await client.circulatoryState(config.start,config.end);
    const scope=reply.data.assembly.request.scope;
    if(reply.data.execution_enabled!==false||scope.patient_id!==config.patient||scope.encounter_id!==config.encounter)throw Error('unconfirmed_scope_or_gate');
-   if(abx)setAntibiotics(abx);if(catalog){setRF2(catalog);retainedRF2.current=catalog;}retained.current=reply.data;setState(reply.data);setRenalFluid(combined?.data);
-  }catch(error){if(token===generation.current)setError('The patient evidence or disabled execution gate could not be confirmed. Refresh to check again; no source was replaced.');throw error;}
-  finally{if(token===generation.current)setLoading(false);}
+   if(renalFluid){const combinedScope=renalFluid.context.scope;if(renalFluid.execution_enabled!==false||combinedScope.patient_id!==config.patient||combinedScope.encounter_id!==config.encounter||combinedScope.repository_cutoff.repository_id!==scope.repository_cutoff.repository_id||JSON.stringify(combinedScope.repository_cutoff)!==JSON.stringify(scope.repository_cutoff))throw Error('unconfirmed_renal_scope_or_cutoff');}
+   if(token!==generation.current)return;
+   if(abx)setAntibiotics(abx);else if(abxFailure)setAntibioticError(abxFailure);
+   if(catalog){setRF2(catalog);retainedRF2.current=catalog;}retained.current=reply.data;setState(reply.data);setRenalFluid(renalFluid);
+  }catch{
+   if(token===generation.current){if(abxFailure)setAntibioticError(abxFailure);setError('The patient evidence or disabled execution gate could not be confirmed. Refresh to check again; no source was replaced.');}
+   throw Error('patient_evidence_unconfirmed');
+  }finally{if(token===generation.current)setLoading(false);}
  },[client,config.patient,config.encounter,config.start,config.end]);
  useEffect(()=>{void refresh().catch(()=>{});return()=>{generation.current++;};},[refresh]);
- return {antibiotics,rf2,retainedRF2:retainedRF2.current,state,renalFluid,retainedState:retained.current,loading,error,refresh};
+ return {antibiotics,antibioticError,rf2,retainedRF2:retainedRF2.current,state,renalFluid,retainedState:retained.current,loading,error,refresh};
 }

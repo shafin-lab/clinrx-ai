@@ -58,7 +58,10 @@ export function renalBedsideModel(state:RenalFluidState|undefined,requested:Beds
   }
  }
  const windowSources=sources.filter(s=>s.inclusion==='in_window'&&s.status==='recorded');
- return {valid:true,signature:JSON.stringify([state.context,state.state_context,catalog?.cutoff,catalog?.items.map(e=>[e.fact.kind,e.fact.id,e.fact.revision,e.digest])]),sources,windowSources,
+ // The immutable repository watermark identifies this exact bounded source
+ // snapshot. Capture time, signed tokens and assembly digests change per request.
+ const signature=JSON.stringify([scope.patient_id,scope.encounter_id,scope.review_start,scope.review_end,cutoff.repository_id,cutoff.fact_watermark]);
+ return {valid:true,signature,sources,windowSources,
   creatinine:sources.filter(s=>s.lab&&s.inclusion==='in_window'),urine:windowSources.filter(s=>s.group==='urine'),support:windowSources.filter(s=>s.group==='support'),weights:sources.filter(s=>s.group==='weight')};
 }
 export const renalActions={collection:'Check collection and catheter patency',baseline:'Review baseline and kidney trajectory',urgent:'Seek urgent renal / ICU review',delivery:'Review KRT delivery and interruptions',citrate:'Review citrate, calcium and metabolic context',medications:'Review renal medication dosing and levels',recovery:'Review recovery and continuing KRT need',followup:'Plan renal follow-up'} as const;

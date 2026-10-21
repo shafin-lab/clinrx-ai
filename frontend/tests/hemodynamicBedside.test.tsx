@@ -28,6 +28,17 @@ describe('M7 bedside evidence safety projection',()=>{
   expect(model.items.some(i=>i.fact.id==='m7-UNPLACED')).toBe(true);
   expect(model.maps).toHaveLength(1);expect(JSON.stringify(state)).toBe(before);
  });
+ it('keeps the same evidence identity when only the signed request token and capture time change',()=>{
+  const state=original(),before=bedsideModel(state,requested).signature;
+  state.state_context='rotated-signed-request-token';state.assembly.request.scope.repository_cutoff.captured_at='2026-10-08T10:01:00Z';
+  state.assembly_digest='rotated-request-assembly-digest';
+  expect(bedsideModel(state,requested).signature).toBe(before);
+ });
+ it('changes evidence identity when a source digest changes',()=>{
+  const state=original(),before=bedsideModel(state,requested).signature;
+  state.assembly.request.scope.repository_cutoff.fact_watermark++;
+  expect(bedsideModel(state,requested).signature).not.toBe(before);
+ });
  it.each(['foreign','duplicate','repository','gate','window'])('withholds the patient projection for %s mismatch',part=>{
   const state=original();
   if(part==='foreign')state.assembly.snapshot.items[0].fact.binding.target.patient_id='foreign';
@@ -89,21 +100,21 @@ describe('M7 bedside clinician workflow',()=>{
   fireEvent.click(within(drawer).getByRole('button',{name:/Vasoactive event/}));expect(screen.getByRole('heading',{name:'Documented initiation'})).toBeInTheDocument();
   expect(screen.queryByText('Infusion running')).not.toBeInTheDocument();
  });
- it('records a pinned session-only note without changing source facts or invoking any write API',()=>{
+ it('saves a pinned review without changing source facts or invoking any write API',async()=>{
   const state=original(),before=JSON.stringify(state),{client}=mount(state);fill();fireEvent.click(screen.getByRole('button',{name:'Record session review'}));
-  const notes=screen.getByRole('region',{name:'Session review records'});expect(within(notes).getByText('Reassess perfusion')).toBeInTheDocument();
+  const notes=await screen.findByRole('region',{name:'Session review records'});expect(within(notes).getByText('Reassess perfusion')).toBeInTheDocument();
   expect(within(notes).getByText(/exact evidence pins/)).toBeInTheDocument();expect(JSON.stringify(state)).toBe(before);
   expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
  });
  it('blocks a stale draft after new evidence, without silently rebasing the clinician assessment',()=>{
-  const x=mount();fill();const state=original();state.assembly_digest='updated-snapshot';state.state_context='updated-context';
+  const x=mount();fill();const state=original();state.assembly.request.scope.repository_cutoff.fact_watermark++;
   x.rerender(<M7BedsideReview {...x.props} state={state}/>);
   expect(screen.getByText(/Evidence changed while this draft was open/)).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button',{name:'Record session review'}));expect(screen.queryByRole('region',{name:'Session review records'})).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button',{name:'Discard stale draft and review refreshed evidence'}));expect(screen.getByLabelText('Rationale')).toHaveValue('');
  });
- it('retains historical session notes while blocking a new note when retrieval fails',()=>{
-  const x=mount();fill();fireEvent.click(screen.getByRole('button',{name:'Record session review'}));
+ it('retains historical saved reviews while blocking a new review when retrieval fails',async()=>{
+  const x=mount();fill();fireEvent.click(screen.getByRole('button',{name:'Record session review'}));await screen.findByRole('region',{name:'Session review records'});
   x.rerender(<M7BedsideReview {...x.props} state={undefined} retrievalError="unavailable"/>);
   expect(screen.getByRole('button',{name:'Record session review'})).toBeDisabled();
   expect(screen.getByText(/Historical session review/)).toBeInTheDocument();expect(screen.queryByText('Tied to this evidence snapshot')).not.toBeInTheDocument();
