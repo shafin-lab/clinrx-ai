@@ -40,8 +40,8 @@ Work stays in the existing isolated candidate; production and synced sources are
 - [x] Browser-check M7/M8 save and reload, historical reviews, kidney source correction and
   overview navigation, antibiotic patient review/reference separation, and the test-only
   non-delivery entry in patient overview. M8 and M7 reviews stayed tied to repository
-  watermark 171 after reload. Narrow layout and simulated lost-response recovery were
-  covered by regression tests, not repeated in this final browser pass.
+  watermark 171 after reload. Simulated lost-response recovery is covered by regression
+  tests; narrow-layout browser verification remains open.
 - [x] Review final diff, run `git diff --check`, and commit source, tests and this handoff
   on the local consolidation branch. No PR or deployment was created.
 
