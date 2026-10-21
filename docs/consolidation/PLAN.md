@@ -50,6 +50,7 @@ Work stays in the existing isolated candidate; production and synced sources are
 - Starting source: `d42ce159e9ce97bf887e4c97bef58df492fed0dd` on
   `codex/clinrx-consolidated-20261022`. A full local baseline copy is preserved under
   `outputs/clinrx-consolidation-20261022/baseline/` and identifies that same commit.
+- Candidate implementation: `29c7a317459556a452685066835cd664fcf98ac0`.
 - Combined preview: `http://127.0.0.1:5238/?workspace=overview` (the preview is loopback
   only and remains running). It uses the explicit synthetic antibiotic gateway, serves the
   candidate build, and reads/writes only the disposable combined-preview database.
@@ -67,10 +68,23 @@ Work stays in the existing isolated candidate; production and synced sources are
   save and exact lookup are exposed in the candidate workflow. The current patient fixture
   has no usable susceptibility report, so no culture-matched option is offered. Local
   clinical execution remains disabled.
-- Launch the already running preview by opening the URL above. For a fresh process, use the
-  explicit gateway command documented in `docs/SYNTHETIC-DEMO-HOSTING.md` as a reference,
-  substituting `app.demo.antibiotic_gateway:from_environment`, the absolute working-copy
-  database/frontend paths, and `CLINRX_ABX_ORIGIN=http://127.0.0.1:5238`.
+- The already running preview can be reopened at the URL above. To launch a fresh process
+  from the repository root, build the candidate frontend with the same flags used for
+  verification and then run the explicit loopback antibiotic gateway:
+
+  ```sh
+  cd frontend
+  VITE_SYNTHETIC_HOSTED=true VITE_SYNTHETIC_RF1=true VITE_SYNTHETIC_RF2=true \
+    VITE_SYNTHETIC_AUTHORING=true VITE_SYNTHETIC_WEIGHT_ENTRY=true \
+    VITE_SYNTHETIC_ANTIBIOTICS=true npm run build
+  cd ..
+  CLINRX_ABX_DATABASE="$PWD/review-evidence/consolidation/clinrx-m8-combined-preview.sqlite3" \
+  CLINRX_ABX_FRONTEND="$PWD/frontend/dist" \
+  CLINRX_ABX_ORIGIN=http://127.0.0.1:5238 PYTHONDONTWRITEBYTECODE=1 \
+  PYTHONPATH=backend /private/tmp/clinrx-preview-venv/bin/python \
+    -m uvicorn app.demo.antibiotic_gateway:from_environment --factory \
+    --host 127.0.0.1 --port 5238 --workers 1 --no-proxy-headers --no-access-log
+  ```
 
 Historical logs remain historical. New verification belongs to the consolidation output
 directory. No source is deleted or replaced from an older snapshot.
