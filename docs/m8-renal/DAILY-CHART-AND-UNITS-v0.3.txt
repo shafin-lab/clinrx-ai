@@ -1,0 +1,81 @@
+ClinRx M8 v0.3 — daily fluid chart and consistent creatinine display
+22 October 2026
+
+Implemented in the shared candidate; this is a synthetic engineering increment.
+The user's correction is applied: the compact hourly row is URINE VOLUME.
+No diuretic-volume row was added.
+
+BEDside behaviour
+The urine card opens a full-width daily chart. Hours run horizontally (08–09,
+09–10, etc.), with date, start hour and explicit fixed-offset chart clock.
+Intake, output, net and running recorded net are shown in mL. Positive, negative
+and zero differences are labelled. The net is included intake minus included
+output; it is a recorded subtotal, never a claim of complete patient balance.
+Missing cells remain blank/dash, and a documented zero remains zero. Source
+minutes under urine show interval coverage, not certified collection completeness.
+The chart scrolls internally on a small screen, retaining its row labels.
+Selecting an hourly number expands contributors and their original source/history.
+Original urine collections also use compact rows in the source drawer.
+
+SOURCE AND CALCULATION CONTRACT
+The existing shared M8 assessment stays on its original window. The daily chart
+performs a separate read of an explicit 24-hour RF2 source window from the same
+repository and patient/encounter. It does not call a two-hour view a full day.
+Scope/cutoff mismatches and changed or unavailable shared evidence block use.
+Late responses cannot replace the currently selected day. In-page navigation
+reuses a settled daily read; an explicit refresh, changed day or shared cutoff
+retrieves it again. Daily sources are not silently added to the existing M8
+assessment note's evidence pins.
+
+Only source-recorded typed volume categories are admitted. mL and L are converted
+by explicit mapping using bounded decimal rational arithmetic. Original quantity,
+unit, revision and source are retained; unresolved mappings remain labelled.
+Wrong dimensions, missing quantities, negative values, conflicting units or
+unresolved timing are excluded. Missing is never inferred as zero.
+Start is inclusive and end exclusive for point entries. Source intervals inside
+one hour are assigned to that hour. Collections across hours enter the daily
+total once in Across hours, without invented hourly prorating. Collections
+crossing the day boundary are excluded rather than apportioned. Possible
+overlapping/duplicate collections in the same category are unresolved and
+excluded until source independence can be established. Cumulative source urine
+and balance summaries are separate and never added to individual entries.
+CRRT net patient removal is an output category; gross filter effluent is separate.
+Running hourly net omits unallocated intervals and is not carried into empty hours.
+Full-day completeness remains Not established with the current legacy contracts.
+Insensible losses, irrigation adjustment, medication-carrier reconciliation and
+admission-to-date balance are not inferred. M9 should reuse this source-owned
+projection and its rules rather than introduce another calculation of the same
+entries. Local calendar/DST schedules need a governed timezone extension; the
+current selector explicitly represents 24 elapsed hours at a fixed offset.
+
+CREATININE DISPLAY
+Creatinine cards use mg/dL with two decimal places. Explicit supported raw units
+can be converted using 88.4 micromol/L per mg/dL; 150 micromol/L displays approximately
+1.70 mg/dL. Raw values are retained in source details. Unknown or conflicting
+units are withheld, never guessed. Display conversion of an unresolved raw unit
+label retains its unresolved status and is not a validated clinical input.
+This display profile does not activate AKI classification, clearance or dosing.
+Urea and BUN remain distinct analytes and must not share numeric conversions by
+simple relabelling.
+
+VERIFICATION
+114 focused tests passed in six files with one worker. The earlier parallel run
+had two shared-workspace timing failures; the serial rerun passed unchanged tests
+and unchanged timeouts. Tests cover conversions, decimals, original preservation,
+missing/zero, overlap, boundaries, partial urine coverage, separate daily retrieval,
+scope rejection, source inspection, stale responses and navigation/cache behaviour.
+Type checking and the RF2 production build passed. Existing shared bundle-size
+advisories remain. No backend schema, order, clinical rule or device control changed.
+Actual browser checks used the disposable synthetic RF2 database: recorded intake
+600 mL, output 315 mL and net +285 mL, explicitly partial; 24 hour headers;
+145 mL urine in 08–09, documented zero over 15 minutes in 09–10; expandable source
+contributors/history; creatinine 1.10, 2.00 and approximately 1.70 mg/dL.
+No console warnings/errors. At 390 px the document width stayed 390 px while the
+chart scrolled internally; the temporary viewport setting was reset.
+
+Sources inspected for this increment:
+https://www.nice.org.uk/guidance/cg174/chapter/recommendations
+https://backend.mayocliniclabs.com/order-tests/si-unit-conversion.html
+
+The earlier v0.1/v0.2 catalogs and evidence remain historical. Clinical treatment
+profiles remain inactive, and this synthetic preview is not cleared for patient use.

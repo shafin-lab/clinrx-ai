@@ -1,0 +1,3689 @@
+{
+  "version": "0.1-proposed",
+  "status": "All rules design_only_disabled; not executable clinical rules",
+  "rules": [
+    {
+      "id": "M7-R001",
+      "version": "0.1-proposed",
+      "title": "Verified ownership",
+      "category": "identity_time_integrity",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W02",
+        "M7-W23",
+        "M7-W24",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Ingest/view/evaluate",
+      "prerequisites": [
+        "Authenticated tenant",
+        "verified patient/encounter",
+        "device assignment"
+      ],
+      "decision": "Quarantine unresolved/foreign binding; maintain urgent source/lab/bedside fallback without attaching a guessed patient.",
+      "withholding_reason": "IDENTITY_UNRESOLVED",
+      "supported_scenario": "Correct verified patient evidence is admitted to declared scope.",
+      "adverse_scenario": "Same bed after patient transfer never establishes source ownership.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R002",
+      "version": "0.1-proposed",
+      "title": "Exact revisions and pins",
+      "category": "identity_time_integrity",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W02",
+        "M7-W23",
+        "M7-W24",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Consume/replay",
+      "prerequisites": [
+        "Exact kind/id/revision",
+        "canonical digest"
+      ],
+      "decision": "Reject conflicting bytes and wrong target kinds; no mutable latest in retained decisions.",
+      "withholding_reason": "INTEGRITY_MISMATCH",
+      "supported_scenario": "Exact evidence pins permit further review.",
+      "adverse_scenario": "Changed source bytes under same revision cannot replace prior evidence.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R003",
+      "version": "0.1-proposed",
+      "title": "Actual-known-at cutoff",
+      "category": "identity_time_integrity",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W02",
+        "M7-W23",
+        "M7-W24",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Historical review",
+      "prerequisites": [
+        "Commit watermark",
+        "source release",
+        "receipt times"
+      ],
+      "decision": "Actual snapshot includes only admitted facts within repository cutoff; source reconstruction visibly retrospective and not clinician awareness.",
+      "withholding_reason": "NOT_ADMITTED_AT_CUTOFF",
+      "supported_scenario": "Late-received earlier-collected sample stays out of earlier actual snapshot.",
+      "adverse_scenario": "Report time cannot backdate ClinRx knowledge.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R004",
+      "version": "0.1-proposed",
+      "title": "Precision before coercion",
+      "category": "identity_time_integrity",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W02",
+        "M7-W23",
+        "M7-W24",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Exact temporal comparison",
+      "prerequisites": [
+        "Retained original timestamp",
+        "precision declaration",
+        "no floats"
+      ],
+      "decision": "Preserve existing M7 precision gate; reject raw floats before coercion and withhold ordering for lost/ambiguous precision, never repair old bytes.",
+      "withholding_reason": "TIME_PRECISION_UNSUITABLE",
+      "supported_scenario": "Exact supported ISO lexeme and trustworthy clock can order events.",
+      "adverse_scenario": "Distinct submicrosecond instants cannot become simultaneous.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R005",
+      "version": "0.1-proposed",
+      "title": "Clock and interval uncertainty",
+      "category": "identity_time_integrity",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W02",
+        "M7-W23",
+        "M7-W24",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Temporal alignment",
+      "prerequisites": [
+        "Verified clock basis",
+        "bounded intervals",
+        "conflicts"
+      ],
+      "decision": "Unknown/offset/drift/conflicting time prevents exact ordering where required; do not auto-adjust timestamps or replace event time with receipt.",
+      "withholding_reason": "CLOCK_OR_TIME_UNCERTAIN",
+      "supported_scenario": "Offset-equivalent exact instants compare equal.",
+      "adverse_scenario": "Bounded overlap cannot prove a before/after relationship.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R006",
+      "version": "0.1-proposed",
+      "title": "Additions invalidate clinical review",
+      "category": "identity_time_integrity",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W02",
+        "M7-W23",
+        "M7-W24",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Prepare/accept",
+      "prerequisites": [
+        "Snapshot query scope",
+        "absence assumptions",
+        "context generation"
+      ],
+      "decision": "New relevant arrhythmia/bleeding/target/dose/support fact invalidates clinical proposal even if no old pin changed; recheck atomically at acceptance.",
+      "withholding_reason": "CONTEXT_CHANGED",
+      "supported_scenario": "New severe arrhythmia marks a fluid-test/pressor proposal stale.",
+      "adverse_scenario": "All old digests matching does not prove current clinical eligibility.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R007",
+      "version": "0.1-proposed",
+      "title": "Corrections retain history",
+      "category": "identity_time_integrity",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W02",
+        "M7-W23",
+        "M7-W24",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Successor/withdrawal",
+      "prerequisites": [
+        "Exact lineage",
+        "availability",
+        "support dependencies"
+      ],
+      "decision": "Preserve original reviews and receipts, invalidate dependent new clinical claims; do not rewrite or auto-replace preparations.",
+      "withholding_reason": "SOURCE_SUPERSEDED",
+      "supported_scenario": "Same-value calibration successor still changes consumed evidence.",
+      "adverse_scenario": "Withdrawn pressure cannot disappear from audit history.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R008",
+      "version": "0.1-proposed",
+      "title": "No interpolation by default",
+      "category": "identity_time_integrity",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W02",
+        "M7-W23",
+        "M7-W24",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Trend/exposure display",
+      "prerequisites": [
+        "Actual observations",
+        "declared intervals",
+        "gaps"
+      ],
+      "decision": "No rate carry-forward, zero filling or continuous BP duration from isolated cuff values. Approved derived methods need explicit profile and coverage.",
+      "withholding_reason": "COVERAGE_INCOMPLETE",
+      "supported_scenario": "Actual samples display with gaps.",
+      "adverse_scenario": "Two cuff readings cannot prove minutes continuously below target.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R009",
+      "version": "0.1-proposed",
+      "title": "Bounded operations fail explicitly",
+      "category": "identity_time_integrity",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W02",
+        "M7-W23",
+        "M7-W24",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Assembly/transport",
+      "prerequisites": [
+        "Reviewed row/byte/time/graph/channel caps"
+      ],
+      "decision": "Overflow returns explicit operational failure; never successful clinical withholding or silent truncation of relevant data.",
+      "withholding_reason": "RESOURCE_LIMIT",
+      "supported_scenario": "Within-cap complete scoped assembly succeeds.",
+      "adverse_scenario": "Large graph cap exhaustion cannot produce an all-clear partial view.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R010",
+      "version": "0.1-proposed",
+      "title": "Safe command recovery",
+      "category": "identity_time_integrity",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W02",
+        "M7-W23",
+        "M7-W24",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Write/timeout/retry",
+      "prerequisites": [
+        "Durable admission",
+        "digest",
+        "fenced generation",
+        "external receipt contract"
+      ],
+      "decision": "No-row is not_found_yet, not terminal no-effect. Retain original command; reconcile exactly; no automatic repeat or new identity after timeout.",
+      "withholding_reason": "COMPLETION_UNKNOWN",
+      "supported_scenario": "Committed exact receipt recovers without new clinical evaluation.",
+      "adverse_scenario": "Old worker can still commit after empty lookup, so resubmission is withheld.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R011",
+      "version": "0.1-proposed",
+      "title": "Pressure method and compartment",
+      "category": "measurement_reliability",
+      "workflow_ids": [
+        "M7-W02",
+        "M7-W03",
+        "M7-W04",
+        "M7-W05",
+        "M7-W06"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03"
+      ],
+      "source_ids": [
+        "S01",
+        "S02"
+      ],
+      "trigger": "Pressure use",
+      "prerequisites": [
+        "Exact parameter",
+        "site",
+        "unit",
+        "method"
+      ],
+      "decision": "Systemic arterial, CVP/RA, pulmonary and ventricular pressures remain distinct; never map by numerical range or ambiguous label.",
+      "withholding_reason": "PRESSURE_METHOD_UNKNOWN",
+      "supported_scenario": "A verified systemic MAP can be compared to its target.",
+      "adverse_scenario": "PA mean cannot substitute systemic MAP.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R012",
+      "version": "0.1-proposed",
+      "title": "Invasive applicability",
+      "category": "measurement_reliability",
+      "workflow_ids": [
+        "M7-W02",
+        "M7-W03",
+        "M7-W04",
+        "M7-W05",
+        "M7-W06"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03"
+      ],
+      "source_ids": [
+        "S01",
+        "S02"
+      ],
+      "trigger": "Arterial pressure review",
+      "prerequisites": [
+        "Quality",
+        "exact leveling/zeroing/calibration applicability",
+        "source support"
+      ],
+      "decision": "Use acquisition-specific attributed checks. Reposition/disconnection/configuration changes require applicable assessment; no universal calibration interval invented.",
+      "withholding_reason": "ACQUISITION_CHECK_MISSING",
+      "supported_scenario": "Applicable adequate source checks allow supported review.",
+      "adverse_scenario": "A recent unrelated zeroing event does not validate an older acquisition.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R013",
+      "version": "0.1-proposed",
+      "title": "Cuff reliability",
+      "category": "measurement_reliability",
+      "workflow_ids": [
+        "M7-W02",
+        "M7-W03",
+        "M7-W04",
+        "M7-W05",
+        "M7-W06"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03"
+      ],
+      "source_ids": [
+        "S01",
+        "S02"
+      ],
+      "trigger": "Cuff interpretation",
+      "prerequisites": [
+        "Actual site/cuff/position",
+        "quality",
+        "rhythm/perfusion limits"
+      ],
+      "decision": "Expose missing or unsuitable cuff context and repeat/confirm per clinical urgency; do not require arterial-transducer zeroing for cuff data.",
+      "withholding_reason": "CUFF_QUALITY_UNCERTAIN",
+      "supported_scenario": "Appropriate documented cuff and coherent repeats support interpretation.",
+      "adverse_scenario": "Motion/incorrect cuff cannot generate confident target-achieved badge.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R014",
+      "version": "0.1-proposed",
+      "title": "Waveform artifacts",
+      "category": "measurement_reliability",
+      "workflow_ids": [
+        "M7-W02",
+        "M7-W03",
+        "M7-W04",
+        "M7-W05",
+        "M7-W06"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03"
+      ],
+      "source_ids": [
+        "S01",
+        "S02"
+      ],
+      "trigger": "Signal/pressure quality",
+      "prerequisites": [
+        "Raw availability",
+        "source quality",
+        "trained assessment"
+      ],
+      "decision": "Flush, damping, resonance, disconnection and motion flags limit derived claims; retain source readings and request owned confirmation.",
+      "withholding_reason": "WAVEFORM_UNRELIABLE",
+      "supported_scenario": "Confirmed valid waveform can support approved averaging.",
+      "adverse_scenario": "Overdamped low systolic value cannot silently trigger dose escalation.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R015",
+      "version": "0.1-proposed",
+      "title": "Discordant pressure sources",
+      "category": "measurement_reliability",
+      "workflow_ids": [
+        "M7-W02",
+        "M7-W03",
+        "M7-W04",
+        "M7-W05",
+        "M7-W06"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03"
+      ],
+      "source_ids": [
+        "S01",
+        "S02"
+      ],
+      "trigger": "Cuff/arterial disagreement",
+      "prerequisites": [
+        "Contemporaneous methods/sites/quality",
+        "local discrepancy policy"
+      ],
+      "decision": "Show both sources, do not average blindly or always prefer invasive; confirm reference/quality/perfusion and bedside urgency.",
+      "withholding_reason": "PRESSURE_DISCORDANCE",
+      "supported_scenario": "Reconciled discrepancy has explicit clinician-selected source.",
+      "adverse_scenario": "Conflicting unreliable readings cannot be hidden by selecting favorable MAP.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R016",
+      "version": "0.1-proposed",
+      "title": "Measured versus approximate MAP",
+      "category": "measurement_reliability",
+      "workflow_ids": [
+        "M7-W02",
+        "M7-W03",
+        "M7-W04",
+        "M7-W05",
+        "M7-W06"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03"
+      ],
+      "source_ids": [
+        "S01",
+        "S02"
+      ],
+      "trigger": "MAP display/calculation",
+      "prerequisites": [
+        "Production method",
+        "exact coherent SBP/DBP"
+      ],
+      "decision": "Preserve monitor-measured MAP; optional formula output labeled approximate and never overwrites source MAP.",
+      "withholding_reason": "APPROXIMATION_ONLY",
+      "supported_scenario": "Approximate and source MAP are visibly distinct.",
+      "adverse_scenario": "Approximate arithmetic alone cannot validate a suspect waveform.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R017",
+      "version": "0.1-proposed",
+      "title": "Individual targets",
+      "category": "measurement_reliability",
+      "workflow_ids": [
+        "M7-W02",
+        "M7-W03",
+        "M7-W04",
+        "M7-W05",
+        "M7-W06"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03"
+      ],
+      "source_ids": [
+        "S01",
+        "S02"
+      ],
+      "trigger": "Patient status display",
+      "prerequisites": [
+        "Current authorized target",
+        "population",
+        "conflicting conditions"
+      ],
+      "decision": "Compare only to applicable documented goals. No target is an explicit state; reference guidance is not automatically a patient order.",
+      "withholding_reason": "TARGET_NOT_DOCUMENTED",
+      "supported_scenario": "Current patient MAP range gives bounded status.",
+      "adverse_scenario": "Universal MAP 65 cannot silently replace TBI/bleeding/RV goals.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R018",
+      "version": "0.1-proposed",
+      "title": "Pressure and perfusion separate",
+      "category": "measurement_reliability",
+      "workflow_ids": [
+        "M7-W02",
+        "M7-W03",
+        "M7-W04",
+        "M7-W05",
+        "M7-W06"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03"
+      ],
+      "source_ids": [
+        "S01",
+        "S02"
+      ],
+      "trigger": "Shock review",
+      "prerequisites": [
+        "Clinical organ-perfusion evidence",
+        "quality",
+        "targets"
+      ],
+      "decision": "Target-achieved pressure does not establish perfusion adequacy; normotensive hypoperfusion remains possible.",
+      "withholding_reason": "PERFUSION_NOT_ASSESSED",
+      "supported_scenario": "Adequate assessed pressure with worsening CRT still raises perfusion review.",
+      "adverse_scenario": "Normal MAP cannot automatically resolve shock.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R019",
+      "version": "0.1-proposed",
+      "title": "Source units retained",
+      "category": "measurement_reliability",
+      "workflow_ids": [
+        "M7-W02",
+        "M7-W03",
+        "M7-W04",
+        "M7-W05",
+        "M7-W06"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03"
+      ],
+      "source_ids": [
+        "S01",
+        "S02"
+      ],
+      "trigger": "Normalize/calculate",
+      "prerequisites": [
+        "Original lexeme",
+        "approved unit map",
+        "dimension"
+      ],
+      "decision": "New clinical adapters may use approved explicit conversions; legacy synthetic raw-mmHg gate remains unchanged. No silent unit or category remapping.",
+      "withholding_reason": "UNIT_UNRESOLVED",
+      "supported_scenario": "Explicit approved conversion carries original unit/method.",
+      "adverse_scenario": "kPa treated as mmHg without conversion is rejected.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R020",
+      "version": "0.1-proposed",
+      "title": "Manufacturer configuration",
+      "category": "measurement_reliability",
+      "workflow_ids": [
+        "M7-W02",
+        "M7-W03",
+        "M7-W04",
+        "M7-W05",
+        "M7-W06"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03"
+      ],
+      "source_ids": [
+        "S01",
+        "S02"
+      ],
+      "trigger": "Device parameter use",
+      "prerequisites": [
+        "Model/sensor/software/algorithm",
+        "configuration evidence",
+        "local validation"
+      ],
+      "decision": "Brand names and source documentation alone do not prove parameter support or clinical performance; unsupported data remains source display only.",
+      "withholding_reason": "DEVICE_CAPABILITY_UNVERIFIED",
+      "supported_scenario": "Verified installed parameter mapping supports scoped display.",
+      "adverse_scenario": "A HemoSphere label alone cannot assert SVV/HPI availability.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R021",
+      "version": "0.1-proposed",
+      "title": "Multimodal perfusion",
+      "category": "perfusion_and_shock",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W05",
+        "M7-W06",
+        "M7-W07",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19"
+      ],
+      "policy_ids": [
+        "P03",
+        "P04"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "trigger": "Clinical assessment",
+      "prerequisites": [
+        "CRT/skin/mentation/urine/lactate context",
+        "missingness"
+      ],
+      "decision": "Assess available concordance and discordance, not a mandatory full test panel or single-marker shock diagnosis.",
+      "withholding_reason": "PERFUSION_SCOPE_INCOMPLETE",
+      "supported_scenario": "Coherent bedside evidence supports an owned concern.",
+      "adverse_scenario": "One normal marker cannot erase other deterioration.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R022",
+      "version": "0.1-proposed",
+      "title": "CRT method and confounders",
+      "category": "perfusion_and_shock",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W05",
+        "M7-W06",
+        "M7-W07",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19"
+      ],
+      "policy_ids": [
+        "P03",
+        "P04"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "trigger": "CRT review",
+      "prerequisites": [
+        "Site",
+        "protocol",
+        "temperature/lighting",
+        "assessor",
+        "quality"
+      ],
+      "decision": "Use only adopted assessment technique/threshold for interpretation; expose nonassessable states and training limitations.",
+      "withholding_reason": "CRT_NOT_INTERPRETABLE",
+      "supported_scenario": "Documented method supports trend and adjunctive review.",
+      "adverse_scenario": "Unmeasurable dark/cold/poorly illuminated skin cannot be recorded as normal CRT.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R023",
+      "version": "0.1-proposed",
+      "title": "Lactate sample timing",
+      "category": "perfusion_and_shock",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W05",
+        "M7-W06",
+        "M7-W07",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19"
+      ],
+      "policy_ids": [
+        "P03",
+        "P04"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "trigger": "Lactate trend",
+      "prerequisites": [
+        "Collection time",
+        "specimen/source",
+        "assay",
+        "report state"
+      ],
+      "decision": "Collection time anchors trend, report time does not. Preserve preliminary/corrected/withdrawn states and urgent source communication separately.",
+      "withholding_reason": "LACTATE_TIMING_OR_STATUS",
+      "supported_scenario": "Comparable final source values support declared trend.",
+      "adverse_scenario": "Late report cannot imply a late physiologic rise.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R024",
+      "version": "0.1-proposed",
+      "title": "Lactate not fluid need",
+      "category": "perfusion_and_shock",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W05",
+        "M7-W06",
+        "M7-W07",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19"
+      ],
+      "policy_ids": [
+        "P03",
+        "P04"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "trigger": "Raised/persistent lactate",
+      "prerequisites": [
+        "Perfusion",
+        "adrenergic exposure",
+        "metabolism",
+        "alternate causes"
+      ],
+      "decision": "Prompt differential and reassessment; do not continue fluids to normalize lactate or infer hypovolemia from it alone.",
+      "withholding_reason": "LACTATE_CAUSE_UNCERTAIN",
+      "supported_scenario": "Raised lactate with epinephrine/liver dysfunction remains contextualized.",
+      "adverse_scenario": "Elevated lactate alone cannot order another bolus.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R025",
+      "version": "0.1-proposed",
+      "title": "Lactate change wording",
+      "category": "perfusion_and_shock",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W05",
+        "M7-W06",
+        "M7-W07",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19"
+      ],
+      "policy_ids": [
+        "P03",
+        "P04"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "trigger": "Percentage trend",
+      "prerequisites": [
+        "Comparable units/methods",
+        "positive baseline",
+        "coherent samples"
+      ],
+      "decision": "Label percentage decrement/change, not measured metabolic clearance; baseline zero/censoring blocks exact ratio.",
+      "withholding_reason": "TREND_RATIO_INVALID",
+      "supported_scenario": "4 to 3 mmol/L is a 25 percent decrement only.",
+      "adverse_scenario": "Zero baseline cannot produce infinite clearance.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R026",
+      "version": "0.1-proposed",
+      "title": "Venous oxygen compartments",
+      "category": "perfusion_and_shock",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W05",
+        "M7-W06",
+        "M7-W07",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19"
+      ],
+      "policy_ids": [
+        "P03",
+        "P04"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "trigger": "Oxygen interpretation",
+      "prerequisites": [
+        "Confirmed sample site",
+        "paired context",
+        "quality"
+      ],
+      "decision": "ScvO2, SvO2 and peripheral venous values are distinct. Normal/high venous saturation does not prove adequate tissue oxygenation.",
+      "withholding_reason": "SAMPLE_COMPARTMENT_MISMATCH",
+      "supported_scenario": "Confirmed mixed-venous sample supports its own interpretation.",
+      "adverse_scenario": "Peripheral venous saturation cannot fill a missing SvO2.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R027",
+      "version": "0.1-proposed",
+      "title": "Oxygen content derivation",
+      "category": "perfusion_and_shock",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W05",
+        "M7-W06",
+        "M7-W07",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19"
+      ],
+      "policy_ids": [
+        "P03",
+        "P04"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "trigger": "Calculate transport",
+      "prerequisites": [
+        "Hb",
+        "measured/qualified saturation",
+        "PaO2",
+        "CO",
+        "units",
+        "aligned times"
+      ],
+      "decision": "Use exact approved constants and saturation fraction; dyshemoglobinemia/shunts/support require method-specific limits. No transfusion decision from DO2 alone.",
+      "withholding_reason": "OXYGEN_INPUT_UNSUITABLE",
+      "supported_scenario": "Coherent inputs generate labeled educational/profile calculation.",
+      "adverse_scenario": "97 percent as fraction 97 cannot produce a valid DO2.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R028",
+      "version": "0.1-proposed",
+      "title": "CO2 gap and ratios",
+      "category": "perfusion_and_shock",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W05",
+        "M7-W06",
+        "M7-W07",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19"
+      ],
+      "policy_ids": [
+        "P03",
+        "P04"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "trigger": "Paired gas review",
+      "prerequisites": [
+        "Matched arterial/venous sites",
+        "time",
+        "units",
+        "method"
+      ],
+      "decision": "A PCO2 gap is not oxygen content, lactate cause, or standalone fluid/CO target. Unknown pairing withholds derived interpretation.",
+      "withholding_reason": "GAS_PAIRING_UNSUITABLE",
+      "supported_scenario": "Comparable samples permit labeled gap.",
+      "adverse_scenario": "Unpaired delayed samples cannot diagnose inadequate flow.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R029",
+      "version": "0.1-proposed",
+      "title": "Phenotype is clinical",
+      "category": "perfusion_and_shock",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W05",
+        "M7-W06",
+        "M7-W07",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19"
+      ],
+      "policy_ids": [
+        "P03",
+        "P04"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "trigger": "Shock classification",
+      "prerequisites": [
+        "Cause history",
+        "exam",
+        "echo/flow",
+        "pressure",
+        "alternatives"
+      ],
+      "decision": "Allow mixed/undifferentiated and changing phenotype, require clinician confirmation for diagnostic assertion; low BP alone not sepsis.",
+      "withholding_reason": "PHENOTYPE_UNCERTAIN",
+      "supported_scenario": "Concurrent distributive and LV components can be retained.",
+      "adverse_scenario": "One low SVR reading cannot confirm septic shock.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R030",
+      "version": "0.1-proposed",
+      "title": "Cause-directed urgency",
+      "category": "perfusion_and_shock",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W05",
+        "M7-W06",
+        "M7-W07",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19"
+      ],
+      "policy_ids": [
+        "P03",
+        "P04"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "trigger": "New deterioration",
+      "prerequisites": [
+        "Bedside assessment",
+        "available critical findings",
+        "response system"
+      ],
+      "decision": "Prompt immediate local clinical assessment for instability while evidence is confirmed; do not wait for complete forms/final lab/echo to communicate concern.",
+      "withholding_reason": "URGENT_REVIEW_REQUIRED",
+      "supported_scenario": "Critical preliminary evidence routes independently of final-only calculation.",
+      "adverse_scenario": "Incomplete data cannot suppress existing emergency pathway.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R031",
+      "version": "0.1-proposed",
+      "title": "Fluid benefit needs three questions",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "Fluid review",
+      "prerequisites": [
+        "Clinical need",
+        "responsiveness where applicable",
+        "tolerance",
+        "urgency"
+      ],
+      "decision": "Keep need, potential flow response and harm separate. Positive responsiveness alone is not a fluid indication or safety approval.",
+      "withholding_reason": "FLUID_BENEFIT_HARM_UNASSESSED",
+      "supported_scenario": "Responsive but congested patient receives owned clinical review.",
+      "adverse_scenario": "Positive PLR cannot automatically authorize bolus.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R032",
+      "version": "0.1-proposed",
+      "title": "Dynamic over static when applicable",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "Further fluid assessment",
+      "prerequisites": [
+        "Adopted method",
+        "eligibility",
+        "context after initial treatment"
+      ],
+      "decision": "Use valid dynamic tests where applicable; CVP/PAWP/GEDV/IVC alone do not establish responsiveness. Emergency treatment not blocked waiting for test.",
+      "withholding_reason": "DYNAMIC_METHOD_NOT_APPLICABLE",
+      "supported_scenario": "A valid reversible test informs a clinician decision.",
+      "adverse_scenario": "Low CVP cannot automatically prescribe fluid.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R033",
+      "version": "0.1-proposed",
+      "title": "PPV/SVV suitability",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "Interpret dynamic index",
+      "prerequisites": [
+        "Rhythm",
+        "effort",
+        "VT/PBW",
+        "chest/mechanics",
+        "RV/IAP",
+        "device",
+        "measurement interval"
+      ],
+      "decision": "Apply exact method-specific validation. Arrhythmia, spontaneous effort or unknown conditions invalidate confident threshold use unless profile specifically supports them.",
+      "withholding_reason": "DYNAMIC_INDEX_INELIGIBLE",
+      "supported_scenario": "Fully eligible configured method supports scoped result.",
+      "adverse_scenario": "PPV in AF cannot yield a standard fluid-responsive classification.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R034",
+      "version": "0.1-proposed",
+      "title": "PLR protocol fidelity",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "PLR assessment",
+      "prerequisites": [
+        "Approved posture/maneuver",
+        "direct rapid CO/SV or supported VTI",
+        "stable baseline",
+        "timing"
+      ],
+      "decision": "Record actual maneuver, peak/defined response and reversibility, concurrent changes and uncertainty. BP change alone not a substitute without method validation.",
+      "withholding_reason": "PLR_PROTOCOL_INCOMPLETE",
+      "supported_scenario": "Valid flow-based reversible PLR supports profile-specific response.",
+      "adverse_scenario": "Leg elevation without protocol or flow measurement is not a valid PLR result.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R035",
+      "version": "0.1-proposed",
+      "title": "PLR special limitations",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "PLR eligibility",
+      "prerequisites": [
+        "IAP",
+        "position/trauma constraints",
+        "pain/cough",
+        "measurement sensitivity"
+      ],
+      "decision": "Unsafe/unsupported maneuver or high-IAP/technical confounding yields indeterminate/expert alternative, not negative response.",
+      "withholding_reason": "PLR_UNSUITABLE",
+      "supported_scenario": "Eligible safe maneuver proceeds under local method.",
+      "adverse_scenario": "Inability to perform PLR cannot mean no fluid responsiveness.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R036",
+      "version": "0.1-proposed",
+      "title": "Occlusion and VT challenges",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "Advanced dynamic test",
+      "prerequisites": [
+        "Ventilator control",
+        "safety",
+        "trained clinician",
+        "approved profile"
+      ],
+      "decision": "No automated ventilator changes; effort/tolerance/insufficient duration/method confounding withholds interpretation. No universal maneuver instruction hardcoded.",
+      "withholding_reason": "TEST_SAFETY_UNVERIFIED",
+      "supported_scenario": "Observed valid clinician-performed test can be assessed.",
+      "adverse_scenario": "Assisted breath during occlusion cannot silently count as valid test.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R037",
+      "version": "0.1-proposed",
+      "title": "Fluid challenge endpoints",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "Planned trial",
+      "prerequisites": [
+        "Indication",
+        "actual volume/type/duration",
+        "baseline/response",
+        "stop conditions"
+      ],
+      "decision": "Distinguish a diagnostic challenge from rescue treatment; actual delivery and response must be documented, no requested volume counted as received.",
+      "withholding_reason": "CHALLENGE_DELIVERY_UNKNOWN",
+      "supported_scenario": "Completed known trial yields measured response.",
+      "adverse_scenario": "Unstarted prescribed challenge cannot be called a negative response.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R038",
+      "version": "0.1-proposed",
+      "title": "Measurement error in response",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "Change threshold",
+      "prerequisites": [
+        "Comparable method",
+        "precision",
+        "least-significant-change profile"
+      ],
+      "decision": "Changes within method uncertainty or with confounding remain indeterminate. Do not mix devices/echo views without valid comparability.",
+      "withholding_reason": "CHANGE_WITHIN_UNCERTAINTY",
+      "supported_scenario": "Change beyond approved uncertainty can be classified.",
+      "adverse_scenario": "Tiny VTI change within measurement error cannot become definitive responsiveness.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R039",
+      "version": "0.1-proposed",
+      "title": "Initial sepsis fluid profile",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "Sepsis-induced hypoperfusion/shock",
+      "prerequisites": [
+        "Adopted SSC version",
+        "body-weight convention",
+        "context",
+        "frequent reassessment"
+      ],
+      "decision": "Reference 2026 conditional initial-volume guidance with its context; an electronic bundle is not an automatic mandatory patient volume or repeated bolus order.",
+      "withholding_reason": "SEPSIS_FLUID_PROFILE_REQUIRED",
+      "supported_scenario": "Clinician-owned plan records volume basis, exceptions and reassessment.",
+      "adverse_scenario": "Heart/RV failure or prior delivered fluid cannot be ignored to satisfy a volume counter.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R040",
+      "version": "0.1-proposed",
+      "title": "Restriction is not universal superiority",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "Post-initial resuscitation",
+      "prerequisites": [
+        "Trial population/phase",
+        "need",
+        "congestion",
+        "trajectory"
+      ],
+      "decision": "CLOVERS/CLASSIC/ARISE FLUIDS do not justify a universal fluid-first or pressor-first mortality-benefit claim; individualize and reassess.",
+      "withholding_reason": "STRATEGY_EXTRAPOLATION",
+      "supported_scenario": "Review retains trial scope and rescue exceptions.",
+      "adverse_scenario": "Neutral strategy trials cannot authorize withholding all rescue fluids.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R041",
+      "version": "0.1-proposed",
+      "title": "Fluid composition",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "Fluid selection review",
+      "prerequisites": [
+        "Indication",
+        "electrolyte/acid-base context",
+        "neurologic/liver status",
+        "approved product"
+      ],
+      "decision": "Use adopted guidance, avoid unsupported class equivalence; starch avoidance and albumin/TBI/cirrhosis caveats require exact applicable policy.",
+      "withholding_reason": "FLUID_PRODUCT_SCOPE",
+      "supported_scenario": "Approved balanced crystalloid reference includes exceptions.",
+      "adverse_scenario": "General sepsis fluid preference cannot override neurocritical protocol.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R042",
+      "version": "0.1-proposed",
+      "title": "Tolerance and congestion",
+      "category": "fluid_tests_and_resuscitation",
+      "workflow_ids": [
+        "M7-W07",
+        "M7-W08",
+        "M7-W09",
+        "M7-W10",
+        "M7-W11",
+        "M7-W12",
+        "M7-W20"
+      ],
+      "policy_ids": [
+        "P04",
+        "P05"
+      ],
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "trigger": "Before/after further fluid",
+      "prerequisites": [
+        "Lung/oxygenation",
+        "LV/RV",
+        "venous congestion",
+        "balance coverage"
+      ],
+      "decision": "Concern or uncertainty requires explicit bedside benefit-harm decision; a negative VExUS/IVC finding is not global fluid safety.",
+      "withholding_reason": "TOLERANCE_NOT_CLEARED",
+      "supported_scenario": "Worsening oxygenation after trial prompts reassessment.",
+      "adverse_scenario": "Fluid responsiveness cannot erase new pulmonary edema.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R043",
+      "version": "0.1-proposed",
+      "title": "Drug-specific clinical profile",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "Vasoactive review",
+      "prerequisites": [
+        "Exact agent/formulation",
+        "phenotype",
+        "contraindications",
+        "local authority"
+      ],
+      "decision": "No class-wide interchangeable protocol; standard septic norepinephrine preference is scoped and not all shock. Unsupported personalized dosing withheld.",
+      "withholding_reason": "DRUG_PROFILE_UNAPPROVED",
+      "supported_scenario": "Approved applicable agent profile supports a bounded review.",
+      "adverse_scenario": "A drug name alone cannot generate start/titration dose.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R044",
+      "version": "0.1-proposed",
+      "title": "Concomitant cardiac dysfunction branch",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "Septic shock drug review",
+      "prerequisites": [
+        "Cardiac function",
+        "hypoperfusion",
+        "pressure/volume",
+        "rhythm",
+        "adopted version"
+      ],
+      "decision": "2026 sepsis cardiac-dysfunction branch differs from generic first-line preference. Inotrope review requires cause/flow/perfusion and adequate pressure/volume assessment.",
+      "withholding_reason": "CARDIAC_BRANCH_INCOMPLETE",
+      "supported_scenario": "Known phenotype/rhythm supports a clinician-reviewed branch.",
+      "adverse_scenario": "Low EF alone cannot mandate dobutamine.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R045",
+      "version": "0.1-proposed",
+      "title": "No automatic titration",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "Any review output",
+      "prerequisites": [
+        "Explicit clinical authorization",
+        "separate host prescribing"
+      ],
+      "decision": "M7 generates review/plan, not pump or ventilator control; no autonomous bolus/start/stop/rate change even if target missed.",
+      "withholding_reason": "CLINICIAN_ACTION_REQUIRED",
+      "supported_scenario": "An accepted review remains separate from actual order/delivery.",
+      "adverse_scenario": "Low MAP cannot write a pump command.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R046",
+      "version": "0.1-proposed",
+      "title": "Dose unit and basis",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "Compare/convert vasoactives",
+      "prerequisites": [
+        "Mass/activity",
+        "time",
+        "weight",
+        "actual concentration",
+        "formulation"
+      ],
+      "decision": "Dimensional conversion explicit; vasopressin units/min not mcg/kg/min; salt/base and potency conventions remain exact.",
+      "withholding_reason": "DOSE_DIMENSION_MISMATCH",
+      "supported_scenario": "Compatible known source values permit labeled arithmetic.",
+      "adverse_scenario": "mg/min mistaken for mcg/min must fail.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R047",
+      "version": "0.1-proposed",
+      "title": "Weight reconciliation",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "Weight-based infusion",
+      "prerequisites": [
+        "Exact prescribed dosing weight",
+        "method",
+        "time",
+        "current context"
+      ],
+      "decision": "Display current and dosing weight separately; changing chart weight does not silently alter intended infusion dose or pump rate.",
+      "withholding_reason": "DOSING_WEIGHT_UNRESOLVED",
+      "supported_scenario": "New weight prompts explicit pharmacy/prescriber review.",
+      "adverse_scenario": "A new scale weight cannot automatically retitrate pressor.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R048",
+      "version": "0.1-proposed",
+      "title": "Concentration and bag changes",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "Changeover or disagreement",
+      "prerequisites": [
+        "Actual bag/product/concentration",
+        "rate",
+        "line dead-space",
+        "sequence"
+      ],
+      "decision": "Reconcile intended dose and actual delivery; new concentration at unchanged mL/hour can change dose. No automatic compensating pump adjustment or flush.",
+      "withholding_reason": "CONCENTRATION_CHANGE_REVIEW",
+      "supported_scenario": "Explicit confirmed dose continuity is retained.",
+      "adverse_scenario": "Unchanged volume rate cannot be labeled unchanged dose after doubled concentration.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R049",
+      "version": "0.1-proposed",
+      "title": "Order is not delivery",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "Exposure/timing",
+      "prerequisites": [
+        "Actual source initiation/segments",
+        "attestation",
+        "coverage"
+      ],
+      "decision": "Keep order/preparation/start/rate change/restart/bolus/stop distinct; scheduled/planned cannot establish actual exposure or continuous treatment.",
+      "withholding_reason": "DELIVERY_NOT_CONFIRMED",
+      "supported_scenario": "Actual source initiation supports an exposure event.",
+      "adverse_scenario": "Prepared syringe cannot count as infusion started.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R050",
+      "version": "0.1-proposed",
+      "title": "Delivery gaps and overlaps",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "Pump/MAR reconciliation",
+      "prerequisites": [
+        "Exact infusion/channel",
+        "source intervals",
+        "quantity",
+        "ownership"
+      ],
+      "decision": "Never carry a dose through disconnect, sum overlapping reports twice, infer zero from missing data or silently pick a source winner.",
+      "withholding_reason": "DELIVERY_COVERAGE_INCOMPLETE",
+      "supported_scenario": "Known nonoverlapping intervals support declared amount only.",
+      "adverse_scenario": "Pump-MAR discrepancy remains disputed pending owned reconciliation.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R051",
+      "version": "0.1-proposed",
+      "title": "Peripheral use and urgency",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "Pressor access review",
+      "prerequisites": [
+        "Exact route/site/patency",
+        "actual checks",
+        "local surveillance",
+        "clinical context"
+      ],
+      "decision": "Do not delay existing urgent sepsis therapy solely for central access. 2026 guidance supplies no universal peripheral dose/duration/site limit; local validated policy required.",
+      "withholding_reason": "ACCESS_POLICY_OR_CHECK_MISSING",
+      "supported_scenario": "Approved peripheral use has explicit inspection and escalation.",
+      "adverse_scenario": "A midline cannot inherit evidence from peripheral studies automatically.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R052",
+      "version": "0.1-proposed",
+      "title": "Extravasation/ischemia",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "Site concern",
+      "prerequisites": [
+        "Actual site finding",
+        "drug/delivery",
+        "bedside owner"
+      ],
+      "decision": "Immediate local bedside safety/escalation workflow; preserve alert even if numeric dose unavailable. Do not generate automatic antidote/flush/line manipulation.",
+      "withholding_reason": "URGENT_ACCESS_REVIEW",
+      "supported_scenario": "Swelling/blanching routes specific owned assessment.",
+      "adverse_scenario": "Acknowledging a site alert cannot claim extravasation treated.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R053",
+      "version": "0.1-proposed",
+      "title": "Adverse vasoactive response",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "New rhythm/ischemia/trajectory",
+      "prerequisites": [
+        "Actual drug dose/time",
+        "ECG/perfusion",
+        "alternatives"
+      ],
+      "decision": "Prompt review of arrhythmia, ischemia and inadequate perfusion with cause uncertainty; norepinephrine equivalents do not prove drug equivalence or total effect.",
+      "withholding_reason": "ADVERSE_RESPONSE_REVIEW",
+      "supported_scenario": "New arrhythmia after escalation is reviewed with confounders.",
+      "adverse_scenario": "Temporal association cannot automatically diagnose drug toxicity.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R054",
+      "version": "0.1-proposed",
+      "title": "Escalation/weaning",
+      "category": "vasoactive_safety",
+      "workflow_ids": [
+        "M7-W13",
+        "M7-W14",
+        "M7-W15",
+        "M7-W16",
+        "M7-W17",
+        "M7-W20",
+        "M7-W25"
+      ],
+      "policy_ids": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "source_ids": [
+        "S02",
+        "S09",
+        "S10"
+      ],
+      "trigger": "Rising/falling support",
+      "prerequisites": [
+        "Targets",
+        "perfusion",
+        "cause/source treatment",
+        "actual doses",
+        "local profile"
+      ],
+      "decision": "Escalating needs prompt cause/measurement/access review and timely senior help. Weaning sequence/limits are profile-specific; no timer-based stop or routine oral-midodrine rescue.",
+      "withholding_reason": "WEAN_OR_ESCALATION_PROFILE",
+      "supported_scenario": "Stable response supports a clinician-owned reassessment.",
+      "adverse_scenario": "MAP briefly at target cannot automatically discontinue therapy.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R055",
+      "version": "0.1-proposed",
+      "title": "Echo scope and attribution",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "Shock imaging review",
+      "prerequisites": [
+        "Actual images/report",
+        "operator",
+        "quality",
+        "view",
+        "time"
+      ],
+      "decision": "Echo findings support clinician phenotyping; incomplete view is not normal structure; no autonomous tamponade/PE/ACS diagnosis from isolated finding.",
+      "withholding_reason": "ECHO_SCOPE_INCOMPLETE",
+      "supported_scenario": "Clinician-reviewed high-quality findings inform phenotype.",
+      "adverse_scenario": "Unavailable RV view cannot be recorded normal RV.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R056",
+      "version": "0.1-proposed",
+      "title": "LVOT and derived flow",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "Echo SV/CO",
+      "prerequisites": [
+        "Diameter",
+        "VTI",
+        "units",
+        "beat selection",
+        "Doppler/HR timing"
+      ],
+      "decision": "Use exact approved method; diameter error is squared, serial VTI requires comparable view/position/loading. EF is not CO or preload responsiveness.",
+      "withholding_reason": "ECHO_FLOW_INPUT_INVALID",
+      "supported_scenario": "Coherent measured LVOT/VTI gives labeled method-limited calculation.",
+      "adverse_scenario": "High EF alone cannot prove adequate cardiac output.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R057",
+      "version": "0.1-proposed",
+      "title": "PAC/RHC measurement",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "Advanced pressure/flow",
+      "prerequisites": [
+        "Correct compartment",
+        "waveform",
+        "respiratory phase",
+        "zero",
+        "method",
+        "trained assessment"
+      ],
+      "decision": "PAWP is not automatically LVEDP or preload need; wedge handling and balloon safety stay trained procedure. Invasive monitoring is selective, not a universal outcome guarantee.",
+      "withholding_reason": "INVASIVE_MEASUREMENT_UNCERTAIN",
+      "supported_scenario": "Verified source pressures support qualified phenotype review.",
+      "adverse_scenario": "An unconfirmed wedge waveform cannot label high LV filling pressure.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R058",
+      "version": "0.1-proposed",
+      "title": "Fick/thermodilution limits",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "CO selection",
+      "prerequisites": [
+        "Measured/assumed VO2",
+        "replicates",
+        "shunt/TR",
+        "ventilation",
+        "support"
+      ],
+      "decision": "Keep methods and uncertainty separate; source-calculated CO not automatically comparable to echo/pulse-contour values. Missing VO2 blocks computed Fick output.",
+      "withholding_reason": "FLOW_METHOD_UNSUITABLE",
+      "supported_scenario": "Coherent supported method yields its own source output.",
+      "adverse_scenario": "Thermodilution during incompatible extracorporeal flow cannot become verified total systemic CO.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R059",
+      "version": "0.1-proposed",
+      "title": "RV and PH review",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "RV/congestion/PH concern",
+      "prerequisites": [
+        "RV findings",
+        "oxygenation/ventilation",
+        "preload/congestion",
+        "perfusion",
+        "specialist"
+      ],
+      "decision": "Use dedicated right-heart pathway. More fluid or inotrope is not automatic; severe PH/RV failure may invalidate generic indices and targets.",
+      "withholding_reason": "RV_PROFILE_REQUIRED",
+      "supported_scenario": "Owned RV assessment can guide specialist review.",
+      "adverse_scenario": "A high CVP cannot automatically become a diuretic or fluid order.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R060",
+      "version": "0.1-proposed",
+      "title": "Obstructive and mechanical causes",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "Suspected PE/tamponade/tension/acute valve/LVOTO",
+      "prerequisites": [
+        "Bedside assessment",
+        "available echo/ECG",
+        "urgency",
+        "specialty"
+      ],
+      "decision": "Urgent local cause-directed pathway; generic fluids/pressor advice must not delay definitive assessment/intervention. Dynamic LVOTO needs specific review before inotrope escalation.",
+      "withholding_reason": "CAUSE_DIRECTED_ESCALATION",
+      "supported_scenario": "Critical source finding routes immediate specialist evaluation.",
+      "adverse_scenario": "IVC dilation alone cannot confirm tamponade or authorize drainage.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R061",
+      "version": "0.1-proposed",
+      "title": "ACS/cardiogenic shock",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "Cardiac cause/deterioration",
+      "prerequisites": [
+        "Clinical/ECG/echo",
+        "SCAI trajectory",
+        "cause",
+        "team resources"
+      ],
+      "decision": "Prioritize urgent shock-team/cardiology assessment and indicated source treatment; no software staging requirement before emergency contact.",
+      "withholding_reason": "CARDIOGENIC_TEAM_REVIEW",
+      "supported_scenario": "Rising support and poor perfusion trigger owned escalation.",
+      "adverse_scenario": "Normal single lactate cannot suppress cardiogenic deterioration.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R062",
+      "version": "0.1-proposed",
+      "title": "SCAI framework scope",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "Stage review",
+      "prerequisites": [
+        "Approved version",
+        "criteria",
+        "modifiers",
+        "trajectory",
+        "clinical confirmation"
+      ],
+      "decision": "Stage, phenotype/etiology and other risk modifiers remain separate; missing criteria stays incomplete. No stage alone mandates a device or predicts inevitable death.",
+      "withholding_reason": "SCAI_CRITERIA_INCOMPLETE",
+      "supported_scenario": "Serial stages retain previous assessments and reasons.",
+      "adverse_scenario": "One lactate cannot assign definitive SCAI stage.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R063",
+      "version": "0.1-proposed",
+      "title": "MCS evidence and selection",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "Mechanical support consideration",
+      "prerequisites": [
+        "Phenotype",
+        "candidate exclusions",
+        "center expertise",
+        "risks",
+        "specialist"
+      ],
+      "decision": "ECLS-SHOCK and DanGer-Shock differ in devices/populations/outcomes. No all-shock automatic VA-ECMO/Impella recommendation or generic device start/control.",
+      "withholding_reason": "MCS_SPECIALIST_ONLY",
+      "supported_scenario": "Specialist candidacy review records benefit/bleeding/vascular tradeoffs.",
+      "adverse_scenario": "Selected-trial benefit cannot be generalized to every shock/arrest patient.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R064",
+      "version": "0.1-proposed",
+      "title": "Post-arrest and neuro targets",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "Arrest/TBI/spinal injury",
+      "prerequisites": [
+        "Cause",
+        "neurologic targets",
+        "ICP/CPP context",
+        "local specialty profile"
+      ],
+      "decision": "Do not apply generic septic MAP range. If computing CPP, exact reference levels/time/ICP method and approved arithmetic required; no broad neurologic prognosis from hemodynamics.",
+      "withholding_reason": "SPECIAL_TARGET_REQUIRED",
+      "supported_scenario": "Documented specialist targets take precedence with explicit rationale.",
+      "adverse_scenario": "MAP65 automatically replacing CPP-based goals is blocked.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R065",
+      "version": "0.1-proposed",
+      "title": "Perioperative/transplant",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "Post-op/reperfusion/transplant instability",
+      "prerequisites": [
+        "Timing",
+        "bleeding/graft/function",
+        "baseline",
+        "specialty"
+      ],
+      "decision": "Use cause-specific review for hemorrhage, vasoplegia, graft dysfunction, cardiac/vascular issues. Steroid/immune/graft management remains relevant domain ownership.",
+      "withholding_reason": "TRANSPLANT_PROFILE_REQUIRED",
+      "supported_scenario": "Exact operative context routes transplant/anesthesia review.",
+      "adverse_scenario": "Liver-transplant lactate alone cannot mandate fluid or diagnose graft failure.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R066",
+      "version": "0.1-proposed",
+      "title": "Unsupported populations",
+      "category": "echo_flow_and_special_shock",
+      "workflow_ids": [
+        "M7-W06",
+        "M7-W08",
+        "M7-W18",
+        "M7-W19",
+        "M7-W21",
+        "M7-W22"
+      ],
+      "policy_ids": [
+        "P03",
+        "P08",
+        "P09"
+      ],
+      "source_ids": [
+        "S01",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "trigger": "Pregnancy/pediatric/burns/congenital special cases",
+      "prerequisites": [
+        "Exact validated population/profile"
+      ],
+      "decision": "Display source evidence and route specialist review; adult generic target/dose/test thresholds remain disabled where not validated.",
+      "withholding_reason": "POPULATION_UNSUPPORTED",
+      "supported_scenario": "Supported adult scope can proceed while pediatric advice is withheld.",
+      "adverse_scenario": "Age missing cannot default adult dosing.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R067",
+      "version": "0.1-proposed",
+      "title": "Four-question bedside view",
+      "category": "clinical_product_and_governance",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W20",
+        "M7-W23",
+        "M7-W24",
+        "M7-W25",
+        "M7-W26",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Open patient screen",
+      "prerequisites": [
+        "Reliable source context",
+        "data freshness",
+        "patient identity"
+      ],
+      "decision": "Primary view answers pressure/target, perfusion, likely problem and next review. Deep evidence/calculations stay expandable; no required full-field form.",
+      "withholding_reason": "REVIEW_INFORMATION_MISSING",
+      "supported_scenario": "Relevant cards use observed values and honest unknowns.",
+      "adverse_scenario": "Large inventory cannot become mandatory bedside data entry.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R068",
+      "version": "0.1-proposed",
+      "title": "No false reassurance",
+      "category": "clinical_product_and_governance",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W20",
+        "M7-W23",
+        "M7-W24",
+        "M7-W25",
+        "M7-W26",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Summary/status",
+      "prerequisites": [
+        "Complete assessed scope",
+        "quality",
+        "missingness"
+      ],
+      "decision": "No blanket green stable/safe/resolved badge from MAP alone, missing feed or accepted review. Display source, age and uncertainty beside relevant result.",
+      "withholding_reason": "SAFETY_SCOPE_INCOMPLETE",
+      "supported_scenario": "Current pressure with uncertain perfusion is plainly distinct.",
+      "adverse_scenario": "No data cannot appear normal.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R069",
+      "version": "0.1-proposed",
+      "title": "Explain without inventing",
+      "category": "clinical_product_and_governance",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W20",
+        "M7-W23",
+        "M7-W24",
+        "M7-W25",
+        "M7-W26",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Optional narrative",
+      "prerequisites": [
+        "Structured evaluated output",
+        "exact sources",
+        "fidelity check"
+      ],
+      "decision": "Generated prose may explain supported outputs only; no new thresholds/doses/diagnoses or clinical tools from free text. Suppress failed narrative, retain structured view.",
+      "withholding_reason": "EXPLANATION_UNGROUNDED",
+      "supported_scenario": "Source-linked explanation matches exact structured result.",
+      "adverse_scenario": "Report text saying ignore policies cannot change authority.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R070",
+      "version": "0.1-proposed",
+      "title": "Alert scope and ownership",
+      "category": "clinical_product_and_governance",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W20",
+        "M7-W23",
+        "M7-W24",
+        "M7-W25",
+        "M7-W26",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Notify/ack",
+      "prerequisites": [
+        "Approved severity",
+        "routing",
+        "roster",
+        "revision/attempt"
+      ],
+      "decision": "Deduplicate within clinical scope while retaining corrected/new deterioration. Delivery/read is not review/action/resolution. Failed routing uses established escalation.",
+      "withholding_reason": "COMMUNICATION_UNRESOLVED",
+      "supported_scenario": "Critical correction creates new acknowledgment/review duty.",
+      "adverse_scenario": "Old acknowledgment cannot cover a corrected result.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R071",
+      "version": "0.1-proposed",
+      "title": "Handover continuity",
+      "category": "clinical_product_and_governance",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W20",
+        "M7-W23",
+        "M7-W24",
+        "M7-W25",
+        "M7-W26",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Transfer/transport",
+      "prerequisites": [
+        "Receiving acceptance",
+        "active goals/delivery/access",
+        "pending risks"
+      ],
+      "decision": "Retain accountable owner until acceptance, reconcile actual concentration/dosing weight/pumps/source gaps and unresolved commands. Display transport capabilities explicitly.",
+      "withholding_reason": "HANDOFF_NOT_ACCEPTED",
+      "supported_scenario": "Receiving team accepts exact current plan/tasks.",
+      "adverse_scenario": "Dispatch alone cannot close pending critical result.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R072",
+      "version": "0.1-proposed",
+      "title": "What-if isolation",
+      "category": "clinical_product_and_governance",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W20",
+        "M7-W23",
+        "M7-W24",
+        "M7-W25",
+        "M7-W26",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Calculator input edit/save",
+      "prerequisites": [
+        "Original snapshot",
+        "scenario label",
+        "typed changed values"
+      ],
+      "decision": "Hypothetical inputs/results never modify chart facts, target, saved clinical review or medication; clinical adoption requires separate verification/review.",
+      "withholding_reason": "HYPOTHETICAL_ONLY",
+      "supported_scenario": "Scenario can be saved with original source values intact.",
+      "adverse_scenario": "Changing weight in scenario cannot alter running infusion.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R073",
+      "version": "0.1-proposed",
+      "title": "Governed content",
+      "category": "clinical_product_and_governance",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W20",
+        "M7-W23",
+        "M7-W24",
+        "M7-W25",
+        "M7-W26",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Profile draft/activate",
+      "prerequisites": [
+        "Sealed payload",
+        "separate approval",
+        "rights",
+        "current validation"
+      ],
+      "decision": "Draft unknowns representable; active clinical use gated by capability/profile/population/environment, revocation invalidates dependent new advice.",
+      "withholding_reason": "PROFILE_NOT_ACTIVE",
+      "supported_scenario": "Signed-off scoped profile may enter approved deployment mode.",
+      "adverse_scenario": "Publisher authority or content digest alone cannot activate titration.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R074",
+      "version": "0.1-proposed",
+      "title": "Downtime and source-critical fallback",
+      "category": "clinical_product_and_governance",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W20",
+        "M7-W23",
+        "M7-W24",
+        "M7-W25",
+        "M7-W26",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Feed/service failure",
+      "prerequisites": [
+        "Coverage",
+        "local escalation",
+        "raw source flags"
+      ],
+      "decision": "Withhold derived live claims affected by gaps; existing bedside monitor/lab emergency pathways remain available. Backfill idempotently without delayed-current alerts presented as new physiology.",
+      "withholding_reason": "SOURCE_DEGRADED",
+      "supported_scenario": "Visible delayed source and owned fallback support continuity.",
+      "adverse_scenario": "Heartbeat cannot restore a live badge despite missing samples.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R075",
+      "version": "0.1-proposed",
+      "title": "Compatibility and clinical activation",
+      "category": "clinical_product_and_governance",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W20",
+        "M7-W23",
+        "M7-W24",
+        "M7-W25",
+        "M7-W26",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Migration/release",
+      "prerequisites": [
+        "Old payloads/receipts",
+        "explicit versions",
+        "independent evidence"
+      ],
+      "decision": "Preserve legacy synthetic P/L/V eligibility and retained receipt semantics; clinical extension has separate permissions. Do not open existing gate or rename timing release as treatment approval.",
+      "withholding_reason": "CLINICAL_ACTIVATION_NOT_ESTABLISHED",
+      "supported_scenario": "Old receipts recover unchanged, new unsupported cases withhold.",
+      "adverse_scenario": "New fact invalidation policy cannot rewrite old selected-event-only timing statements.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R076",
+      "version": "0.1-proposed",
+      "title": "Privacy and security",
+      "category": "clinical_product_and_governance",
+      "workflow_ids": [
+        "M7-W01",
+        "M7-W20",
+        "M7-W23",
+        "M7-W24",
+        "M7-W25",
+        "M7-W26",
+        "M7-W27"
+      ],
+      "policy_ids": [
+        "P01",
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Read/write/export",
+      "prerequisites": [
+        "Scoped authorization",
+        "purpose",
+        "minimum data",
+        "protected originals"
+      ],
+      "decision": "Enforce patient/tenant and operations/knowledge scopes; no PHI/command secrets in ordinary logs or external AI without approved data pathway.",
+      "withholding_reason": "ACCESS_DENIED",
+      "supported_scenario": "Authorized source review has bounded audit.",
+      "adverse_scenario": "Foreign patient errors cannot disclose identifiers.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R077",
+      "version": "0.1-proposed",
+      "title": "Dimensional and denominator validity",
+      "category": "numeric_and_signal_controls",
+      "workflow_ids": [
+        "M7-W03",
+        "M7-W04",
+        "M7-W06",
+        "M7-W08",
+        "M7-W10",
+        "M7-W13",
+        "M7-W14",
+        "M7-W22",
+        "M7-W23"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03",
+        "P10"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Any calculation",
+      "prerequisites": [
+        "Exact finite quantities",
+        "approved conversion",
+        "nonzero valid denominator"
+      ],
+      "decision": "Reject bool/NaN/infinity/overflow, unresolved units, incompatible dimensions and invalid denominators. Negative pressures may be real observations; do not globally discard them as invalid physiology.",
+      "withholding_reason": "CALCULATION_INPUT_INVALID",
+      "supported_scenario": "Approved positive denominator and coherent units allow arithmetic.",
+      "adverse_scenario": "Zero CO cannot yield a finite SVR or falsely reassuring normal result.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R078",
+      "version": "0.1-proposed",
+      "title": "Calculation time coherence",
+      "category": "numeric_and_signal_controls",
+      "workflow_ids": [
+        "M7-W03",
+        "M7-W04",
+        "M7-W06",
+        "M7-W08",
+        "M7-W10",
+        "M7-W13",
+        "M7-W14",
+        "M7-W22",
+        "M7-W23"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03",
+        "P10"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Multi-input formula",
+      "prerequisites": [
+        "Method-specific alignment",
+        "actual time/quality",
+        "clinical stability"
+      ],
+      "decision": "No arbitrary nearest-neighbor/time window; profile defines allowable alignment and instability exclusions. Different-time measurements can remain visible while formula withheld.",
+      "withholding_reason": "INPUTS_NOT_COHERENT",
+      "supported_scenario": "Synchronized profile-eligible inputs produce labeled result.",
+      "adverse_scenario": "MAP/CO/CVP from unrelated phases cannot produce current SVR.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R079",
+      "version": "0.1-proposed",
+      "title": "Indexing and body-size methods",
+      "category": "numeric_and_signal_controls",
+      "workflow_ids": [
+        "M7-W03",
+        "M7-W04",
+        "M7-W06",
+        "M7-W08",
+        "M7-W10",
+        "M7-W13",
+        "M7-W14",
+        "M7-W22",
+        "M7-W23"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03",
+        "P10"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Indexed value display",
+      "prerequisites": [
+        "Exact absolute value",
+        "BSA/PBW method",
+        "weight/height source"
+      ],
+      "decision": "Keep CO/CI, SV/SVI, EVLW/EVLWI and denominator version distinct. No unit relabeling or universal body-size convention.",
+      "withholding_reason": "INDEXING_METHOD_UNRESOLVED",
+      "supported_scenario": "Known BSA allows labeled CI.",
+      "adverse_scenario": "CO cannot be labeled CI because units were edited.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R080",
+      "version": "0.1-proposed",
+      "title": "Pressure-derived arithmetic",
+      "category": "numeric_and_signal_controls",
+      "workflow_ids": [
+        "M7-W03",
+        "M7-W04",
+        "M7-W06",
+        "M7-W08",
+        "M7-W10",
+        "M7-W13",
+        "M7-W14",
+        "M7-W22",
+        "M7-W23"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03",
+        "P10"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "MAP/PP/shock index/CPP",
+      "prerequisites": [
+        "Method-specific source pressures",
+        "HR/ICP",
+        "exact units"
+      ],
+      "decision": "Expose approximation and condition limits; shock index is not a standalone shock diagnosis, CPP needs a validated reference-level convention.",
+      "withholding_reason": "DERIVED_PRESSURE_LIMIT",
+      "supported_scenario": "Eligible educational inputs yield separately labeled derived values.",
+      "adverse_scenario": "Calculated MAP cannot overwrite measured MAP.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R081",
+      "version": "0.1-proposed",
+      "title": "Resistance and power calculations",
+      "category": "numeric_and_signal_controls",
+      "workflow_ids": [
+        "M7-W03",
+        "M7-W04",
+        "M7-W06",
+        "M7-W08",
+        "M7-W10",
+        "M7-W13",
+        "M7-W14",
+        "M7-W22",
+        "M7-W23"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03",
+        "P10"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "SVR/PVR/CPO/PAPi",
+      "prerequisites": [
+        "Aligned compartment-correct pressures",
+        "CO",
+        "units",
+        "approved formula"
+      ],
+      "decision": "Output only method-limited values; PAPi with zero/nonpositive denominator or unsupported support state not classified. No universal clinical cutoffs inferred.",
+      "withholding_reason": "FLOW_PRESSURE_INPUT_INVALID",
+      "supported_scenario": "Coherent pressures and CO yield SVR/PVR without treatment order.",
+      "adverse_scenario": "mPAP substituted for MAP cannot produce systemic resistance.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R082",
+      "version": "0.1-proposed",
+      "title": "Percent versus fraction",
+      "category": "numeric_and_signal_controls",
+      "workflow_ids": [
+        "M7-W03",
+        "M7-W04",
+        "M7-W06",
+        "M7-W08",
+        "M7-W10",
+        "M7-W13",
+        "M7-W14",
+        "M7-W22",
+        "M7-W23"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03",
+        "P10"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Saturation/variation arithmetic",
+      "prerequisites": [
+        "Explicit unit code",
+        "conversion profile"
+      ],
+      "decision": "Percent/fraction conversion only explicit and traceable; verify scale and limits before oxygen/dynamic calculations.",
+      "withholding_reason": "SCALE_MISMATCH",
+      "supported_scenario": "98 percent becomes 0.98 only under exact supported conversion.",
+      "adverse_scenario": "Saturation 98 used as a fraction is rejected.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R083",
+      "version": "0.1-proposed",
+      "title": "Waveform algorithm validation",
+      "category": "numeric_and_signal_controls",
+      "workflow_ids": [
+        "M7-W03",
+        "M7-W04",
+        "M7-W06",
+        "M7-W08",
+        "M7-W10",
+        "M7-W13",
+        "M7-W14",
+        "M7-W22",
+        "M7-W23"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03",
+        "P10"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Derived beat/trend/hypotension burden",
+      "prerequisites": [
+        "Actual samples",
+        "integrity",
+        "sampling rate",
+        "filter/algorithm version",
+        "gaps"
+      ],
+      "decision": "Clinical waveform calculations require independent installed-device validation, gap/arrhythmia/artifact handling and interval definitions; source manifest alone insufficient.",
+      "withholding_reason": "SIGNAL_ALGORITHM_UNVALIDATED",
+      "supported_scenario": "Validated raw samples support a specified bounded derived output.",
+      "adverse_scenario": "Sample-rate metadata alone cannot manufacture time below target.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    },
+    {
+      "id": "M7-R084",
+      "version": "0.1-proposed",
+      "title": "Independent numerical oracles",
+      "category": "numeric_and_signal_controls",
+      "workflow_ids": [
+        "M7-W03",
+        "M7-W04",
+        "M7-W06",
+        "M7-W08",
+        "M7-W10",
+        "M7-W13",
+        "M7-W14",
+        "M7-W22",
+        "M7-W23"
+      ],
+      "policy_ids": [
+        "P02",
+        "P03",
+        "P10"
+      ],
+      "source_ids": [
+        "ENGINEERING"
+      ],
+      "trigger": "Numeric profile approval",
+      "prerequisites": [
+        "Separate expected values",
+        "boundary/unit/confounder cases",
+        "clinical owner"
+      ],
+      "decision": "List of formulas or generated test labels is not validation. Every activated method/drug profile needs independent exact/tolerance oracles and executed evidence.",
+      "withholding_reason": "ORACLE_OR_EXECUTION_MISSING",
+      "supported_scenario": "Independently verified profile arithmetic can enter controlled validation.",
+      "adverse_scenario": "Rule implementation cannot generate its own claimed independent expected answer.",
+      "allowed_states": [
+        "met",
+        "not_met",
+        "not_evaluable",
+        "not_applicable",
+        "invalidated"
+      ],
+      "failure_behavior": "Retain authorized source evidence and urgency; withhold only unsupported derived claim/action, expose reason and route owned clinical review. No automated medication/fluid/device change.",
+      "deployment_state": "design_only_disabled"
+    }
+  ]
+}

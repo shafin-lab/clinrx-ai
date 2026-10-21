@@ -1,0 +1,3636 @@
+{
+  "status": "All application/clinical tests NOT EXECUTED; outline and concrete maturity distinguished",
+  "tests": [
+    {
+      "id": "M7-T001A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R001"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Correct verified patient evidence is admitted to declared scope.",
+      "expected": "Outline intent only: Correct verified patient evidence is admitted to declared scope.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G001",
+        "M7-G002"
+      ]
+    },
+    {
+      "id": "M7-T001B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R001"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Same bed after patient transfer never establishes source ownership.",
+      "expected": "Outline intent only: Same bed after patient transfer never establishes source ownership.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G001",
+        "M7-G002"
+      ]
+    },
+    {
+      "id": "M7-T002A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R002"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Exact evidence pins permit further review.",
+      "expected": "Outline intent only: Exact evidence pins permit further review.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G004"
+      ]
+    },
+    {
+      "id": "M7-T002B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R002"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Changed source bytes under same revision cannot replace prior evidence.",
+      "expected": "Outline intent only: Changed source bytes under same revision cannot replace prior evidence.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G004"
+      ]
+    },
+    {
+      "id": "M7-T003A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R003"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Late-received earlier-collected sample stays out of earlier actual snapshot.",
+      "expected": "Outline intent only: Late-received earlier-collected sample stays out of earlier actual snapshot.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G005",
+        "M7-G006"
+      ]
+    },
+    {
+      "id": "M7-T003B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R003"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Report time cannot backdate ClinRx knowledge.",
+      "expected": "Outline intent only: Report time cannot backdate ClinRx knowledge.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G005",
+        "M7-G006"
+      ]
+    },
+    {
+      "id": "M7-T004A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R004"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Exact supported ISO lexeme and trustworthy clock can order events.",
+      "expected": "Outline intent only: Exact supported ISO lexeme and trustworthy clock can order events.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G007",
+        "M7-G008"
+      ]
+    },
+    {
+      "id": "M7-T004B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R004"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Distinct submicrosecond instants cannot become simultaneous.",
+      "expected": "Outline intent only: Distinct submicrosecond instants cannot become simultaneous.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G007",
+        "M7-G008"
+      ]
+    },
+    {
+      "id": "M7-T005A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R005"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Offset-equivalent exact instants compare equal.",
+      "expected": "Outline intent only: Offset-equivalent exact instants compare equal.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G009",
+        "M7-G010"
+      ]
+    },
+    {
+      "id": "M7-T005B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R005"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Bounded overlap cannot prove a before/after relationship.",
+      "expected": "Outline intent only: Bounded overlap cannot prove a before/after relationship.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G009",
+        "M7-G010"
+      ]
+    },
+    {
+      "id": "M7-T006A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R006"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "New severe arrhythmia marks a fluid-test/pressor proposal stale.",
+      "expected": "Outline intent only: New severe arrhythmia marks a fluid-test/pressor proposal stale.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G011"
+      ]
+    },
+    {
+      "id": "M7-T006B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R006"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "All old digests matching does not prove current clinical eligibility.",
+      "expected": "Outline intent only: All old digests matching does not prove current clinical eligibility.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G011"
+      ]
+    },
+    {
+      "id": "M7-T007A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R007"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Same-value calibration successor still changes consumed evidence.",
+      "expected": "Outline intent only: Same-value calibration successor still changes consumed evidence.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G012"
+      ]
+    },
+    {
+      "id": "M7-T007B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R007"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Withdrawn pressure cannot disappear from audit history.",
+      "expected": "Outline intent only: Withdrawn pressure cannot disappear from audit history.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G012"
+      ]
+    },
+    {
+      "id": "M7-T008A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R008"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Actual samples display with gaps.",
+      "expected": "Outline intent only: Actual samples display with gaps.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G013"
+      ]
+    },
+    {
+      "id": "M7-T008B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R008"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Two cuff readings cannot prove minutes continuously below target.",
+      "expected": "Outline intent only: Two cuff readings cannot prove minutes continuously below target.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G013"
+      ]
+    },
+    {
+      "id": "M7-T009A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R009"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Within-cap complete scoped assembly succeeds.",
+      "expected": "Outline intent only: Within-cap complete scoped assembly succeeds.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G014"
+      ]
+    },
+    {
+      "id": "M7-T009B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R009"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Large graph cap exhaustion cannot produce an all-clear partial view.",
+      "expected": "Outline intent only: Large graph cap exhaustion cannot produce an all-clear partial view.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G014"
+      ]
+    },
+    {
+      "id": "M7-T010A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R010"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Committed exact receipt recovers without new clinical evaluation.",
+      "expected": "Outline intent only: Committed exact receipt recovers without new clinical evaluation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G015",
+        "M7-G016"
+      ]
+    },
+    {
+      "id": "M7-T010B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R010"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Old worker can still commit after empty lookup, so resubmission is withheld.",
+      "expected": "Outline intent only: Old worker can still commit after empty lookup, so resubmission is withheld.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G015",
+        "M7-G016"
+      ]
+    },
+    {
+      "id": "M7-T011A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R011"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "A verified systemic MAP can be compared to its target.",
+      "expected": "Outline intent only: A verified systemic MAP can be compared to its target.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G017"
+      ]
+    },
+    {
+      "id": "M7-T011B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R011"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "PA mean cannot substitute systemic MAP.",
+      "expected": "Outline intent only: PA mean cannot substitute systemic MAP.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G017"
+      ]
+    },
+    {
+      "id": "M7-T012A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R012"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Applicable adequate source checks allow supported review.",
+      "expected": "Outline intent only: Applicable adequate source checks allow supported review.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G018",
+        "M7-G019"
+      ]
+    },
+    {
+      "id": "M7-T012B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R012"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "A recent unrelated zeroing event does not validate an older acquisition.",
+      "expected": "Outline intent only: A recent unrelated zeroing event does not validate an older acquisition.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G018",
+        "M7-G019"
+      ]
+    },
+    {
+      "id": "M7-T013A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R013"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Appropriate documented cuff and coherent repeats support interpretation.",
+      "expected": "Outline intent only: Appropriate documented cuff and coherent repeats support interpretation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G019"
+      ]
+    },
+    {
+      "id": "M7-T013B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R013"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Motion/incorrect cuff cannot generate confident target-achieved badge.",
+      "expected": "Outline intent only: Motion/incorrect cuff cannot generate confident target-achieved badge.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G019"
+      ]
+    },
+    {
+      "id": "M7-T014A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R014"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Confirmed valid waveform can support approved averaging.",
+      "expected": "Outline intent only: Confirmed valid waveform can support approved averaging.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G020"
+      ]
+    },
+    {
+      "id": "M7-T014B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R014"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Overdamped low systolic value cannot silently trigger dose escalation.",
+      "expected": "Outline intent only: Overdamped low systolic value cannot silently trigger dose escalation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G020"
+      ]
+    },
+    {
+      "id": "M7-T015A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R015"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Reconciled discrepancy has explicit clinician-selected source.",
+      "expected": "Outline intent only: Reconciled discrepancy has explicit clinician-selected source.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G020"
+      ]
+    },
+    {
+      "id": "M7-T015B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R015"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Conflicting unreliable readings cannot be hidden by selecting favorable MAP.",
+      "expected": "Outline intent only: Conflicting unreliable readings cannot be hidden by selecting favorable MAP.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G020"
+      ]
+    },
+    {
+      "id": "M7-T016A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R016"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Approximate and source MAP are visibly distinct.",
+      "expected": "Outline intent only: Approximate and source MAP are visibly distinct.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G021"
+      ]
+    },
+    {
+      "id": "M7-T016B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R016"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Approximate arithmetic alone cannot validate a suspect waveform.",
+      "expected": "Outline intent only: Approximate arithmetic alone cannot validate a suspect waveform.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G021"
+      ]
+    },
+    {
+      "id": "M7-T017A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R017"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Current patient MAP range gives bounded status.",
+      "expected": "Outline intent only: Current patient MAP range gives bounded status.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G022",
+        "M7-G060"
+      ]
+    },
+    {
+      "id": "M7-T017B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R017"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Universal MAP 65 cannot silently replace TBI/bleeding/RV goals.",
+      "expected": "Outline intent only: Universal MAP 65 cannot silently replace TBI/bleeding/RV goals.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G022",
+        "M7-G060"
+      ]
+    },
+    {
+      "id": "M7-T018A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R018"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Adequate assessed pressure with worsening CRT still raises perfusion review.",
+      "expected": "Outline intent only: Adequate assessed pressure with worsening CRT still raises perfusion review.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G023"
+      ]
+    },
+    {
+      "id": "M7-T018B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R018"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Normal MAP cannot automatically resolve shock.",
+      "expected": "Outline intent only: Normal MAP cannot automatically resolve shock.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G023"
+      ]
+    },
+    {
+      "id": "M7-T019A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R019"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Explicit approved conversion carries original unit/method.",
+      "expected": "Outline intent only: Explicit approved conversion carries original unit/method.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G024"
+      ]
+    },
+    {
+      "id": "M7-T019B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R019"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "kPa treated as mmHg without conversion is rejected.",
+      "expected": "Outline intent only: kPa treated as mmHg without conversion is rejected.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G024"
+      ]
+    },
+    {
+      "id": "M7-T020A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R020"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Verified installed parameter mapping supports scoped display.",
+      "expected": "Outline intent only: Verified installed parameter mapping supports scoped display.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G025"
+      ]
+    },
+    {
+      "id": "M7-T020B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R020"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "A HemoSphere label alone cannot assert SVV/HPI availability.",
+      "expected": "Outline intent only: A HemoSphere label alone cannot assert SVV/HPI availability.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G025"
+      ]
+    },
+    {
+      "id": "M7-T021A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R021"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Coherent bedside evidence supports an owned concern.",
+      "expected": "Outline intent only: Coherent bedside evidence supports an owned concern.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T021B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R021"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "One normal marker cannot erase other deterioration.",
+      "expected": "Outline intent only: One normal marker cannot erase other deterioration.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T022A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R022"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Documented method supports trend and adjunctive review.",
+      "expected": "Outline intent only: Documented method supports trend and adjunctive review.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G026"
+      ]
+    },
+    {
+      "id": "M7-T022B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R022"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Unmeasurable dark/cold/poorly illuminated skin cannot be recorded as normal CRT.",
+      "expected": "Outline intent only: Unmeasurable dark/cold/poorly illuminated skin cannot be recorded as normal CRT.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G026"
+      ]
+    },
+    {
+      "id": "M7-T023A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R023"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Comparable final source values support declared trend.",
+      "expected": "Outline intent only: Comparable final source values support declared trend.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G027"
+      ]
+    },
+    {
+      "id": "M7-T023B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R023"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Late report cannot imply a late physiologic rise.",
+      "expected": "Outline intent only: Late report cannot imply a late physiologic rise.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G027"
+      ]
+    },
+    {
+      "id": "M7-T024A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R024"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Raised lactate with epinephrine/liver dysfunction remains contextualized.",
+      "expected": "Outline intent only: Raised lactate with epinephrine/liver dysfunction remains contextualized.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G028"
+      ]
+    },
+    {
+      "id": "M7-T024B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R024"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Elevated lactate alone cannot order another bolus.",
+      "expected": "Outline intent only: Elevated lactate alone cannot order another bolus.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G028"
+      ]
+    },
+    {
+      "id": "M7-T025A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R025"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "4 to 3 mmol/L is a 25 percent decrement only.",
+      "expected": "Outline intent only: 4 to 3 mmol/L is a 25 percent decrement only.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G029",
+        "M7-G030"
+      ]
+    },
+    {
+      "id": "M7-T025B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R025"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Zero baseline cannot produce infinite clearance.",
+      "expected": "Outline intent only: Zero baseline cannot produce infinite clearance.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G029",
+        "M7-G030"
+      ]
+    },
+    {
+      "id": "M7-T026A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R026"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Confirmed mixed-venous sample supports its own interpretation.",
+      "expected": "Outline intent only: Confirmed mixed-venous sample supports its own interpretation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G031"
+      ]
+    },
+    {
+      "id": "M7-T026B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R026"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Peripheral venous saturation cannot fill a missing SvO2.",
+      "expected": "Outline intent only: Peripheral venous saturation cannot fill a missing SvO2.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G031"
+      ]
+    },
+    {
+      "id": "M7-T027A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R027"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Coherent inputs generate labeled educational/profile calculation.",
+      "expected": "Outline intent only: Coherent inputs generate labeled educational/profile calculation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G032",
+        "M7-G058"
+      ]
+    },
+    {
+      "id": "M7-T027B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R027"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "97 percent as fraction 97 cannot produce a valid DO2.",
+      "expected": "Outline intent only: 97 percent as fraction 97 cannot produce a valid DO2.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G032",
+        "M7-G058"
+      ]
+    },
+    {
+      "id": "M7-T028A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R028"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Comparable samples permit labeled gap.",
+      "expected": "Outline intent only: Comparable samples permit labeled gap.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T028B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R028"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Unpaired delayed samples cannot diagnose inadequate flow.",
+      "expected": "Outline intent only: Unpaired delayed samples cannot diagnose inadequate flow.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T029A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R029"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Concurrent distributive and LV components can be retained.",
+      "expected": "Outline intent only: Concurrent distributive and LV components can be retained.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G033"
+      ]
+    },
+    {
+      "id": "M7-T029B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R029"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "One low SVR reading cannot confirm septic shock.",
+      "expected": "Outline intent only: One low SVR reading cannot confirm septic shock.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G033"
+      ]
+    },
+    {
+      "id": "M7-T030A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R030"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Critical preliminary evidence routes independently of final-only calculation.",
+      "expected": "Outline intent only: Critical preliminary evidence routes independently of final-only calculation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G034",
+        "M7-G068"
+      ]
+    },
+    {
+      "id": "M7-T030B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R030"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Incomplete data cannot suppress existing emergency pathway.",
+      "expected": "Outline intent only: Incomplete data cannot suppress existing emergency pathway.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G034",
+        "M7-G068"
+      ]
+    },
+    {
+      "id": "M7-T031A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R031"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Responsive but congested patient receives owned clinical review.",
+      "expected": "Outline intent only: Responsive but congested patient receives owned clinical review.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G035"
+      ]
+    },
+    {
+      "id": "M7-T031B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R031"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Positive PLR cannot automatically authorize bolus.",
+      "expected": "Outline intent only: Positive PLR cannot automatically authorize bolus.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G035"
+      ]
+    },
+    {
+      "id": "M7-T032A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R032"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "A valid reversible test informs a clinician decision.",
+      "expected": "Outline intent only: A valid reversible test informs a clinician decision.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G036"
+      ]
+    },
+    {
+      "id": "M7-T032B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R032"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Low CVP cannot automatically prescribe fluid.",
+      "expected": "Outline intent only: Low CVP cannot automatically prescribe fluid.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G036"
+      ]
+    },
+    {
+      "id": "M7-T033A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R033"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Fully eligible configured method supports scoped result.",
+      "expected": "Outline intent only: Fully eligible configured method supports scoped result.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G037",
+        "M7-G038"
+      ]
+    },
+    {
+      "id": "M7-T033B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R033"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "PPV in AF cannot yield a standard fluid-responsive classification.",
+      "expected": "Outline intent only: PPV in AF cannot yield a standard fluid-responsive classification.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G037",
+        "M7-G038"
+      ]
+    },
+    {
+      "id": "M7-T034A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R034"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Valid flow-based reversible PLR supports profile-specific response.",
+      "expected": "Outline intent only: Valid flow-based reversible PLR supports profile-specific response.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G039"
+      ]
+    },
+    {
+      "id": "M7-T034B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R034"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Leg elevation without protocol or flow measurement is not a valid PLR result.",
+      "expected": "Outline intent only: Leg elevation without protocol or flow measurement is not a valid PLR result.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G039"
+      ]
+    },
+    {
+      "id": "M7-T035A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R035"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Eligible safe maneuver proceeds under local method.",
+      "expected": "Outline intent only: Eligible safe maneuver proceeds under local method.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G040"
+      ]
+    },
+    {
+      "id": "M7-T035B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R035"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Inability to perform PLR cannot mean no fluid responsiveness.",
+      "expected": "Outline intent only: Inability to perform PLR cannot mean no fluid responsiveness.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G040"
+      ]
+    },
+    {
+      "id": "M7-T036A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R036"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Observed valid clinician-performed test can be assessed.",
+      "expected": "Outline intent only: Observed valid clinician-performed test can be assessed.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T036B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R036"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Assisted breath during occlusion cannot silently count as valid test.",
+      "expected": "Outline intent only: Assisted breath during occlusion cannot silently count as valid test.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T037A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R037"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Completed known trial yields measured response.",
+      "expected": "Outline intent only: Completed known trial yields measured response.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G041"
+      ]
+    },
+    {
+      "id": "M7-T037B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R037"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Unstarted prescribed challenge cannot be called a negative response.",
+      "expected": "Outline intent only: Unstarted prescribed challenge cannot be called a negative response.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G041"
+      ]
+    },
+    {
+      "id": "M7-T038A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R038"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Change beyond approved uncertainty can be classified.",
+      "expected": "Outline intent only: Change beyond approved uncertainty can be classified.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G040",
+        "M7-G042"
+      ]
+    },
+    {
+      "id": "M7-T038B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R038"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Tiny VTI change within measurement error cannot become definitive responsiveness.",
+      "expected": "Outline intent only: Tiny VTI change within measurement error cannot become definitive responsiveness.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G040",
+        "M7-G042"
+      ]
+    },
+    {
+      "id": "M7-T039A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R039"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Clinician-owned plan records volume basis, exceptions and reassessment.",
+      "expected": "Outline intent only: Clinician-owned plan records volume basis, exceptions and reassessment.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T039B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R039"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Heart/RV failure or prior delivered fluid cannot be ignored to satisfy a volume counter.",
+      "expected": "Outline intent only: Heart/RV failure or prior delivered fluid cannot be ignored to satisfy a volume counter.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T040A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R040"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Review retains trial scope and rescue exceptions.",
+      "expected": "Outline intent only: Review retains trial scope and rescue exceptions.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T040B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R040"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Neutral strategy trials cannot authorize withholding all rescue fluids.",
+      "expected": "Outline intent only: Neutral strategy trials cannot authorize withholding all rescue fluids.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T041A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R041"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Approved balanced crystalloid reference includes exceptions.",
+      "expected": "Outline intent only: Approved balanced crystalloid reference includes exceptions.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T041B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R041"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "General sepsis fluid preference cannot override neurocritical protocol.",
+      "expected": "Outline intent only: General sepsis fluid preference cannot override neurocritical protocol.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T042A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R042"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Worsening oxygenation after trial prompts reassessment.",
+      "expected": "Outline intent only: Worsening oxygenation after trial prompts reassessment.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G035"
+      ]
+    },
+    {
+      "id": "M7-T042B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R042"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Fluid responsiveness cannot erase new pulmonary edema.",
+      "expected": "Outline intent only: Fluid responsiveness cannot erase new pulmonary edema.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G035"
+      ]
+    },
+    {
+      "id": "M7-T043A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R043"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Approved applicable agent profile supports a bounded review.",
+      "expected": "Outline intent only: Approved applicable agent profile supports a bounded review.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G043"
+      ]
+    },
+    {
+      "id": "M7-T043B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R043"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "A drug name alone cannot generate start/titration dose.",
+      "expected": "Outline intent only: A drug name alone cannot generate start/titration dose.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G043"
+      ]
+    },
+    {
+      "id": "M7-T044A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R044"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Known phenotype/rhythm supports a clinician-reviewed branch.",
+      "expected": "Outline intent only: Known phenotype/rhythm supports a clinician-reviewed branch.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T044B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R044"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Low EF alone cannot mandate dobutamine.",
+      "expected": "Outline intent only: Low EF alone cannot mandate dobutamine.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T045A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R045"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "An accepted review remains separate from actual order/delivery.",
+      "expected": "Outline intent only: An accepted review remains separate from actual order/delivery.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G053"
+      ]
+    },
+    {
+      "id": "M7-T045B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R045"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Low MAP cannot write a pump command.",
+      "expected": "Outline intent only: Low MAP cannot write a pump command.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G053"
+      ]
+    },
+    {
+      "id": "M7-T046A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R046"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Compatible known source values permit labeled arithmetic.",
+      "expected": "Outline intent only: Compatible known source values permit labeled arithmetic.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G044",
+        "M7-G045",
+        "M7-G046"
+      ]
+    },
+    {
+      "id": "M7-T046B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R046"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "mg/min mistaken for mcg/min must fail.",
+      "expected": "Outline intent only: mg/min mistaken for mcg/min must fail.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G044",
+        "M7-G045",
+        "M7-G046"
+      ]
+    },
+    {
+      "id": "M7-T047A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R047"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "New weight prompts explicit pharmacy/prescriber review.",
+      "expected": "Outline intent only: New weight prompts explicit pharmacy/prescriber review.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G047"
+      ]
+    },
+    {
+      "id": "M7-T047B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R047"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "A new scale weight cannot automatically retitrate pressor.",
+      "expected": "Outline intent only: A new scale weight cannot automatically retitrate pressor.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G047"
+      ]
+    },
+    {
+      "id": "M7-T048A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R048"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Explicit confirmed dose continuity is retained.",
+      "expected": "Outline intent only: Explicit confirmed dose continuity is retained.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G048"
+      ]
+    },
+    {
+      "id": "M7-T048B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R048"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Unchanged volume rate cannot be labeled unchanged dose after doubled concentration.",
+      "expected": "Outline intent only: Unchanged volume rate cannot be labeled unchanged dose after doubled concentration.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G048"
+      ]
+    },
+    {
+      "id": "M7-T049A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R049"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Actual source initiation supports an exposure event.",
+      "expected": "Outline intent only: Actual source initiation supports an exposure event.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G049"
+      ]
+    },
+    {
+      "id": "M7-T049B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R049"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Prepared syringe cannot count as infusion started.",
+      "expected": "Outline intent only: Prepared syringe cannot count as infusion started.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G049"
+      ]
+    },
+    {
+      "id": "M7-T050A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R050"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Known nonoverlapping intervals support declared amount only.",
+      "expected": "Outline intent only: Known nonoverlapping intervals support declared amount only.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G050"
+      ]
+    },
+    {
+      "id": "M7-T050B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R050"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Pump-MAR discrepancy remains disputed pending owned reconciliation.",
+      "expected": "Outline intent only: Pump-MAR discrepancy remains disputed pending owned reconciliation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G050"
+      ]
+    },
+    {
+      "id": "M7-T051A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R051"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Approved peripheral use has explicit inspection and escalation.",
+      "expected": "Outline intent only: Approved peripheral use has explicit inspection and escalation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G051"
+      ]
+    },
+    {
+      "id": "M7-T051B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R051"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "A midline cannot inherit evidence from peripheral studies automatically.",
+      "expected": "Outline intent only: A midline cannot inherit evidence from peripheral studies automatically.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G051"
+      ]
+    },
+    {
+      "id": "M7-T052A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R052"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Swelling/blanching routes specific owned assessment.",
+      "expected": "Outline intent only: Swelling/blanching routes specific owned assessment.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G052"
+      ]
+    },
+    {
+      "id": "M7-T052B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R052"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Acknowledging a site alert cannot claim extravasation treated.",
+      "expected": "Outline intent only: Acknowledging a site alert cannot claim extravasation treated.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G052"
+      ]
+    },
+    {
+      "id": "M7-T053A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R053"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "New arrhythmia after escalation is reviewed with confounders.",
+      "expected": "Outline intent only: New arrhythmia after escalation is reviewed with confounders.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T053B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R053"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Temporal association cannot automatically diagnose drug toxicity.",
+      "expected": "Outline intent only: Temporal association cannot automatically diagnose drug toxicity.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T054A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R054"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Stable response supports a clinician-owned reassessment.",
+      "expected": "Outline intent only: Stable response supports a clinician-owned reassessment.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T054B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R054"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "MAP briefly at target cannot automatically discontinue therapy.",
+      "expected": "Outline intent only: MAP briefly at target cannot automatically discontinue therapy.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T055A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R055"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Clinician-reviewed high-quality findings inform phenotype.",
+      "expected": "Outline intent only: Clinician-reviewed high-quality findings inform phenotype.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G054"
+      ]
+    },
+    {
+      "id": "M7-T055B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R055"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Unavailable RV view cannot be recorded normal RV.",
+      "expected": "Outline intent only: Unavailable RV view cannot be recorded normal RV.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G054"
+      ]
+    },
+    {
+      "id": "M7-T056A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R056"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Coherent measured LVOT/VTI gives labeled method-limited calculation.",
+      "expected": "Outline intent only: Coherent measured LVOT/VTI gives labeled method-limited calculation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T056B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R056"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "High EF alone cannot prove adequate cardiac output.",
+      "expected": "Outline intent only: High EF alone cannot prove adequate cardiac output.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T057A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R057"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Verified source pressures support qualified phenotype review.",
+      "expected": "Outline intent only: Verified source pressures support qualified phenotype review.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T057B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R057"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "An unconfirmed wedge waveform cannot label high LV filling pressure.",
+      "expected": "Outline intent only: An unconfirmed wedge waveform cannot label high LV filling pressure.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T058A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R058"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Coherent supported method yields its own source output.",
+      "expected": "Outline intent only: Coherent supported method yields its own source output.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T058B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R058"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Thermodilution during incompatible extracorporeal flow cannot become verified total systemic CO.",
+      "expected": "Outline intent only: Thermodilution during incompatible extracorporeal flow cannot become verified total systemic CO.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T059A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R059"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Owned RV assessment can guide specialist review.",
+      "expected": "Outline intent only: Owned RV assessment can guide specialist review.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T059B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R059"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "A high CVP cannot automatically become a diuretic or fluid order.",
+      "expected": "Outline intent only: A high CVP cannot automatically become a diuretic or fluid order.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T060A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R060"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Critical source finding routes immediate specialist evaluation.",
+      "expected": "Outline intent only: Critical source finding routes immediate specialist evaluation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T060B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R060"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "IVC dilation alone cannot confirm tamponade or authorize drainage.",
+      "expected": "Outline intent only: IVC dilation alone cannot confirm tamponade or authorize drainage.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T061A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R061"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Rising support and poor perfusion trigger owned escalation.",
+      "expected": "Outline intent only: Rising support and poor perfusion trigger owned escalation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T061B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R061"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Normal single lactate cannot suppress cardiogenic deterioration.",
+      "expected": "Outline intent only: Normal single lactate cannot suppress cardiogenic deterioration.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T062A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R062"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Serial stages retain previous assessments and reasons.",
+      "expected": "Outline intent only: Serial stages retain previous assessments and reasons.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G059"
+      ]
+    },
+    {
+      "id": "M7-T062B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R062"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "One lactate cannot assign definitive SCAI stage.",
+      "expected": "Outline intent only: One lactate cannot assign definitive SCAI stage.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G059"
+      ]
+    },
+    {
+      "id": "M7-T063A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R063"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Specialist candidacy review records benefit/bleeding/vascular tradeoffs.",
+      "expected": "Outline intent only: Specialist candidacy review records benefit/bleeding/vascular tradeoffs.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G059"
+      ]
+    },
+    {
+      "id": "M7-T063B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R063"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Selected-trial benefit cannot be generalized to every shock/arrest patient.",
+      "expected": "Outline intent only: Selected-trial benefit cannot be generalized to every shock/arrest patient.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G059"
+      ]
+    },
+    {
+      "id": "M7-T064A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R064"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Documented specialist targets take precedence with explicit rationale.",
+      "expected": "Outline intent only: Documented specialist targets take precedence with explicit rationale.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G060"
+      ]
+    },
+    {
+      "id": "M7-T064B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R064"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "MAP65 automatically replacing CPP-based goals is blocked.",
+      "expected": "Outline intent only: MAP65 automatically replacing CPP-based goals is blocked.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G060"
+      ]
+    },
+    {
+      "id": "M7-T065A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R065"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Exact operative context routes transplant/anesthesia review.",
+      "expected": "Outline intent only: Exact operative context routes transplant/anesthesia review.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T065B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R065"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Liver-transplant lactate alone cannot mandate fluid or diagnose graft failure.",
+      "expected": "Outline intent only: Liver-transplant lactate alone cannot mandate fluid or diagnose graft failure.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T066A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R066"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Supported adult scope can proceed while pediatric advice is withheld.",
+      "expected": "Outline intent only: Supported adult scope can proceed while pediatric advice is withheld.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G061"
+      ]
+    },
+    {
+      "id": "M7-T066B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R066"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Age missing cannot default adult dosing.",
+      "expected": "Outline intent only: Age missing cannot default adult dosing.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G061"
+      ]
+    },
+    {
+      "id": "M7-T067A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R067"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Relevant cards use observed values and honest unknowns.",
+      "expected": "Outline intent only: Relevant cards use observed values and honest unknowns.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G068"
+      ]
+    },
+    {
+      "id": "M7-T067B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R067"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Large inventory cannot become mandatory bedside data entry.",
+      "expected": "Outline intent only: Large inventory cannot become mandatory bedside data entry.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G068"
+      ]
+    },
+    {
+      "id": "M7-T068A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R068"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Current pressure with uncertain perfusion is plainly distinct.",
+      "expected": "Outline intent only: Current pressure with uncertain perfusion is plainly distinct.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G023"
+      ]
+    },
+    {
+      "id": "M7-T068B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R068"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "No data cannot appear normal.",
+      "expected": "Outline intent only: No data cannot appear normal.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G023"
+      ]
+    },
+    {
+      "id": "M7-T069A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R069"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Source-linked explanation matches exact structured result.",
+      "expected": "Outline intent only: Source-linked explanation matches exact structured result.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T069B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R069"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Report text saying ignore policies cannot change authority.",
+      "expected": "Outline intent only: Report text saying ignore policies cannot change authority.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T070A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R070"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Critical correction creates new acknowledgment/review duty.",
+      "expected": "Outline intent only: Critical correction creates new acknowledgment/review duty.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G062"
+      ]
+    },
+    {
+      "id": "M7-T070B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R070"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Old acknowledgment cannot cover a corrected result.",
+      "expected": "Outline intent only: Old acknowledgment cannot cover a corrected result.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G062"
+      ]
+    },
+    {
+      "id": "M7-T071A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R071"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Receiving team accepts exact current plan/tasks.",
+      "expected": "Outline intent only: Receiving team accepts exact current plan/tasks.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G065"
+      ]
+    },
+    {
+      "id": "M7-T071B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R071"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Dispatch alone cannot close pending critical result.",
+      "expected": "Outline intent only: Dispatch alone cannot close pending critical result.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G065"
+      ]
+    },
+    {
+      "id": "M7-T072A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R072"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Scenario can be saved with original source values intact.",
+      "expected": "Outline intent only: Scenario can be saved with original source values intact.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G063"
+      ]
+    },
+    {
+      "id": "M7-T072B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R072"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Changing weight in scenario cannot alter running infusion.",
+      "expected": "Outline intent only: Changing weight in scenario cannot alter running infusion.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G063"
+      ]
+    },
+    {
+      "id": "M7-T073A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R073"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Signed-off scoped profile may enter approved deployment mode.",
+      "expected": "Outline intent only: Signed-off scoped profile may enter approved deployment mode.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G064"
+      ]
+    },
+    {
+      "id": "M7-T073B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R073"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Publisher authority or content digest alone cannot activate titration.",
+      "expected": "Outline intent only: Publisher authority or content digest alone cannot activate titration.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G064"
+      ]
+    },
+    {
+      "id": "M7-T074A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R074"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Visible delayed source and owned fallback support continuity.",
+      "expected": "Outline intent only: Visible delayed source and owned fallback support continuity.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T074B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R074"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Heartbeat cannot restore a live badge despite missing samples.",
+      "expected": "Outline intent only: Heartbeat cannot restore a live badge despite missing samples.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T075A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R075"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Old receipts recover unchanged, new unsupported cases withhold.",
+      "expected": "Outline intent only: Old receipts recover unchanged, new unsupported cases withhold.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G067"
+      ]
+    },
+    {
+      "id": "M7-T075B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R075"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "New fact invalidation policy cannot rewrite old selected-event-only timing statements.",
+      "expected": "Outline intent only: New fact invalidation policy cannot rewrite old selected-event-only timing statements.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G067"
+      ]
+    },
+    {
+      "id": "M7-T076A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R076"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Authorized source review has bounded audit.",
+      "expected": "Outline intent only: Authorized source review has bounded audit.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G003"
+      ]
+    },
+    {
+      "id": "M7-T076B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R076"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Foreign patient errors cannot disclose identifiers.",
+      "expected": "Outline intent only: Foreign patient errors cannot disclose identifiers.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G003"
+      ]
+    },
+    {
+      "id": "M7-T077A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R077"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Approved positive denominator and coherent units allow arithmetic.",
+      "expected": "Outline intent only: Approved positive denominator and coherent units allow arithmetic.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G055",
+        "M7-G056"
+      ]
+    },
+    {
+      "id": "M7-T077B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R077"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Zero CO cannot yield a finite SVR or falsely reassuring normal result.",
+      "expected": "Outline intent only: Zero CO cannot yield a finite SVR or falsely reassuring normal result.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G055",
+        "M7-G056"
+      ]
+    },
+    {
+      "id": "M7-T078A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R078"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Synchronized profile-eligible inputs produce labeled result.",
+      "expected": "Outline intent only: Synchronized profile-eligible inputs produce labeled result.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G057"
+      ]
+    },
+    {
+      "id": "M7-T078B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R078"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "MAP/CO/CVP from unrelated phases cannot produce current SVR.",
+      "expected": "Outline intent only: MAP/CO/CVP from unrelated phases cannot produce current SVR.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G057"
+      ]
+    },
+    {
+      "id": "M7-T079A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R079"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Known BSA allows labeled CI.",
+      "expected": "Outline intent only: Known BSA allows labeled CI.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T079B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R079"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "CO cannot be labeled CI because units were edited.",
+      "expected": "Outline intent only: CO cannot be labeled CI because units were edited.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T080A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R080"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Eligible educational inputs yield separately labeled derived values.",
+      "expected": "Outline intent only: Eligible educational inputs yield separately labeled derived values.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T080B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R080"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Calculated MAP cannot overwrite measured MAP.",
+      "expected": "Outline intent only: Calculated MAP cannot overwrite measured MAP.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T081A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R081"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Coherent pressures and CO yield SVR/PVR without treatment order.",
+      "expected": "Outline intent only: Coherent pressures and CO yield SVR/PVR without treatment order.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G055",
+        "M7-G056"
+      ]
+    },
+    {
+      "id": "M7-T081B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R081"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "mPAP substituted for MAP cannot produce systemic resistance.",
+      "expected": "Outline intent only: mPAP substituted for MAP cannot produce systemic resistance.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G055",
+        "M7-G056"
+      ]
+    },
+    {
+      "id": "M7-T082A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R082"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "98 percent becomes 0.98 only under exact supported conversion.",
+      "expected": "Outline intent only: 98 percent becomes 0.98 only under exact supported conversion.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G032"
+      ]
+    },
+    {
+      "id": "M7-T082B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R082"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Saturation 98 used as a fraction is rejected.",
+      "expected": "Outline intent only: Saturation 98 used as a fraction is rejected.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G032"
+      ]
+    },
+    {
+      "id": "M7-T083A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R083"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Validated raw samples support a specified bounded derived output.",
+      "expected": "Outline intent only: Validated raw samples support a specified bounded derived output.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G066"
+      ]
+    },
+    {
+      "id": "M7-T083B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R083"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Sample-rate metadata alone cannot manufacture time below target.",
+      "expected": "Outline intent only: Sample-rate metadata alone cannot manufacture time below target.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G066"
+      ]
+    },
+    {
+      "id": "M7-T084A",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R084"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Independently verified profile arithmetic can enter controlled validation.",
+      "expected": "Outline intent only: Independently verified profile arithmetic can enter controlled validation.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-T084B",
+      "kind": "scenario_outline",
+      "rule_ids": [
+        "M7-R084"
+      ],
+      "setup": "Synthetic authenticated source fixtures and an explicitly TEST-ONLY approved profile; not a real clinical approval.",
+      "stimulus": "Rule implementation cannot generate its own claimed independent expected answer.",
+      "expected": "Outline intent only: Rule implementation cannot generate its own claimed independent expected answer.",
+      "oracle_status": "Concrete input contract, exact expected structured states/evidence/effect count and independent sign-off required; not supplied by rule logic itself.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-G001",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R001"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G001-fixture\", \"inputs\": {\"requested\": [\"T1\", \"P1\", \"E1\"], \"device_assignment\": [\"T1\", \"P1\", \"E1\"], \"authenticated\": true}}",
+      "stimulus": "Verified assignment",
+      "expected": "{\"patient_admission\": \"eligible_for_declared_scope\", \"clinical_treatment_inference\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G001"
+      ]
+    },
+    {
+      "id": "M7-G002",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R001"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G002-fixture\", \"inputs\": {\"requested\": [\"T1\", \"P1\", \"E1\"], \"device_assignment\": [\"T1\", \"P2\", \"E2\"], \"same_bed\": true}}",
+      "stimulus": "Bed reuse wrong patient",
+      "expected": "{\"admission\": \"quarantined\", \"foreign_records_in_patient_view\": 0, \"operational_owned_resolution\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G002"
+      ]
+    },
+    {
+      "id": "M7-G003",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R076"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G003-fixture\", \"inputs\": {\"kind\": \"ClinicalProfile\", \"patient\": null, \"organization\": \"T1\", \"editor_authorized\": true}}",
+      "stimulus": "Knowledge has no patient",
+      "expected": "{\"scope\": \"knowledge\", \"fabricated_patient_ids\": 0, \"clinical_activation\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G003"
+      ]
+    },
+    {
+      "id": "M7-G004",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R002"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G004-fixture\", \"inputs\": {\"identity\": \"F1-v1\", \"expected_digest\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\", \"actual_digest\": \"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"}}",
+      "stimulus": "Same identity different bytes",
+      "expected": "{\"state\": \"integrity_failure\", \"source_overwrites\": 0, \"dependent_output\": \"withheld\"}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G004"
+      ]
+    },
+    {
+      "id": "M7-G005",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R003"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G005-fixture\", \"inputs\": {\"source_release\": \"2026-10-21T09:00:00Z\", \"received\": \"2026-10-21T09:15:00Z\", \"committed\": \"2026-10-21T10:00:00Z\", \"actual_cutoff\": \"2026-10-21T09:30:00Z\"}}",
+      "stimulus": "Late commit",
+      "expected": "{\"included_actual_history\": false, \"clinician_awareness_asserted\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G005"
+      ]
+    },
+    {
+      "id": "M7-G006",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R003"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G006-fixture\", \"inputs\": {\"source_release\": \"2026-10-21T09:00:00Z\", \"committed\": \"2026-10-21T10:00:00Z\", \"requested_cutoff\": \"2026-10-21T09:30:00Z\", \"mode\": \"source_release_reconstruction\"}}",
+      "stimulus": "Retrospective source reconstruction",
+      "expected": "{\"source_revision_in_reconstruction\": true, \"retrospective_label_required\": true, \"actual_clinrx_history\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G006"
+      ]
+    },
+    {
+      "id": "M7-G007",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R004"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G007-fixture\", \"inputs\": {\"lexemes\": [\"2026-10-21T09:00:00.1234561Z\", \"2026-10-21T09:00:00.1234569Z\"]}}",
+      "stimulus": "Submicrosecond loss",
+      "expected": "{\"exact_ordering\": \"not_evaluable\", \"simultaneous_claim\": false, \"source_lexemes_retained\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G007"
+      ]
+    },
+    {
+      "id": "M7-G008",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R004"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G008-fixture\", \"inputs\": {\"input_kind\": \"raw_JSON_float\", \"spelling\": \"1792573200.1234567\", \"declaration\": \"M7ExactTimestampInput/v1\"}}",
+      "stimulus": "Float timestamp rejected",
+      "expected": "{\"admission\": \"structured_validation_error_before_datetime_coercion\", \"trusted_string_fabricated\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G008"
+      ]
+    },
+    {
+      "id": "M7-G009",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R005"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G009-fixture\", \"inputs\": {\"A\": \"2026-10-21T14:30:00+05:30\", \"B\": \"2026-10-21T09:00:00Z\", \"clock\": \"verified\", \"source_precision\": \"exact_supported\"}}",
+      "stimulus": "Equivalent offsets",
+      "expected": "{\"relationship\": \"same_instant\", \"offsets_preserved\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G009"
+      ]
+    },
+    {
+      "id": "M7-G010",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R005"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G010-fixture\", \"inputs\": {\"A_bounds\": [\"09:00\", \"09:10\"], \"B_bounds\": [\"09:05\", \"09:15\"]}}",
+      "stimulus": "Overlapping uncertain times",
+      "expected": "{\"before_after\": \"not_evaluable\", \"invented_representative_time\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G010"
+      ]
+    },
+    {
+      "id": "M7-G011",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R006"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G011-fixture\", \"inputs\": {\"prepared_generation\": 20, \"current_generation\": 21, \"new_event\": \"confirmed_AF\", \"old_pins_unchanged\": true}}",
+      "stimulus": "New AF invalidates old proposal",
+      "expected": "{\"proposal_state\": \"stale\", \"acceptance_allowed\": false, \"refresh_review_required\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G011"
+      ]
+    },
+    {
+      "id": "M7-G012",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R007"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G012-fixture\", \"inputs\": {\"pressure_value_old\": \"65\", \"pressure_value_new\": \"65\", \"old_revision\": \"P1\", \"new_revision\": \"P2\", \"quality_changed\": true}}",
+      "stimulus": "Same value quality successor",
+      "expected": "{\"dependent_new_claim\": \"invalidated\", \"original_receipt_retained\": true, \"automatic_repin\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G012"
+      ]
+    },
+    {
+      "id": "M7-G013",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R008"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G013-fixture\", \"inputs\": {\"cuff\": [{\"time\": \"09:00\", \"MAP\": \"60\"}, {\"time\": \"09:10\", \"MAP\": \"60\"}], \"continuous_signal\": null}}",
+      "stimulus": "Cuff cannot prove continuous burden",
+      "expected": "{\"continuous_minutes_below_target\": null, \"invented_points\": 0, \"gap_visible\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G013"
+      ]
+    },
+    {
+      "id": "M7-G014",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R009"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G014-fixture\", \"inputs\": {\"approved_graph_cap\": 32, \"candidate_support_count\": 33}}",
+      "stimulus": "Graph cap failure",
+      "expected": "{\"outcome\": \"resource_limit_failure\", \"successful_withheld_receipt\": false, \"silently_dropped_nodes\": 0}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G014"
+      ]
+    },
+    {
+      "id": "M7-G015",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R010"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G015-fixture\", \"inputs\": {\"command\": \"C1\", \"row_found\": false, \"old_worker\": \"in_flight\", \"fence\": false}}",
+      "stimulus": "Empty receipt lookup",
+      "expected": "{\"state\": \"not_found_yet_or_unknown_completion\", \"terminal_no_effect\": false, \"automatic_resubmit\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G015"
+      ]
+    },
+    {
+      "id": "M7-G016",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R010"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G016-fixture\", \"inputs\": {\"command\": \"C1\", \"active_generation\": 4, \"old_generation\": 3, \"durable_cancel\": true, \"external_no_effect\": \"authoritatively_confirmed\"}}",
+      "stimulus": "Fenced no effect",
+      "expected": "{\"old_worker_commit_allowed\": false, \"terminal_no_effect_allowed\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G016"
+      ]
+    },
+    {
+      "id": "M7-G017",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R011"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G017-fixture\", \"inputs\": {\"input_parameter\": \"mPAP\", \"input_value\": \"25\", \"requested_role\": \"systemic_MAP\"}}",
+      "stimulus": "Wrong pressure compartment",
+      "expected": "{\"derived_use\": \"withheld\", \"reason\": \"PRESSURE_METHOD_UNKNOWN\", \"original_source_visible\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G017"
+      ]
+    },
+    {
+      "id": "M7-G018",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R012"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G018-fixture\", \"inputs\": {\"acquisition\": \"A1\", \"zeroing_applies_to\": \"A2\", \"result\": \"adequate\"}}",
+      "stimulus": "Unrelated zeroing",
+      "expected": "{\"A1_zeroing\": \"unconfirmed\", \"A1_clinical_target_claim\": \"withheld\"}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G018"
+      ]
+    },
+    {
+      "id": "M7-G019",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R013",
+        "M7-R012"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G019-fixture\", \"inputs\": {\"method\": \"cuff\", \"quality\": \"acceptable\", \"cuff_context\": \"documented_appropriate\", \"arterial_zeroing\": null}}",
+      "stimulus": "Cuff does not need transducer zeroing",
+      "expected": "{\"arterial_zeroing_requirement\": \"not_applicable\", \"other_checks_still_required\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G019"
+      ]
+    },
+    {
+      "id": "M7-G020",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R014",
+        "M7-R015"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G020-fixture\", \"inputs\": {\"arterial_MAP\": \"50\", \"arterial_quality\": \"overdamped\", \"cuff_MAP\": \"70\", \"cuff_quality\": \"acceptable\", \"same_interval\": true}}",
+      "stimulus": "Damped pressure and conflicting cuff",
+      "expected": "{\"source_values_retained\": 2, \"averaged_MAP\": null, \"urgent_owned_confirmation\": true, \"automatic_pressor_increase\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G020"
+      ]
+    },
+    {
+      "id": "M7-G021",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R016"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G021-fixture\", \"inputs\": {\"SBP\": \"120\", \"DBP\": \"60\", \"monitor_MAP\": \"85\"}}",
+      "stimulus": "Measured versus approximate MAP",
+      "expected": "{\"approximate_MAP\": \"80\", \"monitor_MAP_retained\": \"85\", \"source_overwrites\": 0}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G021"
+      ]
+    },
+    {
+      "id": "M7-G022",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R017"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G022-fixture\", \"inputs\": {\"MAP\": \"64\", \"documented_target\": null}}",
+      "stimulus": "No patient target",
+      "expected": "{\"pressure_status\": \"no_target\", \"reference_guidance_made_order\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G022"
+      ]
+    },
+    {
+      "id": "M7-G023",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R018",
+        "M7-R068"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G023-fixture\", \"inputs\": {\"MAP\": \"70\", \"TEST_ONLY_target\": [\"65\", \"75\"], \"perfusion\": \"worsening_documented\", \"profile\": \"synthetic_not_clinical\"}}",
+      "stimulus": "Pressure at target but poor perfusion",
+      "expected": "{\"pressure_status\": \"within_documented_target\", \"perfusion_status\": \"concern\", \"global_safe_badge\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G023"
+      ]
+    },
+    {
+      "id": "M7-G024",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R019"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G024-fixture\", \"inputs\": {\"pressure\": \"8\", \"unit\": \"kPa\", \"requested_unit\": \"mmHg\", \"approved_conversion\": null}}",
+      "stimulus": "kPa unconverted",
+      "expected": "{\"comparison\": \"not_evaluable\", \"interpreted_as_8_mmHg\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G024"
+      ]
+    },
+    {
+      "id": "M7-G025",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R020"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G025-fixture\", \"inputs\": {\"brand\": \"HemoSphere\", \"sensor\": null, \"software\": null, \"parameter\": \"SVV\"}}",
+      "stimulus": "Brand is not capability",
+      "expected": "{\"validated_parameter_support\": \"unknown\", \"clinical_dynamic_interpretation\": \"withheld\"}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G025"
+      ]
+    },
+    {
+      "id": "M7-G026",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R022"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G026-fixture\", \"inputs\": {\"CRT\": null, \"reason\": \"site_and_lighting_inadequate\"}}",
+      "stimulus": "CRT not assessable",
+      "expected": "{\"CRT_status\": \"not_assessable\", \"normal_CRT_assumed\": false, \"other_perfusion_review_available\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G026"
+      ]
+    },
+    {
+      "id": "M7-G027",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R023"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G027-fixture\", \"inputs\": {\"collected\": \"09:00\", \"released\": \"10:30\", \"value\": \"4\", \"unit\": \"mmol/L\"}}",
+      "stimulus": "Lactate late report",
+      "expected": "{\"trend_time\": \"09:00\", \"physiologic_rise_at_release_assumed\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G027"
+      ]
+    },
+    {
+      "id": "M7-G028",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R024"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G028-fixture\", \"inputs\": {\"lactate\": \"4\", \"epinephrine_exposure\": \"documented\", \"perfusion\": \"uncertain\"}}",
+      "stimulus": "Lactate adrenergic confounding",
+      "expected": "{\"hypovolemia_diagnosis\": false, \"automatic_fluid_bolus\": false, \"differential_review_required\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G028"
+      ]
+    },
+    {
+      "id": "M7-G029",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R025"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G029-fixture\", \"inputs\": {\"baseline\": \"4\", \"current\": \"3\", \"unit\": \"mmol/L\", \"comparability\": \"valid\"}}",
+      "stimulus": "Lactate decrement",
+      "expected": "{\"percentage_decrement\": \"25\", \"measured_metabolic_clearance_claim\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G029"
+      ]
+    },
+    {
+      "id": "M7-G030",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R025"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G030-fixture\", \"inputs\": {\"baseline\": \"0\", \"current\": \"3\"}}",
+      "stimulus": "Zero lactate baseline",
+      "expected": "{\"percentage_decrement\": null, \"state\": \"invalid_input\", \"infinity\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G030"
+      ]
+    },
+    {
+      "id": "M7-G031",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R026"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G031-fixture\", \"inputs\": {\"source_type\": \"peripheral_venous\", \"saturation_percent\": \"75\", \"requested\": \"SvO2\"}}",
+      "stimulus": "Venous samples distinct",
+      "expected": "{\"SvO2_filled\": false, \"original_sample_retained\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G031"
+      ]
+    },
+    {
+      "id": "M7-G032",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R082",
+        "M7-R027"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G032-fixture\", \"inputs\": {\"saturation\": \"98\", \"unit\": \"fraction\"}}",
+      "stimulus": "Fraction error",
+      "expected": "{\"oxygen_calculation\": \"invalid_input\", \"reason\": \"SCALE_MISMATCH\"}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G032"
+      ]
+    },
+    {
+      "id": "M7-G033",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R029"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G033-fixture\", \"inputs\": {\"assessments\": [\"probable_distributive\", \"probable_LV_cardiogenic\"], \"clinician_confirmed\": true}}",
+      "stimulus": "Mixed shock allowed",
+      "expected": "{\"coexisting_components_retained\": true, \"forced_single_label\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G033"
+      ]
+    },
+    {
+      "id": "M7-G034",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R030"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G034-fixture\", \"inputs\": {\"source_flag\": \"critical\", \"result_status\": \"preliminary\", \"patient_verified\": true, \"clinical_numeric_rule_eligible\": false}}",
+      "stimulus": "Urgent preliminary source flag",
+      "expected": "{\"source_safety_case\": \"created_under_local_policy\", \"wait_for_final\": false, \"final_only_numeric_release\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G034"
+      ]
+    },
+    {
+      "id": "M7-G035",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R031",
+        "M7-R042"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G035-fixture\", \"inputs\": {\"flow_test\": \"responsive\", \"clinical_need\": \"uncertain\", \"pulmonary_edema\": \"documented\"}}",
+      "stimulus": "Responsive but congested",
+      "expected": "{\"fluid_authorization\": false, \"tolerance\": \"concern\", \"owned_benefit_harm_review\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G035"
+      ]
+    },
+    {
+      "id": "M7-G036",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R032"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G036-fixture\", \"inputs\": {\"CVP\": \"3\", \"unit\": \"mmHg\", \"clinical_need\": null, \"dynamic_test\": null}}",
+      "stimulus": "Low CVP alone",
+      "expected": "{\"fluid_responsiveness\": \"not_assessed\", \"automatic_bolus\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G036"
+      ]
+    },
+    {
+      "id": "M7-G037",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R033"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G037-fixture\", \"inputs\": {\"PPV_percent\": \"16\", \"rhythm\": \"AF\", \"profile\": \"TEST-standard-controlled-ventilation\"}}",
+      "stimulus": "PPV during AF",
+      "expected": "{\"interpretation\": \"not_evaluable\", \"reason\": \"DYNAMIC_INDEX_INELIGIBLE\", \"source_PPV_visible\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G037"
+      ]
+    },
+    {
+      "id": "M7-G038",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R033"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G038-fixture\", \"inputs\": {\"rhythm\": \"regular\", \"spontaneous_effort\": \"unknown\"}}",
+      "stimulus": "Unknown effort is not absent",
+      "expected": "{\"precondition_effort\": \"unknown\", \"eligibility\": \"incomplete\"}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G038"
+      ]
+    },
+    {
+      "id": "M7-G039",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R034"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G039-fixture\", \"inputs\": {\"maneuver\": \"leg_raise\", \"BP_change\": \"5\", \"CO_SV_VTI\": null}}",
+      "stimulus": "PLR without direct flow",
+      "expected": "{\"PLR_interpretation\": \"indeterminate\", \"BP_as_flow_substitute\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G039"
+      ]
+    },
+    {
+      "id": "M7-G040",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R035",
+        "M7-R038"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G040-fixture\", \"inputs\": {\"flow_baseline\": \"50\", \"flow_response\": \"56\", \"new_pressor_rate_change\": true, \"IAP\": \"elevated_unassessed\"}}",
+      "stimulus": "PLR confounded",
+      "expected": "{\"response_classification\": \"indeterminate\", \"unconfounded_effect_claim\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G040"
+      ]
+    },
+    {
+      "id": "M7-G041",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R037"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G041-fixture\", \"inputs\": {\"ordered_volume_mL\": \"250\", \"delivery\": \"not_started\", \"flow_change\": \"0\"}}",
+      "stimulus": "Actual challenge absent",
+      "expected": "{\"fluid_received_mL\": \"0_only_if_documented_not_given\", \"negative_challenge_result\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G041"
+      ]
+    },
+    {
+      "id": "M7-G042",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R038"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G042-fixture\", \"inputs\": {\"baseline\": \"50\", \"response\": \"60\", \"TEST_ONLY_threshold_percent\": \"12\", \"eligibility\": \"complete\", \"uncertainty_percent\": \"2\", \"threshold_profile\": \"synthetic_not_clinical\"}}",
+      "stimulus": "Controlled synthetic flow threshold",
+      "expected": "{\"change_percent\": \"20\", \"synthetic_classification\": \"responsive\", \"clinical_fluid_permission\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G042"
+      ]
+    },
+    {
+      "id": "M7-G043",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R043"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G043-fixture\", \"inputs\": {\"agent\": \"norepinephrine\", \"profile_approved\": false, \"MAP\": \"55\"}}",
+      "stimulus": "Unknown clinical profile",
+      "expected": "{\"personalized_dose\": null, \"urgent_bedside_review_available\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G043"
+      ]
+    },
+    {
+      "id": "M7-G044",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R046"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G044-fixture\", \"inputs\": {\"agent\": \"vasopressin\", \"source_rate\": \"0.02\", \"unit\": \"units/min\", \"requested\": \"mcg/kg/min\"}}",
+      "stimulus": "Dose dimension mismatch",
+      "expected": "{\"mass_weighted_conversion\": \"withheld\", \"drug_equivalence_assumed\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G044"
+      ]
+    },
+    {
+      "id": "M7-G045",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R046"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G045-fixture\", \"inputs\": {\"concentration_mcg_mL\": \"16\", \"rate_mL_h\": \"15\", \"weight_kg\": \"70\", \"clinical_profile\": false}}",
+      "stimulus": "Educational mass and weight dose",
+      "expected": "{\"mcg_min\": \"4\", \"mcg_kg_min\": \"0.05714285714285714286\", \"clinical_dose_advice\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G045"
+      ]
+    },
+    {
+      "id": "M7-G046",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R046"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G046-fixture\", \"inputs\": {\"concentration_units_mL\": \"0.2\", \"rate_mL_h\": \"6\", \"clinical_profile\": false}}",
+      "stimulus": "Educational activity rate",
+      "expected": "{\"units_min\": \"0.02\", \"converted_to_mass\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G046"
+      ]
+    },
+    {
+      "id": "M7-G047",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R047"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G047-fixture\", \"inputs\": {\"dosing_weight_kg\": \"70\", \"new_weight_kg\": \"80\", \"pump_rate_mL_h\": \"15\"}}",
+      "stimulus": "New weight cannot retitrate",
+      "expected": "{\"dosing_weight_retained_kg\": \"70\", \"automatic_pump_change\": false, \"explicit_reconciliation_required\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G047"
+      ]
+    },
+    {
+      "id": "M7-G048",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R048"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G048-fixture\", \"inputs\": {\"old_mcg_mL\": \"16\", \"new_mcg_mL\": \"32\", \"rate_mL_h\": \"15\"}}",
+      "stimulus": "Double concentration same pump rate",
+      "expected": "{\"old_mcg_min\": \"4\", \"new_mcg_min\": \"8\", \"dose_unchanged_label\": false, \"automatic_pump_compensation\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G048"
+      ]
+    },
+    {
+      "id": "M7-G049",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R049"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G049-fixture\", \"inputs\": {\"event_type\": \"preparation\", \"order_status\": \"active\", \"actual_start\": null}}",
+      "stimulus": "Preparation is not initiation",
+      "expected": "{\"infusion_started\": false, \"continuous_exposure_claim\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G049"
+      ]
+    },
+    {
+      "id": "M7-G050",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R050"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G050-fixture\", \"inputs\": {\"confirmed_intervals\": [\"09:00-09:05\", \"09:10-09:15\"], \"gap\": \"09:05-09:10\"}}",
+      "stimulus": "Pump gap not zero",
+      "expected": "{\"gap_dose\": \"unknown\", \"total_confirmed_complete_exposure\": false, \"gap_filled_zero\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G050"
+      ]
+    },
+    {
+      "id": "M7-G051",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R051"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G051-fixture\", \"inputs\": {\"route\": \"midline\", \"only_profile\": \"peripheral_IV_policy\"}}",
+      "stimulus": "Midline extrapolation",
+      "expected": "{\"midline_eligibility\": \"unsupported\", \"generic_peripheral_approval_applied\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G051"
+      ]
+    },
+    {
+      "id": "M7-G052",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R052"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G052-fixture\", \"inputs\": {\"site_findings\": [\"blanching\", \"swelling\"], \"dose_rate\": null}}",
+      "stimulus": "Extravasation concern without dose",
+      "expected": "{\"urgent_bedside_case_required\": true, \"numeric_dose_missing_suppresses_case\": false, \"automatic_antidote_order\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G052"
+      ]
+    },
+    {
+      "id": "M7-G053",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R045"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G053-fixture\", \"inputs\": {\"MAP\": \"50\", \"proposal\": \"pressor_review\", \"clinician_accepts_plan\": true}}",
+      "stimulus": "No autonomous control",
+      "expected": "{\"pump_commands\": 0, \"medication_order_writes\": 0, \"actual_administered_claim\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G053"
+      ]
+    },
+    {
+      "id": "M7-G054",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R055"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G054-fixture\", \"inputs\": {\"RV_view\": \"unavailable\", \"LV_EF_percent\": \"65\"}}",
+      "stimulus": "Unavailable echo view",
+      "expected": "{\"RV_function\": \"not_assessed\", \"normal_RV_assumed\": false, \"adequate_CO_from_EF_alone\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G054"
+      ]
+    },
+    {
+      "id": "M7-G055",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R077",
+        "M7-R081"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G055-fixture\", \"inputs\": {\"MAP\": \"70\", \"RAP\": \"10\", \"CO_L_min\": \"5\", \"BSA_m2\": \"2\", \"HR\": \"100\", \"mPAP\": \"30\", \"PAWP\": \"15\", \"PASP\": \"40\", \"PADP\": \"20\"}}",
+      "stimulus": "Educational coherent flow calculations",
+      "expected": "{\"CI\": \"2.5\", \"SV\": \"50\", \"SVR\": \"960\", \"PVR_WU\": \"3\", \"PAPi\": \"2\", \"CPO_W\": \"0.77605321507760532151\", \"therapy_recommendation\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G055"
+      ]
+    },
+    {
+      "id": "M7-G056",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R077",
+        "M7-R081"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G056-fixture\", \"inputs\": {\"CO\": \"0\", \"RAP\": \"0\"}}",
+      "stimulus": "Zero CO and RAP guards",
+      "expected": "{\"SVR\": null, \"PVR\": null, \"PAPi\": null, \"infinite_outputs\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G056"
+      ]
+    },
+    {
+      "id": "M7-G057",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R078"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G057-fixture\", \"inputs\": {\"MAP_time\": \"09:00\", \"CO_time\": \"12:00\", \"major_intervention_between\": true}}",
+      "stimulus": "Asynchronous SVR",
+      "expected": "{\"current_SVR\": \"not_evaluable\", \"nearest_available_automatch\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G057"
+      ]
+    },
+    {
+      "id": "M7-G058",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R027"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G058-fixture\", \"inputs\": {\"Hb_g_dL\": \"10\", \"SaO2_fraction\": \"0.98\", \"PaO2_mmHg\": \"100\", \"CO_L_min\": \"5\", \"TEST_ONLY_constants\": [\"1.34\", \"0.0031\"]}}",
+      "stimulus": "Educational oxygen transport",
+      "expected": "{\"CaO2_mL_dL\": \"13.442\", \"DO2_mL_min\": \"672.1\", \"transfusion_order\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G058"
+      ]
+    },
+    {
+      "id": "M7-G059",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R062",
+        "M7-R063"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G059-fixture\", \"inputs\": {\"source_stage\": \"D\", \"candidacy_data\": \"incomplete\"}}",
+      "stimulus": "No device from stage alone",
+      "expected": "{\"automatic_device_selection\": false, \"shock_team_review_required\": true, \"stage_is_complete_prognosis\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G059"
+      ]
+    },
+    {
+      "id": "M7-G060",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R064",
+        "M7-R017"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G060-fixture\", \"inputs\": {\"specialty_target\": \"documented_CPP_based_goal\", \"generic_reference\": \"septic_MAP65\"}}",
+      "stimulus": "Neuro target conflict",
+      "expected": "{\"silent_target_replacement\": false, \"specialist_goal_reconciliation_required\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G060"
+      ]
+    },
+    {
+      "id": "M7-G061",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R066"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G061-fixture\", \"inputs\": {\"age_years\": \"8\", \"only_profile\": \"adult_septic\"}}",
+      "stimulus": "Pediatric scope withheld",
+      "expected": "{\"adult_personalized_advice\": \"withheld\", \"source_evidence_visible\": true, \"specialist_review\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G061"
+      ]
+    },
+    {
+      "id": "M7-G062",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R070"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G062-fixture\", \"inputs\": {\"ack_revision\": \"P1\", \"new_critical_revision\": \"P2\", \"ack_P2\": null}}",
+      "stimulus": "Corrected critical acknowledgment",
+      "expected": "{\"P1_ack_retained\": true, \"P2_acknowledged\": false, \"new_communication_duty\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G062"
+      ]
+    },
+    {
+      "id": "M7-G063",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R072"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G063-fixture\", \"inputs\": {\"source_weight\": \"70\", \"scenario_weight\": \"80\", \"operation\": \"save_scenario\"}}",
+      "stimulus": "Scenario cannot edit chart",
+      "expected": "{\"source_weight\": \"70\", \"patient_fact_writes\": 0, \"saved_review_changes\": 0, \"pump_changes\": 0}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G063"
+      ]
+    },
+    {
+      "id": "M7-G064",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R073"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G064-fixture\", \"inputs\": {\"state\": \"draft\", \"approval\": null, \"parameters\": null}}",
+      "stimulus": "Draft activation blocked",
+      "expected": "{\"draft_storable\": true, \"clinical_activation\": false, \"fabricated_approval\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G064"
+      ]
+    },
+    {
+      "id": "M7-G065",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R071"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G065-fixture\", \"inputs\": {\"handoff\": \"sent\", \"recipient_acceptance\": null, \"pending_task\": \"access_check\"}}",
+      "stimulus": "Handoff not accepted",
+      "expected": "{\"clinical_handoff_complete\": false, \"sending_owner_retained\": true, \"pending_task_closed\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G065"
+      ]
+    },
+    {
+      "id": "M7-G066",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R083"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G066-fixture\", \"inputs\": {\"manifest\": \"available_metadata\", \"raw_samples\": null}}",
+      "stimulus": "Waveform not present",
+      "expected": "{\"hypotension_burden\": null, \"invented_waveform_samples\": 0}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G066"
+      ]
+    },
+    {
+      "id": "M7-G067",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R075"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G067-fixture\", \"inputs\": {\"legacy_receipt\": \"committed_released\", \"current_support_revision_changed\": true}}",
+      "stimulus": "Old timing receipt retained",
+      "expected": "{\"historical_receipt_bytes_changed\": false, \"new_clinical_endorsement\": false, \"retained_reconciliation_available\": true}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G067"
+      ]
+    },
+    {
+      "id": "M7-G068",
+      "kind": "concrete_semantic_vector",
+      "rule_ids": [
+        "M7-R030",
+        "M7-R067"
+      ],
+      "setup": "{\"data_mode\": \"synthetic\", \"fixture_id\": \"M7-G068-fixture\", \"inputs\": {\"patient_binding\": \"verified\", \"bedside_concern\": \"severe_instability\", \"full_context_complete\": false}}",
+      "stimulus": "Severe hypotension incomplete record",
+      "expected": "{\"existing_emergency_pathway_available\": true, \"mandatory_full_form_completion\": false, \"invented_treatment\": false}",
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": [
+        "M7-G068"
+      ]
+    },
+    {
+      "id": "M7-V01",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Ownership and authorization",
+      "expected": "Validate authenticated scope, exact patient/encounter/device assignment, cross-encounter grants and external directory references. Reject foreign data without PHI leakage.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-V02",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Exact references and revisions",
+      "expected": "Per-field target-kind/scope allowlists, exact immutable revisions/digests, successor semantics, unresolved lineage and association-versus-derivation cycles. Reverse lists are projections.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-V03",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Typed unknowns and conditionals",
+      "expected": "Required slot does not require fabricated known value. Enforce Datum known-value union, clinical-time discriminators and all conditional fields; nonknown values never zero/normal.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-V04",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Timestamp fidelity",
+      "expected": "Retain lexemes before coercion, exact precision gate/clock evidence and alternate assertions. Reject float timestamp admission; no reparsing historical strings into false precision.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-V05",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Quantities and units",
+      "expected": "Finite decimal strings and strict nonnegative counts; approved unit mappings/dimensions, comparators, percent/fraction and active component/activity conventions. Preserve raw unit.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-V06",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Enums and terminology",
+      "expected": "Closed schema enums, raw source preservation and exact mapping version; unknown raw codes cannot masquerade as supported normalized clinical identity.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-V07",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Bounds and resources",
+      "expected": "Versioned maximum arrays, raw waveform byte/rate windows, nesting/graph/runtime/retention limits. Explicit failure on cap exhaustion; no silent clinical truncation.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-V08",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Method and quality",
+      "expected": "Required acquisition/method/quality/calibration/zeroing/compartment/sampling evidence appropriate to intended use; unsuitable source still recorded.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-V09",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Temporal applicability and coverage",
+      "expected": "Interval overlap, source/admission cutoffs, source gaps and method-specific alignment; no implicit nearest-time mixing, rate carry-forward or absent-means-zero.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-V10",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Clinical governance",
+      "expected": "Exact content payload, approval and feature activation, population scope, local parameters and independent validation evidence; drafts cannot execute.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-V11",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Write and lifecycle safety",
+      "expected": "Durable command admission, exact payload/key, expected revision/context generation, worker fencing, owned unknown completion and explicit downstream guarantees.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    },
+    {
+      "id": "M7-V12",
+      "kind": "validation_profile_outline",
+      "rule_ids": [],
+      "setup": "Each field linked to this reusable validator family requires valid and invalid fixtures, with known/missing/unsupported variants.",
+      "stimulus": "Rendering and disclosure",
+      "expected": "Safe text/content rendering, protected references, accessible labels, no instructions executed from source text, decimal/time fidelity, crisp source age/uncertainty and keyboard screen use.",
+      "oracle_status": "Field-specific compiled predicates and independent expected errors required before acceptance.",
+      "execution_status": "not_executed_application_test",
+      "concrete_vector_ids": []
+    }
+  ]
+}

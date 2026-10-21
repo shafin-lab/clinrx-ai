@@ -1,0 +1,48 @@
+ClinRx M8–M18 continuation — 21 October 2026
+
+This continues the existing candidate and current module numbering. It does not
+replace the earlier design, original application or accepted RF2 evidence.
+
+READ IN THIS ORDER
+1. ../../../clinrx-patient-overview/CLINRX-M8-M18-CHAT-HANDOFF-2026-10-21.txt
+2. M8-M18-DELIVERY-SPEC.txt — connected scope, nutrition/sedation/endocrine detail,
+   implementation sequence and bounded acceptance cases.
+3. SHARED-INVESTIGATIONS-CONTRACT.txt — proposed complete result envelope and
+   rules for original reports, panel membership and correction handling.
+4. INVESTIGATION-CATALOG.txt — development coverage catalog, generated from
+   frontend/src/clinical/sharedInvestigations.ts. A family is not an order set.
+5. WEIGHT-ENTRY-IMPLEMENTED.txt — authorised candidate weight saves, corrections,
+   durable local recovery and final verification. ADD-INFORMATION-SCOPE.txt retains
+   the preceding plan and remaining expansions for notes/reports/general labs.
+
+REUSE EXISTING CLINICAL WORK
+../../../outputs/clinrx-clinical-requirements-20261021/ClinRx-M6-M18-requirements.html
+contains the broader researched domain requirements, transplant pathway and proposed
+calculation inventory. Its formulas are proposed, not evidence that the complete
+historical formula inventory was recovered. This continuation does not independently
+revalidate every recommendation or equation in that report. Its source index and
+retrieval limitations retain their attribution. A separate M6 specification is at
+../../../outputs/clinrx-m6-implementation-20261021/START-HERE.txt.
+
+WHAT CHANGED IN CODE
+One shared product catalog now covers routine through specialised investigations.
+The existing overview uses its explicit mappings for the already supported
+synthetic creatinine and circulatory laboratory/oxygen records. This replaces a
+local creatinine label with a reusable catalog label; it does not create a panel UI.
+All original records still go through the existing strict decoder, scope checks,
+finding grouping and exact source/history opening. No stored observations are copied.
+KFT/RFT aliases search the same development group; they do not map original assays.
+
+WHAT REMAINS UNBUILT
+General laboratory ingestion, a complete laboratory-result envelope, new clinical
+domain storage, compatible shared microbiology loading, general Note/Report entry,
+nutrition calculators, interpretation and treatment support. Recorded weight now
+saves through the existing owner only under the candidate's explicit synthetic gate.
+No live writes or deployment are enabled.
+
+EVIDENCE
+../../review-evidence/weight-entry/RESULTS.json records the current weight increment.
+../../review-evidence/shared-investigations/RESULTS.json records the preceding catalog increment.
+../../review-evidence/browser/ retains the earlier browser evidence; those
+captures/test counts describe that earlier source, not a new browser acceptance.
+The default/RF2 builds and focused tests for this increment are recorded separately.

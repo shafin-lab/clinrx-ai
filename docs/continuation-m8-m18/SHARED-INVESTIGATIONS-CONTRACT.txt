@@ -1,0 +1,126 @@
+One shared investigations record — proposed contract
+21 October 2026 | Design specification; new import/storage contract is not activated
+
+PURPOSE AND OWNERSHIP
+M1 supplies typed facts, M2 supplies bounded result assembly, M4 owns persistence,
+and the patient overview consumes one read model. M6–M18 reference those same facts.
+CBC, KFT, RFT, LFT and other panels are source-described or explicitly configured
+presentation groups. One result can be linked to several views without a second
+stored result or a second contribution to any calculation. An investigation service
+can include blood, urine, CSF, body-fluid, tissue, molecular and report-only records.
+It need not be another numbered module or another compulsory clinician destination.
+
+RESULT ENVELOPE — REQUIRED SHAPE; MISSING VALUES STAY EXPLICIT
+Identity and scope:
+- Patient ID, encounter ID, repository ID and exact fact ID/revision/digest.
+- Issuing organisation, source system/namespace, original result identifier,
+  component identifier and original report/version identifier.
+- Original order, panel, accession, specimen and collection-event relationships,
+  each as supplied, resolved/unresolved/ambiguous with exact references where known.
+- Import message identity, received time, ingestion sequence and source provenance.
+  The import key cannot be a name/value/time heuristic.
+
+Test and assay:
+- Original test display and original code/system/version; unknown local codes remain.
+- Optional curated terminology mapping, its version, reviewer and mapping relation.
+- Assay manufacturer/platform/method, calibration and reagent/version when supplied.
+- Specimen type, collection site, arterial/venous/capillary context and specimen ID.
+- Test preparation, fasting state, collection conditions and dynamic-test protocol
+  or dose/challenge event linkage when supplied. These are contextual assertions,
+  not reasons to invent an absent result.
+
+Result:
+- Typed numeric decimal text plus comparator (<, <=, =, >=, >), qualitative result,
+  narrative, structured report or explicit unavailable/pending/not-performed state.
+- Original lexical value and unit, plus coded unit only when supplied/validated.
+- Reported result limits and assay detection/quantification limits when supplied.
+- Original reference interval text and/or boundaries, inequality/inclusivity, unit,
+  laboratory flags and critical flag; issuing laboratory and applicability context.
+- Source age/sex/pregnancy or other interval conditions only when supplied. Store
+  ambiguity. Neither an absent interval nor an absent critical flag means normal.
+- Haemolysis/lipaemia/icterus or other interference/quality flags and report comments.
+- Directly measured versus source-calculated result and any source-stated method.
+  A source eGFR, LDL or bicarbonate does not become a ClinRx calculation.
+
+Times and states:
+- Ordered, collected, specimen received, measured, reported, clinically available,
+  imported and corrected times, each independently typed with precision/uncertainty.
+- Original offset/clock context and recorded raw timestamp where available.
+- Preliminary/interim/final/pending/cancelled/withdrawn/unknown report state and
+  original/amended/corrected/superseded change state as distinct dimensions.
+- Exact predecessor reference, correction reason, author/issuer and revision lineage.
+- Verification, conflict, provenance limitations and original report attachment/link.
+
+Missingness is not a single null: preserve not supplied, not measured, pending,
+unavailable, not applicable and unknown as appropriate. A failed fetch is transport
+failure, not a patient's missing result. Unknown units stay raw and non-calculable.
+Optional metadata is not fabricated merely to make a record fit this envelope.
+
+ASSEMBLY AND DISPLAY RULES
+1. Verify patient/encounter/repository and explicit cutoff correspondence before
+   assembling. One record's event time cannot override its later availability time.
+2. Preserve unplaced/day/approximate/bounded records. They remain discoverable;
+   they cannot be slotted into an exact hour or matched specimen by timestamp alone.
+3. Repeated import of the same identified source revision is an idempotent replay.
+   Two different source records with equal values are two observations. Reissued
+   reports and changed versions need explicit source identity and lineage handling.
+4. Keep different specimens, assay families and methods inspectable. Troponin I/T,
+   high-sensitivity/conventional, BNP/NT-proBNP, direct/calculated LDL, total/ionised
+   calcium, protein C activity/antigen and drug-calibrated anti-Xa remain distinct.
+5. Catalog search uses names and aliases for discoverability only. It never admits,
+   converts, diagnoses, selects an authoritative revision or asserts equivalence.
+6. Unknown tests stay visible as original reports once a general import owner exists.
+   The current RF2 decoder still rejects unsupported data; the catalog does not
+   bypass that restriction. An unsupported import must be held visibly at its owner,
+   with original content retained, until an approved decoder/owner can accept it.
+7. Source-reported critical flags may be displayed as source assertions. New alert
+   thresholds, assay conversions and trend comparability need separate policies.
+8. Store panel completeness only if the issuer defines the panel and expected
+   components. Do not mark a local KFT panel incomplete by imposing another lab's set.
+9. Keep ordered/requested/collected/pending/resulted distinct. A result catalog alone
+   cannot answer whether an investigation was ordered or is awaiting collection.
+   A future preprocedure view should reuse available results and recorded procedure/
+   indication context. Any suggested investigation needs its own indication-specific
+   policy; a broad catalog does not define a standard preoperative test bundle.
+10. Failed refresh retains explicitly unconfirmed prior data and disables exact-source
+   actions until correspondence is restored, as the current overview already does.
+
+CONTEXT LINKS
+Nutrition: relevant electrolytes, glucose, lipids and selected micronutrients link to
+the same result references; no parallel nutrition-lab database.
+Endocrine: link insulin/steroids, nutrition, collection context and timed challenge
+series without relabelling a random sample as a timed or fasting specimen.
+Thrombophilia: retain acute illness, anticoagulant type and timing, recent transfusion,
+pregnancy and assay comments when recorded. No positive result diagnoses thrombosis
+or automatically changes anticoagulation.
+Drug levels: retain actual dose/sample timing and formulation; unknown timing is not
+a trough. Source target ranges and clinician targets remain separate.
+Transplant: connect graft reports, donor/recipient virology and immunosuppression
+levels while preserving which person's specimen/report was measured.
+
+ACCEPTANCE CASES FOR THE FUTURE GENERAL RESULT PATH (NOT YET IMPLEMENTED)
+INV-01: One creatinine source appears under renal and nutrition detail; one fact.
+INV-02: Two labs issue the same value at the same time; both survive.
+INV-03: A corrected result arrives; old cutoff reconstructs the original, new view
+        identifies the correction without deleting the predecessor.
+INV-04: Same specimen, reissued PDF; no invented new collection or duplicate result.
+INV-05: Troponin I and T, BNP and NT-proBNP remain separately identified.
+INV-06: '<0.01' and 'negative' retain comparator and qualitative meaning.
+INV-07: Absent interval, source flag and unit stay absent; no normality inference.
+INV-08: Test not in catalog remains visible with original report and mapping gap.
+INV-09: Collected before cutoff but available after it is not used as known earlier.
+INV-10: Wrong patient/repository/cutoff is withheld, never joined for convenience.
+INV-11: Cancelled, withdrawn, pending and corrected results remain distinguishable.
+INV-12: Paediatric/pregnancy interval is not replaced with an adult default.
+INV-13: Delayed refresh response cannot replace a newly selected patient's view.
+INV-14: Dynamic endocrine series retains challenge administration and sample sequence.
+INV-15: Specimen rejected/haemolysed and actual negative test are different states.
+INV-16: A panel alias or free-text assay label cannot bypass transport validation.
+
+CURRENT IMPLEMENTATION LIMIT
+ClinicalObservation currently contains concept_id/value and general fact metadata;
+it is not a complete lab report envelope. RF2's service and decoder permit only its
+existing bounded observation concepts. The catalog's explicit presentation mappings
+reuse those accepted discriminants and selected existing circulatory measurements.
+A versioned laboratory contract, bounded assembly, source/history protocol and
+import owner must be implemented together before broader results can flow through.

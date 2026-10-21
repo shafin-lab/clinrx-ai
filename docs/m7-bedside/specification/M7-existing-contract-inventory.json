@@ -1,0 +1,2659 @@
+{
+  "snapshot_head": "0bfef8294d2a5c730fb62413212e26cffb3df502",
+  "status": "Read-only inspected declarations/file digests, not application test evidence",
+  "families": [
+    {
+      "family": "pressure",
+      "existing": "PressureObservation",
+      "proposed_extension": "PressureObservation"
+    },
+    {
+      "family": "cardiac",
+      "existing": "CardiacPerformance",
+      "proposed_extension": "CardiacOutputObservation"
+    },
+    {
+      "family": "volume",
+      "existing": "VolumeMeasurement",
+      "proposed_extension": "VolumeLungObservation"
+    },
+    {
+      "family": "dynamic",
+      "existing": "DynamicMeasurement",
+      "proposed_extension": "DynamicIndex"
+    },
+    {
+      "family": "prediction",
+      "existing": "DevicePrediction",
+      "proposed_extension": "DevicePrediction"
+    },
+    {
+      "family": "perfusion",
+      "existing": "PerfusionObservation",
+      "proposed_extension": "PerfusionObservation"
+    },
+    {
+      "family": "oxygen",
+      "existing": "OxygenTransport",
+      "proposed_extension": "OxygenTransportObservation"
+    },
+    {
+      "family": "lactate",
+      "existing": "LactateResult",
+      "proposed_extension": "LactateObservation"
+    },
+    {
+      "family": "echo",
+      "existing": "EchoObservation",
+      "proposed_extension": "EchoStudy / EchoFinding / StudyView"
+    },
+    {
+      "family": "ECG",
+      "existing": "ECGObservation",
+      "proposed_extension": "RhythmObservation"
+    },
+    {
+      "family": "vasoactive",
+      "existing": "VasoactiveEvent",
+      "proposed_extension": "VasoactiveOrder / VasoactiveDeliveryEvent / InfusionReconciliation"
+    },
+    {
+      "family": "monitoring",
+      "existing": "MonitoringEvent",
+      "proposed_extension": "MonitoringCheck / AcquisitionContext"
+    },
+    {
+      "family": "assessment",
+      "existing": "DynamicAssessment",
+      "proposed_extension": "FluidResponsivenessTest / ApplicabilityCheck"
+    },
+    {
+      "family": "event",
+      "existing": "CirculatoryEvent",
+      "proposed_extension": "ContextualCirculatoryEvent / FluidIntervention"
+    },
+    {
+      "family": "signal",
+      "existing": "SignalManifest",
+      "proposed_extension": "SignalManifest"
+    }
+  ],
+  "files": [
+    {
+      "path": "backend/app/models/clinical/hemodynamics.py",
+      "sha256": "d5c07e74923c40588383d704dedf3cac8253bf75bb765748aae9513449f17271",
+      "bytes": 33760,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": [
+        {
+          "name": "ClockAlignment",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "source_clock",
+              "type": "SourceCode",
+              "declaration": "source_clock: SourceCode"
+            },
+            {
+              "name": "reference_clock",
+              "type": "SourceCode | None",
+              "declaration": "reference_clock: SourceCode | None = None"
+            },
+            {
+              "name": "synchronization",
+              "type": "Literal['synchronized', 'unsynchronized', 'unknown']",
+              "declaration": "synchronization: Literal['synchronized', 'unsynchronized', 'unknown']"
+            },
+            {
+              "name": "offset",
+              "type": "ExactQuantity | None",
+              "declaration": "offset: ExactQuantity | None = None"
+            },
+            {
+              "name": "drift",
+              "type": "ExactQuantity | None",
+              "declaration": "drift: ExactQuantity | None = None"
+            },
+            {
+              "name": "uncertainty",
+              "type": "ExactQuantity | None",
+              "declaration": "uncertainty: ExactQuantity | None = None"
+            },
+            {
+              "name": "assessed",
+              "type": "RecordedTime",
+              "declaration": "assessed: RecordedTime = Field(default_factory=missing_time)"
+            },
+            {
+              "name": "provenance",
+              "type": "BoundedProvenance",
+              "declaration": "provenance: BoundedProvenance"
+            }
+          ]
+        },
+        {
+          "name": "SourceTimeAssertion",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "timestamp_precision",
+              "type": "Literal['M7ExactTimestampInput/v1'] | None",
+              "declaration": "timestamp_precision: Literal['M7ExactTimestampInput/v1'] | None = Field(default=None, exclude_if=lambda v: v is None)"
+            },
+            {
+              "name": "source_timestamp",
+              "type": "Annotated[str, Field(min_length=1, max_length=128)] | None",
+              "declaration": "source_timestamp: Annotated[str, Field(min_length=1, max_length=128)] | None = Field(default=None, exclude_if=lambda v: v is None)"
+            },
+            {
+              "name": "recorded",
+              "type": "RecordedTime",
+              "declaration": "recorded: RecordedTime"
+            },
+            {
+              "name": "source",
+              "type": "SourceCode",
+              "declaration": "source: SourceCode"
+            },
+            {
+              "name": "clock",
+              "type": "Literal['verified', 'unreliable', 'unknown']",
+              "declaration": "clock: Literal['verified', 'unreliable', 'unknown'] = 'unknown'"
+            },
+            {
+              "name": "provenance",
+              "type": "BoundedProvenance",
+              "declaration": "provenance: BoundedProvenance"
+            }
+          ]
+        },
+        {
+          "name": "ClinicalInstant",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "timestamp_precision",
+              "type": "Literal['M7ExactTimestampInput/v1'] | None",
+              "declaration": "timestamp_precision: Literal['M7ExactTimestampInput/v1'] | None = Field(default=None, exclude_if=lambda v: v is None)"
+            },
+            {
+              "name": "recorded",
+              "type": "RecordedTime",
+              "declaration": "recorded: RecordedTime = Field(default_factory=missing_time)"
+            },
+            {
+              "name": "source_timestamp",
+              "type": "Annotated[str, Field(min_length=1, max_length=128)] | None",
+              "declaration": "source_timestamp: Annotated[str, Field(min_length=1, max_length=128)] | None = None"
+            },
+            {
+              "name": "clock",
+              "type": "Literal['verified', 'unreliable', 'unknown']",
+              "declaration": "clock: Literal['verified', 'unreliable', 'unknown'] = 'unknown'"
+            },
+            {
+              "name": "clock_basis",
+              "type": "BoundedProvenance | None",
+              "declaration": "clock_basis: BoundedProvenance | None = None"
+            },
+            {
+              "name": "conflicting",
+              "type": "Annotated[tuple[AwareDatetime, ...], Field(max_length=8)]",
+              "declaration": "conflicting: Annotated[tuple[AwareDatetime, ...], Field(max_length=8)] = ()"
+            },
+            {
+              "name": "alternative_sources",
+              "type": "Annotated[tuple[SourceTimeAssertion, ...], Field(max_length=8)]",
+              "declaration": "alternative_sources: Annotated[tuple[SourceTimeAssertion, ...], Field(max_length=8)] = ()"
+            },
+            {
+              "name": "alignment",
+              "type": "ClockAlignment | None",
+              "declaration": "alignment: ClockAlignment | None = None"
+            },
+            {
+              "name": "conflicting_source_timestamps",
+              "type": "Annotated[tuple[str, ...], Field(max_length=8, exclude_if=lambda v: not v)]",
+              "declaration": "conflicting_source_timestamps: Annotated[tuple[str, ...], Field(max_length=8, exclude_if=lambda v: not v)] = ()"
+            }
+          ]
+        },
+        {
+          "name": "NumericResult",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "result_type",
+              "type": "Literal['numeric']",
+              "declaration": "result_type: Literal['numeric'] = 'numeric'"
+            },
+            {
+              "name": "quantity",
+              "type": "ExactQuantity",
+              "declaration": "quantity: ExactQuantity"
+            },
+            {
+              "name": "comparator",
+              "type": "Literal['=', '<', '<=', '>', '>=']",
+              "declaration": "comparator: Literal['=', '<', '<=', '>', '>='] = '='"
+            }
+          ]
+        },
+        {
+          "name": "QualitativeResult",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "result_type",
+              "type": "Literal['qualitative']",
+              "declaration": "result_type: Literal['qualitative'] = 'qualitative'"
+            },
+            {
+              "name": "finding",
+              "type": "RecordedConcept",
+              "declaration": "finding: RecordedConcept"
+            },
+            {
+              "name": "scale",
+              "type": "SourceCode | None",
+              "declaration": "scale: SourceCode | None = None"
+            }
+          ]
+        },
+        {
+          "name": "MissingResult",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "result_type",
+              "type": "Literal['missing']",
+              "declaration": "result_type: Literal['missing'] = 'missing'"
+            },
+            {
+              "name": "status",
+              "type": "Literal['unknown', 'missing', 'not_measured', 'not_applicable']",
+              "declaration": "status: Literal['unknown', 'missing', 'not_measured', 'not_applicable']"
+            },
+            {
+              "name": "reason",
+              "type": "Text",
+              "declaration": "reason: Text"
+            }
+          ]
+        },
+        {
+          "name": "EvidenceQuality",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "status",
+              "type": "Literal['acceptable', 'suspect', 'invalid', 'unknown']",
+              "declaration": "status: Literal['acceptable', 'suspect', 'invalid', 'unknown'] = 'unknown'"
+            },
+            {
+              "name": "artifacts",
+              "type": "Notes",
+              "declaration": "artifacts: Notes = ()"
+            },
+            {
+              "name": "limitations",
+              "type": "Notes",
+              "declaration": "limitations: Notes = ()"
+            },
+            {
+              "name": "provenance",
+              "type": "BoundedProvenance | None",
+              "declaration": "provenance: BoundedProvenance | None = None"
+            }
+          ]
+        },
+        {
+          "name": "EvidenceBinding",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "role",
+              "type": "Literal['device', 'calibration', 'zeroing', 'specimen', 'study', 'episode', 'order', 'preparation', 'dosing_weight', 'delivery', 'context']",
+              "declaration": "role: Literal['device', 'calibration', 'zeroing', 'specimen', 'study', 'episode',\n                  'order', 'preparation', 'dosing_weight', 'delivery', 'context']"
+            },
+            {
+              "name": "scope",
+              "type": "ContextTarget",
+              "declaration": "scope: ContextTarget"
+            },
+            {
+              "name": "status",
+              "type": "Literal['resolved', 'unresolved', 'ambiguous']",
+              "declaration": "status: Literal['resolved', 'unresolved', 'ambiguous']"
+            },
+            {
+              "name": "exact",
+              "type": "Reference | None",
+              "declaration": "exact: Reference | None = None"
+            },
+            {
+              "name": "candidates",
+              "type": "Annotated[tuple[Reference, ...], Field(max_length=16)]",
+              "declaration": "candidates: Annotated[tuple[Reference, ...], Field(max_length=16)] = ()"
+            },
+            {
+              "name": "provenance",
+              "type": "BoundedProvenance",
+              "declaration": "provenance: BoundedProvenance"
+            },
+            {
+              "name": "limitation",
+              "type": "Text | None",
+              "declaration": "limitation: Text | None = None"
+            }
+          ]
+        },
+        {
+          "name": "DeviceIdentity",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "identity_version",
+              "type": "Literal['1']",
+              "declaration": "identity_version: Literal['1'] = '1'"
+            },
+            {
+              "name": "manufacturer",
+              "type": "SourceCode",
+              "declaration": "manufacturer: SourceCode"
+            },
+            {
+              "name": "platform",
+              "type": "Literal['HemoSphere', 'EV1000', 'PiCCO', 'other']",
+              "declaration": "platform: Literal['HemoSphere', 'EV1000', 'PiCCO', 'other']"
+            },
+            {
+              "name": "product",
+              "type": "SourceCode",
+              "declaration": "product: SourceCode"
+            },
+            {
+              "name": "sensor",
+              "type": "SourceCode | None",
+              "declaration": "sensor: SourceCode | None = None"
+            },
+            {
+              "name": "catheter",
+              "type": "SourceCode | None",
+              "declaration": "catheter: SourceCode | None = None"
+            },
+            {
+              "name": "technology",
+              "type": "Literal['FloTrac', 'AcumenIQ', 'VolumeView', 'SwanGanz', 'PiCCO', 'other']",
+              "declaration": "technology: Literal['FloTrac', 'AcumenIQ', 'VolumeView', 'SwanGanz', 'PiCCO', 'other']"
+            },
+            {
+              "name": "software",
+              "type": "SourceCode | None",
+              "declaration": "software: SourceCode | None = None"
+            },
+            {
+              "name": "serial_identity",
+              "type": "Text | None",
+              "declaration": "serial_identity: Text | None = None"
+            },
+            {
+              "name": "limitations",
+              "type": "Notes",
+              "declaration": "limitations: Notes = ()"
+            }
+          ]
+        },
+        {
+          "name": "AcquisitionApplicability",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "acquisition",
+              "type": "Reference",
+              "declaration": "acquisition: Reference"
+            },
+            {
+              "name": "status",
+              "type": "Literal['applied', 'not_required', 'not_applied', 'unknown']",
+              "declaration": "status: Literal['applied', 'not_required', 'not_applied', 'unknown']"
+            },
+            {
+              "name": "available",
+              "type": "ClinicalInstant",
+              "declaration": "available: ClinicalInstant"
+            },
+            {
+              "name": "provenance",
+              "type": "BoundedProvenance",
+              "declaration": "provenance: BoundedProvenance"
+            }
+          ]
+        },
+        {
+          "name": "Acquisition",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "method",
+              "type": "Literal['invasive_arterial', 'automated_cuff', 'pac', 'rhc', 'bolus_thermodilution', 'continuous_thermodilution', 'pulse_contour', 'transpulmonary_thermodilution', 'direct_fick', 'indirect_fick', 'echo', 'pocus', 'bioreactance', 'ecg_monitor', 'ecg_12_lead', 'blood_gas', 'laboratory', 'bedside_examination', 'source_other', 'unknown']",
+              "declaration": "method: Literal['invasive_arterial', 'automated_cuff', 'pac', 'rhc',\n        'bolus_thermodilution', 'continuous_thermodilution', 'pulse_contour',\n        'transpulmonary_thermodilution', 'direct_fick', 'indirect_fick',\n        'echo', 'pocus', 'bioreactance', 'ecg_monitor', 'ecg_12_lead',\n        'blood_gas', 'laboratory', 'bedside_examination', 'source_other', 'unknown']"
+            },
+            {
+              "name": "source_method",
+              "type": "SourceCode | None",
+              "declaration": "source_method: SourceCode | None = None"
+            },
+            {
+              "name": "device",
+              "type": "DeviceIdentity | None",
+              "declaration": "device: DeviceIdentity | None = None"
+            },
+            {
+              "name": "episode",
+              "type": "SourceCode | None",
+              "declaration": "episode: SourceCode | None = None"
+            },
+            {
+              "name": "parameter",
+              "type": "SourceCode | None",
+              "declaration": "parameter: SourceCode | None = None"
+            },
+            {
+              "name": "parameter_concept",
+              "type": "Text | None",
+              "declaration": "parameter_concept: Text | None = None"
+            },
+            {
+              "name": "algorithm",
+              "type": "SourceCode | None",
+              "declaration": "algorithm: SourceCode | None = None"
+            },
+            {
+              "name": "parameter_support",
+              "type": "Literal['source_documented', 'unsupported', 'unknown']",
+              "declaration": "parameter_support: Literal['source_documented', 'unsupported', 'unknown'] = 'unknown'"
+            },
+            {
+              "name": "support_provenance",
+              "type": "BoundedProvenance | None",
+              "declaration": "support_provenance: BoundedProvenance | None = None"
+            },
+            {
+              "name": "site",
+              "type": "RecordedConcept | None",
+              "declaration": "site: RecordedConcept | None = None"
+            },
+            {
+              "name": "compartment",
+              "type": "Literal['systemic_arterial', 'central_venous', 'right_atrial', 'right_ventricular', 'pulmonary_arterial', 'left_ventricular', 'other', 'unknown']",
+              "declaration": "compartment: Literal['systemic_arterial', 'central_venous', 'right_atrial', 'right_ventricular', 'pulmonary_arterial', 'left_ventricular', 'other', 'unknown'] = 'unknown'"
+            },
+            {
+              "name": "laterality",
+              "type": "Literal['left', 'right', 'midline', 'not_applicable', 'unknown']",
+              "declaration": "laterality: Literal['left', 'right', 'midline', 'not_applicable', 'unknown'] = 'unknown'"
+            },
+            {
+              "name": "respiratory_phase",
+              "type": "RecordedConcept | None",
+              "declaration": "respiratory_phase: RecordedConcept | None = None"
+            },
+            {
+              "name": "position",
+              "type": "RecordedConcept | None",
+              "declaration": "position: RecordedConcept | None = None"
+            },
+            {
+              "name": "reference_level",
+              "type": "RecordedConcept | None",
+              "declaration": "reference_level: RecordedConcept | None = None"
+            },
+            {
+              "name": "calibration",
+              "type": "Literal['adequate', 'inadequate', 'unknown', 'not_applicable']",
+              "declaration": "calibration: Literal['adequate', 'inadequate', 'unknown', 'not_applicable'] = 'unknown'"
+            },
+            {
+              "name": "zeroing",
+              "type": "Literal['adequate', 'inadequate', 'unknown', 'not_applicable']",
+              "declaration": "zeroing: Literal['adequate', 'inadequate', 'unknown', 'not_applicable'] = 'unknown'"
+            },
+            {
+              "name": "calibration_application",
+              "type": "AcquisitionApplicability | None",
+              "declaration": "calibration_application: AcquisitionApplicability | None = Field(default=None, exclude_if=lambda v: v is None)"
+            },
+            {
+              "name": "zeroing_application",
+              "type": "AcquisitionApplicability | None",
+              "declaration": "zeroing_application: AcquisitionApplicability | None = Field(default=None, exclude_if=lambda v: v is None)"
+            },
+            {
+              "name": "calibration_provenance",
+              "type": "BoundedProvenance | None",
+              "declaration": "calibration_provenance: BoundedProvenance | None = None"
+            },
+            {
+              "name": "zeroing_provenance",
+              "type": "BoundedProvenance | None",
+              "declaration": "zeroing_provenance: BoundedProvenance | None = None"
+            },
+            {
+              "name": "interval_start",
+              "type": "RecordedTime",
+              "declaration": "interval_start: RecordedTime = Field(default_factory=missing_time)"
+            },
+            {
+              "name": "interval_end",
+              "type": "RecordedTime",
+              "declaration": "interval_end: RecordedTime = Field(default_factory=missing_time)"
+            },
+            {
+              "name": "averaging",
+              "type": "ExactQuantity | None",
+              "declaration": "averaging: ExactQuantity | None = None"
+            },
+            {
+              "name": "indexing_denominator",
+              "type": "ExactQuantity | None",
+              "declaration": "indexing_denominator: ExactQuantity | None = None"
+            },
+            {
+              "name": "indexing_basis",
+              "type": "BoundedProvenance | None",
+              "declaration": "indexing_basis: BoundedProvenance | None = None"
+            },
+            {
+              "name": "indicator",
+              "type": "RecordedConcept | None",
+              "declaration": "indicator: RecordedConcept | None = None"
+            },
+            {
+              "name": "injection",
+              "type": "ExactQuantity | None",
+              "declaration": "injection: ExactQuantity | None = None"
+            },
+            {
+              "name": "quality",
+              "type": "EvidenceQuality",
+              "declaration": "quality: EvidenceQuality = Field(default_factory=EvidenceQuality)"
+            },
+            {
+              "name": "limitations",
+              "type": "Notes",
+              "declaration": "limitations: Notes = ()"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryFact",
+          "bases": [
+            "PatientFact"
+          ],
+          "fields": [
+            {
+              "name": "contract_version",
+              "type": "Literal['3']",
+              "declaration": "contract_version: Literal['3'] = '3'"
+            },
+            {
+              "name": "origin",
+              "type": "Literal['observed', 'reported']",
+              "declaration": "origin: Literal['observed', 'reported']"
+            },
+            {
+              "name": "provenance",
+              "type": "BoundedProvenance",
+              "declaration": "provenance: BoundedProvenance"
+            },
+            {
+              "name": "occurred",
+              "type": "ClinicalInstant",
+              "declaration": "occurred: ClinicalInstant = Field(default_factory=ClinicalInstant)"
+            },
+            {
+              "name": "available",
+              "type": "ClinicalInstant",
+              "declaration": "available: ClinicalInstant = Field(default_factory=ClinicalInstant)"
+            },
+            {
+              "name": "associations",
+              "type": "Annotated[tuple[EvidenceBinding, ...], Field(max_length=32)]",
+              "declaration": "associations: Annotated[tuple[EvidenceBinding, ...], Field(max_length=32)] = ()"
+            },
+            {
+              "name": "source_identifiers",
+              "type": "Annotated[tuple[SourceCode, ...], Field(max_length=16)]",
+              "declaration": "source_identifiers: Annotated[tuple[SourceCode, ...], Field(max_length=16)] = ()"
+            },
+            {
+              "name": "uncertainty",
+              "type": "Notes",
+              "declaration": "uncertainty: Notes = ()"
+            },
+            {
+              "name": "disclosures",
+              "type": "Notes",
+              "declaration": "disclosures: Notes = ()"
+            },
+            {
+              "name": "record_status",
+              "type": "Literal['recorded', 'withdrawn', 'invalid', 'unknown']",
+              "declaration": "record_status: Literal['recorded', 'withdrawn', 'invalid', 'unknown'] = 'recorded'"
+            }
+          ]
+        },
+        {
+          "name": "Measurement",
+          "bases": [
+            "CirculatoryFact"
+          ],
+          "fields": [
+            {
+              "name": "result",
+              "type": "RecordedResult",
+              "declaration": "result: RecordedResult"
+            },
+            {
+              "name": "acquisition",
+              "type": "Acquisition",
+              "declaration": "acquisition: Acquisition"
+            },
+            {
+              "name": "production",
+              "type": "Literal['direct_measurement', 'monitor_derived', 'source_calculated']",
+              "declaration": "production: Literal['direct_measurement', 'monitor_derived', 'source_calculated']"
+            },
+            {
+              "name": "calculation_method",
+              "type": "SourceCode | None",
+              "declaration": "calculation_method: SourceCode | None = None"
+            },
+            {
+              "name": "calculation_inputs",
+              "type": "Refs",
+              "declaration": "calculation_inputs: Refs = ()"
+            }
+          ]
+        },
+        {
+          "name": "PressureObservation",
+          "bases": [
+            "Measurement"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_pressure']",
+              "declaration": "kind: Literal['circulatory_pressure'] = 'circulatory_pressure'"
+            },
+            {
+              "name": "concept",
+              "type": "Literal['systemic_systolic', 'systemic_diastolic', 'systemic_mean', 'pulse_pressure', 'cvp', 'rap', 'rv_systolic', 'rv_diastolic', 'pasp', 'padp', 'mpap', 'pawp', 'lvedp', 'waveform_finding']",
+              "declaration": "concept: Literal['systemic_systolic', 'systemic_diastolic', 'systemic_mean',\n        'pulse_pressure', 'cvp', 'rap', 'rv_systolic', 'rv_diastolic', 'pasp',\n        'padp', 'mpap', 'pawp', 'lvedp', 'waveform_finding']"
+            }
+          ]
+        },
+        {
+          "name": "CardiacPerformance",
+          "bases": [
+            "Measurement"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_cardiac']",
+              "declaration": "kind: Literal['circulatory_cardiac'] = 'circulatory_cardiac'"
+            },
+            {
+              "name": "concept",
+              "type": "Literal['co', 'ci', 'sv', 'svi', 'cpo', 'cpi', 'heart_rate', 'pulse_rate', 'ef', 'lv_function', 'rv_function', 'pulmonary_flow', 'rv_pa_coupling', 'svr', 'svri', 'pvr', 'pvri', 'tpg', 'dpg', 'arterial_elastance']",
+              "declaration": "concept: Literal['co', 'ci', 'sv', 'svi', 'cpo', 'cpi', 'heart_rate', 'pulse_rate',\n        'ef', 'lv_function', 'rv_function', 'pulmonary_flow', 'rv_pa_coupling',\n        'svr', 'svri', 'pvr', 'pvri', 'tpg', 'dpg', 'arterial_elastance']"
+            }
+          ]
+        },
+        {
+          "name": "VolumeMeasurement",
+          "bases": [
+            "Measurement"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_volume']",
+              "declaration": "kind: Literal['circulatory_volume'] = 'circulatory_volume'"
+            },
+            {
+              "name": "concept",
+              "type": "Literal['gedv', 'gedvi', 'itbv', 'itbvi', 'evlw', 'evlwi', 'pvpi', 'gef', 'cfi', 'ventricular_volume', 'preload_estimate']",
+              "declaration": "concept: Literal['gedv', 'gedvi', 'itbv', 'itbvi', 'evlw', 'evlwi', 'pvpi',\n        'gef', 'cfi', 'ventricular_volume', 'preload_estimate']"
+            }
+          ]
+        },
+        {
+          "name": "DynamicMeasurement",
+          "bases": [
+            "Measurement"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_dynamic']",
+              "declaration": "kind: Literal['circulatory_dynamic'] = 'circulatory_dynamic'"
+            },
+            {
+              "name": "concept",
+              "type": "Literal['ppv', 'svv', 'dynamic_arterial_elastance', 'dp_dt', 'recorded_sv_change', 'recorded_co_change']",
+              "declaration": "concept: Literal['ppv', 'svv', 'dynamic_arterial_elastance', 'dp_dt',\n        'recorded_sv_change', 'recorded_co_change']"
+            }
+          ]
+        },
+        {
+          "name": "DevicePrediction",
+          "bases": [
+            "Measurement"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_device_prediction']",
+              "declaration": "kind: Literal['circulatory_device_prediction'] = 'circulatory_device_prediction'"
+            },
+            {
+              "name": "concept",
+              "type": "Literal['hpi']",
+              "declaration": "concept: Literal['hpi'] = 'hpi'"
+            },
+            {
+              "name": "production",
+              "type": "Literal['monitor_derived']",
+              "declaration": "production: Literal['monitor_derived'] = 'monitor_derived'"
+            },
+            {
+              "name": "disclosures",
+              "type": "Notes",
+              "declaration": "disclosures: Notes = ('Source proprietary prediction; not calculated or clinically interpreted by ClinRx.',)"
+            }
+          ]
+        },
+        {
+          "name": "PerfusionObservation",
+          "bases": [
+            "Measurement"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_perfusion']",
+              "declaration": "kind: Literal['circulatory_perfusion'] = 'circulatory_perfusion'"
+            },
+            {
+              "name": "concept",
+              "type": "Literal['capillary_refill', 'skin_temperature', 'mottling', 'perfusion_index', 'regional_perfusion']",
+              "declaration": "concept: Literal['capillary_refill', 'skin_temperature', 'mottling',\n        'perfusion_index', 'regional_perfusion']"
+            },
+            {
+              "name": "regional_site",
+              "type": "RecordedConcept | None",
+              "declaration": "regional_site: RecordedConcept | None = None"
+            }
+          ]
+        },
+        {
+          "name": "BloodGasContext",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "collected",
+              "type": "ClinicalInstant",
+              "declaration": "collected: ClinicalInstant"
+            },
+            {
+              "name": "fio2",
+              "type": "ExactQuantity | None",
+              "declaration": "fio2: ExactQuantity | None = None"
+            },
+            {
+              "name": "oxygen_device",
+              "type": "RecordedConcept | None",
+              "declaration": "oxygen_device: RecordedConcept | None = None"
+            },
+            {
+              "name": "ventilator_mode",
+              "type": "RecordedConcept | None",
+              "declaration": "ventilator_mode: RecordedConcept | None = None"
+            },
+            {
+              "name": "peep",
+              "type": "ExactQuantity | None",
+              "declaration": "peep: ExactQuantity | None = None"
+            },
+            {
+              "name": "provenance",
+              "type": "BoundedProvenance",
+              "declaration": "provenance: BoundedProvenance"
+            },
+            {
+              "name": "limitations",
+              "type": "Notes",
+              "declaration": "limitations: Notes = ()"
+            }
+          ]
+        },
+        {
+          "name": "OxygenTransport",
+          "bases": [
+            "Measurement"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_oxygen']",
+              "declaration": "kind: Literal['circulatory_oxygen'] = 'circulatory_oxygen'"
+            },
+            {
+              "name": "concept",
+              "type": "Literal['sao2', 'spo2', 'scvo2', 'svo2', 'hemoglobin', 'pao2', 'pvo2', 'cao2', 'cvo2', 'do2', 'vo2', 'extraction_ratio', 'ph', 'paco2', 'bicarbonate', 'base_excess']",
+              "declaration": "concept: Literal['sao2', 'spo2', 'scvo2', 'svo2', 'hemoglobin', 'pao2', 'pvo2',\n        'cao2', 'cvo2', 'do2', 'vo2', 'extraction_ratio',\n        'ph', 'paco2', 'bicarbonate', 'base_excess']"
+            },
+            {
+              "name": "sample_type",
+              "type": "Literal['arterial', 'central_venous', 'mixed_venous', 'peripheral_venous', 'noninvasive', 'unknown']",
+              "declaration": "sample_type: Literal['arterial', 'central_venous', 'mixed_venous', 'peripheral_venous',\n                         'noninvasive', 'unknown']"
+            },
+            {
+              "name": "specimen",
+              "type": "SourceCode | None",
+              "declaration": "specimen: SourceCode | None = None"
+            },
+            {
+              "name": "blood_gas_context",
+              "type": "BloodGasContext | None",
+              "declaration": "blood_gas_context: BloodGasContext | None = Field(default=None, exclude_if=lambda v: v is None)"
+            }
+          ]
+        },
+        {
+          "name": "LactateResult",
+          "bases": [
+            "Measurement"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_lactate']",
+              "declaration": "kind: Literal['circulatory_lactate'] = 'circulatory_lactate'"
+            },
+            {
+              "name": "specimen",
+              "type": "SourceCode | None",
+              "declaration": "specimen: SourceCode | None = None"
+            },
+            {
+              "name": "specimen_type",
+              "type": "RecordedConcept | None",
+              "declaration": "specimen_type: RecordedConcept | None = None"
+            },
+            {
+              "name": "sampling_site",
+              "type": "RecordedConcept | None",
+              "declaration": "sampling_site: RecordedConcept | None = None"
+            },
+            {
+              "name": "blood_source",
+              "type": "Literal['arterial', 'central_venous', 'mixed_venous', 'peripheral_venous', 'other', 'unknown']",
+              "declaration": "blood_source: Literal['arterial', 'central_venous', 'mixed_venous', 'peripheral_venous', 'other', 'unknown'] = 'unknown'"
+            },
+            {
+              "name": "collected",
+              "type": "ClinicalInstant",
+              "declaration": "collected: ClinicalInstant = Field(default_factory=ClinicalInstant)"
+            },
+            {
+              "name": "collection_assertion",
+              "type": "BoundedProvenance | None",
+              "declaration": "collection_assertion: BoundedProvenance | None = None"
+            },
+            {
+              "name": "measured",
+              "type": "ClinicalInstant",
+              "declaration": "measured: ClinicalInstant = Field(default_factory=ClinicalInstant)"
+            },
+            {
+              "name": "reported",
+              "type": "ClinicalInstant",
+              "declaration": "reported: ClinicalInstant = Field(default_factory=ClinicalInstant)"
+            },
+            {
+              "name": "analyzer",
+              "type": "SourceCode | None",
+              "declaration": "analyzer: SourceCode | None = None"
+            },
+            {
+              "name": "report_status",
+              "type": "Literal['final', 'preliminary', 'pending', 'cancelled', 'withdrawn', 'unknown']",
+              "declaration": "report_status: Literal['final', 'preliminary', 'pending', 'cancelled', 'withdrawn', 'unknown']"
+            },
+            {
+              "name": "change",
+              "type": "Literal['original', 'corrected', 'amended', 'superseded']",
+              "declaration": "change: Literal['original', 'corrected', 'amended', 'superseded'] = 'original'"
+            }
+          ]
+        },
+        {
+          "name": "EchoObservation",
+          "bases": [
+            "Measurement"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_echo']",
+              "declaration": "kind: Literal['circulatory_echo'] = 'circulatory_echo'"
+            },
+            {
+              "name": "concept",
+              "type": "Literal['lv_ef', 'lv_dimension', 'lv_volume', 'lvot_vti', 'sv', 'diastolic_function', 'wall_motion', 'rv_dimension', 'rv_function', 'tapse', 'rv_fac', 'tissue_doppler_s', 'rv_strain', 'septal_configuration', 'rv_pressure', 'valve_finding', 'tr_measurement', 'estimated_rvsp', 'estimated_pasp', 'doppler', 'pericardial_effusion', 'tamponade_related_finding', 'ivc_dimension', 'ivc_variation', 'structural_finding']",
+              "declaration": "concept: Literal['lv_ef', 'lv_dimension', 'lv_volume', 'lvot_vti', 'sv',\n        'diastolic_function', 'wall_motion', 'rv_dimension', 'rv_function', 'tapse',\n        'rv_fac', 'tissue_doppler_s', 'rv_strain', 'septal_configuration', 'rv_pressure',\n        'valve_finding', 'tr_measurement', 'estimated_rvsp', 'estimated_pasp', 'doppler',\n        'pericardial_effusion', 'tamponade_related_finding', 'ivc_dimension',\n        'ivc_variation', 'structural_finding']"
+            },
+            {
+              "name": "study",
+              "type": "SourceCode",
+              "declaration": "study: SourceCode"
+            },
+            {
+              "name": "report",
+              "type": "SourceCode",
+              "declaration": "report: SourceCode"
+            },
+            {
+              "name": "report_revision",
+              "type": "Text",
+              "declaration": "report_revision: Text"
+            },
+            {
+              "name": "view",
+              "type": "RecordedConcept | None",
+              "declaration": "view: RecordedConcept | None = None"
+            },
+            {
+              "name": "operator",
+              "type": "Text | None",
+              "declaration": "operator: Text | None = None"
+            },
+            {
+              "name": "reader",
+              "type": "Text | None",
+              "declaration": "reader: Text | None = None"
+            },
+            {
+              "name": "image_references",
+              "type": "Annotated[tuple[SourceCode, ...], Field(max_length=32)]",
+              "declaration": "image_references: Annotated[tuple[SourceCode, ...], Field(max_length=32)] = ()"
+            }
+          ]
+        },
+        {
+          "name": "ECGObservation",
+          "bases": [
+            "Measurement"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_ecg']",
+              "declaration": "kind: Literal['circulatory_ecg'] = 'circulatory_ecg'"
+            },
+            {
+              "name": "concept",
+              "type": "Literal['heart_rate', 'rhythm', 'arrhythmia', 'pr', 'qrs', 'qt', 'qtc', 'st_finding', 'conduction_finding']",
+              "declaration": "concept: Literal['heart_rate', 'rhythm', 'arrhythmia', 'pr', 'qrs', 'qt', 'qtc',\n        'st_finding', 'conduction_finding']"
+            },
+            {
+              "name": "interpretation_source",
+              "type": "Literal['monitor', 'clinician', 'source_algorithm', 'unknown']",
+              "declaration": "interpretation_source: Literal['monitor', 'clinician', 'source_algorithm', 'unknown']"
+            },
+            {
+              "name": "leads",
+              "type": "Annotated[tuple[SourceCode, ...], Field(max_length=16)]",
+              "declaration": "leads: Annotated[tuple[SourceCode, ...], Field(max_length=16)] = ()"
+            },
+            {
+              "name": "report",
+              "type": "SourceCode | None",
+              "declaration": "report: SourceCode | None = None"
+            }
+          ]
+        },
+        {
+          "name": "VasoactiveIdentity",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "identity_version",
+              "type": "Literal['1']",
+              "declaration": "identity_version: Literal['1'] = '1'"
+            },
+            {
+              "name": "source",
+              "type": "SourceCode",
+              "declaration": "source: SourceCode"
+            },
+            {
+              "name": "canonical_id",
+              "type": "Text | None",
+              "declaration": "canonical_id: Text | None = None"
+            },
+            {
+              "name": "mapping",
+              "type": "Literal['mapped', 'unknown', 'ambiguous', 'unsupported']",
+              "declaration": "mapping: Literal['mapped', 'unknown', 'ambiguous', 'unsupported']"
+            },
+            {
+              "name": "mapping_provenance",
+              "type": "BoundedProvenance",
+              "declaration": "mapping_provenance: BoundedProvenance"
+            },
+            {
+              "name": "formulation",
+              "type": "RecordedConcept | None",
+              "declaration": "formulation: RecordedConcept | None = None"
+            },
+            {
+              "name": "limitation",
+              "type": "Text | None",
+              "declaration": "limitation: Text | None = None"
+            }
+          ]
+        },
+        {
+          "name": "DeliveryDetails",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "route",
+              "type": "RecordedConcept | None",
+              "declaration": "route: RecordedConcept | None = None"
+            },
+            {
+              "name": "concentration",
+              "type": "ExactQuantity | None",
+              "declaration": "concentration: ExactQuantity | None = None"
+            },
+            {
+              "name": "rate",
+              "type": "ExactQuantity | None",
+              "declaration": "rate: ExactQuantity | None = None"
+            },
+            {
+              "name": "amount",
+              "type": "ExactQuantity | None",
+              "declaration": "amount: ExactQuantity | None = None"
+            },
+            {
+              "name": "dosing_weight_basis",
+              "type": "Literal['actual', 'ideal', 'adjusted', 'source_other', 'unknown']",
+              "declaration": "dosing_weight_basis: Literal['actual', 'ideal', 'adjusted', 'source_other', 'unknown'] = 'unknown'"
+            },
+            {
+              "name": "dosing_weight",
+              "type": "Reference | None",
+              "declaration": "dosing_weight: Reference | None = None"
+            },
+            {
+              "name": "pump",
+              "type": "SourceCode | None",
+              "declaration": "pump: SourceCode | None = None"
+            },
+            {
+              "name": "channel",
+              "type": "SourceCode | None",
+              "declaration": "channel: SourceCode | None = None"
+            },
+            {
+              "name": "infusion",
+              "type": "SourceCode | None",
+              "declaration": "infusion: SourceCode | None = None"
+            },
+            {
+              "name": "attestation",
+              "type": "BoundedProvenance | None",
+              "declaration": "attestation: BoundedProvenance | None = None"
+            }
+          ]
+        },
+        {
+          "name": "OrderEvent",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "event_type",
+              "type": "Literal['order']",
+              "declaration": "event_type: Literal['order'] = 'order'"
+            },
+            {
+              "name": "prescribed",
+              "type": "DeliveryDetails",
+              "declaration": "prescribed: DeliveryDetails"
+            },
+            {
+              "name": "status",
+              "type": "RecordedConcept",
+              "declaration": "status: RecordedConcept"
+            }
+          ]
+        },
+        {
+          "name": "PreparationEvent",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "event_type",
+              "type": "Literal['preparation']",
+              "declaration": "event_type: Literal['preparation'] = 'preparation'"
+            },
+            {
+              "name": "prepared",
+              "type": "DeliveryDetails",
+              "declaration": "prepared: DeliveryDetails"
+            }
+          ]
+        },
+        {
+          "name": "InfusionEvent",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "event_type",
+              "type": "Literal['initiation', 'rate_change', 'restart', 'bolus']",
+              "declaration": "event_type: Literal['initiation', 'rate_change', 'restart', 'bolus']"
+            },
+            {
+              "name": "delivery",
+              "type": "DeliveryDetails",
+              "declaration": "delivery: DeliveryDetails"
+            }
+          ]
+        },
+        {
+          "name": "InterruptionEvent",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "event_type",
+              "type": "Literal['pause', 'permanent_stop', 'non_delivery']",
+              "declaration": "event_type: Literal['pause', 'permanent_stop', 'non_delivery']"
+            },
+            {
+              "name": "reason",
+              "type": "RecordedConcept",
+              "declaration": "reason: RecordedConcept"
+            },
+            {
+              "name": "attestation",
+              "type": "BoundedProvenance | None",
+              "declaration": "attestation: BoundedProvenance | None = None"
+            }
+          ]
+        },
+        {
+          "name": "VasoactiveEvent",
+          "bases": [
+            "CirculatoryFact"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_vasoactive']",
+              "declaration": "kind: Literal['circulatory_vasoactive'] = 'circulatory_vasoactive'"
+            },
+            {
+              "name": "drug",
+              "type": "VasoactiveIdentity",
+              "declaration": "drug: VasoactiveIdentity"
+            },
+            {
+              "name": "action",
+              "type": "VasoactiveAction",
+              "declaration": "action: VasoactiveAction"
+            },
+            {
+              "name": "source_status",
+              "type": "RecordedConcept",
+              "declaration": "source_status: RecordedConcept"
+            }
+          ]
+        },
+        {
+          "name": "MonitoringEvent",
+          "bases": [
+            "CirculatoryFact"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_monitoring']",
+              "declaration": "kind: Literal['circulatory_monitoring'] = 'circulatory_monitoring'"
+            },
+            {
+              "name": "device",
+              "type": "DeviceIdentity",
+              "declaration": "device: DeviceIdentity"
+            },
+            {
+              "name": "event_type",
+              "type": "Literal['configuration', 'calibration', 'zeroing', 'quality_change']",
+              "declaration": "event_type: Literal['configuration', 'calibration', 'zeroing', 'quality_change']"
+            },
+            {
+              "name": "acquisition",
+              "type": "Acquisition",
+              "declaration": "acquisition: Acquisition"
+            },
+            {
+              "name": "finding",
+              "type": "RecordedConcept",
+              "declaration": "finding: RecordedConcept"
+            }
+          ]
+        },
+        {
+          "name": "DynamicAssessment",
+          "bases": [
+            "CirculatoryFact"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_assessment']",
+              "declaration": "kind: Literal['circulatory_assessment'] = 'circulatory_assessment'"
+            },
+            {
+              "name": "test",
+              "type": "Literal['plr', 'end_expiratory_occlusion', 'mini_fluid_challenge', 'fluid_challenge']",
+              "declaration": "test: Literal['plr', 'end_expiratory_occlusion', 'mini_fluid_challenge', 'fluid_challenge']"
+            },
+            {
+              "name": "protocol",
+              "type": "SourceCode",
+              "declaration": "protocol: SourceCode"
+            },
+            {
+              "name": "baseline",
+              "type": "Refs",
+              "declaration": "baseline: Refs"
+            },
+            {
+              "name": "intervention",
+              "type": "Refs",
+              "declaration": "intervention: Refs"
+            },
+            {
+              "name": "subsequent",
+              "type": "Refs",
+              "declaration": "subsequent: Refs"
+            },
+            {
+              "name": "ventilation_mode",
+              "type": "RecordedConcept | None",
+              "declaration": "ventilation_mode: RecordedConcept | None = None"
+            },
+            {
+              "name": "tidal_volume",
+              "type": "ExactQuantity | None",
+              "declaration": "tidal_volume: ExactQuantity | None = None"
+            },
+            {
+              "name": "tidal_volume_basis",
+              "type": "Text | None",
+              "declaration": "tidal_volume_basis: Text | None = None"
+            },
+            {
+              "name": "rhythm",
+              "type": "RecordedConcept | None",
+              "declaration": "rhythm: RecordedConcept | None = None"
+            },
+            {
+              "name": "spontaneous_effort",
+              "type": "Literal['present', 'absent', 'unknown']",
+              "declaration": "spontaneous_effort: Literal['present', 'absent', 'unknown'] = 'unknown'"
+            },
+            {
+              "name": "position",
+              "type": "RecordedConcept | None",
+              "declaration": "position: RecordedConcept | None = None"
+            },
+            {
+              "name": "quality",
+              "type": "EvidenceQuality",
+              "declaration": "quality: EvidenceQuality = Field(default_factory=EvidenceQuality)"
+            },
+            {
+              "name": "reported_interpretation",
+              "type": "RecordedConcept | None",
+              "declaration": "reported_interpretation: RecordedConcept | None = None"
+            },
+            {
+              "name": "interpretation_provenance",
+              "type": "BoundedProvenance | None",
+              "declaration": "interpretation_provenance: BoundedProvenance | None = None"
+            }
+          ]
+        },
+        {
+          "name": "RecordedCirculatoryInterval",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "start",
+              "type": "ClinicalInstant",
+              "declaration": "start: ClinicalInstant"
+            },
+            {
+              "name": "end",
+              "type": "ClinicalInstant",
+              "declaration": "end: ClinicalInstant"
+            },
+            {
+              "name": "provenance",
+              "type": "BoundedProvenance",
+              "declaration": "provenance: BoundedProvenance"
+            },
+            {
+              "name": "limitations",
+              "type": "Notes",
+              "declaration": "limitations: Notes = ()"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryEvent",
+          "bases": [
+            "CirculatoryFact"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_event']",
+              "declaration": "kind: Literal['circulatory_event'] = 'circulatory_event'"
+            },
+            {
+              "name": "event_type",
+              "type": "Literal['fluid_bolus', 'fluid_challenge', 'transfusion', 'bleeding', 'arrhythmia', 'arrest', 'cardioversion', 'pacing', 'reperfusion', 'surgery', 'transplantation', 'ventilation_change', 'crrt_start', 'crrt_interruption', 'position_change', 'other']",
+              "declaration": "event_type: Literal['fluid_bolus', 'fluid_challenge', 'transfusion', 'bleeding',\n        'arrhythmia', 'arrest', 'cardioversion', 'pacing', 'reperfusion', 'surgery',\n        'transplantation', 'ventilation_change', 'crrt_start', 'crrt_interruption',\n        'position_change', 'other']"
+            },
+            {
+              "name": "description",
+              "type": "RecordedConcept",
+              "declaration": "description: RecordedConcept"
+            },
+            {
+              "name": "external_evidence",
+              "type": "Annotated[tuple[SourceCode, ...], Field(max_length=32)]",
+              "declaration": "external_evidence: Annotated[tuple[SourceCode, ...], Field(max_length=32)] = ()"
+            },
+            {
+              "name": "recorded_amount",
+              "type": "ExactQuantity | None",
+              "declaration": "recorded_amount: ExactQuantity | None = None"
+            },
+            {
+              "name": "recorded_interval",
+              "type": "RecordedCirculatoryInterval | None",
+              "declaration": "recorded_interval: RecordedCirculatoryInterval | None = Field(default=None, exclude_if=lambda v: v is None)"
+            }
+          ]
+        },
+        {
+          "name": "SignalManifest",
+          "bases": [
+            "CirculatoryFact"
+          ],
+          "fields": [
+            {
+              "name": "kind",
+              "type": "Literal['circulatory_signal']",
+              "declaration": "kind: Literal['circulatory_signal'] = 'circulatory_signal'"
+            },
+            {
+              "name": "signal",
+              "type": "Literal['ecg', 'arterial_pressure', 'cvp', 'pap', 'beat_to_beat', 'monitor_trend']",
+              "declaration": "signal: Literal['ecg', 'arterial_pressure', 'cvp', 'pap', 'beat_to_beat', 'monitor_trend']"
+            },
+            {
+              "name": "device",
+              "type": "DeviceIdentity",
+              "declaration": "device: DeviceIdentity"
+            },
+            {
+              "name": "channel",
+              "type": "SourceCode",
+              "declaration": "channel: SourceCode"
+            },
+            {
+              "name": "start",
+              "type": "ClinicalInstant",
+              "declaration": "start: ClinicalInstant"
+            },
+            {
+              "name": "end",
+              "type": "ClinicalInstant",
+              "declaration": "end: ClinicalInstant"
+            },
+            {
+              "name": "sample_rate",
+              "type": "ExactQuantity | None",
+              "declaration": "sample_rate: ExactQuantity | None = None"
+            },
+            {
+              "name": "sample_count",
+              "type": "Annotated[int, Field(strict=True, ge=0)] | None",
+              "declaration": "sample_count: Annotated[int, Field(strict=True, ge=0)] | None = None"
+            },
+            {
+              "name": "units",
+              "type": "RecordedConcept",
+              "declaration": "units: RecordedConcept"
+            },
+            {
+              "name": "encoding",
+              "type": "SourceCode",
+              "declaration": "encoding: SourceCode"
+            },
+            {
+              "name": "content",
+              "type": "SourceCode | None",
+              "declaration": "content: SourceCode | None = None"
+            },
+            {
+              "name": "content_sha256",
+              "type": "Annotated[str, Field(pattern='^[0-9a-f]{64}$')] | None",
+              "declaration": "content_sha256: Annotated[str, Field(pattern='^[0-9a-f]{64}$')] | None = None"
+            },
+            {
+              "name": "availability",
+              "type": "Literal['available', 'unavailable', 'unknown']",
+              "declaration": "availability: Literal['available', 'unavailable', 'unknown']"
+            },
+            {
+              "name": "gaps",
+              "type": "Annotated[tuple[RecordedTime, ...], Field(max_length=64)]",
+              "declaration": "gaps: Annotated[tuple[RecordedTime, ...], Field(max_length=64)] = ()"
+            },
+            {
+              "name": "quality",
+              "type": "EvidenceQuality",
+              "declaration": "quality: EvidenceQuality = Field(default_factory=EvidenceQuality)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/execution/M7-B.md",
+      "sha256": "f73f2b240cce73a9939850a61123a998022f51f68397064629b360fc62cc09cc",
+      "bytes": 9012,
+      "status": "read_only_inspection_not_executed_test"
+    },
+    {
+      "path": "backend/app/execution/M7-C.md",
+      "sha256": "bcee7261474f8334540fe68239d81aa63dea116ca9d3c53be6d1165d30896dd0",
+      "bytes": 6779,
+      "status": "read_only_inspection_not_executed_test"
+    },
+    {
+      "path": "backend/app/execution/M7-B-CORRECTIONS.md",
+      "sha256": "8e4903a217ba263abcd6944aa0d276350a0a1234767f548cd3b1e6cac36febf9",
+      "bytes": 17093,
+      "status": "read_only_inspection_not_executed_test"
+    },
+    {
+      "path": "docs/02-clinical-standards/CLINRX-M7-PLV-POLICY-001.md",
+      "sha256": "66ec449f40a860b939ed7ba42bfa73bb0d8b5b3a42f3d92fa3f8f963d26a4d49",
+      "bytes": 3593,
+      "status": "read_only_inspection_not_executed_test"
+    },
+    {
+      "path": "backend/app/execution/patient_state_v3.py",
+      "sha256": "e7fc4d9924ceb8315e1c38e8707eee8150d9e06944bef5c3f7fa15aa0671791b",
+      "bytes": 6103,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": [
+        {
+          "name": "PatientStateScopeV3",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "contract_version",
+              "type": "Literal['3']",
+              "declaration": "contract_version: Literal['3'] = '3'"
+            },
+            {
+              "name": "patient_id",
+              "type": "Text",
+              "declaration": "patient_id: Text"
+            },
+            {
+              "name": "encounter_id",
+              "type": "Text",
+              "declaration": "encounter_id: Text"
+            },
+            {
+              "name": "review_start",
+              "type": "AwareDatetime",
+              "declaration": "review_start: AwareDatetime"
+            },
+            {
+              "name": "review_end",
+              "type": "AwareDatetime",
+              "declaration": "review_end: AwareDatetime"
+            },
+            {
+              "name": "repository_cutoff",
+              "type": "RepositoryCutoff",
+              "declaration": "repository_cutoff: RepositoryCutoff"
+            }
+          ]
+        },
+        {
+          "name": "RetainedStateItemV3",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "fact",
+              "type": "CirculatoryRecord",
+              "declaration": "fact: CirculatoryRecord"
+            },
+            {
+              "name": "expected_digest",
+              "type": "Digest",
+              "declaration": "expected_digest: Digest"
+            },
+            {
+              "name": "ingestion",
+              "type": "IngestionMetadata",
+              "declaration": "ingestion: IngestionMetadata"
+            },
+            {
+              "name": "inclusion",
+              "type": "Literal['in_window', 'contextual', 'unplaced']",
+              "declaration": "inclusion: Literal['in_window', 'contextual', 'unplaced']"
+            },
+            {
+              "name": "contextual_for",
+              "type": "Annotated[tuple[Reference, ...], Field(max_length=64)]",
+              "declaration": "contextual_for: Annotated[tuple[Reference, ...], Field(max_length=64)] = ()"
+            },
+            {
+              "name": "disclosures",
+              "type": "Annotated[tuple[Text, ...], Field(min_length=1, max_length=32)]",
+              "declaration": "disclosures: Annotated[tuple[Text, ...], Field(min_length=1, max_length=32)]"
+            }
+          ]
+        },
+        {
+          "name": "StateIssueV3",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "reference",
+              "type": "Reference",
+              "declaration": "reference: Reference"
+            },
+            {
+              "name": "reason",
+              "type": "Literal['outside_profile', 'withdrawn_terminal', 'outside_window', 'temporal_uncertainty', 'unplaced', 'contextual', 'unresolved_association', 'historical_association', 'missing_association', 'uncertain_quality']",
+              "declaration": "reason: Literal['outside_profile', 'withdrawn_terminal', 'outside_window',\n        'temporal_uncertainty', 'unplaced', 'contextual', 'unresolved_association',\n        'historical_association', 'missing_association', 'uncertain_quality']"
+            }
+          ]
+        },
+        {
+          "name": "CoverageV3",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "source_completeness",
+              "type": "Literal['unknown']",
+              "declaration": "source_completeness: Literal['unknown'] = 'unknown'"
+            },
+            {
+              "name": "continuity",
+              "type": "Literal['not_established']",
+              "declaration": "continuity: Literal['not_established'] = 'not_established'"
+            },
+            {
+              "name": "candidate_rows",
+              "type": "Annotated[int, Field(strict=True, ge=0)]",
+              "declaration": "candidate_rows: Annotated[int, Field(strict=True, ge=0)]"
+            },
+            {
+              "name": "terminal_count",
+              "type": "Annotated[int, Field(strict=True, ge=0)]",
+              "declaration": "terminal_count: Annotated[int, Field(strict=True, ge=0)]"
+            },
+            {
+              "name": "retained_count",
+              "type": "Annotated[int, Field(strict=True, ge=0)]",
+              "declaration": "retained_count: Annotated[int, Field(strict=True, ge=0)]"
+            },
+            {
+              "name": "limitations",
+              "type": "tuple[Text, ...]",
+              "declaration": "limitations: tuple[Text, ...] = ('Only declared recorded M7 evidence; absence and continuous physiology are not established.',)"
+            }
+          ]
+        },
+        {
+          "name": "PatientStateSnapshotV3",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "contract_version",
+              "type": "Literal['3']",
+              "declaration": "contract_version: Literal['3'] = '3'"
+            },
+            {
+              "name": "scope",
+              "type": "PatientStateScopeV3",
+              "declaration": "scope: PatientStateScopeV3"
+            },
+            {
+              "name": "profile_id",
+              "type": "Literal['RecordedCirculatoryEvidence']",
+              "declaration": "profile_id: Literal['RecordedCirculatoryEvidence'] = 'RecordedCirculatoryEvidence'"
+            },
+            {
+              "name": "profile_version",
+              "type": "Literal['1']",
+              "declaration": "profile_version: Literal['1'] = '1'"
+            },
+            {
+              "name": "items",
+              "type": "Annotated[tuple[RetainedStateItemV3, ...], Field(max_length=512)]",
+              "declaration": "items: Annotated[tuple[RetainedStateItemV3, ...], Field(max_length=512)] = ()"
+            },
+            {
+              "name": "issues",
+              "type": "Annotated[tuple[StateIssueV3, ...], Field(max_length=1024)]",
+              "declaration": "issues: Annotated[tuple[StateIssueV3, ...], Field(max_length=1024)] = ()"
+            },
+            {
+              "name": "coverage",
+              "type": "CoverageV3",
+              "declaration": "coverage: CoverageV3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/execution/patient_state_v3_assembly.py",
+      "sha256": "cf34275f31bb1a91881600ce007557fe3405587636530c3a49e1b7f027d126d1",
+      "bytes": 9599,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": [
+        {
+          "name": "AssemblyLimitsV3",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "history",
+              "type": "HistoryBudget",
+              "declaration": "history: HistoryBudget = Field(default_factory=HistoryBudget)"
+            },
+            {
+              "name": "max_items",
+              "type": "Annotated[int, Field(strict=True, ge=1, le=512)]",
+              "declaration": "max_items: Annotated[int, Field(strict=True, ge=1, le=512)] = 512"
+            },
+            {
+              "name": "max_relationships",
+              "type": "Annotated[int, Field(strict=True, ge=1, le=2048)]",
+              "declaration": "max_relationships: Annotated[int, Field(strict=True, ge=1, le=2048)] = 2048"
+            },
+            {
+              "name": "max_contextual",
+              "type": "Annotated[int, Field(strict=True, ge=1, le=256)]",
+              "declaration": "max_contextual: Annotated[int, Field(strict=True, ge=1, le=256)] = 256"
+            },
+            {
+              "name": "max_groups",
+              "type": "Annotated[int, Field(strict=True, ge=1, le=256)]",
+              "declaration": "max_groups: Annotated[int, Field(strict=True, ge=1, le=256)] = 256"
+            },
+            {
+              "name": "max_signals",
+              "type": "Annotated[int, Field(strict=True, ge=1, le=64)]",
+              "declaration": "max_signals: Annotated[int, Field(strict=True, ge=1, le=64)] = 64"
+            },
+            {
+              "name": "max_depth",
+              "type": "Annotated[int, Field(strict=True, ge=0, le=8)]",
+              "declaration": "max_depth: Annotated[int, Field(strict=True, ge=0, le=8)] = 8"
+            },
+            {
+              "name": "max_fanout",
+              "type": "Annotated[int, Field(strict=True, ge=1, le=64)]",
+              "declaration": "max_fanout: Annotated[int, Field(strict=True, ge=1, le=64)] = 64"
+            },
+            {
+              "name": "max_steps",
+              "type": "Annotated[int, Field(strict=True, ge=1, le=8192)]",
+              "declaration": "max_steps: Annotated[int, Field(strict=True, ge=1, le=8192)] = 8192"
+            },
+            {
+              "name": "max_issues",
+              "type": "Annotated[int, Field(strict=True, ge=1, le=1024)]",
+              "declaration": "max_issues: Annotated[int, Field(strict=True, ge=1, le=1024)] = 1024"
+            },
+            {
+              "name": "max_result_bytes",
+              "type": "Annotated[int, Field(strict=True, ge=1, le=16777216)]",
+              "declaration": "max_result_bytes: Annotated[int, Field(strict=True, ge=1, le=16777216)] = 16777216"
+            }
+          ]
+        },
+        {
+          "name": "AssemblyRequestV3",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "scope",
+              "type": "PatientStateScopeV3",
+              "declaration": "scope: PatientStateScopeV3"
+            },
+            {
+              "name": "profile_id",
+              "type": "Literal['RecordedCirculatoryEvidence']",
+              "declaration": "profile_id: Literal['RecordedCirculatoryEvidence'] = 'RecordedCirculatoryEvidence'"
+            },
+            {
+              "name": "profile_version",
+              "type": "Literal['1']",
+              "declaration": "profile_version: Literal['1'] = '1'"
+            },
+            {
+              "name": "limits",
+              "type": "AssemblyLimitsV3",
+              "declaration": "limits: AssemblyLimitsV3 = Field(default_factory=AssemblyLimitsV3)"
+            }
+          ]
+        },
+        {
+          "name": "PatientStateAssemblyResultV3",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "request",
+              "type": "AssemblyRequestV3",
+              "declaration": "request: AssemblyRequestV3"
+            },
+            {
+              "name": "snapshot",
+              "type": "PatientStateSnapshotV3",
+              "declaration": "snapshot: PatientStateSnapshotV3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/execution/patient_state_v3_inference.py",
+      "sha256": "69462af92b950c24570c0bf0b2e874fbf9b01c7c31d55716fc5a635d571efbc4",
+      "bytes": 13292,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": [
+        {
+          "name": "CirculatoryInferenceError",
+          "bases": [
+            "Exception"
+          ],
+          "fields": []
+        },
+        {
+          "name": "EvidencePin",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "reference",
+              "type": "Reference",
+              "declaration": "reference: Reference"
+            },
+            {
+              "name": "expected_digest",
+              "type": "Digest",
+              "declaration": "expected_digest: Digest"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryTimingRequest",
+          "bases": [
+            "Contract"
+          ],
+          "fields": [
+            {
+              "name": "eligibility_policy",
+              "type": "Annotated[Literal['SyntheticPLVEligibility/1'] | None, Field(exclude_if=lambda v: v is None)]",
+              "declaration": "eligibility_policy: Annotated[Literal['SyntheticPLVEligibility/1'] | None, Field(exclude_if=lambda v: v is None)] = None"
+            },
+            {
+              "name": "scope",
+              "type": "PatientStateScopeV3",
+              "declaration": "scope: PatientStateScopeV3"
+            },
+            {
+              "name": "pressure",
+              "type": "EvidencePin",
+              "declaration": "pressure: EvidencePin"
+            },
+            {
+              "name": "lactate",
+              "type": "EvidencePin",
+              "declaration": "lactate: EvidencePin"
+            },
+            {
+              "name": "vasopressor",
+              "type": "EvidencePin",
+              "declaration": "vasopressor: EvidencePin"
+            },
+            {
+              "name": "supporting",
+              "type": "Annotated[tuple[EvidencePin, ...], Field(max_length=32)]",
+              "declaration": "supporting: Annotated[tuple[EvidencePin, ...], Field(max_length=32)] = ()"
+            },
+            {
+              "name": "expected_assembly_digest",
+              "type": "Digest",
+              "declaration": "expected_assembly_digest: Digest"
+            },
+            {
+              "name": "inference_id",
+              "type": "Text",
+              "declaration": "inference_id: Text"
+            },
+            {
+              "name": "revision",
+              "type": "Text",
+              "declaration": "revision: Text = '1'"
+            },
+            {
+              "name": "executed_at",
+              "type": "AwareDatetime",
+              "declaration": "executed_at: AwareDatetime"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/execution/patient_state_v3_execution.py",
+      "sha256": "8c534868d5f899b9250b2c4fc306628760a073e8a651f1b31db2f9ff93a4fbb4",
+      "bytes": 26217,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": [
+        {
+          "name": "CirculatoryExecutionError",
+          "bases": [
+            "Exception"
+          ],
+          "fields": []
+        },
+        {
+          "name": "ProtectedContract",
+          "bases": [
+            "DomainModel"
+          ],
+          "fields": []
+        },
+        {
+          "name": "CirculatoryExecutionRequest",
+          "bases": [
+            "ProtectedContract"
+          ],
+          "fields": [
+            {
+              "name": "execution_id",
+              "type": "UUID",
+              "declaration": "execution_id: UUID"
+            },
+            {
+              "name": "target",
+              "type": "OutputTarget",
+              "declaration": "target: OutputTarget"
+            },
+            {
+              "name": "actor",
+              "type": "Text",
+              "declaration": "actor: Text"
+            },
+            {
+              "name": "inference_request",
+              "type": "CirculatoryTimingRequest",
+              "declaration": "inference_request: CirculatoryTimingRequest"
+            },
+            {
+              "name": "assembly_request",
+              "type": "AssemblyRequestV3",
+              "declaration": "assembly_request: AssemblyRequestV3"
+            },
+            {
+              "name": "inference_cutoff",
+              "type": "RepositoryCutoff",
+              "declaration": "inference_cutoff: RepositoryCutoff"
+            },
+            {
+              "name": "expected_inference_digest",
+              "type": "Digest",
+              "declaration": "expected_inference_digest: Digest"
+            },
+            {
+              "name": "requested_at",
+              "type": "AwareDatetime",
+              "declaration": "requested_at: AwareDatetime"
+            },
+            {
+              "name": "workflow",
+              "type": "Literal['SyntheticCirculatoryProtectedExecution/v1']",
+              "declaration": "workflow: Literal['SyntheticCirculatoryProtectedExecution/v1'] = WORKFLOW"
+            },
+            {
+              "name": "profile",
+              "type": "Literal['RecordedCirculatoryEvidence:1']",
+              "declaration": "profile: Literal['RecordedCirculatoryEvidence:1'] = PROFILE"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryEvidenceWitness",
+          "bases": [
+            "ProtectedContract"
+          ],
+          "fields": [
+            {
+              "name": "role",
+              "type": "Literal['P', 'L', 'V', 'support']",
+              "declaration": "role: Literal['P', 'L', 'V', 'support']"
+            },
+            {
+              "name": "consumed",
+              "type": "Reference",
+              "declaration": "consumed: Reference"
+            },
+            {
+              "name": "item_digest",
+              "type": "Digest",
+              "declaration": "item_digest: Digest"
+            },
+            {
+              "name": "source_digest",
+              "type": "Digest",
+              "declaration": "source_digest: Digest"
+            },
+            {
+              "name": "original_ingestion",
+              "type": "IngestionMetadata",
+              "declaration": "original_ingestion: IngestionMetadata"
+            },
+            {
+              "name": "terminal",
+              "type": "Reference",
+              "declaration": "terminal: Reference"
+            },
+            {
+              "name": "terminal_source_digest",
+              "type": "Digest",
+              "declaration": "terminal_source_digest: Digest"
+            },
+            {
+              "name": "terminal_ingestion",
+              "type": "IngestionMetadata",
+              "declaration": "terminal_ingestion: IngestionMetadata"
+            },
+            {
+              "name": "suitability",
+              "type": "Literal['established', 'failed', 'unavailable']",
+              "declaration": "suitability: Literal['established', 'failed', 'unavailable']"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryInferenceWitness",
+          "bases": [
+            "ProtectedContract"
+          ],
+          "fields": [
+            {
+              "name": "reference",
+              "type": "Reference",
+              "declaration": "reference: Reference"
+            },
+            {
+              "name": "expected_digest",
+              "type": "Digest",
+              "declaration": "expected_digest: Digest"
+            },
+            {
+              "name": "observed_digest",
+              "type": "Digest",
+              "declaration": "observed_digest: Digest"
+            },
+            {
+              "name": "ingestion",
+              "type": "IngestionMetadata",
+              "declaration": "ingestion: IngestionMetadata"
+            },
+            {
+              "name": "terminal",
+              "type": "Reference",
+              "declaration": "terminal: Reference"
+            },
+            {
+              "name": "terminal_digest",
+              "type": "Digest",
+              "declaration": "terminal_digest: Digest"
+            },
+            {
+              "name": "terminal_ingestion",
+              "type": "IngestionMetadata",
+              "declaration": "terminal_ingestion: IngestionMetadata"
+            },
+            {
+              "name": "method",
+              "type": "Reference",
+              "declaration": "method: Reference"
+            },
+            {
+              "name": "inputs",
+              "type": "tuple[Reference, ...]",
+              "declaration": "inputs: tuple[Reference, ...]"
+            },
+            {
+              "name": "dependencies",
+              "type": "tuple[Reference, ...]",
+              "declaration": "dependencies: tuple[Reference, ...]"
+            },
+            {
+              "name": "declarations",
+              "type": "tuple[LineageEdge, ...]",
+              "declaration": "declarations: tuple[LineageEdge, ...]"
+            },
+            {
+              "name": "reconstruction_digest",
+              "type": "Digest | None",
+              "declaration": "reconstruction_digest: Digest | None"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryFinalRecheck",
+          "bases": [
+            "ProtectedContract"
+          ],
+          "fields": [
+            {
+              "name": "scope",
+              "type": "PatientStateScope",
+              "declaration": "scope: PatientStateScope"
+            },
+            {
+              "name": "inference_cutoff",
+              "type": "RepositoryCutoff",
+              "declaration": "inference_cutoff: RepositoryCutoff"
+            },
+            {
+              "name": "final_cutoff",
+              "type": "RepositoryCutoff",
+              "declaration": "final_cutoff: RepositoryCutoff"
+            },
+            {
+              "name": "evidence",
+              "type": "tuple[CirculatoryEvidenceWitness, ...]",
+              "declaration": "evidence: tuple[CirculatoryEvidenceWitness, ...]"
+            },
+            {
+              "name": "terminal_facts",
+              "type": "tuple[CirculatoryRecord, ...]",
+              "declaration": "terminal_facts: tuple[CirculatoryRecord, ...]"
+            },
+            {
+              "name": "inference",
+              "type": "CirculatoryInferenceWitness",
+              "declaration": "inference: CirculatoryInferenceWitness"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryEvidence",
+          "bases": [
+            "ProtectedContract"
+          ],
+          "fields": [
+            {
+              "name": "request",
+              "type": "CirculatoryExecutionRequest",
+              "declaration": "request: CirculatoryExecutionRequest"
+            },
+            {
+              "name": "items",
+              "type": "tuple[RetainedStateItem, ...]",
+              "declaration": "items: tuple[RetainedStateItem, ...]"
+            },
+            {
+              "name": "facts",
+              "type": "tuple[CirculatoryRecord, ...]",
+              "declaration": "facts: tuple[CirculatoryRecord, ...]"
+            },
+            {
+              "name": "inference",
+              "type": "ClinicalInference",
+              "declaration": "inference: ClinicalInference"
+            },
+            {
+              "name": "inference_ingestion",
+              "type": "IngestionMetadata",
+              "declaration": "inference_ingestion: IngestionMetadata"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryRuntime",
+          "bases": [
+            "ProtectedContract"
+          ],
+          "fields": [
+            {
+              "name": "started_at",
+              "type": "AwareDatetime",
+              "declaration": "started_at: AwareDatetime"
+            },
+            {
+              "name": "observed_at",
+              "type": "AwareDatetime",
+              "declaration": "observed_at: AwareDatetime"
+            },
+            {
+              "name": "decision_at",
+              "type": "AwareDatetime",
+              "declaration": "decision_at: AwareDatetime"
+            },
+            {
+              "name": "finalized_at",
+              "type": "AwareDatetime",
+              "declaration": "finalized_at: AwareDatetime"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryExecutionRecord",
+          "bases": [
+            "ProtectedContract"
+          ],
+          "fields": [
+            {
+              "name": "request",
+              "type": "CirculatoryExecutionRequest",
+              "declaration": "request: CirculatoryExecutionRequest"
+            },
+            {
+              "name": "final_recheck",
+              "type": "CirculatoryFinalRecheck",
+              "declaration": "final_recheck: CirculatoryFinalRecheck"
+            },
+            {
+              "name": "evidence",
+              "type": "CirculatoryEvidence",
+              "declaration": "evidence: CirculatoryEvidence"
+            },
+            {
+              "name": "context_digest",
+              "type": "Digest",
+              "declaration": "context_digest: Digest"
+            },
+            {
+              "name": "decision",
+              "type": "ReleaseDecision",
+              "declaration": "decision: ReleaseDecision"
+            },
+            {
+              "name": "runtime",
+              "type": "CirculatoryRuntime",
+              "declaration": "runtime: CirculatoryRuntime"
+            },
+            {
+              "name": "implementation",
+              "type": "Reference",
+              "declaration": "implementation: Reference = IMPLEMENTATION"
+            },
+            {
+              "name": "payload_version",
+              "type": "Literal[1]",
+              "declaration": "payload_version: Literal[1] = 1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/execution/patient_state_v3_workflow.py",
+      "sha256": "6a69b1efa893c16b75371d7bf7e321b4ce718a2464b701138e59d4d037c3c88a",
+      "bytes": 15338,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": [
+        {
+          "name": "CirculatoryReconciliationResult",
+          "bases": [
+            "DomainModel"
+          ],
+          "fields": [
+            {
+              "name": "status",
+              "type": "Literal['committed_match', 'absent']",
+              "declaration": "status: Literal['committed_match','absent']"
+            },
+            {
+              "name": "stored",
+              "type": "StoredCirculatoryExecution | None",
+              "declaration": "stored: StoredCirculatoryExecution | None"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/circulatory_product_service.py",
+      "sha256": "11f4142f271ee735898b259e0a2a372c76bc95bcba537dc85803fc5105cf2a69",
+      "bytes": 7477,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": [
+        {
+          "name": "CirculatoryProductService",
+          "bases": [
+            "PatientStateProductService"
+          ],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "path": "backend/app/api/routes/circulatory.py",
+      "sha256": "5570bcc239c7e6f49f6b9a7db75735ba3d24bed0b2dd953b75b24cc1731693d8",
+      "bytes": 3714,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": []
+    },
+    {
+      "path": "backend/app/api/schemas/circulatory.py",
+      "sha256": "c3b61db0053bcd9c11eb199860dca431a9f2f8728095f5d2fb2d38a9351beeed",
+      "bytes": 2895,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": [
+        {
+          "name": "CirculatoryStateContext",
+          "bases": [
+            "DTO"
+          ],
+          "fields": [
+            {
+              "name": "transport_version",
+              "type": "Literal['m7-c/1']",
+              "declaration": "transport_version: Literal['m7-c/1'] = 'm7-c/1'"
+            },
+            {
+              "name": "assembly_request",
+              "type": "AssemblyRequestV3",
+              "declaration": "assembly_request: AssemblyRequestV3"
+            },
+            {
+              "name": "assembly_digest",
+              "type": "Digest",
+              "declaration": "assembly_digest: Digest"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryStateResponse",
+          "bases": [
+            "CirculatoryStateContext"
+          ],
+          "fields": [
+            {
+              "name": "assembly",
+              "type": "PatientStateAssemblyResultV3",
+              "declaration": "assembly: PatientStateAssemblyResultV3"
+            },
+            {
+              "name": "state_context",
+              "type": "Envelope",
+              "declaration": "state_context: Envelope = Field(repr=False)"
+            },
+            {
+              "name": "execution_enabled",
+              "type": "bool",
+              "declaration": "execution_enabled: bool = Field(strict=True)"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryPreparationRequest",
+          "bases": [
+            "DTO"
+          ],
+          "fields": [
+            {
+              "name": "execution_id",
+              "type": "UUID",
+              "declaration": "execution_id: UUID"
+            },
+            {
+              "name": "state_context",
+              "type": "Envelope",
+              "declaration": "state_context: Envelope = Field(repr=False)"
+            },
+            {
+              "name": "pressure",
+              "type": "SelectionPin",
+              "declaration": "pressure: SelectionPin"
+            },
+            {
+              "name": "lactate",
+              "type": "SelectionPin",
+              "declaration": "lactate: SelectionPin"
+            },
+            {
+              "name": "vasopressor",
+              "type": "SelectionPin",
+              "declaration": "vasopressor: SelectionPin"
+            },
+            {
+              "name": "supporting",
+              "type": "Annotated[tuple[SelectionPin, ...], Field(max_length=32)]",
+              "declaration": "supporting: Annotated[tuple[SelectionPin,...],Field(max_length=32)] = ()"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryPreparedResponse",
+          "bases": [
+            "DTO"
+          ],
+          "fields": [
+            {
+              "name": "transport_version",
+              "type": "Literal['m7-c/1']",
+              "declaration": "transport_version: Literal['m7-c/1'] = 'm7-c/1'"
+            },
+            {
+              "name": "status",
+              "type": "Literal['prepared']",
+              "declaration": "status: Literal['prepared'] = 'prepared'"
+            },
+            {
+              "name": "execution_id",
+              "type": "UUID",
+              "declaration": "execution_id: UUID"
+            },
+            {
+              "name": "inference",
+              "type": "ClinicalInference",
+              "declaration": "inference: ClinicalInference"
+            },
+            {
+              "name": "command",
+              "type": "Envelope",
+              "declaration": "command: Envelope = Field(repr=False)"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryExecutionResponse",
+          "bases": [
+            "DTO"
+          ],
+          "fields": [
+            {
+              "name": "transport_version",
+              "type": "Literal['m7-c/1']",
+              "declaration": "transport_version: Literal['m7-c/1'] = 'm7-c/1'"
+            },
+            {
+              "name": "execution_id",
+              "type": "UUID",
+              "declaration": "execution_id: UUID"
+            },
+            {
+              "name": "record",
+              "type": "CirculatoryExecutionRecord",
+              "declaration": "record: CirculatoryExecutionRecord"
+            },
+            {
+              "name": "ingested_at",
+              "type": "AwareTimestamp",
+              "declaration": "ingested_at: AwareTimestamp"
+            },
+            {
+              "name": "statement",
+              "type": "str | None",
+              "declaration": "statement: str | None"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryReconciliationResponse",
+          "bases": [
+            "DTO"
+          ],
+          "fields": [
+            {
+              "name": "status",
+              "type": "Literal['committed_match', 'absent']",
+              "declaration": "status: Literal['committed_match','absent']"
+            },
+            {
+              "name": "execution",
+              "type": "CirculatoryExecutionResponse | None",
+              "declaration": "execution: CirculatoryExecutionResponse | None"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryHistoryRequest",
+          "bases": [
+            "DTO"
+          ],
+          "fields": [
+            {
+              "name": "state_context",
+              "type": "Envelope",
+              "declaration": "state_context: Envelope = Field(repr=False)"
+            },
+            {
+              "name": "reference",
+              "type": "ExactReference",
+              "declaration": "reference: ExactReference"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryHistoricalFact",
+          "bases": [
+            "DTO"
+          ],
+          "fields": [
+            {
+              "name": "fact",
+              "type": "CirculatoryRecord",
+              "declaration": "fact: CirculatoryRecord"
+            },
+            {
+              "name": "ingestion",
+              "type": "IngestionMetadata",
+              "declaration": "ingestion: IngestionMetadata"
+            }
+          ]
+        },
+        {
+          "name": "CirculatoryHistoryResponse",
+          "bases": [
+            "DTO"
+          ],
+          "fields": [
+            {
+              "name": "transport_version",
+              "type": "Literal['m7-c/1']",
+              "declaration": "transport_version: Literal['m7-c/1'] = 'm7-c/1'"
+            },
+            {
+              "name": "context",
+              "type": "CirculatoryStateContext",
+              "declaration": "context: CirculatoryStateContext"
+            },
+            {
+              "name": "reference",
+              "type": "ExactReference",
+              "declaration": "reference: ExactReference"
+            },
+            {
+              "name": "revisions",
+              "type": "Annotated[tuple[CirculatoryHistoricalFact, ...], Field(max_length=512)]",
+              "declaration": "revisions: Annotated[tuple[CirculatoryHistoricalFact,...],Field(max_length=512)]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/api/circulatory_projections.py",
+      "sha256": "51c4778a4648b2a3266b9a1a6dab918e5fb74e6e798e987d8ff65d4a9db3c376",
+      "bytes": 421,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": []
+    },
+    {
+      "path": "backend/app/api/circulatory_commands.py",
+      "sha256": "447f5830c155b28caac068a7535805a13f46c27ffc39a939855891315fb7398e",
+      "bytes": 646,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": [
+        {
+          "name": "CirculatoryStateCodec",
+          "bases": [
+            "_Envelope"
+          ],
+          "fields": []
+        },
+        {
+          "name": "CirculatoryCommandCodec",
+          "bases": [
+            "_Envelope"
+          ],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "path": "backend/app/persistence/circulatory_executions.py",
+      "sha256": "2d89fbdb3d184020f776a96ac19f7b5ef34e802f9c3ef80bc7a05e50fa1761c1",
+      "bytes": 10986,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": [
+        {
+          "name": "StoredCirculatoryExecution",
+          "bases": [
+            "DomainModel"
+          ],
+          "fields": [
+            {
+              "name": "record",
+              "type": "CirculatoryExecutionRecord",
+              "declaration": "record: CirculatoryExecutionRecord"
+            },
+            {
+              "name": "ingested_at",
+              "type": "AwareDatetime",
+              "declaration": "ingested_at: AwareDatetime"
+            }
+          ]
+        },
+        {
+          "name": "_CirculatoryExecutionAdapter",
+          "bases": [],
+          "fields": []
+        }
+      ]
+    },
+    {
+      "path": "backend/migrations/versions/m7_0008_circulatory_facts.py",
+      "sha256": "6f2b50fac79485c1d2dcea5eee07de0f08b5baf72f4255ecaabe19828f42fdfd",
+      "bytes": 3733,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": []
+    },
+    {
+      "path": "tests/test_circulatory_api.py",
+      "sha256": "ff7b8b30cbd536b346dfd82a00d12e82b3aeed6627fdbc64091e0dd6cb842c33",
+      "bytes": 11160,
+      "status": "read_only_inspection_not_executed_test",
+      "classes": []
+    }
+  ]
+}

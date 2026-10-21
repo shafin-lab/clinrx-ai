@@ -1,0 +1,438 @@
+ClinRx shared investigation coverage catalog
+21 October 2026
+
+25 product groups; source transport admission remains separately bounded.
+These are proposed test/report coverage names, not an ordering recommendation,
+an assay-equivalence map or a claim that these tests are already imported.
+KFT/RFT are aliases; original local panels and assays retain their identities.
+Unknown tests must be retained by the future general result owner.
+
+1. Blood count [blood-count]
+   Related capabilities: M11 , M14 , M15
+   Search aliases: 'CBC','FBC'
+   - Haemoglobin
+   - Haematocrit
+   - Red-cell count
+   - MCV
+   - MCH
+   - MCHC
+   - RDW
+   - Total white-cell count
+   - Neutrophil count
+   - Lymphocyte count
+   - Monocyte count
+   - Eosinophil count
+   - Basophil count
+   - Platelet count
+   - MPV
+   - Immature granulocytes
+   - Nucleated red cells
+   - Reticulocyte count
+   - Blood-film report
+
+2. Kidney and electrolytes [kidney-electrolytes]
+   Related capabilities: M8 , M9 , M14 , M17
+   Search aliases: 'KFT','RFT','Renal panel'
+   - Creatinine
+   - Urea
+   - Blood urea nitrogen
+   - Source-reported eGFR
+   - Sodium
+   - Potassium
+   - Chloride
+   - Total carbon dioxide
+   - Total calcium
+   - Ionised calcium
+   - Magnesium
+   - Phosphate
+   - Urate
+   - Cystatin C
+
+3. Liver and proteins [liver]
+   Related capabilities: M7 , M11 , M14
+   Search aliases: 'LFT','Liver panel'
+   - AST
+   - ALT
+   - ALP
+   - GGT
+   - Total bilirubin
+   - Direct bilirubin
+   - Albumin
+   - Total protein
+   - Source-reported globulin
+   - Ammonia
+   - Bile acids
+
+4. Blood gases and co-oximetry [gases]
+   Related capabilities: M7 , M8 , M10 , M14
+   Search aliases: 'ABG','VBG'
+   - pH
+   - PaCO2
+   - PaO2
+   - Venous PO2
+   - Blood-gas bicarbonate
+   - Base excess
+   - Arterial oxygen saturation
+   - Mixed venous oxygen saturation
+   - Central venous oxygen saturation
+   - Co-oximetry haemoglobin
+   - Carboxyhaemoglobin
+   - Methaemoglobin
+   - Lactate
+
+5. Cardiac markers [cardiac]
+   Related capabilities: M7
+   Search aliases: none
+   - Troponin I
+   - High-sensitivity troponin I
+   - Troponin T
+   - High-sensitivity troponin T
+   - BNP
+   - NT-proBNP
+   - CK-MB
+   - Total CK
+   - Myoglobin
+
+6. Lipids and apolipoproteins [lipids]
+   Related capabilities: M7 , M14 , M17
+   Search aliases: 'Lipid profile'
+   - Total cholesterol
+   - HDL cholesterol
+   - Direct LDL cholesterol
+   - Source-calculated LDL cholesterol
+   - Triglycerides
+   - Source-reported non-HDL cholesterol
+   - Apolipoprotein B
+   - Apolipoprotein A1
+   - Lipoprotein(a)
+
+7. Coagulation and anticoagulant monitoring [coagulation]
+   Related capabilities: M8 , M11 , M12
+   Search aliases: 'Coagulation profile'
+   - PT
+   - INR
+   - aPTT
+   - Fibrinogen
+   - D-dimer
+   - Fibrin degradation products
+   - Thrombin time
+   - Reptilase time
+   - UFH-calibrated anti-Xa
+   - LMWH-calibrated anti-Xa
+   - Drug-specific anticoagulant level
+   - Mixing-study report
+   - TEG report
+   - ROTEM report
+
+8. Blood bank and transfusion [blood-bank]
+   Related capabilities: M11 , M12 , M18
+   Search aliases: none
+   - ABO group
+   - RhD group
+   - Red-cell antibody screen
+   - Antibody identification
+   - Crossmatch
+   - Direct antiglobulin test
+   - Indirect antiglobulin test
+   - Transfusion-reaction investigation
+   - HLA antibody report
+
+9. Thrombophilia and prothrombotic investigations [thrombophilia]
+   Related capabilities: M11
+   Search aliases: 'Thrombophilia panel'
+   - Lupus-anticoagulant screen and confirmation
+   - Anticardiolipin IgG
+   - Anticardiolipin IgM
+   - Anti-beta-2-glycoprotein I IgG
+   - Anti-beta-2-glycoprotein I IgM
+   - Protein C activity
+   - Protein C antigen
+   - Protein S activity
+   - Free protein S antigen
+   - Total protein S antigen
+   - Antithrombin activity
+   - Antithrombin antigen
+   - Activated protein C resistance
+   - Factor V Leiden genotype
+   - Prothrombin G20210A genotype
+   - HIT immunoassay
+   - HIT functional assay
+   - JAK2 mutation report
+   - PNH flow-cytometry report
+
+10. Specialised haemostasis [special-haemostasis]
+   Related capabilities: M11
+   Search aliases: none
+   - Factor II activity
+   - Factor V activity
+   - Factor VII activity
+   - Factor VIII activity
+   - Factor IX activity
+   - Factor X activity
+   - Factor XI activity
+   - Factor XII activity
+   - Factor XIII assay
+   - Factor-inhibitor assay
+   - von Willebrand factor antigen
+   - von Willebrand factor activity
+   - von Willebrand multimer report
+   - Platelet-function report
+   - ADAMTS13 activity
+   - ADAMTS13 inhibitor
+
+11. Inflammation and infection biomarkers [inflammation]
+   Related capabilities: M6 , M14 , M15
+   Search aliases: none
+   - CRP
+   - High-sensitivity CRP
+   - ESR
+   - Procalcitonin
+   - Interleukin-6
+   - Beta-D-glucan
+   - Galactomannan
+
+12. Microbiology and infectious-disease reports [microbiology]
+   Related capabilities: M6 , M15
+   Search aliases: none
+   - Culture report
+   - Organism identification
+   - Antimicrobial susceptibility
+   - Molecular pathogen assay
+   - Viral load
+   - Pathogen antigen
+   - Pathogen serology
+   - HIV antigen-antibody assay
+   - HBsAg
+   - Anti-HBc
+   - Anti-HBs
+   - HBV DNA
+   - Anti-HCV
+   - HCV RNA
+   - CMV PCR
+   - EBV PCR
+   - CMV serology
+   - EBV serology
+   - Resistance-gene report
+   - Colonisation-screen report
+
+13. Glucose and ketones [glucose]
+   Related capabilities: M10 , M14 , M17
+   Search aliases: none
+   - Laboratory glucose
+   - Capillary point-of-care glucose
+   - CGM observation
+   - HbA1c
+   - Fructosamine
+   - Beta-hydroxybutyrate
+   - Urine ketones
+   - Insulin
+   - C-peptide
+   - Proinsulin
+
+14. Thyroid [thyroid]
+   Related capabilities: M13 , M14 , M17
+   Search aliases: none
+   - TSH
+   - Free T4
+   - Free T3
+   - Total T4
+   - Total T3
+   - Thyroid peroxidase antibody
+   - Thyroglobulin antibody
+   - TSH-receptor antibody
+   - Thyroglobulin
+
+15. Adrenal and mineralocorticoid [adrenal]
+   Related capabilities: M7 , M17
+   Search aliases: none
+   - Serum cortisol
+   - ACTH
+   - Salivary cortisol
+   - Urinary free cortisol
+   - Renin activity
+   - Direct renin concentration
+   - Aldosterone
+   - Plasma free metanephrines
+   - Urinary fractionated metanephrines
+   - DHEAS
+   - 17-hydroxyprogesterone
+
+16. Calcium, bone and vitamin D [bone]
+   Related capabilities: M8 , M14 , M17
+   Search aliases: none
+   - PTH
+   - 25-hydroxyvitamin D
+   - 1,25-dihydroxyvitamin D
+   - Bone-specific ALP
+   - PTH-related peptide
+   - Source bone-turnover marker
+
+17. Pituitary and reproductive endocrine [pituitary-reproductive]
+   Related capabilities: M16 , M17
+   Search aliases: none
+   - Prolactin
+   - LH
+   - FSH
+   - Estradiol
+   - Progesterone
+   - Total testosterone
+   - Free testosterone
+   - SHBG
+   - IGF-1
+   - Growth hormone
+   - Serum hCG
+   - Copeptin
+   - Dynamic endocrine-test series
+
+18. Haematinics and haemolysis [haematinics]
+   Related capabilities: M11 , M14
+   Search aliases: none
+   - Ferritin
+   - Serum iron
+   - Transferrin
+   - TIBC
+   - Source-reported transferrin saturation
+   - Vitamin B12
+   - Folate
+   - Methylmalonic acid
+   - Homocysteine
+   - LDH
+   - Haptoglobin
+   - Plasma free haemoglobin
+   - G6PD assay
+   - Haemoglobinopathy report
+
+19. Specialised nutrition assays [nutrition]
+   Related capabilities: M8 , M14 , M17
+   Search aliases: none
+   - Thiamine assay
+   - Vitamin A
+   - Vitamin E
+   - Vitamin C
+   - Vitamin K assay
+   - Zinc
+   - Copper
+   - Selenium
+   - Ceruloplasmin
+   - Prealbumin
+   - Urinary urea nitrogen
+   - Urinary total nitrogen
+   - Essential-fatty-acid report
+
+20. Immunology and complement [immunology]
+   Related capabilities: M8 , M11 , M15
+   Search aliases: none
+   - ANA
+   - Anti-dsDNA
+   - ENA report
+   - ANCA
+   - Anti-GBM antibody
+   - Rheumatoid factor
+   - Anti-CCP
+   - C3
+   - C4
+   - CH50
+   - Immunoglobulin G
+   - Immunoglobulin A
+   - Immunoglobulin M
+   - Immunoglobulin E
+   - IgG subclasses
+   - Cryoglobulin report
+   - Cryofibrinogen report
+
+21. Paraproteins and haematological reports [paraprotein]
+   Related capabilities: M8 , M11
+   Search aliases: none
+   - Serum electrophoresis
+   - Urine electrophoresis
+   - Serum immunofixation
+   - Urine immunofixation
+   - Free kappa light chains
+   - Free lambda light chains
+   - Source-reported light-chain ratio
+   - Bone-marrow report
+   - Flow-cytometry report
+   - Cytogenetic report
+   - Molecular haematology report
+
+22. Therapeutic drug monitoring and toxicology [drug-levels]
+   Related capabilities: M6 , M8 , M13 , M16 , M17
+   Search aliases: none
+   - Tacrolimus level
+   - Cyclosporine level
+   - Sirolimus level
+   - Everolimus level
+   - Vancomycin level
+   - Aminoglycoside level
+   - Antifungal level
+   - Digoxin level
+   - Lithium level
+   - Antiseizure-drug level
+   - Paracetamol level
+   - Salicylate level
+   - Ethanol level
+   - Toxicology screen
+   - Toxic-alcohol report
+   - Heavy-metal assay
+
+23. Osmolality and urine investigations [osmolality-urine]
+   Related capabilities: M8 , M9 , M17
+   Search aliases: none
+   - Measured serum osmolality
+   - Urine osmolality
+   - Urine sodium
+   - Urine potassium
+   - Urine chloride
+   - Urine creatinine
+   - Urine urea
+   - Urine albumin
+   - Urine protein
+   - Source-reported ACR
+   - Source-reported PCR
+   - Urinalysis
+   - Urine microscopy
+   - Timed urine collection report
+
+24. Rare metabolic, genetic and specialised reports [rare-metabolic]
+   Related capabilities: M8 , M14 , M16 , M17
+   Search aliases: none
+   - Plasma amino-acid report
+   - Urine organic-acid report
+   - Acylcarnitine profile
+   - Carnitine assay
+   - Porphyrin report
+   - Lactate-pyruvate report
+   - Lysosomal-enzyme report
+   - Genetic-test report
+   - Tumour-marker report
+   - Other original investigation report
+
+25. CSF, body fluids and tissue reports [body-fluids]
+   Related capabilities: M6 , M8 , M10 , M11 , M12 , M16
+   Search aliases: none
+   - CSF cell count
+   - CSF protein
+   - CSF glucose
+   - Body-fluid cell count
+   - Body-fluid differential
+   - Body-fluid protein
+   - Body-fluid albumin
+   - Body-fluid LDH
+   - Body-fluid glucose
+   - Body-fluid pH
+   - Body-fluid amylase
+   - Body-fluid triglycerides
+   - Body-fluid creatinine
+   - Fluid cytology
+   - Tissue pathology report
+
+Total planned test/report coverage entries: 319. Some are report families,
+not individual analytes; coverage remains open-ended and source-defined.
+
+IMPLEMENTED PRESENTATION MAPPINGS ONLY
+synthetic-serum-creatinine observation; existing circulatory lactate; selected
+existing circulatory oxygen/gas concepts. These map product labels only.
+Body weight, pulse oximetry and derived oxygen transport are not lab-result mappings.
+
+CANONICAL DEVELOPMENT CATALOG
+frontend/src/clinical/sharedInvestigations.ts. This text is a generated review copy.

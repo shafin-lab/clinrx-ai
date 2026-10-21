@@ -1,0 +1,707 @@
+{
+  "status": "Proposed operations and semantics; not implemented routes or an OpenAPI schema",
+  "patient_namespace": "/api/clinical-vnext/patients/{patient_id}/encounters/{encounter_id}/m7",
+  "knowledge_namespace": "/api/clinical-vnext/knowledge/m7",
+  "operations_namespace": "/api/clinical-vnext/operations/m7",
+  "patient_endpoints": [
+    {
+      "method": "GET",
+      "suffix": "/overview",
+      "request_contract": "ClinicalSnapshot",
+      "response_contract": "ReviewProposal",
+      "semantics": "Read with explicit source scope, cutoff, completeness and mode. No new clinical decision."
+    },
+    {
+      "method": "POST",
+      "suffix": "/review-evaluations",
+      "request_contract": "ClinicalSnapshot",
+      "response_contract": "ReviewProposal",
+      "semantics": "May persist proposal/audit; explicit write semantics; no medication order."
+    },
+    {
+      "method": "POST",
+      "suffix": "/reviews",
+      "request_contract": "ReviewDecision",
+      "response_contract": "CommandReceipt",
+      "semantics": "Atomic current-context/expected-revision recheck plus durable decision and receipt."
+    },
+    {
+      "method": "POST",
+      "suffix": "/targets",
+      "request_contract": "HemodynamicTarget",
+      "response_contract": "CommandReceipt",
+      "semantics": "Clinician authority, exact effective range and conflict/expiry checks."
+    },
+    {
+      "method": "POST",
+      "suffix": "/monitoring-checks",
+      "request_contract": "MonitoringCheck",
+      "response_contract": "CommandReceipt",
+      "semantics": "Attributed bedside observation, not remote device operation."
+    },
+    {
+      "method": "POST",
+      "suffix": "/phenotype-assessments",
+      "request_contract": "PhenotypeAssessment",
+      "response_contract": "CommandReceipt",
+      "semantics": "Explicit clinician assertion with certainty and alternatives."
+    },
+    {
+      "method": "POST",
+      "suffix": "/dynamic-assessments",
+      "request_contract": "FluidResponsivenessTest",
+      "response_contract": "CommandReceipt",
+      "semantics": "Source/clinical test record and eligibility; no maneuver/ventilator control."
+    },
+    {
+      "method": "POST",
+      "suffix": "/flow-evaluations",
+      "request_contract": "ClinicalSnapshot",
+      "response_contract": "ReviewProposal",
+      "semantics": "Validated method-specific interpretation; no image diagnosis."
+    },
+    {
+      "method": "POST",
+      "suffix": "/fluid-review-plans",
+      "request_contract": "FluidIntervention",
+      "response_contract": "CommandReceipt",
+      "semantics": "Plan distinct from prescribing and actual MAR/M9 delivery."
+    },
+    {
+      "method": "POST",
+      "suffix": "/vasoactive-evaluations",
+      "request_contract": "ClinicalSnapshot",
+      "response_contract": "ReviewProposal",
+      "semantics": "Supported profiles only; no start/dose/titration command."
+    },
+    {
+      "method": "POST",
+      "suffix": "/infusion-reconciliations",
+      "request_contract": "InfusionReconciliation",
+      "response_contract": "CommandReceipt",
+      "semantics": "Owned discrepancy resolution; do not overwrite original MAR/pump facts."
+    },
+    {
+      "method": "POST",
+      "suffix": "/access-assessments",
+      "request_contract": "InfusionAccessAssessment",
+      "response_contract": "CommandReceipt",
+      "semantics": "Actual bedside assessment; urgent duties retained."
+    },
+    {
+      "method": "POST",
+      "suffix": "/severity-assessments",
+      "request_contract": "ShockSeverityAssessment",
+      "response_contract": "CommandReceipt",
+      "semantics": "Supported framework/clinician confirmation, no automatic device selection."
+    },
+    {
+      "method": "POST",
+      "suffix": "/special-context-assessments",
+      "request_contract": "SpecialHemodynamicContext",
+      "response_contract": "CommandReceipt",
+      "semantics": "Specialty scope and unsupported-profile behavior."
+    },
+    {
+      "method": "POST",
+      "suffix": "/deescalation-plans",
+      "request_contract": "CongestionDeescalationPlan",
+      "response_contract": "CommandReceipt",
+      "semantics": "Hemodynamic review only; removal execution stays with M8/M9."
+    },
+    {
+      "method": "GET",
+      "suffix": "/support-context",
+      "request_contract": "ClinicalSnapshot",
+      "response_contract": "MechanicalSupportContext",
+      "semantics": "Read-only source device-team/M12 information; no controls."
+    },
+    {
+      "method": "POST",
+      "suffix": "/calculations",
+      "request_contract": "ClinicalSnapshot",
+      "response_contract": "CalculationResult",
+      "semantics": "Exact requested profile and inputs; reject unsupported/missing prerequisites."
+    },
+    {
+      "method": "POST",
+      "suffix": "/scenarios",
+      "request_contract": "Scenario",
+      "response_contract": "CommandReceipt",
+      "semantics": "Optional persistence; client-session-only mode also permitted; no clinical fact updates."
+    },
+    {
+      "method": "POST",
+      "suffix": "/communications/{case}/events",
+      "request_contract": "CommunicationEvent",
+      "response_contract": "CommandReceipt",
+      "semantics": "Append-only actual attempt/content pin/actor; no automatic resolution."
+    },
+    {
+      "method": "POST",
+      "suffix": "/escalations",
+      "request_contract": "ReviewTask",
+      "response_contract": "CommandReceipt",
+      "semantics": "Owned review/communication record; no procedural action or device operation."
+    },
+    {
+      "method": "POST",
+      "suffix": "/handoffs",
+      "request_contract": "Handoff",
+      "response_contract": "CommandReceipt",
+      "semantics": "Receiving acceptance tracked separately; sending owner persists until accepted."
+    },
+    {
+      "method": "GET",
+      "suffix": "/commands/{id}",
+      "request_contract": "CommandReceipt",
+      "response_contract": "CommandReceipt",
+      "semantics": "Exact retained lookup, not clinical recomputation."
+    },
+    {
+      "method": "POST",
+      "suffix": "/commands/{id}/reconcile",
+      "request_contract": "CommandReceipt",
+      "response_contract": "CommandReceipt",
+      "semantics": "Original key/digest; no-row only not_found_yet; terminal no-effect needs fence/proof."
+    }
+  ],
+  "shared_operations": [
+    "GET knowledge /profiles and /profiles/{id}",
+    "POST knowledge /profiles (draft only)",
+    "POST knowledge /approvals (exact sealed payload)",
+    "POST knowledge /activations (capability/profile/population/environment)",
+    "GET operations /feeds",
+    "POST operations /recovery (owned idempotent recovery, no guessed patient assignment)"
+  ],
+  "errors": {
+    "400": "Malformed/type/unit/unsupported schema; bounded detail.",
+    "401/403": "Unauthorized; no cross-patient identifiers.",
+    "404": "Not found/inaccessible without foreign disclosure; receipt absence not no-effect.",
+    "409": "Snapshot/revision/context/idempotency conflict; no side effect.",
+    "422": "Requested clinical/number use unsupported/not evaluable; source evidence remains available.",
+    "503": "Affected service/source unavailable; attempted write completion may be unknown."
+  },
+  "workflow_operations": [
+    {
+      "workflow_id": "M7-W01",
+      "entry": "Open a focused hemodynamic review",
+      "actor": "Treating clinician; bedside nurse",
+      "operations": "GET /overview; POST /reviews",
+      "request_contracts": [
+        "HemodynamicContext",
+        "HemodynamicEpisode",
+        "ClinicalSnapshot"
+      ],
+      "response_contracts": [
+        "ReviewProposal",
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W02",
+      "entry": "Intake, assignment and reliable acquisition",
+      "actor": "Clinical engineering; source operations; bedside nurse",
+      "operations": "source adapter; GET operations /feeds",
+      "request_contracts": [
+        "DeviceSession",
+        "AdmissionReceipt",
+        "FeedHealth"
+      ],
+      "response_contracts": [
+        "PressureObservation",
+        "SignalManifest",
+        "AuditEvent"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W03",
+      "entry": "Confirm arterial pressure reliability",
+      "actor": "Bedside nurse/ICU clinician",
+      "operations": "POST /monitoring-checks",
+      "request_contracts": [
+        "PressureObservation",
+        "MonitoringCheck",
+        "SignalManifest"
+      ],
+      "response_contracts": [
+        "MonitoringCheck",
+        "ReviewTask",
+        "ReviewDecision"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W04",
+      "entry": "Confirm cuff BP and discordance",
+      "actor": "Bedside nurse/clinician",
+      "operations": "POST /monitoring-checks",
+      "request_contracts": [
+        "PressureObservation",
+        "CuffContext"
+      ],
+      "response_contracts": [
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W05",
+      "entry": "Set individualized goals",
+      "actor": "Treating clinician; relevant specialist",
+      "operations": "POST /targets",
+      "request_contracts": [
+        "HemodynamicContext",
+        "HemodynamicEpisode"
+      ],
+      "response_contracts": [
+        "HemodynamicTarget",
+        "ReviewDecision"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W06",
+      "entry": "Phenotype hypotension and hypoperfusion",
+      "actor": "ICU/emergency clinician",
+      "operations": "POST /phenotype-assessments",
+      "request_contracts": [
+        "PerfusionObservation",
+        "PressureObservation",
+        "EchoStudy",
+        "RhythmObservation"
+      ],
+      "response_contracts": [
+        "PhenotypeAssessment",
+        "HemodynamicEpisode",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W07",
+      "entry": "Multimodal perfusion and lactate review",
+      "actor": "Treating clinician; nurse",
+      "operations": "POST /review-evaluations",
+      "request_contracts": [
+        "PerfusionObservation",
+        "LactateObservation",
+        "OxygenTransportObservation"
+      ],
+      "response_contracts": [
+        "ReviewProposal",
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W08",
+      "entry": "Echo, flow and invasive profile review",
+      "actor": "Trained echo/critical-care/cardiology team",
+      "operations": "POST /flow-evaluations",
+      "request_contracts": [
+        "EchoStudy",
+        "EchoFinding",
+        "CardiacOutputObservation",
+        "PressureObservation"
+      ],
+      "response_contracts": [
+        "PhenotypeAssessment",
+        "CalculationResult",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W09",
+      "entry": "PPV/SVV suitability",
+      "actor": "Trained ICU clinician",
+      "operations": "POST /dynamic-assessments",
+      "request_contracts": [
+        "DynamicIndex",
+        "VentilationContext",
+        "RhythmObservation"
+      ],
+      "response_contracts": [
+        "FluidResponsivenessTest",
+        "ReviewProposal"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W10",
+      "entry": "Perform and review PLR",
+      "actor": "Trained clinician/nurse",
+      "operations": "POST /dynamic-assessments",
+      "request_contracts": [
+        "FluidResponsivenessTest",
+        "ApplicabilityCheck",
+        "CardiacOutputObservation"
+      ],
+      "response_contracts": [
+        "FluidResponsivenessTest",
+        "CalculationResult",
+        "ReviewDecision"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W11",
+      "entry": "Advanced reversible tests",
+      "actor": "Trained ICU clinician",
+      "operations": "POST /dynamic-assessments",
+      "request_contracts": [
+        "FluidResponsivenessTest",
+        "VentilationContext"
+      ],
+      "response_contracts": [
+        "FluidResponsivenessTest",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W12",
+      "entry": "Fluid trial and harm reassessment",
+      "actor": "Prescriber; bedside nurse",
+      "operations": "POST /fluid-review-plans; source MAR/M9 adapter",
+      "request_contracts": [
+        "FluidIntervention",
+        "FluidToleranceAssessment",
+        "ClinicalSnapshot"
+      ],
+      "response_contracts": [
+        "InterventionResponse",
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W13",
+      "entry": "Vasoactive preparation and dose review",
+      "actor": "Prescriber; pharmacist; nurse",
+      "operations": "POST /vasoactive-evaluations",
+      "request_contracts": [
+        "VasoactiveProduct",
+        "VasoactiveOrder",
+        "VasoactiveDeliveryEvent"
+      ],
+      "response_contracts": [
+        "CalculationResult",
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W14",
+      "entry": "Bag/concentration/rate changeover",
+      "actor": "Bedside nurse/pharmacist; prescriber",
+      "operations": "POST /infusion-reconciliations",
+      "request_contracts": [
+        "VasoactiveDeliveryEvent",
+        "InfusionAccessAssessment"
+      ],
+      "response_contracts": [
+        "InfusionReconciliation",
+        "InterventionResponse"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W15",
+      "entry": "Peripheral infusion surveillance",
+      "actor": "Bedside nurse; treating clinician",
+      "operations": "POST /access-assessments",
+      "request_contracts": [
+        "InfusionAccessAssessment",
+        "VasoactiveDeliveryEvent"
+      ],
+      "response_contracts": [
+        "CommunicationCase",
+        "ReviewTask",
+        "ReviewDecision"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W16",
+      "entry": "Reconcile exposure and interruptions",
+      "actor": "Nurse/pharmacy/source operations",
+      "operations": "POST /infusion-reconciliations",
+      "request_contracts": [
+        "InfusionReconciliation",
+        "VasoactiveDeliveryEvent",
+        "FeedHealth"
+      ],
+      "response_contracts": [
+        "InfusionReconciliation",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W17",
+      "entry": "Reassess escalation and weaning",
+      "actor": "Treating clinician; ICU team",
+      "operations": "POST /review-evaluations; POST /reviews",
+      "request_contracts": [
+        "HemodynamicTarget",
+        "InterventionResponse",
+        "VasoactiveDeliveryEvent"
+      ],
+      "response_contracts": [
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W18",
+      "entry": "Cardiogenic shock and shock-team escalation",
+      "actor": "Cardiology/ICU shock team",
+      "operations": "POST /severity-assessments; POST /escalations",
+      "request_contracts": [
+        "ShockSeverityAssessment",
+        "PhenotypeAssessment",
+        "SpecialHemodynamicContext"
+      ],
+      "response_contracts": [
+        "ReviewDecision",
+        "ReviewTask",
+        "Handoff"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W19",
+      "entry": "Urgent cause-specific pathways",
+      "actor": "ICU/emergency/anesthesia; responsible specialty",
+      "operations": "POST /escalations",
+      "request_contracts": [
+        "SpecialHemodynamicContext",
+        "PhenotypeAssessment"
+      ],
+      "response_contracts": [
+        "ReviewTask",
+        "CommunicationCase",
+        "ReviewDecision"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W20",
+      "entry": "Stabilization and de-resuscitation review",
+      "actor": "Treating clinician; renal/fluid teams",
+      "operations": "POST /deescalation-plans",
+      "request_contracts": [
+        "FluidToleranceAssessment",
+        "CongestionDeescalationPlan"
+      ],
+      "response_contracts": [
+        "CongestionDeescalationPlan",
+        "ReviewDecision"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W21",
+      "entry": "Special-population review",
+      "actor": "Appropriate specialty with treating clinician",
+      "operations": "POST /special-context-assessments",
+      "request_contracts": [
+        "SpecialHemodynamicContext",
+        "HemodynamicTarget"
+      ],
+      "response_contracts": [
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W22",
+      "entry": "Mechanical support context and monitoring",
+      "actor": "MCS/device team; cardiology/ICU",
+      "operations": "GET /support-context; POST /escalations",
+      "request_contracts": [
+        "MechanicalSupportContext",
+        "SignalManifest"
+      ],
+      "response_contracts": [
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W23",
+      "entry": "Calculations, trends and what-if",
+      "actor": "Clinician/pharmacist under supported method",
+      "operations": "POST /calculations; optional POST /scenarios",
+      "request_contracts": [
+        "CalculationProfile",
+        "ClinicalSnapshot",
+        "Scenario"
+      ],
+      "response_contracts": [
+        "CalculationResult",
+        "Scenario"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W24",
+      "entry": "Critical communication and correction",
+      "actor": "Bedside team; clinical/source operations",
+      "operations": "POST /communications/{case}/events",
+      "request_contracts": [
+        "CommunicationCase",
+        "CommunicationEvent"
+      ],
+      "response_contracts": [
+        "CommunicationEvent",
+        "ReviewTask"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W25",
+      "entry": "Transfer and transport",
+      "actor": "Sending/receiving clinical teams",
+      "operations": "POST /handoffs",
+      "request_contracts": [
+        "Handoff",
+        "VasoactiveDeliveryEvent",
+        "ReviewTask"
+      ],
+      "response_contracts": [
+        "Handoff",
+        "CommunicationEvent"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W26",
+      "entry": "Governed content and release",
+      "actor": "ICU/cardiology/nursing/pharmacy/clinical engineering board",
+      "operations": "knowledge /profiles, /approvals, /activations",
+      "request_contracts": [
+        "ClinicalProfile",
+        "CalculationProfile",
+        "ContentApproval"
+      ],
+      "response_contracts": [
+        "FeatureActivation",
+        "AuditEvent"
+      ],
+      "scope": "knowledge",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    },
+    {
+      "workflow_id": "M7-W27",
+      "entry": "Downtime, command recovery and historical review",
+      "actor": "Clinical operations; treating clinician",
+      "operations": "GET /commands/{id}; POST /commands/{id}/reconcile; operations /recovery",
+      "request_contracts": [
+        "CommandReceipt",
+        "ClinicalSnapshot",
+        "FeedHealth"
+      ],
+      "response_contracts": [
+        "ReviewTask",
+        "AuditEvent",
+        "ClinicalSnapshot"
+      ],
+      "scope": "patient with authorized operations interfaces where stated",
+      "authorization": "Explicit real clinical identity, role, tenant and intended-use scope; synthetic grants not accepted.",
+      "write_semantics": "GET source projections read only; POST evaluations may persist proposals/audit and must declare this. All durable mutations require idempotency, expected revision/context generation and exact receipt.",
+      "feature_gate": "Separate per capability/profile/population/environment; initial clinical design state disabled. No pump, ventilator or device-control API."
+    }
+  ],
+  "schema_acceptance_gate": "Actual closed request/response schemas, discriminator/Datum conditional validators and target-kind/scope constraints must be frozen, implemented and independently checked before deployment.",
+  "clinical_control": "No pump/ventilator/MCS programming endpoints. Optional host prescription integration requires a new separately approved contract and effect reconciliation; not assumed present."
+}

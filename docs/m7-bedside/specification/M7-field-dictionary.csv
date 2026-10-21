@@ -1,0 +1,610 @@
+entity,scope,inherit,id,name,type,requirement,definition,validation_profile_ids
+PatientEnvelope,value,,M7-F-PatientEnvelope.id,id,Identifier,R,Stable scoped logical identity; no display-name matching.,V01;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.revision,revision,Identifier,R,Immutable exact revision; conflicting bytes under the same identity/revision are rejected.,V01;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.kind,kind,Code,R,Published record discriminator; unknown kinds cannot enter an executable rule.,V01;V03;V06;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.schema_version,schema_version,Identifier,R,Exact contract version; not silently upgraded.,V01;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.tenant_id,tenant_id,Identifier,R,Authenticated organizational scope.,V01;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.patient_id,patient_id,Identifier,R,"Verified patient identity; never guessed from bed, name or device label.",V01;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.encounter_id,encounter_id,Identifier,R,Verified encounter; cross-encounter evidence requires explicit authorized linkage.,V01;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.source,source,SourceIdentity,R,"Original device, LIS, MAR, EHR or clinician source and identifier.",V01;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.origin,origin,Enum,R,"observed, source_calculated, clinician_asserted, derived; inference is not a measurement.",V01;V03;V06;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.data_mode,data_mode,Enum,R,"synthetic, validation, clinical_source; provenance label is not clinical authorization.",V01;V03;V06;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.event_time,event_time,ClinicalTime,R,Acquisition/clinical occurrence; original precision and uncertainty retained.,V01;V03;V04;V07;V09;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.source_recorded_time,source_recorded_time,ClinicalTime,R,Charting time distinct from occurrence and report release.,V01;V03;V04;V07;V09;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.source_release_time,source_release_time,ClinicalTime,R,When the source made this revision available; not proof ClinRx received it.,V01;V03;V04;V07;V09;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.transport_received_at,transport_received_at,Instant,R,Server receipt time; not substituted for event time.,V01;V03;V04;V07;V09;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.admission_receipt,admission_receipt,Reference,R,Durable canonical admission and commit watermark; enables actual-known-at replay.,V01;V02;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.source_state,source_state,Enum,R,"active, preliminary, final, corrected, withdrawn, entered_in_error, unknown.",V01;V03;V06;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.predecessor,predecessor,Datum<Reference>,R,Exact prior assertion or explicit unresolved/not applicable; unresolved correction cannot silently overwrite.,V01;V02;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.provenance,provenance,EvidencePin[],R,"Consumed source/mapping dependencies, excluding derived reverse lists.",V01;V02;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.quality,quality,QualityAssessment,R,"Attributed quality and limitations, not an automatic clinical clearance.",V01;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.raw_payload,raw_payload,Datum<ProtectedContent>,R,Retained authorized original report/message; unavailable is explicit.,V01;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.actor,actor,Datum<Actor>,R,Source author or authenticated current clinical actor; distinguish these roles.,V01;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.limitations,limitations,String[],R,"Known uncertainty, conflicts and unassessed coverage.",V01;V03;V07;V12
+PatientEnvelope,value,,M7-F-PatientEnvelope.payload_digest,payload_digest,Digest,R,Declared canonical SHA-256 excluding itself; never recursively expand references.,V01;V03;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.id,id,Identifier,R,Scoped content identity.,V01;V03;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.revision,revision,Identifier,R,Immutable exact content revision.,V01;V03;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.schema_version,schema_version,Identifier,R,Known supported content schema.,V01;V03;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.organization,organization,Reference,R,"Publisher/institution owner, not a fabricated patient.",V01;V02;V03;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.source,source,SourceIdentity,R,"Primary publication, permitted manufacturer documentation or local adoption.",V01;V03;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.status,status,Enum,R,"draft, in_review, approved, active, expired, withdrawn.",V01;V03;V06;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.created_at,created_at,Instant,R,Authoring/import time.,V01;V03;V04;V07;V09;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.population_scope,population_scope,Code[],R,"Adult setting, phenotype, exclusions and locally supported intended uses.",V01;V03;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.substantive_payload,substantive_payload,Datum<Reference>,R,Sealed body independent of approval and activation records; unknown allowed in empty draft.,V01;V02;V03;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.approval,approval,Datum<Reference>,R,Separate approval of sealed payload; unknown in draft.,V01;V02;V03;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.effective_time,effective_time,ClinicalTime,R,Unknown in draft; known and applicable for active dependent use.,V01;V03;V04;V07;V09;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.review_due,review_due,ClinicalTime,R,Owner-selected review/expiry trigger; not fabricated.,V01;V03;V04;V07;V09;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.rights,rights,Datum<Reference>,R,"Permitted display, caching, calculations, AI and offline use as applicable.",V01;V02;V03;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.owner,owner,Actor,R,Clinical/editorial accountable role.,V01;V03;V07;V12
+KnowledgeEnvelope,value,,M7-F-KnowledgeEnvelope.payload_digest,payload_digest,Digest,R,Integrity is not evidence of local clinical approval.,V01;V03;V07;V12
+OperationsEnvelope,value,,M7-F-OperationsEnvelope.id,id,Identifier,R,Scoped operational identity.,V01;V03;V07;V12
+OperationsEnvelope,value,,M7-F-OperationsEnvelope.revision,revision,Identifier,R,Immutable revision.,V01;V03;V07;V12
+OperationsEnvelope,value,,M7-F-OperationsEnvelope.source_scope,source_scope,Reference,R,Authenticated institution/source/service.,V01;V02;V03;V07;V12
+OperationsEnvelope,value,,M7-F-OperationsEnvelope.created_at,created_at,Instant,R,Server event time.,V01;V03;V04;V07;V09;V12
+OperationsEnvelope,value,,M7-F-OperationsEnvelope.actor,actor,Actor,R,Authenticated actor/service with operations role.,V01;V03;V07;V12
+OperationsEnvelope,value,,M7-F-OperationsEnvelope.protected_links,protected_links,Reference[],R,Patient/raw links accessible only when authorized.,V01;V02;V03;V07;V12
+OperationsEnvelope,value,,M7-F-OperationsEnvelope.correlation_id,correlation_id,Identifier,R,Trace without clinical text in ordinary logs.,V01;V03;V07;V12
+OperationsEnvelope,value,,M7-F-OperationsEnvelope.payload_digest,payload_digest,Digest,R,Integrity under declared canonicalization.,V01;V03;V07;V12
+Reference,value,,M7-F-Reference.kind,kind,Code,R,Published target kind; target-type allowlist required in compiled contract.,V01;V03;V06;V07;V12
+Reference,value,,M7-F-Reference.id,id,Identifier,R,Scoped stable target identity.,V01;V03;V07;V12
+Reference,value,,M7-F-Reference.revision,revision,Identifier,R,Exact revision for retained evidence; never mutable latest.,V01;V03;V07;V12
+EvidencePin,value,,M7-F-EvidencePin.reference,reference,Reference,R,Exact kind/identity/revision.,V01;V02;V03;V07;V12
+EvidencePin,value,,M7-F-EvidencePin.expected_digest,expected_digest,Digest,R,Digest of that record alone.,V01;V03;V07;V12
+Code,value,,M7-F-Code.system,system,String,R,Terminology/source namespace.,V01;V03;V07;V12
+Code,value,,M7-F-Code.code,code,String,R,Exact code and case.,V01;V03;V07;V12
+Code,value,,M7-F-Code.version,version,Datum<String>,R,Unknown version retained; mappings requiring version withheld.,V01;V03;V07;V12
+Code,value,,M7-F-Code.display,display,Datum<String>,R,Original display; not executable instructions.,V01;V03;V07;V12
+Datum,value,,M7-F-Datum.status,status,Enum,R,"known, unknown, not_recorded, not_measured, not_applicable, pending, invalid, disputed.",V01;V03;V06;V07;V12
+Datum,value,,M7-F-Datum.value,value,T,C:known,Exactly enclosing declared type; absent for non-known status.,V01;V03;V07;V12
+Datum,value,,M7-F-Datum.reason,reason,String,C:not known,Specific reason; pending also has owning workflow.,V01;V03;V07;V12
+Datum,value,,M7-F-Datum.evidence,evidence,Reference[],R,Source or clinical assessment references.,V01;V02;V03;V07;V12
+Datum,value,,M7-F-Datum.assessed_time,assessed_time,ClinicalTime,R,"Timing of reconciliation/assessment, not substitute for measurement time.",V01;V03;V04;V07;V09;V12
+Quantity,value,,M7-F-Quantity.value,value,Decimal,R,"Finite base-10 string; no float, bool, NaN or infinity coercion.",V01;V03;V05;V07;V12
+Quantity,value,,M7-F-Quantity.unit_raw,unit_raw,String,R,"Original unit spelling, preserved.",V01;V03;V07;V12
+Quantity,value,,M7-F-Quantity.unit,unit,Datum<Code>,R,Validated dimension/UCUM mapping; unresolved units block calculation.,V01;V03;V06;V07;V12
+Quantity,value,,M7-F-Quantity.comparator,comparator,Enum,R,"eq, lt, le, gt, ge; censored results not exact numbers.",V01;V03;V06;V07;V12
+Quantity,value,,M7-F-Quantity.method,method,Datum<Reference>,R,Assay/measurement method where required.,V01;V02;V03;V07;V12
+ClinicalTime,value,,M7-F-ClinicalTime.status,status,Enum,R,"known, bounded, approximate, unknown, missing, not_applicable.",V01;V03;V06;V07;V12
+ClinicalTime,value,,M7-F-ClinicalTime.instant,instant,Instant,C:known,"Offset-aware exact instant, retains source lexeme and declared precision.",V01;V03;V04;V07;V09;V12
+ClinicalTime,value,,M7-F-ClinicalTime.lower,lower,Instant,C:bounded,Inclusive earliest instant.,V01;V03;V04;V07;V09;V12
+ClinicalTime,value,,M7-F-ClinicalTime.upper,upper,Instant,C:bounded,Inclusive latest; not less than lower.,V01;V03;V04;V07;V09;V12
+ClinicalTime,value,,M7-F-ClinicalTime.source_lexeme,source_lexeme,Datum<String>,R,Original before datetime coercion; old lost precision cannot be reconstructed.,V01;V03;V07;V12
+ClinicalTime,value,,M7-F-ClinicalTime.precision_contract,precision_contract,Datum<Code>,R,Versioned producer declaration; does not override loss or authenticate a clock.,V01;V03;V06;V07;V12
+ClinicalTime,value,,M7-F-ClinicalTime.clock_status,clock_status,Enum,R,"verified, unreliable, unknown; missing is not synchronized.",V01;V03;V06;V07;V12
+ClinicalTime,value,,M7-F-ClinicalTime.clock_evidence,clock_evidence,EvidencePin[],R,"Source-backed alignment, offset, drift and uncertainty assessment.",V01;V02;V03;V07;V12
+ClinicalTime,value,,M7-F-ClinicalTime.conflicting_assertions,conflicting_assertions,Reference[],R,All retained alternatives; unresolved disagreements prevent exact ordering.,V01;V02;V03;V07;V12
+ClinicalTime,value,,M7-F-ClinicalTime.limitations,limitations,String[],R,Approximation and precision/clock limits; never invent an exact event time.,V01;V03;V07;V12
+Actor,value,,M7-F-Actor.id,id,Identifier,R,Stable identity.,V01;V03;V07;V12
+Actor,value,,M7-F-Actor.kind,kind,Enum,R,"person, service, source_reported.",V01;V03;V06;V07;V12
+Actor,value,,M7-F-Actor.role,role,Code[],R,Current role for action; source author label grants no permission.,V01;V03;V07;V12
+Actor,value,,M7-F-Actor.organization,organization,Reference,R,Responsible institution.,V01;V02;V03;V07;V12
+Actor,value,,M7-F-Actor.authorization,authorization,Datum<Reference>,R,Current action/purpose/scope evidence when acting.,V01;V02;V03;V07;V12
+TeamAssignment,value,,M7-F-TeamAssignment.primary,primary,Reference,R,"Current directory role/team, not static free-text name.",V01;V02;V03;V07;V12
+TeamAssignment,value,,M7-F-TeamAssignment.backup,backup,Datum<Reference>,R,After-hours/escalation owner.,V01;V02;V03;V07;V12
+TeamAssignment,value,,M7-F-TeamAssignment.valid_interval,valid_interval,TimeInterval,R,Roster applicability and handover.,V01;V03;V04;V07;V09;V12
+TeamAssignment,value,,M7-F-TeamAssignment.acceptance,acceptance,Datum<Reference>,R,"Actual receiving-owner acceptance, not just dispatch.",V01;V02;V03;V07;V12
+TimeInterval,value,,M7-F-TimeInterval.start,start,ClinicalTime,R,Actual or explicitly uncertain start.,V01;V03;V04;V07;V09;V12
+TimeInterval,value,,M7-F-TimeInterval.end,end,ClinicalTime,R,Known end or open ongoing status.,V01;V03;V04;V07;V09;V12
+TimeInterval,value,,M7-F-TimeInterval.end_state,end_state,Enum,R,"closed, ongoing, unknown.",V01;V03;V06;V07;V12
+SourceIdentity,value,,M7-F-SourceIdentity.system,system,Code,R,Source system and version.,V01;V03;V06;V07;V12
+SourceIdentity,value,,M7-F-SourceIdentity.facility,facility,Datum<Code>,R,Source site/organization; unknown not inferred from patient location.,V01;V03;V06;V07;V12
+SourceIdentity,value,,M7-F-SourceIdentity.record_identifier,record_identifier,Datum<String>,R,Original source logical identifier.,V01;V03;V07;V12
+SourceIdentity,value,,M7-F-SourceIdentity.message_identifier,message_identifier,Datum<String>,R,Transport identifier distinct from event identity.,V01;V03;V07;V12
+SourceIdentity,value,,M7-F-SourceIdentity.adapter_version,adapter_version,Code,R,Exact parser/mapping contract.,V01;V03;V06;V07;V12
+ProtectedContent,value,,M7-F-ProtectedContent.location,location,String,R,"Protected retrievable handle, not public URL or embedded arbitrary executable content.",V01;V03;V07;V12
+ProtectedContent,value,,M7-F-ProtectedContent.content_digest,content_digest,Datum<Digest>,R,Known hash verified on retrieval.,V01;V03;V07;V12
+ProtectedContent,value,,M7-F-ProtectedContent.media_type,media_type,Code,R,Allowlisted content type.,V01;V03;V06;V07;V12
+ProtectedContent,value,,M7-F-ProtectedContent.access_policy,access_policy,Reference,R,Authorized scope and retention.,V01;V02;V03;V07;V12
+ProtectedContent,value,,M7-F-ProtectedContent.availability,availability,Enum,R,"available, unavailable, unknown; handle alone is not sample availability.",V01;V03;V06;V07;V12
+QualityAssessment,value,,M7-F-QualityAssessment.state,state,Enum,R,"acceptable, suspect, invalid, unknown.",V01;V03;V06;V07;V08;V09;V12
+QualityAssessment,value,,M7-F-QualityAssessment.artifacts,artifacts,Code[],R,"Motion, flush, damping, disconnection, electrocautery, signal loss, other attributed artifact.",V01;V03;V07;V08;V09;V12
+QualityAssessment,value,,M7-F-QualityAssessment.assessor,assessor,Datum<Actor>,R,Source algorithm versus clinical reviewer.,V01;V03;V07;V08;V09;V12
+QualityAssessment,value,,M7-F-QualityAssessment.method,method,Datum<Reference>,R,Quality method/version and scope.,V01;V02;V03;V07;V08;V09;V12
+QualityAssessment,value,,M7-F-QualityAssessment.applicable_interval,applicable_interval,TimeInterval,R,Exact acquisition coverage; newest quality event does not prove applicability.,V01;V03;V04;V07;V08;V09;V12
+QualityAssessment,value,,M7-F-QualityAssessment.evidence,evidence,EvidencePin[],R,Attributed basis and calibration/zeroing dependencies.,V01;V02;V03;V07;V08;V09;V12
+QualityAssessment,value,,M7-F-QualityAssessment.limitations,limitations,String[],R,Coverage and unassessed quality.,V01;V03;V07;V08;V09;V12
+AdmissionReceipt,operations,OperationsEnvelope,M7-F-AdmissionReceipt.source_message,source_message,Reference,R,Exact original intake.,V01;V02;V03;V07;V12
+AdmissionReceipt,operations,OperationsEnvelope,M7-F-AdmissionReceipt.record,record,Reference,R,Canonical admitted fact/revision.,V01;V02;V03;V07;V12
+AdmissionReceipt,operations,OperationsEnvelope,M7-F-AdmissionReceipt.committed_at,committed_at,Instant,R,Authoritative commit time.,V01;V03;V04;V07;V09;V12
+AdmissionReceipt,operations,OperationsEnvelope,M7-F-AdmissionReceipt.commit_sequence,commit_sequence,Integer,R,Monotonic scoped repository watermark.,V01;V03;V05;V07;V12
+AdmissionReceipt,operations,OperationsEnvelope,M7-F-AdmissionReceipt.adapter,adapter,Code,R,Admission/semantic contract version.,V01;V03;V06;V07;V12
+FeedHealth,operations,OperationsEnvelope,M7-F-FeedHealth.feed,feed,Code,R,Exact source channel and scope.,V01;V03;V06;V07;V12
+FeedHealth,operations,OperationsEnvelope,M7-F-FeedHealth.last_transport,last_transport,ClinicalTime,R,Last receipt; not proof patient completeness.,V01;V03;V04;V07;V09;V12
+FeedHealth,operations,OperationsEnvelope,M7-F-FeedHealth.committed_watermark,committed_watermark,Datum<String>,R,Admission sequence known through source offset.,V01;V03;V07;V12
+FeedHealth,operations,OperationsEnvelope,M7-F-FeedHealth.covered_intervals,covered_intervals,TimeInterval[],R,Verified data coverage for the declared patient/channel.,V01;V03;V04;V07;V09;V12
+FeedHealth,operations,OperationsEnvelope,M7-F-FeedHealth.gaps,gaps,TimeInterval[],R,Known missing windows; no zero filling.,V01;V03;V04;V07;V09;V12
+FeedHealth,operations,OperationsEnvelope,M7-F-FeedHealth.state,state,Enum,R,"healthy, delayed, disconnected, partial, reconciling, unknown.",V01;V03;V06;V07;V12
+FeedHealth,operations,OperationsEnvelope,M7-F-FeedHealth.latency_policy,latency_policy,Reference,R,"Intended-use SLO, stale threshold and fallback; local numerical values required.",V01;V02;V03;V07;V12
+FeedHealth,operations,OperationsEnvelope,M7-F-FeedHealth.owner,owner,TeamAssignment,R,Source/clinical operations escalation.,V01;V03;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.age,age,Datum<Quantity>,R,"Known age/date basis; population eligibility, no inferred missing age.",V01;V03;V05;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.setting,setting,Code,R,"ED, ICU, ward, perioperative, transport and available response resources.",V01;V03;V06;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.height,height,Datum<Quantity>,R,Measured/estimated source and time for BSA/PBW methods.,V01;V03;V05;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.weight_refs,weight_refs,Reference[],R,"Actual, dosing, ideal/adjusted/PBW methods remain distinct with dates.",V01;V02;V03;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.baseline_pressure,baseline_pressure,Datum<Reference>,R,"Usual BP, chronic hypertension and source reliability.",V01;V02;V03;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.cardiac_history,cardiac_history,Reference[],R,"HF, CAD, valve disease, congenital/shunt, PH, cardiomyopathy, transplant and support.",V01;V02;V03;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.relevant_conditions,relevant_conditions,Reference[],R,"Bleeding, renal/hepatic dysfunction, infection, pregnancy, autonomic/neurologic injury; dependency observations only.",V01;V02;V03;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.medications,medications,Reference[],R,"Actual vasoactives plus beta blockers, sedatives, antiarrhythmics, vasodilators and other relevant exposures with coverage.",V01;V02;V03;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.allergies,allergies,Datum<Reference>,R,Reconciled status; empty external list is not no allergy.,V01;V02;V03;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.ventilation,ventilation,Datum<Reference>,R,Exact ventilation context including changes.,V01;V02;V03;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.organ_support,organ_support,Reference[],R,"Current KRT, mechanical circulatory support and relevant interruptions, never inferred absent.",V01;V02;V03;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.goals_of_care,goals_of_care,Datum<Reference>,R,"Treatment ceiling, resuscitation status and time-limited trials; CPR algorithm is separately governed.",V01;V02;V03;V07;V12
+HemodynamicContext,patient,PatientEnvelope,M7-F-HemodynamicContext.context_coverage,context_coverage,Reference,R,What has and has not been assessed and through which cutoff.,V01;V02;V03;V07;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.method,method,Code,R,"Invasive arterial, cuff, PAC, RHC, thermodilution, pulse contour, echo, Doppler, bioreactance or source-specific method.",V01;V03;V06;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.device,device,Datum<Reference>,R,Exact device/configuration episode; brand does not establish parameter support.,V01;V02;V03;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.channel,channel,Datum<Code>,R,Exact parameter and channel; no patient association by bed alone.,V01;V03;V06;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.site,site,Datum<Code>,R,Anatomic site and side.,V01;V03;V06;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.compartment,compartment,Enum,R,"systemic_arterial, central_venous, RA, RV, PA, LV, peripheral_venous, unknown, other.",V01;V03;V06;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.position,position,Datum<Code>,R,Body posture and relevant changes.,V01;V03;V06;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.respiratory_phase,respiratory_phase,Datum<Code>,R,"End-expiratory/averaged/spontaneous, method-specific limitations.",V01;V03;V06;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.reference_level,reference_level,Datum<Code>,R,"Transducer reference relative to patient, not assumed from zeroing.",V01;V03;V06;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.zeroing,zeroing,Datum<Reference>,R,Attributed applicability to exact acquisition; not merely latest timestamp.,V01;V02;V03;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.calibration,calibration,Datum<Reference>,R,"Exact applicable method/episode, not blanket universal interval.",V01;V02;V03;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.measurement_interval,measurement_interval,TimeInterval,R,Source acquisition and averaging window.,V01;V03;V04;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.averaging_method,averaging_method,Datum<Code>,R,Beat/respiratory/time averaging and device algorithm version.,V01;V03;V06;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.indexing_basis,indexing_basis,Datum<Reference>,R,BSA/PBW/other denominator and exact version when indexed.,V01;V02;V03;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.parameter_support,parameter_support,Enum,R,"source_documented, independently_validated, unsupported, unknown.",V01;V03;V06;V07;V08;V09;V12
+AcquisitionContext,patient,PatientEnvelope,M7-F-AcquisitionContext.support_evidence,support_evidence,Reference[],R,Manufacturer permitted configuration documentation plus local validation; declaration is not proof.,V01;V02;V03;V07;V08;V09;V12
+DeviceSession,patient,PatientEnvelope,M7-F-DeviceSession.manufacturer,manufacturer,Code,R,Original manufacturer source identity.,V01;V03;V06;V07;V12
+DeviceSession,patient,PatientEnvelope,M7-F-DeviceSession.platform,platform,Code,R,"HemoSphere, EV1000, PiCCO, Swan-Ganz/PAC, other exact model.",V01;V03;V06;V07;V12
+DeviceSession,patient,PatientEnvelope,M7-F-DeviceSession.technology,technology,Code,R,"FloTrac, AcumenIQ, VolumeView, thermodilution, Fick, other; no assumed cross-model equivalence.",V01;V03;V06;V07;V12
+DeviceSession,patient,PatientEnvelope,M7-F-DeviceSession.software,software,Datum<Code>,R,Version and algorithm revision.,V01;V03;V06;V07;V12
+DeviceSession,patient,PatientEnvelope,M7-F-DeviceSession.sensor_catheter,sensor_catheter,Datum<Code>,R,Sensor/catheter subtype and compatibility evidence.,V01;V03;V06;V07;V12
+DeviceSession,patient,PatientEnvelope,M7-F-DeviceSession.serial_channel,serial_channel,Datum<Code>,R,Protected unique device/channel identity.,V01;V03;V06;V07;V12
+DeviceSession,patient,PatientEnvelope,M7-F-DeviceSession.assignment_interval,assignment_interval,TimeInterval,R,Verified patient assignment; reassignment closes old link.,V01;V03;V04;V07;V09;V12
+DeviceSession,patient,PatientEnvelope,M7-F-DeviceSession.configuration,configuration,Reference[],R,"Exact modes, calibration and parameter enablement; source assertions retained.",V01;V02;V03;V07;V12
+DeviceSession,patient,PatientEnvelope,M7-F-DeviceSession.local_validation,local_validation,Datum<Reference>,R,Installed configuration-specific adapter validation; absent means display limits.,V01;V02;V03;V07;V12
+MonitoringCheck,patient,PatientEnvelope,M7-F-MonitoringCheck.device_session,device_session,Reference,R,Exact circuit/transducer/catheter episode.,V01;V02;V03;V07;V08;V09;V12
+MonitoringCheck,patient,PatientEnvelope,M7-F-MonitoringCheck.check_type,check_type,Enum,R,"leveling, zeroing, calibration, dynamic_response, cuff_check, site_check, configuration_change.",V01;V03;V06;V07;V08;V09;V12
+MonitoringCheck,patient,PatientEnvelope,M7-F-MonitoringCheck.applies_to,applies_to,Reference[],R,Exact acquisitions or source-backed interval coverage.,V01;V02;V03;V07;V08;V09;V12
+MonitoringCheck,patient,PatientEnvelope,M7-F-MonitoringCheck.result,result,Enum,R,"adequate, inadequate, not_required, not_applicable, unknown.",V01;V03;V06;V07;V08;V09;V12
+MonitoringCheck,patient,PatientEnvelope,M7-F-MonitoringCheck.reference_level,reference_level,Datum<Code>,R,Anatomic reference actually used.,V01;V03;V06;V07;V08;V09;V12
+MonitoringCheck,patient,PatientEnvelope,M7-F-MonitoringCheck.patient_position,patient_position,Datum<Code>,R,Position while checking and after movement.,V01;V03;V06;V07;V08;V09;V12
+MonitoringCheck,patient,PatientEnvelope,M7-F-MonitoringCheck.waveform_check,waveform_check,Datum<Code>,R,Underdamping/overdamping/flush effects and assessment method.,V01;V03;V06;V07;V08;V09;V12
+MonitoringCheck,patient,PatientEnvelope,M7-F-MonitoringCheck.performer,performer,Datum<Actor>,R,Attributed trained operator/source.,V01;V03;V07;V08;V09;V12
+MonitoringCheck,patient,PatientEnvelope,M7-F-MonitoringCheck.reason,reason,Datum<String>,R,"Failure, adjustment and limitations; no fabricated correction.",V01;V03;V07;V08;V09;V12
+PressureObservation,patient,PatientEnvelope,M7-F-PressureObservation.parameter,parameter,Enum,R,"systemic_systolic, systemic_diastolic, systemic_mean, pulse_pressure, CVP, RAP, RV_systolic, RV_diastolic, PASP, PADP, mPAP, PAWP, LVEDP, waveform_finding.",V01;V03;V06;V07;V08;V09;V12
+PressureObservation,patient,PatientEnvelope,M7-F-PressureObservation.result,result,Datum<Quantity>,R,Exact value with comparator and original unit; waveform finding represented separately.,V01;V03;V05;V07;V08;V09;V12
+PressureObservation,patient,PatientEnvelope,M7-F-PressureObservation.qualitative_finding,qualitative_finding,Datum<Code>,R,Source waveform/qualitative observation; never forced numeric.,V01;V03;V06;V07;V08;V09;V12
+PressureObservation,patient,PatientEnvelope,M7-F-PressureObservation.acquisition,acquisition,AcquisitionContext,R,"Method, compartment and attributed applicability.",V01;V03;V07;V08;V09;V12
+PressureObservation,patient,PatientEnvelope,M7-F-PressureObservation.production,production,Enum,R,"direct_measurement, monitor_derived, source_calculated, clinrx_derived.",V01;V03;V06;V07;V08;V09;V12
+PressureObservation,patient,PatientEnvelope,M7-F-PressureObservation.calculation_profile,calculation_profile,Datum<Reference>,R,Required for derived output; preserve measured MAP alongside approximate MAP.,V01;V02;V03;V07;V08;V09;V12
+PressureObservation,patient,PatientEnvelope,M7-F-PressureObservation.input_pins,input_pins,EvidencePin[],R,Exact inputs when calculated.,V01;V02;V03;V07;V08;V09;V12
+PressureObservation,patient,PatientEnvelope,M7-F-PressureObservation.cuff_context,cuff_context,Datum<CuffContext>,R,Required for cuff use; not a transducer-zeroing requirement.,V01;V03;V07;V08;V09;V12
+CuffContext,value,,M7-F-CuffContext.limb_site,limb_site,Code,R,Arm/leg/site/side; preserve difference between methods.,V01;V03;V06;V07;V12
+CuffContext,value,,M7-F-CuffContext.cuff_size,cuff_size,Datum<Code>,R,Actual size/model; absent cannot be called verified appropriate.,V01;V03;V06;V07;V12
+CuffContext,value,,M7-F-CuffContext.limb_circumference,limb_circumference,Datum<Quantity>,R,Measurement if used for selection.,V01;V03;V05;V07;V12
+CuffContext,value,,M7-F-CuffContext.position_relative_heart,position_relative_heart,Datum<Code>,R,Limb position and support.,V01;V03;V06;V07;V12
+CuffContext,value,,M7-F-CuffContext.site_restrictions,site_restrictions,Code[],R,Local vascular/access/wound restrictions and clinician assessment.,V01;V03;V07;V12
+CuffContext,value,,M7-F-CuffContext.motion_rhythm,motion_rhythm,Code[],R,"Movement, tremor, arrhythmia and perfusion limitations.",V01;V03;V07;V12
+CuffContext,value,,M7-F-CuffContext.repeat_set,repeat_set,Reference[],R,"Repeated actual readings, no invented continuous trace.",V01;V02;V03;V07;V12
+CardiacOutputObservation,patient,PatientEnvelope,M7-F-CardiacOutputObservation.parameter,parameter,Enum,R,"CO, CI, SV, SVI, CPO, CPI, HR, pulse_rate, EF, LV_function, RV_function, pulmonary_flow, RV_PA_coupling, SVR, SVRI, PVR, PVRI, TPG, DPG, arterial_elastance.",V01;V03;V06;V07;V08;V09;V12
+CardiacOutputObservation,patient,PatientEnvelope,M7-F-CardiacOutputObservation.value,value,Datum<Quantity>,R,Exact source or derived value with units; indexed and absolute distinct.,V01;V03;V05;V07;V08;V09;V12
+CardiacOutputObservation,patient,PatientEnvelope,M7-F-CardiacOutputObservation.qualitative,qualitative,Datum<Code>,R,Source qualitative function when applicable.,V01;V03;V06;V07;V08;V09;V12
+CardiacOutputObservation,patient,PatientEnvelope,M7-F-CardiacOutputObservation.acquisition,acquisition,AcquisitionContext,R,"Device, method, calibration and averaging window.",V01;V03;V07;V08;V09;V12
+CardiacOutputObservation,patient,PatientEnvelope,M7-F-CardiacOutputObservation.production,production,Enum,R,"direct, source_derived, clinrx_derived.",V01;V03;V06;V07;V08;V09;V12
+CardiacOutputObservation,patient,PatientEnvelope,M7-F-CardiacOutputObservation.method_details,method_details,Datum<FlowMethodContext>,R,Thermodilution/Fick/echo/pulse-contour requirements.,V01;V03;V07;V08;V09;V12
+CardiacOutputObservation,patient,PatientEnvelope,M7-F-CardiacOutputObservation.input_pins,input_pins,EvidencePin[],R,Complete exact calculation dependencies.,V01;V02;V03;V07;V08;V09;V12
+FlowMethodContext,value,,M7-F-FlowMethodContext.indicator,indicator,Datum<Code>,R,Injectate or thermodilution indicator type.,V01;V03;V06;V07;V12
+FlowMethodContext,value,,M7-F-FlowMethodContext.injection_volume_temperature,injection_volume_temperature,Reference[],R,Actual bolus details and timing where required.,V01;V02;V03;V07;V12
+FlowMethodContext,value,,M7-F-FlowMethodContext.replicate_measurements,replicate_measurements,Reference[],R,"Individual source measures, dispersion and excluded replicates with reason.",V01;V02;V03;V07;V12
+FlowMethodContext,value,,M7-F-FlowMethodContext.oxygen_consumption,oxygen_consumption,Datum<Reference>,R,"Measured versus assumed VO2 for Fick, with actual formula.",V01;V02;V03;V07;V12
+FlowMethodContext,value,,M7-F-FlowMethodContext.shunt_valve_arrhythmia,shunt_valve_arrhythmia,Code[],R,Method confounders including TR/shunts/arrhythmia.,V01;V03;V07;V12
+FlowMethodContext,value,,M7-F-FlowMethodContext.calibration_state,calibration_state,Datum<Reference>,R,Applicable calibration and changes in vascular tone.,V01;V02;V03;V07;V12
+FlowMethodContext,value,,M7-F-FlowMethodContext.measurement_precision,measurement_precision,Datum<Quantity>,R,Least significant change or uncertainty for selected method; unknown blocks overconfident response claims.,V01;V03;V05;V07;V12
+VolumeLungObservation,patient,PatientEnvelope,M7-F-VolumeLungObservation.parameter,parameter,Enum,R,"GEDV, GEDVI, ITBV, ITBVI, EVLW, EVLWI, PVPI, GEF, CFI, ventricular_volume, preload_estimate.",V01;V03;V06;V07;V08;V09;V12
+VolumeLungObservation,patient,PatientEnvelope,M7-F-VolumeLungObservation.value,value,Datum<Quantity>,R,"Source value/unit, comparison and exact indexing denominator.",V01;V03;V05;V07;V08;V09;V12
+VolumeLungObservation,patient,PatientEnvelope,M7-F-VolumeLungObservation.acquisition,acquisition,AcquisitionContext,R,"Indicator, calibration, method and supported parameter.",V01;V03;V07;V08;V09;V12
+VolumeLungObservation,patient,PatientEnvelope,M7-F-VolumeLungObservation.interpretation,interpretation,Datum<Reference>,R,Attributed source interpretation separate from numeric observation.,V01;V02;V03;V07;V08;V09;V12
+DynamicIndex,patient,PatientEnvelope,M7-F-DynamicIndex.parameter,parameter,Enum,R,"PPV, SVV, dynamic_arterial_elastance, dP_dt, recorded_SV_change, recorded_CO_change.",V01;V03;V06;V07;V12
+DynamicIndex,patient,PatientEnvelope,M7-F-DynamicIndex.value,value,Datum<Quantity>,R,Percent/fraction and algorithm explicit; cannot mix 0.12 and 12 percent.,V01;V03;V05;V07;V12
+DynamicIndex,patient,PatientEnvelope,M7-F-DynamicIndex.acquisition,acquisition,AcquisitionContext,R,"Method, windows and quality.",V01;V03;V07;V12
+DynamicIndex,patient,PatientEnvelope,M7-F-DynamicIndex.ventilation_context,ventilation_context,Reference,R,"Contemporaneous mode/effort/VT/PEEP, not last charted default.",V01;V02;V03;V07;V12
+DynamicIndex,patient,PatientEnvelope,M7-F-DynamicIndex.rhythm_context,rhythm_context,Reference,R,Contemporaneous arrhythmia/ectopy/pacing.,V01;V02;V03;V07;V12
+DynamicIndex,patient,PatientEnvelope,M7-F-DynamicIndex.applicability,applicability,Datum<Reference>,R,Profile-specific eligibility; unknown is not valid.,V01;V02;V03;V07;V12
+VentilationContext,patient,PatientEnvelope,M7-F-VentilationContext.mode,mode,Datum<Code>,R,"Controlled, assisted, spontaneous and actual effort.",V01;V03;V06;V07;V12
+VentilationContext,patient,PatientEnvelope,M7-F-VentilationContext.spontaneous_effort,spontaneous_effort,Enum,R,"present, absent, unknown.",V01;V03;V06;V07;V12
+VentilationContext,patient,PatientEnvelope,M7-F-VentilationContext.tidal_volume,tidal_volume,Datum<Quantity>,R,Absolute delivered VT and unit.,V01;V03;V05;V07;V12
+VentilationContext,patient,PatientEnvelope,M7-F-VentilationContext.predicted_body_weight,predicted_body_weight,Datum<Reference>,R,Exact approved PBW method and inputs if VT per kg used.,V01;V02;V03;V07;V12
+VentilationContext,patient,PatientEnvelope,M7-F-VentilationContext.vt_per_pbw,vt_per_pbw,Datum<Quantity>,R,Derived only from coherent supported inputs.,V01;V03;V05;V07;V12
+VentilationContext,patient,PatientEnvelope,M7-F-VentilationContext.peep,peep,Datum<Quantity>,R,Actual PEEP at observation.,V01;V03;V05;V07;V12
+VentilationContext,patient,PatientEnvelope,M7-F-VentilationContext.plateau_driving_pressure,plateau_driving_pressure,Reference[],R,"Relevant measured mechanics, not inferred from mode.",V01;V02;V03;V07;V12
+VentilationContext,patient,PatientEnvelope,M7-F-VentilationContext.respiratory_rate,respiratory_rate,Datum<Quantity>,R,Actual rate and HR/RR suitability where needed.,V01;V03;V05;V07;V12
+VentilationContext,patient,PatientEnvelope,M7-F-VentilationContext.compliance,compliance,Datum<Quantity>,R,If method uses it; absence not normal compliance.,V01;V03;V05;V07;V12
+VentilationContext,patient,PatientEnvelope,M7-F-VentilationContext.chest_status,chest_status,Code[],R,"Open chest, pneumothorax, thoracic conditions and constraints.",V01;V03;V07;V12
+VentilationContext,patient,PatientEnvelope,M7-F-VentilationContext.abdominal_pressure,abdominal_pressure,Datum<Reference>,R,Measured/assessed elevated IAP and PLR limitations.,V01;V02;V03;V07;V12
+PerfusionObservation,patient,PatientEnvelope,M7-F-PerfusionObservation.parameter,parameter,Enum,R,"capillary_refill, skin_temperature, mottling, peripheral_pulse, mentation, urine_output_context, other.",V01;V03;V06;V07;V08;V09;V12
+PerfusionObservation,patient,PatientEnvelope,M7-F-PerfusionObservation.numeric,numeric,Datum<Quantity>,R,"CRT seconds, temperature with scale, interval-based output as applicable.",V01;V03;V05;V07;V08;V09;V12
+PerfusionObservation,patient,PatientEnvelope,M7-F-PerfusionObservation.qualitative,qualitative,Datum<Code>,R,Preserved attributed finding/scale.,V01;V03;V06;V07;V08;V09;V12
+PerfusionObservation,patient,PatientEnvelope,M7-F-PerfusionObservation.site,site,Datum<Code>,R,Finger/sternum/knee/other actual measurement site.,V01;V03;V06;V07;V08;V09;V12
+PerfusionObservation,patient,PatientEnvelope,M7-F-PerfusionObservation.protocol,protocol,Datum<Reference>,R,"Pressure duration/device/ambient conditions, trained assessment method.",V01;V02;V03;V07;V08;V09;V12
+PerfusionObservation,patient,PatientEnvelope,M7-F-PerfusionObservation.confounders,confounders,Code[],R,"Skin tone/temperature/lighting, vascular disease, vasoconstriction, sedation, neurologic state and baseline.",V01;V03;V07;V08;V09;V12
+PerfusionObservation,patient,PatientEnvelope,M7-F-PerfusionObservation.interval,interval,TimeInterval,R,Measurement or observation window; no instantaneous urine rate without interval.,V01;V03;V04;V07;V08;V09;V12
+PerfusionObservation,patient,PatientEnvelope,M7-F-PerfusionObservation.source_dependency,source_dependency,Reference[],R,"M8/M9/neurology observations consumed, not duplicate module logic.",V01;V02;V03;V07;V08;V09;V12
+LactateObservation,patient,PatientEnvelope,M7-F-LactateObservation.concentration,concentration,Datum<Quantity>,R,Comparator and original unit; mmol/L distinct from mg/dL.,V01;V03;V05;V07;V08;V09;V12
+LactateObservation,patient,PatientEnvelope,M7-F-LactateObservation.specimen_identity,specimen_identity,Datum<Code>,R,Exact specimen or source-backed collection assertion; missing stays unlinked.,V01;V03;V06;V07;V08;V09;V12
+LactateObservation,patient,PatientEnvelope,M7-F-LactateObservation.blood_source,blood_source,Enum,R,"arterial, central_venous, mixed_venous, peripheral_venous, other, unknown.",V01;V03;V06;V07;V08;V09;V12
+LactateObservation,patient,PatientEnvelope,M7-F-LactateObservation.collection_time,collection_time,ClinicalTime,R,Actual collection; never replaced by report/receipt.,V01;V03;V04;V07;V08;V09;V12
+LactateObservation,patient,PatientEnvelope,M7-F-LactateObservation.analysis_time,analysis_time,ClinicalTime,R,"Assay time, preanalytic delay if known.",V01;V03;V04;V07;V08;V09;V12
+LactateObservation,patient,PatientEnvelope,M7-F-LactateObservation.report_time,report_time,ClinicalTime,R,"Source release, final/preliminary/correction status retained.",V01;V03;V04;V07;V08;V09;V12
+LactateObservation,patient,PatientEnvelope,M7-F-LactateObservation.assay,assay,Datum<Code>,R,Analyzer/method and range.,V01;V03;V06;V07;V08;V09;V12
+LactateObservation,patient,PatientEnvelope,M7-F-LactateObservation.collection_context,collection_context,Code[],R,Sampling/handling/contamination and quality evidence.,V01;V03;V07;V08;V09;V12
+LactateObservation,patient,PatientEnvelope,M7-F-LactateObservation.possible_nonhypoxic_causes,possible_nonhypoxic_causes,Reference[],R,"Clinician-assessed adrenergic drugs, impaired metabolism/liver function, seizures, ischemia, toxins and other causes.",V01;V02;V03;V07;V08;V09;V12
+LactateObservation,patient,PatientEnvelope,M7-F-LactateObservation.trend_group,trend_group,Datum<Reference>,R,"Comparable sampling/method group, no silent arterial/venous mixing.",V01;V02;V03;V07;V08;V09;V12
+OxygenTransportObservation,patient,PatientEnvelope,M7-F-OxygenTransportObservation.parameter,parameter,Enum,R,"SaO2, SpO2, ScvO2, SvO2, Hb, PaO2, PvO2, PaCO2, PvCO2, CaO2, CvO2, DO2, DO2I, VO2, OER, CO2_gap.",V01;V03;V06;V07;V08;V09;V12
+OxygenTransportObservation,patient,PatientEnvelope,M7-F-OxygenTransportObservation.value,value,Datum<Quantity>,R,Saturation fraction/percent explicit; content and tension not interchangeable.,V01;V03;V05;V07;V08;V09;V12
+OxygenTransportObservation,patient,PatientEnvelope,M7-F-OxygenTransportObservation.sample_type,sample_type,Enum,R,"arterial, central_venous, mixed_venous, peripheral_venous, noninvasive, unknown.",V01;V03;V06;V07;V08;V09;V12
+OxygenTransportObservation,patient,PatientEnvelope,M7-F-OxygenTransportObservation.site_catheter,site_catheter,Datum<Reference>,R,Confirmed sample/catheter compartment.,V01;V02;V03;V07;V08;V09;V12
+OxygenTransportObservation,patient,PatientEnvelope,M7-F-OxygenTransportObservation.specimen,specimen,Datum<Code>,R,Original sample identity; no invented arterial-venous pairing.,V01;V03;V06;V07;V08;V09;V12
+OxygenTransportObservation,patient,PatientEnvelope,M7-F-OxygenTransportObservation.collection_time,collection_time,ClinicalTime,R,"Actual collection, coherent for paired calculations.",V01;V03;V04;V07;V08;V09;V12
+OxygenTransportObservation,patient,PatientEnvelope,M7-F-OxygenTransportObservation.fio2_peep_context,fio2_peep_context,Datum<Reference>,R,Contemporaneous respiratory support.,V01;V02;V03;V07;V08;V09;V12
+OxygenTransportObservation,patient,PatientEnvelope,M7-F-OxygenTransportObservation.cooximetry,cooximetry,Datum<Code>,R,Measured saturation versus calculated; dyshemoglobinemia assumptions.,V01;V03;V06;V07;V08;V09;V12
+OxygenTransportObservation,patient,PatientEnvelope,M7-F-OxygenTransportObservation.method,method,Datum<Reference>,R,"Measurement, assumed VO2 or derived profile.",V01;V02;V03;V07;V08;V09;V12
+OxygenTransportObservation,patient,PatientEnvelope,M7-F-OxygenTransportObservation.confounders,confounders,Code[],R,"Shunt, extraction/metabolism, skin/low perfusion pulse-ox error and extracorporeal mixing.",V01;V03;V07;V08;V09;V12
+EchoStudy,patient,PatientEnvelope,M7-F-EchoStudy.study_id,study_id,Code,R,Original study/accession and report revision.,V01;V03;V06;V07;V12
+EchoStudy,patient,PatientEnvelope,M7-F-EchoStudy.study_type,study_type,Enum,R,"TTE, TEE, focused_POCUS, other.",V01;V03;V06;V07;V12
+EchoStudy,patient,PatientEnvelope,M7-F-EchoStudy.performed_interval,performed_interval,TimeInterval,R,"Actual acquisition, distinct from report signature.",V01;V03;V04;V07;V09;V12
+EchoStudy,patient,PatientEnvelope,M7-F-EchoStudy.operator,operator,Datum<Actor>,R,Operator and relevant competence assertion.,V01;V03;V07;V12
+EchoStudy,patient,PatientEnvelope,M7-F-EchoStudy.reader,reader,Datum<Actor>,R,"Interpreting clinician, report state and responsibility.",V01;V03;V07;V12
+EchoStudy,patient,PatientEnvelope,M7-F-EchoStudy.image_quality,image_quality,QualityAssessment,R,"Windows/limitations, incomplete exam not normal findings.",V01;V03;V07;V12
+EchoStudy,patient,PatientEnvelope,M7-F-EchoStudy.images,images,ProtectedContent[],R,Authorized DICOM/cine references; no images manufactured.,V01;V03;V07;V12
+EchoStudy,patient,PatientEnvelope,M7-F-EchoStudy.ventilation_position,ventilation_position,Reference[],R,Acquisition-specific posture/respiratory support.,V01;V02;V03;V07;V12
+EchoStudy,patient,PatientEnvelope,M7-F-EchoStudy.critical_communication,critical_communication,Datum<Reference>,R,Actual source communication; report finality is not action.,V01;V02;V03;V07;V12
+EchoFinding,patient,PatientEnvelope,M7-F-EchoFinding.study,study,Reference,R,Exact source study/report identity; forward association authoritative.,V01;V02;V03;V07;V12
+EchoFinding,patient,PatientEnvelope,M7-F-EchoFinding.parameter,parameter,Enum,R,"LV_EF, LV_size, LV_volume, LV_function, diastolic_function, wall_motion, LVOT_diameter, LVOT_VTI, SV, RV_size, RV_function, TAPSE, RV_FAC, tissue_S_prime, RV_strain, septal_shape, TR_velocity, estimated_RVSP, valve_lesion, pericardial_effusion, tamponade_sign, IVC_size, IVC_variation, aortic_finding, other.",V01;V03;V06;V07;V12
+EchoFinding,patient,PatientEnvelope,M7-F-EchoFinding.value,value,Datum<Quantity>,R,Numeric if actually measured; absence not zero.,V01;V03;V05;V07;V12
+EchoFinding,patient,PatientEnvelope,M7-F-EchoFinding.qualitative,qualitative,Datum<Code>,R,Source severity/appearance; preserve uncertain language.,V01;V03;V06;V07;V12
+EchoFinding,patient,PatientEnvelope,M7-F-EchoFinding.method,method,Code,R,"View, measurement and calculation convention; visual estimate distinct from Simpson EF.",V01;V03;V06;V07;V12
+EchoFinding,patient,PatientEnvelope,M7-F-EchoFinding.view,view,Datum<Code>,R,Actual imaging view and Doppler alignment.,V01;V03;V06;V07;V12
+EchoFinding,patient,PatientEnvelope,M7-F-EchoFinding.beat_selection,beat_selection,Datum<Code>,R,"Number/selection/averaging, arrhythmia and pacing limitations.",V01;V03;V06;V07;V12
+EchoFinding,patient,PatientEnvelope,M7-F-EchoFinding.units_inputs,units_inputs,EvidencePin[],R,"Exact component inputs for calculations, including diameter and VTI.",V01;V02;V03;V07;V12
+EchoFinding,patient,PatientEnvelope,M7-F-EchoFinding.loading_conditions,loading_conditions,Reference[],R,"BP, HR, vasoactives and ventilation at acquisition.",V01;V02;V03;V07;V12
+EchoFinding,patient,PatientEnvelope,M7-F-EchoFinding.interpretation,interpretation,Datum<Reference>,R,Qualified clinician conclusion separate from finding.,V01;V02;V03;V07;V12
+RhythmObservation,patient,PatientEnvelope,M7-F-RhythmObservation.parameter,parameter,Enum,R,"HR, pulse_rate, rhythm, arrhythmia, PR, QRS, QT, QTc, ST_finding, conduction, pacing.",V01;V03;V06;V07;V08;V09;V12
+RhythmObservation,patient,PatientEnvelope,M7-F-RhythmObservation.numeric,numeric,Datum<Quantity>,R,Interval/rate with units.,V01;V03;V05;V07;V08;V09;V12
+RhythmObservation,patient,PatientEnvelope,M7-F-RhythmObservation.qualitative,qualitative,Datum<Code>,R,Source rhythm and certainty; alarm alone not confirmed arrhythmia.,V01;V03;V06;V07;V08;V09;V12
+RhythmObservation,patient,PatientEnvelope,M7-F-RhythmObservation.interpretation_source,interpretation_source,Enum,R,"monitor_algorithm, source_clinician, ClinRx_clinician, unknown.",V01;V03;V06;V07;V08;V09;V12
+RhythmObservation,patient,PatientEnvelope,M7-F-RhythmObservation.leads,leads,Code[],R,Actual leads and ECG/report reference.,V01;V03;V07;V08;V09;V12
+RhythmObservation,patient,PatientEnvelope,M7-F-RhythmObservation.strip,strip,Datum<ProtectedContent>,R,Authorized waveform/ECG strip if available.,V01;V03;V07;V08;V09;V12
+RhythmObservation,patient,PatientEnvelope,M7-F-RhythmObservation.pulse_confirmation,pulse_confirmation,Datum<Reference>,R,Clinical pulse/perfusion confirmation when urgent; telemetry rate not perfusing rhythm proof.,V01;V02;V03;V07;V08;V09;V12
+HemodynamicEpisode,patient,PatientEnvelope,M7-F-HemodynamicEpisode.recognition_time,recognition_time,ClinicalTime,R,"Actual documented recognition, not first retrospectively abnormal value.",V01;V03;V04;V07;V09;V12
+HemodynamicEpisode,patient,PatientEnvelope,M7-F-HemodynamicEpisode.phase,phase,Enum,R,"rescue, optimization, stabilization, evacuation, uncertain; phase is reassessed, not clock-only.",V01;V03;V06;V07;V12
+HemodynamicEpisode,patient,PatientEnvelope,M7-F-HemodynamicEpisode.hypotension_assessment,hypotension_assessment,Datum<Code>,R,Clinician assessment under valid individualized target and reliable measurement.,V01;V03;V06;V07;V12
+HemodynamicEpisode,patient,PatientEnvelope,M7-F-HemodynamicEpisode.hypoperfusion_assessment,hypoperfusion_assessment,Datum<Code>,R,"Separate evidence/uncertainty, including possible normotensive shock.",V01;V03;V06;V07;V12
+HemodynamicEpisode,patient,PatientEnvelope,M7-F-HemodynamicEpisode.phenotype_assessments,phenotype_assessments,Reference[],R,"Distributive, hypovolemic/hemorrhagic, LV/RV cardiogenic, obstructive and mixed assertions.",V01;V02;V03;V07;V12
+HemodynamicEpisode,patient,PatientEnvelope,M7-F-HemodynamicEpisode.causes_and_alternatives,causes_and_alternatives,Reference[],R,"Infection, hemorrhage, ACS, PE, tamponade, tension physiology, anaphylaxis, endocrine/drug and other causes.",V01;V02;V03;V07;V12
+HemodynamicEpisode,patient,PatientEnvelope,M7-F-HemodynamicEpisode.active_targets,active_targets,Reference[],R,Exact patient-specific goal records with conflicts visible.,V01;V02;V03;V07;V12
+HemodynamicEpisode,patient,PatientEnvelope,M7-F-HemodynamicEpisode.context_snapshot,context_snapshot,Reference,R,Exact evidence/absence scope and policy versions.,V01;V02;V03;V07;V12
+HemodynamicEpisode,patient,PatientEnvelope,M7-F-HemodynamicEpisode.owner,owner,TeamAssignment,R,Responsible treating team and escalation contact.,V01;V03;V07;V12
+HemodynamicEpisode,patient,PatientEnvelope,M7-F-HemodynamicEpisode.reassessment_due,reassessment_due,ClinicalTime,R,Time/event trigger under local urgency policy.,V01;V03;V04;V07;V09;V12
+HemodynamicEpisode,patient,PatientEnvelope,M7-F-HemodynamicEpisode.status,status,Enum,R,"suspected, active, improving, deteriorating, resolved, unresolved.",V01;V03;V06;V07;V12
+PhenotypeAssessment,patient,PatientEnvelope,M7-F-PhenotypeAssessment.episode,episode,Reference,R,Correct patient/clinical episode.,V01;V02;V03;V07;V12
+PhenotypeAssessment,patient,PatientEnvelope,M7-F-PhenotypeAssessment.phenotype,phenotype,Enum,R,"distributive, hypovolemic, hemorrhagic, LV_cardiogenic, RV_failure, obstructive, mixed, undifferentiated.",V01;V03;V06;V07;V12
+PhenotypeAssessment,patient,PatientEnvelope,M7-F-PhenotypeAssessment.certainty,certainty,Enum,R,"suspected, probable, confirmed, refuted, uncertain.",V01;V03;V06;V07;V12
+PhenotypeAssessment,patient,PatientEnvelope,M7-F-PhenotypeAssessment.supporting,supporting,EvidencePin[],R,"Examination, echo/flow/pressure, cause and response evidence.",V01;V02;V03;V07;V12
+PhenotypeAssessment,patient,PatientEnvelope,M7-F-PhenotypeAssessment.contradictory,contradictory,EvidencePin[],R,"Conflicts explicitly retained, not discarded by ranking.",V01;V02;V03;V07;V12
+PhenotypeAssessment,patient,PatientEnvelope,M7-F-PhenotypeAssessment.assessed_by,assessed_by,Actor,R,Qualified clinical interpretation.,V01;V03;V07;V12
+PhenotypeAssessment,patient,PatientEnvelope,M7-F-PhenotypeAssessment.next_assessment,next_assessment,ClinicalTime,R,Trigger after intervention or deterioration.,V01;V03;V04;V07;V09;V12
+HemodynamicTarget,patient,PatientEnvelope,M7-F-HemodynamicTarget.episode,episode,Reference,R,Clinical scope including concurrent conditions.,V01;V02;V03;V07;V12
+HemodynamicTarget,patient,PatientEnvelope,M7-F-HemodynamicTarget.parameter,parameter,Code,R,MAP/SBP/perfusion/flow or other precisely defined goal.,V01;V03;V06;V07;V12
+HemodynamicTarget,patient,PatientEnvelope,M7-F-HemodynamicTarget.lower,lower,Datum<Quantity>,R,"Known explicit target lower limit, no implicit universal default.",V01;V03;V05;V07;V12
+HemodynamicTarget,patient,PatientEnvelope,M7-F-HemodynamicTarget.upper,upper,Datum<Quantity>,R,Known upper/tolerance bound when prescribed.,V01;V03;V05;V07;V12
+HemodynamicTarget,patient,PatientEnvelope,M7-F-HemodynamicTarget.priority,priority,Code,R,Conflicting goals (e.g. cerebral perfusion/bleeding/RV) require clinical reconciliation.,V01;V03;V06;V07;V12
+HemodynamicTarget,patient,PatientEnvelope,M7-F-HemodynamicTarget.clinical_rationale,clinical_rationale,String,R,"Population, baseline pressure, cause, organ perfusion and reason.",V01;V03;V07;V12
+HemodynamicTarget,patient,PatientEnvelope,M7-F-HemodynamicTarget.reference_profile,reference_profile,Datum<Reference>,R,Applicable adopted guideline; not generic adult rule.,V01;V02;V03;V07;V12
+HemodynamicTarget,patient,PatientEnvelope,M7-F-HemodynamicTarget.effective_interval,effective_interval,TimeInterval,R,Actual start/end; revision does not retroactively alter prior goals.,V01;V03;V04;V07;V09;V12
+HemodynamicTarget,patient,PatientEnvelope,M7-F-HemodynamicTarget.authorized_by,authorized_by,Actor,R,Responsible clinician and authority.,V01;V03;V07;V12
+HemodynamicTarget,patient,PatientEnvelope,M7-F-HemodynamicTarget.review_due,review_due,ClinicalTime,R,Reassessment trigger and expiry.,V01;V03;V04;V07;V09;V12
+ShockSeverityAssessment,patient,PatientEnvelope,M7-F-ShockSeverityAssessment.episode,episode,Reference,R,Relevant cardiogenic/other supported episode.,V01;V02;V03;V07;V12
+ShockSeverityAssessment,patient,PatientEnvelope,M7-F-ShockSeverityAssessment.classification,classification,Reference,R,Exact approved framework/version and validated population.,V01;V02;V03;V07;V12
+ShockSeverityAssessment,patient,PatientEnvelope,M7-F-ShockSeverityAssessment.stage,stage,Datum<Code>,R,A/B/C/D/E only under the adopted SCAI criteria; unknown not forced C.,V01;V03;V06;V07;V12
+ShockSeverityAssessment,patient,PatientEnvelope,M7-F-ShockSeverityAssessment.criteria_met,criteria_met,EvidencePin[],R,"Clinical, biochemical and hemodynamic criteria with observation times.",V01;V02;V03;V07;V12
+ShockSeverityAssessment,patient,PatientEnvelope,M7-F-ShockSeverityAssessment.criteria_missing,criteria_missing,Code[],R,Why staging may be incomplete.,V01;V03;V07;V12
+ShockSeverityAssessment,patient,PatientEnvelope,M7-F-ShockSeverityAssessment.trajectory,trajectory,Enum,R,"new, improving, stable, deteriorating, unknown; previous stage retained.",V01;V03;V06;V07;V12
+ShockSeverityAssessment,patient,PatientEnvelope,M7-F-ShockSeverityAssessment.arrest_modifier,arrest_modifier,Datum<Code>,R,Framework-specific arrest modifier and neurologic context.,V01;V03;V06;V07;V12
+ShockSeverityAssessment,patient,PatientEnvelope,M7-F-ShockSeverityAssessment.risk_modifiers,risk_modifiers,Reference[],R,"Etiology, age, comorbidity and clinical context; stage not complete prognosis.",V01;V02;V03;V07;V12
+ShockSeverityAssessment,patient,PatientEnvelope,M7-F-ShockSeverityAssessment.confirmed_by,confirmed_by,Datum<Actor>,R,Clinician confirmation; software candidate not definitive diagnosis.,V01;V03;V07;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.episode,episode,Reference,R,Clinical assessment scope.,V01;V02;V03;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.test_type,test_type,Enum,R,"PLR, end_expiratory_occlusion, mini_fluid_challenge, fluid_challenge, tidal_volume_challenge, other_approved.",V01;V03;V06;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.protocol,protocol,Reference,R,Exact validated method/threshold/timing/exclusion profile; none means recording only.,V01;V02;V03;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.indication,indication,String,R,"Clinical question, not automatic need for fluids.",V01;V03;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.preconditions,preconditions,ApplicabilityCheck[],R,"Independent required eligibility checks, unknown is not met.",V01;V03;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.baseline,baseline,EvidencePin[],R,Actual baseline CO/SV/VTI/other approved variable and stable conditions.,V01;V02;V03;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.intervention,intervention,Datum<Reference>,R,Position/occlusion or actual fluid event; recorded performance not just request.,V01;V02;V03;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.response,response,EvidencePin[],R,Actual peak/defined response interval and recovery as specified.,V01;V02;V03;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.confounding_events,confounding_events,Reference[],R,"Vasoactive, ventilation, rhythm, pain, cough, procedure and timing changes.",V01;V02;V03;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.computed_change,computed_change,Datum<Reference>,R,"Versioned calculation, measurement precision and uncertainty.",V01;V02;V03;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.reported_result,reported_result,Datum<Code>,R,Source-reported result distinct from ClinRx-calculated result.,V01;V03;V06;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.interpretation,interpretation,Enum,R,"responsive, nonresponsive, indeterminate, invalid, not_assessed; only eligible method can classify.",V01;V03;V06;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.tolerance_assessment,tolerance_assessment,Datum<Reference>,R,Separate fluid-harm review; responsiveness cannot fill this field.,V01;V02;V03;V07;V08;V09;V12
+FluidResponsivenessTest,patient,PatientEnvelope,M7-F-FluidResponsivenessTest.performer,performer,Actor,R,Qualified bedside assessor.,V01;V03;V07;V08;V09;V12
+ApplicabilityCheck,value,,M7-F-ApplicabilityCheck.criterion,criterion,Code,R,"Exact profile criterion such as rhythm, effort, VT, chest, IAP, reversibility or CO measurement.",V01;V03;V06;V07;V12
+ApplicabilityCheck,value,,M7-F-ApplicabilityCheck.state,state,Enum,R,"met, not_met, unknown, not_applicable.",V01;V03;V06;V07;V12
+ApplicabilityCheck,value,,M7-F-ApplicabilityCheck.evidence,evidence,EvidencePin[],R,Actual contemporaneous support.,V01;V02;V03;V07;V12
+ApplicabilityCheck,value,,M7-F-ApplicabilityCheck.reason,reason,Datum<String>,R,Failure/uncertainty or justified not applicable.,V01;V03;V07;V12
+FluidToleranceAssessment,patient,PatientEnvelope,M7-F-FluidToleranceAssessment.episode,episode,Reference,R,Relevant resuscitation decision.,V01;V02;V03;V07;V12
+FluidToleranceAssessment,patient,PatientEnvelope,M7-F-FluidToleranceAssessment.respiratory_findings,respiratory_findings,Reference[],R,"Oxygenation, lung ultrasound, pulmonary edema/ventilation and change, not an isolated B-line label.",V01;V02;V03;V07;V12
+FluidToleranceAssessment,patient,PatientEnvelope,M7-F-FluidToleranceAssessment.venous_congestion,venous_congestion,Reference[],R,"Exam, CVP context, hepatic/portal/intrarenal Doppler and source method if available.",V01;V02;V03;V07;V12
+FluidToleranceAssessment,patient,PatientEnvelope,M7-F-FluidToleranceAssessment.cardiac_constraints,cardiac_constraints,Reference[],R,"LV/RV function, valve disease and pressure/congestion concerns.",V01;V02;V03;V07;V12
+FluidToleranceAssessment,patient,PatientEnvelope,M7-F-FluidToleranceAssessment.fluid_balance_context,fluid_balance_context,Datum<Reference>,R,M9 authoritative balance and coverage; no duplicate bookkeeping.,V01;V02;V03;V07;V12
+FluidToleranceAssessment,patient,PatientEnvelope,M7-F-FluidToleranceAssessment.renal_context,renal_context,Datum<Reference>,R,M8 output/function observations; oliguria alone does not establish fluid need.,V01;V02;V03;V07;V12
+FluidToleranceAssessment,patient,PatientEnvelope,M7-F-FluidToleranceAssessment.assessment,assessment,Enum,R,"tolerable_for_declared_trial, concern, contraindicated_by_clinician, uncertain, not_assessed.",V01;V03;V06;V07;V12
+FluidToleranceAssessment,patient,PatientEnvelope,M7-F-FluidToleranceAssessment.benefit_harm_rationale,benefit_harm_rationale,String,R,Clinician assessment and limitations; no global safe-to-fluid flag.,V01;V03;V07;V12
+FluidToleranceAssessment,patient,PatientEnvelope,M7-F-FluidToleranceAssessment.assessed_by,assessed_by,Actor,R,Responsible clinician.,V01;V03;V07;V12
+FluidIntervention,patient,PatientEnvelope,M7-F-FluidIntervention.episode,episode,Reference,R,Clinical indication and ownership.,V01;V02;V03;V07;V12
+FluidIntervention,patient,PatientEnvelope,M7-F-FluidIntervention.purpose,purpose,Enum,R,"rescue_resuscitation, diagnostic_challenge, replacement, other; maintenance not assumed resuscitation.",V01;V03;V06;V07;V12
+FluidIntervention,patient,PatientEnvelope,M7-F-FluidIntervention.product,product,Code,R,Exact crystalloid/colloid/blood product and composition reference.,V01;V03;V06;V07;V12
+FluidIntervention,patient,PatientEnvelope,M7-F-FluidIntervention.ordered_volume,ordered_volume,Datum<Quantity>,R,Intended volume; not given volume.,V01;V03;V05;V07;V12
+FluidIntervention,patient,PatientEnvelope,M7-F-FluidIntervention.ordered_duration,ordered_duration,Datum<Quantity>,R,Prescribed rate/time and unit.,V01;V03;V05;V07;V12
+FluidIntervention,patient,PatientEnvelope,M7-F-FluidIntervention.actual_delivery_ref,actual_delivery_ref,Datum<Reference>,R,MAR/pump/M9 source for actual amount and interval.,V01;V02;V03;V07;V12
+FluidIntervention,patient,PatientEnvelope,M7-F-FluidIntervention.known_delivered_volume,known_delivered_volume,Datum<Quantity>,R,Source-asserted total distinct from derived estimate; gaps explicit.,V01;V03;V05;V07;V12
+FluidIntervention,patient,PatientEnvelope,M7-F-FluidIntervention.weight_basis,weight_basis,Datum<Reference>,R,Actual/ideal/adjusted convention only if adopted profile uses it.,V01;V02;V03;V07;V12
+FluidIntervention,patient,PatientEnvelope,M7-F-FluidIntervention.preassessment,preassessment,Reference[],R,"Need, responsiveness where applicable, tolerance and urgent exceptions.",V01;V02;V03;V07;V12
+FluidIntervention,patient,PatientEnvelope,M7-F-FluidIntervention.stop_conditions,stop_conditions,Reference[],R,"Clinician-authorized harm/endpoint limits, with manual bedside action.",V01;V02;V03;V07;V12
+FluidIntervention,patient,PatientEnvelope,M7-F-FluidIntervention.response_assessment,response_assessment,Datum<Reference>,R,"Actual result, not causal effect asserted from before/after alone.",V01;V02;V03;V07;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.agent,agent,Code,R,"Norepinephrine, epinephrine, vasopressin, phenylephrine, dopamine, dobutamine, milrinone or other specifically supported agent.",V01;V03;V06;V07;V10;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.class_role,class_role,Code[],R,Pressor/inotrope/inodilator/vasodilator and intended phenotype; not class-wide interchangeability.,V01;V03;V07;V10;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.active_component_basis,active_component_basis,Code,R,Base/salt/activity-unit convention and exact product strength semantics.,V01;V03;V06;V07;V10;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.permitted_units,permitted_units,Code[],R,"mcg/min, mcg/kg/min, mg/hour, units/min or profile-specific units; dimensional conversion only with approved method.",V01;V03;V07;V10;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.concentration_profiles,concentration_profiles,Reference[],R,Locally approved preparation/concentration/library entries.,V01;V02;V03;V07;V10;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.indication_profiles,indication_profiles,Reference[],R,"Drug/phenotype/population protocols, contraindications, initiation and titration/monitoring rules.",V01;V02;V03;V07;V10;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.weight_method,weight_method,Datum<Reference>,R,Declared actual/dosing/ideal/other rule; weight changes require deliberate reconciliation.,V01;V02;V03;V07;V10;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.maximum_minimum_rules,maximum_minimum_rules,Reference[],R,Owned local constraints and escalation; no invented generic dose caps.,V01;V02;V03;V07;V10;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.route_access_rules,route_access_rules,Reference[],R,Peripheral/central restrictions and surveillance under adopted policy.,V01;V02;V03;V07;V10;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.interactions,interactions,Reference[],R,Agent-specific arrhythmia/ischemia/drug/organ-dysfunction checks and coverage.,V01;V02;V03;V07;V10;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.preparation_compatibility,preparation_compatibility,Reference[],R,"Concentration, diluent, stability, carrier, lumen and Y-site compatibility under validated source.",V01;V02;V03;V07;V10;V12
+VasoactiveProduct,knowledge,KnowledgeEnvelope,M7-F-VasoactiveProduct.weaning_profile,weaning_profile,Datum<Reference>,R,"Individualized criteria/sequence, not a default discontinuation timer.",V01;V02;V03;V07;V10;V12
+VasoactiveOrder,patient,PatientEnvelope,M7-F-VasoactiveOrder.episode,episode,Reference,R,Clinical indication.,V01;V02;V03;V07;V12
+VasoactiveOrder,patient,PatientEnvelope,M7-F-VasoactiveOrder.product,product,Datum<Reference>,R,Validated canonical profile if mapped; unknown source drug still retained raw.,V01;V02;V03;V07;V12
+VasoactiveOrder,patient,PatientEnvelope,M7-F-VasoactiveOrder.source_drug,source_drug,Code,R,Original identity and mapping uncertainty.,V01;V03;V06;V07;V12
+VasoactiveOrder,patient,PatientEnvelope,M7-F-VasoactiveOrder.ordered_dose,ordered_dose,Datum<Quantity>,R,Dose with active-component/activity basis and unit.,V01;V03;V05;V07;V12
+VasoactiveOrder,patient,PatientEnvelope,M7-F-VasoactiveOrder.concentration,concentration,Datum<Quantity>,R,"Approved mass/activity per volume, not amount alone.",V01;V03;V05;V07;V12
+VasoactiveOrder,patient,PatientEnvelope,M7-F-VasoactiveOrder.dosing_weight,dosing_weight,Datum<Reference>,R,Exact value/method/time if weight-based.,V01;V02;V03;V07;V12
+VasoactiveOrder,patient,PatientEnvelope,M7-F-VasoactiveOrder.route,route,Datum<Code>,R,Actual intended route.,V01;V03;V06;V07;V12
+VasoactiveOrder,patient,PatientEnvelope,M7-F-VasoactiveOrder.access,access,Datum<Reference>,R,Line/lumen and M12 identity.,V01;V02;V03;V07;V12
+VasoactiveOrder,patient,PatientEnvelope,M7-F-VasoactiveOrder.targets,targets,Reference[],R,Current authorized BP/perfusion goals.,V01;V02;V03;V07;V12
+VasoactiveOrder,patient,PatientEnvelope,M7-F-VasoactiveOrder.allowed_titration_profile,allowed_titration_profile,Datum<Reference>,R,Exact prescriber/local nursing authority and constraints.,V01;V02;V03;V07;V12
+VasoactiveOrder,patient,PatientEnvelope,M7-F-VasoactiveOrder.status,status,Code,R,"Original order state, start/stop intent not delivery proof.",V01;V03;V06;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.order,order,Datum<Reference>,R,Linked order only if resolved.,V01;V02;V03;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.source_drug,source_drug,Code,R,Original product identity retained even if unmapped.,V01;V03;V06;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.canonical_product,canonical_product,Datum<Reference>,R,Known mapping required for dose comparison.,V01;V02;V03;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.action,action,Enum,R,"preparation, initiation, rate_change, concentration_change, bag_change, restart, bolus, pause, stop, non_delivery, correction.",V01;V03;V06;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.delivery_state,delivery_state,Enum,R,"planned, prepared, started, ongoing, partial, completed, paused, stopped, not_given, unknown.",V01;V03;V06;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.actual_dose_rate,actual_dose_rate,Datum<Quantity>,R,"Source actual dose rate, not prescribed dose copied as delivered.",V01;V03;V05;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.pump_volume_rate,pump_volume_rate,Datum<Quantity>,R,mL/hour or actual source unit.,V01;V03;V05;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.concentration,concentration,Datum<Quantity>,R,Actual bag/syringe active mass or activity per volume; exact formulation.,V01;V03;V05;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.dosing_weight,dosing_weight,Datum<Reference>,R,Exact independently supported dosing weight; not newest unannounced weight.,V01;V02;V03;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.line_lumen,line_lumen,Datum<Reference>,R,Actual connected line and lumen.,V01;V02;V03;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.pump_channel,pump_channel,Datum<Code>,R,Unique device/channel/infusion identity and assignment interval.,V01;V03;V06;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.interval,interval,TimeInterval,R,Actual event or delivery segment; unknown end not endless carry-forward.,V01;V03;V04;V07;V09;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.delivery_attestation,delivery_attestation,Datum<Reference>,R,Authenticated MAR/nursing/pump evidence and scope; pump running does not prove vein delivery.,V01;V02;V03;V07;V12
+VasoactiveDeliveryEvent,patient,PatientEnvelope,M7-F-VasoactiveDeliveryEvent.reason,reason,Datum<Code>,R,Pause/missed/stop/change reason and source unknown.,V01;V03;V06;V07;V12
+InfusionReconciliation,patient,PatientEnvelope,M7-F-InfusionReconciliation.infusion_identity,infusion_identity,Code,R,Exact source infusion/pump/bag episode.,V01;V03;V06;V07;V12
+InfusionReconciliation,patient,PatientEnvelope,M7-F-InfusionReconciliation.source_events,source_events,EvidencePin[],R,"All source totals/events used, no order substituted.",V01;V02;V03;V07;V12
+InfusionReconciliation,patient,PatientEnvelope,M7-F-InfusionReconciliation.covered_intervals,covered_intervals,TimeInterval[],R,Verified delivered coverage.,V01;V03;V04;V07;V09;V12
+InfusionReconciliation,patient,PatientEnvelope,M7-F-InfusionReconciliation.gaps_overlaps,gaps_overlaps,TimeInterval[],R,Unobserved or conflicting segments; no zero fill or double counting.,V01;V03;V04;V07;V09;V12
+InfusionReconciliation,patient,PatientEnvelope,M7-F-InfusionReconciliation.amount_estimate,amount_estimate,Datum<Quantity>,R,Derived amount only with dimensional and coverage checks.,V01;V03;V05;V07;V12
+InfusionReconciliation,patient,PatientEnvelope,M7-F-InfusionReconciliation.source_total,source_total,Datum<Quantity>,R,Original asserted total remains distinct.,V01;V03;V05;V07;V12
+InfusionReconciliation,patient,PatientEnvelope,M7-F-InfusionReconciliation.state,state,Enum,R,"consistent_for_scope, disputed, incomplete, unknown, resolved_for_declared_use.",V01;V03;V06;V07;V12
+InfusionReconciliation,patient,PatientEnvelope,M7-F-InfusionReconciliation.precedence_policy,precedence_policy,Datum<Reference>,R,Owned source reconciliation policy; no silent pump-over-MAR precedence.,V01;V02;V03;V07;V12
+InfusionReconciliation,patient,PatientEnvelope,M7-F-InfusionReconciliation.resolution,resolution,Datum<Reference>,R,Authorized clinician/pharmacist/nurse reconciliation.,V01;V02;V03;V07;V12
+InfusionAccessAssessment,patient,PatientEnvelope,M7-F-InfusionAccessAssessment.line,line,Reference,R,Verified exact line/lumen and actual patient connection.,V01;V02;V03;V07;V12
+InfusionAccessAssessment,patient,PatientEnvelope,M7-F-InfusionAccessAssessment.route_type,route_type,Enum,R,"peripheral_IV, central_venous, midline, intraosseous, other, unknown; midline is not ordinary peripheral extrapolation.",V01;V03;V06;V07;V12
+InfusionAccessAssessment,patient,PatientEnvelope,M7-F-InfusionAccessAssessment.site_size,site_size,Datum<Code>,R,Actual site/size/patency evidence under local protocol.,V01;V03;V06;V07;V12
+InfusionAccessAssessment,patient,PatientEnvelope,M7-F-InfusionAccessAssessment.checked_time,checked_time,ClinicalTime,R,"Last actual inspection, no assumed check from pump activity.",V01;V03;V04;V07;V09;V12
+InfusionAccessAssessment,patient,PatientEnvelope,M7-F-InfusionAccessAssessment.patency,patency,Enum,R,"documented_patent, concern, not_patent, unknown.",V01;V03;V06;V07;V12
+InfusionAccessAssessment,patient,PatientEnvelope,M7-F-InfusionAccessAssessment.site_findings,site_findings,Code[],R,"Pain, blanching, swelling, leakage, ischemia, infection and assessment uncertainty.",V01;V03;V07;V12
+InfusionAccessAssessment,patient,PatientEnvelope,M7-F-InfusionAccessAssessment.local_policy,local_policy,Reference,R,Drug/concentration/dose/duration/site/surveillance/escalation requirements.,V01;V02;V03;V07;V12
+InfusionAccessAssessment,patient,PatientEnvelope,M7-F-InfusionAccessAssessment.next_check,next_check,ClinicalTime,R,"Local schedule/event triggers, not invented guideline universal limit.",V01;V03;V04;V07;V09;V12
+InfusionAccessAssessment,patient,PatientEnvelope,M7-F-InfusionAccessAssessment.complication_case,complication_case,Datum<Reference>,R,Extravasation/ischemia response owned by bedside team; no automatic antidote.,V01;V02;V03;V07;V12
+InterventionResponse,patient,PatientEnvelope,M7-F-InterventionResponse.episode,episode,Reference,R,Clinical scope.,V01;V02;V03;V07;V12
+InterventionResponse,patient,PatientEnvelope,M7-F-InterventionResponse.intervention,intervention,Reference,R,Actual fluid/pressor/procedure/ventilation event.,V01;V02;V03;V07;V12
+InterventionResponse,patient,PatientEnvelope,M7-F-InterventionResponse.baseline,baseline,EvidencePin[],R,Time- and method-compatible baseline.,V01;V02;V03;V07;V12
+InterventionResponse,patient,PatientEnvelope,M7-F-InterventionResponse.post_intervention,post_intervention,EvidencePin[],R,Defined post interval and measurement source.,V01;V02;V03;V07;V12
+InterventionResponse,patient,PatientEnvelope,M7-F-InterventionResponse.perfusion_response,perfusion_response,Datum<Code>,R,Improved/unchanged/worse/uncertain under declared assessment.,V01;V03;V06;V07;V12
+InterventionResponse,patient,PatientEnvelope,M7-F-InterventionResponse.pressure_flow_response,pressure_flow_response,Reference[],R,Actual changes separately from perfusion and tolerance.,V01;V02;V03;V07;V12
+InterventionResponse,patient,PatientEnvelope,M7-F-InterventionResponse.harm_findings,harm_findings,Reference[],R,"Arrhythmia, ischemia, congestion, oxygenation or other adverse response.",V01;V02;V03;V07;V12
+InterventionResponse,patient,PatientEnvelope,M7-F-InterventionResponse.confounding,confounding,Reference[],R,Other events and uncertainty; no unsupported treatment-effect claim.,V01;V02;V03;V07;V12
+InterventionResponse,patient,PatientEnvelope,M7-F-InterventionResponse.next_plan,next_plan,Datum<Reference>,R,Clinician reassessment and ownership.,V01;V02;V03;V07;V12
+CongestionDeescalationPlan,patient,PatientEnvelope,M7-F-CongestionDeescalationPlan.episode,episode,Reference,R,"Stabilization/evacuation assessment, not a clock-only phase.",V01;V02;V03;V07;V12
+CongestionDeescalationPlan,patient,PatientEnvelope,M7-F-CongestionDeescalationPlan.reason,reason,String,R,Clinical congestion/fluid accumulation and expected benefit.,V01;V03;V07;V12
+CongestionDeescalationPlan,patient,PatientEnvelope,M7-F-CongestionDeescalationPlan.perfusion_stability,perfusion_stability,Reference[],R,Current BP/flow/perfusion/pressor trajectory and uncertainty.,V01;V02;V03;V07;V12
+CongestionDeescalationPlan,patient,PatientEnvelope,M7-F-CongestionDeescalationPlan.constraints,constraints,Reference[],R,"RV/preload dependence, active bleeding, ischemia and support considerations.",V01;V02;V03;V07;V12
+CongestionDeescalationPlan,patient,PatientEnvelope,M7-F-CongestionDeescalationPlan.removal_plan_dependency,removal_plan_dependency,Datum<Reference>,R,Authorized M8/M9 plan; no automatic diuretic/KRT setting.,V01;V02;V03;V07;V12
+CongestionDeescalationPlan,patient,PatientEnvelope,M7-F-CongestionDeescalationPlan.review_stop_conditions,review_stop_conditions,Reference[],R,Hypoperfusion or adverse response and responsible bedside action.,V01;V02;V03;V07;V12
+CongestionDeescalationPlan,patient,PatientEnvelope,M7-F-CongestionDeescalationPlan.owner,owner,TeamAssignment,R,Clinical ownership and next review.,V01;V03;V07;V12
+SpecialHemodynamicContext,patient,PatientEnvelope,M7-F-SpecialHemodynamicContext.context_type,context_type,Enum,R,"RV_PH, ACS, tamponade, PE, hemorrhage, anaphylaxis, neurogenic, spinal_cord, TBI_CPP, post_cardiac_arrest, perioperative, liver_transplant, heart_transplant, aortic_pathology, pregnancy, pediatric, burns, other.",V01;V03;V06;V07;V12
+SpecialHemodynamicContext,patient,PatientEnvelope,M7-F-SpecialHemodynamicContext.source_diagnosis,source_diagnosis,Datum<Reference>,R,Clinician diagnosis or suspicion and uncertainty.,V01;V02;V03;V07;V12
+SpecialHemodynamicContext,patient,PatientEnvelope,M7-F-SpecialHemodynamicContext.procedure_time,procedure_time,ClinicalTime,R,Operation/reperfusion/transplant/arrest time if relevant.,V01;V03;V04;V07;V09;V12
+SpecialHemodynamicContext,patient,PatientEnvelope,M7-F-SpecialHemodynamicContext.baseline_function,baseline_function,Reference[],R,Baseline graft/LV/RV/PH/valve/autonomic context.,V01;V02;V03;V07;V12
+SpecialHemodynamicContext,patient,PatientEnvelope,M7-F-SpecialHemodynamicContext.condition_constraints,condition_constraints,Reference[],R,"Condition-specific pressure/flow goals, bleeding/congestion/airway/procedural priorities.",V01;V02;V03;V07;V12
+SpecialHemodynamicContext,patient,PatientEnvelope,M7-F-SpecialHemodynamicContext.specialist,specialist,TeamAssignment,R,Responsible specialty/transfer destination.,V01;V03;V07;V12
+SpecialHemodynamicContext,patient,PatientEnvelope,M7-F-SpecialHemodynamicContext.validated_profile,validated_profile,Datum<Reference>,R,Exact scope-specific approved content; absent means expert review and unsupported personalized therapy.,V01;V02;V03;V07;V12
+MechanicalSupportContext,patient,PatientEnvelope,M7-F-MechanicalSupportContext.device_type,device_type,Enum,R,"VA_ECMO, VV_ECMO, IABP, microaxial_pump, temporary_VAD, pacing, other.",V01;V03;V06;V07;V12
+MechanicalSupportContext,patient,PatientEnvelope,M7-F-MechanicalSupportContext.device_episode,device_episode,Reference,R,Exact authoritative M12 episode and device-team owner.,V01;V02;V03;V07;V12
+MechanicalSupportContext,patient,PatientEnvelope,M7-F-MechanicalSupportContext.indication_stage,indication_stage,Datum<Reference>,R,"Clinician rationale, shock trajectory and candidacy.",V01;V02;V03;V07;V12
+MechanicalSupportContext,patient,PatientEnvelope,M7-F-MechanicalSupportContext.source_settings,source_settings,Reference[],R,Read-only actual settings/flow/sweep/speed/augmentation/pacing and timestamps with source units.,V01;V02;V03;V07;V12
+MechanicalSupportContext,patient,PatientEnvelope,M7-F-MechanicalSupportContext.vascular_checks,vascular_checks,Reference[],R,"Limb perfusion, bleeding, hemolysis and access concerns as appropriate.",V01;V02;V03;V07;V12
+MechanicalSupportContext,patient,PatientEnvelope,M7-F-MechanicalSupportContext.cardiopulmonary_context,cardiopulmonary_context,Reference[],R,"Native ejection, LV distension, RV function, ventilation and mixing implications.",V01;V02;V03;V07;V12
+MechanicalSupportContext,patient,PatientEnvelope,M7-F-MechanicalSupportContext.measurement_limits,measurement_limits,Code[],R,"Nonpulsatile flow, thermodilution/pulse contour/SpO2/sample-compartment limitations.",V01;V03;V07;V12
+MechanicalSupportContext,patient,PatientEnvelope,M7-F-MechanicalSupportContext.urgent_team_contact,urgent_team_contact,TeamAssignment,R,Specialist response; generic shock rule cannot control device.,V01;V03;V07;V12
+SignalManifest,patient,PatientEnvelope,M7-F-SignalManifest.signal_type,signal_type,Enum,R,"ECG, arterial_pressure, CVP, PAP, beat_to_beat, trend.",V01;V03;V06;V07;V12
+SignalManifest,patient,PatientEnvelope,M7-F-SignalManifest.device_session,device_session,Reference,R,Verified device/channel/patient assignment.,V01;V02;V03;V07;V12
+SignalManifest,patient,PatientEnvelope,M7-F-SignalManifest.channel,channel,Code,R,Source signal channel and unit.,V01;V03;V06;V07;V12
+SignalManifest,patient,PatientEnvelope,M7-F-SignalManifest.interval,interval,TimeInterval,R,Actual source coverage.,V01;V03;V04;V07;V09;V12
+SignalManifest,patient,PatientEnvelope,M7-F-SignalManifest.sample_rate,sample_rate,Datum<Quantity>,R,Sampling frequency and actual mode; not inferred from display refresh.,V01;V03;V05;V07;V12
+SignalManifest,patient,PatientEnvelope,M7-F-SignalManifest.sample_count,sample_count,Datum<Integer>,R,Actual sample count nonnegative.,V01;V03;V05;V07;V12
+SignalManifest,patient,PatientEnvelope,M7-F-SignalManifest.encoding,encoding,Code,R,"Format, compression and scaling/calibration definition.",V01;V03;V06;V07;V12
+SignalManifest,patient,PatientEnvelope,M7-F-SignalManifest.content,content,Datum<ProtectedContent>,R,Actual raw samples reference; metadata alone is not a waveform.,V01;V03;V07;V12
+SignalManifest,patient,PatientEnvelope,M7-F-SignalManifest.gaps,gaps,TimeInterval[],R,Missing windows and sequence drops; no fabricated samples.,V01;V03;V04;V07;V09;V12
+SignalManifest,patient,PatientEnvelope,M7-F-SignalManifest.algorithm_derivations,algorithm_derivations,Reference[],R,"Versioned method, raw interval and output linkage.",V01;V02;V03;V07;V12
+DevicePrediction,patient,PatientEnvelope,M7-F-DevicePrediction.parameter,parameter,Code,R,Exact HPI/other proprietary parameter.,V01;V03;V06;V07;V12
+DevicePrediction,patient,PatientEnvelope,M7-F-DevicePrediction.source_value,source_value,Datum<Quantity>,R,"As reported, with applicable unit/scale.",V01;V03;V05;V07;V12
+DevicePrediction,patient,PatientEnvelope,M7-F-DevicePrediction.device_session,device_session,Reference,R,Validated supported sensor/software configuration.,V01;V02;V03;V07;V12
+DevicePrediction,patient,PatientEnvelope,M7-F-DevicePrediction.prediction_horizon,prediction_horizon,Datum<Quantity>,R,Manufacturer-supported horizon if known.,V01;V03;V05;V07;V12
+DevicePrediction,patient,PatientEnvelope,M7-F-DevicePrediction.intended_population,intended_population,Datum<Reference>,R,Permitted scope and local validation.,V01;V02;V03;V07;V12
+DevicePrediction,patient,PatientEnvelope,M7-F-DevicePrediction.clinical_use,clinical_use,Enum,R,"record_only, approved_reference_display, validated_review_prompt; disabled unless explicit feature approval.",V01;V03;V06;V07;V12
+DevicePrediction,patient,PatientEnvelope,M7-F-DevicePrediction.limitations,limitations,String[],R,"Prediction is not current hypotension, diagnosis, treatment directive or performance guarantee.",V01;V03;V07;V12
+ClinicalSnapshot,patient,PatientEnvelope,M7-F-ClinicalSnapshot.episode,episode,Reference,R,Current patient hemodynamic review.,V01;V02;V03;V07;V12
+ClinicalSnapshot,patient,PatientEnvelope,M7-F-ClinicalSnapshot.mode,mode,Enum,R,"actual_known_at, source_release_reconstruction; reconstruction is retrospective and visibly labeled.",V01;V03;V06;V07;V12
+ClinicalSnapshot,patient,PatientEnvelope,M7-F-ClinicalSnapshot.repository_cutoff,repository_cutoff,Identifier,R,Exact committed admission watermark; late commits excluded from earlier actual history.,V01;V03;V07;V12
+ClinicalSnapshot,patient,PatientEnvelope,M7-F-ClinicalSnapshot.source_release_cutoff,source_release_cutoff,ClinicalTime,R,Separate source availability bound; cannot prove ClinRx awareness.,V01;V03;V04;V07;V09;V12
+ClinicalSnapshot,patient,PatientEnvelope,M7-F-ClinicalSnapshot.input_pins,input_pins,EvidencePin[],R,"Exact consumed observations, quality, calibration, delivery, policy and support dependencies.",V01;V02;V03;V07;V12
+ClinicalSnapshot,patient,PatientEnvelope,M7-F-ClinicalSnapshot.feed_pins,feed_pins,EvidencePin[],R,Exact source coverage/gaps at evaluation.,V01;V02;V03;V07;V12
+ClinicalSnapshot,patient,PatientEnvelope,M7-F-ClinicalSnapshot.watch_scope,watch_scope,Reference,R,"Query scope and absence assumptions, not only old consumed records.",V01;V02;V03;V07;V12
+ClinicalSnapshot,patient,PatientEnvelope,M7-F-ClinicalSnapshot.context_generation,context_generation,Integer,R,Version for relevant additions/corrections/withdrawals; rechecked transactionally.,V01;V03;V05;V07;V12
+ClinicalSnapshot,patient,PatientEnvelope,M7-F-ClinicalSnapshot.intended_use,intended_use,Code,R,"Source review, trend, numeric calculation, clinical prompt or optional authorized order handoff.",V01;V03;V06;V07;V12
+ClinicalSnapshot,patient,PatientEnvelope,M7-F-ClinicalSnapshot.evaluated_at,evaluated_at,Instant,R,Server evaluation time; no hidden clock in deterministic rule function.,V01;V03;V04;V07;V09;V12
+ContextWatch,patient,PatientEnvelope,M7-F-ContextWatch.observed_scope,observed_scope,Code[],R,Patient/episode/site/channel/source/clinical families consumed.,V01;V03;V07;V12
+ContextWatch,patient,PatientEnvelope,M7-F-ContextWatch.absence_assumptions,absence_assumptions,Code[],R,"No new arrhythmia, bleeding, allergy, contraindication, dose or support change claims with scope.",V01;V03;V07;V12
+ContextWatch,patient,PatientEnvelope,M7-F-ContextWatch.source_watermarks,source_watermarks,Reference[],R,Exact coverage used to evaluate absence; no feed is complete by heartbeat alone.,V01;V02;V03;V07;V12
+ContextWatch,patient,PatientEnvelope,M7-F-ContextWatch.invalidation_events,invalidation_events,Code[],R,"Relevant additions, successors, target/profile changes, access/medication/ventilation/device changes.",V01;V03;V07;V12
+CalculationProfile,knowledge,KnowledgeEnvelope,M7-F-CalculationProfile.name,name,Code,R,"Exact calculation and version, with intended use.",V01;V03;V06;V07;V10;V12
+CalculationProfile,knowledge,KnowledgeEnvelope,M7-F-CalculationProfile.inputs,inputs,InputRequirement[],R,"Typed units/methods/time alignment, required knownness and coverage.",V01;V03;V07;V10;V12
+CalculationProfile,knowledge,KnowledgeEnvelope,M7-F-CalculationProfile.equation,equation,String,R,Unambiguous approved expression/lookup; not arbitrary evaluated source code.,V01;V03;V07;V10;V12
+CalculationProfile,knowledge,KnowledgeEnvelope,M7-F-CalculationProfile.constants,constants,ParameterValue[],R,"Units, literature basis, local adoption and exact precision.",V01;V03;V07;V10;V12
+CalculationProfile,knowledge,KnowledgeEnvelope,M7-F-CalculationProfile.applicability,applicability,Code[],R,"Population, rhythm/flow/device/organ-support and sampling exclusions.",V01;V03;V07;V10;V12
+CalculationProfile,knowledge,KnowledgeEnvelope,M7-F-CalculationProfile.validation_rules,validation_rules,Reference[],R,"Bounds, denominator guards, negative values, unit mappings and censored results.",V01;V02;V03;V07;V10;V12
+CalculationProfile,knowledge,KnowledgeEnvelope,M7-F-CalculationProfile.rounding,rounding,Code,R,Calculation precision and final display rounding; no intermediate rounding unless specified.,V01;V03;V06;V07;V10;V12
+CalculationProfile,knowledge,KnowledgeEnvelope,M7-F-CalculationProfile.uncertainty_policy,uncertainty_policy,Reference,R,Measurement uncertainty and meaningful-change criteria.,V01;V02;V03;V07;V10;V12
+CalculationProfile,knowledge,KnowledgeEnvelope,M7-F-CalculationProfile.independent_oracles,independent_oracles,Reference[],R,Separately reviewed numeric expected outcomes and error tolerances.,V01;V02;V03;V07;V10;V12
+InputRequirement,value,,M7-F-InputRequirement.name,name,Code,R,"Exact semantic input, not a generic untyped number.",V01;V03;V06;V07;V12
+InputRequirement,value,,M7-F-InputRequirement.expected_kind,expected_kind,Code,R,Allowed observation/reference kind and production method.,V01;V03;V06;V07;V12
+InputRequirement,value,,M7-F-InputRequirement.required_unit,required_unit,Code,R,Exact dimension and accepted conversions.,V01;V03;V06;V07;V12
+InputRequirement,value,,M7-F-InputRequirement.knownness,knownness,Enum,R,"known_required, optional, explicitly_not_applicable; unknown never zero.",V01;V03;V06;V07;V12
+InputRequirement,value,,M7-F-InputRequirement.alignment_policy,alignment_policy,Reference,R,Method-specific temporal compatibility; same encounter is insufficient.,V01;V02;V03;V07;V12
+InputRequirement,value,,M7-F-InputRequirement.quality_policy,quality_policy,Reference,R,Eligible source/quality/calibration and original precision.,V01;V02;V03;V07;V12
+InputRequirement,value,,M7-F-InputRequirement.exclusions,exclusions,Code[],R,Method-specific limits and safe withholding reason.,V01;V03;V07;V12
+ParameterValue,value,,M7-F-ParameterValue.name,name,Code,R,Named threshold/constant.,V01;V03;V06;V07;V12
+ParameterValue,value,,M7-F-ParameterValue.value,value,Datum<Quantity>,R,Known approved value or explicit unknown in draft.,V01;V03;V05;V07;V12
+ParameterValue,value,,M7-F-ParameterValue.source,source,Reference,R,Evidence/adoption basis and version.,V01;V02;V03;V07;V12
+ParameterValue,value,,M7-F-ParameterValue.boundary_semantics,boundary_semantics,Code,R,Strict/inclusive direction and interpretation.,V01;V03;V06;V07;V12
+CalculationResult,patient,PatientEnvelope,M7-F-CalculationResult.profile,profile,Reference,R,Exact approved algorithm version.,V01;V02;V03;V07;V12
+CalculationResult,patient,PatientEnvelope,M7-F-CalculationResult.snapshot,snapshot,Reference,R,"Input pins, time alignment, source coverage and mode.",V01;V02;V03;V07;V12
+CalculationResult,patient,PatientEnvelope,M7-F-CalculationResult.result,result,Datum<Quantity>,R,Unrounded exact output and units or typed withholding.,V01;V03;V05;V07;V12
+CalculationResult,patient,PatientEnvelope,M7-F-CalculationResult.formatted_display,formatted_display,Datum<String>,R,Final display rounding only; original result retained.,V01;V03;V07;V12
+CalculationResult,patient,PatientEnvelope,M7-F-CalculationResult.state,state,Enum,R,"calculated, not_evaluable, not_applicable, invalid_input, unsupported, stale.",V01;V03;V06;V07;V12
+CalculationResult,patient,PatientEnvelope,M7-F-CalculationResult.reason_codes,reason_codes,Code[],R,Specific unit/method/time/quality/denominator/applicability reasons.,V01;V03;V07;V12
+CalculationResult,patient,PatientEnvelope,M7-F-CalculationResult.input_pins,input_pins,EvidencePin[],R,"Complete exact inputs, including denominator method.",V01;V02;V03;V07;V12
+CalculationResult,patient,PatientEnvelope,M7-F-CalculationResult.limitations,limitations,String[],R,Approximation/indexing/measurement precision and clinical limits.,V01;V03;V07;V12
+RuleEvaluation,patient,PatientEnvelope,M7-F-RuleEvaluation.rule,rule,Code,R,Stable ID/version.,V01;V03;V06;V07;V12
+RuleEvaluation,patient,PatientEnvelope,M7-F-RuleEvaluation.snapshot,snapshot,Reference,R,Exact clinical inputs and policies.,V01;V02;V03;V07;V12
+RuleEvaluation,patient,PatientEnvelope,M7-F-RuleEvaluation.state,state,Enum,R,"met, not_met, not_evaluable, not_applicable, invalidated.",V01;V03;V06;V07;V12
+RuleEvaluation,patient,PatientEnvelope,M7-F-RuleEvaluation.reason_codes,reason_codes,Code[],R,Machine-readable missingness and unsupported scope.,V01;V03;V07;V12
+RuleEvaluation,patient,PatientEnvelope,M7-F-RuleEvaluation.source_pins,source_pins,EvidencePin[],R,Source and approved policy basis.,V01;V02;V03;V07;V12
+RuleEvaluation,patient,PatientEnvelope,M7-F-RuleEvaluation.output_refs,output_refs,Reference[],R,Findings/review prompts and withholding; no medication execution.,V01;V02;V03;V07;V12
+RuleEvaluation,patient,PatientEnvelope,M7-F-RuleEvaluation.invalidated_by,invalidated_by,Datum<Reference>,R,"New relevant evidence/context/profile change, original result preserved.",V01;V02;V03;V07;V12
+ReviewProposal,patient,PatientEnvelope,M7-F-ReviewProposal.episode,episode,Reference,R,Current clinical scope.,V01;V02;V03;V07;V12
+ReviewProposal,patient,PatientEnvelope,M7-F-ReviewProposal.snapshot,snapshot,Reference,R,"Pinned inputs, watch scope and active policy versions.",V01;V02;V03;V07;V12
+ReviewProposal,patient,PatientEnvelope,M7-F-ReviewProposal.pressure_status,pressure_status,Enum,R,"within_documented_target, below, above, unreliable, no_target, not_assessable.",V01;V03;V06;V07;V12
+ReviewProposal,patient,PatientEnvelope,M7-F-ReviewProposal.perfusion_status,perfusion_status,Enum,R,"concern, no_concern_on_assessed_scope, uncertain, not_assessed; no blanket adequate from one marker.",V01;V03;V06;V07;V12
+ReviewProposal,patient,PatientEnvelope,M7-F-ReviewProposal.phenotype_summary,phenotype_summary,Datum<Reference>,R,Clinician assessment or explicitly tentative candidate.,V01;V02;V03;V07;V12
+ReviewProposal,patient,PatientEnvelope,M7-F-ReviewProposal.next_review_options,next_review_options,Reference[],R,Relevant approved review options; no hidden preselected treatment.,V01;V02;V03;V07;V12
+ReviewProposal,patient,PatientEnvelope,M7-F-ReviewProposal.priority_findings,priority_findings,Reference[],R,"Only clinically meaningful issues under approved alert policy, with missingness visible.",V01;V02;V03;V07;V12
+ReviewProposal,patient,PatientEnvelope,M7-F-ReviewProposal.checks,checks,Reference[],R,Complete structured rule results accessible on demand.,V01;V02;V03;V07;V12
+ReviewProposal,patient,PatientEnvelope,M7-F-ReviewProposal.state,state,Enum,R,"proposed, reviewed, accepted_for_plan, rejected, deferred, stale, withdrawn.",V01;V03;V06;V07;V12
+ReviewProposal,patient,PatientEnvelope,M7-F-ReviewProposal.owner,owner,TeamAssignment,R,Responsible treating team and next review.,V01;V03;V07;V12
+ReviewDecision,patient,PatientEnvelope,M7-F-ReviewDecision.proposal,proposal,Datum<Reference>,R,"Reviewed output, if any.",V01;V02;V03;V07;V12
+ReviewDecision,patient,PatientEnvelope,M7-F-ReviewDecision.snapshot,snapshot,Reference,R,Evidence actually reviewed.,V01;V02;V03;V07;V12
+ReviewDecision,patient,PatientEnvelope,M7-F-ReviewDecision.decision,decision,Code,R,"Confirm_measurement, reassess, continue, fluid_trial_review, vasoactive_review, investigate_cause, escalate, deescalate, defer, other.",V01;V03;V06;V07;V12
+ReviewDecision,patient,PatientEnvelope,M7-F-ReviewDecision.rationale,rationale,String,R,"Clinical basis, competing priorities and limitations.",V01;V03;V07;V12
+ReviewDecision,patient,PatientEnvelope,M7-F-ReviewDecision.author,author,Actor,R,Authorized treating clinician or scoped professional role.,V01;V03;V07;V12
+ReviewDecision,patient,PatientEnvelope,M7-F-ReviewDecision.next_review,next_review,ClinicalTime,R,Due event/time and accountable owner.,V01;V03;V04;V07;V09;V12
+ReviewDecision,patient,PatientEnvelope,M7-F-ReviewDecision.order_refs,order_refs,Reference[],R,Only actual independently confirmed order-system records; decision does not place order.,V01;V02;V03;V07;V12
+ReviewDecision,patient,PatientEnvelope,M7-F-ReviewDecision.override,override,Datum<Reference>,R,Reasoned scoped override and expiry/review.,V01;V02;V03;V07;V12
+ReviewTask,patient,PatientEnvelope,M7-F-ReviewTask.episode,episode,Datum<Reference>,R,Clinical episode or explicit source safety issue.,V01;V02;V03;V07;V12
+ReviewTask,patient,PatientEnvelope,M7-F-ReviewTask.trigger,trigger,EvidencePin[],R,Exact source/evaluation revision.,V01;V02;V03;V07;V12
+ReviewTask,patient,PatientEnvelope,M7-F-ReviewTask.kind,kind,Code,R,"Measurement confirmation, perfusion assessment, access check, escalation, repeat observation, etc.",V01;V03;V06;V07;V12
+ReviewTask,patient,PatientEnvelope,M7-F-ReviewTask.priority_policy,priority_policy,Reference,R,Local severity/routing/deadline; no universal timer.,V01;V02;V03;V07;V12
+ReviewTask,patient,PatientEnvelope,M7-F-ReviewTask.owner,owner,TeamAssignment,R,Responsible current team and backup.,V01;V03;V07;V12
+ReviewTask,patient,PatientEnvelope,M7-F-ReviewTask.due,due,ClinicalTime,R,Approved urgency-based time/event trigger or not configured.,V01;V03;V04;V07;V09;V12
+ReviewTask,patient,PatientEnvelope,M7-F-ReviewTask.state,state,Enum,R,"open, acknowledged, in_progress, completed, deferred, superseded, cancelled.",V01;V03;V06;V07;V12
+ReviewTask,patient,PatientEnvelope,M7-F-ReviewTask.completion_evidence,completion_evidence,Datum<Reference>,R,Actual review/action that fulfills duty; dismissal alone is not treatment.,V01;V02;V03;V07;V12
+ReviewTask,patient,PatientEnvelope,M7-F-ReviewTask.deferral,deferral,Datum<String>,R,Clinical reason and revised owner/review plan.,V01;V03;V07;V12
+CommunicationCase,patient,PatientEnvelope,M7-F-CommunicationCase.trigger,trigger,EvidencePin,R,Exact critical source revision or approved clinical evaluation.,V01;V02;V03;V07;V12
+CommunicationCase,patient,PatientEnvelope,M7-F-CommunicationCase.severity_policy,severity_policy,Reference,R,Source-critical and clinical-alert policies are distinct.,V01;V02;V03;V07;V12
+CommunicationCase,patient,PatientEnvelope,M7-F-CommunicationCase.initial_recipient,initial_recipient,TeamAssignment,R,"Original assignment, later assignments are events.",V01;V03;V07;V12
+CommunicationCase,patient,PatientEnvelope,M7-F-CommunicationCase.created_at,created_at,Instant,R,Server case creation.,V01;V03;V04;V07;V09;V12
+CommunicationEvent,patient,PatientEnvelope,M7-F-CommunicationEvent.case,case,Reference,R,Correct critical case.,V01;V02;V03;V07;V12
+CommunicationEvent,patient,PatientEnvelope,M7-F-CommunicationEvent.event_type,event_type,Enum,R,"assigned, sent, delivered, failed, acknowledged, reviewed, actioned, resolved, corrected_update, handed_over.",V01;V03;V06;V07;V12
+CommunicationEvent,patient,PatientEnvelope,M7-F-CommunicationEvent.communicated_content,communicated_content,EvidencePin,R,Exact result/summary revision actually communicated.,V01;V02;V03;V07;V12
+CommunicationEvent,patient,PatientEnvelope,M7-F-CommunicationEvent.attempt_id,attempt_id,Identifier,R,"Specific attempt, not a mutable acknowledged flag.",V01;V03;V07;V12
+CommunicationEvent,patient,PatientEnvelope,M7-F-CommunicationEvent.recipient,recipient,TeamAssignment,R,Actual target with roster version.,V01;V03;V07;V12
+CommunicationEvent,patient,PatientEnvelope,M7-F-CommunicationEvent.actor,actor,Actor,R,Authenticated service/person; delivery is not clinician acknowledgment.,V01;V03;V07;V12
+CommunicationEvent,patient,PatientEnvelope,M7-F-CommunicationEvent.occurred_at,occurred_at,Instant,R,Server/action time and local clock limits.,V01;V03;V04;V07;V09;V12
+CommunicationEvent,patient,PatientEnvelope,M7-F-CommunicationEvent.evidence,evidence,Reference[],R,"Delivery receipt, review or actual action/resolution.",V01;V02;V03;V07;V12
+Handoff,patient,PatientEnvelope,M7-F-Handoff.from_episode,from_episode,Reference,R,Original accountable episode.,V01;V02;V03;V07;V12
+Handoff,patient,PatientEnvelope,M7-F-Handoff.destination,destination,Code,R,Actual receiving unit/service/facility.,V01;V03;V06;V07;V12
+Handoff,patient,PatientEnvelope,M7-F-Handoff.current_targets,current_targets,Reference[],R,Current approved goals and reasons.,V01;V02;V03;V07;V12
+Handoff,patient,PatientEnvelope,M7-F-Handoff.current_delivery,current_delivery,Reference[],R,"Confirmed active drug, actual concentration/rate/weight/line and unknown segments.",V01;V02;V03;V07;V12
+Handoff,patient,PatientEnvelope,M7-F-Handoff.perfusion_trajectory,perfusion_trajectory,Reference[],R,"Reliable recent pressure/flow/perfusion findings, phenotype and limitations.",V01;V02;V03;V07;V12
+Handoff,patient,PatientEnvelope,M7-F-Handoff.pending_tasks,pending_tasks,Reference[],R,"Investigations, repeat checks, critical communication and unresolved completion.",V01;V02;V03;V07;V12
+Handoff,patient,PatientEnvelope,M7-F-Handoff.transport_capabilities,transport_capabilities,Reference[],R,Monitoring/pump/battery/oxygen/access/team requirements confirmed.,V01;V02;V03;V07;V12
+Handoff,patient,PatientEnvelope,M7-F-Handoff.receiving_team,receiving_team,TeamAssignment,R,Actual accepted clinical responsibility.,V01;V03;V07;V12
+Handoff,patient,PatientEnvelope,M7-F-Handoff.accepted_at,accepted_at,ClinicalTime,R,Acceptance time or explicit pending; dispatch not acceptance.,V01;V03;V04;V07;V09;V12
+Scenario,patient,PatientEnvelope,M7-F-Scenario.label,label,String,R,"Persistent hypothetical label, including export.",V01;V03;V07;V12
+Scenario,patient,PatientEnvelope,M7-F-Scenario.base_snapshot,base_snapshot,Reference,R,Immutable original evidence.,V01;V02;V03;V07;V12
+Scenario,patient,PatientEnvelope,M7-F-Scenario.profile,profile,Reference,R,Exact permitted calculation or clinical content profile.,V01;V02;V03;V07;V12
+Scenario,patient,PatientEnvelope,M7-F-Scenario.changes,changes,ScenarioChange[],R,Original source pin plus explicit hypothetical typed value.,V01;V03;V07;V12
+Scenario,patient,PatientEnvelope,M7-F-Scenario.result,result,Datum<Reference>,R,Scenario-only result; not new observed fact.,V01;V02;V03;V07;V12
+Scenario,patient,PatientEnvelope,M7-F-Scenario.author,author,Actor,R,Authenticated user; scenario editing grants no source editing rights.,V01;V03;V07;V12
+Scenario,patient,PatientEnvelope,M7-F-Scenario.state,state,Enum,R,"draft, evaluated, invalidated, archived.",V01;V03;V06;V07;V12
+ScenarioChange,value,,M7-F-ScenarioChange.input_name,input_name,Code,R,Exact input semantic role.,V01;V03;V06;V07;V12
+ScenarioChange,value,,M7-F-ScenarioChange.original,original,Datum<EvidencePin>,R,Original source value reference or explicit unavailable.,V01;V02;V03;V07;V12
+ScenarioChange,value,,M7-F-ScenarioChange.hypothetical_quantity,hypothetical_quantity,Datum<Quantity>,R,"Number with explicit unit, if numeric.",V01;V03;V05;V07;V12
+ScenarioChange,value,,M7-F-ScenarioChange.hypothetical_code,hypothetical_code,Datum<Code>,R,"Categorical value, if applicable; exactly one known hypothetical kind.",V01;V03;V06;V07;V12
+ScenarioChange,value,,M7-F-ScenarioChange.reason,reason,String,R,Assumption label and source verification needed before clinical adoption.,V01;V03;V07;V12
+ClinicalProfile,knowledge,KnowledgeEnvelope,M7-F-ClinicalProfile.profile_type,profile_type,Enum,R,"pressure_target, shock_pathway, fluid_test, fluid_resuscitation, vasoactive, infusion_safety, echo_flow, escalation, weaning, special_population.",V01;V03;V06;V07;V10;V12
+ClinicalProfile,knowledge,KnowledgeEnvelope,M7-F-ClinicalProfile.intended_use,intended_use,String,R,"Specific clinical question, population, setting and exclusions.",V01;V03;V07;V10;V12
+ClinicalProfile,knowledge,KnowledgeEnvelope,M7-F-ClinicalProfile.prerequisites,prerequisites,InputRequirement[],R,"Known required fields, units/time/method and coverage.",V01;V03;V07;V10;V12
+ClinicalProfile,knowledge,KnowledgeEnvelope,M7-F-ClinicalProfile.parameters,parameters,ParameterValue[],R,"All thresholds, durations, doses and actions explicitly authored; null means disabled.",V01;V03;V07;V10;V12
+ClinicalProfile,knowledge,KnowledgeEnvelope,M7-F-ClinicalProfile.rules,rules,Code[],R,Exact approved applicable rule versions.,V01;V03;V07;V10;V12
+ClinicalProfile,knowledge,KnowledgeEnvelope,M7-F-ClinicalProfile.response_options,response_options,Code[],R,Permitted clinician review/actions with contraindications.,V01;V03;V07;V10;V12
+ClinicalProfile,knowledge,KnowledgeEnvelope,M7-F-ClinicalProfile.monitoring,monitoring,Reference[],R,"What to measure and when, owner and adverse-response handling.",V01;V02;V03;V07;V10;V12
+ClinicalProfile,knowledge,KnowledgeEnvelope,M7-F-ClinicalProfile.emergency_fallback,emergency_fallback,String,R,Bedside existing institutional pathway independent of ClinRx availability.,V01;V03;V07;V10;V12
+ContentApproval,knowledge,KnowledgeEnvelope,M7-F-ContentApproval.payload,payload,EvidencePin,R,Sealed clinical profile/body approved.,V01;V02;V03;V07;V10;V12
+ContentApproval,knowledge,KnowledgeEnvelope,M7-F-ContentApproval.reviewers,reviewers,Actor[],R,Independent ICU/cardiology/nursing/pharmacy/engineering roles as required.,V01;V03;V07;V10;V12
+ContentApproval,knowledge,KnowledgeEnvelope,M7-F-ContentApproval.intended_scope,intended_scope,Code[],R,Population/capability/institution and exclusions.,V01;V03;V07;V10;V12
+ContentApproval,knowledge,KnowledgeEnvelope,M7-F-ContentApproval.approval_time,approval_time,Instant,R,"Actual approval, not invented in draft.",V01;V03;V04;V07;V09;V10;V12
+ContentApproval,knowledge,KnowledgeEnvelope,M7-F-ContentApproval.validation_evidence,validation_evidence,Reference[],R,Independent engineering/clinical study acceptance evidence.,V01;V02;V03;V07;V10;V12
+FeatureActivation,knowledge,KnowledgeEnvelope,M7-F-FeatureActivation.capability,capability,Code,R,"Exact feature, not a global all-M7 switch.",V01;V03;V06;V07;V10;V12
+FeatureActivation,knowledge,KnowledgeEnvelope,M7-F-FeatureActivation.profile,profile,EvidencePin,R,Approved exact content version.,V01;V02;V03;V07;V10;V12
+FeatureActivation,knowledge,KnowledgeEnvelope,M7-F-FeatureActivation.environment_scope,environment_scope,Code[],R,"Institution, population, role, device and deployment mode.",V01;V03;V07;V10;V12
+FeatureActivation,knowledge,KnowledgeEnvelope,M7-F-FeatureActivation.approval,approval,Reference,R,Current clinical approval and validated evidence.,V01;V02;V03;V07;V10;V12
+FeatureActivation,knowledge,KnowledgeEnvelope,M7-F-FeatureActivation.state,state,Enum,R,"disabled, shadow_only, limited_clinical, suspended, retired.",V01;V03;V06;V07;V10;V12
+FeatureActivation,knowledge,KnowledgeEnvelope,M7-F-FeatureActivation.start_end,start_end,TimeInterval,R,Activation duration and expiry.,V01;V03;V04;V07;V09;V10;V12
+FeatureActivation,knowledge,KnowledgeEnvelope,M7-F-FeatureActivation.stop_criteria,stop_criteria,Reference[],R,Monitored clinical harm/operations rollback and named owner.,V01;V02;V03;V07;V10;V12
+CommandReceipt,operations,OperationsEnvelope,M7-F-CommandReceipt.command_id,command_id,Identifier,R,Original immutable operation identity.,V01;V03;V07;V12
+CommandReceipt,operations,OperationsEnvelope,M7-F-CommandReceipt.idempotency_key,idempotency_key,Identifier,R,"Bound to exact authenticated scope, purpose and request digest.",V01;V03;V07;V12
+CommandReceipt,operations,OperationsEnvelope,M7-F-CommandReceipt.request_digest,request_digest,Digest,R,Conflicting reuse denied without modifying original.,V01;V03;V07;V12
+CommandReceipt,operations,OperationsEnvelope,M7-F-CommandReceipt.admitted_at,admitted_at,Instant,R,Durable command admission before any effect.,V01;V03;V04;V07;V09;V12
+CommandReceipt,operations,OperationsEnvelope,M7-F-CommandReceipt.worker_generation,worker_generation,Integer,R,Fenced worker generation; old attempts cannot later commit after terminal cancellation.,V01;V03;V05;V07;V12
+CommandReceipt,operations,OperationsEnvelope,M7-F-CommandReceipt.state,state,Enum,R,"admitted, pending, committed_match, rejected_terminal, not_found_yet, terminal_no_effect_with_fence, unknown_completion.",V01;V03;V06;V07;V12
+CommandReceipt,operations,OperationsEnvelope,M7-F-CommandReceipt.result,result,Datum<Reference>,R,Actual retained result; no recomputation to recover receipt.,V01;V02;V03;V07;V12
+CommandReceipt,operations,OperationsEnvelope,M7-F-CommandReceipt.downstream_contract,downstream_contract,Datum<Reference>,R,Optional order integration idempotency/reconciliation guarantees; absent means no assumption.,V01;V02;V03;V07;V12
+CommandReceipt,operations,OperationsEnvelope,M7-F-CommandReceipt.no_effect_evidence,no_effect_evidence,Reference[],R,Required proof of durable fence and external no-effect for terminal claim; empty lookup insufficient.,V01;V02;V03;V07;V12
+AuditEvent,operations,OperationsEnvelope,M7-F-AuditEvent.action,action,Code,R,"Read, ingest, map, evaluate, review, approve, activate, override or handoff.",V01;V03;V06;V07;V12
+AuditEvent,operations,OperationsEnvelope,M7-F-AuditEvent.target_pins,target_pins,EvidencePin[],R,Exact authorized objects and revision.,V01;V02;V03;V07;V12
+AuditEvent,operations,OperationsEnvelope,M7-F-AuditEvent.authorization,authorization,Reference,R,Actual decision and intended use.,V01;V02;V03;V07;V12
+AuditEvent,operations,OperationsEnvelope,M7-F-AuditEvent.outcome,outcome,Code,R,Allowed/denied/committed/unknown/rejected with bounded reason.,V01;V03;V06;V07;V12
+StudyView,value,,M7-F-StudyView.study,study,Reference,R,Exact original source study.,V01;V02;V03;V07;V12
+StudyView,value,,M7-F-StudyView.cutoff,cutoff,Identifier,R,Committed snapshot watermark.,V01;V03;V07;V12
+StudyView,value,,M7-F-StudyView.findings,findings,Reference[],R,Resolved source findings at cutoff; original study hash remains unchanged when a finding is added.,V01;V02;V03;V07;V12
+ContextualCirculatoryEvent,patient,PatientEnvelope,M7-F-ContextualCirculatoryEvent.event_type,event_type,Enum,R,"fluid_bolus, fluid_challenge, transfusion, bleeding, surgery, reperfusion, procedure, ventilation_change, position_change, arrhythmia_event, other.",V01;V03;V06;V07;V12
+ContextualCirculatoryEvent,patient,PatientEnvelope,M7-F-ContextualCirculatoryEvent.description,description,Code,R,Source event and original text retained as safe content.,V01;V03;V06;V07;V12
+ContextualCirculatoryEvent,patient,PatientEnvelope,M7-F-ContextualCirculatoryEvent.actual_interval,actual_interval,TimeInterval,R,"Actual or explicitly uncertain timing, not order timing.",V01;V03;V04;V07;V09;V12
+ContextualCirculatoryEvent,patient,PatientEnvelope,M7-F-ContextualCirculatoryEvent.source_amount,source_amount,Datum<Quantity>,R,Source-recorded amount; transfusion/coagulation and fluid ledgers remain M11/M9 ownership.,V01;V03;V05;V07;V12
+ContextualCirculatoryEvent,patient,PatientEnvelope,M7-F-ContextualCirculatoryEvent.external_evidence,external_evidence,Reference[],R,Verified exact source links and missing linkage limits.,V01;V02;V03;V07;V12
+ContextualCirculatoryEvent,patient,PatientEnvelope,M7-F-ContextualCirculatoryEvent.clinical_assessment,clinical_assessment,Datum<Reference>,R,"Independent clinician meaning, not generated diagnosis.",V01;V02;V03;V07;V12
+ClinicalOverride,patient,PatientEnvelope,M7-F-ClinicalOverride.evaluation,evaluation,Reference,R,Exact affected rule/proposal and snapshot.,V01;V02;V03;V07;V12
+ClinicalOverride,patient,PatientEnvelope,M7-F-ClinicalOverride.reason,reason,String,R,Clinical rationale and known limits.,V01;V03;V07;V12
+ClinicalOverride,patient,PatientEnvelope,M7-F-ClinicalOverride.scope,scope,Code,R,"One clinical decision/patient/time, never silently global.",V01;V03;V06;V07;V12
+ClinicalOverride,patient,PatientEnvelope,M7-F-ClinicalOverride.author,author,Actor,R,Appropriately authorized treating role.,V01;V03;V07;V12
+ClinicalOverride,patient,PatientEnvelope,M7-F-ClinicalOverride.review_due,review_due,ClinicalTime,R,Reassessment/expiry and responsible team.,V01;V03;V04;V07;V09;V12
+ClinicalOverride,patient,PatientEnvelope,M7-F-ClinicalOverride.alternative_plan,alternative_plan,Datum<Reference>,R,Monitoring/escalation/alternative action.,V01;V02;V03;V07;V12
+GuidelineAdoption,knowledge,KnowledgeEnvelope,M7-F-GuidelineAdoption.primary_source,primary_source,Code,R,Exact source ID/DOI/version and publication date.,V01;V03;V06;V07;V10;V12
+GuidelineAdoption,knowledge,KnowledgeEnvelope,M7-F-GuidelineAdoption.statement_type,statement_type,Enum,R,"graded_recommendation, good_practice_statement, expert_consensus, RCT_result, observational, engineering_requirement.",V01;V03;V06;V07;V10;V12
+GuidelineAdoption,knowledge,KnowledgeEnvelope,M7-F-GuidelineAdoption.certainty_strength,certainty_strength,Datum<Code>,R,As actually graded by source; not invented for ungraded material.,V01;V03;V06;V07;V10;V12
+GuidelineAdoption,knowledge,KnowledgeEnvelope,M7-F-GuidelineAdoption.source_population,source_population,Code[],R,"Actual study/guideline setting, population, time phase and exclusions.",V01;V03;V07;V10;V12
+GuidelineAdoption,knowledge,KnowledgeEnvelope,M7-F-GuidelineAdoption.local_applicability,local_applicability,String,R,Clinical rationale for supported scope and exclusions.,V01;V03;V07;V10;V12
+GuidelineAdoption,knowledge,KnowledgeEnvelope,M7-F-GuidelineAdoption.conflicting_or_later_evidence,conflicting_or_later_evidence,Reference[],R,Newer trials or differing guidance acknowledged explicitly.,V01;V02;V03;V07;V10;V12
+GuidelineAdoption,knowledge,KnowledgeEnvelope,M7-F-GuidelineAdoption.adopted_by,adopted_by,Datum<Reference>,R,Separate institutional approval and validation.,V01;V02;V03;V07;V10;V12

@@ -1,0 +1,99 @@
+CURRENT v0.3, 22 October 2026: read DAILY-CHART-AND-UNITS-v0.3.txt first.
+Daily 24-hour source retrieval and recorded-subtotal arithmetic are now enabled
+for the synthetic chart. Creatinine display is standardized to mg/dL. This
+supersedes earlier statements about no second catalog or no in-app arithmetic;
+the separate daily read does not replace the shared assessment. Clinical
+treatment profiles remain inactive. The v0.1 report below is historical evidence.
+
+ClinRx M8 — renal physiology and kidney replacement therapy
+21 October 2026 | v0.1 design and source-linked bedside increment
+
+START HERE
+The detailed design is specification/M8-IMPLEMENTATION-SPEC.html.
+Machine-readable records/fields, rules, validation specifications, workflow,
+calculation and metric catalogs are alongside it. Evidence sources and their
+publication/draft status are included. The authoring package is also retained in
+the project outputs/clinrx-m8-implementation-20261021 directory.
+
+WHAT IS IMPLEMENTED
+The actual shared candidate has a Kidney review beside Patient overview and
+Hemodynamic review. The URL is ?workspace=renal. It uses the same current shared
+RF2 catalog in authoring mode and the existing RF1 combined service when enabled
+in standalone mode. It does not fetch a second catalog when switching views.
+
+Four cards cover kidney status, urine/collection, kidney support and the next
+review. Original creatinine, blood-gas kidney context, interval urine records,
+CRRT-context/net-removal, weights and authored renal notes remain linked to their
+original owners. Cumulative urine is not summed with intervals. No weight is
+automatically selected for calculations. Original values, offsets and revisions
+are retained. Missing volume is not zero. Evidence groups expose contextual and
+unplaced sources without assigning them to invented hourly buckets.
+
+The drawer opens exact source/history through the RF2 owner or original RF1
+history route. It cancels late results when selection/context changes. Failed
+retrieval, scope/cutoff/gate mismatch, duplicate identities or conflicting catalog
+content blocks the affected bedside projection/review rather than mixing patients
+or substituting a different version. A changed snapshot retains draft text but
+blocks submission until explicit new review. Existing source-entry recovery and
+pending-command guards remain in the shared patient workspace.
+
+Manual renal review records require next step, reviewer, rationale and next review
+plan. They pin the original renal evidence and immutable note text. They survive
+in-page navigation between overview, M7 and M8, but CLEAR ON PAGE RELOAD. They are
+not durable chart entries, scheduled tasks, clinical sign-off or team notifications.
+
+DESIGN CATALOGS, NOT ACTIVATED CAPABILITIES
+29 record definitions; 313 field definitions; 60 proposed disabled rules;
+23 workflows; 24 calculation references; 146 validation specifications;
+12 measures and 13 evidence/implementation anchors. These counts describe design
+coverage. There are not 60 active clinical rules or 146 executed clinical tests.
+
+Typed history/baseline selection, complete specimen/patency metadata, governed
+AKI classification, eGFR/eCrCl/measured clearance, full KRT prescriptions, actual
+CRRT/citrate/calcium/device segments, delivered-dose calculations and durable
+clinical reviews/tasks remain staged extensions. Existing context entries do not
+provide those records. The official KDIGO status page inspected on this date still
+describes the 2026 update as preparing for publication; its public-review draft is
+excluded from the proposed published/local-approval profile authority.
+
+No new backend schemas/routes, clinical source writes, orders, fluid-removal
+adjustments, dialysis initiation or device commands were added by M8. Clinical
+execution stays disabled. The offline arithmetic examples are engineering checks
+only and are not imported by ClinRx. The design is not permission for patient use.
+
+VALIDATION
+31 new M8 tests passed, including original decimal/unit/timing preservation,
+scope/cutoff/gate rejection, collection gaps, shared-source de-duplication, history
+ownership/races/errors, stale draft and session continuity. The wider focused run
+passed 168 frontend/regression tests across 12 files. A first highly parallel run
+timed out one existing shared-workspace test; rerun with two workers passed all
+168 without changing the test timeout. After the final collapsed-history display
+change, the 31 M8 tests were rerun and passed.
+
+54 existing backend renal/source-entry/correction/recovery tests passed. The
+installed Starlette/httpx deprecation warning remains; dependencies were unchanged.
+Default and RF2 builds/type checking passed; the existing large shared schema bundle
+advisory remains. The final RF2 build includes the final history display change.
+26 standalone Decimal/coverage reference checks passed (not clinical validation).
+Catalog structural checks passed and the candidate diff has no whitespace errors.
+
+The browser exercised the actual disposable synthetic database through RF2:
+original/corrected creatinine, interval/cumulative/missing/zero urine, a 26-pin
+manual note, view continuity with M7 and the overview, and clearing on reload.
+The browser console had no warning/error entries. At 390px, document width and
+viewport width were both390px; the temporary override was reset. The screenshot
+and request log are retained in the output evidence/runtime directories. No source
+save/order/execution request was made by this M8 browser review.
+
+Preview: http://127.0.0.1:5238/?workspace=renal
+Database: new disposable output runtime/m8-synthetic.sqlite3, not a live patient
+database. No synced source under sources/ was edited. Other work in the shared
+candidate was preserved, including the main chat's M7 and recorded-vitals work.
+
+NEXT CLINICAL RELEASE WORK
+Approve exact populations/guideline versions, baseline policy, interval completeness,
+unit and specimen pairing, weight and drug-label methods, machine accounting and
+formulations/citrate protocols, urgency/acknowledgement, durable authorization and
+recovery, trial-off/follow-up ownership, and independent retrospective/prospective
+clinical/usability validation. These are explicit release requirements; no clinical
+thresholds were silently filled in or enabled by this implementation.

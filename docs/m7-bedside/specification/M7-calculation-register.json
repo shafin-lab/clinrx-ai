@@ -1,0 +1,255 @@
+{
+  "status": "25 design-reference profiles, no active clinical calculators",
+  "profiles": [
+    {
+      "id": "M7-CALC01",
+      "name": "approximate_MAP",
+      "formula": "(SBP + 2*DBP)/3",
+      "required_inputs": "SBP,DBP mmHg",
+      "output_unit": "mmHg",
+      "limits": "Approximation; source measured MAP retained, limited in nonstandard waveforms/rhythm.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC02",
+      "name": "pulse_pressure",
+      "formula": "SBP-DBP",
+      "required_inputs": "coherent SBP,DBP mmHg",
+      "output_unit": "mmHg",
+      "limits": "Same site/acquisition; negative difference is inconsistent and prompts review.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC03",
+      "name": "shock_index",
+      "formula": "HR/SBP",
+      "required_inputs": "HR beats/min, SBP mmHg; SBP>0",
+      "output_unit": "beats/min/mmHg",
+      "limits": "Context/medication/rhythm dependent; not a standalone shock classifier.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC04",
+      "name": "CI",
+      "formula": "CO/BSA",
+      "required_inputs": "CO L/min; BSA m2>0",
+      "output_unit": "L/min/m2",
+      "limits": "Declared approved BSA method; indexed distinct from absolute.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC05",
+      "name": "SV",
+      "formula": "CO*1000/HR",
+      "required_inputs": "CO L/min; HR beats/min>0",
+      "output_unit": "mL/beat",
+      "limits": "Aligned perfusing HR and CO; no incompatible support state.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC06",
+      "name": "SVI",
+      "formula": "SV/BSA",
+      "required_inputs": "SV mL/beat; BSA m2>0",
+      "output_unit": "mL/beat/m2",
+      "limits": "Exact indexing method.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC07",
+      "name": "SVR",
+      "formula": "80*(MAP-RAP)/CO",
+      "required_inputs": "pressures mmHg, CO L/min>0",
+      "output_unit": "dyn*s/cm5",
+      "limits": "Compartment/method/time coherent; RAP/CVP substitution requires approved context.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC08",
+      "name": "PVR",
+      "formula": "(mPAP-PAWP)/CO",
+      "required_inputs": "pressures mmHg; CO L/min>0",
+      "output_unit": "Wood units",
+      "limits": "PAWP validity and method; multiply by80 only as explicit conversion.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC09",
+      "name": "TPG",
+      "formula": "mPAP-PAWP",
+      "required_inputs": "aligned mmHg",
+      "output_unit": "mmHg",
+      "limits": "No automatic PH diagnosis.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC10",
+      "name": "DPG",
+      "formula": "PADP-PAWP",
+      "required_inputs": "aligned mmHg",
+      "output_unit": "mmHg",
+      "limits": "Measurement error/phase limits; no standalone treatment inference.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC11",
+      "name": "CPO",
+      "formula": "MAP*CO/451",
+      "required_inputs": "MAP mmHg; CO L/min",
+      "output_unit": "W",
+      "limits": "Adopted conversion/convention; no universal escalation cutoff.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC12",
+      "name": "CPI",
+      "formula": "MAP*CI/451",
+      "required_inputs": "MAP mmHg; CI L/min/m2",
+      "output_unit": "W/m2",
+      "limits": "Profile must distinguish CPO and CPI.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC13",
+      "name": "PAPi",
+      "formula": "(PASP-PADP)/RAP",
+      "required_inputs": "aligned mmHg; RAP>0 and valid",
+      "output_unit": "ratio",
+      "limits": "Near-zero/error/support/PH limitations; no universal RV cutoff.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC14",
+      "name": "CaO2",
+      "formula": "1.34*Hb*SaO2_fraction + 0.0031*PaO2",
+      "required_inputs": "Hb g/dL; SaO2 fraction; PaO2 mmHg",
+      "output_unit": "mL O2/dL",
+      "limits": "Constants are educational convention pending local adoption; measured co-oximetry and method limits.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC15",
+      "name": "DO2",
+      "formula": "CO*CaO2*10",
+      "required_inputs": "CO L/min; CaO2 mL/dL",
+      "output_unit": "mL O2/min",
+      "limits": "No isolated transfusion or CO target.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC16",
+      "name": "DO2I",
+      "formula": "CI*CaO2*10",
+      "required_inputs": "CI L/min/m2; CaO2 mL/dL",
+      "output_unit": "mL O2/min/m2",
+      "limits": "Aligned method and indexed semantics.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC17",
+      "name": "OER",
+      "formula": "(CaO2-CvO2)/CaO2",
+      "required_inputs": "aligned compatible contents; CaO2>0",
+      "output_unit": "fraction",
+      "limits": "SvO2/ScvO2 cannot be swapped silently; content is not tension.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC18",
+      "name": "CO2_gap",
+      "formula": "PvCO2-PaCO2",
+      "required_inputs": "paired approved venous/arterial samples mmHg",
+      "output_unit": "mmHg",
+      "limits": "Label compartment and sampling interval; not standalone target.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC19",
+      "name": "lactate_decrement",
+      "formula": "100*(baseline-current)/baseline",
+      "required_inputs": "comparable mmol/L; baseline>0",
+      "output_unit": "percent",
+      "limits": "Not measured lactate clearance; negative decrement is rise.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC20",
+      "name": "test_flow_change",
+      "formula": "100*(response-baseline)/baseline",
+      "required_inputs": "same supported CO/SV/VTI method; baseline>0",
+      "output_unit": "percent",
+      "limits": "Eligibility/uncertainty/threshold protocol required; no universal cut point.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC21",
+      "name": "infusion_dose_mass",
+      "formula": "concentration_mcg_mL*rate_mL_h/60",
+      "required_inputs": "mcg/mL and mL/hour",
+      "output_unit": "mcg/min",
+      "limits": "Actual bag/delivery basis; educational arithmetic not a drug instruction.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC22",
+      "name": "infusion_dose_weighted",
+      "formula": "concentration_mcg_mL*rate_mL_h/(60*weight_kg)",
+      "required_inputs": "known approved dosing weight>0",
+      "output_unit": "mcg/kg/min",
+      "limits": "Do not silently change weight or convert activity units to mass.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC23",
+      "name": "activity_rate",
+      "formula": "concentration_units_mL*rate_mL_h/60",
+      "required_inputs": "units/mL and mL/hour",
+      "output_unit": "units/min",
+      "limits": "Drug/product activity convention; not mcg/kg/min.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC24",
+      "name": "known_delivered_volume",
+      "formula": "sum(rate_mL_h*duration_seconds/3600)",
+      "required_inputs": "complete nonoverlapping actual segments",
+      "output_unit": "mL",
+      "limits": "Derived estimate separate from source total; gaps remain unknown.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    },
+    {
+      "id": "M7-CALC25",
+      "name": "CPP",
+      "formula": "MAP-ICP",
+      "required_inputs": "mmHg; declared compatible reference levels/method/time",
+      "output_unit": "mmHg",
+      "limits": "Specialist approved context; no default neurocritical target.",
+      "status": "design_reference_only_disabled",
+      "clinical_approval": null
+    }
+  ]
+}

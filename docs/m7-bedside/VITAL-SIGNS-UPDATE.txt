@@ -1,0 +1,62 @@
+Latest display correction: blood pressure is now a single SBP/DBP (MAP) card.
+See review-evidence/m7-bp-format/ for the 27-test/build/browser verification.
+The original update details below predate this display correction.
+
+M7 recorded vital signs — 21 October 2026
+
+Preview: http://127.0.0.1:5232/?workspace=hemodynamics
+
+The shared M7 bedside view now starts with heart rate, oxygen saturation,
+respiratory rate and blood pressure showing systolic, diastolic and MAP separately.
+Pulse-oximetry SpO2 and arterial SaO2 have separate labels and source links.
+Venous saturation is never substituted for either. Heart rate consumes the existing
+cardiac/ECG heart_rate sources; pulse rate is not silently relabelled as heart rate.
+
+Only in-window sources enter this panel. Original decimal strings, units, times,
+methods and quality assertions are retained. Each available reading opens its exact
+source and retained history. Multiple readings show their count and open the
+matching source list; none is selected as latest/current automatically. Components
+from different BP sources remain separate; no combined BP or calculated MAP is
+created. Missing readings say Not recorded. Unconfirmed retrieval withholds all
+vital headlines and says Not confirmed.
+
+Respiratory rate was added as a recorded respiratory measurement in the existing
+OxygenTransport family. It uses the same acquisition, provenance, timing, scope,
+exact revision and history contracts. It permits noninvasive/unknown sample context,
+rejects blood-sample identities and blood-gas acquisition/context. Existing facts
+and the transport envelope remain compatible. The generated M7 and renal transport
+schemas were refreshed; the RF2 schema generator produced no change. No numerical
+clinical thresholds, interpretations, new execution workflow or clinical orders
+were added. General vital-sign entry through Add information remains outside this
+increment; that editor still begins with recorded weight.
+
+Validation
+
+- 58 focused frontend tests passed across six files, including four added tests for
+  exact vitals, missing values, distinct saturation types, multiple observations,
+  contextual/unplaced exclusion, exact source navigation and failed retrieval.
+- 45 existing backend cases passed in the combined regression run. Its one new
+  fixture failure used an unsupported acquisition literal; after correcting the
+  fixture to the existing source_other method, all four new API/contract cases
+  passed. The new cases exercise real scoped retrieval and exact RR history,
+  decimal preservation, read-only behavior and rejection of sample mismatches.
+- Default and RF2/authoring/weight production builds and typechecks passed.
+  Existing bundle-size and installed Starlette/httpx advisories remain.
+- Browser loaded all requested vitals through the shared catalog, opened the exact
+  RR record and its history, and returned to the same patient overview. API requests
+  were successful reads only. At 390px, document width was 390px; viewport reset.
+  Browser warning/error capture was empty.
+- Five explicitly synthetic vital records were added only to a separate copied
+  database for the exercise. They are demo data, not application defaults. The
+  source fixture hash and all prior fact revisions are unchanged, and execution
+  table counts did not increase. The original accepted checkout remains clean;
+  port 5197 and the previous candidate instance were not changed.
+
+Evidence: review-evidence/m7-vitals/RESULTS.json, request-verification.json,
+source-sha256.json, source-snapshot/, frontend-corrected.log, backend-initial.log,
+backend-vitals-final.log, build-*-final.log, vitals-loaded-dom.txt,
+respiratory-history-dom.txt, m7-vitals-desktop-final.png and m7-vitals-mobile.png.
+Initial unsuccessful checks are retained with their original attribution.
+
+Other-chat M8 files appeared in the shared candidate during this work. They were
+preserved; this task changes M7 and makes no M8 validation/completion claim.

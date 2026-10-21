@@ -51,16 +51,7 @@ export async function decodeEvidence(raw:unknown,repository:string,expected?:Pin
  return e;
 }
 export class RF2ReviewChanged extends Error {constructor(){super('Selected-source review changed; this request was rejected before append.');}}
-export class RF2Client {
- private reviewed=new Map<string,Fact>();
- constructor(private send:typeof fetch=fetch){}
- private async request(path:string,body?:unknown){
-  const send=this.send;
-  const abort=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
-  const deadline=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{abort.abort();reject(Error('Request timed out; completion is unconfirmed.'));},15000);});
-  try{return await Promise.race([(async()=>{const r=await send('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'same-origin',redirect:'error',signal:abort.signal});if(r.status===409&&body!==undefined&&(path==='/save'||path==='/validate')){const failure=object(await readRF2JSON(r));if(failure.code==='rf2_source_review_changed'){exactKeys(failure,['code','request_digest','execution_enabled']);if(failure.execution_enabled!==false||failure.request_digest!==await hash(stable(body)))reject();throw new RF2ReviewChanged();}throw Error('Source conflict: review the original record; no replacement was inserted.');}if(!r.ok)throw Error(r.status===409?'Source conflict: review the original record; no replacement was inserted.':'The exact result could not be confirmed.');return readRF2JSON(r);})(),deadline]);}finally{clearTimeout(timer);}
- }
- async catalog(start:string,end:string):Promise<Catalog>{const c=object(await this.request('?'+new URLSearchParams({review_start:start,review_end:end}))) as unknown as Catalog;
+export async function decodeRF2Catalog(raw:unknown,start:string,end:string):Promise<Catalog>{const c=object(raw) as unknown as Catalog;
   exactKeys(c,['repository','cutoff','items','combined','execution_enabled']);validateTransportSchema(c.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);if(c.execution_enabled!==false||c.repository!==c.cutoff.repository_id||!Array.isArray(c.items)||c.items.length>4096)reject();const combined=await decodeRenalFluid(c.combined,{patient_id:'synthetic-p1',encounter_id:'synthetic-e1',start,end});if(!equal(combined.context.scope.repository_cutoff,c.cutoff))reject();
   // Existing facts travel once in the combined response. Build a typed view, not another stored record.
   const baseFacts=[...combined.circulatory.assembly.snapshot.items,...combined.laboratory.observations];
@@ -72,6 +63,16 @@ export class RF2Client {
   c.items=[...derived,...c.items];
   const keys=new Set<string>();for(const item of c.items){await decodeEvidence(item,c.repository);if(item.cutoff!==c.cutoff.fact_watermark||keys.has(key(pin(item))))reject();keys.add(key(pin(item)));}return c;
  }
+export class RF2Client {
+ private reviewed=new Map<string,Fact>();
+ constructor(private send:typeof fetch=fetch){}
+ private async request(path:string,body?:unknown){
+  const send=this.send;
+  const abort=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
+  const deadline=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{abort.abort();reject(Error('Request timed out; completion is unconfirmed.'));},15000);});
+  try{return await Promise.race([(async()=>{const r=await send('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'same-origin',redirect:'error',signal:abort.signal});if(r.status===409&&body!==undefined&&(path==='/save'||path==='/validate')){const failure=object(await readRF2JSON(r));if(failure.code==='rf2_source_review_changed'){exactKeys(failure,['code','request_digest','execution_enabled']);if(failure.execution_enabled!==false||failure.request_digest!==await hash(stable(body)))reject();throw new RF2ReviewChanged();}throw Error('Source conflict: review the original record; no replacement was inserted.');}if(!r.ok)throw Error(r.status===409?'Source conflict: review the original record; no replacement was inserted.':'The exact result could not be confirmed.');return readRF2JSON(r);})(),deadline]);}finally{clearTimeout(timer);}
+ }
+ async catalog(start:string,end:string):Promise<Catalog>{return decodeRF2Catalog(await this.request('?'+new URLSearchParams({review_start:start,review_end:end})),start,end);}
  async history(original:Evidence){const selected=pin(original);const r=object(await this.request('/history',{repository:selected.repository,pins:[selected]}));exactKeys(r,['repository','selected','items','execution_enabled']);if(r.execution_enabled!==false||r.repository!==selected.repository||!equal(r.selected,selected)||!Array.isArray(r.items)||r.items.length<1||r.items.length>128)reject();const items=await Promise.all(r.items.map(x=>decodeEvidence(x,selected.repository)));if(items.some(x=>x.fact.kind!==selected.reference.kind||x.fact.id!==selected.reference.id||x.cutoff!==selected.cutoff)||items.filter(x=>equal(pin(x).reference,selected.reference)&&x.digest===selected.digest&&x.ingestion.ingestion_sequence===selected.ingestion).length!==1)reject();const matched=items.find(x=>equal(pin(x).reference,selected.reference))!;if(!equal(matched.fact,original.fact)||!equal(matched.ingestion,original.ingestion))reject();return items;}
  async resolve(repository:string,pins:Pin[]){const r=object(await this.request('/resolve',{repository,pins}));exactKeys(r,['repository','items','execution_enabled']);if(r.repository!==repository||r.execution_enabled!==false||!Array.isArray(r.items)||r.items.length!==pins.length)reject();return Promise.all(r.items.map((x,n)=>decodeEvidence(x,repository,pins[n])));}
  async action(action:'validate'|'save'|'lookup',draft:Draft):Promise<Result>{validateTransportSchema(draft,bundle.roots.RF2Draft,bundle.definitions);const result=object(await this.request('/'+action,draft)) as unknown as Result;

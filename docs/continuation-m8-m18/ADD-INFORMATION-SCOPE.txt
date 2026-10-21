@@ -1,0 +1,73 @@
+Simple Add information — concrete ownership and scope proposal
+21 October 2026 | Historical scope proposal; see WEIGHT-ENTRY-IMPLEMENTED.txt
+
+SUBSEQUENT AUTHORISATION AND DELIVERY
+The user authorised recorded-weight entry, correction and recovery in the candidate
+only. That bounded flow is implemented and verified as described in the adjacent
+WEIGHT-ENTRY-IMPLEMENTED.txt. The earlier proposal below remains the scope rationale;
+it does not describe the current completion status of recorded-weight entry.
+
+PRODUCT FLOW
+One Add information action with Note, Measurement and Report choices. Show only
+supported operations. Enter once, review plainly, save through the correct existing
+owner, refresh the same overview and open exact details. Never redirect clinicians
+to Source entry/reassessment, Compare notes or a manual handover-selection screen.
+Do not make arbitrary defaults or hidden placeholders satisfy a mismatched contract.
+
+SMALLEST EXISTING COMPATIBLE OPERATION
+A recorded weight measurement can use the existing synthetic RF2 Chart owner:
+frontend/src/api/rf2Client.ts: RF2Client.action(validate/save/lookup)
+backend/app/api/schemas/renal_fluid_entry.py: Chart and RF2Draft
+backend/app/services/renal_fluid_entry_service.py: RF2Service
+
+Proposed first UI operation: Measurement → Recorded weight.
+Required clinical inputs: decimal magnitude and source unit kg/g, measurement time
+or explicit unknown time, measured/reported/unknown acquisition, method if known,
+source context, uncertainty, and who recorded it. Zero remains recorded zero; any
+clinical plausibility policy is separate. Never guess dry/dosing/ideal weight.
+Internally retain repository, stable draft ID/revision, recorded time, source record
+identity/version OR an explicit new-collection reason. A correction requires exact
+predecessor, same owner and correction reason. Preserve every required existing
+contract field; obtain meaningful information with progressive disclosure.
+
+Review: show exactly the value/unit, timing and context the existing owner will
+validate. Keep the validated payload immutable for the save attempt. Edits invalidate
+that review. Saving and refresh must use the same patient and repository.
+Timeout: retain the exact pending request, label outcome unconfirmed, reconcile
+through lookup. Never create new IDs, auto-resubmit or claim a failed save as absent.
+Correction conflict: reopen the exact owner/history; no silent successor replacement.
+Draft scope: patient/encounter/repository/entry type; switching patient cannot move it.
+Reload recovery: existing code does not establish durable unsaved-draft recovery;
+define and validate recovery before presenting persistence guarantees to clinicians.
+
+SCOPE EXPANSIONS IDENTIFIED
+1. This candidate has been read-only. A synthetic authoring connection is an explicit
+   capability expansion even if the underlying RF2 owner already exists. Keep a
+   separate opt-in synthetic gate; never connect a live patient endpoint by default.
+2. A general free-text Note does not fit RenalNote: that contract requires five
+   structured sections and 1–12 exact evidence pins. Do not fill these with dummy
+   text or force manual pin selection. It needs an appropriate clinician-note owner
+   or a reviewed extension of the existing note contract.
+3. A general Report needs original report identity, issuer, specimen/study context,
+   status, typed times, full text/attachment and corrections. It cannot be a fluid
+   Chart or a disguised renal note. Define a versioned report owner before authoring.
+4. General blood results need the shared laboratory envelope, not an enlarged
+   spelling allowlist inside RF2. Keep current decoder restrictions intact.
+5. Nutrition targets/delivery and sedation assessments need their own typed owned
+   facts. The simple dialog is a common entry shell, not permission to store all
+   domains as circulatory events.
+
+RELEASE CHECKS FOR THE FIRST SYNTHETIC ENTRY INCREMENT
+- Add a measured weight once and see one record through the existing catalog.
+- Validate exact decimal/unit and unknown-time representation without conversion.
+- Edit after review: stale reviewed request cannot be saved.
+- Pending save plus navigation: draft/patient stay correct, late responses ignored.
+- Timeout then lookup: committed, absent and unresolved outcomes are distinct.
+- Double action/reload: preserve request identity; do not create duplicate facts.
+- Correct a record: predecessor history survives; conflicting owner changes stop save.
+- Failed refresh after save: confirm save separately; overview stays unconfirmed.
+- Keyboard, focus return and 360px check for the new dialog.
+- No balance/nutrition calculations, clinical execution or live patient writes.
+
+This proposal is reviewable; no approval to activate these writes is inferred from
+the handoff. Read-only development and contract design proceed within current scope.

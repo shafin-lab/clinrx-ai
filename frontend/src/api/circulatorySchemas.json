@@ -4164,6 +4164,7 @@
     },
     "OxygenTransport": {
       "additionalProperties": false,
+      "description": "Recorded oxygenation/gas measurements and noninvasive respiratory rate.",
       "properties": {
         "kind": {
           "const": "circulatory_oxygen",
@@ -4384,7 +4385,8 @@
             "ph",
             "paco2",
             "bicarbonate",
-            "base_excess"
+            "base_excess",
+            "respiratory_rate"
           ],
           "title": "Concept",
           "type": "string"

@@ -1,0 +1,314 @@
+record,field,type,requirement,validation,owner
+EvidenceEnvelope,schema_version,string,R,Exact registered schema version; reject unsupported version.,Existing source owner
+EvidenceEnvelope,record_id,string,R,Stable source record identity; scoped by repository and kind.,Existing source owner
+EvidenceEnvelope,revision,string,R,Immutable revision; corrections append successors.,Existing source owner
+EvidenceEnvelope,patient_id,string,R,Must match requested patient; never merge by bed or display name.,Existing source owner
+EvidenceEnvelope,encounter_id,string,R,Explicit encounter; cross-encounter baseline uses a separately authorized reference.,Existing source owner
+EvidenceEnvelope,repository_id,string,R,Original owner; must match selected source repository.,Existing source owner
+EvidenceEnvelope,ingestion_sequence,integer,R,Positive and no greater than selected fact watermark.,Existing source owner
+EvidenceEnvelope,source_reference,ExactRef,R,Kind/id/version plus digest; resolve exactly at cutoff.,Existing source owner
+EvidenceEnvelope,source_issuer,string,R,Laboratory/device/clinician provenance; unknown is explicit.,Existing source owner
+EvidenceEnvelope,source_record_id,string,R,Original accession/component or observation identity; deduplicate upstream retransmissions.,Existing source owner
+EvidenceEnvelope,source_digest,string,R,Digest of canonical source content; reject mismatched content.,Existing source owner
+EvidenceEnvelope,recorded_at,AwareInstant,R,Timezone and precision retained; not collection time.,Existing source owner
+EvidenceEnvelope,effective_time,TimeAssertion,R,Point or explicit interval with precision; unknown with reason allowed.,Existing source owner
+EvidenceEnvelope,specimen_collected_at,TimeAssertion,C,Required for specimen-dependent calculations; never inferred from report time.,Existing source owner
+EvidenceEnvelope,received_at,AwareInstant,C,Required for latency audit when supplied by transport.,Existing source owner
+EvidenceEnvelope,record_status,enum,R,recorded/corrected/withdrawn/invalid/unknown; do not resurrect an older numeric value.,Existing source owner
+EvidenceEnvelope,quality,QualityAssertion,R,Source assessment including assessor/method/artifacts; not a system certification.,Existing source owner
+EvidenceEnvelope,verification,enum,R,verified/unverified/unknown with actor/time where supplied.,Existing source owner
+EvidenceEnvelope,uncertainty,string[],R,Empty only if explicitly assessed; absent is not no uncertainty.,Existing source owner
+EvidenceEnvelope,supersedes,ExactRef?,C,"Required for correction; same logical observation only, never a new specimen.",Existing source owner
+EvidenceEnvelope,correction_reason,string?,C,Required nonblank when supersedes exists.,Existing source owner
+EvidenceEnvelope,links,Association[],R,Exact typed references with resolved/unresolved/contradictory status.,Existing source owner
+EvidenceEnvelope,author,ActorRef,R,Source author/recorder identity; original origin preserved.,Existing source owner
+SharedValueTypes,quantity,Quantity,R,Original decimal lexeme plus raw and mapped units; no binary float for clinical arithmetic.,Platform M1–M5
+SharedValueTypes,availability,enum,R,known/missing/not_measured/pending/unknown/not_applicable; reason required unless known.,Platform M1–M5
+SharedValueTypes,unit_mapping,UnitAssertion,R,"Raw label plus UCUM code, mapping version and status; unresolved units block arithmetic.",Platform M1–M5
+SharedValueTypes,time,TimeAssertion,R,Original timestamp/offset plus precision and uncertainty; exact fractional comparison.,Platform M1–M5
+SharedValueTypes,interval,IntervalAssertion,R,"Start/end, boundary convention, duration basis, collection identity and completeness; end greater than start.",Platform M1–M5
+SharedValueTypes,reference,ExactRef,R,Repository/kind/id/version/digest/ingestion/cutoff; no latest-version substitution.,Platform M1–M5
+SharedValueTypes,population,PopulationContext,R,"Age/DOB source, adult/child/neonate/pregnancy and eligibility uncertainty; never adult by default.",Platform M1–M5
+SharedValueTypes,status_reason,string,C,"Nonblank for unavailable, excluded, rejected, deferred or overridden state.",Platform M1–M5
+KidneyHistory,ckd_assertion,DiagnosisAssertion,R,known/absent/unknown with source and first/last confirmation.,M8
+KidneyHistory,ckd_cause,CodeOrText[],O,Source diagnoses and confidence; do not diagnose from code mapping alone.,M8
+KidneyHistory,ckd_g_category,SourceClassification?,O,Original equation/version/date and persistence evidence.,M8
+KidneyHistory,ckd_a_category,SourceClassification?,O,Albumin category linked to assay and repeated measurements.,M8
+KidneyHistory,prior_aki,EpisodeRef[],R,"Episode dates, severity provenance, recovery and unresolved history.",M8
+KidneyHistory,preadmission_krt,KRTBaseline,R,"yes/no/unknown, modality, schedule, access, last actual session and residual urine.",M8
+KidneyHistory,usual_weight,ExactRef?,O,Source/date/method; distinguish usual/dry/admission/current/dosing weights.,M8
+KidneyHistory,dry_weight,ExactRef?,O,Author-selected target and validity period; not the measured weight.,M8
+KidneyHistory,renal_anatomy,CodeOrText[],O,"Solitary kidney, congenital variants, nephrectomy, cystic disease with source.",M8
+KidneyHistory,renal_transplant,TransplantRef?,O,"One graft episode, transplant date, donor type, baseline graft function and responsible service.",M8
+KidneyHistory,transplant_complications,DiagnosisAssertion[],O,"Rejection, infection, obstruction, vascular concern; specialist-authored confidence.",M8
+KidneyHistory,immunosuppression,MedicationRef[],O,Tacrolimus/cyclosporine etc from medication owner; link dose times and levels without duplicating orders.,M8
+KidneyHistory,history_review,ActorTime,R,Reviewer and as-of time; unknown history remains visible.,M8
+BaselineSelection,candidate_references,ExactRef[],R,"All eligible pre-insult creatinine candidates with dates, source and quality.",M8
+BaselineSelection,selected_reference,ExactRef?,R,Null plus unavailable/uncertain reason is valid; do not choose lowest automatically.,M8
+BaselineSelection,selection_method,enum,R,clinician_selected/policy_selected/unavailable; exact policy version if applicable.,M8
+BaselineSelection,selection_rationale,string,R,"Explain representativeness, known CKD, prior AKI and excluded candidates.",M8
+BaselineSelection,baseline_value,Quantity?,C,Must match pinned eligible source after explicit versioned conversion.,M8
+BaselineSelection,baseline_date,TimeAssertion,R,"Distinguish measured date, historical report date and estimated interval.",M8
+BaselineSelection,stability_evidence,ExactRef[],R,Relevant trajectory; empty means stability unconfirmed.,M8
+BaselineSelection,confidence,enum,R,"confirmed/uncertain/unavailable, never silently upgraded.",M8
+BaselineSelection,acute_onset_window,IntervalAssertion,R,Known/presumed onset and supporting sources; no presumed onset from arrival alone.,M8
+BaselineSelection,selected_by,ActorTime,R,Selection and reassessment author/date.,M8
+BaselineSelection,alternative_selections,ExactRef[],O,Sensitivity display must retain selected baseline and any changed stage.,M8
+RenalLaboratory,analyte,CodeOrText,R,"Creatinine, urea/BUN, Na/K/Cl/bicarbonate, Mg/phosphate/Ca, glucose, cystatin C or specialist analyte.",Shared investigations
+RenalLaboratory,result,QuantityOrCoded,R,"Typed availability, exact value, raw unit, mapped unit and reference/critical limits.",Shared investigations
+RenalLaboratory,specimen_id,string,R,Accession and component identity; explicit unavailable if legacy source lacks specimen metadata.,Shared investigations
+RenalLaboratory,specimen_type,CodeOrText,R,Serum/plasma/whole blood/urine/effluent and collection site.,Shared investigations
+RenalLaboratory,collection_time,TimeAssertion,R,Collection rather than release time; absent blocks paired-specimen calculations.,Shared investigations
+RenalLaboratory,assay_method,CodeOrText,R,"Creatinine/cystatin calibration, blood-gas or laboratory method and version when known.",Shared investigations
+RenalLaboratory,sample_quality,QualityAssertion,R,Hemolysis/lipemia/icterus/contamination/line-draw/dilution and source flags.,Shared investigations
+RenalLaboratory,reference_range,RangeWithUnit?,O,Source laboratory and population context; not universal threshold.,Shared investigations
+RenalLaboratory,critical_flag,SourceFlag?,O,Original flag and acknowledgement state; distinguish source from computed alert.,Shared investigations
+RenalLaboratory,report_time,TimeAssertion,R,Separate preliminary/final/corrected status and report release.,Shared investigations
+RenalLaboratory,related_krt_episode,ExactRef?,O,Pre/during/post session context; do not infer from nearest order.,Shared investigations
+RenalLaboratory,interference_context,ExactRef[],O,"Medication assay interference, low muscle mass, amputation, cirrhosis, burns, pregnancy or high catabolic state.",Shared investigations
+UrineStudy,study_type,enum,R,dipstick/microscopy/culture/ACR/PCR/timed_protein/urine_electrolytes/osmolality/specialist.,Shared investigations
+UrineStudy,collection_method,enum,R,"clean_catch/catheter/nephrostomy/other/unknown, with device reference.",Shared investigations
+UrineStudy,specimen_id,string,R,Retain accession and component identity.,Shared investigations
+UrineStudy,collection_time,TimeAssertion,R,Point or timed collection; do not assume a spot specimen is a timed collection.,Shared investigations
+UrineStudy,findings,ObservationRef[],R,"Blood/protein/leukocytes/nitrite/glucose, RBC morphology/casts/WBC/crystals and actual counts/units.",Shared investigations
+UrineStudy,protein_measure,Quantity?,O,Albumin or total protein identified separately; assay and unit.,Shared investigations
+UrineStudy,urine_creatinine,ExactRef?,C,Required for ACR/PCR; same eligible specimen or approved matched collection.,Shared investigations
+UrineStudy,reported_ratio,Quantity?,O,Source-reported ACR/PCR distinguished from calculated ratio and unit basis.,Shared investigations
+UrineStudy,timed_collection,CollectionRef?,C,Required for excretion per day; coverage/completeness explicit.,Shared investigations
+UrineStudy,contamination,QualityAssertion,R,Menstruation/traumatic catheter/UTI/other confounders; not a diagnosis.,Shared investigations
+UrineCollection,collection_id,string,R,"Stable collection identity, not catheter identity; duplicate totals share an overlap/exclusion group.","M9 source owner, referenced by M8"
+UrineCollection,interval,IntervalAssertion,R,Explicit start and end with timezone and boundary convention.,"M9 source owner, referenced by M8"
+UrineCollection,volume,Quantity,R,mL/L only after approved mapping; zero differs from missing.,"M9 source owner, referenced by M8"
+UrineCollection,quantity_semantics,enum,R,interval_total/cumulative_total/point_emptying/reported_rate; cannot reinterpret a total as hourly rate.,"M9 source owner, referenced by M8"
+UrineCollection,measurement_method,enum,R,bag/urometer/weighed_diaper/device/other/unknown; conversion profile for mass-to-volume.,"M9 source owner, referenced by M8"
+UrineCollection,collection_completeness,enum,R,complete/incomplete/uncertain/not_assessed with reason and assessor.,"M9 source owner, referenced by M8"
+UrineCollection,coverage_segments,IntervalAssertion[],R,Measured segments and documented missing segments; no zero-fill.,"M9 source owner, referenced by M8"
+UrineCollection,device_reference,ExactRef?,O,"Original catheter, stoma, nephrostomy or other collection access episode.","M9 source owner, referenced by M8"
+UrineCollection,catheter_patency,StatusAssertion,R,patent/blocked/suspected_blockage/unknown with assessment time.,"M9 source owner, referenced by M8"
+UrineCollection,irrigation_in,Quantity?,O,Instilled irrigation volume separated from renal urine; matched interval.,"M9 source owner, referenced by M8"
+UrineCollection,irrigation_recovered,Quantity?,O,Returned irrigation and reconciliation method; never subtract an assumed amount.,"M9 source owner, referenced by M8"
+UrineCollection,leakage_or_loss,StatusAssertion,R,Uncaptured urine and reason; blocks complete-interval claim.,"M9 source owner, referenced by M8"
+UrineCollection,source_total_reference,ExactRef?,O,Link aggregate to components; never add both.,"M9 source owner, referenced by M8"
+UrineCollection,diuretic_context,MedicationRef[],O,Actual doses/timing and response; not an automatic exclusion from KDIGO output criteria.,"M9 source owner, referenced by M8"
+UrineCollection,weight_selection,ExactRef?,C,"Required for weight-normalized assessment; purpose, method, date and uncertainty explicit.","M9 source owner, referenced by M8"
+KidneyFunctionAssessment,assessment_kind,enum,R,measured_CrCl/measured_GFR/eGFR/eCrCl/kinetic_estimate/source_reported.,M8
+KidneyFunctionAssessment,method_id,string,R,Exact equation or measurement method/version and implementation hash.,M8
+KidneyFunctionAssessment,clinical_purpose,enum,R,AKI_context/CKD_classification/drug_specific_dosing/native_recovery/research.,M8
+KidneyFunctionAssessment,inputs,ExactRef[],R,Creatinine/cystatin/demographics/height/weight/timed urine as required; no inferred sex/age/weight.,M8
+KidneyFunctionAssessment,steady_state,StatusAssertion,R,confirmed/unstable/unknown; conventional steady-state estimate unsuitable flags retained.,M8
+KidneyFunctionAssessment,body_size_basis,enum,R,indexed_1_73m2/absolute_mL_min/other/not_applicable; never relabel without a calculation record.,M8
+KidneyFunctionAssessment,selected_weight,ExactRef?,C,Required for weight-dependent methods; actual/ideal/adjusted with approved formula if derived.,M8
+KidneyFunctionAssessment,selected_bsa,ExactRef?,C,Required for deindexing; versioned formula and measured inputs.,M8
+KidneyFunctionAssessment,timed_urine,ExactRef?,C,Required for measured CrCl; collection completeness and representative plasma specimen.,M8
+KidneyFunctionAssessment,result,QuantityOrUnavailable,R,Units and all withheld reasons; creatinine clearance is not measured GFR.,M8
+KidneyFunctionAssessment,applicability,EligibilityResult,R,"Population, nonsteady state, KRT, assay interference and body-size limitations.",M8
+KidneyFunctionAssessment,drug_label_reference,SourceVersion?,C,Required when used for drug review; label may specify another renal estimate.,M8
+AKIAssessment,guideline_profile,SourceVersion,R,"Published approved version, population, activation scope and hash; draft excluded.",M8
+AKIAssessment,baseline_selection,ExactRef?,R,Unavailable allowed; baseline must not be back-calculated silently.,M8
+AKIAssessment,creatinine_evidence,ExactRef[],R,Distinct specimens and eligible timing for absolute 48-hour and relative 7-day criteria.,M8
+AKIAssessment,urine_evidence,ExactRef[],R,Complete applicable intervals and weight evidence; overlaps/gaps prevent affected duration claim.,M8
+AKIAssessment,creatinine_criterion,CriterionResult,R,"met/not_met/indeterminate/not_applicable plus stage, exact thresholds and reasons.",M8
+AKIAssessment,urine_criterion,CriterionResult,R,Independent stage and assessed durations; incomplete data cannot establish absence.,M8
+AKIAssessment,krt_criterion,CriterionResult,R,"Actual initiation attributable to acute kidney support, not a planned or chronic session.",M8
+AKIAssessment,combined_stage,ClassificationOrUnavailable,R,"Maximum established eligible criterion; unknown criteria remain explicit, no false stage zero.",M8
+AKIAssessment,evidence_time,TimeAssertion,R,As-of clinical evidence and repository cutoff; no future specimen leakage.,M8
+AKIAssessment,clinical_confirmation,ActorTime?,O,Confirmation distinct from computation; all overrides require reason and original output retained.,M8
+AKIAssessment,stage_history,ExactRef[],R,Time-stamped revisions; correction is not physiological recovery.,M8
+RenalCauseReview,working_causes,CodeOrText[],R,hemodynamic/sepsis/nephrotoxic/obstruction/glomerular/interstitial/TMA/rhabdomyolysis/HRS/vascular/transplant/other/undifferentiated.,M8 with specialist owner
+RenalCauseReview,evidence_for,ExactRef[],R,Each possibility links supporting evidence and relevant exclusions.,M8 with specialist owner
+RenalCauseReview,evidence_against,ExactRef[],R,Negative evidence is dated and scope-limited.,M8 with specialist owner
+RenalCauseReview,certainty,enum,R,suspected/probable/confirmed/unassessed; confirmation authority explicit.,M8 with specialist owner
+RenalCauseReview,obstruction_review,ExactRef[],R,"Device patency, retention/bladder scan, ultrasound/CT and urology assessment where applicable.",M8 with specialist owner
+RenalCauseReview,imaging,ReportRef[],R,"Anatomy, hydronephrosis, perfusion, bladder volume with acquisition/report times and limitations.",M8 with specialist owner
+RenalCauseReview,immune_hematology,ObservationRef[],O,"Complement, ANA/ANCA/anti-GBM, dsDNA, monoclonal studies, hemolysis/platelets/smear/LDH/haptoglobin and relevant infection serology.",M8 with specialist owner
+RenalCauseReview,rhabdomyolysis,ObservationRef[],O,CK/myoglobin/urine context and actual timing; avoid single-marker diagnosis.,M8 with specialist owner
+RenalCauseReview,hepatorenal_review,SpecialistAssessment?,O,"Cirrhosis/ascites, hemodynamic/sepsis/structural alternatives and current approved criteria version; no automatic HRS label.",M8 with specialist owner
+RenalCauseReview,biopsy,ProcedureRef?,O,"Indication, consent, bleeding context, pathology and pending/deferral reason.",M8 with specialist owner
+RenalCauseReview,nephrotoxic_exposure,MedicationRef[],R,"Actual exposure, route, dose times, contrast/procedure context; orders are not administrations.",M8 with specialist owner
+RenalCauseReview,next_investigations,PlanItem[],R,Justified targeted testing and responsible owner; no universal rare-test panel ordering.,M8 with specialist owner
+KRTIndicationReview,review_time,AwareInstant,R,As-of assessment and exact evidence cutoff.,M8
+KRTIndicationReview,electrolyte_concern,ClinicalConcern,R,"Evidence, trends, symptoms/ECG, prior temporizing treatment/response and refractory-status author.",M8
+KRTIndicationReview,acid_base_concern,ClinicalConcern,R,"Sample type, pH/bicarbonate/context, intervention and response; local protocol required.",M8
+KRTIndicationReview,overload_concern,ClinicalConcern,R,"Clinical significance, respiratory/hemodynamic effects and response; M9 balance alone is insufficient.",M8
+KRTIndicationReview,uremic_complication,ClinicalConcern,R,Pericarditis/encephalopathy/bleeding or specialist-assessed complication and alternative explanations.,M8
+KRTIndicationReview,toxin_indication,SpecialistConcern?,O,Agent/formulation/exposure/level/time; toxicology-specific guidance and modality authority.,M8
+KRTIndicationReview,trajectory_context,ExactRef[],R,Urine/function/illness trajectory and organ support; severe AKI alone does not force accelerated KRT.,M8
+KRTIndicationReview,decision,enum,R,continue_conservative/urgent_specialist_review/start_considered/defer/continue_KRT/stop_considered.,M8
+KRTIndicationReview,goals_of_care,ExactRef,R,"Patient preference, capacity, consent/representative or emergency exception with jurisdiction/local policy.",M8
+KRTIndicationReview,responsible_clinician,ActorRef,R,Nephrology/ICU decision authority and rationale.,M8
+KRTIndicationReview,next_review,ReviewPlan,R,"Due trigger/time, owner and closed-loop acknowledgement; not merely a displayed message.",M8
+KRTEpisode,episode_id,string,R,Stable identifier for acute or chronic support episode.,M8
+KRTEpisode,indication,ExactRef,R,Reviewed indication record; distinguish AKI and chronic maintenance.,M8
+KRTEpisode,modality,enum,R,CVVH/CVVHD/CVVHDF/IHD/SLED_PIKRT/PD/isolated_UF/other/unknown with supported profile.,M8
+KRTEpisode,episode_status,enum,R,planned/ordered/prepared/running/paused/completed/stopped/cancelled/unknown; actual evidence required for running.,M8
+KRTEpisode,ordered_start,TimeAssertion,R,"Intent, not delivered therapy.",M8
+KRTEpisode,actual_start,TimeAssertion,R,Actual event or explicit unavailable; do not copy from order.,M8
+KRTEpisode,actual_end,TimeAssertion,R,Explicit stop or open-ended unknown; no continuity inferred.,M8
+KRTEpisode,intended_duration,DurationOrUnavailable,R,Order intent only; no default 24-hour delivery.,M8
+KRTEpisode,goals,ClinicalGoal[],R,Solute/acid-base/fluid/support objectives and reviewer rationale.,M8
+KRTEpisode,access,ExactRef,R,Device episode from M12; no parallel device list.,M8
+KRTEpisode,prescription_versions,ExactRef[],R,"Dated versions, approval and applicable modality segment.",M8
+KRTEpisode,modality_segments,ExactRef[],R,Nonoverlapping authorized segments; transitions close old delivery semantics.,M8
+KRTEpisode,treatment_consent,ExactRef,R,"Consent/decline/exception, actor/time, discussion and capacity.",M8
+KRTAccess,device_episode,string,R,"Stable access episode, replaced device receives new identity.",M12
+KRTAccess,type,enum,R,temporary_CVC/tunneled_CVC/AV_fistula/AV_graft/PD_catheter/other.,M12
+KRTAccess,site_laterality,CodeOrText,R,"Anatomy/site and laterality, unknown allowed with reason.",M12
+KRTAccess,lumens,Lumen[],R,"Arterial/venous/other roles, labels and connection check.",M12
+KRTAccess,size_length,Quantity[],O,Source French size/length and manufacturer/model.,M12
+KRTAccess,inserted_removed,TimeAssertion[],R,"Insertion, use authorization and removal times with uncertainty.",M12
+KRTAccess,position_confirmation,ReportRef?,C,Required per local access policy; date/method and approver.,M12
+KRTAccess,function,StatusAssertion,R,"Flow limitation, recirculation suspicion, reversal and patency review.",M12
+KRTAccess,complications,EventRef[],R,Infection/bleeding/thrombosis/dislodgement and linked actions.,M12
+KRTAccess,maintenance,CareRecord[],R,"Dressing/lock/care, responsible staff and review dates.",M12
+CRRTPrescription,prescription_id,string,R,Immutable version with author/approval and valid interval.,M8
+CRRTPrescription,episode_segment,ExactRef,R,One CRRT modality segment; no reuse after transition without reapproval.,M8
+CRRTPrescription,device_profile,SourceVersion,R,"Machine model/software, fluid accounting convention and approved limits.",M8
+CRRTPrescription,filter,FilterSpec,R,Membrane/model/surface characteristics and local availability; circuit reference.,M8
+CRRTPrescription,blood_flow,Quantity,R,mL/min with intended limits; no conversion to replacement flow.,M8
+CRRTPrescription,dialysate_flow,Quantity,R,mL/h and selected solution; zero explicit where modality uses none.,M8
+CRRTPrescription,prefilter_replacement_flow,Quantity,R,"mL/h, location and solution; citrate-carrier accounting explicit.",M8
+CRRTPrescription,postfilter_replacement_flow,Quantity,R,"mL/h, location and solution.",M8
+CRRTPrescription,machine_patient_removal,Quantity,R,mL/h net patient removal setting with direction/sign convention and validity period.,M8
+CRRTPrescription,gross_effluent_definition,string,R,Exact device accounting components; prevent citrate/PBP double-counting.,M8
+CRRTPrescription,effluent_target,Quantity,R,Prescribed mL/h and optional normalized mL/kg/h with selected weight reference.,M8
+CRRTPrescription,normalization_weight,ExactRef,R,Purpose and method/date; no automatic latest or dosing weight substitution.,M8
+CRRTPrescription,anticoagulation,ExactRef,R,none/citrate/heparin/other strategy and approved local protocol version.,M8
+CRRTPrescription,temperature_goal,QuantityOrUnavailable,R,Device/profile-specific heating target and monitoring.,M8
+CRRTPrescription,monitoring_plan,PlanItem[],R,"Systemic/circuit labs, pressure checks, frequency and escalation; no universal schedule.",M8
+CRRTPrescription,fluid_removal_review,ExactRef,R,M7 tolerance and M9 goals/context; no MAP-only automatic UF changes.,M8
+KRTSolution,product_reference,SourceVersion,R,Manufacturer/formulary version and bag/product identifier.,Pharmacy/formulary referenced by M8
+KRTSolution,role,enum,R,dialysate/pre_replacement/post_replacement/citrate/calcium/PD/other.,Pharmacy/formulary referenced by M8
+KRTSolution,prepared_at_expires,TimeAssertion[],R,Preparation/mixing/expiry/opening and responsible staff.,Pharmacy/formulary referenced by M8
+KRTSolution,lot,string,O,Lot/batch traceability where supplied.,Pharmacy/formulary referenced by M8
+KRTSolution,composition,SoluteConcentration[],R,"Na/K/Ca/Mg/Cl/bicarbonate/lactate/phosphate/glucose/citrate with species and units; absent is unknown, not zero.",Pharmacy/formulary referenced by M8
+KRTSolution,additives,PreparationRecord[],R,Actual additive amount/final volume/final concentration and independent checks.,Pharmacy/formulary referenced by M8
+KRTSolution,final_volume,Quantity,R,Volume after preparation; no assumed nominal bag correction.,Pharmacy/formulary referenced by M8
+KRTSolution,compatibility,SourceVersion,R,Approved product/circuit/modality compatibility; precipitate/contamination checks.,Pharmacy/formulary referenced by M8
+KRTSolution,connected_interval,IntervalAssertion,R,Actual bag connections/disconnections and line role; intent separate.,Pharmacy/formulary referenced by M8
+CircuitEpisode,circuit_id,string,R,One filter/circuit; replacement opens a new identity.,M8 with M12 device links
+CircuitEpisode,machine_reference,ExactRef,R,Model/serial/software reference; clock calibration status.,M8 with M12 device links
+CircuitEpisode,filter_reference,ExactRef,R,Model/lot and installation/priming record.,M8 with M12 device links
+CircuitEpisode,access_reference,ExactRef,R,Used access episode and lumen connection check.,M8 with M12 device links
+CircuitEpisode,connected_at,TimeAssertion,R,"Actual patient connection, not setup completion.",M8 with M12 device links
+CircuitEpisode,disconnected_at,TimeAssertion,R,Actual end and uncertainty.,M8 with M12 device links
+CircuitEpisode,stop_reason,enum,R,clot/alarm/access/procedure/transport/planned_change/recovery/modality_change/death/other/unknown.,M8 with M12 device links
+CircuitEpisode,blood_return,StatusAssertion,R,Returned/not_returned/unknown; blood-loss volume only if measured/reliably recorded.,M8 with M12 device links
+CircuitEpisode,filter_life_basis,enum,R,"connected_wall_time/confirmed_running_time, both labelled with gaps.",M8 with M12 device links
+DeliverySegment,segment_id,string,R,One actual homogeneous setting segment linked to episode/modality/circuit.,M8
+DeliverySegment,interval,IntervalAssertion,R,Start/end timezone and exact duration; no negative/overlapping segments.,M8
+DeliverySegment,status,enum,R,confirmed_running/confirmed_stopped/paused/unknown; missing device stream is unknown.,M8
+DeliverySegment,actual_flows,FlowAssertion[],R,Blood/dialysate/pre/post/relevant PBP and net removal rates with actual versus set distinction.,M8
+DeliverySegment,measured_effluent,QuantityOrUnavailable,R,"Measured bag volume or cumulative counter delta, basis and reset handling.",M8
+DeliverySegment,measured_patient_removal,QuantityOrUnavailable,R,Separate machine net removal from total effluent.,M8
+DeliverySegment,setting_reference,ExactRef,R,Prescription/version and actual source; a prescription is not delivery proof.,M8
+DeliverySegment,solutions,ExactRef[],R,Actual product/role/interval links.,M8
+DeliverySegment,interruptions,ExactRef[],R,"All downtime spans, including known zero delivery and unobserved gaps separately.",M8
+DeliverySegment,clock_quality,QualityAssertion,R,"Machine versus EHR clock offset, drift and precision.",M8
+DeliverySegment,coverage,CoverageAssertion,R,Known/unknown wall-time and run-time; denominator eligibility explicit.,M8
+DowntimeEvent,interval,IntervalAssertion,R,Actual start/end; open interval remains partial at as-of time.,M8
+DowntimeEvent,reason,enum,R,clot/access/alarm/procedure/transport/bag_change/pause/device_fault/unknown/other.,M8
+DowntimeEvent,expected_resume,TimeAssertion,O,Plan rather than evidence of actual resumption.,M8
+DowntimeEvent,actual_resume,TimeAssertion,R,"Actual event or unavailable, never inferred from expected time.",M8
+DowntimeEvent,overlapping_events,ExactRef[],R,"Original events retained; union known downtime for summary, do not sum overlaps.",M8
+DowntimeEvent,delivery_zero_confirmed,boolean?,R,Only true when documented no delivery; missing telemetry is not zero.,M8
+DowntimeEvent,response,ActionRecord[],R,"Nurse/device/senior review, steps and outcome; no autonomous restart.",M8
+CircuitMonitoring,channel,enum,R,access/return/prefilter/postfilter/effluent/TMP/filter_drop/air_detector/other.,M8 device source
+CircuitMonitoring,measurement,Quantity,R,Raw pressure/temperature/flow with units and actual timestamp.,M8 device source
+CircuitMonitoring,setting_or_measured,enum,R,set/measured/calculated_by_device/unknown.,M8 device source
+CircuitMonitoring,device_algorithm,SourceVersion?,C,Required if reported TMP/drop/clearance is a device calculation.,M8 device source
+CircuitMonitoring,sample_time,TimeAssertion,R,Source time and clock quality; not UI arrival time.,M8 device source
+CircuitMonitoring,alarm,DeviceAlarm?,O,"Native code/severity, raised/acknowledged/resolved times and operator.",M8 device source
+CircuitMonitoring,signal_quality,QualityAssertion,R,Artifact/calibration/connection status and source limits.,M8 device source
+CircuitMonitoring,response,ActionRecord[],R,Documented troubleshooting; displayed alarms do not establish a safe circuit.,M8 device source
+AnticoagulationPlan,strategy,enum,R,none/regional_citrate/systemic_heparin/alternative/unknown.,M8 with medication owner
+AnticoagulationPlan,protocol,SourceVersion,R,Local approved population/device/modality/product profile and expiry.,M8 with medication owner
+AnticoagulationPlan,bleeding_thrombosis_context,ExactRef[],R,"Active bleeding, HIT concern, platelet/coagulation and concurrent systemic therapy.",M8 with medication owner
+AnticoagulationPlan,citrate_reference,ExactRef?,C,Required for citrate strategy; species/concentration/carrier and final formulation.,M8 with medication owner
+AnticoagulationPlan,calcium_reference,ExactRef?,C,Required where protocol includes replacement; salt/elemental concentration/access route.,M8 with medication owner
+AnticoagulationPlan,other_anticoagulant,MedicationRef?,C,Required for non-citrate drug; dose/rate and actual administrations referenced.,M8 with medication owner
+AnticoagulationPlan,systemic_target,TargetAssertion,R,Approved patient assay/site/units and validity; not a postfilter target.,M8 with medication owner
+AnticoagulationPlan,circuit_target,TargetAssertion,R,Approved postfilter target and sample location; not systemic calcium.,M8 with medication owner
+AnticoagulationPlan,monitoring_due,PlanItem[],R,Times/trigger after start/change/interruption and named owner.,M8 with medication owner
+AnticoagulationPlan,metabolic_risk,ClinicalAssessment,R,Perfusion/lactate trajectory/liver dysfunction/shock context and specialist applicability review.,M8 with medication owner
+AnticoagulationPlan,interruption_plan,SourceVersion,R,Coordinated citrate/calcium/blood-flow pause/resume plan with human checks; no pump commands.,M8 with medication owner
+CitrateCalciumReview,systemic_ica,ExactRef,R,Actual patient sample/location; units and pH handling when supplied.,M8
+CitrateCalciumReview,postfilter_ica,ExactRef,R,Actual circuit sample/location; no swap with systemic sample.,M8
+CitrateCalciumReview,total_calcium,ExactRef,R,"Eligible patient specimen, units and collection time.",M8
+CitrateCalciumReview,pairing_window,SourceVersion,R,Approved maximum time gap with reason; no nearest-sample matching without policy.,M8
+CitrateCalciumReview,ca_ratio,DerivedResult,R,total_Ca/systemic_iCa only after species/unit/site/time matching; original measurements retained.,M8
+CitrateCalciumReview,calcium_delivery,MedicationRef[],R,"Actual rate/bolus, concentration, line and interruptions; orders not delivery.",M8
+CitrateCalciumReview,citrate_delivery,MedicationRef[],R,Actual citrate exposure/flow and interruptions; separate from clearance/effluent terms.,M8
+CitrateCalciumReview,metabolic_context,ExactRef[],R,"pH/bicarbonate/anion gap, lactate trend, Na/Mg and clinical perfusion/liver context.",M8
+CitrateCalciumReview,concern,ClinicalAssessment,R,Possible accumulation/overload/inadequate_delivery/other/uncertain; clinician judgement and alternatives.,M8
+CitrateCalciumReview,review_action,ActionRecord,R,Named operator/clinician and documented response; no automatic stop/start of either pump.,M8
+DeliveredTreatmentSummary,window,IntervalAssertion,R,Explicit reporting period and as-of cutoff; no assumed 24 hours.,M8
+DeliveredTreatmentSummary,episodes,ExactRef[],R,Preserve modality/circuit segments; do not combine incomparable dose units.,M8
+DeliveredTreatmentSummary,prescribed_volume,DerivedResult,R,Integral of eligible intended flows over intended interval; all amendments explicit.,M8
+DeliveredTreatmentSummary,measured_effluent_volume,DerivedResult,R,Sum nonduplicated measured effluent deltas with coverage and resets handled.,M8
+DeliveredTreatmentSummary,estimated_effluent_volume,DerivedResult,R,"Integral of observed actual rates only; label estimate, do not call measured.",M8
+DeliveredTreatmentSummary,run_time,DerivedResult,R,Union confirmed running intervals with unknown time separately.,M8
+DeliveredTreatmentSummary,downtime,DerivedResult,R,Union confirmed stopped intervals; unknown telemetry remains a gap.,M8
+DeliveredTreatmentSummary,selected_weight,ExactRef,R,One explicit weight basis per segment; changes split summaries or preserve pinned original basis.,M8
+DeliveredTreatmentSummary,wall_time_effluent,DerivedResult,R,Eligible effluent mL divided by selected kg and full elapsed hours; unknown delivery withholds full-window result.,M8
+DeliveredTreatmentSummary,on_treatment_effluent,DerivedResult,R,Eligible effluent mL divided by selected kg and confirmed running hours; distinct denominator.,M8
+DeliveredTreatmentSummary,predilution_adjustment,DerivedResult,R,"Method/version, Qb/Hct/preflow inputs and exclusions; label modeled surrogate, not measured clearance.",M8
+DeliveredTreatmentSummary,clearance_measure,DerivedResult,R,"Solute-specific effluent/plasma concentrations, saturation or sieving assumptions; absent means clearance not established.",M8
+DeliveredTreatmentSummary,patient_net_removal,DerivedResult,R,Machine removal and all extracorporeal inputs according to explicit accounting profile; M9 whole-patient balance distinct.,M8
+DeliveredTreatmentSummary,coverage,CoverageAssertion,R,"Known/unknown time, missing flows, unit issues, exclusions and reasons; never hide underdelivery gaps.",M8
+IntermittentKRTSession,modality_segment,ExactRef,R,IHD/SLED_PIKRT/isolated_UF episode segment and authority.,M8
+IntermittentKRTSession,planned_actual_interval,IntervalAssertion[],R,"Intended versus actual time, interruptions and early termination.",M8
+IntermittentKRTSession,prescription,PrescriptionRef,R,"Qb/Qd, dialyzer, bath composition/temperature, UF goal, anticoagulation and monitoring.",M8
+IntermittentKRTSession,delivered,DeliveryRef[],R,Actual runtime/flows/cumulative volumes with access/recirculation concerns.,M8
+IntermittentKRTSession,pre_post_weight,ExactRef[],R,Measurement method/time and fluid/food/clothing context.,M8
+IntermittentKRTSession,pre_post_urea,ExactRef[],C,Required for selected adequacy method; sample timing/technique and rebound explicit.,M8
+IntermittentKRTSession,adequacy,DerivedResult,R,Selected URR/spKtV/eKtV/standardKtV method or unavailable; never infer one from another.,M8
+IntermittentKRTSession,hemodynamic_events,ExactRef[],R,Hypotension/symptoms/rescue interventions and M7 source links.,M8
+IntermittentKRTSession,next_session,PlanItem,R,Clinician plan and review criteria; not auto-scheduled from prior pattern.,M8
+PeritonealDialysisExchange,pd_episode,ExactRef,R,"PD modality segment, access, consent and prescription.",M8
+PeritonealDialysisExchange,exchange_id,string,R,Unique actual exchange; cycler/manual profile and pediatric eligibility.,M8
+PeritonealDialysisExchange,solution,ExactRef,R,Product/glucose/icodextrin/composition/final volume.,M8
+PeritonealDialysisExchange,fill_dwell_drain,IntervalAssertion[],R,"Actual fill time, dwell, drain and incomplete exchange status.",M8
+PeritonealDialysisExchange,instilled_drained,Quantity[],R,"Separate actual volumes, residual estimates and measurement quality.",M8
+PeritonealDialysisExchange,net_uf,DerivedResult,R,Drain minus instilled only on eligible matched exchange; residual/leak caveats explicit.,M8
+PeritonealDialysisExchange,effluent_findings,ObservationRef[],R,"Cloudy/bloody effluent, cell counts/culture source and collection.",M8
+PeritonealDialysisExchange,complications,EventRef[],R,"Peritonitis concern, leak, respiratory/intolerance and actions.",M8
+RenalMedicationReview,medication,MedicationRef,R,Original order and actual administration identity/version.,Medication owner; M8 applicability
+RenalMedicationReview,renal_context,ExactRef[],R,"AKI trajectory, recovery, native clearance, modality, delivered treatment and interruptions.",Medication owner; M8 applicability
+RenalMedicationReview,review_reason,enum,R,initiation/change_in_function/KRT_start_stop/modality_change/downtime/TDM/toxicity/other.,Medication owner; M8 applicability
+RenalMedicationReview,method_required,SourceVersion,R,Drug label/formulary requires specified renal estimate or KRT regimen; avoid generic substitution.,Medication owner; M8 applicability
+RenalMedicationReview,loading_maintenance,PlanAssertion[],R,"Separate reviewed intent, exposure and interval; M8 does not invent dosing.",Medication owner; M8 applicability
+RenalMedicationReview,levels,ObservationRef[],R,"TDM sampling/dose times, assay, concentration and target authority.",Medication owner; M8 applicability
+RenalMedicationReview,review_status,enum,R,due/in_progress/completed/deferred/unavailable with responsible pharmacist/clinician.,Medication owner; M8 applicability
+RenalMedicationReview,decision,ActionRecord,R,Signed decision/rationale/source version and next review; no silent order rewrite.,Medication owner; M8 applicability
+ElectrolyteNutritionReview,electrolyte_results,ObservationRef[],R,K/Mg/phosphate/Ca/Na and acid-base/glucose collection times.,M8 linked to M14/M17
+ElectrolyteNutritionReview,replacement_exposure,MedicationRef[],R,Actual administration and renal/KRT timing; no autonomous replacement.,M8 linked to M14/M17
+ElectrolyteNutritionReview,solution_contributions,ExactRef[],R,Pin actual composition/rates/delivery intervals and citrate chemistry.,M8 linked to M14/M17
+ElectrolyteNutritionReview,measured_effluent_solutes,ObservationRef[],O,Eligible solute-specific concentrations and paired volume interval.,M8 linked to M14/M17
+ElectrolyteNutritionReview,nutrient_losses,DerivedResult[],R,Measured/modelled/unavailable clearly separated; no universal amino-acid loss assumption.,M8 linked to M14/M17
+ElectrolyteNutritionReview,nonfeed_energy,DerivedResult[],R,"Glucose/citrate substrate, delivered amount, uptake/metabolism model/version and uncertainty; no assumed complete metabolism.",M8 linked to M14/M17
+ElectrolyteNutritionReview,nutrition_plan,ExactRef,R,Original dietitian/M14 target and delivery; never copy as new prescription.,M8 linked to M14/M17
+ElectrolyteNutritionReview,review_owner,ActorTime,R,Due trigger and documented clinical response.,M8 linked to M14/M17
+RecoveryTransition,continuing_indications,ExactRef,R,Current concern review and rationale each review period.,M8
+RecoveryTransition,native_function,ExactRef[],R,"Urine coverage, clearance evidence, creatinine trajectory and actual KRT context.",M8
+RecoveryTransition,trial_off_plan,PlanItem,R,"Clinician authorization, timing, monitoring, restart/escalation criteria and owner.",M8
+RecoveryTransition,actual_trial,IntervalAssertion,R,"Observed off-support period and symptoms/labs, not planned stop.",M8
+RecoveryTransition,modality_change,TransitionRecord,R,"Close old segment, actual start of new, new prescription/medication review and gap exposure.",M8
+RecoveryTransition,restart,ActionRecord?,O,"Actual event, indication, new episode linkage and review.",M8
+RecoveryTransition,catheter_plan,ExactRef,R,M12 removal/retention decision and daily indication; actual removal separately documented.,M8
+RecoveryTransition,recovery_status,ClinicalAssessment,R,partial/complete/dialysis_dependent/uncertain with baseline and timing.,M8
+AKIFollowup,discharge_renal_state,ExactRef,R,"AKI episode/stages uncertainty, current function, last actual KRT and recovery assessment.",M18 with M8 content
+AKIFollowup,medication_reconciliation,ExactRef,R,Nephrotoxin/renal-dose plan and restart/withhold rationale with owner.,M18 with M8 content
+AKIFollowup,followup_tests,PlanItem[],R,Individualized early checks and approximately 3-month kidney review from published guidance where appropriate.,M18 with M8 content
+AKIFollowup,appointment,AppointmentRef,R,Responsible clinic/date/confirmation/unconfirmed state and escalation for nonattendance.,M18 with M8 content
+AKIFollowup,chronic_krt_handoff,ExactRef?,C,"Required if continuing support; center, access, modality, next session and transport/consent.",M18 with M8 content
+AKIFollowup,education,CommunicationRecord,R,"Patient/caregiver understanding, red flags and sick-day advice per approved plan.",M18 with M8 content
+AKIFollowup,outcome,OutcomeRecord,R,Recovery/readmission/death/dialysis dependence with denominator eligibility and missing follow-up explicit.,M18 with M8 content
+DecisionResult,rule_id_version,string,R,Exact approved rule/profile/version/hash.,M8 governed inference
+DecisionResult,inputs,ExactRef[],R,Immutable input pins at patient/encounter/window/cutoff.,M8 governed inference
+DecisionResult,eligibility,enum,R,eligible/withheld/not_applicable/error with all reasons.,M8 governed inference
+DecisionResult,output,TypedResult?,R,Null when withheld; retain criterion-specific known facts.,M8 governed inference
+DecisionResult,evidence_time,TimeAssertion,R,No ingestion timestamp relabelled as clinical event time.,M8 governed inference
+DecisionResult,limitations,string[],R,"Population, method, uncertainty and coverage.",M8 governed inference
+DecisionResult,review_priority,enum,R,routine/prompt/urgent per approved clinical policy; no unsupported numeric alarm defaults.,M8 governed inference
+DecisionResult,acknowledgement,ActorTime?,C,Required where clinical alert workflow demands closed-loop review.,M8 governed inference
+DecisionResult,override,ActionRecord?,O,Signed reason; preserve original result and audit.,M8 governed inference

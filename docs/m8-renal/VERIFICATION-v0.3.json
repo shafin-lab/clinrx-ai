@@ -1,0 +1,50 @@
+{
+  "version": "M8-v0.3",
+  "date": "2026-10-22",
+  "status": "synthetic-engineering-only",
+  "tests": {
+    "passed": 114,
+    "files": 6,
+    "workers": 1,
+    "log": "focused-final-serial.log",
+    "earlier_parallel_run": "Two timing failures; unchanged tests and timeouts passed serially"
+  },
+  "build": "Type checking and RF2 production build passed; shared bundle advisory remains",
+  "browser": {
+    "url": "http://127.0.0.1:5238/?workspace=renal",
+    "intake_mL": "600",
+    "output_mL": "315",
+    "recorded_net_mL": "+285",
+    "full_day_complete": false,
+    "urine_08_09_mL": "145",
+    "urine_09_10_mL": "0 over 15 recorded minutes; partial",
+    "creatinine_display_mg_dL": [
+      "1.10",
+      "2.00",
+      "approximately 1.70"
+    ],
+    "source_history": "Original contributor opened; history request HTTP 200",
+    "console_warnings_errors": 0,
+    "mobile": {
+      "viewport": 390,
+      "document": 390,
+      "chart_internal_scroll": true
+    }
+  },
+  "clinical_treatment_profiles": "inactive",
+  "no_diuretic_row": true,
+  "source_sha256": {
+    "frontend/src/renal/DailyFluidChart.tsx": "6211da69bdea19c4a825667a82cf5b5bf3154b5ace3aa456af2e8f7d488224d0",
+    "frontend/src/renal/RenalBedsideReview.tsx": "800c3e2ffac8c0ce7913e4607e8c1e5d42816819360a30e55a243b0ebe1b9db5",
+    "frontend/src/renal/RenalInvestigations.tsx": "c235d174ae23e41dde55024d25342364966afb93cb547500c85edc4b71c40a2b",
+    "frontend/src/renal/RenalPage.tsx": "4c14d1510a0d8c2ed9cffacbba4130c6c52d982dfc3588815f8d07f78542150e",
+    "frontend/src/renal/chartArithmetic.ts": "74353152bce7e1a53c28817d9a98d3376653f1c835066256240a1542edcdf171",
+    "frontend/src/renal/dailyFluidModel.ts": "df343daa7e00d2765862eda00056c09648a7521ff306250e6859bcf270197b43",
+    "frontend/src/renal/renalBedside.css": "b70192dc05a059cebab9b0d482697c1a9018b7d2d2d25638c8e4301205def618",
+    "frontend/src/renal/renalBedsideModel.ts": "84ef371141917c30890adfa614e3185bf497391c189d1d07211ed60ed5b71df9",
+    "frontend/src/renal/renalUnits.ts": "10563fd83cb4fa1eb8533c97461f9306a6518038524d5f3c7d9631531fbad1c5",
+    "frontend/tests/renalDailyChart.test.tsx": "dd847f3a26213f45d0db4d114a02cf47609d1bfcad1f39a658e3b9b282911242",
+    "frontend/tests/renalBedside.test.tsx": "33b7475c64d0396162875154000d85d0a2ccae64c6bf998433c83ed7d02ccd54",
+    "frontend/tests/renalInvestigations.test.tsx": "998e9f93459e6c2066ce99f904c940cd0deb1be89b96ef2ea2ce67993afa096f"
+  }
+}
