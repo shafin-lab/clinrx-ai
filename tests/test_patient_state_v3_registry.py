@@ -26,6 +26,7 @@ def test_complete_admission_registry_is_exact_original_16_plus_explicit_15():
         'circulatory_vasoactive':h.VasoactiveEvent,'circulatory_monitoring':h.MonitoringEvent,
         'circulatory_assessment':h.DynamicAssessment,'circulatory_event':h.CirculatoryEvent,
         'circulatory_signal':h.SignalManifest,
+        'laboratory_report':__import__('app.models.clinical.laboratory',fromlist=['LaboratoryReport']).LaboratoryReport,
     }
 
 

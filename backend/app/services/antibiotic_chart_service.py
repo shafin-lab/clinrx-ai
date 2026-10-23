@@ -26,14 +26,14 @@ def metadata(fact):
     if not codes:return None
     if len(codes)!=1 or codes[0].version!='1':raise StorageIntegrityError('ambiguous antibiotic chart metadata')
     body=AntibioticDraft.model_validate(exact_json(codes[0].code))
-    if canonical_payload(build_fact(body))!=canonical_payload(fact):raise StorageIntegrityError('antibiotic chart metadata differs')
+    if canonical_payload(build_fact(body,metadata_payload=codes[0].code))!=canonical_payload(fact):raise StorageIntegrityError('antibiotic chart metadata differs')
     return body
 
-def build_fact(body):
+def build_fact(body,metadata_payload=None):
     source=Source(namespace=OWNER,identifier=body.source_record,version='1',channel='clinician')
     prov=Provenance(source=source,actor=body.actor,recorded_at=body.recorded_at,lineage='unknown',limitations=('Manual source record; not a generated regimen or prescribing instruction.',))
     antimicrobial=a.AntimicrobialIdentity(source_code=SourceCode(namespace='clinrx.manual-antibiotic',code=body.medicine,version='1',raw_display=body.medicine),raw_display=body.medicine,formulation=body.product,mapping_status='unknown',mapping_provenance=prov,limitation='Clinician-entered identity and product; terminology equivalence not validated.')
-    encoded=canonical_payload(body)
+    encoded=metadata_payload if metadata_payload is not None else canonical_payload(body)
     if len(encoded.encode())>4096:raise ValueError('source metadata exceeds bound')
     fields=dict(id=str(body.id),revision=str(body.revision),binding=Binding(target=TARGET,verification=IdentityVerification(status='verified',method='synthetic encounter binding',verifier=body.actor,assessed_at=body.recorded_at,source=source)),origin='reported',provenance=prov,time=ClinicalTime(recorded=body.recorded_at,precision='unknown'),temporal_status='unknown',source_identifiers=(SourceCode(namespace=OWNER,code=encoded,version='1',raw_display='Manual antibiotic chart request'),),disclosures=('Recorded prescription and completed administration are separate assertions; no exposure or clinical suitability inferred.',),supersedes=body.predecessor.model_dump() if body.predecessor else None,correction_reason=body.correction_reason,antimicrobial=antimicrobial,route=RecordedConcept(raw_display=body.route))
     if body.order:
@@ -61,6 +61,11 @@ class AntibioticChartService(RF2Service):
         if body.order:
             order=repo.load_fact(Reference.model_validate(body.order.model_dump()),target=TARGET).fact
             if order.kind!='antimicrobial_order' or order.antimicrobial.raw_display!=body.medicine or order.antimicrobial.formulation!=body.product or not order.route or order.route.raw_display!=body.route:raise EvidenceConflict()
+        if body.culture_ref:
+            culture=repo.load_fact(Reference.model_validate(body.culture_ref.model_dump()),target=TARGET).fact
+            if culture.kind!='microbiology_susceptibility':raise EvidenceConflict()
+            history=self.history_rows(repo,repo.capture_cutoff(),self.accounting(),culture.reference)
+            if not history or history[-1].fact.reference!=culture.reference:raise EvidenceConflict()
         return fact
     def reply(self,body,status,fact=None,stored=None):
         out={'status':status,'request_canonical':canonical_payload(body),'request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'execution_enabled':False}

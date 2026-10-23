@@ -1,6 +1,6 @@
 import {parseRF2JSON} from '../api/rf2JSON';
 
-export type ReviewDomain='M7'|'M8';
+export type ReviewDomain='M7'|'M8'|'M9';
 export interface ReviewScope {domain:ReviewDomain;patient:string;encounter:string;repository:string}
 export interface SavedReview<T=Record<string,unknown>> {
  format:'clinrx-local-review';version:1;id:string;domain:ReviewDomain;patient:string;encounter:string;repository:string;

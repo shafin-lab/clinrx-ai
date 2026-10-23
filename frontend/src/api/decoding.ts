@@ -4316,6 +4316,7 @@ const contracts = {
     "properties": {
       "status": {
         "enum": [
+          "pending",
           "preliminary",
           "interim",
           "final",

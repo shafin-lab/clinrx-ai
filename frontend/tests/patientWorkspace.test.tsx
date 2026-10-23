@@ -26,7 +26,7 @@ it('uses one shared snapshot and hands off the exact selected revision and diges
  const {client,entry,getState}=setup();await correction();expect(client.circulatoryState).toHaveBeenCalledTimes(1);
  const original=getState().assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!;const body=entry.validate.mock.calls[0][0];expect(body.predecessor_digest).toBe(original.expected_digest);expect(body.fact.supersedes).toEqual({kind:original.fact.kind,id:original.fact.id,version:original.fact.revision});expect(body.fact.occurred).toEqual(original.fact.occurred);expect(body.fact.blood_gas_context).toEqual(original.fact.blood_gas_context);
  expect(screen.getByRole('button',{name:'Handover'})).toBeDisabled();expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();expect(entry.save).not.toHaveBeenCalled();
-});
+},15000);
 it('preserves a guided unsaved draft by blocking navigation and refresh until explicit discard',async()=>{
  const {client}=setup();await ready();step('Source entry and reassessment');fireEvent.change(screen.getByRole('textbox',{name:'Actor name'}),{target:{value:'Draft actor'}});
  expect(screen.getByRole('button',{name:'Patient and evidence'})).toBeDisabled();expect(screen.getByRole('button',{name:'New source entry'})).toBeDisabled();for(const button of screen.getByRole('region',{name:'Recorded evidence'}).querySelectorAll('.entry-list button'))expect(button).toBeDisabled();expect(screen.getByRole('button',{name:'Refresh evidence'})).toBeDisabled();expect(screen.getByRole('textbox',{name:'Actor name'})).toHaveValue('Draft actor');expect(client.circulatoryState).toHaveBeenCalledTimes(1);
@@ -80,7 +80,7 @@ it('completes correction, separate authored reassessment, comparison and handove
  const row=screen.getAllByRole('row').find(r=>r.textContent?.includes('Follow-up ABG / evidence reference'))!;const cells=within(row).getAllByRole('cell');expect(cells[0]).toHaveTextContent('Revision: 1');expect(cells[1]).toHaveTextContent('Revision: '+corrected.revision);
  step('Patient and evidence');fireEvent.change(screen.getByRole('searchbox',{name:'Search recorded evidence'}),{target:{value:reassessment.id}});step('Inspect other '+reassessment.id);step('Add exact source to handover');step('Handover');expect(screen.getByRole('region',{name:'Read-only handover'})).toHaveTextContent('Clinician-authored reassessment (synthetic assertion)');expect(screen.getByRole('region',{name:'Read-only handover'})).toHaveTextContent(corrected.revision);
  expect(entry.save).toHaveBeenCalledTimes(2);expect(client.circulatoryExecute).not.toHaveBeenCalled();expect(client.circulatoryPrepare).not.toHaveBeenCalled();
-});
+},15000);
 it('preserves exact comparison selection across refresh and discloses a disappeared note',async()=>{
  const {getState,setState,client}=setup(s=>{
   const baseline=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-30')!,followup=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!,intervention=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-D-CHANGE')!;

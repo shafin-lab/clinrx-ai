@@ -11815,7 +11815,8 @@
         "execution_enabled": false
       },
       "items": [],
-      "execution_enabled": false
+      "execution_enabled": false,
+      "laboratory_reports": []
     },
     "micro": {
       "transport_version": "1",
@@ -11936,7 +11937,7 @@
                   "raw_display": "FICTIONAL-URINE-001"
                 },
                 "specimen_type": {
-                  "raw_display": "Urine \u00b7 synthetic fixture",
+                  "raw_display": "Urine · synthetic fixture",
                   "coding": null
                 },
                 "site": null,
@@ -12120,7 +12121,7 @@
                   "raw_display": "FICTIONAL-ECOLI-001"
                 },
                 "organism": {
-                  "raw_display": "Escherichia coli \u00b7 synthetic fixture",
+                  "raw_display": "Escherichia coli · synthetic fixture",
                   "coding": null
                 },
                 "identification_state": "final",
@@ -13414,12 +13415,13 @@
     "order": null,
     "predecessor": null,
     "predecessor_digest": null,
-    "correction_reason": null
+    "correction_reason": null,
+    "culture_ref": null
   },
   "validated": {
     "status": "validated",
-    "request_canonical": "{\"actor\":\"Synthetic nurse\",\"amount\":\"1.00\",\"correction_reason\":null,\"dose_detail\":\"Total product mass\",\"id\":\"529fac56-e3be-4d06-a72c-db9167e0f13c\",\"indication\":\"Synthetic source transcription\",\"medicine\":\"Ceftriaxone\",\"mode\":\"given\",\"order\":null,\"point\":\"2026-10-08T09:30:00Z\",\"predecessor\":null,\"predecessor_digest\":null,\"product\":\"Injection\",\"recorded_at\":\"2026-10-21T10:00:00Z\",\"repository\":\"f53afbd6-6f0c-49fd-9250-35f3e7e452bf\",\"revision\":\"bee97168-2547-463e-878f-3b9e8033741c\",\"route\":\"IV\",\"schedule\":null,\"source_record\":\"TEST-FIXTURE-NOT-SAVED\",\"unit\":\"g\"}",
-    "request_digest": "205c6d5b2fe28b186bd54fb39e8f55047e533d7bf1454ec5a6d0972d5d97e07d",
+    "request_canonical": "{\"actor\":\"Synthetic nurse\",\"amount\":\"1.00\",\"correction_reason\":null,\"culture_ref\":null,\"dose_detail\":\"Total product mass\",\"id\":\"529fac56-e3be-4d06-a72c-db9167e0f13c\",\"indication\":\"Synthetic source transcription\",\"medicine\":\"Ceftriaxone\",\"mode\":\"given\",\"order\":null,\"point\":\"2026-10-08T09:30:00Z\",\"predecessor\":null,\"predecessor_digest\":null,\"product\":\"Injection\",\"recorded_at\":\"2026-10-21T10:00:00Z\",\"repository\":\"f53afbd6-6f0c-49fd-9250-35f3e7e452bf\",\"revision\":\"bee97168-2547-463e-878f-3b9e8033741c\",\"route\":\"IV\",\"schedule\":null,\"source_record\":\"TEST-FIXTURE-NOT-SAVED\",\"unit\":\"g\"}",
+    "request_digest": "7026945c914580ea4a42f8ea0105466f68e70cd8ff54f4dd6b4b356b8d42593b",
     "execution_enabled": false,
     "fact": {
       "kind": "antimicrobial_administration",

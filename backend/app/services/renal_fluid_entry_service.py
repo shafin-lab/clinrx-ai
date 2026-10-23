@@ -8,6 +8,9 @@ from app.demo.authoring import TARGET, EvidenceConflict
 from app.models.clinical.hemodynamics import CirculatoryEvent, ClinicalInstant, RecordedCirculatoryInterval, EvidenceBinding
 from app.models.clinical.recorded_v2 import SourceCode, ExactQuantity, RecordedConcept
 from app.models.clinical.facts import ClinicalObservation
+from app.models.clinical.laboratory import LaboratoryReport
+from app.models.clinical.respiratory import RespiratoryRecord
+from app.services.respiratory_service import available_by, save_respiratory_record
 from app.models.clinical.common import Reference
 from app.persistence.canonical import canonical_payload
 from app.persistence.bounded_history import HistoryBudget, HistoryAccounting, AggregateHistoryBudget
@@ -84,7 +87,7 @@ def time(text):
     return ClinicalInstant.model_validate({'timestamp_precision':'M7ExactTimestampInput/v1','recorded':{'status':'known','precision':'instant','value':text},'source_timestamp':text,'clock':'unknown'}) if text else ClinicalInstant()
 
 def allowed(fact):
-    return (isinstance(fact,ClinicalObservation) and fact.concept_id in ('synthetic-serum-creatinine','body-weight')) or isinstance(fact,CirculatoryEvent) or fact.kind.startswith('circulatory_')
+    return isinstance(fact,(LaboratoryReport,RespiratoryRecord)) or (isinstance(fact,ClinicalObservation) and fact.concept_id in ('synthetic-serum-creatinine','body-weight')) or isinstance(fact,CirculatoryEvent) or fact.kind.startswith('circulatory_')
 
 class RF2Service(RenalFluidProductService):
     def accounting(self):return HistoryAccounting(self.aggregate_budget)
@@ -112,7 +115,9 @@ class RF2Service(RenalFluidProductService):
         self.require_repo(repo,body.repository);accounting=self.accounting();out=[]
         for p in body.pins:
             s=self.pin_record(repo,p,accounting)
-            out.append(self.evidence(repo,s,repo.capture_cutoff(),accounting))
+            cutoff=repo.capture_cutoff()
+            if isinstance(s.fact,RespiratoryRecord):cutoff=cutoff.model_copy(update={'fact_watermark':p.cutoff})
+            out.append(self.evidence(repo,s,cutoff,accounting))
         return self.bounded_dict({'repository':str(body.repository),'items':out,'execution_enabled':False})
     def history(self,repo,body):
         self.require_repo(repo,body.repository)
@@ -140,7 +145,52 @@ class RF2Service(RenalFluidProductService):
         selected=[s for s in terminals.values() if category(s.fact) or s.fact.kind in ('circulatory_pressure','circulatory_cardiac','circulatory_lactate','circulatory_oxygen','circulatory_perfusion','circulatory_vasoactive') or (isinstance(s.fact,ClinicalObservation) and s.fact.concept_id in ('body-weight','synthetic-serum-creatinine'))]
         base_keys={(i.fact.kind,i.fact.id,i.fact.revision) for i in base.circulatory.assembly.snapshot.items}|{(i.fact.kind,i.fact.id,i.fact.revision) for i in base.laboratory.observations}
         extras=[s for s in selected if (s.fact.kind,s.fact.id,s.fact.revision) not in base_keys]
-        return self.bounded_dict({'repository':str(cutoff.repository_id),'cutoff':cutoff.model_dump(mode='json'),'combined':base.model_dump(mode='json'),'items':[self.evidence(repo,s,cutoff,a) for s in extras],'execution_enabled':False})
+        # Keep later-issued source reports out of an earlier review window. Reports
+        # with no usable availability time remain visible with their time gap explicit.
+        laboratory_reports=[self.evidence(repo,s,cutoff,a) for s in terminals.values()
+            if isinstance(s.fact,LaboratoryReport)
+            and (s.fact.semantic_time.anchor is None or s.fact.semantic_time.anchor <= end)]
+        # Select terminals after availability filtering so later corrections cannot
+        # erase a predecessor that was available at the requested review time.
+        respiratory_visible={}
+        for stored in rows:
+            if isinstance(stored.fact,RespiratoryRecord) and available_by(stored.fact,end):
+                respiratory_visible[stored.fact.id]=stored
+        respiratory_records=[]
+        for stored in respiratory_visible.values():
+            terminal=terminals[(stored.fact.kind,stored.fact.id)]
+            visible_cutoff=cutoff if terminal==stored else cutoff.model_copy(update={'fact_watermark':stored.ingestion.ingestion_sequence})
+            respiratory_records.append(self.evidence(repo,stored,visible_cutoff,a))
+        return self.bounded_dict({'repository':str(cutoff.repository_id),'cutoff':cutoff.model_dump(mode='json'),'combined':base.model_dump(mode='json'),'items':[self.evidence(repo,s,cutoff,a) for s in extras],'laboratory_reports':laboratory_reports,'respiratory_records':respiratory_records,'execution_enabled':False})
+    def save_respiratory_record(self,repo,repository,record):
+        return save_respiratory_record(self,repo,repository,record)
+    def save_laboratory_report(self,repo,report):
+        from app.persistence.errors import RecordConflict
+        self.require_closed()
+        if not isinstance(report,LaboratoryReport) or report.binding.target!=TARGET or report.origin!='reported':
+            raise UnsupportedOperation('laboratory report must be a typed reported record in the synthetic encounter')
+        owner='lab-'+sha256((report.source_identity.issuer_namespace+'\0'+report.source_identity.source_report_id).encode()).hexdigest()[:32]
+        if report.id!=owner or report.revision!=report.source_identity.source_version:
+            raise UnsupportedOperation('laboratory report identity and revision must follow the exact source report identity/version')
+        accounting=self.accounting();cutoff=repo.capture_cutoff()
+        rows=self.history_rows(repo,cutoff,accounting,report.reference)
+        exact=next((row for row in rows if row.fact.reference==report.reference),None)
+        if exact:
+            if canonical_payload(exact.fact)!=canonical_payload(report):raise EvidenceConflict()
+            return self.evidence(repo,exact,cutoff,accounting)
+        # The repository query is exact-version; enumerate same source owner through a bounded catalog.
+        all_rows=self.history_rows(repo,cutoff,accounting)
+        prior=[row for row in all_rows if isinstance(row.fact,LaboratoryReport) and row.fact.id==owner]
+        if not prior:
+            if report.supersedes is not None or report.change_state!='original':raise EvidenceConflict()
+            stored=repo.append_fact(report,target=TARGET)
+        else:
+            terminal=prior[-1].fact
+            if report.supersedes!=terminal.reference or report.source_identity.issuer_namespace!=terminal.source_identity.issuer_namespace or report.source_identity.source_report_id!=terminal.source_identity.source_report_id or report.source_identity.accession_id!=terminal.source_identity.accession_id:
+                raise EvidenceConflict()
+            if report.change_state=='original':raise EvidenceConflict()
+            stored=repo.append_revision(report,target=TARGET)
+        return self.evidence(repo,stored,repo.capture_cutoff(),accounting)
     def source_review(self,repo,body,a):
         now=repo.capture_cutoff();out=[]
         for p in body.note.pins:

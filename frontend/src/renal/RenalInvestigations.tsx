@@ -1,13 +1,13 @@
 import type {RenalSource} from './renalBedsideModel';
 
-type Test={id:string;label:string;note?:string;source?:'creatinine'|'bicarbonate'|'ph'};
+type Test={id:string;label:string;note?:string;source?:'creatinine'|'bicarbonate'|'ph';concepts?:readonly string[]};
 export const renalInvestigationPanels:readonly {id:string;title:string;description:string;tests:readonly Test[]}[]=[
  {id:'core',title:'Core kidney tests',description:'Core fields stay visible. Actual testing and repeat frequency follow the clinical assessment.',tests:[
-  {id:'urea',label:'Urea / BUN',note:'Keep urea and BUN identified as reported; their numeric values and units differ.'},
+  {id:'urea',label:'Urea / BUN',concepts:['urea','bun'],note:'Keep urea and BUN identified as reported; their numeric values and units differ.'},
   {id:'creatinine',label:'Creatinine',source:'creatinine'},
-  {id:'sodium',label:'Sodium'},
-  {id:'potassium',label:'Potassium',note:'Retain specimen time and haemolysis flag.'},
-  {id:'urine-routine',label:'Urine routine',note:'Blood, protein, leukocytes, nitrites and glucose; urine microscopy is separate.'}
+  {id:'sodium',label:'Sodium',concepts:['sodium']},
+  {id:'potassium',label:'Potassium',concepts:['potassium'],note:'Retain specimen time and haemolysis flag.'},
+  {id:'urine-routine',label:'Urine routine',concepts:['urine_appearance','urine_colour','urine_specific_gravity','urine_ph','urine_protein','urine_glucose','urine_ketones','urine_blood','urine_leukocyte_esterase','urine_nitrite','urine_bilirubin','urine_urobilinogen','urine_rbc','urine_wbc','urine_epithelial_cells','urine_casts','urine_crystals','urine_bacteria'],note:'Blood, protein, leukocytes, nitrites and glucose; urine microscopy is separate.'}
  ]},
  {id:'electrolytes',title:'Electrolytes, acid–base and CRRT monitoring',description:'Keep chemistry and blood-gas specimens distinct. Review calcium, magnesium and phosphate in the KRT context.',tests:[
   {id:'chloride',label:'Chloride'},{id:'total-co2',label:'Total CO₂ · chemistry'},
@@ -43,11 +43,12 @@ export const renalInvestigationPanels:readonly {id:string;title:string;descripti
 export function renalInvestigationSources(test:Test,sources:readonly RenalSource[]){
  if(test.source==='creatinine')return sources.filter(s=>s.lab?.fact.concept_id==='synthetic-serum-creatinine');
  if(test.source==='bicarbonate'||test.source==='ph')return sources.filter(s=>s.fluid?.fact.kind==='circulatory_oxygen'&&s.fluid.fact.concept===test.source);
+ if(test.concepts)return sources.filter(s=>s.entry?.fact.kind==='laboratory_report'&&!!s.mappedConcept&&test.concepts!.includes(s.mappedConcept));
  return [];
 }
 export function RenalInvestigations({sources,current,onOpen}:{sources:readonly RenalSource[];current:boolean;onOpen:(query:string)=>void}){
- function row(test:Test){const records=renalInvestigationSources(test,sources);const supported=!!test.source;
-  return <li key={test.id}><div><strong>{test.label}</strong><span>{!current?'Current results unconfirmed':records.length?`${records.length} recorded source${records.length===1?'':'s'}`:supported?'No result supplied':'Result feed not connected'}</span></div>{records.length>0&&<button type="button" className="m7-text-button" aria-label={'Inspect sources for '+test.label} disabled={!current} onClick={()=>onOpen(test.source!)}>Inspect sources ↗<span className="m7-visually-hidden"> for {test.label}</span></button>}{test.note&&<small>{test.note}</small>}</li>;
+ function row(test:Test){const records=renalInvestigationSources(test,sources);const supported=!!test.source||!!test.concepts;
+  return <li key={test.id}><div><strong>{test.label}</strong><span>{!current?'Current results unconfirmed':records.length?`${records.length} recorded source${records.length===1?'':'s'}`:supported?'No result supplied':'Result feed not connected'}</span></div>{records.length>0&&<button type="button" className="m7-text-button" aria-label={'Inspect sources for '+test.label} disabled={!current} onClick={()=>onOpen(test.source??test.id)}>Inspect sources ↗<span className="m7-visually-hidden"> for {test.label}</span></button>}{test.note&&<small>{test.note}</small>}</li>;
  }
  return <section className="m8-investigations" aria-labelledby="m8-investigations-title"><div className="m7-section-line"><h2 id="m8-investigations-title">Kidney investigations</h2><span>Results and options</span></div><p className="m7-caption">Shared investigation records. Missing results stay explicit; no test is ordered from this view.</p><ul className="m8-core-tests" aria-label="Core kidney investigation fields">{renalInvestigationPanels[0].tests.map(row)}</ul>{renalInvestigationPanels.slice(1).map(panel=><details key={panel.id}><summary>{panel.title}</summary><p className="m7-caption">{panel.description}</p><ul className="m8-other-tests" aria-label={panel.title}>{panel.tests.map(row)}</ul></details>)}<p className="m7-caption">Urine output is a separate collection record. Urine sodium, FENa and FEurea need clinical context, including diuretics, timing and kidney disease; no cause is diagnosed here.</p></section>;
 }

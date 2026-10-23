@@ -44,6 +44,23 @@ def test_prescription_is_not_administration_and_held_has_no_delivered_dose(case)
     assert post(client,'save',{**held,'id':str(uuid4()),'medicine':'Meropenem'}).status_code==409
     assert post(client,'save',{**held,'amount':'1.0','unit':'g','dose_detail':'Total product mass'}).status_code==422
 
+def test_exact_culture_susceptibility_is_retained_with_prescription_draft(case):
+    client,app=case
+    from app.demo.micro_antimicrobial import facts as micro_facts
+    engine=create_database(app.config.database_path)
+    with transaction(engine) as repo:
+        from app.demo.patient_state import TARGET
+        for fact in micro_facts():repo.append_fact(fact,target=TARGET)
+    engine.dispose();v=catalog(client);items=v['micro']['assembly']['snapshot']['items']
+    ast=next(i['fact'] for i in items if i['fact']['kind']=='microbiology_susceptibility')
+    body={**draft(v['renal']['repository']),'mode':'prescription','schedule':'Every 24 hours','culture_ref':{'kind':ast['kind'],'id':ast['id'],'version':ast['revision']}}
+    saved=post(client,'save',body);assert saved.status_code==200,saved.text
+    fact=saved.json()['fact'];metadata=next(i for i in fact['source_identifiers'] if i['namespace']=='clinrx.local.antibiotic-chart/v1')
+    import json
+    assert json.loads(metadata['code'])['culture_ref']==body['culture_ref']
+    assert post(client,'save',{**draft(v['renal']['repository']),'culture_ref':{'kind':'microbiology_culture','id':'wrong-kind','version':'1'}}).status_code==422
+    assert post(client,'save',{**draft(v['renal']['repository']),'culture_ref':{'kind':'microbiology_susceptibility','id':'missing','version':'1'}}).status_code==404
+
 
 def test_invalid_dose_scope_and_gateway_origin_do_not_append(case):
     client,app=case;v=catalog(client);before=v['renal']['cutoff']['fact_watermark'];body=draft(v['renal']['repository'])

@@ -3,11 +3,13 @@ import json
 from pathlib import Path
 from app.api.schemas.renal_fluid_entry import RF2Draft, ResolveRequest
 from app.models.clinical.facts import ClinicalObservation
+from app.models.clinical.laboratory import LaboratoryReport
+from app.models.clinical.respiratory import RespiratoryRecord, RespiratoryImport
 from app.persistence.metadata import IngestionMetadata, RepositoryCutoff
 
 def bundle():
     roots={};definitions={}
-    for model in (RF2Draft,ResolveRequest,ClinicalObservation,IngestionMetadata,RepositoryCutoff):
+    for model in (RF2Draft,ResolveRequest,ClinicalObservation,LaboratoryReport,RespiratoryRecord,RespiratoryImport,IngestionMetadata,RepositoryCutoff):
         schema=model.model_json_schema(mode='serialization')
         for name,s in schema.pop('$defs',{}).items():
             if name in definitions and definitions[name]!=s:raise ValueError('conflicting definition')

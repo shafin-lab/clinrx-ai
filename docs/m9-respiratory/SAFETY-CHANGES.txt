@@ -1,0 +1,41 @@
+Respiratory/ABG safety corrections — 23 October 2026
+
+Applied to the concurrently added respiratory workspace. Existing source
+records, migrations, databases and other modules were not rewritten by this task.
+
+CHANGES
+1. A measurement set must be selected explicitly. Newest-first sorting no longer
+   silently selects a clinical sample or displays its arithmetic.
+2. Loading, retrieval error or unconfirmed current evidence suppresses the
+   selected calculation panel and disables sample-review controls. A caller's
+   stale current=true cannot override an explicit retrieval error.
+3. Scope and period placement compare complete fractional instants and offsets.
+   Distinct microsecond/submicrosecond times cannot collapse into one JavaScript
+   millisecond. Equivalent explicit offsets/trailing zeroes still match.
+4. Blood gases require their own exact collection time for physiological period
+   placement. Bounded, approximate, day-only or missing collection stays context;
+   a later report/availability time cannot become a collection time.
+5. Other respiratory records use their observation/performance time rather than
+   their report/availability time. Conflicting raw/recorded source times remain
+   unplaced instead of choosing one by convenience.
+6. Legacy sample-time setting fields remain source assertions. Their presence
+   does not set an independent support-alignment confirmation to true. The
+   original source values remain available for inspection.
+
+VERIFICATION METHOD
+New regressions were observed failing before their fixes. An existing UI test
+now explicitly selects its source before asserting the selected sample detail.
+A reviewer confirmed the final delta, including the bounded-null collection case.
+Exact counts, commands and source hashes are in DESIGN-VERIFICATION.json.
+
+REMAINING CLINICAL/INTERFACE WORK
+The four-panel bedside overview is a proposed amendment awaiting user approval.
+The existing specialist tabs and source entry/review paths are preserved.
+
+Mechanics still needs clinical reconciliation of the actual source-contract
+evidence for zero-flow, leak, hold quality/duration and volume/breath pairing.
+This task does not claim that the existing two confirmation booleans establish
+all those conditions. Do not promote the engineering preview to patient use or
+claim comprehensive CHEST/ERS/Indian Chest Society compliance from passing tests.
+Other arithmetic and condition-specific pathways require the documented profile,
+evidence, population, local-protocol and clinical validation work.

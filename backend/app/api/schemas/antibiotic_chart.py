@@ -27,6 +27,7 @@ class AntibioticDraft(DTO):
     source_record: Short
     recorded_at: Stamp
     order: ExactReference | None = None
+    culture_ref: ExactReference | None = None
     predecessor: ExactReference | None = None
     predecessor_digest: Digest | None = None
     correction_reason: Note | None = None
@@ -43,6 +44,7 @@ class AntibioticDraft(DTO):
         if (self.mode=='prescription')!=(self.schedule is not None):raise ValueError('schedule belongs only to a prescription record')
         if self.mode=='prescription' and self.order is not None:raise ValueError('prescription cannot link another prescription as its parent')
         if self.order and self.order.kind!='antimicrobial_order':raise ValueError('exact antimicrobial order required')
+        if self.culture_ref and self.culture_ref.kind!='microbiology_susceptibility':raise ValueError('exact susceptibility result required')
         if any(not getattr(self,k).strip() for k in ('medicine','product','route','indication','actor','source_record')):raise ValueError('nonblank source fields required')
         if (self.predecessor is None)!=(self.predecessor_digest is None) or (self.predecessor is None)!=(self.correction_reason is None):raise ValueError('correction requires exact predecessor, digest and reason')
         if self.predecessor and (self.predecessor.id!=str(self.id) or self.predecessor.version==str(self.revision)):raise ValueError('correction must retain stable identity and append a new revision')

@@ -4,7 +4,7 @@ import fixtures from './fixtures/circulatory.json';
 import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
 import type {CirculatoryState,CirculatoryItem,CirculatoryHistory} from '../src/api/circulatoryTypes';
 import type {CirculatoryClient} from '../src/api/circulatoryClient';
-import {bedsideModel,observationSummary,validateReview,emptyReview,sourceLimitations} from '../src/hemodynamics/bedsideModel';
+import {bedsideModel,chronologicalItems,observationSummary,validateReview,emptyReview,sourceLimitations} from '../src/hemodynamics/bedsideModel';
 import {M7BedsideReview} from '../src/hemodynamics/M7BedsideReview';
 const requested={patient:'synthetic-p1',encounter:'synthetic-e1',start:'2026-10-08T08:00:00Z',end:'2026-10-08T10:00:00Z'};
 const original=()=>({...decodeCirculatoryState(structuredClone(fixtures.state),{patient_id:requested.patient,encounter_id:requested.encounter}),execution_enabled:false});
@@ -82,6 +82,16 @@ describe('M7 bedside clinician workflow',()=>{
   expect(screen.getByText('Chart target not supplied')).toBeInTheDocument();expect(screen.getByText('Not clinically assessed')).toBeInTheDocument();
   expect(screen.getByText(/Clinical profiles inactive/)).toBeInTheDocument();
   expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();
+ });
+ it('does not show source or issue counts as confirmed after retrieval fails',()=>{
+  const state=original(),client=mockClient();
+  render(<M7BedsideReview state={state} requested={requested} loading={false} retrievalError="retrieval_failed" onRefresh={vi.fn()} client={client as unknown as CirculatoryClient}/>);
+  const strip=screen.getByRole('group',{name:'Evidence status'});
+  expect(within(strip).getAllByText('Not confirmed')).toHaveLength(2);
+  expect(within(strip).queryByText('0')).not.toBeInTheDocument();
+  expect(within(strip).getAllByRole('button').slice(0,2).every(button=>button.hasAttribute('disabled'))).toBe(true);
+  expect(screen.getByText(/Intervention records not confirmed/)).toBeInTheDocument();
+  expect(screen.getAllByText(/Refresh evidence to confirm this recorded view/).length).toBeGreaterThan(0);
  });
  it('opens exact source and fetches its bounded history without preparing or executing a review',async()=>{
   const {client}=mount();
@@ -188,5 +198,42 @@ describe('M7 recorded vital signs',()=>{
   const x=mount(withVitalSigns());x.rerender(<M7BedsideReview {...x.props} retrievalError="unavailable"/>);const vitals=screen.getByRole('region',{name:'Recorded vital signs'});
   expect(within(vitals).queryByText(/^88.00/)).not.toBeInTheDocument();expect(within(vitals).getAllByText('Not confirmed')).toHaveLength(4);
   const state=withVitalSigns();state.assembly.request.scope.patient_id='foreign';expect(bedsideModel(state,requested).heartRates).toEqual([]);
+ });
+});
+describe('M7 chronological presentation',()=>{
+ it('orders dated readings by source timestamp and leaves undated readings last without inventing a time',()=>{
+  const state=withVitalSigns(),items=state.assembly.snapshot.items;
+  items.find(i=>i.fact.id==='vital-HR')!.fact.occurred={source_timestamp:'2026-10-08T08:20:00Z'};
+  items.find(i=>i.fact.id==='vital-SPO2')!.fact.occurred={source_timestamp:'2026-10-08T08:10:00Z'};
+  items.find(i=>i.fact.id==='vital-RR')!.fact.occurred={source_timestamp:'2026-10-08T08:30:00Z'};
+  const undated=items.find(i=>i.fact.id==='vital-SBP')!;
+  expect(chronologicalItems([items.find(i=>i.fact.id==='vital-HR')!,undated,items.find(i=>i.fact.id==='vital-RR')!,items.find(i=>i.fact.id==='vital-SPO2')!]).map(i=>i.fact.id))
+   .toEqual(['vital-RR','vital-HR','vital-SPO2','vital-SBP']);
+  expect(chronologicalItems([undated])[0]).toBe(undated);
+  undated.fact.occurred={source_timestamp:'2026-10-08'};
+  expect(chronologicalItems([items.find(i=>i.fact.id==='vital-HR')!,undated]).map(i=>i.fact.id)).toEqual(['vital-HR','vital-SBP']);
+ });
+ it('presents timestamped vital readings as separate source-linked entries',()=>{
+  const state=withVitalSigns(),items=state.assembly.snapshot.items;
+  items.find(i=>i.fact.id==='vital-HR')!.fact.occurred={source_timestamp:'2026-10-08T08:20:00Z'};
+  items.find(i=>i.fact.id==='vital-RR')!.fact.occurred={source_timestamp:'2026-10-08T08:30:00Z'};
+  items.find(i=>i.fact.id==='vital-SBP')!.fact.occurred=undefined;
+  mount(state);
+  const timeline=screen.getByRole('region',{name:'Recorded readings in time order'});
+  const rows=within(timeline).getAllByRole('button');
+  expect(rows[0]).toHaveAccessibleName(/2026-10-08T08:30:00Z.*Respiratory rate.*22/);
+  expect(rows[1]).toHaveAccessibleName(/2026-10-08T08:20:00Z.*Heart rate.*88/);
+  expect(within(timeline).getByRole('button',{name:/Time not established.*Systolic blood pressure.*104 mmHg/})).toBeInTheDocument();
+  fireEvent.click(rows[0]);expect(screen.getByRole('region',{name:'Exact source details'})).toHaveTextContent('vital-RR / 1');
+ });
+ it('shows vasoactive and contextual events in source-time order with documented event labels',()=>{
+  const state=original(),items=state.assembly.snapshot.items;
+  items.find(i=>i.fact.id==='m7-EVENT')!.fact.occurred={source_timestamp:'2026-10-08T08:20:00Z'};
+  items.find(i=>i.fact.id==='m7-V')!.fact.occurred={source_timestamp:'2026-10-08T08:30:00Z'};
+  mount(state);
+  const heading=screen.getByRole('heading',{name:'Vasoactive and intervention records'}),section=heading.parentElement!.nextElementSibling as HTMLElement;
+  const rows=within(section).getAllByRole('button');
+  expect(rows[0]).toHaveTextContent('norepinephrine');expect(rows[0]).toHaveTextContent('Documented initiation');expect(rows[0]).toHaveTextContent('2026-10-08T08:30:00Z');
+  expect(rows[1]).toHaveTextContent('Position change');expect(rows[1]).toHaveTextContent('2026-10-08T08:20:00Z');
  });
 });

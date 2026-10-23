@@ -14,6 +14,15 @@ export const evidenceGroups = {
 export type EvidenceGroup = keyof typeof evidenceGroups;
 export const itemKey = (item:CirculatoryItem) => refKey(reference(item));
 export const exactPin = (item:CirculatoryItem) => ({reference:reference(item),expected_digest:item.expected_digest});
+/** Newest source timestamp first; untimed records stay visible at the end. */
+export function chronologicalItems(items:CirculatoryItem[]) {
+  return items.map((item,index)=>{const timestamp=sourceTime(item);const exactInstant=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})$/.test(timestamp);return {item,index,time:exactInstant?Date.parse(timestamp):Number.NaN};}).sort((a,b)=>{
+    const aValid=Number.isFinite(a.time),bValid=Number.isFinite(b.time);
+    if(aValid!==bValid)return aValid?-1:1;
+    if(aValid&&bValid&&a.time!==b.time)return b.time-a.time;
+    return a.index-b.index;
+  }).map(entry=>entry.item);
+}
 export function sourceQuality(item:CirculatoryItem) {
   const assessment=record(record(item.fact.acquisition).quality??item.fact.quality);
   const status=assessment.status;

@@ -17,8 +17,8 @@ export const indicationOptions:Record<ProfileName,{id:string;label:string}[]>={
  'Ampicillin/sulbactam':[{id:'standard',label:'Standard dosing (excludes CRAB)'}],
  Ciprofloxacin:[{id:'standard',label:'Standard dosing'},{id:'systemic',label:'Pseudomonas / Gram-negative bloodstream / staphylococcal hardware induction'}],
 };
-export interface DoseContext {medicine:string;indication:string;route:string;infusion:string;phase:string;bodySize:string;hepatic:string;special:string;safetyReviewed:boolean;cvvhMode:string;flow:string;flowDefinitionReviewed:boolean;residual:string;downtime:string;hdFlux:string;hdStable:string;hdInterval:string;hdTimingReviewed:boolean;cultureReviewed:boolean;cultureBlock:string;cultureSource:string;empiricReviewed:boolean}
-export const blankDoseContext:DoseContext={medicine:'',indication:'',route:'',infusion:'',phase:'',bodySize:'',hepatic:'',special:'',safetyReviewed:false,cvvhMode:'',flow:'',flowDefinitionReviewed:false,residual:'',downtime:'',hdFlux:'',hdStable:'',hdInterval:'',hdTimingReviewed:false,cultureReviewed:false,cultureBlock:'',cultureSource:'',empiricReviewed:false};
+export interface DoseContext {medicine:string;indication:string;route:string;infusion:string;phase:string;bodySize:string;hepatic:string;special:string;safetyReviewed:boolean;renalFunction:string;support:string;cvvhMode:string;flow:string;flowDefinitionReviewed:boolean;residual:string;downtime:string;hdFlux:string;hdStable:string;hdInterval:string;hdTimingReviewed:boolean;cultureReviewed:boolean;cultureBlock:string;cultureSource:string;empiricReviewed:boolean}
+export const blankDoseContext:DoseContext={medicine:'',indication:'',route:'',infusion:'',phase:'',bodySize:'',hepatic:'',special:'',safetyReviewed:false,renalFunction:'unknown',support:'unknown',cvvhMode:'',flow:'',flowDefinitionReviewed:false,residual:'',downtime:'',hdFlux:'',hdStable:'',hdInterval:'',hdTimingReviewed:false,cultureReviewed:false,cultureBlock:'',cultureSource:'',empiricReviewed:false};
 export interface Regimen {amount:string;unit:'g'|'mg';route:'IV'|'PO';schedule:string;display:string}
 export interface DoseResult {status:'suggested'|'review';reason:string;medicine?:ProfileName;maintenance?:Regimen;initial?:string;band?:string;source?:string;notes?:string[];version:string}
 export interface PrescriptionSeed {medicine:string;amount:string;unit:'g'|'mg';dose_detail:string;route:string;schedule:string;indication:string}
@@ -40,20 +40,20 @@ export function renalDose(inputs:ClearanceInputs,c:DoseContext,calculatedCrCl?:n
  if(c.cultureSource)notes.push(`Culture context reviewed: ${c.cultureSource}. Confirm the result is current and relevant to the infection being treated.`);
  if(c.empiricReviewed)notes.push('No matching final susceptible AST was selected; this suggestion is not culture-directed.');
  let crcl:number|undefined,band='',initial:string|undefined;
- if(inputs.support==='none'){
-  const estimate=clearance(inputs);if(estimate.error||estimate.limited||calculatedCrCl===undefined||!Number.isFinite(calculatedCrCl)||calculatedCrCl!==estimate.value)return hold('Calculate current CrCl with the selected inputs and clinician-assessed stable renal function. Changing/unknown renal function cannot select a steady-state dose.');
+ if(c.support==='none'){
+  const estimate=clearance(inputs);if(estimate.error||c.renalFunction!=='stable'||calculatedCrCl===undefined||!Number.isFinite(calculatedCrCl)||calculatedCrCl!==estimate.value)return hold('Calculate current CrCl and confirm clinician-assessed stable renal function in the dose-review context. Changing/unknown renal function cannot select a steady-state dose.');
   crcl=calculatedCrCl;band=`CrCl ${crcl.toFixed(2)} mL/min (unrounded value used)`;
- }else if(inputs.support==='crrt'){
+ }else if(c.support==='crrt'){
   if(c.cvvhMode!=='cvvhd')return hold('Loaded CRRT profiles cover CVVHD only. CVVH and CVVHDF require their own validated profiles.');
   if(!/^\d+(?:\.\d+)?$/.test(c.flow)||Number(c.flow)!==2||!c.flowDefinitionReviewed||c.residual!=='lt10'||c.downtime!=='none')return hold('Confirm CVVHD source conditions: treatment flow 2 L/h, residual native GFR <10 mL/min and uninterrupted delivery. Source flow is not patient net fluid removal. Other settings need a dedicated profile.');
   band='CVVHD · source treatment flow 2 L/h · residual native GFR <10 mL/min · no downtime';
   notes.push('Source general table calls the 2 L/h setting ultrafiltration rate; confirm the actual treatment-flow definition with the dialysis prescription. No dose is derived from Cockcroft–Gault or net fluid removal.');
- }else if(inputs.support==='ihd'){
+ }else if(c.support==='ihd'){
   if(c.hdFlux!=='high'||c.hdStable!=='stable'||!['48','72'].includes(c.hdInterval)||!c.hdTimingReviewed)return hold('Confirm high-flux intermittent HD, a stable schedule, the next 48/72-hour interval and dialysis-day dose timing. Other schedules require a separate review.');
   band=`High-flux intermittent HD · stable schedule · next interval ${c.hdInterval} h`;
   notes.push('Dialysis-specific schedule; Cockcroft–Gault is not used. Review last/next dialysis and previous doses before giving an initial or post-HD dose.');
  }else return hold('Select a supported kidney-support state. SLED/PIRRT, peritoneal dialysis and unknown support do not inherit intermittent-HD or CRRT doses.');
- const hd=inputs.support==='ihd',crrt=inputs.support==='crrt';let maintenance:Regimen|undefined;
+ const hd=c.support==='ihd',crrt=c.support==='crrt';let maintenance:Regimen|undefined;
  if(medicine==='Ceftriaxone'){
   if(crrt)return hold('The loaded UCSF source page has no ceftriaxone CRRT row. A non-dialysis or intermittent-HD row is not substituted.');
   maintenance=regimen(c.indication==='uti'?'1':'2','g','IV',c.indication==='meningitis'?'Every 12 hours':'Every 24 hours');notes.push('No renal adjustment for these source indications. Obesity and enterococcal endocarditis combination therapy require a separate assessment.');

@@ -182,7 +182,7 @@ class DomainBinding(Contract):
 
 
 class ReportState(Contract):
-    status: Literal['preliminary', 'interim', 'final', 'withdrawn']
+    status: Literal['pending', 'preliminary', 'interim', 'final', 'withdrawn']
     change: Literal['original', 'amended', 'corrected', 'superseded'] = 'original'
     reported: RecordedTime = Field(default_factory=missing_time)
     available: RecordedTime = Field(default_factory=missing_time)

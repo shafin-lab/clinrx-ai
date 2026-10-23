@@ -1,0 +1,191 @@
+{
+  "kind": "respiratory_record",
+  "id": "resp-fc6353743f5d7763f670b5d611efc6f8",
+  "revision": "1",
+  "binding": {
+    "target": {
+      "patient_id": "synthetic-p1",
+      "encounter_id": "synthetic-e1",
+      "longitudinal_context_id": null
+    },
+    "verification": {
+      "status": "verified",
+      "method": "synthetic fixture mapping",
+      "verifier": "synthetic-import",
+      "assessed_at": "2026-10-08T09:00:00Z",
+      "source": {
+        "namespace": "lab.example",
+        "identifier": "system-a",
+        "version": "1",
+        "channel": "external_record"
+      },
+      "ambiguity": null
+    }
+  },
+  "origin": "reported",
+  "provenance": {
+    "source": {
+      "namespace": "lab.example",
+      "identifier": "system-a",
+      "version": "1",
+      "channel": "external_record"
+    },
+    "actor": "synthetic-import",
+    "recorded_at": "2026-10-08T09:00:00Z",
+    "upstream": [],
+    "lineage": "unknown",
+    "limitations": [
+      "Synthetic source report."
+    ]
+  },
+  "time": {
+    "event": null,
+    "recorded": null,
+    "effective_start": null,
+    "effective_end": null,
+    "retrieved": null,
+    "processed": null,
+    "precision": "unknown",
+    "uncertainty": null
+  },
+  "verification": "unverified",
+  "conflict": "unknown",
+  "temporal_status": "unknown",
+  "uncertainty": [],
+  "supersedes": null,
+  "correction_reason": null,
+  "contract_version": "2",
+  "source_identifiers": [],
+  "domain_bindings": [],
+  "disclosures": [],
+  "category": "blood_gas",
+  "source_identity": {
+    "issuer_namespace": "lab.example",
+    "source_report_id": "synthetic-m9-gas",
+    "source_version": "1",
+    "accession_id": "sample-1"
+  },
+  "title": "Synthetic arterial gas",
+  "times": {
+    "occurred": {
+      "status": "not_recorded",
+      "precision": "unknown",
+      "value": null,
+      "lower": null,
+      "upper": null,
+      "uncertainty": null
+    },
+    "collected": {
+      "status": "known",
+      "precision": "instant",
+      "value": "2026-10-08T09:00:00Z",
+      "lower": null,
+      "upper": null,
+      "uncertainty": null
+    },
+    "reported": {
+      "status": "known",
+      "precision": "instant",
+      "value": "2026-10-08T09:00:00Z",
+      "lower": null,
+      "upper": null,
+      "uncertainty": null
+    },
+    "available": {
+      "status": "known",
+      "precision": "instant",
+      "value": "2026-10-08T09:00:00Z",
+      "lower": null,
+      "upper": null,
+      "uncertainty": null
+    }
+  },
+  "context": {
+    "sample_type": "arterial",
+    "specimen_id": null,
+    "collection_site": null,
+    "oxygen_device": null,
+    "ventilator_mode": null,
+    "airway_id": null,
+    "position": null,
+    "population": "adult",
+    "settings_confirmed_at_sample": true,
+    "passive": null,
+    "occlusion_confirmed": null,
+    "reference_equation": null
+  },
+  "measurements": [
+    {
+      "concept": "ph",
+      "label": "pH",
+      "result": {
+        "kind": "numeric",
+        "raw_value": "7.30",
+        "comparator": "=",
+        "unit": null
+      },
+      "role": "measured",
+      "quality": "usable",
+      "method": null
+    },
+    {
+      "concept": "paco2",
+      "label": "PaCO2",
+      "result": {
+        "kind": "numeric",
+        "raw_value": "50",
+        "comparator": "=",
+        "unit": {
+          "namespace": "source.unit",
+          "code": "mmHg",
+          "version": null,
+          "raw_display": "mmHg"
+        }
+      },
+      "role": "measured",
+      "quality": "usable",
+      "method": null
+    },
+    {
+      "concept": "pao2",
+      "label": "PaO2",
+      "result": {
+        "kind": "numeric",
+        "raw_value": "80",
+        "comparator": "=",
+        "unit": {
+          "namespace": "source.unit",
+          "code": "mmHg",
+          "version": null,
+          "raw_display": "mmHg"
+        }
+      },
+      "role": "measured",
+      "quality": "usable",
+      "method": null
+    },
+    {
+      "concept": "fio2",
+      "label": "FiO2",
+      "result": {
+        "kind": "numeric",
+        "raw_value": "40",
+        "comparator": "=",
+        "unit": {
+          "namespace": "source.unit",
+          "code": "%",
+          "version": null,
+          "raw_display": "%"
+        }
+      },
+      "role": "set",
+      "quality": "usable",
+      "method": null
+    }
+  ],
+  "narrative": "Original report text",
+  "report_status": "final",
+  "change_state": "original",
+  "record_status": "recorded",
+  "linked_sources": []
+}

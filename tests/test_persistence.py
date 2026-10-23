@@ -535,5 +535,5 @@ def assert_fact_kind_extension_only(before, after):
             'circulatory_pressure', 'circulatory_cardiac', 'circulatory_volume', 'circulatory_dynamic',
             'circulatory_device_prediction', 'circulatory_perfusion', 'circulatory_oxygen', 'circulatory_lactate',
             'circulatory_echo', 'circulatory_ecg', 'circulatory_vasoactive', 'circulatory_monitoring',
-            'circulatory_assessment', 'circulatory_event', 'circulatory_signal'}
+            'circulatory_assessment', 'circulatory_event', 'circulatory_signal', 'laboratory_report', 'respiratory_record'}
         assert old_kinds <= new_kinds

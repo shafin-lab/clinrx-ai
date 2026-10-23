@@ -1,0 +1,700 @@
+{
+  "format": "ClinRx-M10-respiratory-acceptance-inventory/v1",
+  "working_label": "M9 respiratory and ABG",
+  "original_roadmap_module": "M10",
+  "design_version": "0.2",
+  "date": "2026-10-23",
+  "status": "planned scenarios; not executed product tests",
+  "cases": [
+    {
+      "id": "RESP-001",
+      "increment": "R1",
+      "area": "scope",
+      "setup": "Gas state belongs to a different patient.",
+      "action": "Open respiratory view.",
+      "expected": [
+        "No gas shown as current",
+        "Source actions and review saving blocked"
+      ]
+    },
+    {
+      "id": "RESP-002",
+      "increment": "R1",
+      "area": "scope",
+      "setup": "Encounter differs despite identical patient ID.",
+      "action": "Assemble source review.",
+      "expected": [
+        "Whole respiratory model invalid",
+        "No cross-encounter join"
+      ]
+    },
+    {
+      "id": "RESP-003",
+      "increment": "R1",
+      "area": "scope",
+      "setup": "Repository, ingestion watermark or exact source digest does not match confirmed scope.",
+      "action": "Inspect gas/source.",
+      "expected": [
+        "Correspondence unconfirmed",
+        "No successor or alternate repository substituted"
+      ]
+    },
+    {
+      "id": "RESP-004",
+      "increment": "R1",
+      "area": "scope",
+      "setup": "Review boundary differs beyond millisecond precision, or offset representation denotes a different instant.",
+      "action": "Validate scope.",
+      "expected": [
+        "Difference is detected without truncation",
+        "Equivalent exact offsets accepted only when truly equal"
+      ]
+    },
+    {
+      "id": "RESP-005",
+      "increment": "R1",
+      "area": "scope",
+      "setup": "Execution enabled or disabled gate absent.",
+      "action": "Open synthetic respiratory view.",
+      "expected": [
+        "Current evidence/review actions blocked"
+      ]
+    },
+    {
+      "id": "RESP-006",
+      "increment": "R1",
+      "area": "scope",
+      "setup": "A late response arrives after patient/window selection changes.",
+      "action": "Resolve the old request after the new request.",
+      "expected": [
+        "Old response ignored",
+        "No old source or saved review displayed for new patient"
+      ]
+    },
+    {
+      "id": "RESP-007",
+      "increment": "R1",
+      "area": "refresh",
+      "setup": "Previously confirmed evidence exists, then refresh fails.",
+      "action": "Inspect view and attempt save/history.",
+      "expected": [
+        "Retained facts explicitly unconfirmed",
+        "Current-source actions blocked",
+        "Historical local reviews retained in correct scope"
+      ]
+    },
+    {
+      "id": "RESP-008",
+      "increment": "R1",
+      "area": "identity",
+      "setup": "Two distinct source records have identical values and timestamps.",
+      "action": "Build gas list.",
+      "expected": [
+        "Both exact identities survive",
+        "No heuristic deduplication or panel grouping"
+      ]
+    },
+    {
+      "id": "RESP-009",
+      "increment": "R1",
+      "area": "identity",
+      "setup": "Legacy gas components have no coherent explicit specimen/panel relation.",
+      "action": "Open gas summary.",
+      "expected": [
+        "Separate observations remain visible",
+        "No fabricated complete ABG panel"
+      ]
+    },
+    {
+      "id": "RESP-010",
+      "increment": "R1",
+      "area": "identity",
+      "setup": "Gas collected before cutoff but clinically available only after it.",
+      "action": "Reconstruct earlier knowledge view.",
+      "expected": [
+        "Result excluded from earlier-known evidence",
+        "Collection and availability remain distinct"
+      ]
+    },
+    {
+      "id": "RESP-011",
+      "increment": "R1",
+      "area": "chronology",
+      "setup": "Gas collected 09:45 at source FiO2 40%; support changed to 60% at 10:00.",
+      "action": "Select the gas beside later change.",
+      "expected": [
+        "Gas retains sample-time FiO2 40%",
+        "Later change shown separately",
+        "No later setting substitution"
+      ]
+    },
+    {
+      "id": "RESP-012",
+      "increment": "R1",
+      "area": "chronology",
+      "setup": "Two samples plus a day-only/unplaced support observation.",
+      "action": "Sort/select gas sources.",
+      "expected": [
+        "No exact sample match from approximate time",
+        "Selection explicit; newest sort does not choose current sample"
+      ]
+    },
+    {
+      "id": "RESP-013",
+      "increment": "R1",
+      "area": "chronology",
+      "setup": "Gas correction retains original collection time and predecessor.",
+      "action": "Inspect sources/history/trend.",
+      "expected": [
+        "Correction labelled",
+        "Predecessor preserved",
+        "No physiological improvement inferred from revised value"
+      ]
+    },
+    {
+      "id": "RESP-014",
+      "increment": "R1",
+      "area": "specimen",
+      "setup": "Unknown or conflicting specimen label on a source named PaO2.",
+      "action": "Display it.",
+      "expected": [
+        "Original wording retained with specimen warning",
+        "No arterial eligibility inferred from label"
+      ]
+    },
+    {
+      "id": "RESP-015",
+      "increment": "R1",
+      "area": "specimen",
+      "setup": "Measured arterial saturation and pulse oximetry both present.",
+      "action": "Open oxygenation view.",
+      "expected": [
+        "SaO2 and SpO2 remain distinct",
+        "Calculated saturation labelled separately"
+      ]
+    },
+    {
+      "id": "RESP-016",
+      "increment": "R1",
+      "area": "missingness",
+      "setup": "Missing support/targets/trials; one pending gas; another feed unconnected.",
+      "action": "Open summary.",
+      "expected": [
+        "Pending, not recorded and feed not connected are distinct",
+        "No normal/zero/complete inference"
+      ]
+    },
+    {
+      "id": "RESP-017",
+      "increment": "R1",
+      "area": "review",
+      "setup": "A draft pins snapshot A; refresh produces snapshot B.",
+      "action": "Attempt save.",
+      "expected": [
+        "Save rejected as stale",
+        "Draft not silently re-pinned"
+      ]
+    },
+    {
+      "id": "RESP-018",
+      "increment": "R1",
+      "area": "review",
+      "setup": "Correctly scoped respiratory review using the currently implemented M9 domain.",
+      "action": "Save, reload, switch scopes and return.",
+      "expected": [
+        "Exact pins and current M9 storage domain retained",
+        "Only matching patient/encounter/repository reviews shown",
+        "M7/M8 keys unchanged; no migration for historical roadmap aliases"
+      ]
+    },
+    {
+      "id": "RESP-019",
+      "increment": "R1",
+      "area": "review",
+      "setup": "Storage unavailable, quota exceeded, safe locks unavailable or readback mismatch.",
+      "action": "Save review.",
+      "expected": [
+        "No success confirmation without verified append",
+        "Earlier local records preserved"
+      ]
+    },
+    {
+      "id": "RESP-020",
+      "increment": "R1",
+      "area": "interface",
+      "setup": "Surgeon reviews postoperative synthetic patient.",
+      "action": "Identify gas specimen/time, sample-time oxygen, later change and next action.",
+      "expected": [
+        "All are accessible without raw JSON",
+        "Abbreviations defined on demand",
+        "No automatic diagnosis or treatment implied"
+      ]
+    },
+    {
+      "id": "RESP-021",
+      "increment": "R1",
+      "area": "interface",
+      "setup": "Intensivist/pulmonologist expands source methods.",
+      "action": "Inspect original gas quality and support relation, then close.",
+      "expected": [
+        "Same source selection retained",
+        "Exact history available only when current",
+        "Focus returns to trigger"
+      ]
+    },
+    {
+      "id": "RESP-022",
+      "increment": "R1",
+      "area": "interface",
+      "setup": "390px viewport and keyboard/screen-reader navigation.",
+      "action": "Navigate cards, table, drawer and save feedback.",
+      "expected": [
+        "No page-wide overflow",
+        "Internal table scroll",
+        "Visible focus and announced status",
+        "Escape closes and restores focus"
+      ]
+    },
+    {
+      "id": "RESP-023",
+      "increment": "R1",
+      "area": "regression",
+      "setup": "Respiratory tab added to shared workspace with pending source entry.",
+      "action": "Navigate among respiratory, antibiotics, M7 and M8.",
+      "expected": [
+        "Guarded editor preserved",
+        "No navigation bypass during uncertain write",
+        "Other modules retain their existing state and source ownership"
+      ]
+    },
+    {
+      "id": "RESP-024",
+      "increment": "R1",
+      "area": "evidence",
+      "setup": "Existing synthetic physiology arithmetic is present, but no locally activated clinical treatment profile exists.",
+      "action": "Inspect gas/mechanics and any Why panel.",
+      "expected": [
+        "Arithmetic method/version/input eligibility and limitations visible",
+        "Guideline source/year visible where referenced",
+        "No society-certified or clinical-readiness claim",
+        "No treatment profile enabled merely because arithmetic exists"
+      ]
+    },
+    {
+      "id": "RESP-025",
+      "increment": "R2",
+      "area": "contract",
+      "setup": "Neutral pCO2 with explicit venous or capillary specimen.",
+      "action": "Validate and round-trip through source owner.",
+      "expected": [
+        "Correct Pv/Pc wording",
+        "Legacy paco2 contract unchanged",
+        "No venous-to-arterial relabelling"
+      ]
+    },
+    {
+      "id": "RESP-026",
+      "increment": "R2",
+      "area": "contract",
+      "setup": "Post-oxygenator circuit gas and systemic arterial gas.",
+      "action": "Group, display and inspect support.",
+      "expected": [
+        "Different specimen sites retained",
+        "Circuit oxygen fraction distinct from ventilator FiO2"
+      ]
+    },
+    {
+      "id": "RESP-027",
+      "increment": "R2",
+      "area": "entry",
+      "setup": "Same source revision reimported; separate equal-value record also arrives.",
+      "action": "Import and read back.",
+      "expected": [
+        "Exact replay idempotent",
+        "Distinct identity not deduplicated"
+      ]
+    },
+    {
+      "id": "RESP-028",
+      "increment": "R2",
+      "area": "entry",
+      "setup": "Append request times out before acknowledgement.",
+      "action": "Recover pending entry.",
+      "expected": [
+        "Exact command identity retained",
+        "Lookup/readback precedes explicit retry",
+        "No fresh duplicate write"
+      ]
+    },
+    {
+      "id": "RESP-029",
+      "increment": "R2",
+      "area": "support",
+      "setup": "NIV order without delivered observation.",
+      "action": "Open current-support summary.",
+      "expected": [
+        "Order labelled as plan only",
+        "Running NIV not established"
+      ]
+    },
+    {
+      "id": "RESP-030",
+      "increment": "R2",
+      "area": "support",
+      "setup": "Open episode has undocumented gaps or contradictory mode/FiO2 changes.",
+      "action": "Align gas to support.",
+      "expected": [
+        "No uninterrupted delivery inferred",
+        "Alignment conflicting/unknown until resolved"
+      ]
+    },
+    {
+      "id": "RESP-031",
+      "increment": "R2",
+      "area": "support",
+      "setup": "IPAP absolute value, EPAP and pressure support above PEEP present.",
+      "action": "Display settings.",
+      "expected": [
+        "Pressure basis shown",
+        "IPAP never renamed as pressure support"
+      ]
+    },
+    {
+      "id": "RESP-032",
+      "increment": "R2",
+      "area": "support",
+      "setup": "HFNC total mixed flow, oxygen source flow and estimated FiO2 all present.",
+      "action": "Display and select fields.",
+      "expected": [
+        "Distinct flows retained",
+        "Estimated FiO2 visibly uncertain",
+        "No flow-to-FiO2 conversion by default"
+      ]
+    },
+    {
+      "id": "RESP-033",
+      "increment": "R2",
+      "area": "source",
+      "setup": "Unsupported new analyser code/unit or incomplete source identity.",
+      "action": "Import gas result.",
+      "expected": [
+        "Original held at canonical owner",
+        "Unsupported mapping explicit",
+        "No bypass of decoder validation"
+      ]
+    },
+    {
+      "id": "RESP-034",
+      "increment": "R2",
+      "area": "targets",
+      "setup": "Two conflicting targets, or an expired patient-specific target.",
+      "action": "Display goal and compare values.",
+      "expected": [
+        "Conflict/expiry visible",
+        "No default replacement or active target flag"
+      ]
+    },
+    {
+      "id": "RESP-035",
+      "increment": "R2",
+      "area": "prone",
+      "setup": "Prone episode has recorded disconnected monitoring or incomplete airway check.",
+      "action": "Review operational readiness.",
+      "expected": [
+        "Incomplete assessment remains unresolved",
+        "No ready-to-prone conclusion or device command"
+      ]
+    },
+    {
+      "id": "RESP-036",
+      "increment": "R2",
+      "area": "liberation",
+      "setup": "SBT passed but cough/secretions/airway protection unassessed.",
+      "action": "Open extubation assessment.",
+      "expected": [
+        "SBT outcome retained",
+        "Extubation readiness incomplete",
+        "No automatic extubation"
+      ]
+    },
+    {
+      "id": "RESP-037",
+      "increment": "R2",
+      "area": "liberation",
+      "setup": "Trial oxygen increased or support changed during SBT.",
+      "action": "Record trial outcome.",
+      "expected": [
+        "Technique and change explicit",
+        "No unqualified pass copied across conditions"
+      ]
+    },
+    {
+      "id": "RESP-038",
+      "increment": "R2",
+      "area": "shared ownership",
+      "setup": "Sedation, airway procedure, fluid and respiratory cultures already recorded elsewhere.",
+      "action": "Open respiratory pathway and handover.",
+      "expected": [
+        "Exact original references used",
+        "No second fluid total, medication list or culture record"
+      ]
+    },
+    {
+      "id": "RESP-039",
+      "increment": "R3",
+      "area": "arithmetic",
+      "setup": "Eligible arterial PaO2 80 mmHg, matched known FiO2 40%.",
+      "action": "Evaluate staged P/F under an approved test profile.",
+      "expected": [
+        "FiO2 fraction 0.40",
+        "P/F 200 mmHg",
+        "Profile and exact input pins retained",
+        "No ARDS diagnosis"
+      ]
+    },
+    {
+      "id": "RESP-040",
+      "increment": "R3",
+      "area": "arithmetic",
+      "setup": "FiO2 0, >100%, unknown units, low-flow estimate or comparator result.",
+      "action": "Evaluate strict P/F.",
+      "expected": [
+        "Withheld with precise reason",
+        "Original source still visible"
+      ]
+    },
+    {
+      "id": "RESP-041",
+      "increment": "R3",
+      "area": "arithmetic",
+      "setup": "Venous/capillary/circuit pO2, unknown arterial identity or invalid quality.",
+      "action": "Evaluate strict systemic arterial P/F.",
+      "expected": [
+        "Withheld; specimen/quality reason",
+        "No surrogate substitution"
+      ]
+    },
+    {
+      "id": "RESP-042",
+      "increment": "R3",
+      "area": "arithmetic",
+      "setup": "Missing height, unspecified formula category, child or actual body weight only.",
+      "action": "Evaluate adult PBW and VT/PBW.",
+      "expected": [
+        "Affected calculations withheld",
+        "No actual-weight or demographic-guess substitution"
+      ]
+    },
+    {
+      "id": "RESP-043",
+      "increment": "R3",
+      "area": "arithmetic",
+      "setup": "Eligible adult height 170 cm, explicit male-formula category; VT 396.096 mL.",
+      "action": "Evaluate proposed ARDSNet cm profile after primary-source validation.",
+      "expected": [
+        "PBW 66.016 kg",
+        "VT/PBW exactly 6 mL/kg",
+        "Formula category and method retained"
+      ]
+    },
+    {
+      "id": "RESP-044",
+      "increment": "R3",
+      "area": "mechanics",
+      "setup": "Valid passive same-assessment plateau 25, total PEEP 10 cmH2O, measured VT 400 mL.",
+      "action": "Evaluate passive mechanics.",
+      "expected": [
+        "Driving pressure 15 cmH2O",
+        "Compliance 400/15 mL/cmH2O at declared precision",
+        "Not labelled isolated lung compliance"
+      ]
+    },
+    {
+      "id": "RESP-045",
+      "increment": "R3",
+      "area": "mechanics",
+      "setup": "Plateau obtained during effort, invalid hold, material leak or missing zero-flow confirmation.",
+      "action": "Evaluate passive mechanics.",
+      "expected": [
+        "Driving pressure/compliance withheld",
+        "Source pressures retained"
+      ]
+    },
+    {
+      "id": "RESP-046",
+      "increment": "R3",
+      "area": "mechanics",
+      "setup": "Only set PEEP/peak pressure available, or plateau <= total PEEP.",
+      "action": "Evaluate passive driving pressure and compliance.",
+      "expected": [
+        "No peak/set-PEEP substitution",
+        "Nonpositive denominator rejected"
+      ]
+    },
+    {
+      "id": "RESP-047",
+      "increment": "R3",
+      "area": "arithmetic",
+      "setup": "Representative matched VT 500 mL and total RR 12/min; second case has incompatible averaging.",
+      "action": "Evaluate minute ventilation.",
+      "expected": [
+        "Eligible case 6 L/min",
+        "Incompatible case withheld",
+        "Source-measured minute volume kept distinct"
+      ]
+    },
+    {
+      "id": "RESP-048",
+      "increment": "R3",
+      "area": "acid-base",
+      "setup": "Same eligible chemistry specimen Na 140, Cl 104, HCO3 20 mmol/L; no lab interval.",
+      "action": "Evaluate AG without K.",
+      "expected": [
+        "AG 16 mmol/L",
+        "No high/normal label without interval",
+        "No source-calculated gas bicarbonate substitution"
+      ]
+    },
+    {
+      "id": "RESP-049",
+      "increment": "R3",
+      "area": "acid-base",
+      "setup": "Electrolytes from different specimens or total CO2 vs gas bicarbonate identity unresolved.",
+      "action": "Evaluate AG/compensation.",
+      "expected": [
+        "Withheld pending compatible explicit input selection",
+        "No composite panel invented"
+      ]
+    },
+    {
+      "id": "RESP-050",
+      "increment": "R3",
+      "area": "acid-base",
+      "setup": "Eligible clinician-assessed metabolic-acidosis context; chosen HCO3 12 mmol/L.",
+      "action": "Evaluate proposed Winter approximation after primary-source validation.",
+      "expected": [
+        "Expected centre 26 mmHg and interval 24-28",
+        "Assumptions visible",
+        "No complete mixed-disorder diagnosis"
+      ]
+    },
+    {
+      "id": "RESP-051",
+      "increment": "R3",
+      "area": "classification",
+      "setup": "P/F exists but imaging/timing/alternative-cause or actual support criteria absent.",
+      "action": "Review ARDS criteria.",
+      "expected": [
+        "Definition/version explicit",
+        "Incomplete criteria shown",
+        "No ARDS classification from ratio alone"
+      ]
+    },
+    {
+      "id": "RESP-052",
+      "increment": "R3",
+      "area": "classification",
+      "setup": "Criteria are partly Berlin and partly Global 2024, or SpO2 assumptions not satisfied.",
+      "action": "Evaluate selected definition.",
+      "expected": [
+        "No blended definition",
+        "No unsupported S/F-to-P/F substitution"
+      ]
+    },
+    {
+      "id": "RESP-053",
+      "increment": "R3",
+      "area": "clinical evidence",
+      "setup": "Guideline entry is conditional, comparator-specific or population-excluded.",
+      "action": "Render explanation/evaluate applicability.",
+      "expected": [
+        "Source/year and original strength shown",
+        "No universal imperative",
+        "Exclusion or unresolved scope blocks recommendation"
+      ]
+    },
+    {
+      "id": "RESP-054",
+      "increment": "R2",
+      "area": "postoperative",
+      "setup": "Postoperative failure with possible surgical complication or unassessed airway protection.",
+      "action": "Open postoperative pathway.",
+      "expected": [
+        "Surgical context and review prompt visible",
+        "No blanket NIV recommendation",
+        "Urgent review owner/escalation plan can be recorded"
+      ]
+    },
+    {
+      "id": "RESP-055",
+      "increment": "R3",
+      "area": "postextubation",
+      "setup": "Preventive NIV/HFNC evidence selected while patient already deteriorating after extubation.",
+      "action": "Evaluate applicability.",
+      "expected": [
+        "Prevention and rescue distinct",
+        "Preventive evidence not applied as rescue rule",
+        "No delay-to-intubation instruction"
+      ]
+    },
+    {
+      "id": "RESP-056",
+      "increment": "R1",
+      "area": "society identity",
+      "setup": "Evidence source is ISCCM, UK ICS or an ICS NIV development announcement.",
+      "action": "Display evidence labels.",
+      "expected": [
+        "Only Indian Chest Society labelled requested ICS",
+        "ISCCM/UK ICS separately attributed",
+        "Announcement not labelled finalized guideline"
+      ]
+    },
+    {
+      "id": "RESP-057",
+      "increment": "R3",
+      "area": "evidence reconciliation",
+      "setup": "ERS 2022 device comparison and ATS 2026 comparator-specific recommendations differ.",
+      "action": "Build selected evidence profile.",
+      "expected": [
+        "PICO/comparator/population retained",
+        "Disagreement or unresolved adaptation visible",
+        "No fabricated consensus or universal preferred device"
+      ]
+    },
+    {
+      "id": "RESP-058",
+      "increment": "R3",
+      "area": "grading",
+      "setup": "ICS IA/IIA/UPP and GRADE strength/certainty exist in different sources.",
+      "action": "Render evidence strength.",
+      "expected": [
+        "Original grading preserved",
+        "No automatic IA-to-GRADE mapping"
+      ]
+    },
+    {
+      "id": "RESP-059",
+      "increment": "R3",
+      "area": "resource eligibility",
+      "setup": "NIV/HFNC pathway lacks documented monitoring, trained staff or timely escalation capacity.",
+      "action": "Evaluate any eventual support recommendation.",
+      "expected": [
+        "Resource/monitoring gap visible",
+        "Recommendation applicability unresolved",
+        "An empty checkbox is not readiness"
+      ]
+    },
+    {
+      "id": "RESP-060",
+      "increment": "R1",
+      "area": "audience usability",
+      "setup": "Intensivist, pulmonologist, physician and surgeon complete a structured synthetic walkthrough.",
+      "action": "Identify support, gas relation, clinical uncertainty and next review; expand advanced details.",
+      "expected": [
+        "Same evidence and safety limits across specialties",
+        "No raw JSON required for routine tasks",
+        "Misunderstandings logged and corrected before release claim"
+      ]
+    }
+  ]
+}

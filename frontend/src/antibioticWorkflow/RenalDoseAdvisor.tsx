@@ -11,14 +11,16 @@ export function RenalDoseAdvisor({current,inputs,calculatedCrCl,cultures,onUseSu
  const medicine=profileName(context.medicine),indications=medicine?indicationOptions[medicine]:[];
  const choices=useMemo(()=>cultures.map(o=>({key:uniqueKey(o),option:o})),[cultures]);
  const cultureSignature=cultures.map(o=>`${uniqueKey(o)}:${o.candidate}:${o.category}:${o.reasons.join(',')}`).join(';');
- useEffect(()=>setResult(undefined),[current,inputs.age,inputs.weight,inputs.creatinine,inputs.factor,inputs.weightBasis,inputs.stability,inputs.support,calculatedCrCl,cultureSignature]);
+ useEffect(()=>setResult(undefined),[current,inputs.age,inputs.weight,inputs.creatinine,inputs.factor,context.renalFunction,context.support,calculatedCrCl,cultureSignature]);
  function change(field:keyof DoseContext,value:string|boolean){setContext(old=>editable(old,field,value));setResult(undefined);}
- function selectMedicine(value:string){setContext({...blankDoseContext,medicine:value});setResult(undefined);}
+ function selectMedicine(value:string){setContext(old=>({...blankDoseContext,medicine:value,renalFunction:old.renalFunction,support:old.support}));setResult(undefined);}
  const recommendation=result?.status==='suggested'?result.maintenance:undefined;
  return <section className="abx-panel abx-dose-advisor" aria-labelledby="renal-dose-title">
   <p className="m7-eyebrow">Antibiotic module · source-matched review</p><h2 id="renal-dose-title">Renal-aware dose suggestion</h2>
   <p>Adult candidate guidance for clinician review. It does not select treatment, place an order or replace local policy, ID/pharmacy review, therapeutic drug monitoring or bedside judgment.</p>
   <fieldset disabled={!current}><div className="abx-input-grid">
+   <label>Renal function status for dose review<select value={context.renalFunction} onChange={e=>change('renalFunction',e.target.value)}><option value="unknown">Unknown / not assessed</option><option value="changing">Changing creatinine / AKI</option><option value="stable">Clinician assessed stable</option></select></label>
+   <label>Kidney support for dose review<select value={context.support} onChange={e=>change('support',e.target.value)}><option value="unknown">Unknown / not assessed</option><option value="none">No kidney replacement therapy</option><option value="crrt">CRRT</option><option value="ihd">Intermittent HD</option><option value="sled">SLED / PIRRT</option><option value="pd">Peritoneal dialysis</option></select></label>
    <label>Exact antibiotic<select value={context.medicine} onChange={e=>selectMedicine(e.target.value)}><option value="">Select antibiotic</option>{PROFILE_NAMES.map(name=><option key={name}>{name}</option>)}</select></label>
    {medicine&&<label>Supported indication<select value={context.indication} onChange={e=>change('indication',e.target.value)}><option value="">Select indication</option>{indications.map(i=><option key={i.id} value={i.id}>{i.label}</option>)}</select></label>}
    <label>Route<select value={context.route} onChange={e=>change('route',e.target.value)}><option value="">Select route</option><option value="IV">IV</option>{medicine==='Ciprofloxacin'&&<option value="PO">PO</option>}</select></label>
@@ -32,14 +34,14 @@ export function RenalDoseAdvisor({current,inputs,calculatedCrCl,cultures,onUseSu
    {cultures.some(o=>!o.candidate)&&<p className="abx-dose-note">Non-susceptible or incomplete AST rows remain visible for review, but cannot authorize a culture-linked dose.</p>}
    <label className="abx-check"><input type="checkbox" checked={context.safetyReviewed} onChange={e=>change('safetyReviewed',e.target.checked)}/>Allergies, interactions and patient-specific contraindications reviewed</label>
   </div>
-  {inputs.support==='crrt'&&<fieldset className="abx-support-fields"><legend>CRRT profile match</legend><div className="abx-input-grid">
+  {context.support==='crrt'&&<fieldset className="abx-support-fields"><legend>CRRT profile match</legend><div className="abx-input-grid">
    <label>CRRT modality<select value={context.cvvhMode} onChange={e=>change('cvvhMode',e.target.value)}><option value="">Select modality</option><option value="cvvhd">CVVHD</option><option value="cvvh">CVVH</option><option value="cvvhdf">CVVHDF</option></select></label>
    <label>Source treatment flow (L/h)<input inputMode="decimal" value={context.flow} onChange={e=>change('flow',e.target.value)} placeholder="e.g. 2"/></label>
    <label>Residual native renal function<select value={context.residual} onChange={e=>change('residual',e.target.value)}><option value="">Unreviewed</option><option value="lt10">Source GFR &lt;10 mL/min confirmed</option><option value="other">Other / unknown</option></select></label>
    <label>CRRT delivery interruptions<select value={context.downtime} onChange={e=>change('downtime',e.target.value)}><option value="">Unreviewed</option><option value="none">No interruption in the source interval</option><option value="present">Interrupted / changing delivery</option></select></label>
    <label className="abx-check"><input type="checkbox" checked={context.flowDefinitionReviewed} onChange={e=>change('flowDefinitionReviewed',e.target.checked)}/>Flow definition checked against the dialysis prescription</label>
   </div><p>These candidate CRRT rows match CVVHD at the source’s 2 L/h setting and residual GFR &lt;10 only. CVVH, CVVHDF, different flow, interruptions or changing residual function are held.</p></fieldset>}
-  {inputs.support==='ihd'&&<fieldset className="abx-support-fields"><legend>Intermittent HD profile match</legend><div className="abx-input-grid">
+  {context.support==='ihd'&&<fieldset className="abx-support-fields"><legend>Intermittent HD profile match</legend><div className="abx-input-grid">
    <label>Dialysis membrane<select value={context.hdFlux} onChange={e=>change('hdFlux',e.target.value)}><option value="">Unreviewed</option><option value="high">High-flux</option><option value="other">Other / unknown</option></select></label>
    <label>Schedule<select value={context.hdStable} onChange={e=>change('hdStable',e.target.value)}><option value="">Unreviewed</option><option value="stable">Stable schedule</option><option value="unstable">Changing / missed session</option></select></label>
    <label>Next interdialytic interval<select value={context.hdInterval} onChange={e=>change('hdInterval',e.target.value)}><option value="">Unreviewed</option><option value="48">48 hours</option><option value="72">72 hours</option></select></label>

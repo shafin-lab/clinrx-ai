@@ -58,7 +58,9 @@ def _session(engine):
     try:
         with Session(engine, expire_on_commit=False) as session:
             with session.begin():
-                require_schema(session.connection())
+                # M8/M9 extend recorded fact kinds while retaining the M7
+                # execution table and payload schema unchanged.
+                require_schema(session.connection(), compatible_revisions=('m7_0008', 'm8_0009'))
                 yield session
     except SchemaMismatch:
         raise SchemaMismatch('execution storage requires the reviewed schema revision') from None

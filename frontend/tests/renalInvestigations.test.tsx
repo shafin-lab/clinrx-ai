@@ -7,7 +7,7 @@ import {RenalInvestigations,renalInvestigationPanels,renalInvestigationSources} 
 const scope={patient:'synthetic-p1',encounter:'synthetic-e1',start:'2026-10-08T08:00:00Z',end:'2026-10-08T10:00:00Z'};
 const model=()=>renalBedsideModel(structuredClone(fixture) as unknown as RenalFluidState,scope);
 it('makes all five core fields visible without inferring absent test results',()=>{
- render(<RenalInvestigations sources={model().sources} current onOpen={vi.fn()}/>);const core=screen.getByRole('list',{name:'Core kidney investigation fields'});for(const label of ['Urea / BUN','Creatinine','Sodium','Potassium','Urine routine'])expect(within(core).getByText(label)).toBeInTheDocument();expect(within(core).getAllByText('Result feed not connected')).toHaveLength(4);expect(within(core).getByRole('button',{name:'Inspect sources for Creatinine'})).toBeEnabled();
+ render(<RenalInvestigations sources={model().sources} current onOpen={vi.fn()}/>);const core=screen.getByRole('list',{name:'Core kidney investigation fields'});for(const label of ['Urea / BUN','Creatinine','Sodium','Potassium','Urine routine'])expect(within(core).getByText(label)).toBeInTheDocument();expect(within(core).getAllByText('No result supplied')).toHaveLength(4);expect(within(core).getByRole('button',{name:'Inspect sources for Creatinine'})).toBeEnabled();
 });
 it('opens original creatinine evidence without choosing the latest or calculating a trend',()=>{
  const open=vi.fn();render(<RenalInvestigations sources={model().sources} current onOpen={open}/>);fireEvent.click(screen.getByRole('button',{name:'Inspect sources for Creatinine'}));expect(open).toHaveBeenCalledWith('creatinine');expect(screen.queryByText(/improv|normal renal|stage [123]/i)).not.toBeInTheDocument();

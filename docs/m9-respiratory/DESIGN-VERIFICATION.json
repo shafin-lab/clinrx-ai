@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-23",
+  "design_version": "0.2",
+  "status": "Design and companion integrity checked; awaiting design approval",
+  "checks": {
+    "json_parse": "passed",
+    "unique_case_ids": 60,
+    "source_records": 12,
+    "requirement_mappings": 14,
+    "cross_references": "passed",
+    "arithmetic_examples": "checked independently with Decimal; not product tests",
+    "review_finding": "Reversed passive-effort wording corrected and checked",
+    "inspected_product_sources_changed_since_audit": [
+      "frontend/src/demo/PatientWorkspace.tsx"
+    ]
+  },
+  "builder_review": "No R1 planning blocker; R2 ownership and R3 clinical activation remain deferred",
+  "product_code_changed_by_this_task": false,
+  "product_tests_run": false,
+  "working_interface_created": false,
+  "clinical_profiles_enabled": false,
+  "society_accreditation_claimed": false
+}

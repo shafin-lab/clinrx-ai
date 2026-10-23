@@ -148,6 +148,17 @@
           ],
           "default": null
         },
+        "culture_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "predecessor": {
           "anyOf": [
             {

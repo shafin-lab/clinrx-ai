@@ -4,7 +4,7 @@ import {decodeRF2Catalog,hash,stable,type Catalog,type Ref,type Fact} from './rf
 import {decodeMicroState} from './microDecoders';
 import type {MicroState} from './microTypes';
 import {decodeContract,object,reject,validateTransportSchema,type Schema} from './decoding';
-export interface AntibioticDraft{repository:string;id:string;revision:string;mode:'prescription'|'given'|'held'|'missed'|'refused'|'not_given';medicine:string;product:string;amount:string|null;unit:'mg'|'g'|'IU'|null;dose_detail:string|null;route:string;schedule:string|null;indication:string;point:string;actor:string;source_record:string;recorded_at:string;order:Ref|null;predecessor:Ref|null;predecessor_digest:string|null;correction_reason:string|null}
+export interface AntibioticDraft{repository:string;id:string;revision:string;mode:'prescription'|'given'|'held'|'missed'|'refused'|'not_given';medicine:string;product:string;amount:string|null;unit:'mg'|'g'|'IU'|null;dose_detail:string|null;route:string;schedule:string|null;indication:string;point:string;actor:string;source_record:string;recorded_at:string;order:Ref|null;culture_ref:Ref|null;predecessor:Ref|null;predecessor_digest:string|null;correction_reason:string|null}
 export interface AntibioticBundle{version:'SyntheticAntibiotics/v1';renal:Catalog;micro:MicroState;execution_enabled:false}
 export interface AntibioticResult{status:'validated'|'saved'|'absent';request_canonical:string;request_digest:string;execution_enabled:false;fact?:Fact;canonical_fact?:string;digest?:string;ingestion?:{repository_id:string;ingestion_sequence:number}|null}
 const schema=generated as unknown as {roots:Record<string,Schema>;definitions:Record<string,Schema>};
@@ -13,7 +13,7 @@ export function validateAntibioticDraft(value:unknown):asserts value is Antibiot
 export function antibioticMetadata(fact:Fact):AntibioticDraft|undefined{
  const fields=Array.isArray(fact.source_identifiers)?fact.source_identifiers.map(object).filter(s=>s.namespace==='clinrx.local.antibiotic-chart/v1'):[];
  if(!fields.length)return undefined;if(fields.length!==1||fields[0].version!=='1')reject();
- const body=parseRF2JSON(String(fields[0].code));validateAntibioticDraft(body);if(body.id!==fact.id||body.revision!==fact.revision)reject();return body;
+ const body=parseRF2JSON(String(fields[0].code));validateAntibioticDraft(body);if(body.id!==fact.id||body.revision!==fact.revision)reject();return {...body,culture_ref:body.culture_ref??null};
 }
 export class AntibioticClient{
  constructor(private send:typeof fetch=fetch){}

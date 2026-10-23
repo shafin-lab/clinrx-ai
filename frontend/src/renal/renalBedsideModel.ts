@@ -11,7 +11,7 @@ export type RenalGroup=keyof typeof renalGroups;
 export interface RenalSource {
  key:string;group:Exclude<RenalGroup,'all'>;label:string;value:string;time:string;interval:string;
  inclusion:string;status:string;limitations:string[];pin:{repository:string;kind:string;id:string;version:string;digest:string;ingestion:number;cutoff:number};
- raw:unknown;lab?:RenalObservation;fluid?:CirculatoryItem;entry?:Evidence;
+ raw:unknown;lab?:RenalObservation;fluid?:CirculatoryItem;entry?:Evidence;mappedConcept?:string;
 }
 const interval=(raw:unknown)=>{const i=record(raw);if(!Object.keys(i).length)return 'No collection interval supplied';
  const stamp=(v:unknown)=>String(record(v).source_timestamp??record(record(v).recorded).value??'Unknown');
@@ -55,6 +55,19 @@ export function renalBedsideModel(state:RenalFluidState|undefined,requested:Beds
    const original=[...state.laboratory.observations,...base.items].find(i=>JSON.stringify([i.fact.kind,i.fact.id,i.fact.revision])===k);if(seen.has(k)){if(!original||original.expected_digest!==e.digest||!equal(original.fact,e.fact)||!equal(original.ingestion,e.ingestion))return empty;const s=sources.find(s=>s.key===k);if(s){s.entry=e;continue;}}
    seen.add(k);const c=e.metadata?.chart,group=e.metadata?.note?'reviews':c?groupFor(c.category):undefined;if(!group)continue;
    sources.push({key:k,group,label:e.metadata?.note?'Authored renal review':labelFor(c!.category),value:e.metadata?.note?.question??(c?.amount!==null&&c?.amount!==undefined?c.amount+' '+(c.unit??'Unit unavailable'):'Amount unavailable'),time:c?.point??String(record(f.occurred).source_timestamp??'Event time unavailable'),interval:c?.start&&c.end?c.start+' → '+c.end:'No collection interval supplied',inclusion:e.superseded?'historical':original?.inclusion??'source timing not placed',status:e.superseded?'Superseded historical revision':String(f.record_status??'Unknown'),limitations:['Source-authored context; no calculated rate, stage or dose',...(c?[c.uncertainty]:[])],pin:sourcePin(f.kind,f.id,f.revision,e.digest,e.ingestion.ingestion_sequence),raw:e,entry:e});
+  }
+ }
+ if(catalog){
+  for(const e of catalog.laboratory_reports){const f=e.fact as unknown as {kind:string;id:string;revision:string;binding:{target:{patient_id:string;encounter_id:string}};components:{source_component_id:string;test_code:{raw_display:string};mapping_status:string;mapped_concept?:string|null;result:{kind:string;status?:string;reason?:string;comparator?:string;raw_value?:string;unit?:{raw_display:string}|null};assay?:{raw_display:string}|null}[];times:{available:{status:string;value?:string|null};collected:{status:string;value?:string|null}};report_status:string;specimen:{specimen_type?:{raw_display:string}|null}};const t=f.binding.target,k=JSON.stringify([f.kind,f.id,f.revision]);
+   if(f.kind!=='laboratory_report'||!admit(f.kind,f.id,f.revision,t.patient_id,t.encounter_id,e.ingestion.repository_id,e.ingestion.ingestion_sequence)||e.repository!==cutoff.repository_id||e.cutoff!==cutoff.fact_watermark)return empty;
+   for(const component of f.components){
+    if(component.mapping_status!=='mapped'||!component.mapped_concept)continue;
+    const concept=String(component.mapped_concept),group=concept.startsWith('urine_')?'urine':'kidney';
+    const result=component.result,value=result.kind==='unavailable'?`${result.status} · ${result.reason}`:result.kind==='numeric'?`${result.comparator==='='?'':result.comparator}${result.raw_value??'Result unavailable'}${result.unit?.raw_display?' '+result.unit.raw_display:''}`:result.raw_value??'Result unavailable';
+    const at=f.times.available.status==='known'?String(f.times.available.value):'Availability time not recorded';
+    const placed=f.times.available.status==='known'?(Date.parse(at)>=Date.parse(requested.start)&&Date.parse(at)<=Date.parse(requested.end)?'in_window':'outside_window'):'unplaced';
+    sources.push({key:JSON.stringify([k,component.source_component_id]),group,label:component.test_code.raw_display,value,time:at,interval:'Specimen collection: '+(f.times.collected.status==='known'?String(f.times.collected.value):'time not recorded'),inclusion:e.superseded?'historical':placed,status:`${f.report_status} · ${result.kind==='unavailable'?result.status:'result recorded'}`,limitations:[`Mapped concept: ${concept}`,`Source assay: ${component.assay?.raw_display??'not supplied'}`,`Source specimen: ${f.specimen.specimen_type?.raw_display??'not supplied'}`,`Unit and result retain source wording; no conversion or clinical range assessment.`],pin:sourcePin(f.kind,f.id,f.revision,e.digest,e.ingestion.ingestion_sequence),raw:e,entry:e,mappedConcept:concept});
+   }
   }
  }
  const windowSources=sources.filter(s=>s.inclusion==='in_window'&&s.status==='recorded');

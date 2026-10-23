@@ -100,7 +100,9 @@ def execution_transaction(engine: Engine):
     try:
         with Session(engine, expire_on_commit=False) as session:
             with session.begin():
-                require_schema(session.connection())
+                # M8/M9 add recorded fact kinds. Shared execution tables retain
+                # their M7 contracts on the prior reviewed schemas.
+                require_schema(session.connection(), compatible_revisions=('m7_0008', 'm8_0009'))
                 tx = ExecutionTransaction(PatientRepository(session, _lifecycle=state),
                                           _ExecutionAdapter(session, state),
                                           _CreatinineExecutionAdapter(session, state),
