@@ -37,3 +37,9 @@ it('does not group approximate legacy collection times as an exact blood-gas sam
  const c=catalog(),e=gas(c,'approximate-o2','pao2','80');(e.fact.blood_gas_context as any).collected.recorded.precision='approximate';c.items=[e];
  const model=respiratoryModel(c,requested);expect(model.samples).toHaveLength(0);expect(model.contextItems).toHaveLength(1);
 });
+it('formats redundant lactate zeroes for bedside display without rounding or changing original facts',async()=>{
+ const {sourceSummary,measurementText}=await import('../src/respiratory/respiratoryModel');const c=catalog(),e=gas(c,'lactate','lactate','2.000');e.fact.kind='circulatory_lactate';const before=JSON.stringify(e);expect(sourceSummary(e)).toBe('2.0 mmHg');expect(JSON.stringify(e)).toBe(before);expect(measurementText({concept:'lactate',label:'Lactate',role:'measured',quality:'usable',method:null,result:{kind:'numeric',raw_value:'2.0100',comparator:'=',unit:null}})).toBe('2.01');
+});
+it('groups existing observations by measurement and sorts each group by exact time',async()=>{
+ const {groupRespiratoryObservations}=await import('../src/respiratory/respiratoryModel');const c=catalog(),a=gas(c,'ph-old','ph','7.30'),b=gas(c,'paco2','paco2','50'),d=gas(c,'ph-new','ph','7.35');(a.fact.blood_gas_context as any).collected.recorded.value='2026-10-08T08:00:00Z';(a.fact.blood_gas_context as any).collected.source_timestamp='2026-10-08T08:00:00Z';const groups=groupRespiratoryObservations([a,b,d]);expect(groups.map(g=>g.concept)).toEqual(['ph','paco2']);expect(groups[0].items.map(e=>e.fact.id)).toEqual(['ph-new','ph-old']);
+});

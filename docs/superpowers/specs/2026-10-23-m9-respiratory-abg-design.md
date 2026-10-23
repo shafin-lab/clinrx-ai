@@ -1,6 +1,6 @@
 # ClinRx M9 respiratory and ABG
 
-Design v0.2 · 23 October 2026 · Awaiting design approval
+Design v0.2 · 23 October 2026 · Bedside interface approved, implemented and verified in the synthetic workspace; clinical validation remains open
 
 Working label **M9 respiratory/ABG** corresponds to **original roadmap M10**.
 Historical roadmap references retain original M10. Original M9 fluid balance is
@@ -692,6 +692,6 @@ pretending they are implemented. R2 source ownership, deployment/migration and R
 clinical activation are separate decisions; they do not block the R1 source-review
 screen after design approval.
 
-Approve this supplemental bedside layout and safety/evidence requirements before
-applying the redesign to the existing respiratory workspace. Clinical activation
-and production deployment remain separate work after interface approval.
+The user approved this supplemental bedside layout and its safety/evidence requirements on 23 October 2026. The four-panel overview is integrated into the existing respiratory workspace, retaining its source, history and specialist flows. Clinical activation and production deployment remain separate work. Verification is recorded in docs/m9-respiratory/IMPLEMENTATION-VERIFICATION.json.
+
+The user subsequently clarified the shared-workspace objective: enter or import once, inspect earlier values and trends, see renal, respiratory, circulatory and medication context, and complete a review without repeated entry or a reuse-for-assessment step. A combined screen and passing engineering tests do not by themselves satisfy that complete clinical workflow. M7-C remains gated; M9 remains in progress until the outstanding workflow and clinical validation gates are resolved.

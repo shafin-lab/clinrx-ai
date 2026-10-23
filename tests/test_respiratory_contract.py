@@ -91,7 +91,10 @@ def test_m9_migration_preserves_all_171_original_fact_rows_and_links(tmp_path):
         before=snapshot();assert len(before['fact_revision'])==171
         with engine.begin() as connection:
             config.attributes['connection']=connection;command.upgrade(config,'head')
-        assert snapshot()==before
+        after=snapshot()
+        assert {name:after[name] for name in before}==before
+        assert set(after)-set(before)=={'m10_command','m10_attachment'}
+        assert after['m10_command']==after['m10_attachment']==[]
         with transaction(engine) as repo:
             assert repo.load_fact(original.reference,target=TARGET).fact==original
             assert repo.append_fact(record(),target=TARGET).ingestion.ingestion_sequence==172

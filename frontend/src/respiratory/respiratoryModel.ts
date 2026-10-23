@@ -8,7 +8,7 @@ export const blankTime=():RecordedTime=>({status:'not_recorded',precision:'unkno
 export const blankRespiratoryContext=():RespiratoryContext=>({sample_type:'unknown',specimen_id:null,collection_site:null,oxygen_device:null,ventilator_mode:null,airway_id:null,position:null,population:'unknown',settings_confirmed_at_sample:null,passive:null,occlusion_confirmed:null,reference_equation:null});
 export function respiratoryTime(e:Evidence):string|null {
  const f=e.fact;
- if(f.kind==='respiratory_record'){const times=(f as RespiratoryRecord).times;return times.collected.value??times.occurred.value??times.reported.value??times.available.value;}
+ if(f.kind==='respiratory_record'){const record=f as RespiratoryRecord;return record.category==='blood_gas'?record.times.collected.value:record.times.occurred.value;}
  if(f.kind==='laboratory_report'){const times=asObject(f.times);for(const k of ['collected','reported','available']){const p=asObject(times[k]);if(typeof p.value==='string')return p.value;}}
  for(const p of [asObject(asObject(f.blood_gas_context).collected),asObject(f.occurred),asObject(f.available)]){const value=asObject(p.recorded).value??p.source_timestamp;if(typeof value==='string')return value;}
  return null;
@@ -32,11 +32,13 @@ function exactObservationTime(e:Evidence):string|null {
  return null;
 }
 export function respiratoryLabel(e:Evidence):string {if(e.fact.kind==='respiratory_record')return String(e.fact.title);if(e.fact.kind==='laboratory_report')return String(asObject(e.fact.source_panel).raw_display??'Laboratory report');return String(e.fact.concept??e.fact.kind).replaceAll('_',' ');}
-export function measurementText(m:RespiratoryMeasurement){const r=m.result;return r.kind==='unavailable'?`${r.status.replaceAll('_',' ')}: ${r.reason}`:`${r.kind==='numeric'&&r.comparator!=='='?r.comparator:''}${r.raw_value}${r.kind==='numeric'&&r.unit&&r.unit.code!=='1'?' '+r.unit.raw_display:''}`;}
+/** Display-only removal of redundant lactate zeroes; raw source bytes stay intact. */
+export function bedsideResultText(concept:string,text:string){return concept==='lactate'&&/^[+-]?\d+\.\d+$/.test(text)?text.replace(/(\.\d*?[1-9])0+$/,'$1').replace(/\.0+$/,'.0'):text;}
+export function measurementText(m:RespiratoryMeasurement){const r=m.result;return r.kind==='unavailable'?`${r.status.replaceAll('_',' ')}: ${r.reason}`:`${r.kind==='numeric'&&r.comparator!=='='?r.comparator:''}${r.kind==='numeric'?bedsideResultText(m.concept,r.raw_value):r.raw_value}${r.kind==='numeric'&&r.unit&&r.unit.code!=='1'?' '+r.unit.raw_display:''}`;}
 export function sourceSummary(e:Evidence):string {
  if(e.fact.kind==='respiratory_record'){const f=e.fact as RespiratoryRecord;return f.record_status==='withdrawn'?'Withdrawn source record':f.measurements.length?f.measurements.slice(0,4).map(m=>`${m.label}: ${measurementText(m)}`).join(' · '):f.narrative??f.report_status;}
  if(e.fact.kind==='laboratory_report'){return (Array.isArray(e.fact.components)?e.fact.components:[]).map(x=>{const c=asObject(x),r=asObject(c.result);return `${asObject(c.test_code).raw_display??c.mapped_concept??'Result'}: ${r.raw_value??r.status??'Not recorded'} ${asObject(r.unit).raw_display??''}`.trim();}).join(' · ');}
- const r=asObject(e.fact.result),q=asObject(r.quantity);return typeof q.value==='string'?`${q.value} ${asObject(q.unit).raw??''}`:String(r.raw_value??asObject(e.fact.description).raw_display??r.result_type??'Inspect recorded content');
+ const r=asObject(e.fact.result),q=asObject(r.quantity);return typeof q.value==='string'?`${bedsideResultText(e.fact.kind==='circulatory_lactate'?'lactate':String(e.fact.concept??''),q.value)} ${asObject(q.unit).raw??''}`:String(r.raw_value??asObject(e.fact.description).raw_display??r.result_type??'Inspect recorded content');
 }
 function sourceMeasurement(e:Evidence):RespiratoryMeasurement {
  const f=e.fact,r=asObject(f.result),q=asObject(r.quantity),u=asObject(q.unit),status=asObject(asObject(f.acquisition).quality).status;
@@ -74,4 +76,12 @@ export function respiratoryModel(catalog:Catalog|undefined,requested:{patient:st
  }
  const samples:RespiratorySample[]=[...[...groups.values()].map(legacySample),...items.filter(e=>e.fact.kind==='respiratory_record'&&((e.fact as RespiratoryRecord).category==='blood_gas'||(e.fact as RespiratoryRecord).measurements.some(m=>m.result.kind==='numeric'))).map(e=>({id:key(pin(e)),record:e.fact as RespiratoryRecord,evidence:[e],issues:[] as string[],legacy:false}))];
  return {valid:true,signature:JSON.stringify([scope.patient_id,scope.encounter_id,scope.review_start,scope.review_end,c.repository,c.cutoff.fact_watermark]),items,contextItems,samples,laboratory:c.laboratory_reports};
+}
+
+/** Group original observations by concept; never combine specimens or choose a current value. */
+export function groupRespiratoryObservations(items:Evidence[]){
+ const order=['ph','paco2','pao2','bicarbonate','base_excess','sao2','scvo2','svo2','hemoglobin','lactate','spo2','respiratory_rate'];
+ const groups=new Map<string,Evidence[]>();
+ for(const e of items){const concept=e.fact.kind==='circulatory_lactate'?'lactate':String(e.fact.concept??e.fact.kind);groups.set(concept,[...(groups.get(concept)??[]),e]);}
+ return [...groups].sort(([a],[b])=>{const x=order.indexOf(a),y=order.indexOf(b);return (x<0?order.length:x)-(y<0?order.length:y)||a.localeCompare(b);}).map(([concept,rows])=>({concept,items:[...rows].sort((a,b)=>{const x=respiratoryTime(a),y=respiratoryTime(b);return x&&y?compareRespiratoryInstants(y,x)??0:x?-1:y?1:0;})}));
 }

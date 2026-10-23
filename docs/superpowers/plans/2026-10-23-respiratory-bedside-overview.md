@@ -34,11 +34,11 @@
 
 **Interfaces:** consume `ReturnType<typeof respiratoryModel>`, `current:boolean`, `selected?:RespiratorySample`, `onNavigate:(tab:RespiratoryTab)=>void`. Produce `RespiratoryBedsideOverview` with those props.
 
-- [ ] Write failing real-component tests: four headings; no auto-selected support/gas; explicit gas value and source-time context; unconfirmed state suppresses numeric summary; source-context versus confirmed alignment; existing-tab navigation; multiple support records.
-- [ ] Run `npm test -- --maxWorkers=1 tests/respiratoryOverview.test.tsx`; observe missing-module/behaviour failure before implementation.
-- [ ] Implement the four panels with labelled evidence counts/gaps and explicit selected gas; no independent arithmetic or clinical recommendation.
-- [ ] Rerun focused tests and confirm all expected behaviours.
-- [ ] Save a task-specific source snapshot; no shared-index commit while concurrent changes are present.
+- [x] Write failing real-component tests: four headings; no auto-selected support/gas; explicit gas value and source-time context; unconfirmed state suppresses numeric summary; source-context versus confirmed alignment; existing-tab navigation; multiple support records.
+- [x] Run `npm test -- --maxWorkers=1 tests/respiratoryOverview.test.tsx`; observe missing-module/behaviour failure before implementation.
+- [x] Implement the four panels with labelled evidence counts/gaps and explicit selected gas; no independent arithmetic or clinical recommendation.
+- [x] Rerun focused tests and confirm all expected behaviours.
+- [x] Save a task-specific source snapshot; no shared-index commit while concurrent changes are present.
 
 ### Task 2: Integration, style and surgical clarity
 
@@ -46,22 +46,22 @@
 
 **Interfaces:** use the existing `chooseTab` and `tabButtons` refs for overview actions; the selected sample remains owned by the workspace.
 
-- [ ] Write a failing integration test that the overview is visible and each action opens/focuses its existing section without deleting specialist tabs.
-- [ ] Add the overview above the tab list. Move existing evidence counts into a secondary disclosure, preserving their information.
-- [ ] Add responsive, accessible card styles following the current palette; retain visible uncertainty and specimen identity.
-- [ ] Add brief postoperative-context guidance distinguishing postoperative failure, prevention after planned extubation and deterioration after extubation, with linked evidence/source scope; no treatment controls.
-- [ ] Run overview/workspace/model/safety/integration tests and typecheck.
-- [ ] Save updated source snapshots and a diff against exact preimages.
+- [x] Write a failing integration test that the overview is visible and each action opens/focuses its existing section without deleting specialist tabs.
+- [x] Add the overview above the tab list. Move existing evidence counts into a secondary disclosure, preserving their information.
+- [x] Add responsive, accessible card styles following the current palette; retain visible uncertainty and specimen identity.
+- [x] Add brief postoperative-context guidance distinguishing postoperative failure, prevention after planned extubation and deterioration after extubation, with linked evidence/source scope; no treatment controls.
+- [x] Run overview/workspace/model/safety/integration tests and typecheck.
+- [x] Save updated source snapshots and a diff against exact preimages.
 
 ### Task 3: Verify and demonstrate
 
 **Files:** task output directory and `docs/m9-respiratory/` verification records.
 
-- [ ] Build ordinary and configured synthetic bundles into separate output folders.
-- [ ] Run the full frontend suite; investigate/report every observed failure. Repeat after new changes only as needed.
-- [ ] Create an isolated fixture preview of the real component, with synthetic labelling and no patient-database connection. Check desktop/mobile, selection and tab navigation.
-- [ ] Request final review of this delta; fix important findings before reporting completion.
-- [ ] Package design, source crosswalk, planned scenarios, actual verification and changed-file snapshots. Clearly distinguish planned cases from executed tests.
+- [x] Build ordinary and configured synthetic bundles into separate output folders.
+- [x] Run the full frontend suite; investigate/report every observed failure. Repeat after new changes only as needed.
+- [x] Check isolated synthetic previews with existing copied databases, source selection/tab navigation and actual1280px desktop/478px narrow layouts. Exact390px remains unverified; no original database writes.
+- [x] Request final review of this delta; fix important findings before reporting completion.
+- [x] Package design, source crosswalk, planned scenarios, actual verification and changed-file snapshots. Clearly distinguish planned cases from executed tests.
 
 ## Self-review
 
@@ -69,3 +69,21 @@ This plan implements the approved interface amendment and its safety boundaries.
 Broader source-contract extensions, passive-mechanics clinical validation and
 condition-specific treatment activation remain separately documented work. The
 current source implementation is preserved and no new backend scope is introduced.
+
+## Verification status after checkpoint a767c288
+
+Tasks 1 and 2 are implemented with red/green regression evidence and passing focused tests/typecheck. Final read-only delta review found no important introduced issue. Task 3 is being verified on a frozen combined source manifest and immutable build. No claim of clinical readiness or comprehensive society compliance is made. Coordinator and independent reviewer roles follow the user's clarified division of work.
+
+### User-requested optional findings amendment
+
+The user requested chest examination (including air entry) and optional chest ultrasound, X-ray, CT/CTPA and MRI findings on 23 October 2026. This extends the existing bedside/imaging source categories, without a new store, interpretation engine or mandatory imaging requirement.
+
+- [x] Add blank, optional examination and modality-specific report field templates.
+- [x] Preserve original findings and correction history; adding fields does not overwrite existing values.
+- [x] Add direct entry actions in the existing breathing and investigation sections.
+- [x] Observe five failing real-component tests before implementation; verify six capture and navigation cases plus existing regressions.
+- [x] Complete separate independent review, full frontend verification and browser demonstration of the optional-fields checkpoint.
+
+Integration baseline build 061509 and its immutable source evidence remain separately preserved. Exact runtime/test identities and executed results belong in IMPLEMENTATION-VERIFICATION.json; planned clinical validation scenarios are not counted as tests.
+
+Final verification: 1,156 frontend tests across52files and4,409 backend tests pass. Independent review and populated209-source workflow checks are clear. Final runtime build063355, source manifest70e103ed..., patchf7ccd87a.... Full records: docs/m9-respiratory/IMPLEMENTATION-VERIFICATION.json. M9 clinical validation remains in progress and M7-C stays gated.

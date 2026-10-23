@@ -15,7 +15,7 @@ function model(){
 }
 it('presents four bedside questions with explicit gaps and no automatic gas selection',()=>{
  render(<RespiratoryBedsideOverview model={model()} current onNavigate={vi.fn()}/>);
- for(const name of ['Breathing support','Blood gas','Lung mechanics','Review plan'])expect(screen.getByRole('heading',{name,exact:true})).toBeVisible();
+ for(const name of ['Breathing support','Blood gas','Lung mechanics','Review plan'])expect(screen.getByRole('heading',{name})).toBeVisible();
  expect(screen.getByText('Choose a sample')).toBeVisible();expect(screen.getByText('Not assessed')).toBeVisible();
  expect(screen.queryByText('7.30')).not.toBeInTheDocument();expect(screen.queryByText(/normal ventilation/i)).not.toBeInTheDocument();
 });

@@ -29,19 +29,19 @@ it('organizes the overview as a recorded patient course with explicit clinical a
  const catalog=await load(),model=patientOverviewModel(catalog,config);
  expect(model).toHaveProperty('courseSections');
  expect(model.courseSections.map(section=>section.label)).toEqual([
-  'Kidney function, electrolytes and urine',
-  'Cultures and antibiotics',
-  'Circulation and support',
+  'Renal system',
+  'Antimicrobials',
+  'Cardiovascular system',
   'Other recorded findings',
  ]);
  render(<PatientOverview catalog={catalog} status="current" requested={config} guarded={false}/>);
  expect(screen.getByRole('region',{name:'Recorded course by area'})).toBeVisible();
- expect(screen.getByRole('heading',{name:'Kidney function, electrolytes and urine'})).toBeVisible();
+ expect(screen.getByRole('heading',{name:'Renal system'})).toBeVisible();
  expect(screen.getByText(/Expand a finding to inspect each source and its correction history/)).toBeVisible();
 });
 it('places the live culture and antibiotic summary inside the course section',async()=>{
  const catalog=await load();render(<PatientOverview catalog={catalog} status="current" requested={config} guarded={false} antibioticOverview={<p>Final culture and administered antibiotic source</p>}/>);
- const infection=screen.getByRole('region',{name:'Cultures and antibiotics'});expect(within(infection).getByText('Final culture and administered antibiotic source')).toBeVisible();expect(within(infection).queryByText(/No culture finding is available/)).not.toBeInTheDocument();
+ const infection=screen.getByRole('region',{name:'Antimicrobials'});expect(within(infection).getByText('Final culture and administered antibiotic source')).toBeVisible();expect(within(infection).queryByText(/No culture finding is available/)).not.toBeInTheDocument();
 });
 it('orders individual course observations by source time and keeps report status visible',async()=>{
  const catalog=await load(),repo=catalog.repository,cutoff=catalog.cutoff.fact_watermark;
@@ -111,8 +111,9 @@ it('offers the supported fluid-chart workflow from Add information',async()=>{
 });
 it('surfaces the latest M7 and M8 reviews with current versus historical evidence status',async()=>{
  const catalog=await load(),scope=catalog.combined.context.scope,signature=JSON.stringify([scope.patient_id,scope.encounter_id,scope.review_start,scope.review_end,catalog.repository,catalog.cutoff.fact_watermark]);
- const save=(domain:'M7'|'M8',id:string,recordedAt:string,reviewSignature:string)=>localStorage.setItem(reviewStoragePrefix({domain,patient:config.patient,encounter:config.encounter,repository:catalog.repository})+id,JSON.stringify({format:'clinrx-local-review',version:1,id,domain,patient:config.patient,encounter:config.encounter,repository:catalog.repository,period:{start:config.start,end:config.end},snapshot:{signature:reviewSignature,cutoff:catalog.cutoff,pins:[]},draft:{action:'perfusion',reviewer:id.endsWith('new')?'Latest M7 reviewer':domain+' reviewer',rationale:domain+' source review',nextReview:'After reassessment'},recordedAt}));
- save('M7','m7-old','2026-10-08T08:00:00Z',signature);save('M7','m7-new','2026-10-08T09:00:00Z',signature);save('M8','m8-old','2026-10-08T09:30:00Z','historical-signature');
+ const {m7ReviewEvidence}=await import('../src/respiratory/reviewEvidenceContext'),expectedM7=m7ReviewEvidence(catalog.combined.circulatory,config,catalog);
+ const save=(domain:'M7'|'M8',id:string,recordedAt:string,reviewSignature:string,pins:unknown[]=[])=>localStorage.setItem(reviewStoragePrefix({domain,patient:config.patient,encounter:config.encounter,repository:catalog.repository})+id,JSON.stringify({format:'clinrx-local-review',version:1,id,domain,patient:config.patient,encounter:config.encounter,repository:catalog.repository,period:{start:config.start,end:config.end},snapshot:{signature:reviewSignature,cutoff:catalog.cutoff,pins},draft:{action:'perfusion',reviewer:id.endsWith('new')?'Latest M7 reviewer':domain+' reviewer',rationale:domain+' source review',nextReview:'After reassessment'},recordedAt}));
+ save('M7','m7-old','2026-10-08T08:00:00Z',signature);save('M7','m7-new','2026-10-08T09:00:00Z',expectedM7.signature,expectedM7.pins);save('M8','m8-old','2026-10-08T09:30:00Z','historical-signature');
  render(<PatientOverview catalog={catalog} status="current" requested={config} guarded={false}/>);
  const reviews=screen.getByRole('region',{name:'Clinician reviews and next plans'});
  expect(within(reviews).getByText(/Latest M7 reviewer/)).toBeInTheDocument();expect(within(reviews).queryByText(/M7 reviewer · Reviewed 2026-10-08T08:00:00Z/)).not.toBeInTheDocument();expect(within(reviews).getByText('M7 source review')).toBeInTheDocument();expect(within(reviews).getByText('Current evidence snapshot')).toBeInTheDocument();

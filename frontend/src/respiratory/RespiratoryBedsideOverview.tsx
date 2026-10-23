@@ -1,6 +1,7 @@
 import {measurementText,respiratoryTime,type RespiratorySample,respiratoryModel} from './respiratoryModel';
 import type {RespiratoryTab} from './respiratoryCatalog';
 import type {RespiratoryRecord} from './respiratoryTypes';
+import {sampleGasConcepts} from './gasConcepts';
 
 export interface RespiratoryReviewSummary {signature:string;reviewer:string;rationale:string;nextReview:string}
 interface Props {
@@ -8,10 +9,12 @@ interface Props {
  current:boolean;
  selected?:RespiratorySample;
  review?:RespiratoryReviewSummary;
+ reviewIdentity?:string;
  onNavigate:(tab:RespiratoryTab)=>void;
 }
 const timeLabel=(value:string|null)=>value?new Date(value).toLocaleString('en-GB',{timeZone:'UTC',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false})+' UTC':'Collection time not recorded';
-function reading(record:RespiratoryRecord,concept:string){
+function reading(record:RespiratoryRecord,concept:string|null){
+ if(concept===null)return 'Specimen not established';
  const matches=record.measurements.filter(m=>m.concept===concept);
  if(matches.length>1)return 'Conflicting results';
  if(!matches.length)return 'Not recorded';
@@ -20,12 +23,13 @@ function reading(record:RespiratoryRecord,concept:string){
 }
 
 /** Source display only: selection, arithmetic and saved records stay with their owners. */
-export function RespiratoryBedsideOverview({model,current,selected,review,onNavigate}:Props){
+export function RespiratoryBedsideOverview({model,current,selected,review,reviewIdentity,onNavigate}:Props){
  const confirmed=current&&model.valid;
  const supports=model.items.filter(e=>e.fact.kind==='respiratory_record'&&(e.fact as RespiratoryRecord).category==='support');
  const mechanics=model.items.filter(e=>e.fact.kind==='respiratory_record'&&(e.fact as RespiratoryRecord).category==='mechanics');
  const gas=confirmed&&selected?.record.category==='blood_gas'&&selected.record.record_status==='recorded'&&['final','corrected','preliminary','interim'].includes(selected.record.report_status)?selected:undefined;
- const plan=confirmed&&review?.signature===model.signature?review:undefined;
+ const plan=confirmed&&review?.signature===(reviewIdentity??model.signature)?review:undefined;
+ const concepts=sampleGasConcepts(gas?.record.context.sample_type??'unknown');
  const count=(n:number,singular:string,plural:string)=>n===1?'1 '+singular:n+' '+plural;
  const navigate=(tab:RespiratoryTab)=>()=>onNavigate(tab);
  return <section className="resp-bedside-overview" aria-labelledby="resp-overview-heading">
@@ -40,7 +44,7 @@ export function RespiratoryBedsideOverview({model,current,selected,review,onNavi
    <section className="resp-overview-card" aria-labelledby="resp-gas-title"><span className="resp-overview-number">02 · SPECIMEN & TIMING</span><h3 id="resp-gas-title">Blood gas</h3>
     {!confirmed?<strong className="resp-overview-headline">Evidence unconfirmed</strong>:!gas?<><strong className="resp-overview-headline">Choose a sample</strong><p>Keep the specimen and its collection-time support together.</p></>:<>
      <p className="resp-overview-sample">{gas.record.context.sample_type.replaceAll('_',' ')} · {timeLabel(gas.record.times.collected.value)}</p>
-     <dl className="resp-overview-gas"><div><dt>pH</dt><dd>{reading(gas.record,'ph')}</dd></div><div><dt>CO₂</dt><dd>{reading(gas.record,gas.record.context.sample_type==='arterial'?'paco2':'venous_pco2')}</dd></div><div><dt>O₂</dt><dd>{reading(gas.record,gas.record.context.sample_type==='arterial'?'pao2':'pvo2')}</dd></div></dl>
+     <dl className="resp-overview-gas"><div><dt>pH</dt><dd>{reading(gas.record,'ph')}</dd></div><div><dt>CO₂</dt><dd>{reading(gas.record,concepts.co2)}</dd></div><div><dt>O₂</dt><dd>{reading(gas.record,concepts.oxygen)}</dd></div></dl>
      <div className="resp-overview-settings"><span>Sample-time FiO₂</span><strong>{reading(gas.record,'fio2')}</strong><small>{gas.legacy||gas.record.context.settings_confirmed_at_sample!==true?'Alignment not independently confirmed':'Sample-time confirmation recorded'}</small></div>
     </>}
     <button type="button" disabled={!confirmed} onClick={navigate('physiology')}>Choose or review blood gas <span aria-hidden="true">↗</span></button>

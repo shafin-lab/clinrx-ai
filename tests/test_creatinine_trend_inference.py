@@ -264,7 +264,7 @@ def test_persist_reopen_complete_exact_lineage(registered, earlier, later):
         assert [n.stored.fact.reference for n in graph.nodes] == [b.reference, a.reference, inference.reference]
         with reopened.connect() as conn:
             assert set(inspect(conn).get_table_names()) == {'patient', 'encounter', 'fact_revision',
-                'revision_link', 'repository_identity', 'weight_trend_execution', 'creatinine_trend_execution', 'patient_state_temporal_execution', 'micro_antimicrobial_execution', 'circulatory_execution', 'alembic_version'}
+                'revision_link', 'repository_identity', 'weight_trend_execution', 'creatinine_trend_execution', 'patient_state_temporal_execution', 'micro_antimicrobial_execution', 'circulatory_execution', 'alembic_version', 'm10_command', 'm10_attachment'}
     finally:
         reopened.dispose()
 

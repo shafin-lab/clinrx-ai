@@ -1,10 +1,10 @@
-ClinRx respiratory & ABG — proposed bedside interface
+ClinRx respiratory & ABG — approved bedside interface
 23 October 2026 | Design v0.2 | Working M9, original M10
 
 AUDIENCE
 One common clinical view for intensivists, pulmonologists, physicians and
 surgeons. Same facts and safeguards for everyone; expand advanced detail when
-needed. This is a design for review, not a working clinical screen.
+needed. The approved bedside overview is integrated into the existing synthetic workspace. Engineering verification and clinical validation are separate gates.
 
 AT THE TOP
 Patient and encounter | Recorded review window | Evidence confirmation
@@ -51,10 +51,10 @@ Key uncertainty, specimen type and sample oxygen always visible.
 “Why?” shows the source/year and scope. Conditional guidance stays conditional.
 Accurate provenance is not society accreditation or product clinical validation.
 
-PROPOSED AMENDMENT TO THE EXISTING WORKSPACE
+IMPLEMENTED AMENDMENT TO THE EXISTING WORKSPACE
 Concurrent work has added respiratory source entry/review, physiology and
 specialist tabs. Preserve that implementation; do not create a second workspace.
-Add the compact bedside overview and reconcile its source/eligibility behaviour
+The compact overview now links to the existing sections. Reconcile source/eligibility behaviour
 against the evidence crosswalk and acceptance inventory before clinical release.
 Fluid balance/output stays in M8. M11–M18 identifiers remain unchanged.
 
@@ -63,3 +63,17 @@ Full design: ../superpowers/specs/2026-10-23-m9-respiratory-abg-design.md
 SOCIETY-EVIDENCE-CROSSWALK.json: 12 source records and 14 design mappings.
 ACCEPTANCE-CASES.json: 60 planned validation scenarios, not tests already passed.
 INSPECTION-AUDIT.json: inspected candidate identity and file hashes.
+
+CURRENT BOUNDARY
+The four panels summarize existing evidence and clinician-authored reviews.
+They add no new observation store or treatment activation. The complete shared
+clinical workflow remains a separate acceptance gate; M7-C remains gated and M9
+remains in progress. See IMPLEMENTATION-VERIFICATION.json for executed evidence.
+
+OPTIONAL EXAMINATION AND IMAGING CAPTURE
+The existing breathing view offers chest examination capture, including separate
+right/left air entry and examination site/limitations. The investigation view
+offers optional ultrasound, X-ray, CT/CTPA and MRI report fields. Blank fields
+remain absent; an unperformed study can retain its explicit source reason. No
+normal finding, completed test or image interpretation is generated. Each entry
+uses the existing source identity, review-before-save and correction-history flow.

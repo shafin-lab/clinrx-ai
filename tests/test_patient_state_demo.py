@@ -23,7 +23,7 @@ def test_bootstrap_rerun_correction_and_reopen(tmp_path):
         assert set(inspect(engine).get_table_names()) == {
             'repository_identity','patient','encounter','fact_revision','revision_link',
             'weight_trend_execution','creatinine_trend_execution','patient_state_temporal_execution',
-            'micro_antimicrobial_execution','circulatory_execution','alembic_version'}
+            'micro_antimicrobial_execution','circulatory_execution','alembic_version', 'm10_command', 'm10_attachment'}
         correction = demo.correct(engine)
         assert correction == demo.correct(engine)
         assert demo.bootstrap(engine) == first

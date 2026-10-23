@@ -26,11 +26,18 @@ VERIFICATION METHOD
 New regressions were observed failing before their fixes. An existing UI test
 now explicitly selects its source before asserting the selected sample detail.
 A reviewer confirmed the final delta, including the bounded-null collection case.
-Exact counts, commands and source hashes are in DESIGN-VERIFICATION.json.
+Executed counts, commands and source identities are in IMPLEMENTATION-VERIFICATION.json. DESIGN-VERIFICATION.json remains the historical design-only record.
 
-REMAINING CLINICAL/INTERFACE WORK
-The four-panel bedside overview is a proposed amendment awaiting user approval.
-The existing specialist tabs and source entry/review paths are preserved.
+APPROVED INTERFACE INTEGRATION
+The user approved the four-panel overview on 23 October 2026. It is now integrated
+above the existing specialist tabs, which retain source entry/history/review flows.
+Specimen-specific gas concepts prevent capillary/peripheral venous values from
+borrowing arterial or mixed-venous identity. The review panel summarizes the
+existing matching-scope browser review; it adds no second review store.
+
+REMAINING CLINICAL/WORKFLOW WORK
+The full single-entry, cross-domain clinician workflow requires separate
+verification. A combined screen is not proof of integrated clinical reasoning.
 
 Mechanics still needs clinical reconciliation of the actual source-contract
 evidence for zero-flow, leak, hold quality/duration and volume/breath pairing.
@@ -39,3 +46,18 @@ all those conditions. Do not promote the engineering preview to patient use or
 claim comprehensive CHEST/ERS/Indian Chest Society compliance from passing tests.
 Other arithmetic and condition-specific pathways require the documented profile,
 evidence, population, local-protocol and clinical validation work.
+
+SUBSEQUENT SHARED-WORKSPACE CORRECTIONS
+Respiratory RR/SpO2 is read directly from its original source in M7; M9, kidney
+and antibiotic views expose original shared context without copying observations.
+M7/M9 saved review freshness now compares the exact confirmed source pins and
+domain coverage as well as scope/cutoff. Loss of culture confirmation invalidates
+a queued review and makes the older note historical even at the same watermark.
+Typed native timing/quality captions distinguish observation from collection.
+Existing observations are grouped by measurement and ordered by source time;
+lactate display drops redundant trailing zeroes while raw source values remain.
+
+Optional chest examination and imaging capture uses the existing source owner.
+A modality template alone cannot establish an imaging report: a source finding,
+original narrative or explicit study status/reason is required. Blank findings
+are omitted and no normal result or performed test is inferred.

@@ -77,7 +77,7 @@ describe('M7 bedside evidence safety projection',()=>{
 describe('M7 bedside clinician workflow',()=>{
  it('renders four questions, original source data and a clinical-advice-disabled boundary',()=>{
   const {client}=mount();
-  expect(screen.getByRole('heading',{name:'Patient hemodynamic review'})).toBeInTheDocument();
+  expect(screen.getByRole('heading',{name:'Cardiovascular system'})).toBeInTheDocument();
   expect(within(screen.getByRole('region',{name:'Four bedside questions'})).getAllByRole('button')).toHaveLength(4);
   expect(screen.getByText('Chart target not supplied')).toBeInTheDocument();expect(screen.getByText('Not clinically assessed')).toBeInTheDocument();
   expect(screen.getByText(/Clinical profiles inactive/)).toBeInTheDocument();

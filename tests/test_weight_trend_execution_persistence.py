@@ -411,7 +411,7 @@ def test_unmigrated_store_does_not_auto_create_schema(tmp_path):
 def test_execution_schema_is_one_table_with_owner_fk(database):
     with database.connect() as conn:
         schema=inspect(conn)
-        assert SCHEMA_REVISION=='m9_0010' and PAYLOAD_VERSION==1
+        assert SCHEMA_REVISION=='m10_0011' and PAYLOAD_VERSION==1
         assert {c['name'] for c in schema.get_columns('weight_trend_execution')}=={
             'execution_id','patient_id','encounter_id','payload_version','payload','payload_digest','ingested_at'}
         assert schema.get_indexes('weight_trend_execution')==[]
@@ -496,7 +496,7 @@ def test_destructive_downgrade_refused_with_records(case,registered):
             command.downgrade(config,'7a2_0002')
     assert row(registered)==before
     with registered.connect() as conn:
-        assert conn.execute(text('SELECT version_num FROM alembic_version')).scalar_one()=='m9_0010'
+        assert conn.execute(text('SELECT version_num FROM alembic_version')).scalar_one()=='m10_0011'
 
 
 def test_owner_fk_prevents_delete_or_foreign_owner(case,registered):

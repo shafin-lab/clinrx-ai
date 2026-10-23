@@ -17,7 +17,7 @@ export function AntibioticOverview({state,current,onOpen}:{state?:MicroState;cur
  const items=stateItems(state),meds=items.filter(i=>String(i.fact.kind).startsWith('antimicrobial_')),ast=items.filter(i=>i.fact.kind==='microbiology_susceptibility'),cultureReports=items.filter(i=>i.fact.kind==='microbiology_culture');
  const micro=record(state?.assembly.snapshot.microbiology),specimenGroups=Array.isArray(micro.specimens)?micro.specimens.map(record):[];
  const byRef=new Map(items.map(item=>[refKey({kind:item.fact.kind,id:item.fact.id,version:item.fact.revision}),item]));
- return <section aria-label="Patient antibiotics and cultures" className="connected-antibiotics"><h3>Antibiotics and cultures</h3>
+ return <section aria-label="Patient antimicrobials and cultures" className="connected-antibiotics"><h3>Antimicrobials and cultures</h3>
   {!state?<p role="status">Microbiology and antibiotic evidence is unavailable or unconfirmed. This does not establish that no reports exist.</p>:<>
    {!cultureReports.length&&<p>No linked culture report is available in this patient view.</p>}
    {!!cultureReports.length&&!specimenGroups.length&&<p>Culture report evidence is present, but no linked specimen group is available in this patient view.</p>}

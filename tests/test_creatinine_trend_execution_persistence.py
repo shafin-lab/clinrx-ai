@@ -445,7 +445,7 @@ def test_unmigrated_store_rejected(tmp_path):
 def test_schema_exact(database):
     with database.connect() as conn:
         schema=inspect(conn)
-        assert SCHEMA_REVISION=='m9_0010' and PAYLOAD_VERSION==1
+        assert SCHEMA_REVISION=='m10_0011' and PAYLOAD_VERSION==1
         assert {c['name'] for c in schema.get_columns(TABLE)}=={
             'execution_id','patient_id','encounter_id','payload_version','payload','payload_digest','ingested_at'}
         assert all(not c['nullable'] for c in schema.get_columns(TABLE))
@@ -459,7 +459,7 @@ def test_schema_exact(database):
         assert fk[0]['options'].get('ondelete') in (None,'NO ACTION')
         assert compare_metadata(MigrationContext.configure(conn),Base.metadata)==[]
     scripts=ScriptDirectory.from_config(Config(str(ROOT/'backend/alembic.ini')))
-    assert scripts.get_heads()==['m9_0010']
+    assert scripts.get_heads()==['m10_0011']
     assert scripts.get_revision('7b2_0004').down_revision=='7b1_0003'
 
 
@@ -504,11 +504,11 @@ def test_upgrade_preserves_existing_schema_payloads_and_watermark(tmp_path,monke
         after,newddl=retained_storage(engine)
         assert after==before
         assert_fact_kind_extension_only(ddl, newddl)
-        assert {entry[0] for entry in newddl}-{entry[0] for entry in ddl}=={TABLE,'sqlite_autoindex_'+TABLE+'_1','patient_state_temporal_execution','sqlite_autoindex_patient_state_temporal_execution_1','micro_antimicrobial_execution','sqlite_autoindex_micro_antimicrobial_execution_1','circulatory_execution','sqlite_autoindex_circulatory_execution_1'}
+        assert {entry[0] for entry in newddl}-{entry[0] for entry in ddl}=={TABLE,'sqlite_autoindex_'+TABLE+'_1','patient_state_temporal_execution','sqlite_autoindex_patient_state_temporal_execution_1','micro_antimicrobial_execution','sqlite_autoindex_micro_antimicrobial_execution_1','circulatory_execution','sqlite_autoindex_circulatory_execution_1','m10_command','sqlite_autoindex_m10_command_1','m10_attachment','sqlite_autoindex_m10_attachment_1'}
         migrate(engine)
         assert retained_storage(engine)==(after,newddl)
         with transaction(engine) as repo: assert repo.capture_cutoff().fact_watermark==(4 if populated else 0)
-        with engine.connect() as conn: assert conn.execute(text('SELECT version_num FROM alembic_version')).scalar_one()=='m9_0010'
+        with engine.connect() as conn: assert conn.execute(text('SELECT version_num FROM alembic_version')).scalar_one()=='m10_0011'
         if saved is not None:
             from app.persistence.executions import load_weight_trend_execution
             assert load_weight_trend_execution(engine,saved.record.execution_id,target=TARGET)==saved
