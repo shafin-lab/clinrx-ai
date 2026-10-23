@@ -55,7 +55,7 @@ jobs:
           actual=$("$RUNNER_TEMP/clinrx-backend/bin/alembic" -c backend/alembic.ini heads)
           printf '%s\n' "$actual" > "$RUNNER_TEMP/clinrx-backend-logs/schema-head.txt"
           cat "$RUNNER_TEMP/clinrx-backend-logs/schema-head.txt"
-          test "$actual" = 'm7_0008 (head)'
+          test "$actual" = 'm10_0011 (head)'
       - name: Full backend suite
         run: |
           set -o pipefail
