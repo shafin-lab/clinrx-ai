@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-21",
+  "scope": "Synthetic engineering increment; source-linked bedside review and detailed proposed M8 design, not clinical activation",
+  "preview": "http://127.0.0.1:5238/?workspace=renal",
+  "catalog": {
+    "record_definitions": 29,
+    "field_definitions": 313,
+    "proposed_disabled_rules": 60,
+    "workflows": 23,
+    "calculation_references": 24,
+    "validation_specifications": 146,
+    "measures": 12,
+    "sources": 13
+  },
+  "checks": {
+    "frontend_regression_passed": 168,
+    "frontend_files": 12,
+    "new_m8_tests_passed": 31,
+    "final_m8_display_change_retested": true,
+    "backend_regression_passed": 54,
+    "offline_reference_checks_passed": 26,
+    "clinical_validation_tests_executed": 0,
+    "proposed_test_cases_executed": false,
+    "default_build": "passed",
+    "rf2_final_build": "passed",
+    "catalog_structure": "passed",
+    "diff_check": "passed"
+  },
+  "first_run_note": "Initial 12-worker frontend run timed out one pre-existing M7 shared-workspace test; all168 passed with maxWorkers2, without raising test timeout.",
+  "warnings": [
+    "Existing large shared schema bundle advisory",
+    "Installed Starlette/httpx deprecation warning"
+  ],
+  "browser": {
+    "source": "Actual disposable synthetic RF2 gateway/database",
+    "renal_sources_displayed": 26,
+    "shared_catalog_assertions": 165,
+    "exact_creatinine_history": "Original1.00 and corrected1.1000; RF2 history200",
+    "urine": "Intervals, cumulative total, gap, overlap, recorded zero and missing retained separately",
+    "manual_review": "26 pinned original sources, no transport write",
+    "view_continuity": "Overview \u2192 M8 \u2192 M7 \u2192 M8; same catalog and retained session note",
+    "reload": "Synthetic session note cleared; clean preview left open",
+    "console_warnings_errors": [],
+    "mobile_width": 390,
+    "mobile_document_width": 390,
+    "viewport_reset": true
+  },
+  "clinical_execution": "disabled",
+  "clinical_rules": "inactive",
+  "clinical_storage_change": false,
+  "backend_change_by_m8": false,
+  "device_or_order_control": false,
+  "review_persistence": "Page session only; not durable charting or task scheduling",
+  "implementation_limit": "Full baseline/specimen/collection/KRT/citrate record extensions and governed calculations remain design backlog; existing context is not current treatment delivery",
+  "source_sha256": {
+    "frontend/src/renal/renalBedsideModel.ts": "84ef371141917c30890adfa614e3185bf497391c189d1d07211ed60ed5b71df9",
+    "frontend/src/renal/RenalBedsideReview.tsx": "42e874f7e7c60fdaab2675c32de16b91d726a01064de30989267361e71d71e90",
+    "frontend/src/renal/RenalPage.tsx": "4c14d1510a0d8c2ed9cffacbba4130c6c52d982dfc3588815f8d07f78542150e",
+    "frontend/src/renal/renalBedside.css": "c9453f010cff0951cbf311ca15e882fe657b54dc43f8154fa32935ee09c4f307",
+    "frontend/tests/renalBedside.test.tsx": "0622f1a1766fa933fafa34eaca00b9d7d3a8795eaf1927a71883b610a3d38f5f",
+    "frontend/src/App.tsx": "1aa0eef54b1cebd6c6fe722dd3ef5cc7264f22c3a0dbe0714b08b8801372f2c1",
+    "frontend/src/demo/PatientWorkspace.tsx": "571bd1bd2e51fbf36016f195daa19e41667b9457f1a4e8103e52581b24c32e6b",
+    "frontend/src/demo/ComprehensiveDemo.tsx": "6bce93ff9f3fd2cdb7b0979a375d06e4058ebf3b0919847027977bfc81168b8a"
+  },
+  "screenshots": [
+    "evidence/m8-bedside-interface.png",
+    "evidence/m8-mobile.png"
+  ]
+}

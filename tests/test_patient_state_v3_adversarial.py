@@ -137,7 +137,7 @@ def test_m7_migration_preserves_bytes_allocator_links_and_rollback(tmp_path,monk
     after=snapshot()
     if fail:assert after==before
     else:
-        assert set(after)-set(before)=={'circulatory_execution'}
+        assert set(after)-set(before)=={'circulatory_execution', 'm10_command', 'm10_attachment'}
         assert all(after[k]==v for k,v in before.items() if k!='alembic_version')
         assert save(engine,measurement()).fact_watermark==1000
     engine.dispose()

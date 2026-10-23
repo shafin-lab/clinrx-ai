@@ -1,0 +1,927 @@
+[
+  {
+    "id": "teg6s_trauma_reference",
+    "label": "TEG 6s trauma — 2025 consensus reference",
+    "version": "2026-10-23.1",
+    "status": "reference_only",
+    "population": "adult",
+    "setting": "trauma",
+    "device_profile_ids": [
+      "teg6s_gh_lysis"
+    ],
+    "rules": [
+      {
+        "id": "plasma",
+        "conditions": [
+          {
+            "assay": "CK",
+            "parameter": "R",
+            "op": "gt",
+            "value": "10",
+            "unit": "min"
+          }
+        ],
+        "product": "plasma",
+        "text": "Delayed clot initiation supports considering plasma after reviewing anticoagulants and the clinical/laboratory findings.",
+        "source_ids": [
+          "teg6s_trauma"
+        ]
+      },
+      {
+        "id": "fibrin",
+        "conditions": [
+          {
+            "assay": "CFF",
+            "parameter": "MA",
+            "op": "lt",
+            "value": "14",
+            "unit": "mm"
+          }
+        ],
+        "product": "fibrinogen_replacement",
+        "text": "Fibrinogen replacement may be considered within this reference protocol; choose cryoprecipitate or the specified fibrinogen concentrate with the clinician and blood service.",
+        "source_ids": [
+          "teg6s_trauma"
+        ]
+      },
+      {
+        "id": "platelets",
+        "conditions": [
+          {
+            "assay": "CRT",
+            "parameter": "MA",
+            "op": "lt",
+            "value": "50",
+            "unit": "mm"
+          },
+          {
+            "assay": "CFF",
+            "parameter": "MA",
+            "op": "ge",
+            "value": "14",
+            "unit": "mm"
+          }
+        ],
+        "product": "platelets",
+        "text": "Reduced overall strength with adequate measured fibrin contribution supports reviewing platelet replacement in this reference protocol.",
+        "source_ids": [
+          "teg6s_trauma"
+        ]
+      },
+      {
+        "id": "lysis",
+        "conditions": [
+          {
+            "assay": "CK",
+            "parameter": "LY30",
+            "op": "gt",
+            "value": "2.6",
+            "unit": "%"
+          }
+        ],
+        "product": null,
+        "text": "Increased measured clot breakdown. Review trauma antifibrinolytic timing and prior treatment; do not delay independently indicated trauma therapy while awaiting lysis.",
+        "source_ids": [
+          "teg6s_trauma"
+        ]
+      }
+    ],
+    "source_ids": [
+      "teg6s_trauma"
+    ],
+    "reviewer_approval": null,
+    "quantitative_dosing": "not_activated",
+    "clinical_activation": "site_approval_required",
+    "reassessment": "Reassess bleeding and repeat the relevant laboratory/VET measurements after intervention according to the selected local protocol.",
+    "content_hash": "d7767b20d07fb3f259000b74b0ca1ef3e9d62d743830b5d777b9c9f8048a5a47"
+  },
+  {
+    "id": "teg5000_cardiac_reference",
+    "label": "TEG 5000 cardiac — MOH reference",
+    "version": "2026-10-23.1",
+    "status": "reference_only",
+    "population": "adult",
+    "setting": "cardiac",
+    "device_profile_ids": [
+      "teg5000_kaolin"
+    ],
+    "rules": [
+      {
+        "id": "plasma",
+        "conditions": [
+          {
+            "assay": "KH",
+            "parameter": "R",
+            "op": "gt",
+            "value": "12",
+            "unit": "min"
+          }
+        ],
+        "product": "plasma",
+        "text": "Delayed clot initiation supports considering plasma after reviewing anticoagulants and the clinical/laboratory findings.",
+        "source_ids": [
+          "moh_cardiac"
+        ]
+      },
+      {
+        "id": "fibrin",
+        "conditions": [
+          {
+            "assay": "K",
+            "parameter": "MA",
+            "op": "lt",
+            "value": "40",
+            "unit": "mm"
+          },
+          {
+            "assay": "FF",
+            "parameter": "MA",
+            "op": "lt",
+            "value": "8",
+            "unit": "mm"
+          }
+        ],
+        "product": "fibrinogen_replacement",
+        "text": "Fibrinogen replacement may be considered within this reference protocol; choose cryoprecipitate or the specified fibrinogen concentrate with the clinician and blood service.",
+        "source_ids": [
+          "moh_cardiac"
+        ]
+      },
+      {
+        "id": "platelets",
+        "conditions": [
+          {
+            "assay": "K",
+            "parameter": "MA",
+            "op": "lt",
+            "value": "40",
+            "unit": "mm"
+          },
+          {
+            "assay": "FF",
+            "parameter": "MA",
+            "op": "gt",
+            "value": "8",
+            "unit": "mm"
+          }
+        ],
+        "product": "platelets",
+        "text": "Reduced overall strength with adequate measured fibrin contribution supports reviewing platelet replacement in this reference protocol.",
+        "source_ids": [
+          "moh_cardiac"
+        ]
+      }
+    ],
+    "source_ids": [
+      "moh_cardiac"
+    ],
+    "reviewer_approval": null,
+    "quantitative_dosing": "not_activated",
+    "clinical_activation": "site_approval_required",
+    "reassessment": "Reassess bleeding and repeat the relevant laboratory/VET measurements after intervention according to the selected local protocol.",
+    "phases": [
+      "post_protamine"
+    ],
+    "heparin_comparison": {
+      "left": [
+        "K",
+        "R"
+      ],
+      "right": [
+        "KH",
+        "R"
+      ],
+      "kind": "ratio_gt",
+      "threshold": "1.25",
+      "source_id": "moh_cardiac"
+    },
+    "content_hash": "a00fb1063fefc5ceaa0e3c1b720b5ee46af2301b5168a017bc0f826d44a29a3c"
+  },
+  {
+    "id": "teg5000_trauma_reference",
+    "label": "TEG 5000 RapidTEG trauma — Association guideline reference",
+    "version": "2026-10-23.1",
+    "status": "reference_only",
+    "population": "adult",
+    "setting": "trauma",
+    "device_profile_ids": [
+      "teg5000_rapid"
+    ],
+    "rules": [
+      {
+        "id": "fibrin",
+        "conditions": [
+          {
+            "assay": "FF",
+            "parameter": "MA",
+            "op": "lt",
+            "value": "20",
+            "unit": "mm"
+          }
+        ],
+        "product": "fibrinogen_replacement",
+        "text": "Fibrinogen replacement may be considered within this reference protocol; choose cryoprecipitate or the specified fibrinogen concentrate with the clinician and blood service.",
+        "source_ids": [
+          "aagbi_trauma"
+        ]
+      },
+      {
+        "id": "platelets",
+        "conditions": [
+          {
+            "assay": "RapidTEG",
+            "parameter": "MA",
+            "op": "difference_lt",
+            "value": "45",
+            "unit": "mm"
+          },
+          {
+            "assay": "FF",
+            "parameter": "MA",
+            "op": "ge",
+            "value": "20",
+            "unit": "mm"
+          }
+        ],
+        "product": "platelets",
+        "text": "Reduced overall strength with adequate measured fibrin contribution supports reviewing platelet replacement in this reference protocol.",
+        "source_ids": [
+          "aagbi_trauma"
+        ],
+        "difference_with": [
+          "FF",
+          "MA"
+        ]
+      },
+      {
+        "id": "plasma",
+        "conditions": [
+          {
+            "assay": "RapidTEG",
+            "parameter": "MA",
+            "op": "gt",
+            "value": "65",
+            "unit": "mm"
+          },
+          {
+            "assay": "RapidTEG",
+            "parameter": "ACT",
+            "op": "gt",
+            "value": "120",
+            "unit": "s"
+          }
+        ],
+        "product": "plasma",
+        "text": "Delayed clot initiation supports considering plasma after reviewing anticoagulants and the clinical/laboratory findings.",
+        "source_ids": [
+          "aagbi_trauma"
+        ]
+      },
+      {
+        "id": "lysis",
+        "conditions": [
+          {
+            "assay": "RapidTEG",
+            "parameter": "LY30",
+            "op": "gt",
+            "value": "10",
+            "unit": "%"
+          }
+        ],
+        "product": null,
+        "text": "Increased clot breakdown; assess antifibrinolytic treatment within the trauma protocol.",
+        "source_ids": [
+          "aagbi_trauma"
+        ]
+      }
+    ],
+    "source_ids": [
+      "aagbi_trauma"
+    ],
+    "reviewer_approval": null,
+    "quantitative_dosing": "not_activated",
+    "clinical_activation": "site_approval_required",
+    "reassessment": "Reassess bleeding and repeat the relevant laboratory/VET measurements after intervention according to the selected local protocol.",
+    "content_hash": "652619551eb32f7272d558339a09d3cf0e6b153e6fa5466d0374680ace1bc3d9"
+  },
+  {
+    "id": "teg6s_cardiac_reference",
+    "label": "TEG 6s cardiac — RUH non-obstetric reference",
+    "version": "2026-10-23.1",
+    "status": "reference_only",
+    "population": "adult",
+    "setting": "cardiac",
+    "device_profile_ids": [
+      "teg6s_gh"
+    ],
+    "rules": [
+      {
+        "id": "plasma",
+        "conditions": [
+          {
+            "assay": "CK",
+            "parameter": "R",
+            "op": "ge",
+            "value": "10",
+            "unit": "min"
+          }
+        ],
+        "product": "plasma",
+        "text": "Delayed clot initiation supports considering plasma after reviewing anticoagulants and the clinical/laboratory findings.",
+        "source_ids": [
+          "ruh"
+        ]
+      },
+      {
+        "id": "fibrin",
+        "conditions": [
+          {
+            "assay": "CFF",
+            "parameter": "MA",
+            "op": "le",
+            "value": "14",
+            "unit": "mm"
+          }
+        ],
+        "product": "fibrinogen_replacement",
+        "text": "Fibrinogen replacement may be considered within this reference protocol; choose cryoprecipitate or the specified fibrinogen concentrate with the clinician and blood service.",
+        "source_ids": [
+          "ruh"
+        ]
+      },
+      {
+        "id": "platelets",
+        "conditions": [
+          {
+            "assay": "CRT",
+            "parameter": "MA",
+            "op": "le",
+            "value": "49",
+            "unit": "mm"
+          },
+          {
+            "assay": "CFF",
+            "parameter": "MA",
+            "op": "gt",
+            "value": "14",
+            "unit": "mm"
+          }
+        ],
+        "product": "platelets",
+        "text": "Reduced overall strength with adequate measured fibrin contribution supports reviewing platelet replacement in this reference protocol.",
+        "source_ids": [
+          "ruh"
+        ]
+      }
+    ],
+    "source_ids": [
+      "ruh"
+    ],
+    "reviewer_approval": null,
+    "quantitative_dosing": "not_activated",
+    "clinical_activation": "site_approval_required",
+    "reassessment": "Reassess bleeding and repeat the relevant laboratory/VET measurements after intervention according to the selected local protocol.",
+    "phases": [
+      "post_protamine"
+    ],
+    "limitations": [
+      "Reference uses the cardiac subset of the RUH non-obstetric algorithm. Unavailable lysis on this GH mask is not evaluated. Institutional approval does not transfer to ClinRx."
+    ],
+    "heparin_comparison": {
+      "left": [
+        "CK",
+        "R"
+      ],
+      "right": [
+        "CKH",
+        "R"
+      ],
+      "kind": "difference_gt",
+      "threshold": "2",
+      "source_id": "ruh"
+    },
+    "content_hash": "3aadf24f42656950be77dab594134f6649bbc6ca55341948e3e9ff9a1b3eec95"
+  },
+  {
+    "id": "teg6s_hn_cardiac_reference",
+    "label": "TEG 6s HN cardiac — concurrent Clauss reference",
+    "version": "2026-10-23.1",
+    "status": "reference_only",
+    "population": "adult",
+    "setting": "cardiac",
+    "device_profile_ids": [
+      "teg6s_gh_hn"
+    ],
+    "rules": [
+      {
+        "id": "clauss_fibrin",
+        "conditions": [
+          {
+            "assay": "LAB",
+            "parameter": "fibrinogen_clauss",
+            "op": "lt",
+            "value": "1.5",
+            "unit": "g/L"
+          }
+        ],
+        "product": "fibrinogen_concentrate",
+        "text": "Concurrent Clauss fibrinogen below 1.5 g/L with persistent non-surgical post-CPB bleeding supports reviewing fibrinogen concentrate under the source cardiac protocol. This option is laboratory-driven; CFFH is not substituted for Clauss.",
+        "source_ids": [
+          "cardiac_clauss"
+        ],
+        "basis": "laboratory",
+        "requires_context": {
+          "persistent_non_surgical_bleeding": true
+        }
+      }
+    ],
+    "source_ids": [
+      "hn_diagnostic",
+      "cardiac_clauss"
+    ],
+    "reviewer_approval": null,
+    "quantitative_dosing": "not_activated",
+    "clinical_activation": "site_approval_required",
+    "reassessment": "Reassess bleeding and repeat the relevant laboratory/VET measurements after intervention according to the selected local protocol.",
+    "phases": [
+      "post_protamine"
+    ],
+    "limitations": [
+      "No validated HN-specific numeric product algorithm located; diagnostic CFFH cutoffs are not treatment thresholds."
+    ],
+    "content_hash": "4f7a67ccf4cb43feacad77f2dee2c3b2a651aed77edabf6cc7a182d072fdbb3e"
+  },
+  {
+    "id": "rotem_delta_perioperative_reference",
+    "label": "ROTEM delta cardiac — MOH reference",
+    "version": "2026-10-23.1",
+    "status": "reference_only",
+    "population": "adult",
+    "setting": "cardiac",
+    "device_profile_ids": [
+      "rotem_delta_liquid"
+    ],
+    "rules": [
+      {
+        "id": "fibrin",
+        "conditions": [
+          {
+            "assay": "FIBTEM",
+            "parameter": "A10",
+            "op": "lt",
+            "value": "10",
+            "unit": "mm"
+          },
+          {
+            "assay": "EXTEM",
+            "parameter": "A10",
+            "op": "lt",
+            "value": "40",
+            "unit": "mm"
+          }
+        ],
+        "product": "fibrinogen_replacement",
+        "text": "Fibrinogen replacement may be considered within this reference protocol; choose cryoprecipitate or the specified fibrinogen concentrate with the clinician and blood service.",
+        "source_ids": [
+          "moh_cardiac"
+        ]
+      },
+      {
+        "id": "platelets",
+        "conditions": [
+          {
+            "assay": "FIBTEM",
+            "parameter": "A10",
+            "op": "gt",
+            "value": "10",
+            "unit": "mm"
+          },
+          {
+            "assay": "EXTEM",
+            "parameter": "A10",
+            "op": "lt",
+            "value": "40",
+            "unit": "mm"
+          }
+        ],
+        "product": "platelets",
+        "text": "Reduced overall strength with adequate measured fibrin contribution supports reviewing platelet replacement in this reference protocol.",
+        "source_ids": [
+          "moh_cardiac"
+        ]
+      },
+      {
+        "id": "plasma",
+        "conditions": [
+          {
+            "assay": "EXTEM",
+            "parameter": "CT",
+            "op": "gt",
+            "value": "100",
+            "unit": "s"
+          },
+          {
+            "assay": "INTEM",
+            "parameter": "CT",
+            "op": "gt",
+            "value": "240",
+            "unit": "s"
+          }
+        ],
+        "product": "plasma",
+        "text": "Delayed clot initiation supports considering plasma after reviewing anticoagulants and the clinical/laboratory findings.",
+        "source_ids": [
+          "moh_cardiac"
+        ]
+      }
+    ],
+    "source_ids": [
+      "moh_cardiac"
+    ],
+    "reviewer_approval": null,
+    "quantitative_dosing": "not_activated",
+    "clinical_activation": "site_approval_required",
+    "reassessment": "Reassess bleeding and repeat the relevant laboratory/VET measurements after intervention according to the selected local protocol.",
+    "phases": [
+      "post_protamine"
+    ],
+    "heparin_comparison": {
+      "left": [
+        "INTEM",
+        "CT"
+      ],
+      "right": [
+        "HEPTEM",
+        "CT"
+      ],
+      "kind": "right_ratio_lt",
+      "threshold": "0.9",
+      "left_min": "240",
+      "source_id": "moh_cardiac"
+    },
+    "content_hash": "d68228f824447dcf037739cf2d64fb89c6378588f10213dea829aafeaa411ad0"
+  },
+  {
+    "id": "rotem_delta_trauma_reference",
+    "label": "ROTEM delta S critical bleeding — SCGH reference",
+    "version": "2026-10-23.1",
+    "status": "reference_only",
+    "population": "adult",
+    "setting": "trauma",
+    "device_profile_ids": [
+      "rotem_delta_single_use"
+    ],
+    "rules": [
+      {
+        "id": "fibrin",
+        "conditions": [
+          {
+            "assay": "FIBTEM S",
+            "parameter": "A5",
+            "op": "le",
+            "value": "10",
+            "unit": "mm"
+          }
+        ],
+        "product": "fibrinogen_replacement",
+        "text": "Fibrinogen replacement may be considered within this reference protocol; choose cryoprecipitate or the specified fibrinogen concentrate with the clinician and blood service.",
+        "source_ids": [
+          "delta_trauma"
+        ]
+      },
+      {
+        "id": "plasma",
+        "conditions": [
+          {
+            "assay": "EXTEM S",
+            "parameter": "CT",
+            "op": "gt",
+            "value": "80",
+            "unit": "s"
+          },
+          {
+            "assay": "FIBTEM S",
+            "parameter": "A5",
+            "op": "gt",
+            "value": "10",
+            "unit": "mm"
+          }
+        ],
+        "product": "plasma",
+        "text": "Delayed clot initiation supports considering plasma after reviewing anticoagulants and the clinical/laboratory findings.",
+        "source_ids": [
+          "delta_trauma"
+        ]
+      }
+    ],
+    "source_ids": [
+      "delta_trauma"
+    ],
+    "reviewer_approval": null,
+    "quantitative_dosing": "not_activated",
+    "clinical_activation": "site_approval_required",
+    "reassessment": "Reassess bleeding and repeat the relevant laboratory/VET measurements after intervention according to the selected local protocol.",
+    "content_hash": "79996b3cd223bdc7ba8cefe1470d00a2dd2ecdbb74c86cbfdd5313bbb39e38ec"
+  },
+  {
+    "id": "rotem_sigma_trauma_reference",
+    "label": "ROTEM sigma Complete trauma — FEISTY fibrinogen reference",
+    "version": "2026-10-23.1",
+    "status": "reference_only",
+    "population": "adult",
+    "setting": "trauma",
+    "device_profile_ids": [
+      "rotem_sigma_complete"
+    ],
+    "rules": [
+      {
+        "id": "fibrin",
+        "conditions": [
+          {
+            "assay": "FIBTEM C",
+            "parameter": "A5",
+            "op": "le",
+            "value": "10",
+            "unit": "mm"
+          }
+        ],
+        "product": "fibrinogen_replacement",
+        "text": "Fibrinogen replacement may be considered within this reference protocol; choose cryoprecipitate or the specified fibrinogen concentrate with the clinician and blood service.",
+        "source_ids": [
+          "sigma_trauma"
+        ]
+      }
+    ],
+    "source_ids": [
+      "sigma_trauma"
+    ],
+    "reviewer_approval": null,
+    "quantitative_dosing": "not_activated",
+    "clinical_activation": "site_approval_required",
+    "reassessment": "Reassess bleeding and repeat the relevant laboratory/VET measurements after intervention according to the selected local protocol.",
+    "limitations": [
+      "Fibrinogen branch only; no plasma or platelet thresholds borrowed from delta. Verify local cartridge/reagent generation against the study before adoption."
+    ],
+    "content_hash": "6bec4dfaf101b76e455e85d0a8a365481c68eceacd7407fce26f91c3cdf355c9"
+  },
+  {
+    "id": "rotem_sigma_cardiac_reference",
+    "label": "ROTEM sigma + HEP cardiac — Fiameni reference",
+    "version": "2026-10-23.1",
+    "status": "reference_only",
+    "population": "adult",
+    "setting": "cardiac",
+    "device_profile_ids": [
+      "rotem_sigma_complete_hep"
+    ],
+    "rules": [
+      {
+        "id": "fibrin",
+        "conditions": [
+          {
+            "assay": "FIBTEM C",
+            "parameter": "MCF",
+            "op": "lt",
+            "value": "9",
+            "unit": "mm"
+          }
+        ],
+        "product": "fibrinogen_replacement",
+        "text": "Fibrinogen replacement may be considered within this reference protocol; choose cryoprecipitate or the specified fibrinogen concentrate with the clinician and blood service.",
+        "source_ids": [
+          "sigma_cardiac"
+        ]
+      },
+      {
+        "id": "platelets",
+        "conditions": [
+          {
+            "assay": "FIBTEM C",
+            "parameter": "MCF",
+            "op": "gt",
+            "value": "9",
+            "unit": "mm"
+          },
+          {
+            "assay": "EXTEM C",
+            "parameter": "A10",
+            "op": "lt",
+            "value": "40",
+            "unit": "mm"
+          }
+        ],
+        "product": "platelets",
+        "text": "Reduced overall strength with adequate measured fibrin contribution supports reviewing platelet replacement in this reference protocol.",
+        "source_ids": [
+          "sigma_cardiac"
+        ]
+      },
+      {
+        "id": "plasma",
+        "conditions": [
+          {
+            "assay": "FIBTEM C",
+            "parameter": "MCF",
+            "op": "gt",
+            "value": "9",
+            "unit": "mm"
+          },
+          {
+            "assay": "EXTEM C",
+            "parameter": "CT",
+            "op": "gt",
+            "value": "90",
+            "unit": "s"
+          }
+        ],
+        "product": "plasma",
+        "text": "Delayed clot initiation supports considering plasma after reviewing anticoagulants and the clinical/laboratory findings.",
+        "source_ids": [
+          "sigma_cardiac"
+        ]
+      }
+    ],
+    "source_ids": [
+      "sigma_cardiac"
+    ],
+    "reviewer_approval": null,
+    "quantitative_dosing": "not_activated",
+    "clinical_activation": "site_approval_required",
+    "reassessment": "Reassess bleeding and repeat the relevant laboratory/VET measurements after intervention according to the selected local protocol.",
+    "phases": [
+      "post_protamine"
+    ],
+    "heparin_comparison": {
+      "left": [
+        "INTEM C",
+        "CT"
+      ],
+      "right": [
+        "HEPTEM C",
+        "CT"
+      ],
+      "kind": "right_ratio_lt",
+      "threshold": "0.8",
+      "left_min": "240",
+      "source_id": "sigma_cardiac"
+    },
+    "content_hash": "5801dc7453ad6abebca1d8082616eb9a8576eb3defc40bac1e6f21af3bd9f976"
+  },
+  {
+    "id": "rotem_delta_obstetric_reference",
+    "label": "ROTEM delta postpartum — Tampere trial reference",
+    "version": "2026-10-23.1",
+    "status": "reference_only",
+    "population": "adult",
+    "setting": "obstetric",
+    "device_profile_ids": [
+      "rotem_delta_liquid"
+    ],
+    "rules": [
+      {
+        "id": "fibrin",
+        "conditions": [
+          {
+            "assay": "FIBTEM",
+            "parameter": "A5",
+            "op": "lt",
+            "value": "12",
+            "unit": "mm"
+          }
+        ],
+        "product": "fibrinogen_concentrate",
+        "text": "The postpartum-haemorrhage trial used fibrinogen concentrate when FIBTEM A5 was below 12 mm during bleeding.",
+        "source_ids": [
+          "obstetric"
+        ]
+      }
+    ],
+    "source_ids": [
+      "obstetric"
+    ],
+    "reviewer_approval": null,
+    "quantitative_dosing": "not_activated",
+    "clinical_activation": "site_approval_required",
+    "reassessment": "Reassess bleeding and repeat the relevant laboratory/VET measurements after intervention according to the selected local protocol.",
+    "phases": [
+      "postpartum"
+    ],
+    "content_hash": "0eecb71881cdda0eb0fe29a46105efbeafbd4d466b467b3808160cf54eac081f"
+  },
+  {
+    "id": "rotem_delta_liver_reference",
+    "label": "ROTEM delta liver transplant — Zamper reference",
+    "version": "2026-10-23.1",
+    "status": "reference_only",
+    "population": "adult",
+    "setting": "liver_transplant",
+    "device_profile_ids": [
+      "rotem_delta_liquid"
+    ],
+    "rules": [
+      {
+        "id": "fibrin",
+        "conditions": [
+          {
+            "assay": "EXTEM",
+            "parameter": "A5",
+            "op": "lt",
+            "value": "25",
+            "unit": "mm"
+          },
+          {
+            "assay": "FIBTEM",
+            "parameter": "A10",
+            "op": "lt",
+            "value": "10",
+            "unit": "mm"
+          }
+        ],
+        "product": "fibrinogen_replacement",
+        "text": "Fibrinogen replacement may be considered within this reference protocol; choose cryoprecipitate or the specified fibrinogen concentrate with the clinician and blood service.",
+        "source_ids": [
+          "liver"
+        ]
+      },
+      {
+        "id": "platelets",
+        "conditions": [
+          {
+            "assay": "EXTEM",
+            "parameter": "A5",
+            "op": "lt",
+            "value": "25",
+            "unit": "mm"
+          },
+          {
+            "assay": "FIBTEM",
+            "parameter": "A10",
+            "op": "gt",
+            "value": "10",
+            "unit": "mm"
+          }
+        ],
+        "product": "platelets",
+        "text": "Reduced overall strength with adequate measured fibrin contribution supports reviewing platelet replacement in this reference protocol.",
+        "source_ids": [
+          "liver"
+        ]
+      },
+      {
+        "id": "plasma",
+        "conditions": [
+          {
+            "assay": "INTEM",
+            "parameter": "CT",
+            "op": "gt",
+            "value": "240",
+            "unit": "s"
+          },
+          {
+            "assay": "HEPTEM",
+            "parameter": "CT",
+            "op": "ge_other",
+            "value": "0",
+            "unit": "s"
+          }
+        ],
+        "product": "plasma",
+        "text": "Delayed clot initiation supports considering plasma after reviewing anticoagulants and the clinical/laboratory findings.",
+        "source_ids": [
+          "liver"
+        ],
+        "compare_with": [
+          "INTEM",
+          "CT"
+        ]
+      }
+    ],
+    "source_ids": [
+      "liver"
+    ],
+    "reviewer_approval": null,
+    "quantitative_dosing": "not_activated",
+    "clinical_activation": "site_approval_required",
+    "reassessment": "Reassess bleeding and repeat the relevant laboratory/VET measurements after intervention according to the selected local protocol.",
+    "phases": [
+      "pre_anhepatic",
+      "anhepatic",
+      "reperfusion",
+      "neohepatic"
+    ],
+    "requires_context": {
+      "diffuse_bleeding": true,
+      "physiological_conditions_met": true
+    },
+    "context_notes": "Source Figure 1 requires temperature >35 C, ionised calcium >1 mmol/L, pH >7.20 and haemoglobin >8 g/dL. Document that these conditions have been checked.",
+    "limitations": [
+      "Reference study excluded acute liver failure, combined organ transplant and retransplantation within 30 days. PCC and antifibrinolytic branches require additional specific protocols."
+    ],
+    "exclusion_keys": [
+      "acute_liver_failure",
+      "combined_organ_transplant",
+      "retransplant_within_30_days"
+    ],
+    "content_hash": "d4b1d0bda33d095643953fde91452da3a83bd496eeca03972d2773132fc64535"
+  }
+]

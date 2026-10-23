@@ -246,3 +246,7 @@ tests therefore run from source archives and shallow CI checkouts without networ
 access or requiring historical Git objects at test runtime. These are engineering
 test fixtures, not another review ZIP. They contain tracked source only, no Git
 repository, databases, environment files, installed dependencies or build output.
+
+## Supplemental policy approval
+
+The four formerly pending clinical-policy questions are reconciled by the user's explicit approval in [SyntheticPLVEligibility/1](../../../docs/02-clinical-standards/CLINRX-M7-PLV-POLICY-001.md). That document supersedes the pending-policy status above and defines the new-preparation/retained-receipt compatibility boundary. Timestamp admission guarantees remain unchanged.

@@ -1,0 +1,65 @@
+M7 joined to the shared patient overview — 21 October 2026
+
+Candidate preview: http://127.0.0.1:5230/?workspace=hemodynamics
+
+The developed M7 bedside view is now mounted inside PatientWorkspace beside the
+patient overview. Both consume the existing usePatientEvidenceState loader and its
+same patient, encounter, review period, repository and cutoff. The authoring M7
+deep link enters this shared workspace. View buttons do not reload the page or
+fetch another snapshot. M7 source history still uses the exact signed circulatory
+context supplied by the shared catalog. The nonauthoring standalone route remains
+available, with its return destination pointing to the patient overview.
+
+M7 session reviews and drafts survive switches to the overview and back. They
+remain session-only and clear on page reload. A changed shared evidence signature
+preserves draft text but blocks recording it against different evidence; earlier
+session reviews become explicitly historical. A different patient/encounter resets
+the mounted M7 session. Legacy editing/comparison/handover destinations are not
+shown in the overview/M7 navigation.
+
+The existing opt-in synthetic recorded-weight editor remains in the same overview.
+Its pending command survives the M7 view switch, and its save refresh updates both
+views. No M7 calculations, clinical profiles, treatment execution, durable reviews
+or new backend routes were added by this integration.
+
+Verification for this increment
+
+- 54 focused tests passed across six files: shared M7 workspace (4), M7 bedside
+  (19), recorded weight (14), connected overview (9), RF2 integration (2), shared
+  investigations (6). Both default and RF2/authoring/weight builds/typechecks pass.
+  The existing large-bundle build advisory remains.
+- Real browser used a read-only SQLite backup of the M7 synthetic fixture in an
+  independent disposable database. Original 41 M7 sources and two creatinine
+  records appeared together (43 assertions). No snapshots were joined.
+- A 41-pin M7 session review and unsaved draft survived in-page navigation.
+- Recorded 69.8000 kg via the existing validation/save API. A controlled response
+  failure after commit forced exact lookup recovery. Closing the dialog, visiting
+  M7 and returning recovered the pending request without another save. Lookup
+  confirmed it and refreshed the shared overview to 44 assertions. The M7 draft
+  then showed the evidence-change warning and its earlier review was historical.
+- Validate/save/lookup request bytes were identical; exactly one save and one new
+  revision exist. All original revisions are unchanged. No execution-table count
+  increased (two pre-existing circulatory executions remain two).
+- Exact MAP source and its retained revision history worked through the shared
+  context. Browser console warning/error capture was empty. At 390px, document
+  width was 390px. Temporary viewport override was reset.
+- The original M7 fixture hash is unchanged. rf2-implementation stayed clean at
+  0bfef8294d2a5c730fb62413212e26cffb3df502. The app at port 5197 was not changed.
+
+Evidence: review-evidence/m7-shared-integration/ (RESULTS.json, focused-final.log,
+build-*-final.log, request-verification.json, source-sha256.json/source-snapshot,
+DOM captures, desktop/mobile screenshots, verified-snapshot.sqlite3).
+The original M7 handoff ZIP and prior weight-entry evidence retain their original
+attribution. Initial test/build/server failures are retained separately; the final
+logs identify corrected successful runs. The original M7 handoff's 99 frontend
+and 25 backend checks were prior verification, not rerun counts for this increment.
+
+Scope limits
+
+This is synthetic engineering verification. Weight corrections, reload/absent
+recovery and refresh-failure behavior retain their earlier weight-entry browser/API
+evidence and regression coverage. This increment additionally exercises recovery
+while switching between the integrated views. Broad laboratory import and the
+remaining clinical domains are not completed by this work. No M8 work was started
+in this integration task. The accepted checkout, live app and synced sources were
+not edited, deployed or replaced.

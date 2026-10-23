@@ -299,6 +299,14 @@ class DeviceIdentity(Contract):
     limitations: Notes = ()
 
 
+class AcquisitionApplicability(Contract):
+    """Source assertion covering one exact acquisition, not a freshness heuristic."""
+    acquisition: Reference
+    status: Literal['applied', 'not_required', 'not_applied', 'unknown']
+    available: ClinicalInstant
+    provenance: BoundedProvenance
+
+
 class Acquisition(Contract):
     method: Literal['invasive_arterial', 'automated_cuff', 'pac', 'rhc',
         'bolus_thermodilution', 'continuous_thermodilution', 'pulse_contour',
@@ -321,6 +329,8 @@ class Acquisition(Contract):
     reference_level: RecordedConcept | None = None
     calibration: Literal['adequate', 'inadequate', 'unknown', 'not_applicable'] = 'unknown'
     zeroing: Literal['adequate', 'inadequate', 'unknown', 'not_applicable'] = 'unknown'
+    calibration_application: AcquisitionApplicability | None = Field(default=None, exclude_if=lambda v: v is None)
+    zeroing_application: AcquisitionApplicability | None = Field(default=None, exclude_if=lambda v: v is None)
     calibration_provenance: BoundedProvenance | None = None
     zeroing_provenance: BoundedProvenance | None = None
     interval_start: RecordedTime = Field(default_factory=missing_time)
@@ -455,18 +465,37 @@ class PerfusionObservation(Measurement):
     regional_site: RecordedConcept | None = None
 
 
+class BloodGasContext(Contract):
+    """Source-recorded respiratory context; no derived ratios or interpretation."""
+    collected: ClinicalInstant
+    fio2: ExactQuantity | None = None
+    oxygen_device: RecordedConcept | None = None
+    ventilator_mode: RecordedConcept | None = None
+    peep: ExactQuantity | None = None
+    provenance: BoundedProvenance
+    limitations: Notes = ()
+
+
 class OxygenTransport(Measurement):
+    """Recorded oxygenation/gas measurements and noninvasive respiratory rate."""
     kind: Literal['circulatory_oxygen'] = 'circulatory_oxygen'
     concept: Literal['sao2', 'spo2', 'scvo2', 'svo2', 'hemoglobin', 'pao2', 'pvo2',
-        'cao2', 'cvo2', 'do2', 'vo2', 'extraction_ratio']
+        'cao2', 'cvo2', 'do2', 'vo2', 'extraction_ratio',
+        'ph', 'paco2', 'bicarbonate', 'base_excess', 'respiratory_rate']
     sample_type: Literal['arterial', 'central_venous', 'mixed_venous', 'peripheral_venous',
                          'noninvasive', 'unknown']
     specimen: SourceCode | None = None
+    blood_gas_context: BloodGasContext | None = Field(default=None, exclude_if=lambda v: v is None)
 
     @model_validator(mode='after')
     def sample_identity(self):
+        if self.concept == 'respiratory_rate' and (self.blood_gas_context is not None or self.acquisition.method == 'blood_gas'):
+            raise ValueError('respiratory rate is a bedside observation, not a blood gas result')
+        if self.blood_gas_context is not None and (self.acquisition.method != 'blood_gas' or self.sample_type == 'noninvasive'):
+            raise ValueError('blood gas context requires a sampled blood gas acquisition')
         expected = {'scvo2': 'central_venous', 'svo2': 'mixed_venous',
-                    'sao2': 'arterial', 'spo2': 'noninvasive'}
+                    'sao2': 'arterial', 'spo2': 'noninvasive', 'paco2': 'arterial',
+                    'respiratory_rate': 'noninvasive'}
         if self.concept in expected and self.sample_type not in (expected[self.concept], 'unknown'):
             raise ValueError('oxygen concept contradicts sample context')
         return self
@@ -618,6 +647,14 @@ class DynamicAssessment(CirculatoryFact):
         return self
 
 
+class RecordedCirculatoryInterval(Contract):
+    """Source-asserted boundaries, not a derived duration or verified ordering."""
+    start: ClinicalInstant
+    end: ClinicalInstant
+    provenance: BoundedProvenance
+    limitations: Notes = ()
+
+
 class CirculatoryEvent(CirculatoryFact):
     kind: Literal['circulatory_event'] = 'circulatory_event'
     event_type: Literal['fluid_bolus', 'fluid_challenge', 'transfusion', 'bleeding',
@@ -627,6 +664,7 @@ class CirculatoryEvent(CirculatoryFact):
     description: RecordedConcept
     external_evidence: Annotated[tuple[SourceCode, ...], Field(max_length=32)] = ()
     recorded_amount: ExactQuantity | None = None
+    recorded_interval: RecordedCirculatoryInterval | None = Field(default=None, exclude_if=lambda v: v is None)
 
 
 class SignalManifest(CirculatoryFact):

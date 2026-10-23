@@ -1,0 +1,62 @@
+M8 investigation presentation amendment — v0.2, 21 October 2026
+
+The detailed v0.1 field catalog already specifies renal chemistry and urine studies.
+This amendment makes their bedside visibility explicit without claiming that new
+laboratory feeds, entry contracts or calculations have been implemented.
+
+Core visible fields: urea/BUN as identified by the source, creatinine, serum/plasma
+sodium and potassium, and urine routine. A urea value is not a BUN value; preserve
+analyte and original units. No automatic cross-conversion or clinical interpretation.
+
+Expandable electrolyte, acid–base and CRRT monitoring: chloride; chemistry total
+CO2; blood-gas bicarbonate and pH, separately identified; total and systemic ionised
+calcium; circuit post-filter ionised calcium separately; magnesium; phosphate;
+glucose and albumin. Keep actual specimen/location, collection/report times, quality
+and haemolysis flags. Direct versus indirect sodium assay, interference/dilution,
+diuretics, replacement and actual KRT context are important source metadata for
+future interpretation. A critical-result workflow requires local thresholds and
+acknowledgement, not a new automatic treatment rule in this view.
+
+Expandable urine studies: urine routine/dipstick components; microscopy with cells,
+casts, crystals and source morphology; ACR and PCR as distinct ratios; urine sodium,
+potassium, chloride, creatinine and urea; urine osmolality and measured serum
+osmolality; specific gravity. Routine report components may also include pH,
+ketones, colour and appearance when supplied by the laboratory. Do not use a urine
+output/collection entry as a urinalysis result. Culture is available when infection
+is a clinical question, with original specimen and M6 ownership retained.
+
+Measured osmolality uses mOsm/kg. Estimated osmolarity uses a separately specified
+calculation/basis and must not be silently relabelled as a measurement. Specific
+gravity does not replace measured osmolality. Paired blood/urine collection times,
+sampling before/after relevant interventions, KRT, diuretics, sepsis and CKD context
+must remain visible where interpretation depends on them. Urine sodium, FENa and
+FEurea do not generate an automatic volume-status or cause-of-AKI diagnosis.
+
+Targeted options: cystatin C, CK/rhabdomyolysis evaluation, immune/glomerular tests,
+haemolysis/TMA evaluation, medication/transplant drug levels, renal imaging and
+obstruction review. These are indication-led options, not a universal order bundle.
+ACR/PCR, urine electrolyte calculations, osmolality/gap interpretation and sodium
+correction calculations retain their v0.1 eligibility and approval requirements.
+
+Current implementation: five core fields and expandable groups. Only currently
+supported exact source discriminants (creatinine and relevant blood-gas observations)
+open source/history. Other options explicitly read 'Result feed not connected'.
+No result supplied, retrieval unconfirmed and feed not connected remain different
+states. No invented observations, test ordering, source writes or expanded laboratory
+admission were added. The source-linked four-card renal workflow is unchanged.
+
+Verification for this amendment: 41 tests passed across the new investigation panel,
+existing renal bedside and shared M7 workspace tests; typecheck/production RF2 build
+passed. Existing large shared schema bundle advisory remains. No backend contracts
+or clinical rules were changed; the earlier backend/clinical validation boundaries
+remain in force. See outputs/clinrx-m8-investigations-20261021 for current evidence.
+
+Clinical anchors:
+NICE NG148, recommendation1.4.2, urinalysis when AKI is suspected/detected:
+https://www.nice.org.uk/guidance/ng148/chapter/Recommendations
+NICE NG203, proteinuria assessment and ACR/PCR distinctions:
+https://www.nice.org.uk/guidance/ng203/chapter/Recommendations
+European hyponatraemia guideline (ESE/ESICM/ERA-EDTA,2014):
+https://www.ese-hormones.org/publications/directory/ese-clinical-guideline-for-the-management-of-hyponatraemia/
+These support specific investigation concepts; the UI organization is a ClinRx
+design choice, not a claim that every listed test is required for every patient.

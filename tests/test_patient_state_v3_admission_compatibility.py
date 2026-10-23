@@ -131,11 +131,12 @@ def test_actual_producer_current_consumer(historical_source,tmp_path,monkeypatch
             assert w.reconcile_circulatory_execution(engine,request).status=='absent'
             # Absence performs no retry. Only this explicit same-command call may execute.
             assert contents()[0] is None
-            if kind=='iso':assert w.execute_circulatory_review(engine,request,clock=clock).record.decision.outcome=='released'
-            else:
-                with pytest.raises(StorageIntegrityError) as caught:w.execute_circulatory_review(engine,request,clock=clock)
-                assert str(caught.value)=='circulatory execution integrity failure'
-                assert contents()[0] is None
+            # These pre-policy producers have no approved eligibility version or
+            # acquisition-specific applicability evidence. Even exact ISO pending
+            # preparations require explicit source-backed re-preparation now.
+            with pytest.raises(StorageIntegrityError) as caught:w.execute_circulatory_review(engine,request,clock=clock)
+            assert str(caught.value)=='circulatory execution integrity failure'
+            assert contents()[0] is None
         assert request.model_dump_json()==original_request
         assert contents()[1]==data['facts']
         if data['receipt'] is not None:assert contents()[0]==data['receipt']

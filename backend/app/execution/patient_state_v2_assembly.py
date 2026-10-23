@@ -84,7 +84,11 @@ def _limit(condition):
 
 
 def _domain(fact):
-    return 'antimicrobial' if fact.kind.startswith('antimicrobial_') else 'microbiology'
+    if fact.kind.startswith('antimicrobial_'):
+        return 'antimicrobial'
+    if fact.kind.startswith('microbiology_') or fact.kind in ('blood_culture_set', 'blood_culture_bottle'):
+        return 'microbiology'
+    return 'other'
 
 
 def _withdrawn(fact):
@@ -132,6 +136,10 @@ def _assemble(repository, request, *, history_budget=None, family_budget=None, a
         fact = stored.fact
         if not isinstance(fact, RecordedFactV2):
             issue(fact.reference, 'unsupported_source_structure')
+        elif _domain(fact) == 'other':
+            # M6 assembles only facts owned by microbiology and antimicrobial
+            # contracts. Shared laboratory reports are served through M8/RF2.
+            continue
         elif _withdrawn(fact):
             issue(fact.reference, 'withdrawn_terminal')
         else:

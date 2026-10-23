@@ -1,0 +1,145 @@
+{
+  "date": "2026-10-23",
+  "status": "Approved interface and optional findings integrated; synthetic engineering verification passed; clinical M9 remains in progress",
+  "source_identity": {
+    "head": "a26ac43934e6df94a4dc5de61ce722975ddb0a05",
+    "source_manifest_sha256": "70e103edf69a3620b6ff9687aa1b895ea71fa43ee0fa15d32783f0c6fa0bf390",
+    "patch_sha256": "f7ccd87a38245bab546306f0da5d43adb5d1950f9c81c0748ca30637cba9ea44",
+    "new_files": {
+      "frontend/src/respiratory/SharedPatientContext.tsx": "81af7af135d101ca6281a74d49d6ba4e00d1a203dc1bba44533d247bd68f2c21",
+      "frontend/src/respiratory/gasConcepts.ts": "f69a57f4c69c827d862b8b192f845e1a6285f671935ae83cd80820919f2375ea",
+      "frontend/src/respiratory/patientContextModel.ts": "14b33f362267c9b716b0ff287d22abe068213874dbde6ecb7e47536eb319fbf4",
+      "frontend/src/respiratory/reviewEvidenceContext.ts": "d965ba92e6ae3382e0fcfbbf8bcd7b90a63649095b960f95e3ba020162f6655c",
+      "frontend/tests/respiratoryFindings.test.tsx": "5f04b87f285bcdcd18210efb6b39b22f3573a535ead22f9ec7be7f5f644426a6",
+      "frontend/tests/sharedRespiratoryContext.test.tsx": "4d0a2687a7818c59f7c7d939a933039c9dc395d806a6c69e9d45da3edc4d2a97"
+    }
+  },
+  "source_manifest_entries_checked": 402,
+  "source_manifest_mismatches": [],
+  "synthetic_build": "review-evidence/consolidation/builds/preview-20261023T063355Z",
+  "verification": {
+    "frontend": {
+      "files": 52,
+      "tests_passed": 1156,
+      "exit_code": 0,
+      "duration_seconds": 238.51,
+      "command": "npm test -- --maxWorkers=1",
+      "log": "review-evidence/m9-respiratory/optional-accepted-freeze-20261023T063415Z/frontend-full-green.log"
+    },
+    "baseline_frontend": {
+      "files": 51,
+      "tests_passed": 1148,
+      "exit_code": 0,
+      "duration_seconds": 244.01,
+      "source_reconstruction": "review-evidence/m9-respiratory/baseline-061509-reconstruction.json",
+      "log": "review-evidence/m9-respiratory/baseline-061509-full-green.log"
+    },
+    "backend": {
+      "tests_passed": 4409,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0,
+      "junit": "review-evidence/m9-respiratory/backend-resumed.xml",
+      "note": "Backend runtime unchanged by subsequent frontend-only corrections and optional fields."
+    },
+    "focused_optional_and_shared": {
+      "files": 4,
+      "tests_passed": 56,
+      "exit_code": 0
+    },
+    "typecheck_and_synthetic_build": {
+      "exit_code": 0
+    },
+    "ordinary_build": {
+      "exit_code": 0,
+      "output": "../outputs/clinrx-m9-resumed-20261023/build-default-063355"
+    },
+    "independent_review": "Superpower Review: final fixed source and optional capture reviewed at identified frozen manifests; no unresolved consequential finding."
+  },
+  "browser": {
+    "isolated_previews": [
+      5241,
+      5242
+    ],
+    "original_preview_untouched": 5238,
+    "populated_snapshot": 209,
+    "source_roundtrip": "Original and corrected respiratory versions retained; same source visible automatically in M7, overview, kidney and antibiotic context.",
+    "reviews": "M9 saved200 exact pins and M7 saved182; reload and overview current status confirmed, older subset reviews historical.",
+    "gas_spot_check": "09:00 source80mmHg/40% gives P/F200; later60% not substituted.",
+    "optional_capture": "Right/left air entry and ultrasound findings blank by default; X-ray, CT/CTPA, MRI choices present; modality-only report rejected; own test draft closed with zero source writes.",
+    "layout": {
+      "final_desktop_css_width": 1280,
+      "final_desktop_scroll_width": 1280,
+      "baseline_narrow_css_width": 478,
+      "baseline_narrow_scroll_width": 478,
+      "exact_390px": "not run"
+    },
+    "evidence": "review-evidence/m9-respiratory/optional-accepted-freeze-20261023T063415Z/browser-check.json"
+  },
+  "preservation": {
+    "checked_at": "2026-10-23T06:40:01.082913+00:00",
+    "databases": {
+      "original": {
+        "sha256": "0fad90871d2a4fa1a36eac09c70c53fce553ea62c729d7c0b0f22038d661d2c4",
+        "integrity": "ok",
+        "facts": 171,
+        "schema": "m8_0009",
+        "original_fact_rows_identical": true,
+        "identity_and_execution_tables_identical": true,
+        "antimicrobial_records": [
+          [
+            "antimicrobial_non_delivery",
+            1
+          ]
+        ]
+      },
+      "candidate": {
+        "sha256": "fe0110faa89b2466109003f97c4b9e4a55b1e00e71ec062faf4f004b4ee74a32",
+        "integrity": "ok",
+        "facts": 171,
+        "schema": "m9_0010",
+        "original_fact_rows_identical": true,
+        "identity_and_execution_tables_identical": true,
+        "antimicrobial_records": [
+          [
+            "antimicrobial_non_delivery",
+            1
+          ]
+        ]
+      },
+      "verification": {
+        "sha256": "c134d6785213026a9a3cc82d189c81a9c1943c3641c3deb3489ee9c8c308df29",
+        "integrity": "ok",
+        "facts": 209,
+        "schema": "m9_0010",
+        "original_fact_rows_identical": true,
+        "identity_and_execution_tables_identical": true,
+        "antimicrobial_records": [
+          [
+            "antimicrobial_non_delivery",
+            1
+          ]
+        ]
+      }
+    },
+    "served_build": "preview-20261023T063355Z",
+    "databases_unchanged_since_browser_review": true
+  },
+  "planned_clinical_scenarios": {
+    "count": 60,
+    "file": "ACCEPTANCE-CASES.json",
+    "status": "Planned validation inventory; not counted as executed product tests."
+  },
+  "clinical_limits": [
+    "M7-C remains gated.",
+    "No society endorsement or comprehensive ACCP/CHEST, ERS or Indian Chest Society compliance certification is claimed.",
+    "Passive mechanics, condition-specific pathways and patient-use release require the documented clinical validation and local protocol work.",
+    "Optional fields capture original clinical examination/imaging findings; no automatic image interpretation, diagnosis or treatment."
+  ],
+  "product_code_changed": true,
+  "working_interface_created": true,
+  "clinical_profiles_enabled": false,
+  "synced_sources_modified": false,
+  "original_patient_database_modified": false
+}

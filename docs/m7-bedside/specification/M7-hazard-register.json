@@ -1,0 +1,205 @@
+{
+  "status": "Planning inventory, not an accepted clinical safety case",
+  "hazards": [
+    {
+      "id": "M7-H01",
+      "hazard": "Wrong patient/device assignment",
+      "required_controls": "Verified exact assignment interval, authenticated binding and pre-identity quarantine.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H02",
+      "hazard": "Artifact drives escalation",
+      "required_controls": "Method-specific quality, calibration/zero applicability, waveform/cuff confirmation and bedside urgency.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H03",
+      "hazard": "Normal pressure falsely reassures",
+      "required_controls": "Separate documented target status from multimodal perfusion and missingness.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H04",
+      "hazard": "Lactate drives repeated fluid",
+      "required_controls": "Sampling/method context, alternative causes and separate need/response/tolerance review.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H05",
+      "hazard": "Invalid dynamic index drives fluid",
+      "required_controls": "Contemporaneous rhythm/effort/ventilation/device/RV/IAP applicability and uncertainty checks.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H06",
+      "hazard": "Fluid causes congestion harm",
+      "required_controls": "Separate tolerance, actual delivery, reassessment and clinician-owned stop conditions.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H07",
+      "hazard": "Dose/unit/concentration error",
+      "required_controls": "Exact active basis, dimensions, actual concentration, dosing weight and local preparation checks.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H08",
+      "hazard": "New weight silently changes therapy",
+      "required_controls": "Retain prescribed dosing weight; explicit reconciliation before clinical adoption.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H09",
+      "hazard": "Unobserved infusion gap counted as treatment",
+      "required_controls": "No carry-forward/zero fill; separate source totals and derived intervals; owned reconciliation.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H10",
+      "hazard": "Extravasation missed",
+      "required_controls": "Actual documented access checks and immediate owned bedside pathway independent of numeric completeness.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H11",
+      "hazard": "Mixed/obstructive/RV cause missed",
+      "required_controls": "Clinical cause alternatives, specialist profiles and timely escalation without complete-form gating.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H12",
+      "hazard": "Incompatible method calculations",
+      "required_controls": "Exact units, sample compartments, method/time alignment, denominator and uncertainty gates.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H13",
+      "hazard": "MCS or specialty misapplication",
+      "required_controls": "Explicit scope, source-context limits and specialist candidacy; no generic device control.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H14",
+      "hazard": "Correction/new fact leaves stale plan",
+      "required_controls": "Evidence pins plus query/absence watches/context generation and transactional acceptance recheck.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H15",
+      "hazard": "Unknown completion causes duplicate effect",
+      "required_controls": "Durable original command, idempotency, fenced workers and authoritative downstream reconciliation.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H16",
+      "hazard": "Critical correction not communicated",
+      "required_controls": "Append-only revision/attempt-specific communication with current roster, escalation and actual action evidence.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H17",
+      "hazard": "Transfer loses ownership or infusion continuity",
+      "required_controls": "Receiving acceptance, exact targets/delivery/concentration/weight/access and pending task handoff.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H18",
+      "hazard": "Stale feed looks live",
+      "required_controls": "Verified coverage and gaps, source-specific SLOs and independent bedside fallback.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H19",
+      "hazard": "Reference/AI mistaken for treatment approval",
+      "required_controls": "Visible reference/profile/approval scope, grounded explanations, no generated doses or autonomous commands.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    },
+    {
+      "id": "M7-H20",
+      "hazard": "Complex UI delays action",
+      "required_controls": "Four-question default view, progressive disclosure, relevant-only entry and bedside task/error validation.",
+      "severity": "local clinical assessment pending",
+      "likelihood": "local assessment pending",
+      "residual_risk": "not accepted",
+      "owner": "local named owner required",
+      "evidence": "independent verification and clinical acceptance pending"
+    }
+  ]
+}

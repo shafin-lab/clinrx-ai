@@ -1,0 +1,1893 @@
+{
+  "status": "Concrete synthetic semantic fixtures with proposed oracles; clinical approval, DTO adapters and application execution pending",
+  "vectors": [
+    {
+      "id": "M7-G001",
+      "title": "Verified assignment",
+      "rule_ids": [
+        "M7-R001"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G001-fixture",
+        "inputs": {
+          "requested": [
+            "T1",
+            "P1",
+            "E1"
+          ],
+          "device_assignment": [
+            "T1",
+            "P1",
+            "E1"
+          ],
+          "authenticated": true
+        }
+      },
+      "fixture_digest": "d547810662f3f86ed53e41eba11a24a28880ed961c0d294d343834a0f2db7b17",
+      "expected_structured_subset": {
+        "patient_admission": "eligible_for_declared_scope",
+        "clinical_treatment_inference": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G002",
+      "title": "Bed reuse wrong patient",
+      "rule_ids": [
+        "M7-R001"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G002-fixture",
+        "inputs": {
+          "requested": [
+            "T1",
+            "P1",
+            "E1"
+          ],
+          "device_assignment": [
+            "T1",
+            "P2",
+            "E2"
+          ],
+          "same_bed": true
+        }
+      },
+      "fixture_digest": "c86c5f65db1ebc01a81b8ff42c16d14a358e642ca66d68e79a140e7e44950a1f",
+      "expected_structured_subset": {
+        "admission": "quarantined",
+        "foreign_records_in_patient_view": 0,
+        "operational_owned_resolution": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G003",
+      "title": "Knowledge has no patient",
+      "rule_ids": [
+        "M7-R076"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G003-fixture",
+        "inputs": {
+          "kind": "ClinicalProfile",
+          "patient": null,
+          "organization": "T1",
+          "editor_authorized": true
+        }
+      },
+      "fixture_digest": "c0c6c86ed726c71bf0f0b1735ce7f80d25f67fa0438ba5f9207ab7aab08c56b0",
+      "expected_structured_subset": {
+        "scope": "knowledge",
+        "fabricated_patient_ids": 0,
+        "clinical_activation": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G004",
+      "title": "Same identity different bytes",
+      "rule_ids": [
+        "M7-R002"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G004-fixture",
+        "inputs": {
+          "identity": "F1-v1",
+          "expected_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "actual_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      },
+      "fixture_digest": "0b4d54d93f679842521c9c27e96c6e26eadfc27e3fdd70528268f201a71f49a6",
+      "expected_structured_subset": {
+        "state": "integrity_failure",
+        "source_overwrites": 0,
+        "dependent_output": "withheld"
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G005",
+      "title": "Late commit",
+      "rule_ids": [
+        "M7-R003"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G005-fixture",
+        "inputs": {
+          "source_release": "2026-10-21T09:00:00Z",
+          "received": "2026-10-21T09:15:00Z",
+          "committed": "2026-10-21T10:00:00Z",
+          "actual_cutoff": "2026-10-21T09:30:00Z"
+        }
+      },
+      "fixture_digest": "9dd72ad673bf204e116469cb0a6dcf310577ec4f9c9bd70abd381df8624606e4",
+      "expected_structured_subset": {
+        "included_actual_history": false,
+        "clinician_awareness_asserted": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G006",
+      "title": "Retrospective source reconstruction",
+      "rule_ids": [
+        "M7-R003"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G006-fixture",
+        "inputs": {
+          "source_release": "2026-10-21T09:00:00Z",
+          "committed": "2026-10-21T10:00:00Z",
+          "requested_cutoff": "2026-10-21T09:30:00Z",
+          "mode": "source_release_reconstruction"
+        }
+      },
+      "fixture_digest": "5f8cdf927c287219c5ba004cf08859893e489c0812ca7233ae60925c6327da66",
+      "expected_structured_subset": {
+        "source_revision_in_reconstruction": true,
+        "retrospective_label_required": true,
+        "actual_clinrx_history": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G007",
+      "title": "Submicrosecond loss",
+      "rule_ids": [
+        "M7-R004"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G007-fixture",
+        "inputs": {
+          "lexemes": [
+            "2026-10-21T09:00:00.1234561Z",
+            "2026-10-21T09:00:00.1234569Z"
+          ]
+        }
+      },
+      "fixture_digest": "ca4bfab991edd135621ef8d571eca10b1f97575c3ef5f435fccb6f900303e9cb",
+      "expected_structured_subset": {
+        "exact_ordering": "not_evaluable",
+        "simultaneous_claim": false,
+        "source_lexemes_retained": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G008",
+      "title": "Float timestamp rejected",
+      "rule_ids": [
+        "M7-R004"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G008-fixture",
+        "inputs": {
+          "input_kind": "raw_JSON_float",
+          "spelling": "1792573200.1234567",
+          "declaration": "M7ExactTimestampInput/v1"
+        }
+      },
+      "fixture_digest": "86b440c6b2ff2fdc75f445a603378fecf0cc5429b3c5f6f41be643029f28f780",
+      "expected_structured_subset": {
+        "admission": "structured_validation_error_before_datetime_coercion",
+        "trusted_string_fabricated": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G009",
+      "title": "Equivalent offsets",
+      "rule_ids": [
+        "M7-R005"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G009-fixture",
+        "inputs": {
+          "A": "2026-10-21T14:30:00+05:30",
+          "B": "2026-10-21T09:00:00Z",
+          "clock": "verified",
+          "source_precision": "exact_supported"
+        }
+      },
+      "fixture_digest": "f40bc1564920ad8cfb2f5f489dc30bd603de9f1e839e9be4ec5fcf5e8c635da3",
+      "expected_structured_subset": {
+        "relationship": "same_instant",
+        "offsets_preserved": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G010",
+      "title": "Overlapping uncertain times",
+      "rule_ids": [
+        "M7-R005"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G010-fixture",
+        "inputs": {
+          "A_bounds": [
+            "09:00",
+            "09:10"
+          ],
+          "B_bounds": [
+            "09:05",
+            "09:15"
+          ]
+        }
+      },
+      "fixture_digest": "a8c4c03e8feebc8bc087df3de3b7bd9a0528d96e81b077f00c572fbb78fc7f46",
+      "expected_structured_subset": {
+        "before_after": "not_evaluable",
+        "invented_representative_time": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G011",
+      "title": "New AF invalidates old proposal",
+      "rule_ids": [
+        "M7-R006"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G011-fixture",
+        "inputs": {
+          "prepared_generation": 20,
+          "current_generation": 21,
+          "new_event": "confirmed_AF",
+          "old_pins_unchanged": true
+        }
+      },
+      "fixture_digest": "16b16f5ce7b5d0a394db95be74f6eeed43aa20de4b44ff292abb5c4b639d8463",
+      "expected_structured_subset": {
+        "proposal_state": "stale",
+        "acceptance_allowed": false,
+        "refresh_review_required": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G012",
+      "title": "Same value quality successor",
+      "rule_ids": [
+        "M7-R007"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G012-fixture",
+        "inputs": {
+          "pressure_value_old": "65",
+          "pressure_value_new": "65",
+          "old_revision": "P1",
+          "new_revision": "P2",
+          "quality_changed": true
+        }
+      },
+      "fixture_digest": "3f75554aadbb67e33b7a7bcce820b8ea465d41e261b4b6c9510f58ba791ff07e",
+      "expected_structured_subset": {
+        "dependent_new_claim": "invalidated",
+        "original_receipt_retained": true,
+        "automatic_repin": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G013",
+      "title": "Cuff cannot prove continuous burden",
+      "rule_ids": [
+        "M7-R008"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G013-fixture",
+        "inputs": {
+          "cuff": [
+            {
+              "time": "09:00",
+              "MAP": "60"
+            },
+            {
+              "time": "09:10",
+              "MAP": "60"
+            }
+          ],
+          "continuous_signal": null
+        }
+      },
+      "fixture_digest": "ec9b2a3b35e3d296585a55280556bddaf2836de6da712dc34d517dac01a0d4e8",
+      "expected_structured_subset": {
+        "continuous_minutes_below_target": null,
+        "invented_points": 0,
+        "gap_visible": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G014",
+      "title": "Graph cap failure",
+      "rule_ids": [
+        "M7-R009"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G014-fixture",
+        "inputs": {
+          "approved_graph_cap": 32,
+          "candidate_support_count": 33
+        }
+      },
+      "fixture_digest": "148f11894173cd6e27feac13aa6a1dd838009188e44cc8b4ff991f043b1258ff",
+      "expected_structured_subset": {
+        "outcome": "resource_limit_failure",
+        "successful_withheld_receipt": false,
+        "silently_dropped_nodes": 0
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G015",
+      "title": "Empty receipt lookup",
+      "rule_ids": [
+        "M7-R010"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G015-fixture",
+        "inputs": {
+          "command": "C1",
+          "row_found": false,
+          "old_worker": "in_flight",
+          "fence": false
+        }
+      },
+      "fixture_digest": "9beac88892d025f9f389498ace97a4ac27f69bfbd25ecb9a1105b7d12c30a65b",
+      "expected_structured_subset": {
+        "state": "not_found_yet_or_unknown_completion",
+        "terminal_no_effect": false,
+        "automatic_resubmit": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G016",
+      "title": "Fenced no effect",
+      "rule_ids": [
+        "M7-R010"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G016-fixture",
+        "inputs": {
+          "command": "C1",
+          "active_generation": 4,
+          "old_generation": 3,
+          "durable_cancel": true,
+          "external_no_effect": "authoritatively_confirmed"
+        }
+      },
+      "fixture_digest": "2ae2b6cc88c206bdf2fe326c1eeaa08aafbd24314a2d6042bc71632442d67384",
+      "expected_structured_subset": {
+        "old_worker_commit_allowed": false,
+        "terminal_no_effect_allowed": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G017",
+      "title": "Wrong pressure compartment",
+      "rule_ids": [
+        "M7-R011"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G017-fixture",
+        "inputs": {
+          "input_parameter": "mPAP",
+          "input_value": "25",
+          "requested_role": "systemic_MAP"
+        }
+      },
+      "fixture_digest": "4b85bca54d5ab91fb0721ad8f27546d5e80863f143ad3dc685de93bf291eecc8",
+      "expected_structured_subset": {
+        "derived_use": "withheld",
+        "reason": "PRESSURE_METHOD_UNKNOWN",
+        "original_source_visible": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G018",
+      "title": "Unrelated zeroing",
+      "rule_ids": [
+        "M7-R012"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G018-fixture",
+        "inputs": {
+          "acquisition": "A1",
+          "zeroing_applies_to": "A2",
+          "result": "adequate"
+        }
+      },
+      "fixture_digest": "47bc110013c10fca16e022a786963acb3a57f508513537eadf4587509dc9d54e",
+      "expected_structured_subset": {
+        "A1_zeroing": "unconfirmed",
+        "A1_clinical_target_claim": "withheld"
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G019",
+      "title": "Cuff does not need transducer zeroing",
+      "rule_ids": [
+        "M7-R013",
+        "M7-R012"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G019-fixture",
+        "inputs": {
+          "method": "cuff",
+          "quality": "acceptable",
+          "cuff_context": "documented_appropriate",
+          "arterial_zeroing": null
+        }
+      },
+      "fixture_digest": "dd777c803b22a2df9954b61ce4ce5dfc83b4268de2249f766067797fd1fe57e0",
+      "expected_structured_subset": {
+        "arterial_zeroing_requirement": "not_applicable",
+        "other_checks_still_required": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G020",
+      "title": "Damped pressure and conflicting cuff",
+      "rule_ids": [
+        "M7-R014",
+        "M7-R015"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G020-fixture",
+        "inputs": {
+          "arterial_MAP": "50",
+          "arterial_quality": "overdamped",
+          "cuff_MAP": "70",
+          "cuff_quality": "acceptable",
+          "same_interval": true
+        }
+      },
+      "fixture_digest": "02dc17a2136497bae4060e996118aec194aed07df67900c85437b1559959ddf9",
+      "expected_structured_subset": {
+        "source_values_retained": 2,
+        "averaged_MAP": null,
+        "urgent_owned_confirmation": true,
+        "automatic_pressor_increase": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G021",
+      "title": "Measured versus approximate MAP",
+      "rule_ids": [
+        "M7-R016"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G021-fixture",
+        "inputs": {
+          "SBP": "120",
+          "DBP": "60",
+          "monitor_MAP": "85"
+        }
+      },
+      "fixture_digest": "e2620f0c67f44ba9c4f3868a66d8bdb6bc1c816d0c1caf4ea881274835df3045",
+      "expected_structured_subset": {
+        "approximate_MAP": "80",
+        "monitor_MAP_retained": "85",
+        "source_overwrites": 0
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": "approx_MAP"
+    },
+    {
+      "id": "M7-G022",
+      "title": "No patient target",
+      "rule_ids": [
+        "M7-R017"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G022-fixture",
+        "inputs": {
+          "MAP": "64",
+          "documented_target": null
+        }
+      },
+      "fixture_digest": "d84c1ad13bea649bc95c9506a39b6329932401aee762b7573bd7e1f89c5a776e",
+      "expected_structured_subset": {
+        "pressure_status": "no_target",
+        "reference_guidance_made_order": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G023",
+      "title": "Pressure at target but poor perfusion",
+      "rule_ids": [
+        "M7-R018",
+        "M7-R068"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G023-fixture",
+        "inputs": {
+          "MAP": "70",
+          "TEST_ONLY_target": [
+            "65",
+            "75"
+          ],
+          "perfusion": "worsening_documented",
+          "profile": "synthetic_not_clinical"
+        }
+      },
+      "fixture_digest": "496716820c3393fc730e8720af501064cd386992c765ef6f95e91c5b2ed2f6d3",
+      "expected_structured_subset": {
+        "pressure_status": "within_documented_target",
+        "perfusion_status": "concern",
+        "global_safe_badge": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G024",
+      "title": "kPa unconverted",
+      "rule_ids": [
+        "M7-R019"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G024-fixture",
+        "inputs": {
+          "pressure": "8",
+          "unit": "kPa",
+          "requested_unit": "mmHg",
+          "approved_conversion": null
+        }
+      },
+      "fixture_digest": "8683547117c87f8181b631f578057b427b770a947675432270a3aa1c138eb93f",
+      "expected_structured_subset": {
+        "comparison": "not_evaluable",
+        "interpreted_as_8_mmHg": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G025",
+      "title": "Brand is not capability",
+      "rule_ids": [
+        "M7-R020"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G025-fixture",
+        "inputs": {
+          "brand": "HemoSphere",
+          "sensor": null,
+          "software": null,
+          "parameter": "SVV"
+        }
+      },
+      "fixture_digest": "6b178acd8109294fe7d410edbac3d04967f3e48a9caa9d51f4d8a01a8c2bdc81",
+      "expected_structured_subset": {
+        "validated_parameter_support": "unknown",
+        "clinical_dynamic_interpretation": "withheld"
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G026",
+      "title": "CRT not assessable",
+      "rule_ids": [
+        "M7-R022"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G026-fixture",
+        "inputs": {
+          "CRT": null,
+          "reason": "site_and_lighting_inadequate"
+        }
+      },
+      "fixture_digest": "8cdfc5a798c562425edfd97b93e4694ed43a20e50ae1afd5b108d9d914d77fe1",
+      "expected_structured_subset": {
+        "CRT_status": "not_assessable",
+        "normal_CRT_assumed": false,
+        "other_perfusion_review_available": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G027",
+      "title": "Lactate late report",
+      "rule_ids": [
+        "M7-R023"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G027-fixture",
+        "inputs": {
+          "collected": "09:00",
+          "released": "10:30",
+          "value": "4",
+          "unit": "mmol/L"
+        }
+      },
+      "fixture_digest": "d2a5508a647bb6e342c9b2a748d6af1a150fafc82a37be85efb0b4498bcc26ea",
+      "expected_structured_subset": {
+        "trend_time": "09:00",
+        "physiologic_rise_at_release_assumed": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G028",
+      "title": "Lactate adrenergic confounding",
+      "rule_ids": [
+        "M7-R024"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G028-fixture",
+        "inputs": {
+          "lactate": "4",
+          "epinephrine_exposure": "documented",
+          "perfusion": "uncertain"
+        }
+      },
+      "fixture_digest": "62ca8879d0cbb222fe6953eaa726026a9504d571014caafadfd9b046654f3626",
+      "expected_structured_subset": {
+        "hypovolemia_diagnosis": false,
+        "automatic_fluid_bolus": false,
+        "differential_review_required": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G029",
+      "title": "Lactate decrement",
+      "rule_ids": [
+        "M7-R025"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G029-fixture",
+        "inputs": {
+          "baseline": "4",
+          "current": "3",
+          "unit": "mmol/L",
+          "comparability": "valid"
+        }
+      },
+      "fixture_digest": "293533c26fc808a6c76b4260be44a8d213c29de55de812ac9b49daac9cd0d28d",
+      "expected_structured_subset": {
+        "percentage_decrement": "25",
+        "measured_metabolic_clearance_claim": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": "lactate"
+    },
+    {
+      "id": "M7-G030",
+      "title": "Zero lactate baseline",
+      "rule_ids": [
+        "M7-R025"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G030-fixture",
+        "inputs": {
+          "baseline": "0",
+          "current": "3"
+        }
+      },
+      "fixture_digest": "3fd6f578c6690d53538d9055dbf8181de4803ed8d7001149b30804df915b8c31",
+      "expected_structured_subset": {
+        "percentage_decrement": null,
+        "state": "invalid_input",
+        "infinity": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G031",
+      "title": "Venous samples distinct",
+      "rule_ids": [
+        "M7-R026"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G031-fixture",
+        "inputs": {
+          "source_type": "peripheral_venous",
+          "saturation_percent": "75",
+          "requested": "SvO2"
+        }
+      },
+      "fixture_digest": "d52725c3934c635cfeef036b54a8812a6fbbb527f01929647b6951f9274c0e5e",
+      "expected_structured_subset": {
+        "SvO2_filled": false,
+        "original_sample_retained": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G032",
+      "title": "Fraction error",
+      "rule_ids": [
+        "M7-R082",
+        "M7-R027"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G032-fixture",
+        "inputs": {
+          "saturation": "98",
+          "unit": "fraction"
+        }
+      },
+      "fixture_digest": "dffd3e71d6d5f7ae8e34697c5072116adaeec968864fc671fe0819158d5711fa",
+      "expected_structured_subset": {
+        "oxygen_calculation": "invalid_input",
+        "reason": "SCALE_MISMATCH"
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G033",
+      "title": "Mixed shock allowed",
+      "rule_ids": [
+        "M7-R029"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G033-fixture",
+        "inputs": {
+          "assessments": [
+            "probable_distributive",
+            "probable_LV_cardiogenic"
+          ],
+          "clinician_confirmed": true
+        }
+      },
+      "fixture_digest": "cf42723bbb08b1d63d851a4e800bea0c593e9731ef532058fcca6efda62f0e98",
+      "expected_structured_subset": {
+        "coexisting_components_retained": true,
+        "forced_single_label": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G034",
+      "title": "Urgent preliminary source flag",
+      "rule_ids": [
+        "M7-R030"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G034-fixture",
+        "inputs": {
+          "source_flag": "critical",
+          "result_status": "preliminary",
+          "patient_verified": true,
+          "clinical_numeric_rule_eligible": false
+        }
+      },
+      "fixture_digest": "af85d687e0e43dae34c4616915bccbb2072602d5401a8df01228b2abd05f9168",
+      "expected_structured_subset": {
+        "source_safety_case": "created_under_local_policy",
+        "wait_for_final": false,
+        "final_only_numeric_release": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G035",
+      "title": "Responsive but congested",
+      "rule_ids": [
+        "M7-R031",
+        "M7-R042"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G035-fixture",
+        "inputs": {
+          "flow_test": "responsive",
+          "clinical_need": "uncertain",
+          "pulmonary_edema": "documented"
+        }
+      },
+      "fixture_digest": "e5549775d687597c5e1ca09608471bf02c66b382ab6a9ea77af032d8a763f891",
+      "expected_structured_subset": {
+        "fluid_authorization": false,
+        "tolerance": "concern",
+        "owned_benefit_harm_review": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G036",
+      "title": "Low CVP alone",
+      "rule_ids": [
+        "M7-R032"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G036-fixture",
+        "inputs": {
+          "CVP": "3",
+          "unit": "mmHg",
+          "clinical_need": null,
+          "dynamic_test": null
+        }
+      },
+      "fixture_digest": "c494d3d3be0de66cd95522ef938c5228c8ad5620114fc9a5435a7f68c7670c90",
+      "expected_structured_subset": {
+        "fluid_responsiveness": "not_assessed",
+        "automatic_bolus": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G037",
+      "title": "PPV during AF",
+      "rule_ids": [
+        "M7-R033"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G037-fixture",
+        "inputs": {
+          "PPV_percent": "16",
+          "rhythm": "AF",
+          "profile": "TEST-standard-controlled-ventilation"
+        }
+      },
+      "fixture_digest": "a1c77ec5a8a256dd7ce7733105f12691d0ce7d94220a308057fb510e2fa00e8a",
+      "expected_structured_subset": {
+        "interpretation": "not_evaluable",
+        "reason": "DYNAMIC_INDEX_INELIGIBLE",
+        "source_PPV_visible": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G038",
+      "title": "Unknown effort is not absent",
+      "rule_ids": [
+        "M7-R033"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G038-fixture",
+        "inputs": {
+          "rhythm": "regular",
+          "spontaneous_effort": "unknown"
+        }
+      },
+      "fixture_digest": "847bac222a9c4c6a4f6394312db41ccc26111c071f058724e1fd9296ed22ca1b",
+      "expected_structured_subset": {
+        "precondition_effort": "unknown",
+        "eligibility": "incomplete"
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G039",
+      "title": "PLR without direct flow",
+      "rule_ids": [
+        "M7-R034"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G039-fixture",
+        "inputs": {
+          "maneuver": "leg_raise",
+          "BP_change": "5",
+          "CO_SV_VTI": null
+        }
+      },
+      "fixture_digest": "ecb65e4b73d498b2ce43a67bb558a2772612b8725eb107478198fe392d99837d",
+      "expected_structured_subset": {
+        "PLR_interpretation": "indeterminate",
+        "BP_as_flow_substitute": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G040",
+      "title": "PLR confounded",
+      "rule_ids": [
+        "M7-R035",
+        "M7-R038"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G040-fixture",
+        "inputs": {
+          "flow_baseline": "50",
+          "flow_response": "56",
+          "new_pressor_rate_change": true,
+          "IAP": "elevated_unassessed"
+        }
+      },
+      "fixture_digest": "f6e6a0fbd7296b0176ca062ac71be7183d7530c9b7a7519f7011a03a081a579b",
+      "expected_structured_subset": {
+        "response_classification": "indeterminate",
+        "unconfounded_effect_claim": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G041",
+      "title": "Actual challenge absent",
+      "rule_ids": [
+        "M7-R037"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G041-fixture",
+        "inputs": {
+          "ordered_volume_mL": "250",
+          "delivery": "not_started",
+          "flow_change": "0"
+        }
+      },
+      "fixture_digest": "2e18616774182b21d7b05472a3b82fefcbfb759f83d8988295b559c050b07da2",
+      "expected_structured_subset": {
+        "fluid_received_mL": "0_only_if_documented_not_given",
+        "negative_challenge_result": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G042",
+      "title": "Controlled synthetic flow threshold",
+      "rule_ids": [
+        "M7-R038"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G042-fixture",
+        "inputs": {
+          "baseline": "50",
+          "response": "60",
+          "TEST_ONLY_threshold_percent": "12",
+          "eligibility": "complete",
+          "uncertainty_percent": "2",
+          "threshold_profile": "synthetic_not_clinical"
+        }
+      },
+      "fixture_digest": "f660f35e69021901d717d9cb7ab7fa9dc09ea5bfc82b9d9dab73cbdf3b53584d",
+      "expected_structured_subset": {
+        "change_percent": "20",
+        "synthetic_classification": "responsive",
+        "clinical_fluid_permission": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": "flow_change"
+    },
+    {
+      "id": "M7-G043",
+      "title": "Unknown clinical profile",
+      "rule_ids": [
+        "M7-R043"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G043-fixture",
+        "inputs": {
+          "agent": "norepinephrine",
+          "profile_approved": false,
+          "MAP": "55"
+        }
+      },
+      "fixture_digest": "d500b77a896f8123ab8e6f4eb6bae73a40fdb3af2654d836a5292921d8d529a5",
+      "expected_structured_subset": {
+        "personalized_dose": null,
+        "urgent_bedside_review_available": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G044",
+      "title": "Dose dimension mismatch",
+      "rule_ids": [
+        "M7-R046"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G044-fixture",
+        "inputs": {
+          "agent": "vasopressin",
+          "source_rate": "0.02",
+          "unit": "units/min",
+          "requested": "mcg/kg/min"
+        }
+      },
+      "fixture_digest": "0a86f98d4ea57d0b5940816fdceb6b24a1499de9013c77be51c12581a1ea93a8",
+      "expected_structured_subset": {
+        "mass_weighted_conversion": "withheld",
+        "drug_equivalence_assumed": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G045",
+      "title": "Educational mass and weight dose",
+      "rule_ids": [
+        "M7-R046"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G045-fixture",
+        "inputs": {
+          "concentration_mcg_mL": "16",
+          "rate_mL_h": "15",
+          "weight_kg": "70",
+          "clinical_profile": false
+        }
+      },
+      "fixture_digest": "8ac8007813be661a759ac63c77b55e0663587be8abb0abdbc116df713077ab1f",
+      "expected_structured_subset": {
+        "mcg_min": "4",
+        "mcg_kg_min": "0.05714285714285714286",
+        "clinical_dose_advice": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": "infusion"
+    },
+    {
+      "id": "M7-G046",
+      "title": "Educational activity rate",
+      "rule_ids": [
+        "M7-R046"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G046-fixture",
+        "inputs": {
+          "concentration_units_mL": "0.2",
+          "rate_mL_h": "6",
+          "clinical_profile": false
+        }
+      },
+      "fixture_digest": "ed5aeaa12c01fb4ba8b470dfa3f62c650a55c1c74f4959db8c5094cd2915a280",
+      "expected_structured_subset": {
+        "units_min": "0.02",
+        "converted_to_mass": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": "activity"
+    },
+    {
+      "id": "M7-G047",
+      "title": "New weight cannot retitrate",
+      "rule_ids": [
+        "M7-R047"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G047-fixture",
+        "inputs": {
+          "dosing_weight_kg": "70",
+          "new_weight_kg": "80",
+          "pump_rate_mL_h": "15"
+        }
+      },
+      "fixture_digest": "e417623363eb591429dd82351e6d599bcc6f5a46fe283a5ae1bb26efc8db5b95",
+      "expected_structured_subset": {
+        "dosing_weight_retained_kg": "70",
+        "automatic_pump_change": false,
+        "explicit_reconciliation_required": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G048",
+      "title": "Double concentration same pump rate",
+      "rule_ids": [
+        "M7-R048"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G048-fixture",
+        "inputs": {
+          "old_mcg_mL": "16",
+          "new_mcg_mL": "32",
+          "rate_mL_h": "15"
+        }
+      },
+      "fixture_digest": "bad05508fcbee2fa6708797054a8a7af4871a8007a989815e7dcca60b3f4d594",
+      "expected_structured_subset": {
+        "old_mcg_min": "4",
+        "new_mcg_min": "8",
+        "dose_unchanged_label": false,
+        "automatic_pump_compensation": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": "concentration"
+    },
+    {
+      "id": "M7-G049",
+      "title": "Preparation is not initiation",
+      "rule_ids": [
+        "M7-R049"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G049-fixture",
+        "inputs": {
+          "event_type": "preparation",
+          "order_status": "active",
+          "actual_start": null
+        }
+      },
+      "fixture_digest": "2048f40922e55f1f948ca9534232e306b208798c4a834f97fd95274502c6f3c1",
+      "expected_structured_subset": {
+        "infusion_started": false,
+        "continuous_exposure_claim": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G050",
+      "title": "Pump gap not zero",
+      "rule_ids": [
+        "M7-R050"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G050-fixture",
+        "inputs": {
+          "confirmed_intervals": [
+            "09:00-09:05",
+            "09:10-09:15"
+          ],
+          "gap": "09:05-09:10"
+        }
+      },
+      "fixture_digest": "76067c527c3f066ec5fdb5e650bbe45ed35bd550917572c468655f4a9de7ac5b",
+      "expected_structured_subset": {
+        "gap_dose": "unknown",
+        "total_confirmed_complete_exposure": false,
+        "gap_filled_zero": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G051",
+      "title": "Midline extrapolation",
+      "rule_ids": [
+        "M7-R051"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G051-fixture",
+        "inputs": {
+          "route": "midline",
+          "only_profile": "peripheral_IV_policy"
+        }
+      },
+      "fixture_digest": "075fb0200a46dffabdc579762ace68bd254b56201c2a8fc1ade24419ad51cd7a",
+      "expected_structured_subset": {
+        "midline_eligibility": "unsupported",
+        "generic_peripheral_approval_applied": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G052",
+      "title": "Extravasation concern without dose",
+      "rule_ids": [
+        "M7-R052"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G052-fixture",
+        "inputs": {
+          "site_findings": [
+            "blanching",
+            "swelling"
+          ],
+          "dose_rate": null
+        }
+      },
+      "fixture_digest": "289c557be00b5fd16d3de4dadb4aca7202aff54e05914dad025e710fad234b9b",
+      "expected_structured_subset": {
+        "urgent_bedside_case_required": true,
+        "numeric_dose_missing_suppresses_case": false,
+        "automatic_antidote_order": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G053",
+      "title": "No autonomous control",
+      "rule_ids": [
+        "M7-R045"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G053-fixture",
+        "inputs": {
+          "MAP": "50",
+          "proposal": "pressor_review",
+          "clinician_accepts_plan": true
+        }
+      },
+      "fixture_digest": "938935831e75c11a1632f642f18043419aa2f7094c7f8b1d6ae4004515926b9d",
+      "expected_structured_subset": {
+        "pump_commands": 0,
+        "medication_order_writes": 0,
+        "actual_administered_claim": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G054",
+      "title": "Unavailable echo view",
+      "rule_ids": [
+        "M7-R055"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G054-fixture",
+        "inputs": {
+          "RV_view": "unavailable",
+          "LV_EF_percent": "65"
+        }
+      },
+      "fixture_digest": "f809542193a912e69829a6ea5c1adf119af4b3d9edecbd7d5ef9dc94c2ea2f0a",
+      "expected_structured_subset": {
+        "RV_function": "not_assessed",
+        "normal_RV_assumed": false,
+        "adequate_CO_from_EF_alone": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G055",
+      "title": "Educational coherent flow calculations",
+      "rule_ids": [
+        "M7-R077",
+        "M7-R081"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G055-fixture",
+        "inputs": {
+          "MAP": "70",
+          "RAP": "10",
+          "CO_L_min": "5",
+          "BSA_m2": "2",
+          "HR": "100",
+          "mPAP": "30",
+          "PAWP": "15",
+          "PASP": "40",
+          "PADP": "20"
+        }
+      },
+      "fixture_digest": "711815421e258fa85738f1b591dee25d5d35b702b1c0cd3b5daa63f5d1b21906",
+      "expected_structured_subset": {
+        "CI": "2.5",
+        "SV": "50",
+        "SVR": "960",
+        "PVR_WU": "3",
+        "PAPi": "2",
+        "CPO_W": "0.77605321507760532151",
+        "therapy_recommendation": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": "hemodynamics"
+    },
+    {
+      "id": "M7-G056",
+      "title": "Zero CO and RAP guards",
+      "rule_ids": [
+        "M7-R077",
+        "M7-R081"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G056-fixture",
+        "inputs": {
+          "CO": "0",
+          "RAP": "0"
+        }
+      },
+      "fixture_digest": "e3fef95dc87c7dba48a7a6eb969f03b5bf0255fc3b492240fda72184d70fe146",
+      "expected_structured_subset": {
+        "SVR": null,
+        "PVR": null,
+        "PAPi": null,
+        "infinite_outputs": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G057",
+      "title": "Asynchronous SVR",
+      "rule_ids": [
+        "M7-R078"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G057-fixture",
+        "inputs": {
+          "MAP_time": "09:00",
+          "CO_time": "12:00",
+          "major_intervention_between": true
+        }
+      },
+      "fixture_digest": "ce21f65876eb3aba26482488ce941b66bfc7d94315944a7ff53195425ebdb298",
+      "expected_structured_subset": {
+        "current_SVR": "not_evaluable",
+        "nearest_available_automatch": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G058",
+      "title": "Educational oxygen transport",
+      "rule_ids": [
+        "M7-R027"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G058-fixture",
+        "inputs": {
+          "Hb_g_dL": "10",
+          "SaO2_fraction": "0.98",
+          "PaO2_mmHg": "100",
+          "CO_L_min": "5",
+          "TEST_ONLY_constants": [
+            "1.34",
+            "0.0031"
+          ]
+        }
+      },
+      "fixture_digest": "a6680adbc26b4e76e3248b5c1639eb5198dcc73dd14f26e57bc52505d01288c1",
+      "expected_structured_subset": {
+        "CaO2_mL_dL": "13.442",
+        "DO2_mL_min": "672.1",
+        "transfusion_order": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": "oxygen"
+    },
+    {
+      "id": "M7-G059",
+      "title": "No device from stage alone",
+      "rule_ids": [
+        "M7-R062",
+        "M7-R063"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G059-fixture",
+        "inputs": {
+          "source_stage": "D",
+          "candidacy_data": "incomplete"
+        }
+      },
+      "fixture_digest": "16ca5b6af758f665388c38981aa114cde1d3e23cd1fe1817019e455c031fee7b",
+      "expected_structured_subset": {
+        "automatic_device_selection": false,
+        "shock_team_review_required": true,
+        "stage_is_complete_prognosis": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G060",
+      "title": "Neuro target conflict",
+      "rule_ids": [
+        "M7-R064",
+        "M7-R017"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G060-fixture",
+        "inputs": {
+          "specialty_target": "documented_CPP_based_goal",
+          "generic_reference": "septic_MAP65"
+        }
+      },
+      "fixture_digest": "af58bc83da26f9b74dd9d4efefee5fd758df54d913a38531b3c39d68a8056e0d",
+      "expected_structured_subset": {
+        "silent_target_replacement": false,
+        "specialist_goal_reconciliation_required": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G061",
+      "title": "Pediatric scope withheld",
+      "rule_ids": [
+        "M7-R066"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G061-fixture",
+        "inputs": {
+          "age_years": "8",
+          "only_profile": "adult_septic"
+        }
+      },
+      "fixture_digest": "bce7aa879740225271d8c5348b2146b709c5eccd508272fdfadbbaf877ffc054",
+      "expected_structured_subset": {
+        "adult_personalized_advice": "withheld",
+        "source_evidence_visible": true,
+        "specialist_review": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G062",
+      "title": "Corrected critical acknowledgment",
+      "rule_ids": [
+        "M7-R070"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G062-fixture",
+        "inputs": {
+          "ack_revision": "P1",
+          "new_critical_revision": "P2",
+          "ack_P2": null
+        }
+      },
+      "fixture_digest": "f805680c01c7a286fffca27c4a86f9ad386d485252c635fd565629a41c61ac49",
+      "expected_structured_subset": {
+        "P1_ack_retained": true,
+        "P2_acknowledged": false,
+        "new_communication_duty": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G063",
+      "title": "Scenario cannot edit chart",
+      "rule_ids": [
+        "M7-R072"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G063-fixture",
+        "inputs": {
+          "source_weight": "70",
+          "scenario_weight": "80",
+          "operation": "save_scenario"
+        }
+      },
+      "fixture_digest": "08f212f930e6484e0c409d38aeaf9b3941cdb051bc1d9d25146ef5f4a4293ef5",
+      "expected_structured_subset": {
+        "source_weight": "70",
+        "patient_fact_writes": 0,
+        "saved_review_changes": 0,
+        "pump_changes": 0
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G064",
+      "title": "Draft activation blocked",
+      "rule_ids": [
+        "M7-R073"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G064-fixture",
+        "inputs": {
+          "state": "draft",
+          "approval": null,
+          "parameters": null
+        }
+      },
+      "fixture_digest": "65fc7ce6a39aee12e7d6e96112fc5277b916f6115305fe2446d33a1387f70440",
+      "expected_structured_subset": {
+        "draft_storable": true,
+        "clinical_activation": false,
+        "fabricated_approval": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G065",
+      "title": "Handoff not accepted",
+      "rule_ids": [
+        "M7-R071"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G065-fixture",
+        "inputs": {
+          "handoff": "sent",
+          "recipient_acceptance": null,
+          "pending_task": "access_check"
+        }
+      },
+      "fixture_digest": "5ab84a8c942c387b571ee132f3af4f80c982f5b6ffa6e92a13044359b1697d6a",
+      "expected_structured_subset": {
+        "clinical_handoff_complete": false,
+        "sending_owner_retained": true,
+        "pending_task_closed": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G066",
+      "title": "Waveform not present",
+      "rule_ids": [
+        "M7-R083"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G066-fixture",
+        "inputs": {
+          "manifest": "available_metadata",
+          "raw_samples": null
+        }
+      },
+      "fixture_digest": "3a80082ff5e89409900423a6e4283cb271461f05eef70574e0160de1fdb2ee8a",
+      "expected_structured_subset": {
+        "hypotension_burden": null,
+        "invented_waveform_samples": 0
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G067",
+      "title": "Old timing receipt retained",
+      "rule_ids": [
+        "M7-R075"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G067-fixture",
+        "inputs": {
+          "legacy_receipt": "committed_released",
+          "current_support_revision_changed": true
+        }
+      },
+      "fixture_digest": "963bab8d49fb7a59d72983647cb40991259b69c8d96ddf07d0137eb013de05aa",
+      "expected_structured_subset": {
+        "historical_receipt_bytes_changed": false,
+        "new_clinical_endorsement": false,
+        "retained_reconciliation_available": true
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    },
+    {
+      "id": "M7-G068",
+      "title": "Severe hypotension incomplete record",
+      "rule_ids": [
+        "M7-R030",
+        "M7-R067"
+      ],
+      "fixture": {
+        "data_mode": "synthetic",
+        "fixture_id": "M7-G068-fixture",
+        "inputs": {
+          "patient_binding": "verified",
+          "bedside_concern": "severe_instability",
+          "full_context_complete": false
+        }
+      },
+      "fixture_digest": "4fa7bbcdad7096714f4ffc14dfd1bd727ec54f913f182778a6d207c5e5347ace",
+      "expected_structured_subset": {
+        "existing_emergency_pathway_available": true,
+        "mandatory_full_form_completion": false,
+        "invented_treatment": false
+      },
+      "expected_unintended_clinical_effect_writes": 0,
+      "oracle_status": "proposed; independent clinical approval pending",
+      "execution_status": "not_executed_application_test",
+      "adapter_status": "semantic DTO fixture; closed runtime-contract adapter not implemented",
+      "educational_arithmetic_check": null
+    }
+  ]
+}

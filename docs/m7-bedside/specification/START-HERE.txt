@@ -1,0 +1,23 @@
+ClinRx M7 ONLY — Hemodynamics implementation specification
+21 October 2026 | Version0.1 proposed | Design only, not for patient use
+
+Start with M7-BEDSIDE-REQUIREMENTS.html for the simple clinician-facing requirements.
+Use M7-IMPLEMENTATION-SPEC.html for the complete implementation specification.
+The CSV/JSON catalogs define fields, rules, workflows, calculations, API semantics,
+local activation dependencies, hazards and validation specifications.
+
+This extends the existing recorded-evidence M7. It does not replace its source
+contracts or turn its selected-event timing inference into treatment authorization.
+No application code, source file, clinical gate, patient record or treatment changed.
+Only M7 is included; other-domain observations are M7 dependency inputs.
+
+All new clinical rules/profiles are disabled. All11 clinical policy groups remain
+unresolved. The typed dictionary/API registry is not a compiled runtime schema,
+implemented OpenAPI service, approved dosing library or clinical safety case.
+All application/clinical tests are NOT EXECUTED. Concrete semantic vectors and
+educational arithmetic do not establish clinical validation.
+
+Required next: compile/verify exact contracts, source adapters, hospital-specific
+clinical and drug/formulation/method profiles; independently approve/execute
+oracles and source/regression/failure/human-factors tests; prospective shadow
+adjudication; scoped clinical acceptance, monitored rollout and rollback.

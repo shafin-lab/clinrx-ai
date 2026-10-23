@@ -97,7 +97,7 @@ def test_visible_corruption_is_integrity_failure(registered, damage):
 
 
 def test_admission_is_exact_closed_mapping(registered):
-    assert {k for k in SUPPORTED_FACTS if not k.startswith('circulatory_')} == {'observation', 'medication_order', 'medication_administration', 'inference', 'microbiology_specimen', 'microbiology_direct_examination', 'microbiology_culture', 'microbiology_isolate', 'microbiology_susceptibility', 'microbiology_resistance', 'microbiology_molecular', 'blood_culture_set', 'blood_culture_bottle', 'antimicrobial_order', 'antimicrobial_administration', 'antimicrobial_non_delivery'}
+    assert {k for k in SUPPORTED_FACTS if not k.startswith('circulatory_')} == {'observation', 'medication_order', 'medication_administration', 'inference', 'microbiology_specimen', 'microbiology_direct_examination', 'microbiology_culture', 'microbiology_isolate', 'microbiology_susceptibility', 'microbiology_resistance', 'microbiology_molecular', 'blood_culture_set', 'blood_culture_bottle', 'antimicrobial_order', 'antimicrobial_administration', 'antimicrobial_non_delivery', 'laboratory_report', 'respiratory_record', 'transfusion_administration', 'haemostatic_medication_course', 'transfusion_request', 'transfusion_prescription', 'blood_product_disposition', 'transfusion_compatibility', 'transfusion_reaction', 'haemorrhage_episode', 'm10_assessment', 'transfusion_coverage_link', 'fluid_administration_link', 'm10_medication_detail', 'viscoelastic_report'}
     for fact in all_facts(): assert SUPPORTED_FACTS[fact.kind] is type(fact)
     save(registered, facts()[0])
     with pytest.raises(IntegrityError), registered.begin() as conn:
@@ -136,14 +136,14 @@ def test_migration_preserves_populated_bytes_links_and_high_water(tmp_path):
 
 def test_migration_head_and_refused_downgrade(database):
     scripts=ScriptDirectory.from_config(Config(str(ROOT/'backend/alembic.ini')))
-    assert scripts.get_heads()==['m7_0008']
+    assert scripts.get_heads()==['m10_0011']
     assert scripts.get_revision('m6_0006').down_revision=='m4_0005'
     config=Config(str(ROOT/'backend/alembic.ini'))
     with pytest.raises(RuntimeError), database.begin() as conn:
         config.attributes['connection']=conn
         command.downgrade(config,'m4_0005')
     with database.connect() as conn:
-        assert conn.execute(text('SELECT version_num FROM alembic_version')).scalar_one()=='m7_0008'
+        assert conn.execute(text('SELECT version_num FROM alembic_version')).scalar_one()=='m10_0011'
 
 
 def test_migration_failure_rolls_back_table_copy(tmp_path):

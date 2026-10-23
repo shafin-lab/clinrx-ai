@@ -1,0 +1,1316 @@
+[
+  {
+    "id": "M8-T001A",
+    "rule": "M8-R001",
+    "kind": "positive_specification",
+    "given": "Every bound source matches requested scope and authorized historical baseline link",
+    "when": "Any M8 projection",
+    "expect": "Allow bounded source display",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T001B",
+    "rule": "M8-R001",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Any M8 projection",
+    "expect": "Withhold foreign source and dependent result; audit mismatch",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T002A",
+    "rule": "M8-R002",
+    "kind": "positive_specification",
+    "given": "Scope, repository, ingestion watermark, canonical digests and full-precision boundary correspondence confirmed",
+    "when": "Load/refresh",
+    "expect": "Accept one coherent snapshot",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T002B",
+    "rule": "M8-R002",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Load/refresh",
+    "expect": "Withhold projection; no join of unrelated RF1/RF2 snapshots",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T003A",
+    "rule": "M8-R003",
+    "kind": "positive_specification",
+    "given": "Logical specimen/collection identity and predecessor chain resolvable",
+    "when": "Source amendment/retransmission",
+    "expect": "Show terminal eligible revision; retain originals in history",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T003B",
+    "rule": "M8-R003",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Source amendment/retransmission",
+    "expect": "Do not add duplicates or resurrect a withdrawn predecessor",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T004A",
+    "rule": "M8-R004",
+    "kind": "positive_specification",
+    "given": "Explicit documented zero or confirmed stopped treatment",
+    "when": "Absent source or broken device stream",
+    "expect": "Display true zero on its assessed interval",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T004B",
+    "rule": "M8-R004",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Absent source or broken device stream",
+    "expect": "Show missing/unknown and preserve coverage gap",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T005A",
+    "rule": "M8-R005",
+    "kind": "positive_specification",
+    "given": "Reviewed original candidate/date, selection rationale and uncertainty",
+    "when": "Assess kidney function",
+    "expect": "Pin selected baseline with alternatives",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T005B",
+    "rule": "M8-R005",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Assess kidney function",
+    "expect": "Show baseline unavailable; no default eGFR back-calculation",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T006A",
+    "rule": "M8-R006",
+    "kind": "positive_specification",
+    "given": "Authorized patient match, dates and policy-specific lookback",
+    "when": "Prior-encounter creatinine",
+    "expect": "Use explicit historical candidate",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T006B",
+    "rule": "M8-R006",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Prior-encounter creatinine",
+    "expect": "Do not treat another encounter as current evidence",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T007A",
+    "rule": "M8-R007",
+    "kind": "positive_specification",
+    "given": "Longitudinal supporting records and approved CKD profile",
+    "when": "CKD classification",
+    "expect": "Display established source classification or governed result",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T007B",
+    "rule": "M8-R007",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "CKD classification",
+    "expect": "Single abnormal test does not establish CKD",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T008A",
+    "rule": "M8-R008",
+    "kind": "positive_specification",
+    "given": "Distinct eligible specimens, comparable units/calibration and precise chronology",
+    "when": "48-hour creatinine criterion",
+    "expect": "Evaluate >=0.3 mg/dL rise within 48h under KDIGO2012 profile",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T008B",
+    "rule": "M8-R008",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "48-hour creatinine criterion",
+    "expect": "Indeterminate for missing interval/specimen/unit; correction is not new sample",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T009A",
+    "rule": "M8-R009",
+    "kind": "positive_specification",
+    "given": "Eligible baseline, current specimen and evidence of known/presumed onset within profile window",
+    "when": "7-day creatinine criterion",
+    "expect": "Evaluate >=1.5-fold rise; retain baseline uncertainty",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T009B",
+    "rule": "M8-R009",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "7-day creatinine criterion",
+    "expect": "Withhold relative criterion without baseline/onset evidence",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T010A",
+    "rule": "M8-R010",
+    "kind": "positive_specification",
+    "given": "Approved published population profile and sufficient coherent creatinine evidence",
+    "when": "Eligible AKI assessment",
+    "expect": "Stage1: eligible ratio >=1.5 and <2, or absolute rise >=0.3 mg/dL within48h; stage2: ratio >=2 and <3; record exact branch",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T010B",
+    "rule": "M8-R010",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Eligible AKI assessment",
+    "expect": "Do not label no AKI when other criteria are indeterminate",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T011A",
+    "rule": "M8-R011",
+    "kind": "positive_specification",
+    "given": "AKI context established; approved age-specific profile; actual source values",
+    "when": "High eligible creatinine",
+    "expect": "In established acute injury assess ratio >=3 or rise to >=4.0 mg/dL; preserve timing and actual acute-KRT branches separately",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T011B",
+    "rule": "M8-R011",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "High eligible creatinine",
+    "expect": "High chronic baseline alone is not an incident AKI assertion",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T012A",
+    "rule": "M8-R012",
+    "kind": "positive_specification",
+    "given": "Complete eligible interval and weight; <0.5 mL/kg/h for >=6h but <12h under approved interpretation",
+    "when": "Output criterion review",
+    "expect": "Record independent urine criterion",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T012B",
+    "rule": "M8-R012",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Output criterion review",
+    "expect": "Do not use incomplete collection/blocked catheter as established renal oliguria",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T013A",
+    "rule": "M8-R013",
+    "kind": "positive_specification",
+    "given": "Complete eligible >=12h interval and weight; <0.5 mL/kg/h",
+    "when": "Output criterion review",
+    "expect": "Record independent urine stage branch",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T013B",
+    "rule": "M8-R013",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Output criterion review",
+    "expect": "Gaps or disputed continuity prevent duration claim",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T014A",
+    "rule": "M8-R014",
+    "kind": "positive_specification",
+    "given": "Eligible <0.3 mL/kg/h over >=24h or anuria >=12h with complete/patent collection",
+    "when": "Output criterion review",
+    "expect": "Record branch and supporting interval",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T014B",
+    "rule": "M8-R014",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Output criterion review",
+    "expect": "No anuria diagnosis from absent charting or blocked catheter",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T015A",
+    "rule": "M8-R015",
+    "kind": "positive_specification",
+    "given": "Actual support for acute kidney indication; chronic maintenance excluded",
+    "when": "Actual initiation",
+    "expect": "Retain KRT criterion distinct from creatinine/urine",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T015B",
+    "rule": "M8-R015",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Actual initiation",
+    "expect": "Order/preparation/chronic dialysis cannot automatically establish incident stage 3",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T016A",
+    "rule": "M8-R016",
+    "kind": "positive_specification",
+    "given": "Each criterion has met/not_met/indeterminate state",
+    "when": "Criterion combination",
+    "expect": "Report highest established eligible stage, noting unassessed branches",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T016B",
+    "rule": "M8-R016",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Criterion combination",
+    "expect": "No stage zero/recovery claim from partial negative evidence",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T017A",
+    "rule": "M8-R017",
+    "kind": "positive_specification",
+    "given": "Known adult/child/neonate/pregnancy context and approved exact population profile",
+    "when": "Rule activation",
+    "expect": "Run only applicable definition",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T017B",
+    "rule": "M8-R017",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Rule activation",
+    "expect": "No adult default; pediatric eGFR branch requires dedicated validation",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T018A",
+    "rule": "M8-R018",
+    "kind": "positive_specification",
+    "given": "Explicit start/end, interval_total semantics, complete collection, comparable mapped volume",
+    "when": "Rate review",
+    "expect": "Volume divided by exact elapsed duration; label original total",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T018B",
+    "rule": "M8-R018",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Rate review",
+    "expect": "A six-hour total cannot be interpreted as one hourly observation",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T019A",
+    "rule": "M8-R019",
+    "kind": "positive_specification",
+    "given": "Distinct collections with nonoverlapping accounted coverage",
+    "when": "Interval aggregation",
+    "expect": "Aggregate included nonduplicated collections",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T019B",
+    "rule": "M8-R019",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Interval aggregation",
+    "expect": "Cumulative/interval/emptying entries not added blindly",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T020A",
+    "rule": "M8-R020",
+    "kind": "positive_specification",
+    "given": "Collection patency and irrigation accounting documented",
+    "when": "Low/zero output",
+    "expect": "Present collection finding and need for clinical review",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T020B",
+    "rule": "M8-R020",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Low/zero output",
+    "expect": "No renal-anuria attribution with obstruction/loss uncertainty",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T021A",
+    "rule": "M8-R021",
+    "kind": "positive_specification",
+    "given": "Approved equation/population/input calibration; steady-state suitability assessed",
+    "when": "Renal estimate requested",
+    "expect": "Label equation, indexed units and limitations",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T021B",
+    "rule": "M8-R021",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Renal estimate requested",
+    "expect": "Flag rapid change/KRT/unknown suitability; do not use as acute true filtration",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T022A",
+    "rule": "M8-R022",
+    "kind": "positive_specification",
+    "given": "Explicit applicable label, demographics, eligible creatinine and selected weight method",
+    "when": "Drug-label review",
+    "expect": "Label eCrCl mL/min and formula/version",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T022B",
+    "rule": "M8-R022",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Drug-label review",
+    "expect": "Never relabel eGFR as eCrCl or silently choose actual/ideal/adjusted weight",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T023A",
+    "rule": "M8-R023",
+    "kind": "positive_specification",
+    "given": "Complete timed collection, mapped concentrations/volume and representative plasma sample",
+    "when": "Timed urine clearance",
+    "expect": "Label measured CrCl method and validity interval",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T023B",
+    "rule": "M8-R023",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Timed urine clearance",
+    "expect": "Do not label measured GFR or extrapolate across intermittent rebound",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T024A",
+    "rule": "M8-R024",
+    "kind": "positive_specification",
+    "given": "Explicit BSA method and valid source height/weight; source indexed estimate",
+    "when": "Absolute estimate requested",
+    "expect": "Calculate eGFR * BSA/1.73 with original indexed result retained",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T024B",
+    "rule": "M8-R024",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Absolute estimate requested",
+    "expect": "No assumed BSA or changed denominator label",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T025A",
+    "rule": "M8-R025",
+    "kind": "positive_specification",
+    "given": "Paired eligible plasma/urine analytes, units, timing and medication context",
+    "when": "Etiology review",
+    "expect": "Display FENa/FEurea as limited contextual result",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T025B",
+    "rule": "M8-R025",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Etiology review",
+    "expect": "No automatic prerenal/ATN diagnosis; confounders visible",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T026A",
+    "rule": "M8-R026",
+    "kind": "positive_specification",
+    "given": "Confirmed assay/context, actual clinical concern and treatment/response assessment",
+    "when": "Documented significant electrolyte issue",
+    "expect": "Escalate concern to responsible clinician under approved pathway",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T026B",
+    "rule": "M8-R026",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Documented significant electrolyte issue",
+    "expect": "No universal K threshold or autonomous dialysis order",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T027A",
+    "rule": "M8-R027",
+    "kind": "positive_specification",
+    "given": "Clinical significance and alternatives/refractoriness reviewed where applicable",
+    "when": "Documented urgent indication",
+    "expect": "Route urgent clinician review and acknowledgement",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T027B",
+    "rule": "M8-R027",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Documented urgent indication",
+    "expect": "Do not diagnose urgency from a single creatinine/BUN value",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T028A",
+    "rule": "M8-R028",
+    "kind": "positive_specification",
+    "given": "Individual clinical trajectory, goals and responsible specialist review",
+    "when": "Severe AKI without established urgent indication",
+    "expect": "Record considered strategy and next review",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T028B",
+    "rule": "M8-R028",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Severe AKI without established urgent indication",
+    "expect": "No universal accelerated start from severe AKI alone; never delay an urgent indication",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T029A",
+    "rule": "M8-R029",
+    "kind": "positive_specification",
+    "given": "Toxin/level/time, clinical context and approved toxicology guidance",
+    "when": "Toxin-specific concern",
+    "expect": "Specialist-directed modality/plan review",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T029B",
+    "rule": "M8-R029",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Toxin-specific concern",
+    "expect": "No general creatinine-based toxin clearance decision",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T030A",
+    "rule": "M8-R030",
+    "kind": "positive_specification",
+    "given": "Reviewed indication, consent, access, population and supported modality/device profile",
+    "when": "Create KRT plan",
+    "expect": "Versioned authorized prescription intent",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T030B",
+    "rule": "M8-R030",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Create KRT plan",
+    "expect": "Unsupported modality remains record-only, no fallback to CRRT equations",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T031A",
+    "rule": "M8-R031",
+    "kind": "positive_specification",
+    "given": "Exact final formulation, role, circuit and approved device compatibility",
+    "when": "Connect/change product",
+    "expect": "Permit documentation of checked connection",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T031B",
+    "rule": "M8-R031",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Connect/change product",
+    "expect": "No inferred electrolytes from product name; unknown composition blocks dependent calculation",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T032A",
+    "rule": "M8-R032",
+    "kind": "positive_specification",
+    "given": "Actual flow/volume/time observation, not an order or start intent",
+    "when": "Calculate delivered exposure",
+    "expect": "Build explicit confirmed running segments",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T032B",
+    "rule": "M8-R032",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Calculate delivered exposure",
+    "expect": "Do not extrapolate continuous delivery from a single start event",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T033A",
+    "rule": "M8-R033",
+    "kind": "positive_specification",
+    "given": "Close prior interval and pin new prescription/device/solution context",
+    "when": "Setting/modality/filter change",
+    "expect": "Split integration at actual event time",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T033B",
+    "rule": "M8-R033",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Setting/modality/filter change",
+    "expect": "Unknown transition time remains a gap; never carry IHD into CRRT dose",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T034A",
+    "rule": "M8-R034",
+    "kind": "positive_specification",
+    "given": "Explicit start/end, reason and known stopped versus telemetry missing",
+    "when": "Downtime summary",
+    "expect": "Union overlapping documented downtime within reporting window",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T034B",
+    "rule": "M8-R034",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Downtime summary",
+    "expect": "Unknown gaps reported separately; no double-counted interruptions",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T035A",
+    "rule": "M8-R035",
+    "kind": "positive_specification",
+    "given": "Measured nonduplicated bag/counter volume, resets/weights/calibration known",
+    "when": "Dose summary",
+    "expect": "Report measured volume and coverage",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T035B",
+    "rule": "M8-R035",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Dose summary",
+    "expect": "Cannot substitute net patient removal for gross effluent",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T036A",
+    "rule": "M8-R036",
+    "kind": "positive_specification",
+    "given": "Confirmed actual settings/intervals and device-specific effluent accounting",
+    "when": "Rate integration",
+    "expect": "Integrate exact piecewise rates, labelled estimate",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T036B",
+    "rule": "M8-R036",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Rate integration",
+    "expect": "No integration across unknown rate/gap; no citrate/PBP double count",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T037A",
+    "rule": "M8-R037",
+    "kind": "positive_specification",
+    "given": "Explicit approved weight purpose/reference and valid kg mapping",
+    "when": "Normalized CRRT summary",
+    "expect": "Show both mL/h and mL/kg/h with weight/time basis",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T037B",
+    "rule": "M8-R037",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Normalized CRRT summary",
+    "expect": "No automatic latest/dry/dosing weight substitution",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T038A",
+    "rule": "M8-R038",
+    "kind": "positive_specification",
+    "given": "Full-window coverage plus run-time and selected weight",
+    "when": "Daily delivery review",
+    "expect": "Show distinct wall-time and on-treatment effluent surrogates",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T038B",
+    "rule": "M8-R038",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Daily delivery review",
+    "expect": "Do not hide downtime by reporting only running-hour intensity",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T039A",
+    "rule": "M8-R039",
+    "kind": "positive_specification",
+    "given": "Approved membrane/model/profile, measured Qb, Hct, replacement location/flow",
+    "when": "Modeled clearance surrogate",
+    "expect": "Apply documented dilution model with assumptions",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T039B",
+    "rule": "M8-R039",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Modeled clearance surrogate",
+    "expect": "Do not apply one dilution factor to all CVVHDF transport; no measured-clearance label",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T040A",
+    "rule": "M8-R040",
+    "kind": "positive_specification",
+    "given": "Paired plasma/effluent concentrations and representative effluent flow",
+    "when": "Solute-specific clearance",
+    "expect": "Compute method-specific clearance with uncertainty",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T040B",
+    "rule": "M8-R040",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Solute-specific clearance",
+    "expect": "Effluent volume alone is not proof of delivered solute clearance",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T041A",
+    "rule": "M8-R041",
+    "kind": "positive_specification",
+    "given": "Machine convention and extra circuit inputs/returns explicitly mapped",
+    "when": "Fluid accounting",
+    "expect": "Publish net-removal summary to M9 once with source identity",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T041B",
+    "rule": "M8-R041",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Fluid accounting",
+    "expect": "Gross effluent is not removal; machine net rate alone is not whole-patient balance",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T042A",
+    "rule": "M8-R042",
+    "kind": "positive_specification",
+    "given": "Clinician-approved target with actual coverage and weight",
+    "when": "Delivered dose outside approved intent",
+    "expect": "Flag discrepancy for review; include electrolyte context",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T042B",
+    "rule": "M8-R042",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Delivered dose outside approved intent",
+    "expect": "No automatic intensification or fluid-removal change",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T043A",
+    "rule": "M8-R043",
+    "kind": "positive_specification",
+    "given": "Systemic and postfilter site/type labels known",
+    "when": "Calcium review",
+    "expect": "Display separate results and protocol target authority",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T043B",
+    "rule": "M8-R043",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Calcium review",
+    "expect": "No sample-site substitution or universal target",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T044A",
+    "rule": "M8-R044",
+    "kind": "positive_specification",
+    "given": "Total and systemic ionized calcium, compatible molar units, valid temporal pairing and sample quality",
+    "when": "Ratio requested",
+    "expect": "Ratio with exact paired refs, timing and unit conversion",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T044B",
+    "rule": "M8-R044",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Ratio requested",
+    "expect": "Mixed mg/dL and mmol/L, postfilter sample or unmatched times withhold ratio",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T045A",
+    "rule": "M8-R045",
+    "kind": "positive_specification",
+    "given": "Ratio/context trends, calcium requirement, acid-base/perfusion/liver/lactate context",
+    "when": "Citrate concern review",
+    "expect": "Show concern for expert review under approved profile",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T045B",
+    "rule": "M8-R045",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Citrate concern review",
+    "expect": "No standalone ratio diagnosis or reflex pump change",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T046A",
+    "rule": "M8-R046",
+    "kind": "positive_specification",
+    "given": "Actual contemporaneous delivery states and named protocol",
+    "when": "Actual interruption events",
+    "expect": "Urgent coordinated clinician/nurse check per approved policy, preserving uncertainty",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T046B",
+    "rule": "M8-R046",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Actual interruption events",
+    "expect": "Do not automatically stop calcium; systemic replacement may still be clinically required",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T047A",
+    "rule": "M8-R047",
+    "kind": "positive_specification",
+    "given": "Actual event and new supported protocol prescription",
+    "when": "Citrate treatment transition",
+    "expect": "Prompt coordinated citrate/calcium/solution review",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T047B",
+    "rule": "M8-R047",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Citrate treatment transition",
+    "expect": "No carry-forward prior infusion targets or inferred safe state",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T048A",
+    "rule": "M8-R048",
+    "kind": "positive_specification",
+    "given": "Concurrent anticoagulants, labs/clinical bleeding and applicable expertise",
+    "when": "Anticoagulation plan",
+    "expect": "Record individualized strategy and monitoring",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T048B",
+    "rule": "M8-R048",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Anticoagulation plan",
+    "expect": "No default citrate/heparin order or automatic contraindication from one liver value",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T049A",
+    "rule": "M8-R049",
+    "kind": "positive_specification",
+    "given": "Native channel/sign, model, timestamps, signal quality and local approved response",
+    "when": "Device alarm/abnormal source",
+    "expect": "Display native alarm with acknowledgement and bedside check",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T049B",
+    "rule": "M8-R049",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Device alarm/abnormal source",
+    "expect": "No autonomous alarm suppression or machine control",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T050A",
+    "rule": "M8-R050",
+    "kind": "positive_specification",
+    "given": "Actual current specimen/measurement and local critical-result policy",
+    "when": "KRT monitoring",
+    "expect": "Route accountable human review with recorded response",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T050B",
+    "rule": "M8-R050",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "KRT monitoring",
+    "expect": "No unapproved universal supplement/cooling protocol",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T051A",
+    "rule": "M8-R051",
+    "kind": "positive_specification",
+    "given": "Actual exposure, source-specific label, estimate applicability, delivered modality and TDM",
+    "when": "Function/KRT/downtime change",
+    "expect": "Create/reconcile review task in medication owner including M6 antibiotics",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T051B",
+    "rule": "M8-R051",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Function/KRT/downtime change",
+    "expect": "No duplicate drug library or silent dosing change",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T052A",
+    "rule": "M8-R052",
+    "kind": "positive_specification",
+    "given": "Actual product/delivery and measured or approved modeled loss/contribution",
+    "when": "KRT and nutrition review",
+    "expect": "Link versioned estimate to M14 with assumptions",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T052B",
+    "rule": "M8-R052",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "KRT and nutrition review",
+    "expect": "No universal amino-acid loss or complete citrate metabolism assumption",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T053A",
+    "rule": "M8-R053",
+    "kind": "positive_specification",
+    "given": "Current indications, native function and actual support context",
+    "when": "Scheduled or change-triggered review",
+    "expect": "Record continue/defer/trial-off decision and owner",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T053B",
+    "rule": "M8-R053",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Scheduled or change-triggered review",
+    "expect": "No automatic discontinuation from one creatinine/urine threshold",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T054A",
+    "rule": "M8-R054",
+    "kind": "positive_specification",
+    "given": "Actual off-time, monitoring/escalation plan and new modality if any",
+    "when": "Clinician-authorized plan",
+    "expect": "Preserve old episode, open new segment, trigger medication review",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T054B",
+    "rule": "M8-R054",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Clinician-authorized plan",
+    "expect": "No recovery declaration from dilution or extracorporeal clearance alone",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T055A",
+    "rule": "M8-R055",
+    "kind": "positive_specification",
+    "given": "Last actual KRT, recovery uncertainty, catheter indication and follow-up owner",
+    "when": "Transfer/discharge",
+    "expect": "Handoff exact sources and confirmed next plans",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T055B",
+    "rule": "M8-R055",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Transfer/discharge",
+    "expect": "No implied catheter removal or completed appointment from a plan",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T056A",
+    "rule": "M8-R056",
+    "kind": "positive_specification",
+    "given": "Draft signature equals current canonical snapshot",
+    "when": "Shared snapshot changes",
+    "expect": "Record manual review pinned to original evidence",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T056B",
+    "rule": "M8-R056",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Shared snapshot changes",
+    "expect": "Keep draft text; require explicit discard/new review before recording",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T057A",
+    "rule": "M8-R057",
+    "kind": "positive_specification",
+    "given": "Exact request canonical body/digest and confirmed lookup outcome",
+    "when": "Transport interruption",
+    "expect": "Recover original request before any deliberate retry",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T057B",
+    "rule": "M8-R057",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Transport interruption",
+    "expect": "No duplicate append or alternate request after unconfirmed completion",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T058A",
+    "rule": "M8-R058",
+    "kind": "positive_specification",
+    "given": "Generation and exact selected reference/snapshot still match",
+    "when": "Open another source/refresh",
+    "expect": "Show exact history from original source owner",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T058B",
+    "rule": "M8-R058",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Open another source/refresh",
+    "expect": "Discard late response; retain error instead of unrelated successor",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T059A",
+    "rule": "M8-R059",
+    "kind": "positive_specification",
+    "given": "Confirmed current data, reviewer, rationale, next step and next review",
+    "when": "Manual bedside session note",
+    "expect": "Page-session review with explicit persistence limit",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T059B",
+    "rule": "M8-R059",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Manual bedside session note",
+    "expect": "Never imply chart sign-off, scheduled task or durable record",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T060A",
+    "rule": "M8-R060",
+    "kind": "positive_specification",
+    "given": "Named local approvals, versioned evidence, independent validation and prospective supervised pilot",
+    "when": "Release decision",
+    "expect": "Activate only exact validated scope with rollback and monitoring",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-T060B",
+    "rule": "M8-R060",
+    "kind": "withhold_specification",
+    "given": "One or more prerequisite is absent, conflicting, stale, ineligible or outside approved scope.",
+    "when": "Release decision",
+    "expect": "All proposed clinical rules stay disabled until release gates met",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC01",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "240 mL recorded over 6h; 2h collection gap",
+    "when": "Incomplete urine collection",
+    "expect": "Original total remains visible; normalized complete-interval result and urine duration criterion withheld.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC02",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "300 mL with interval 00:00–06:00 and semantics interval_total",
+    "when": "Six-hour total entered as hourly",
+    "expect": "Retain 300 mL/6h; any eligible arithmetic gives 50 mL/h, never 300 mL/h. Correction preserves original.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC03",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Several historical values; reviewer marks selection uncertain",
+    "when": "Uncertain baseline",
+    "expect": "Display selection/date/uncertainty; relative stage not promoted to confirmed. Absolute-change criterion may independently be eligible.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC04",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Zero in bag for 6h; suspected blockage, incomplete collection",
+    "when": "Blocked catheter",
+    "expect": "Zero collection is retained; renal anuria and KDIGO urine branch not established; prompt patency/obstruction review.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC05",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "70 kg; actual effluent 2100 mL/h for 20h, confirmed no delivery for 4h in 24h",
+    "when": "Four hours CRRT downtime",
+    "expect": "42000 mL estimated delivered; 25 mL/kg/h wall-time versus 30 on-treatment. Not net patient removal or guaranteed clearance.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC06",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Actual citrate stop and ongoing calcium source; systemic iCa/context may be missing",
+    "when": "Citrate stopped while calcium continues",
+    "expect": "Flag coordinated human review; retain unknown timing; no automatic stop-calcium command.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC07",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "IHD actual end 14:00, CRRT actual start 16:00 with new prescription",
+    "when": "IHD to CRRT",
+    "expect": "Separate modality segments and 2h off/unknown status according to evidence; new medication review; no inherited CRRT dose during IHD.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC08",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Total calcium 10 mg/dL, systemic iCa 1.1 mmol/L",
+    "when": "Unit mismatch calcium",
+    "expect": "No raw-number ratio; require validated calcium species conversion before pairing.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC09",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Postfilter iCa selected as systemic comparator",
+    "when": "Postfilter sample mislabel",
+    "expect": "Reject ratio pairing and preserve source site; do not silently swap samples.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC10",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Specimen collected in-window but ingested beyond selected watermark",
+    "when": "New result after cutoff",
+    "expect": "Exclude at historical cutoff; later refresh creates a new assessment context.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC11",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Same specimen 2.0 → corrected 1.2",
+    "when": "Corrected creatinine",
+    "expect": "History preserved; invalidate dependent draft; never depict as improvement between two specimens.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC12",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Final lab withdrawn and older numeric revision exists",
+    "when": "Withdrawn measurement",
+    "expect": "Show withdrawal; do not resurrect older value as current.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC13",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Maintenance IHD recorded before admission",
+    "when": "Known chronic dialysis",
+    "expect": "Retain chronic support history; do not infer new AKI stage3 solely from maintenance dialysis.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC14",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "No preadmission baseline; two eligible current specimens show >=0.3 mg/dL increase in <=48h",
+    "when": "No baseline, acute rise",
+    "expect": "Baseline remains unavailable; independently established absolute criterion can still be evaluated.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC15",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Stop A 02:00–04:00 and stop B 03:00–05:00",
+    "when": "Overlapping downtime",
+    "expect": "Union is 3h, not 4h; original two events remain inspectable.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC16",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Effluent cumulative counter 10000 → 0 after bag/machine reset",
+    "when": "Counter reset",
+    "expect": "No negative removal; split at validated reset or withhold affected volume.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC17",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "No device events 02:00–04:00",
+    "when": "Missing telemetry",
+    "expect": "Mark unknown exposure, not proven downtime/zero; withhold complete-day delivered dose.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC18",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Machine gross effluent 2400 mL/h; net-removal setting 100 mL/h",
+    "when": "Net versus effluent",
+    "expect": "Show as different quantities; do not record 2400 mL/h patient loss.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC19",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Selected dose weight70kg; later measured weight80kg",
+    "when": "Weight change",
+    "expect": "Old summary retains70kg; explicit new selection creates new result with reason, no silent recomputation.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC20",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Device PBP contains citrate already included in replacement/effluent accounting",
+    "when": "Citrate carrier double count",
+    "expect": "Count once under the exact device profile; withhold if convention unresolved.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC21",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Two measured intervals overlap and cumulative summary covers both",
+    "when": "Urine overlap and total",
+    "expect": "Do not sum all; identify collection relationships/coverage before output rate.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC22",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Age/pregnancy applicability absent for selected equation/protocol",
+    "when": "Infant or pregnancy unknown",
+    "expect": "No adult default, no unsupported equation or citrate profile activation.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC23",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Creatinine falls while delivered support increases",
+    "when": "Falling creatinine on CRRT",
+    "expect": "No native recovery declaration; clinician assesses independent evidence and continuing indication.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC24",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Open source B while delayed history A returns",
+    "when": "Refresh during history",
+    "expect": "Only B details remain; ignore stale A result and show exact history errors without fallback.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC25",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Record bedside session review then reload page",
+    "when": "Session reload",
+    "expect": "Session note clears with visible persistence limit; no chart-save or task completion claim.",
+    "execution_status": "specified_not_executed"
+  },
+  {
+    "id": "M8-AC26",
+    "rule": "cross-domain",
+    "kind": "acceptance_specification",
+    "given": "Append response lost after storage commit",
+    "when": "Uncertain durable save",
+    "expect": "Existing owner exact request lookup returns original result; no blind duplicate save.",
+    "execution_status": "specified_not_executed"
+  }
+]

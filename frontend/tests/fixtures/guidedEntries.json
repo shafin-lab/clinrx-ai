@@ -1,0 +1,1662 @@
+[
+  {
+    "family": "pressure",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "71.00",
+      "unit": "mmHg",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "direct_measurement",
+      "quality": "unknown",
+      "method": "automated_cuff",
+      "resultType": "numeric",
+      "concept": "systemic_mean"
+    },
+    "fact": {
+      "id": "guided-validation-0",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-0",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-0",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_pressure",
+      "concept": "systemic_mean",
+      "result": {
+        "result_type": "numeric",
+        "quantity": {
+          "value": "71.00",
+          "unit": {
+            "raw": "mmHg",
+            "status": "unresolved",
+            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+          }
+        }
+      },
+      "production": "direct_measurement",
+      "acquisition": {
+        "method": "automated_cuff",
+        "quality": {
+          "status": "unknown",
+          "provenance": null
+        },
+        "calibration": "unknown",
+        "zeroing": "unknown"
+      }
+    }
+  },
+  {
+    "family": "gas",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "7.3600",
+      "unit": "1",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "direct_measurement",
+      "quality": "unknown",
+      "method": "unknown",
+      "resultType": "numeric",
+      "concept": "ph",
+      "sample": "arterial",
+      "specimen": "local-sample",
+      "fio2": "40",
+      "fio2Unit": "%",
+      "peep": "5",
+      "peepUnit": "cmH2O"
+    },
+    "fact": {
+      "id": "guided-validation-1",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-1",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-1",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_oxygen",
+      "concept": "ph",
+      "result": {
+        "result_type": "numeric",
+        "quantity": {
+          "value": "7.3600",
+          "unit": {
+            "raw": "1",
+            "status": "unresolved",
+            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+          }
+        }
+      },
+      "production": "direct_measurement",
+      "acquisition": {
+        "method": "blood_gas",
+        "quality": {
+          "status": "unknown",
+          "provenance": null
+        },
+        "calibration": "unknown",
+        "zeroing": "unknown"
+      },
+      "specimen": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "code": "local-sample",
+        "raw_display": "local-sample",
+        "version": null
+      },
+      "sample_type": "arterial",
+      "blood_gas_context": {
+        "collected": {
+          "recorded": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T09:15:00.123456Z"
+          },
+          "source_timestamp": "2026-10-08T09:15:00.123456Z",
+          "clock": "unknown"
+        },
+        "provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-1",
+            "channel": "clinician",
+            "version": null
+          },
+          "actor": "Synthetic reviewer",
+          "recorded_at": "2026-10-18T06:00:00Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        },
+        "limitations": [
+          "Context applies only to this recorded specimen."
+        ],
+        "fio2": {
+          "value": "40",
+          "unit": {
+            "raw": "%",
+            "status": "unresolved",
+            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+          }
+        },
+        "peep": {
+          "value": "5",
+          "unit": {
+            "raw": "cmH2O",
+            "status": "unresolved",
+            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+          }
+        }
+      }
+    }
+  },
+  {
+    "family": "gas",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "62.0",
+      "unit": "%",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "direct_measurement",
+      "quality": "unknown",
+      "method": "unknown",
+      "resultType": "numeric",
+      "concept": "svo2",
+      "sample": "mixed_venous"
+    },
+    "fact": {
+      "id": "guided-validation-2",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-2",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-2",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_oxygen",
+      "concept": "svo2",
+      "result": {
+        "result_type": "numeric",
+        "quantity": {
+          "value": "62.0",
+          "unit": {
+            "raw": "%",
+            "status": "unresolved",
+            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+          }
+        }
+      },
+      "production": "direct_measurement",
+      "acquisition": {
+        "method": "blood_gas",
+        "quality": {
+          "status": "unknown",
+          "provenance": null
+        },
+        "calibration": "unknown",
+        "zeroing": "unknown"
+      },
+      "specimen": null,
+      "sample_type": "mixed_venous",
+      "blood_gas_context": {
+        "collected": {
+          "recorded": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T09:15:00.123456Z"
+          },
+          "source_timestamp": "2026-10-08T09:15:00.123456Z",
+          "clock": "unknown"
+        },
+        "provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-2",
+            "channel": "clinician",
+            "version": null
+          },
+          "actor": "Synthetic reviewer",
+          "recorded_at": "2026-10-18T06:00:00Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        },
+        "limitations": [
+          "Context applies only to this recorded specimen."
+        ]
+      }
+    }
+  },
+  {
+    "family": "gas",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "2.10",
+      "unit": "mmol/L",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "direct_measurement",
+      "quality": "unknown",
+      "method": "unknown",
+      "resultType": "numeric",
+      "concept": "lactate",
+      "sample": "arterial",
+      "reportStatus": "final"
+    },
+    "fact": {
+      "id": "guided-validation-3",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-3",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-3",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_lactate",
+      "result": {
+        "result_type": "numeric",
+        "quantity": {
+          "value": "2.10",
+          "unit": {
+            "raw": "mmol/L",
+            "status": "unresolved",
+            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+          }
+        }
+      },
+      "production": "direct_measurement",
+      "acquisition": {
+        "method": "blood_gas",
+        "quality": {
+          "status": "unknown",
+          "provenance": null
+        },
+        "calibration": "unknown",
+        "zeroing": "unknown"
+      },
+      "specimen": null,
+      "blood_source": "arterial",
+      "collected": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "collection_assertion": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-3",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "report_status": "final"
+    }
+  },
+  {
+    "family": "cardiac",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "4.70",
+      "unit": "L/min",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "direct_measurement",
+      "quality": "suspect",
+      "method": "bolus_thermodilution",
+      "resultType": "numeric",
+      "concept": "co",
+      "methodContext": "PAC source-recorded three-injection basis; no ClinRx averaging"
+    },
+    "fact": {
+      "id": "guided-validation-4",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-4",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-4",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_cardiac",
+      "concept": "co",
+      "result": {
+        "result_type": "numeric",
+        "quantity": {
+          "value": "4.70",
+          "unit": {
+            "raw": "L/min",
+            "status": "unresolved",
+            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+          }
+        }
+      },
+      "production": "direct_measurement",
+      "acquisition": {
+        "method": "bolus_thermodilution",
+        "quality": {
+          "status": "suspect",
+          "provenance": {
+            "source": {
+              "namespace": "clinrx-local-synthetic-entry",
+              "identifier": "guided-validation-4",
+              "channel": "clinician",
+              "version": null
+            },
+            "actor": "Synthetic reviewer",
+            "recorded_at": "2026-10-18T06:00:00Z",
+            "upstream": [],
+            "lineage": "incomplete",
+            "limitations": [
+              "Fictional local entry; actor and source assertions are not independently authenticated."
+            ]
+          }
+        },
+        "calibration": "unknown",
+        "zeroing": "unknown",
+        "source_method": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "code": "PAC source-recorded three-injection basis; no ClinRx averaging",
+          "raw_display": "PAC source-recorded three-injection basis; no ClinRx averaging",
+          "version": null
+        }
+      }
+    }
+  },
+  {
+    "family": "echo",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "45.0",
+      "unit": "mmHg",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "source_calculated",
+      "quality": "unknown",
+      "method": "unknown",
+      "resultType": "numeric",
+      "concept": "estimated_rvsp",
+      "productionBasis": "Source TR velocity / estimated RAP; RVOT obstruction context unknown",
+      "study": "study-local",
+      "report": "report-local",
+      "reportRevision": "1"
+    },
+    "fact": {
+      "id": "guided-validation-5",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-5",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-5",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_echo",
+      "concept": "estimated_rvsp",
+      "result": {
+        "result_type": "numeric",
+        "quantity": {
+          "value": "45.0",
+          "unit": {
+            "raw": "mmHg",
+            "status": "unresolved",
+            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+          }
+        }
+      },
+      "production": "source_calculated",
+      "acquisition": {
+        "method": "echo",
+        "quality": {
+          "status": "unknown",
+          "provenance": null
+        },
+        "calibration": "unknown",
+        "zeroing": "unknown"
+      },
+      "calculation_method": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "code": "Source TR velocity / estimated RAP; RVOT obstruction context unknown",
+        "raw_display": "Source TR velocity / estimated RAP; RVOT obstruction context unknown",
+        "version": null
+      },
+      "study": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "code": "study-local",
+        "raw_display": "study-local",
+        "version": null
+      },
+      "report": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "code": "report-local",
+        "raw_display": "report-local",
+        "version": null
+      },
+      "report_revision": "1",
+      "disclosures": [
+        "Echo assertions and estimates are source-reported; no PH/PAH diagnosis, invasive confirmation or simultaneous later measurement is inferred."
+      ]
+    }
+  },
+  {
+    "family": "echo",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "7.3600",
+      "unit": "1",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "direct_measurement",
+      "quality": "unknown",
+      "method": "unknown",
+      "resultType": "qualitative",
+      "concept": "rv_function",
+      "finding": "Source-reported reduced RV function",
+      "study": "study-local",
+      "report": "report-local",
+      "reportRevision": "1"
+    },
+    "fact": {
+      "id": "guided-validation-6",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-6",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-6",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_echo",
+      "concept": "rv_function",
+      "result": {
+        "result_type": "qualitative",
+        "finding": {
+          "raw_display": "Source-reported reduced RV function"
+        }
+      },
+      "production": "direct_measurement",
+      "acquisition": {
+        "method": "echo",
+        "quality": {
+          "status": "unknown",
+          "provenance": null
+        },
+        "calibration": "unknown",
+        "zeroing": "unknown"
+      },
+      "study": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "code": "study-local",
+        "raw_display": "study-local",
+        "version": null
+      },
+      "report": {
+        "namespace": "clinrx-local-synthetic-entry",
+        "code": "report-local",
+        "raw_display": "report-local",
+        "version": null
+      },
+      "report_revision": "1",
+      "disclosures": [
+        "Echo assertions and estimates are source-reported; no PH/PAH diagnosis, invasive confirmation or simultaneous later measurement is inferred."
+      ]
+    }
+  },
+  {
+    "family": "infusion",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "7.3600",
+      "unit": "1",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "direct_measurement",
+      "quality": "unknown",
+      "method": "unknown",
+      "resultType": "numeric",
+      "drug": "noradrenaline",
+      "action": "order",
+      "sourceStatus": "Source prescribed order; no administration",
+      "series": "local-N",
+      "rate": "7.00",
+      "rateUnit": "mcg/min",
+      "concentration": "0.08",
+      "concentrationUnit": "mg/mL"
+    },
+    "fact": {
+      "id": "guided-validation-7",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-7",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-7",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_vasoactive",
+      "drug": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "code": "noradrenaline",
+          "raw_display": "noradrenaline",
+          "version": null
+        },
+        "mapping": "unknown",
+        "limitation": "Raw agent identity recorded; no terminology mapping asserted.",
+        "mapping_provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-7",
+            "channel": "clinician",
+            "version": null
+          },
+          "actor": "Synthetic reviewer",
+          "recorded_at": "2026-10-18T06:00:00Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        }
+      },
+      "source_status": {
+        "raw_display": "Source prescribed order; no administration"
+      },
+      "source_identifiers": [
+        {
+          "namespace": "clinrx.local.infusion-series/v1",
+          "code": "local-N",
+          "raw_display": "local-N",
+          "version": null
+        }
+      ],
+      "action": {
+        "event_type": "order",
+        "prescribed": {
+          "infusion": {
+            "namespace": "clinrx.local.infusion-series/v1",
+            "code": "local-N",
+            "raw_display": "local-N",
+            "version": null
+          },
+          "route": null,
+          "rate": {
+            "value": "7.00",
+            "unit": {
+              "raw": "mcg/min",
+              "status": "unresolved",
+              "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+            }
+          },
+          "concentration": {
+            "value": "0.08",
+            "unit": {
+              "raw": "mg/mL",
+              "status": "unresolved",
+              "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+            }
+          }
+        },
+        "status": {
+          "raw_display": "Source prescribed order; no administration"
+        }
+      },
+      "disclosures": [
+        "Orders and preparations do not establish administration. Documented delivery is a source assertion, not continuous exposure, a conversion, or proof of treatment effect. Weight-dependent doses require separately reviewed weight support; this guided form does not calculate doses or pump rates."
+      ]
+    }
+  },
+  {
+    "family": "infusion",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "7.3600",
+      "unit": "1",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "direct_measurement",
+      "quality": "unknown",
+      "method": "unknown",
+      "resultType": "numeric",
+      "drug": "vasopressin",
+      "action": "initiation",
+      "sourceStatus": "Source documented start",
+      "series": "local-V",
+      "rate": "1.8",
+      "rateUnit": "units/h"
+    },
+    "fact": {
+      "id": "guided-validation-8",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-8",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-8",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_vasoactive",
+      "drug": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "code": "vasopressin",
+          "raw_display": "vasopressin",
+          "version": null
+        },
+        "mapping": "unknown",
+        "limitation": "Raw agent identity recorded; no terminology mapping asserted.",
+        "mapping_provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-8",
+            "channel": "clinician",
+            "version": null
+          },
+          "actor": "Synthetic reviewer",
+          "recorded_at": "2026-10-18T06:00:00Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        }
+      },
+      "source_status": {
+        "raw_display": "Source documented start"
+      },
+      "source_identifiers": [
+        {
+          "namespace": "clinrx.local.infusion-series/v1",
+          "code": "local-V",
+          "raw_display": "local-V",
+          "version": null
+        }
+      ],
+      "action": {
+        "event_type": "initiation",
+        "delivery": {
+          "infusion": {
+            "namespace": "clinrx.local.infusion-series/v1",
+            "code": "local-V",
+            "raw_display": "local-V",
+            "version": null
+          },
+          "route": null,
+          "rate": {
+            "value": "1.8",
+            "unit": {
+              "raw": "units/h",
+              "status": "unresolved",
+              "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+            }
+          },
+          "attestation": {
+            "source": {
+              "namespace": "clinrx-local-synthetic-entry",
+              "identifier": "guided-validation-8",
+              "channel": "clinician",
+              "version": null
+            },
+            "actor": "Synthetic reviewer",
+            "recorded_at": "2026-10-18T06:00:00Z",
+            "upstream": [],
+            "lineage": "incomplete",
+            "limitations": [
+              "Fictional local entry; actor and source assertions are not independently authenticated."
+            ]
+          }
+        }
+      },
+      "disclosures": [
+        "Orders and preparations do not establish administration. Documented delivery is a source assertion, not continuous exposure, a conversion, or proof of treatment effect. Weight-dependent doses require separately reviewed weight support; this guided form does not calculate doses or pump rates."
+      ]
+    }
+  },
+  {
+    "family": "infusion",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "7.3600",
+      "unit": "1",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "direct_measurement",
+      "quality": "unknown",
+      "method": "unknown",
+      "resultType": "numeric",
+      "drug": "dobutamine",
+      "action": "pause",
+      "sourceStatus": "Source documented pause",
+      "series": "local-D",
+      "interruption": "Source recorded reason"
+    },
+    "fact": {
+      "id": "guided-validation-9",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-9",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-9",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_vasoactive",
+      "drug": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "code": "dobutamine",
+          "raw_display": "dobutamine",
+          "version": null
+        },
+        "mapping": "unknown",
+        "limitation": "Raw agent identity recorded; no terminology mapping asserted.",
+        "mapping_provenance": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-9",
+            "channel": "clinician",
+            "version": null
+          },
+          "actor": "Synthetic reviewer",
+          "recorded_at": "2026-10-18T06:00:00Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        }
+      },
+      "source_status": {
+        "raw_display": "Source documented pause"
+      },
+      "source_identifiers": [
+        {
+          "namespace": "clinrx.local.infusion-series/v1",
+          "code": "local-D",
+          "raw_display": "local-D",
+          "version": null
+        }
+      ],
+      "action": {
+        "event_type": "pause",
+        "reason": {
+          "raw_display": "Source recorded reason"
+        },
+        "attestation": {
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-9",
+            "channel": "clinician",
+            "version": null
+          },
+          "actor": "Synthetic reviewer",
+          "recorded_at": "2026-10-18T06:00:00Z",
+          "upstream": [],
+          "lineage": "incomplete",
+          "limitations": [
+            "Fictional local entry; actor and source assertions are not independently authenticated."
+          ]
+        }
+      },
+      "disclosures": [
+        "Orders and preparations do not establish administration. Documented delivery is a source assertion, not continuous exposure, a conversion, or proof of treatment effect. Weight-dependent doses require separately reviewed weight support; this guided form does not calculate doses or pump rates."
+      ]
+    }
+  },
+  {
+    "family": "perfusion",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "3.0",
+      "unit": "s",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "direct_measurement",
+      "quality": "unknown",
+      "method": "bedside_examination",
+      "resultType": "numeric",
+      "concept": "capillary_refill"
+    },
+    "fact": {
+      "id": "guided-validation-10",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-10",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-10",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_perfusion",
+      "concept": "capillary_refill",
+      "result": {
+        "result_type": "numeric",
+        "quantity": {
+          "value": "3.0",
+          "unit": {
+            "raw": "s",
+            "status": "unresolved",
+            "limitation": "Locally recorded raw unit; terminology and conversion not assessed."
+          }
+        }
+      },
+      "production": "direct_measurement",
+      "acquisition": {
+        "method": "bedside_examination",
+        "quality": {
+          "status": "unknown",
+          "provenance": null
+        },
+        "calibration": "unknown",
+        "zeroing": "unknown"
+      }
+    }
+  },
+  {
+    "family": "reassessment",
+    "fields": {
+      "time": "2026-10-08T09:15:00.123456Z",
+      "available": "",
+      "value": "7.3600",
+      "unit": "1",
+      "uncertainty": "Fictional source; context requires review",
+      "production": "direct_measurement",
+      "quality": "unknown",
+      "method": "unknown",
+      "resultType": "numeric",
+      "question": "Review documented intervention and separately recorded findings",
+      "baseline": "[\"circulatory_pressure\",\"fs-MAP-15\",\"1\"]",
+      "intervention": "[\"circulatory_vasoactive\",\"fs-N-CHANGE\",\"1\"]",
+      "followup": "[\"circulatory_cardiac\",\"fs-CO-60\",\"1\"]",
+      "findings": "Recorded MAP and CO have distinct times and methods.",
+      "possibilities": "Relationship unconfirmed; no causal attribution",
+      "nextReview": "Clinician to review sample and echo context"
+    },
+    "fact": {
+      "id": "guided-validation-11",
+      "revision": "1",
+      "contract_version": "3",
+      "binding": {
+        "target": {
+          "patient_id": "synthetic-p1",
+          "encounter_id": "synthetic-e1"
+        },
+        "verification": {
+          "status": "unresolved",
+          "method": "Local synthetic encounter selection",
+          "verifier": "Synthetic reviewer",
+          "assessed_at": "2026-10-18T06:00:00Z",
+          "source": {
+            "namespace": "clinrx-local-synthetic-entry",
+            "identifier": "guided-validation-11",
+            "channel": "clinician",
+            "version": null
+          },
+          "ambiguity": "Fictional patient identity only; not independently verified."
+        }
+      },
+      "origin": "reported",
+      "provenance": {
+        "source": {
+          "namespace": "clinrx-local-synthetic-entry",
+          "identifier": "guided-validation-11",
+          "channel": "clinician",
+          "version": null
+        },
+        "actor": "Synthetic reviewer",
+        "recorded_at": "2026-10-18T06:00:00Z",
+        "upstream": [],
+        "lineage": "incomplete",
+        "limitations": [
+          "Fictional local entry; actor and source assertions are not independently authenticated."
+        ]
+      },
+      "time": {
+        "precision": "unknown"
+      },
+      "temporal_status": "unknown",
+      "verification": "unverified",
+      "record_status": "recorded",
+      "occurred": {
+        "recorded": {
+          "status": "known",
+          "precision": "instant",
+          "value": "2026-10-08T09:15:00.123456Z"
+        },
+        "source_timestamp": "2026-10-08T09:15:00.123456Z",
+        "clock": "unknown"
+      },
+      "available": {
+        "recorded": {
+          "status": "not_recorded"
+        },
+        "clock": "unknown"
+      },
+      "uncertainty": [
+        "Fictional source; context requires review"
+      ],
+      "kind": "circulatory_event",
+      "event_type": "other",
+      "description": {
+        "raw_display": "Clinician-authored synthetic reassessment; not a computed response or causal conclusion.\nQuestion: Review documented intervention and separately recorded findings\nbaseline: {\"kind\":\"circulatory_pressure\",\"id\":\"fs-MAP-15\",\"version\":\"1\"}\nintervention: {\"kind\":\"circulatory_vasoactive\",\"id\":\"fs-N-CHANGE\",\"version\":\"1\"}\nfollowup: {\"kind\":\"circulatory_cardiac\",\"id\":\"fs-CO-60\",\"version\":\"1\"}\nRecorded findings: Recorded MAP and CO have distinct times and methods.\nUnconfirmed possibilities: Relationship unconfirmed; no causal attribution\nConfirmation gaps: Fictional source; context requires review\nNext review (recorded plan, not a scheduled action): Clinician to review sample and echo context"
+      },
+      "source_identifiers": [
+        {
+          "namespace": "clinrx.local.chart-entry/v1",
+          "code": "reassessment",
+          "raw_display": "reassessment",
+          "version": null
+        }
+      ],
+      "external_evidence": [
+        {
+          "namespace": "clinrx.local.reassessment.baseline/v1",
+          "code": "{\"kind\":\"circulatory_pressure\",\"id\":\"fs-MAP-15\",\"version\":\"1\"}",
+          "raw_display": "{\"kind\":\"circulatory_pressure\",\"id\":\"fs-MAP-15\",\"version\":\"1\"}",
+          "version": null
+        },
+        {
+          "namespace": "clinrx.local.reassessment.intervention/v1",
+          "code": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"fs-N-CHANGE\",\"version\":\"1\"}",
+          "raw_display": "{\"kind\":\"circulatory_vasoactive\",\"id\":\"fs-N-CHANGE\",\"version\":\"1\"}",
+          "version": null
+        },
+        {
+          "namespace": "clinrx.local.reassessment.followup/v1",
+          "code": "{\"kind\":\"circulatory_cardiac\",\"id\":\"fs-CO-60\",\"version\":\"1\"}",
+          "raw_display": "{\"kind\":\"circulatory_cardiac\",\"id\":\"fs-CO-60\",\"version\":\"1\"}",
+          "version": null
+        }
+      ],
+      "associations": [
+        {
+          "role": "context",
+          "scope": {
+            "patient_id": "synthetic-p1",
+            "encounter_id": "synthetic-e1"
+          },
+          "status": "resolved",
+          "exact": {
+            "kind": "circulatory_pressure",
+            "id": "fs-MAP-15",
+            "version": "1"
+          },
+          "provenance": {
+            "source": {
+              "namespace": "clinrx-local-synthetic-entry",
+              "identifier": "guided-validation-11",
+              "channel": "clinician",
+              "version": null
+            },
+            "actor": "Synthetic reviewer",
+            "recorded_at": "2026-10-18T06:00:00Z",
+            "upstream": [],
+            "lineage": "incomplete",
+            "limitations": [
+              "Fictional local entry; actor and source assertions are not independently authenticated."
+            ]
+          }
+        },
+        {
+          "role": "context",
+          "scope": {
+            "patient_id": "synthetic-p1",
+            "encounter_id": "synthetic-e1"
+          },
+          "status": "resolved",
+          "exact": {
+            "kind": "circulatory_vasoactive",
+            "id": "fs-N-CHANGE",
+            "version": "1"
+          },
+          "provenance": {
+            "source": {
+              "namespace": "clinrx-local-synthetic-entry",
+              "identifier": "guided-validation-11",
+              "channel": "clinician",
+              "version": null
+            },
+            "actor": "Synthetic reviewer",
+            "recorded_at": "2026-10-18T06:00:00Z",
+            "upstream": [],
+            "lineage": "incomplete",
+            "limitations": [
+              "Fictional local entry; actor and source assertions are not independently authenticated."
+            ]
+          }
+        },
+        {
+          "role": "context",
+          "scope": {
+            "patient_id": "synthetic-p1",
+            "encounter_id": "synthetic-e1"
+          },
+          "status": "resolved",
+          "exact": {
+            "kind": "circulatory_cardiac",
+            "id": "fs-CO-60",
+            "version": "1"
+          },
+          "provenance": {
+            "source": {
+              "namespace": "clinrx-local-synthetic-entry",
+              "identifier": "guided-validation-11",
+              "channel": "clinician",
+              "version": null
+            },
+            "actor": "Synthetic reviewer",
+            "recorded_at": "2026-10-18T06:00:00Z",
+            "upstream": [],
+            "lineage": "incomplete",
+            "limitations": [
+              "Fictional local entry; actor and source assertions are not independently authenticated."
+            ]
+          }
+        }
+      ]
+    }
+  }
+]

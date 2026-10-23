@@ -2,13 +2,14 @@
 import pytest
 from app.persistence import mapping as m
 from app.models.clinical import hemodynamics as h
+from app.models.clinical import transfusion as t
 from app.execution.patient_state_v3_inference import build_circulatory_timing_inference, CirculatoryInferenceError
 from test_persistence import database, registered
 from test_patient_state_v3 import change, numeric
 from test_patient_state_v3_inference import inputs, selected
 
 
-def test_complete_admission_registry_is_exact_original_16_plus_explicit_15():
+def test_complete_admission_registry_includes_only_explicitly_supported_domains():
     assert m.SUPPORTED_FACTS == {
         'observation':m.ClinicalObservation,'medication_order':m.MedicationOrder,
         'medication_administration':m.MedicationAdministration,'inference':m.ClinicalInference,
@@ -26,6 +27,21 @@ def test_complete_admission_registry_is_exact_original_16_plus_explicit_15():
         'circulatory_vasoactive':h.VasoactiveEvent,'circulatory_monitoring':h.MonitoringEvent,
         'circulatory_assessment':h.DynamicAssessment,'circulatory_event':h.CirculatoryEvent,
         'circulatory_signal':h.SignalManifest,
+        'laboratory_report':__import__('app.models.clinical.laboratory',fromlist=['LaboratoryReport']).LaboratoryReport,
+        'respiratory_record':__import__('app.models.clinical.respiratory',fromlist=['RespiratoryRecord']).RespiratoryRecord,
+        'transfusion_administration':t.TransfusionAdministration,
+        'haemostatic_medication_course':t.HaemostaticMedicationCourse,
+        'transfusion_request':t.TransfusionRequest,
+        'transfusion_prescription':t.TransfusionPrescription,
+        'blood_product_disposition':t.BloodProductDisposition,
+        'transfusion_compatibility':t.TransfusionCompatibility,
+        'transfusion_reaction':t.TransfusionReaction,
+        'haemorrhage_episode':t.HaemorrhageEpisode,
+        'm10_assessment':t.M10Assessment,
+        'transfusion_coverage_link':t.TransfusionCoverageLink,
+        'fluid_administration_link':t.FluidAdministrationLink,
+        'm10_medication_detail':t.M10MedicationDetail,
+        'viscoelastic_report':t.ViscoelasticReport,
     }
 
 

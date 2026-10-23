@@ -17,6 +17,9 @@ from app.models.clinical.microbiology import (Specimen, DirectExamination, Cultu
     BloodCultureSet, BloodCultureBottle)
 from app.models.clinical.antimicrobials import (AntimicrobialOrder,
     CompletedAntimicrobialAdministration, AntimicrobialNonDelivery)
+from app.models.clinical.laboratory import LaboratoryReport
+from app.models.clinical.respiratory import RespiratoryRecord
+from app.models.clinical.transfusion import M10_FACTS, M10Record
 
 from app.models.clinical.hemodynamics import M7_FACTS, CirculatoryRecord
 
@@ -37,13 +40,15 @@ SUPPORTED_FACTS = {
     'antimicrobial_order': AntimicrobialOrder,
     'antimicrobial_administration': CompletedAntimicrobialAdministration,
     'antimicrobial_non_delivery': AntimicrobialNonDelivery,
+    'laboratory_report': LaboratoryReport,
+    'respiratory_record': RespiratoryRecord,
 }
 SupportedFact = (ClinicalObservation | MedicationOrder | MedicationAdministration | ClinicalInference
-    | Specimen | DirectExamination | CultureFinding | IsolateIdentification | SusceptibilityResult | ResistanceFinding | MolecularResult | BloodCultureSet | BloodCultureBottle | AntimicrobialOrder | CompletedAntimicrobialAdministration | AntimicrobialNonDelivery)
+    | Specimen | DirectExamination | CultureFinding | IsolateIdentification | SusceptibilityResult | ResistanceFinding | MolecularResult | BloodCultureSet | BloodCultureBottle | AntimicrobialOrder | CompletedAntimicrobialAdministration | AntimicrobialNonDelivery | LaboratoryReport | RespiratoryRecord)
 
 
-SUPPORTED_FACTS = {**SUPPORTED_FACTS, **M7_FACTS}
-SupportedFact = SupportedFact | CirculatoryRecord
+SUPPORTED_FACTS = {**SUPPORTED_FACTS, **M7_FACTS, **M10_FACTS}
+SupportedFact = SupportedFact | CirculatoryRecord | M10Record
 
 @dataclass(frozen=True)
 class StoredFact:

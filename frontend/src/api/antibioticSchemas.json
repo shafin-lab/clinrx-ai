@@ -1,0 +1,271 @@
+{
+  "roots": {
+    "AntibioticDraft": {
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "format": "uuid",
+          "title": "Repository",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "format": "uuid",
+          "title": "Revision",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "prescription",
+            "given",
+            "held",
+            "missed",
+            "refused",
+            "not_given"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "medicine": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Medicine",
+          "type": "string"
+        },
+        "product": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Product",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "pattern": "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "enum": [
+                "mg",
+                "g",
+                "IU"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "dose_detail": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dose Detail"
+        },
+        "route": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Route",
+          "type": "string"
+        },
+        "schedule": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Schedule"
+        },
+        "indication": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Indication",
+          "type": "string"
+        },
+        "point": {
+          "maxLength": 64,
+          "minLength": 20,
+          "title": "Point",
+          "type": "string"
+        },
+        "actor": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Actor",
+          "type": "string"
+        },
+        "source_record": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Source Record",
+          "type": "string"
+        },
+        "recorded_at": {
+          "maxLength": 64,
+          "minLength": 20,
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "order": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "culture_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "predecessor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "predecessor_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Predecessor Digest"
+        },
+        "correction_reason": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        }
+      },
+      "required": [
+        "repository",
+        "id",
+        "revision",
+        "mode",
+        "medicine",
+        "product",
+        "route",
+        "indication",
+        "point",
+        "actor",
+        "source_record",
+        "recorded_at"
+      ],
+      "title": "AntibioticDraft",
+      "type": "object"
+    },
+    "AntibioticHistoryRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "state_context": {
+          "maxLength": 65536,
+          "minLength": 1,
+          "title": "State Context",
+          "type": "string"
+        },
+        "reference": {
+          "$ref": "#/$defs/ExactReference"
+        }
+      },
+      "required": [
+        "state_context",
+        "reference"
+      ],
+      "title": "AntibioticHistoryRequest",
+      "type": "object"
+    }
+  },
+  "definitions": {
+    "ExactReference": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version"
+      ],
+      "title": "ExactReference",
+      "type": "object"
+    }
+  }
+}

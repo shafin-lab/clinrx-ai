@@ -1,0 +1,6 @@
+/* Local read-only RF1; horizontal overflow remains inside each table. */
+.rf-scroll {max-width:100%;overflow:auto;border:1px solid #a7bdc8;margin:1rem 0;}
+.rf-scroll table {border-collapse:collapse;width:100%;min-width:38rem;}
+.rf-scroll th,.rf-scroll td {text-align:left;vertical-align:top;padding:.7rem;border:1px solid #b5c7d0;overflow-wrap:anywhere;}
+.rf-scroll small {display:block;font-weight:normal;}
+[aria-label="Renal review exact source inspector"] pre {max-height:25rem;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;}

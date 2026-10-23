@@ -1,0 +1,1799 @@
+[
+  {
+    "id": "teg5000_kaolin",
+    "label": "TEG 5000 — Kaolin + functional fibrinogen",
+    "device": "TEG 5000",
+    "manufacturer": "Haemonetics",
+    "configuration": "TEG 5000 — Kaolin + functional fibrinogen",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "K",
+        "label": "K",
+        "parameters": [
+          {
+            "name": "R",
+            "unit": "min"
+          },
+          {
+            "name": "K",
+            "unit": "min"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "LY30",
+            "unit": "%"
+          },
+          {
+            "name": "LY60",
+            "unit": "%"
+          },
+          {
+            "name": "G",
+            "unit": "dyn/cm2"
+          },
+          {
+            "name": "CI",
+            "unit": "1"
+          }
+        ]
+      },
+      {
+        "assay": "KH",
+        "label": "KH",
+        "parameters": [
+          {
+            "name": "R",
+            "unit": "min"
+          },
+          {
+            "name": "K",
+            "unit": "min"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "LY30",
+            "unit": "%"
+          },
+          {
+            "name": "LY60",
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "assay": "FF",
+        "label": "FF",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "FLEV",
+            "unit": "mg/dL"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "teg5000"
+    ],
+    "mapping_status": "source_defined_capture",
+    "notes": "Cup-and-pin reagents, with optional matched heparinase channel. Local output mask requires IFU verification.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "403b9921a3ca65e48e6bc06f766579790527ba7b2f5094c4fe53987c67fa70c5"
+  },
+  {
+    "id": "teg5000_rapid",
+    "label": "TEG 5000 — RapidTEG + functional fibrinogen",
+    "device": "TEG 5000",
+    "manufacturer": "Haemonetics",
+    "configuration": "TEG 5000 — RapidTEG + functional fibrinogen",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "RapidTEG",
+        "label": "RapidTEG",
+        "parameters": [
+          {
+            "name": "ACT",
+            "unit": "s"
+          },
+          {
+            "name": "K",
+            "unit": "min"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "LY30",
+            "unit": "%"
+          },
+          {
+            "name": "LY60",
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "assay": "FF",
+        "label": "FF",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "FLEV",
+            "unit": "mg/dL"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "teg5000"
+    ],
+    "mapping_status": "source_defined_capture",
+    "notes": "",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "340ad84a7e2bcf625ca84ffd6422c5af176ffc0bb61750b566b0d04ab1a45fcb"
+  },
+  {
+    "id": "teg5000_native",
+    "label": "TEG 5000 — Native / recalcified",
+    "device": "TEG 5000",
+    "manufacturer": "Haemonetics",
+    "configuration": "TEG 5000 — Native / recalcified",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "Native",
+        "label": "Native",
+        "parameters": [
+          {
+            "name": "R",
+            "unit": "min"
+          },
+          {
+            "name": "K",
+            "unit": "min"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "LY30",
+            "unit": "%"
+          },
+          {
+            "name": "LY60",
+            "unit": "%"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "teg5000"
+    ],
+    "mapping_status": "capture_only",
+    "notes": "No kaolin algorithm applies to native results.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "800e989bd34de2f43a7bdf2b816e98c6d08f25af853e1cc86fbb89946864f61d"
+  },
+  {
+    "id": "teg6s_gh",
+    "label": "TEG 6s — Global Hemostasis",
+    "device": "TEG 6s",
+    "manufacturer": "Haemonetics",
+    "configuration": "TEG 6s — Global Hemostasis",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "CK",
+        "label": "CK",
+        "parameters": [
+          {
+            "name": "R",
+            "unit": "min"
+          },
+          {
+            "name": "K",
+            "unit": "min"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "CKH",
+        "label": "CKH",
+        "parameters": [
+          {
+            "name": "R",
+            "unit": "min"
+          }
+        ]
+      },
+      {
+        "assay": "CRT",
+        "label": "CRT",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "CFF",
+        "label": "CFF",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "FLEV",
+            "unit": "mg/dL"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "gh"
+    ],
+    "mapping_status": "source_verified_core",
+    "notes": "",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "94775aac035be8a31dfdbbce7089b040a984ec445ecf07ffd2e61152848d636a"
+  },
+  {
+    "id": "teg6s_gh_lysis",
+    "label": "TEG 6s — Global Hemostasis with Lysis",
+    "device": "TEG 6s",
+    "manufacturer": "Haemonetics",
+    "configuration": "TEG 6s — Global Hemostasis with Lysis",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "CK",
+        "label": "CK",
+        "parameters": [
+          {
+            "name": "R",
+            "unit": "min"
+          },
+          {
+            "name": "LY30",
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "assay": "CRT",
+        "label": "CRT",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "CFF",
+        "label": "CFF",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "lysis"
+    ],
+    "mapping_status": "source_verified_core",
+    "notes": "",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "275df3868a9b15050e49fc0f18e4e256be28e9fae41521ab371ecee86ab4a1f2"
+  },
+  {
+    "id": "teg6s_gh_hn",
+    "label": "TEG 6s — Global Hemostasis–HN",
+    "device": "TEG 6s",
+    "manufacturer": "Haemonetics",
+    "configuration": "TEG 6s — Global Hemostasis–HN",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "CK",
+        "label": "CK",
+        "parameters": [
+          {
+            "name": "R",
+            "unit": "min"
+          },
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "CKH",
+        "label": "CKH",
+        "parameters": [
+          {
+            "name": "R",
+            "unit": "min"
+          },
+          {
+            "name": "LY30",
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "assay": "CRTH",
+        "label": "CRTH",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "CFFH",
+        "label": "CFFH",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "hn"
+    ],
+    "mapping_status": "source_verified_core",
+    "notes": "",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "ad23d5b5baa7b67b1922c70895da4c4f7ffa147bac7ef3864804db70437f88e1"
+  },
+  {
+    "id": "teg5000_pm_adp_aa",
+    "label": "TEG 5000 — PlateletMapping ADP & AA",
+    "device": "TEG 5000",
+    "manufacturer": "Haemonetics",
+    "configuration": "TEG 5000 — PlateletMapping ADP & AA",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "Control",
+        "label": "Control",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "Fibrin",
+        "label": "Fibrin",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "ADP",
+        "label": "ADP",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "inhibition",
+            "unit": "%"
+          },
+          {
+            "name": "aggregation",
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "assay": "AA",
+        "label": "AA",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "inhibition",
+            "unit": "%"
+          },
+          {
+            "name": "aggregation",
+            "unit": "%"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "platelet",
+      "teg5000"
+    ],
+    "mapping_status": "capture_only",
+    "notes": "Source control/channel names are retained verbatim; this is a capture vocabulary, not a verified regional export mask.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "4b5bc3db954a0a53a58f0e2c2c5dbe26f2448e49f5174331e75e7bd4612eb4c0"
+  },
+  {
+    "id": "teg5000_pm_adp",
+    "label": "TEG 5000 — PlateletMapping ADP",
+    "device": "TEG 5000",
+    "manufacturer": "Haemonetics",
+    "configuration": "TEG 5000 — PlateletMapping ADP",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "Control",
+        "label": "Control",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "Fibrin",
+        "label": "Fibrin",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "ADP",
+        "label": "ADP",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "inhibition",
+            "unit": "%"
+          },
+          {
+            "name": "aggregation",
+            "unit": "%"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "platelet",
+      "teg5000"
+    ],
+    "mapping_status": "capture_only",
+    "notes": "Source control/channel names are retained verbatim; this is a capture vocabulary, not a verified regional export mask.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "b5a61c25cd587430a5f02f8b55916de61c95f43750432726c9698290f563b25d"
+  },
+  {
+    "id": "teg5000_pm_aa",
+    "label": "TEG 5000 — PlateletMapping AA",
+    "device": "TEG 5000",
+    "manufacturer": "Haemonetics",
+    "configuration": "TEG 5000 — PlateletMapping AA",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "Control",
+        "label": "Control",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "Fibrin",
+        "label": "Fibrin",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "AA",
+        "label": "AA",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "inhibition",
+            "unit": "%"
+          },
+          {
+            "name": "aggregation",
+            "unit": "%"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "platelet",
+      "teg5000"
+    ],
+    "mapping_status": "capture_only",
+    "notes": "Source control/channel names are retained verbatim; this is a capture vocabulary, not a verified regional export mask.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "b8eda9a3d137e915777ab9eceea01a6d509ff0bb18e94346b8506b7f9ed8cefa"
+  },
+  {
+    "id": "teg6s_pm_adp_aa",
+    "label": "TEG 6s — PlateletMapping ADP & AA",
+    "device": "TEG 6s",
+    "manufacturer": "Haemonetics",
+    "configuration": "TEG 6s — PlateletMapping ADP & AA",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "Control",
+        "label": "Control",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "Fibrin",
+        "label": "Fibrin",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "ADP",
+        "label": "ADP",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "inhibition",
+            "unit": "%"
+          },
+          {
+            "name": "aggregation",
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "assay": "AA",
+        "label": "AA",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "inhibition",
+            "unit": "%"
+          },
+          {
+            "name": "aggregation",
+            "unit": "%"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "platelet",
+      "teg6s"
+    ],
+    "mapping_status": "capture_only",
+    "notes": "Source control/channel names are retained verbatim; this is a capture vocabulary, not a verified regional export mask.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "7899f5e5810d450d9735be3e41a346a90327780486a10ab7731249cde6ee10fe"
+  },
+  {
+    "id": "teg6s_pm_adp",
+    "label": "TEG 6s — PlateletMapping ADP",
+    "device": "TEG 6s",
+    "manufacturer": "Haemonetics",
+    "configuration": "TEG 6s — PlateletMapping ADP",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "Control",
+        "label": "Control",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "Fibrin",
+        "label": "Fibrin",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "ADP",
+        "label": "ADP",
+        "parameters": [
+          {
+            "name": "MA",
+            "unit": "mm"
+          },
+          {
+            "name": "inhibition",
+            "unit": "%"
+          },
+          {
+            "name": "aggregation",
+            "unit": "%"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "platelet",
+      "teg6s"
+    ],
+    "mapping_status": "capture_only",
+    "notes": "Source control/channel names are retained verbatim; this is a capture vocabulary, not a verified regional export mask.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "aeeaf0445e6a763a354b12db1de45a35cae1f8ea61f98fbd2c803a5ad0acf42a"
+  },
+  {
+    "id": "rotem_delta_liquid",
+    "label": "ROTEM delta — liquid",
+    "device": "ROTEM delta",
+    "manufacturer": "Werfen",
+    "configuration": "ROTEM delta — liquid",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "INTEM",
+        "label": "INTEM",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "CFT",
+            "unit": "s"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI30",
+            "unit": "%"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          },
+          {
+            "name": "LOT",
+            "unit": "s"
+          }
+        ]
+      },
+      {
+        "assay": "EXTEM",
+        "label": "EXTEM",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "CFT",
+            "unit": "s"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI30",
+            "unit": "%"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          },
+          {
+            "name": "LOT",
+            "unit": "s"
+          }
+        ]
+      },
+      {
+        "assay": "APTEM",
+        "label": "APTEM",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "CFT",
+            "unit": "s"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI30",
+            "unit": "%"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          },
+          {
+            "name": "LOT",
+            "unit": "s"
+          }
+        ]
+      },
+      {
+        "assay": "HEPTEM",
+        "label": "HEPTEM",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "CFT",
+            "unit": "s"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI30",
+            "unit": "%"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          },
+          {
+            "name": "LOT",
+            "unit": "s"
+          }
+        ]
+      },
+      {
+        "assay": "NATEM",
+        "label": "NATEM",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "CFT",
+            "unit": "s"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI30",
+            "unit": "%"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          },
+          {
+            "name": "LOT",
+            "unit": "s"
+          }
+        ]
+      },
+      {
+        "assay": "FIBTEM",
+        "label": "FIBTEM",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI30",
+            "unit": "%"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "rotem",
+      "delta"
+    ],
+    "mapping_status": "source_defined_capture",
+    "notes": "Assay-specific local outputs require current IFU; source-only extra parameters remain available.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "50f7f95c9153cdc699cb4e3c3b59061805d59fdc553fb0d65614686efc05ebf9"
+  },
+  {
+    "id": "rotem_delta_single_use",
+    "label": "ROTEM delta — single use",
+    "device": "ROTEM delta",
+    "manufacturer": "Werfen",
+    "configuration": "ROTEM delta — single use",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "INTEM S",
+        "label": "INTEM S",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "CFT",
+            "unit": "s"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI30",
+            "unit": "%"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          },
+          {
+            "name": "LOT",
+            "unit": "s"
+          }
+        ]
+      },
+      {
+        "assay": "EXTEM S",
+        "label": "EXTEM S",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "CFT",
+            "unit": "s"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI30",
+            "unit": "%"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          },
+          {
+            "name": "LOT",
+            "unit": "s"
+          }
+        ]
+      },
+      {
+        "assay": "APTEM S",
+        "label": "APTEM S",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "CFT",
+            "unit": "s"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI30",
+            "unit": "%"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          },
+          {
+            "name": "LOT",
+            "unit": "s"
+          }
+        ]
+      },
+      {
+        "assay": "HEPTEM S",
+        "label": "HEPTEM S",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "CFT",
+            "unit": "s"
+          },
+          {
+            "name": "alpha",
+            "unit": "deg"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI30",
+            "unit": "%"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          },
+          {
+            "name": "LOT",
+            "unit": "s"
+          }
+        ]
+      },
+      {
+        "assay": "FIBTEM S",
+        "label": "FIBTEM S",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI30",
+            "unit": "%"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "rotem",
+      "delta"
+    ],
+    "mapping_status": "source_defined_capture",
+    "notes": "Assay-specific local outputs require current IFU; source-only extra parameters remain available.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "8814cb66b6d93d37e19acf47ae3ad20d3d7189cca2d505d9978f8bb3e3e32bce"
+  },
+  {
+    "id": "rotem_sigma_complete",
+    "label": "ROTEM sigma — Complete",
+    "device": "ROTEM sigma",
+    "manufacturer": "Werfen",
+    "configuration": "ROTEM sigma — Complete",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "INTEM C",
+        "label": "INTEM C",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "assay": "EXTEM C",
+        "label": "EXTEM C",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "assay": "FIBTEM C",
+        "label": "FIBTEM C",
+        "parameters": [
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "APTEM C",
+        "label": "APTEM C",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "rotem",
+      "sigma"
+    ],
+    "mapping_status": "source_defined_capture",
+    "notes": "Complete APTEM C regional mask requires local verification.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "abf4ccde1515f3873d553cc7ff50dccf3a3ebc4d73df022a3e71f8ab7a215c15"
+  },
+  {
+    "id": "rotem_sigma_complete_hep",
+    "label": "ROTEM sigma — Complete + Hep",
+    "device": "ROTEM sigma",
+    "manufacturer": "Werfen",
+    "configuration": "ROTEM sigma — Complete + Hep",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "INTEM C",
+        "label": "INTEM C",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "assay": "EXTEM C",
+        "label": "EXTEM C",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          },
+          {
+            "name": "LI60",
+            "unit": "%"
+          },
+          {
+            "name": "ML",
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "assay": "FIBTEM C",
+        "label": "FIBTEM C",
+        "parameters": [
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          }
+        ]
+      },
+      {
+        "assay": "HEPTEM C",
+        "label": "HEPTEM C",
+        "parameters": [
+          {
+            "name": "CT",
+            "unit": "s"
+          },
+          {
+            "name": "A5",
+            "unit": "mm"
+          },
+          {
+            "name": "A10",
+            "unit": "mm"
+          },
+          {
+            "name": "A20",
+            "unit": "mm"
+          },
+          {
+            "name": "MCF",
+            "unit": "mm"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "rotem",
+      "sigma"
+    ],
+    "mapping_status": "source_verified_core",
+    "notes": "FDA K201440 assay-specific US reportable outputs.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "0068186e20a71d84aa48cf174e1b6bbb01d81d7799fc6864b87aea26893f6bde"
+  },
+  {
+    "id": "rotem_platelet",
+    "label": "ROTEM platelet — aggregation",
+    "device": "ROTEM platelet",
+    "manufacturer": "Werfen",
+    "configuration": "ROTEM platelet — aggregation",
+    "version": "2026-10-23.1",
+    "channels": [
+      {
+        "assay": "ARATEM",
+        "label": "ARATEM",
+        "parameters": [
+          {
+            "name": "A6",
+            "unit": "ohm"
+          },
+          {
+            "name": "MS",
+            "unit": "ohm/min"
+          },
+          {
+            "name": "AUC",
+            "unit": "ohm*min"
+          }
+        ]
+      },
+      {
+        "assay": "ADPTEM",
+        "label": "ADPTEM",
+        "parameters": [
+          {
+            "name": "A6",
+            "unit": "ohm"
+          },
+          {
+            "name": "MS",
+            "unit": "ohm/min"
+          },
+          {
+            "name": "AUC",
+            "unit": "ohm*min"
+          }
+        ]
+      },
+      {
+        "assay": "TRAPTEM",
+        "label": "TRAPTEM",
+        "parameters": [
+          {
+            "name": "A6",
+            "unit": "ohm"
+          },
+          {
+            "name": "MS",
+            "unit": "ohm/min"
+          },
+          {
+            "name": "AUC",
+            "unit": "ohm*min"
+          }
+        ]
+      }
+    ],
+    "source_ids": [
+      "sigma"
+    ],
+    "mapping_status": "capture_only",
+    "notes": "Platelet aggregation domain; no clot-strength or transfusion rule applied.",
+    "extra_outputs": "preserved_unmapped",
+    "clinical_activation": "not_activated",
+    "availability_states": [
+      "final",
+      "preliminary",
+      "pending",
+      "not_reported",
+      "invalid",
+      "aborted",
+      "no_clot",
+      "unavailable"
+    ],
+    "content_hash": "36f4ddef2ee00e4b77c0b0dc4ea2a6c2cfcf04c086d1f91f5b6ecd4cd97fa705"
+  }
+]

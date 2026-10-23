@@ -1,0 +1,463 @@
+{
+  "format": "ClinRx-M10-respiratory-society-crosswalk/v1",
+  "design_version": "0.2",
+  "working_label": "M9 respiratory and ABG",
+  "requested_ICS": "Indian Chest Society; explicitly confirmed by user",
+  "date": "2026-10-23",
+  "status": "design evidence mapping; not clinical activation or accreditation",
+  "sources": [
+    {
+      "id": "CHEST-2017-LIBERATION",
+      "title": "Official ATS/ACCP executive summary: liberation from mechanical ventilation",
+      "society": [
+        "ACCP/CHEST",
+        "ATS"
+      ],
+      "publication_year": 2017,
+      "url": "https://academic.oup.com/ajrccm/article/195/1/115/8498923",
+      "document_type": "clinical_practice_guideline",
+      "access": "primary_publisher_indexed_summary",
+      "scope": "Critically ill adults receiving invasive ventilation; recommendation-specific eligibility applies",
+      "checked_on": "2026-10-23"
+    },
+    {
+      "id": "ERS-ATS-2017-NIV",
+      "title": "Official ERS/ATS clinical practice guidelines: NIV for acute respiratory failure",
+      "society": [
+        "ERS",
+        "ATS"
+      ],
+      "publication_year": 2017,
+      "url": "https://www.thoracic.org/statements/resources/cc/niv-guidelines.pdf",
+      "document_type": "clinical_practice_guideline",
+      "access": "primary_society_pdf_read",
+      "scope": "Indication-specific acute respiratory failure populations",
+      "checked_on": "2026-10-23"
+    },
+    {
+      "id": "ERS-2022-HFNC",
+      "title": "ERS clinical practice guidelines: high-flow nasal cannula in acute respiratory failure",
+      "society": [
+        "ERS"
+      ],
+      "publication_year": 2022,
+      "url": "https://publications.ersnet.org/content/erj/59/4/2101574",
+      "document_type": "clinical_practice_guideline",
+      "access": "primary_publisher_indexed_sections; direct page access 403",
+      "scope": "Adults; hypoxaemic, COPD/hypercapnic, postoperative and postextubation PICO groups differ",
+      "checked_on": "2026-10-23"
+    },
+    {
+      "id": "ICS-NCCP-2013-COPD",
+      "title": "Guidelines for diagnosis and management of COPD: Joint ICS/NCCP(I) recommendations",
+      "society": [
+        "Indian Chest Society",
+        "NCCP India"
+      ],
+      "publication_year": 2013,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3775210/",
+      "document_type": "joint_clinical_guideline",
+      "access": "primary_full_text_read",
+      "scope": "COPD including acute exacerbations; not all-cause respiratory failure",
+      "checked_on": "2026-10-23"
+    },
+    {
+      "id": "ICS-2026-DEVELOPMENT",
+      "title": "Official ICS members update: NIV guidelines ongoing",
+      "society": [
+        "Indian Chest Society"
+      ],
+      "publication_year": null,
+      "url": "https://www.indianchestsociety.com/messages-for-the-members.php",
+      "document_type": "society_development_announcement",
+      "access": "official_page_read",
+      "scope": "Publication status only; no executable clinical recommendations",
+      "checked_on": "2026-10-23"
+    },
+    {
+      "id": "ATS-2026-NIRS",
+      "title": "Noninvasive respiratory support for adult patients with acute respiratory failure",
+      "society": [
+        "ATS"
+      ],
+      "publication_year": 2026,
+      "url": "https://academic.oup.com/ajrccm/article/212/9/2135/8721554",
+      "document_type": "clinical_practice_guideline",
+      "access": "indexed_primary_article_sections; direct page blocked",
+      "scope": "Adult acute failure, preoxygenation and postextubation; comparator-specific",
+      "checked_on": "2026-10-23"
+    },
+    {
+      "id": "AARC-2024-SBT",
+      "title": "Spontaneous breathing trials for liberation from adult mechanical ventilation",
+      "society": [
+        "AARC"
+      ],
+      "publication_year": 2024,
+      "url": "https://www.aarc.org/wp-content/uploads/2023/11/CPG2024SpontaneousBreathingTrial.pdf",
+      "document_type": "clinical_practice_guideline",
+      "access": "primary_society_pdf_read",
+      "scope": "Adult mechanically ventilated patients",
+      "checked_on": "2026-10-23"
+    },
+    {
+      "id": "AARC-2024-PVA",
+      "title": "Patient-Ventilator Assessment",
+      "society": [
+        "AARC"
+      ],
+      "publication_year": 2024,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11298231/",
+      "document_type": "clinical_practice_guideline",
+      "access": "primary_full_text_read",
+      "scope": "Patient, ventilator, humidification and airway/interface assessment",
+      "checked_on": "2026-10-23"
+    },
+    {
+      "id": "AARC-2013-BGA",
+      "title": "Blood Gas Analysis and Hemoximetry: 2013",
+      "society": [
+        "AARC"
+      ],
+      "publication_year": 2013,
+      "url": "https://www.aarc.org/wp-content/uploads/2025/03/davis-et-al-2013-aarc-clinical-practice-guideline-blood-gas-analysis-and-hemoximetry-2013.pdf",
+      "document_type": "clinical_practice_guideline",
+      "access": "primary_society_pdf_read",
+      "scope": "Measurement and specimen context; hosted 2025 but guideline 2013",
+      "checked_on": "2026-10-23"
+    },
+    {
+      "id": "ATS-2024-ARDS",
+      "title": "An Update on Management of Adult Patients with ARDS",
+      "society": [
+        "ATS"
+      ],
+      "publication_year": 2024,
+      "url": "https://escholarship.org/uc/item/5c98w95h",
+      "document_type": "clinical_practice_guideline",
+      "access": "primary_author_repository_text",
+      "scope": "Adult ARDS management; conditional adjuncts retain scope",
+      "checked_on": "2026-10-23"
+    },
+    {
+      "id": "GLOBAL-2024-ARDS",
+      "title": "A New Global Definition of ARDS",
+      "society": [
+        "Global ARDS definition consensus group"
+      ],
+      "publication_year": 2024,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10870872/",
+      "document_type": "definition_consensus",
+      "access": "primary_full_text_read",
+      "scope": "Definition selection; not a treatment guideline or formal ERS/ICS endorsement",
+      "checked_on": "2026-10-23"
+    },
+    {
+      "id": "FDA-OXIMETRY",
+      "title": "Pulse Oximeters",
+      "society": [
+        "FDA"
+      ],
+      "publication_year": null,
+      "url": "https://www.fda.gov/medical-devices/products-and-medical-procedures/pulse-oximeters",
+      "document_type": "regulatory_information",
+      "access": "official_page_read",
+      "scope": "Signal/device limitations; no race-based correction",
+      "checked_on": "2026-10-23"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "E01-LIBERATION",
+      "source_ids": [
+        "CHEST-2017-LIBERATION"
+      ],
+      "source_locator": "Summary recommendations and remarks",
+      "original_strength": "varies by recommendation",
+      "original_certainty": "varies by recommendation",
+      "design_implication": "Separate screening, SBT, airway readiness and prevention planning.",
+      "interface_requirement": "Trial and extubation panels with shared sedation links",
+      "acceptance_case_ids": [
+        "RESP-036",
+        "RESP-037",
+        "RESP-038"
+      ],
+      "limits": "Initial trial technique and high-risk prevention require source-specific/local reconciliation.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E02-CUFF-LEAK",
+      "source_ids": [
+        "CHEST-2017-LIBERATION"
+      ],
+      "source_locator": "Recommendation 6a",
+      "original_strength": "conditional",
+      "original_certainty": "very low",
+      "design_implication": "Assess indication before recording cuff leak.",
+      "interface_requirement": "High-risk airway section; not universal checklist requirement",
+      "acceptance_case_ids": [
+        "RESP-036",
+        "RESP-053"
+      ],
+      "limits": "No automated steroid order or universal testing rule.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E03-COPD-NIV",
+      "source_ids": [
+        "ERS-ATS-2017-NIV"
+      ],
+      "source_locator": "Question 1b, Recommendations, PDF page 5",
+      "original_strength": "strong",
+      "original_certainty": "high",
+      "design_implication": "Keep acidotic COPD as a distinct clinical indication.",
+      "interface_requirement": "Hypercapnic/COPD assessment with gas trajectory and escalation context",
+      "acceptance_case_ids": [
+        "RESP-041",
+        "RESP-053",
+        "RESP-059"
+      ],
+      "limits": "No patient treatment selection until exact scope, thresholds and local activation are approved.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E04-CARDIOGENIC",
+      "source_ids": [
+        "ERS-ATS-2017-NIV"
+      ],
+      "source_locator": "Question 2; population exclusions",
+      "original_strength": "strong",
+      "original_certainty": "moderate",
+      "design_implication": "Cardiogenic oedema differs from COPD; shock applicability cannot be assumed.",
+      "interface_requirement": "Link circulation and explicit assessment of cause",
+      "acceptance_case_ids": [
+        "RESP-038",
+        "RESP-053"
+      ],
+      "limits": "No inference of cardiogenic oedema from gas or fluid balance.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E05-POSTOPERATIVE",
+      "source_ids": [
+        "ERS-ATS-2017-NIV"
+      ],
+      "source_locator": "Question 6; Recommendations/Justification, PDF pages 10-11",
+      "original_strength": "conditional",
+      "original_certainty": "moderate",
+      "design_implication": "Review surgical complications and airway protection before pathway applicability.",
+      "interface_requirement": "Separate postoperative-failure context with procedure links",
+      "acceptance_case_ids": [
+        "RESP-020",
+        "RESP-054"
+      ],
+      "limits": "Not a generic order; no automatic surgical-complication diagnosis.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E06-PREVENTION-RESCUE",
+      "source_ids": [
+        "ERS-ATS-2017-NIV",
+        "ATS-2026-NIRS"
+      ],
+      "source_locator": "Postextubation sections; 2026 PICO 4",
+      "original_strength": "conditional in the relevant recommendations",
+      "original_certainty": "source/PICO-specific",
+      "design_implication": "Prevention after planned extubation differs from treatment after deterioration.",
+      "interface_requirement": "Separate prevention and deterioration workflow labels",
+      "acceptance_case_ids": [
+        "RESP-055"
+      ],
+      "limits": "Do not apply preventive recommendations as rescue policy.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E07-HFNC-COMPARATOR",
+      "source_ids": [
+        "ERS-2022-HFNC",
+        "ATS-2026-NIRS"
+      ],
+      "source_locator": "ERS PICO 1/2; ATS PICO 1",
+      "original_strength": "conditional in ERS; comparator-specific in ATS",
+      "original_certainty": "source/PICO-specific",
+      "design_implication": "Preserve comparator and indication rather than merge device rankings.",
+      "interface_requirement": "Why panel displays source/year/comparator and unresolved adaptation",
+      "acceptance_case_ids": [
+        "RESP-053",
+        "RESP-057"
+      ],
+      "limits": "Full-text reconciliation required; no universal HFNC preference.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E08-INDIAN-COPD",
+      "source_ids": [
+        "ICS-NCCP-2013-COPD"
+      ],
+      "source_locator": "AECOPD: oxygen and NIV recommendations",
+      "original_strength": "original IA/IIA/UPP; not GRADE",
+      "original_certainty": "not automatically mappable",
+      "design_implication": "Document oxygen target, gas monitoring and reassessment/escalation capability in COPD.",
+      "interface_requirement": "Patient-specific target and timed support-response sections",
+      "acceptance_case_ids": [
+        "RESP-034",
+        "RESP-058",
+        "RESP-059"
+      ],
+      "limits": "Dated COPD scope; not an all-patient target or current new NIV guideline.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E09-ICS-STATUS",
+      "source_ids": [
+        "ICS-2026-DEVELOPMENT"
+      ],
+      "source_locator": "Official president/secretary messages",
+      "original_strength": "not applicable",
+      "original_certainty": "not applicable",
+      "design_implication": "In-development guidance cannot be presented as published recommendations.",
+      "interface_requirement": "Evidence library status badge",
+      "acceptance_case_ids": [
+        "RESP-056"
+      ],
+      "limits": "No claim of exhaustive absence; final publication status must be rechecked before activation.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E10-SBT-TECHNIQUE",
+      "source_ids": [
+        "AARC-2024-SBT",
+        "CHEST-2017-LIBERATION"
+      ],
+      "source_locator": "AARC abstract/recommendations; CHEST initial SBT recommendation",
+      "original_strength": "conditional",
+      "original_certainty": "source-specific",
+      "design_implication": "Record technique and reconcile the selected protocol.",
+      "interface_requirement": "Trial details; RSBI optional; actual oxygen changes visible",
+      "acceptance_case_ids": [
+        "RESP-036",
+        "RESP-037",
+        "RESP-057"
+      ],
+      "limits": "Passing trial is not extubation readiness; no mandatory RSBI gate.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E11-PVA",
+      "source_ids": [
+        "AARC-2024-PVA"
+      ],
+      "source_locator": "PVA and lung-protection assessment sections",
+      "original_strength": "varies by component",
+      "original_certainty": "varies by component",
+      "design_implication": "Patient and measurement conditions accompany settings.",
+      "interface_requirement": "Mechanics/airway/interface and humidification details",
+      "acceptance_case_ids": [
+        "RESP-021",
+        "RESP-044",
+        "RESP-045",
+        "RESP-046"
+      ],
+      "limits": "No passive mechanics from invalid effort/hold/leak conditions.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E12-GAS-CONTEXT",
+      "source_ids": [
+        "AARC-2013-BGA"
+      ],
+      "source_locator": "Sampling context and specimen limitations",
+      "original_strength": "not extracted as one composite grade",
+      "original_certainty": "not applicable to the combined field design",
+      "design_implication": "Preserve specimen, collection, support and measured/source-calculated distinctions.",
+      "interface_requirement": "Specimen-first gas display and sample support relation",
+      "acceptance_case_ids": [
+        "RESP-009",
+        "RESP-011",
+        "RESP-014",
+        "RESP-015",
+        "RESP-025",
+        "RESP-026"
+      ],
+      "limits": "Venous/capillary/circuit oxygen cannot be systemic arterial oxygen.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E13-ARDS",
+      "source_ids": [
+        "ATS-2024-ARDS",
+        "GLOBAL-2024-ARDS"
+      ],
+      "source_locator": "Selected management and definition sections",
+      "original_strength": "separate management recommendation and definition consensus",
+      "original_certainty": "not a composite certainty",
+      "design_implication": "Keep definition eligibility separate from treatment review.",
+      "interface_requirement": "Definition/version with explicit missing criteria",
+      "acceptance_case_ids": [
+        "RESP-051",
+        "RESP-052"
+      ],
+      "limits": "No diagnosis from P/F alone; no combined Berlin/Global criteria.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    },
+    {
+      "id": "E14-SIGNAL",
+      "source_ids": [
+        "FDA-OXIMETRY"
+      ],
+      "source_locator": "Limitations and accuracy factors",
+      "original_strength": "not a clinical GRADE recommendation",
+      "original_certainty": "not applicable",
+      "design_implication": "Keep signal/device limitations visible.",
+      "interface_requirement": "SpO2 quality and discrepancy explanation",
+      "acceptance_case_ids": [
+        "RESP-015",
+        "RESP-016",
+        "RESP-060"
+      ],
+      "limits": "No numerical correction based on race or assumption of accuracy from one reading.",
+      "status": "evidence_mapped; clinical profile not enabled",
+      "local_activation_owner": "Not designated; required before activation",
+      "exact_threshold_policy": null
+    }
+  ],
+  "retrieval_limits": {
+    "Consensus": "Monthly 30-search quota exhausted; no paper result supplied",
+    "Firecrawl": "Insufficient credits; no page result supplied",
+    "fallback": "Ordinary web primary sources; no search snippets promoted to fully read documents"
+  },
+  "pending": [
+    "Complete recommendation-by-recommendation full-text and update reconciliation",
+    "Primary historical formula/constant verification",
+    "Design approval for R1",
+    "R2 canonical owner contracts",
+    "Independent clinical review and local activation owner",
+    "Multispecialty usability walkthrough and clinical release validation"
+  ]
+}

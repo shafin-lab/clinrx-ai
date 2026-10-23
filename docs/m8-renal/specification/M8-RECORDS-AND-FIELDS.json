@@ -1,0 +1,2709 @@
+[
+  {
+    "name": "EvidenceEnvelope",
+    "owner": "Existing source owner",
+    "purpose": "Applied to every new M8 assertion; reuse original identities rather than cloning facts.",
+    "fields": [
+      {
+        "record": "EvidenceEnvelope",
+        "field": "schema_version",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Exact registered schema version; reject unsupported version.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "record_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Stable source record identity; scoped by repository and kind.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "revision",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Immutable revision; corrections append successors.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "patient_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Must match requested patient; never merge by bed or display name.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "encounter_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Explicit encounter; cross-encounter baseline uses a separately authorized reference.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "repository_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Original owner; must match selected source repository.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "ingestion_sequence",
+        "type": "integer",
+        "requirement": "R",
+        "validation": "Positive and no greater than selected fact watermark.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "source_reference",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Kind/id/version plus digest; resolve exactly at cutoff.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "source_issuer",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Laboratory/device/clinician provenance; unknown is explicit.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "source_record_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Original accession/component or observation identity; deduplicate upstream retransmissions.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "source_digest",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Digest of canonical source content; reject mismatched content.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "recorded_at",
+        "type": "AwareInstant",
+        "requirement": "R",
+        "validation": "Timezone and precision retained; not collection time.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "effective_time",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Point or explicit interval with precision; unknown with reason allowed.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "specimen_collected_at",
+        "type": "TimeAssertion",
+        "requirement": "C",
+        "validation": "Required for specimen-dependent calculations; never inferred from report time.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "received_at",
+        "type": "AwareInstant",
+        "requirement": "C",
+        "validation": "Required for latency audit when supplied by transport.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "record_status",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "recorded/corrected/withdrawn/invalid/unknown; do not resurrect an older numeric value.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "quality",
+        "type": "QualityAssertion",
+        "requirement": "R",
+        "validation": "Source assessment including assessor/method/artifacts; not a system certification.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "verification",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "verified/unverified/unknown with actor/time where supplied.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "uncertainty",
+        "type": "string[]",
+        "requirement": "R",
+        "validation": "Empty only if explicitly assessed; absent is not no uncertainty.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "supersedes",
+        "type": "ExactRef?",
+        "requirement": "C",
+        "validation": "Required for correction; same logical observation only, never a new specimen.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "correction_reason",
+        "type": "string?",
+        "requirement": "C",
+        "validation": "Required nonblank when supersedes exists.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "links",
+        "type": "Association[]",
+        "requirement": "R",
+        "validation": "Exact typed references with resolved/unresolved/contradictory status.",
+        "owner": "Existing source owner"
+      },
+      {
+        "record": "EvidenceEnvelope",
+        "field": "author",
+        "type": "ActorRef",
+        "requirement": "R",
+        "validation": "Source author/recorder identity; original origin preserved.",
+        "owner": "Existing source owner"
+      }
+    ]
+  },
+  {
+    "name": "SharedValueTypes",
+    "owner": "Platform M1–M5",
+    "purpose": "Reuse contracts; these are required semantics for the extensions, not replacement foundation schemas.",
+    "fields": [
+      {
+        "record": "SharedValueTypes",
+        "field": "quantity",
+        "type": "Quantity",
+        "requirement": "R",
+        "validation": "Original decimal lexeme plus raw and mapped units; no binary float for clinical arithmetic.",
+        "owner": "Platform M1–M5"
+      },
+      {
+        "record": "SharedValueTypes",
+        "field": "availability",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "known/missing/not_measured/pending/unknown/not_applicable; reason required unless known.",
+        "owner": "Platform M1–M5"
+      },
+      {
+        "record": "SharedValueTypes",
+        "field": "unit_mapping",
+        "type": "UnitAssertion",
+        "requirement": "R",
+        "validation": "Raw label plus UCUM code, mapping version and status; unresolved units block arithmetic.",
+        "owner": "Platform M1–M5"
+      },
+      {
+        "record": "SharedValueTypes",
+        "field": "time",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Original timestamp/offset plus precision and uncertainty; exact fractional comparison.",
+        "owner": "Platform M1–M5"
+      },
+      {
+        "record": "SharedValueTypes",
+        "field": "interval",
+        "type": "IntervalAssertion",
+        "requirement": "R",
+        "validation": "Start/end, boundary convention, duration basis, collection identity and completeness; end greater than start.",
+        "owner": "Platform M1–M5"
+      },
+      {
+        "record": "SharedValueTypes",
+        "field": "reference",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Repository/kind/id/version/digest/ingestion/cutoff; no latest-version substitution.",
+        "owner": "Platform M1–M5"
+      },
+      {
+        "record": "SharedValueTypes",
+        "field": "population",
+        "type": "PopulationContext",
+        "requirement": "R",
+        "validation": "Age/DOB source, adult/child/neonate/pregnancy and eligibility uncertainty; never adult by default.",
+        "owner": "Platform M1–M5"
+      },
+      {
+        "record": "SharedValueTypes",
+        "field": "status_reason",
+        "type": "string",
+        "requirement": "C",
+        "validation": "Nonblank for unavailable, excluded, rejected, deferred or overridden state.",
+        "owner": "Platform M1–M5"
+      }
+    ]
+  },
+  {
+    "name": "KidneyHistory",
+    "owner": "M8",
+    "purpose": "Longitudinal context is dated; one abnormal value cannot establish chronicity.",
+    "fields": [
+      {
+        "record": "KidneyHistory",
+        "field": "ckd_assertion",
+        "type": "DiagnosisAssertion",
+        "requirement": "R",
+        "validation": "known/absent/unknown with source and first/last confirmation.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "ckd_cause",
+        "type": "CodeOrText[]",
+        "requirement": "O",
+        "validation": "Source diagnoses and confidence; do not diagnose from code mapping alone.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "ckd_g_category",
+        "type": "SourceClassification?",
+        "requirement": "O",
+        "validation": "Original equation/version/date and persistence evidence.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "ckd_a_category",
+        "type": "SourceClassification?",
+        "requirement": "O",
+        "validation": "Albumin category linked to assay and repeated measurements.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "prior_aki",
+        "type": "EpisodeRef[]",
+        "requirement": "R",
+        "validation": "Episode dates, severity provenance, recovery and unresolved history.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "preadmission_krt",
+        "type": "KRTBaseline",
+        "requirement": "R",
+        "validation": "yes/no/unknown, modality, schedule, access, last actual session and residual urine.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "usual_weight",
+        "type": "ExactRef?",
+        "requirement": "O",
+        "validation": "Source/date/method; distinguish usual/dry/admission/current/dosing weights.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "dry_weight",
+        "type": "ExactRef?",
+        "requirement": "O",
+        "validation": "Author-selected target and validity period; not the measured weight.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "renal_anatomy",
+        "type": "CodeOrText[]",
+        "requirement": "O",
+        "validation": "Solitary kidney, congenital variants, nephrectomy, cystic disease with source.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "renal_transplant",
+        "type": "TransplantRef?",
+        "requirement": "O",
+        "validation": "One graft episode, transplant date, donor type, baseline graft function and responsible service.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "transplant_complications",
+        "type": "DiagnosisAssertion[]",
+        "requirement": "O",
+        "validation": "Rejection, infection, obstruction, vascular concern; specialist-authored confidence.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "immunosuppression",
+        "type": "MedicationRef[]",
+        "requirement": "O",
+        "validation": "Tacrolimus/cyclosporine etc from medication owner; link dose times and levels without duplicating orders.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyHistory",
+        "field": "history_review",
+        "type": "ActorTime",
+        "requirement": "R",
+        "validation": "Reviewer and as-of time; unknown history remains visible.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "BaselineSelection",
+    "owner": "M8",
+    "purpose": "Explicit reviewed choice, with alternatives and uncertainty; never unannounced back-calculation.",
+    "fields": [
+      {
+        "record": "BaselineSelection",
+        "field": "candidate_references",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "All eligible pre-insult creatinine candidates with dates, source and quality.",
+        "owner": "M8"
+      },
+      {
+        "record": "BaselineSelection",
+        "field": "selected_reference",
+        "type": "ExactRef?",
+        "requirement": "R",
+        "validation": "Null plus unavailable/uncertain reason is valid; do not choose lowest automatically.",
+        "owner": "M8"
+      },
+      {
+        "record": "BaselineSelection",
+        "field": "selection_method",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "clinician_selected/policy_selected/unavailable; exact policy version if applicable.",
+        "owner": "M8"
+      },
+      {
+        "record": "BaselineSelection",
+        "field": "selection_rationale",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Explain representativeness, known CKD, prior AKI and excluded candidates.",
+        "owner": "M8"
+      },
+      {
+        "record": "BaselineSelection",
+        "field": "baseline_value",
+        "type": "Quantity?",
+        "requirement": "C",
+        "validation": "Must match pinned eligible source after explicit versioned conversion.",
+        "owner": "M8"
+      },
+      {
+        "record": "BaselineSelection",
+        "field": "baseline_date",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Distinguish measured date, historical report date and estimated interval.",
+        "owner": "M8"
+      },
+      {
+        "record": "BaselineSelection",
+        "field": "stability_evidence",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Relevant trajectory; empty means stability unconfirmed.",
+        "owner": "M8"
+      },
+      {
+        "record": "BaselineSelection",
+        "field": "confidence",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "confirmed/uncertain/unavailable, never silently upgraded.",
+        "owner": "M8"
+      },
+      {
+        "record": "BaselineSelection",
+        "field": "acute_onset_window",
+        "type": "IntervalAssertion",
+        "requirement": "R",
+        "validation": "Known/presumed onset and supporting sources; no presumed onset from arrival alone.",
+        "owner": "M8"
+      },
+      {
+        "record": "BaselineSelection",
+        "field": "selected_by",
+        "type": "ActorTime",
+        "requirement": "R",
+        "validation": "Selection and reassessment author/date.",
+        "owner": "M8"
+      },
+      {
+        "record": "BaselineSelection",
+        "field": "alternative_selections",
+        "type": "ExactRef[]",
+        "requirement": "O",
+        "validation": "Sensitivity display must retain selected baseline and any changed stage.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "RenalLaboratory",
+    "owner": "Shared investigations",
+    "purpose": "One specimen observation referenced by all modules; no duplicate M8 laboratory store.",
+    "fields": [
+      {
+        "record": "RenalLaboratory",
+        "field": "analyte",
+        "type": "CodeOrText",
+        "requirement": "R",
+        "validation": "Creatinine, urea/BUN, Na/K/Cl/bicarbonate, Mg/phosphate/Ca, glucose, cystatin C or specialist analyte.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "RenalLaboratory",
+        "field": "result",
+        "type": "QuantityOrCoded",
+        "requirement": "R",
+        "validation": "Typed availability, exact value, raw unit, mapped unit and reference/critical limits.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "RenalLaboratory",
+        "field": "specimen_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Accession and component identity; explicit unavailable if legacy source lacks specimen metadata.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "RenalLaboratory",
+        "field": "specimen_type",
+        "type": "CodeOrText",
+        "requirement": "R",
+        "validation": "Serum/plasma/whole blood/urine/effluent and collection site.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "RenalLaboratory",
+        "field": "collection_time",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Collection rather than release time; absent blocks paired-specimen calculations.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "RenalLaboratory",
+        "field": "assay_method",
+        "type": "CodeOrText",
+        "requirement": "R",
+        "validation": "Creatinine/cystatin calibration, blood-gas or laboratory method and version when known.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "RenalLaboratory",
+        "field": "sample_quality",
+        "type": "QualityAssertion",
+        "requirement": "R",
+        "validation": "Hemolysis/lipemia/icterus/contamination/line-draw/dilution and source flags.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "RenalLaboratory",
+        "field": "reference_range",
+        "type": "RangeWithUnit?",
+        "requirement": "O",
+        "validation": "Source laboratory and population context; not universal threshold.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "RenalLaboratory",
+        "field": "critical_flag",
+        "type": "SourceFlag?",
+        "requirement": "O",
+        "validation": "Original flag and acknowledgement state; distinguish source from computed alert.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "RenalLaboratory",
+        "field": "report_time",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Separate preliminary/final/corrected status and report release.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "RenalLaboratory",
+        "field": "related_krt_episode",
+        "type": "ExactRef?",
+        "requirement": "O",
+        "validation": "Pre/during/post session context; do not infer from nearest order.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "RenalLaboratory",
+        "field": "interference_context",
+        "type": "ExactRef[]",
+        "requirement": "O",
+        "validation": "Medication assay interference, low muscle mass, amputation, cirrhosis, burns, pregnancy or high catabolic state.",
+        "owner": "Shared investigations"
+      }
+    ]
+  },
+  {
+    "name": "UrineStudy",
+    "owner": "Shared investigations",
+    "purpose": "Original urinalysis, microscopy and quantification; clinical cause remains assessed separately.",
+    "fields": [
+      {
+        "record": "UrineStudy",
+        "field": "study_type",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "dipstick/microscopy/culture/ACR/PCR/timed_protein/urine_electrolytes/osmolality/specialist.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "UrineStudy",
+        "field": "collection_method",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "clean_catch/catheter/nephrostomy/other/unknown, with device reference.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "UrineStudy",
+        "field": "specimen_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Retain accession and component identity.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "UrineStudy",
+        "field": "collection_time",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Point or timed collection; do not assume a spot specimen is a timed collection.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "UrineStudy",
+        "field": "findings",
+        "type": "ObservationRef[]",
+        "requirement": "R",
+        "validation": "Blood/protein/leukocytes/nitrite/glucose, RBC morphology/casts/WBC/crystals and actual counts/units.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "UrineStudy",
+        "field": "protein_measure",
+        "type": "Quantity?",
+        "requirement": "O",
+        "validation": "Albumin or total protein identified separately; assay and unit.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "UrineStudy",
+        "field": "urine_creatinine",
+        "type": "ExactRef?",
+        "requirement": "C",
+        "validation": "Required for ACR/PCR; same eligible specimen or approved matched collection.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "UrineStudy",
+        "field": "reported_ratio",
+        "type": "Quantity?",
+        "requirement": "O",
+        "validation": "Source-reported ACR/PCR distinguished from calculated ratio and unit basis.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "UrineStudy",
+        "field": "timed_collection",
+        "type": "CollectionRef?",
+        "requirement": "C",
+        "validation": "Required for excretion per day; coverage/completeness explicit.",
+        "owner": "Shared investigations"
+      },
+      {
+        "record": "UrineStudy",
+        "field": "contamination",
+        "type": "QualityAssertion",
+        "requirement": "R",
+        "validation": "Menstruation/traumatic catheter/UTI/other confounders; not a diagnosis.",
+        "owner": "Shared investigations"
+      }
+    ]
+  },
+  {
+    "name": "UrineCollection",
+    "owner": "M9 source owner, referenced by M8",
+    "purpose": "Intervals, collections and device patency are first-class; point charting does not establish a rate.",
+    "fields": [
+      {
+        "record": "UrineCollection",
+        "field": "collection_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Stable collection identity, not catheter identity; duplicate totals share an overlap/exclusion group.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "interval",
+        "type": "IntervalAssertion",
+        "requirement": "R",
+        "validation": "Explicit start and end with timezone and boundary convention.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "volume",
+        "type": "Quantity",
+        "requirement": "R",
+        "validation": "mL/L only after approved mapping; zero differs from missing.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "quantity_semantics",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "interval_total/cumulative_total/point_emptying/reported_rate; cannot reinterpret a total as hourly rate.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "measurement_method",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "bag/urometer/weighed_diaper/device/other/unknown; conversion profile for mass-to-volume.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "collection_completeness",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "complete/incomplete/uncertain/not_assessed with reason and assessor.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "coverage_segments",
+        "type": "IntervalAssertion[]",
+        "requirement": "R",
+        "validation": "Measured segments and documented missing segments; no zero-fill.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "device_reference",
+        "type": "ExactRef?",
+        "requirement": "O",
+        "validation": "Original catheter, stoma, nephrostomy or other collection access episode.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "catheter_patency",
+        "type": "StatusAssertion",
+        "requirement": "R",
+        "validation": "patent/blocked/suspected_blockage/unknown with assessment time.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "irrigation_in",
+        "type": "Quantity?",
+        "requirement": "O",
+        "validation": "Instilled irrigation volume separated from renal urine; matched interval.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "irrigation_recovered",
+        "type": "Quantity?",
+        "requirement": "O",
+        "validation": "Returned irrigation and reconciliation method; never subtract an assumed amount.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "leakage_or_loss",
+        "type": "StatusAssertion",
+        "requirement": "R",
+        "validation": "Uncaptured urine and reason; blocks complete-interval claim.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "source_total_reference",
+        "type": "ExactRef?",
+        "requirement": "O",
+        "validation": "Link aggregate to components; never add both.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "diuretic_context",
+        "type": "MedicationRef[]",
+        "requirement": "O",
+        "validation": "Actual doses/timing and response; not an automatic exclusion from KDIGO output criteria.",
+        "owner": "M9 source owner, referenced by M8"
+      },
+      {
+        "record": "UrineCollection",
+        "field": "weight_selection",
+        "type": "ExactRef?",
+        "requirement": "C",
+        "validation": "Required for weight-normalized assessment; purpose, method, date and uncertainty explicit.",
+        "owner": "M9 source owner, referenced by M8"
+      }
+    ]
+  },
+  {
+    "name": "KidneyFunctionAssessment",
+    "owner": "M8",
+    "purpose": "No interchangeable labels for measured clearance, eGFR and estimated creatinine clearance.",
+    "fields": [
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "assessment_kind",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "measured_CrCl/measured_GFR/eGFR/eCrCl/kinetic_estimate/source_reported.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "method_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Exact equation or measurement method/version and implementation hash.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "clinical_purpose",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "AKI_context/CKD_classification/drug_specific_dosing/native_recovery/research.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "inputs",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Creatinine/cystatin/demographics/height/weight/timed urine as required; no inferred sex/age/weight.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "steady_state",
+        "type": "StatusAssertion",
+        "requirement": "R",
+        "validation": "confirmed/unstable/unknown; conventional steady-state estimate unsuitable flags retained.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "body_size_basis",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "indexed_1_73m2/absolute_mL_min/other/not_applicable; never relabel without a calculation record.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "selected_weight",
+        "type": "ExactRef?",
+        "requirement": "C",
+        "validation": "Required for weight-dependent methods; actual/ideal/adjusted with approved formula if derived.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "selected_bsa",
+        "type": "ExactRef?",
+        "requirement": "C",
+        "validation": "Required for deindexing; versioned formula and measured inputs.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "timed_urine",
+        "type": "ExactRef?",
+        "requirement": "C",
+        "validation": "Required for measured CrCl; collection completeness and representative plasma specimen.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "result",
+        "type": "QuantityOrUnavailable",
+        "requirement": "R",
+        "validation": "Units and all withheld reasons; creatinine clearance is not measured GFR.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "applicability",
+        "type": "EligibilityResult",
+        "requirement": "R",
+        "validation": "Population, nonsteady state, KRT, assay interference and body-size limitations.",
+        "owner": "M8"
+      },
+      {
+        "record": "KidneyFunctionAssessment",
+        "field": "drug_label_reference",
+        "type": "SourceVersion?",
+        "requirement": "C",
+        "validation": "Required when used for drug review; label may specify another renal estimate.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "AKIAssessment",
+    "owner": "M8",
+    "purpose": "Separate observed evidence from a governed derived classification; not a dialysis instruction.",
+    "fields": [
+      {
+        "record": "AKIAssessment",
+        "field": "guideline_profile",
+        "type": "SourceVersion",
+        "requirement": "R",
+        "validation": "Published approved version, population, activation scope and hash; draft excluded.",
+        "owner": "M8"
+      },
+      {
+        "record": "AKIAssessment",
+        "field": "baseline_selection",
+        "type": "ExactRef?",
+        "requirement": "R",
+        "validation": "Unavailable allowed; baseline must not be back-calculated silently.",
+        "owner": "M8"
+      },
+      {
+        "record": "AKIAssessment",
+        "field": "creatinine_evidence",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Distinct specimens and eligible timing for absolute 48-hour and relative 7-day criteria.",
+        "owner": "M8"
+      },
+      {
+        "record": "AKIAssessment",
+        "field": "urine_evidence",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Complete applicable intervals and weight evidence; overlaps/gaps prevent affected duration claim.",
+        "owner": "M8"
+      },
+      {
+        "record": "AKIAssessment",
+        "field": "creatinine_criterion",
+        "type": "CriterionResult",
+        "requirement": "R",
+        "validation": "met/not_met/indeterminate/not_applicable plus stage, exact thresholds and reasons.",
+        "owner": "M8"
+      },
+      {
+        "record": "AKIAssessment",
+        "field": "urine_criterion",
+        "type": "CriterionResult",
+        "requirement": "R",
+        "validation": "Independent stage and assessed durations; incomplete data cannot establish absence.",
+        "owner": "M8"
+      },
+      {
+        "record": "AKIAssessment",
+        "field": "krt_criterion",
+        "type": "CriterionResult",
+        "requirement": "R",
+        "validation": "Actual initiation attributable to acute kidney support, not a planned or chronic session.",
+        "owner": "M8"
+      },
+      {
+        "record": "AKIAssessment",
+        "field": "combined_stage",
+        "type": "ClassificationOrUnavailable",
+        "requirement": "R",
+        "validation": "Maximum established eligible criterion; unknown criteria remain explicit, no false stage zero.",
+        "owner": "M8"
+      },
+      {
+        "record": "AKIAssessment",
+        "field": "evidence_time",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "As-of clinical evidence and repository cutoff; no future specimen leakage.",
+        "owner": "M8"
+      },
+      {
+        "record": "AKIAssessment",
+        "field": "clinical_confirmation",
+        "type": "ActorTime?",
+        "requirement": "O",
+        "validation": "Confirmation distinct from computation; all overrides require reason and original output retained.",
+        "owner": "M8"
+      },
+      {
+        "record": "AKIAssessment",
+        "field": "stage_history",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Time-stamped revisions; correction is not physiological recovery.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "RenalCauseReview",
+    "owner": "M8 with specialist owner",
+    "purpose": "Clinician-authored differential; no urine index establishes a cause alone.",
+    "fields": [
+      {
+        "record": "RenalCauseReview",
+        "field": "working_causes",
+        "type": "CodeOrText[]",
+        "requirement": "R",
+        "validation": "hemodynamic/sepsis/nephrotoxic/obstruction/glomerular/interstitial/TMA/rhabdomyolysis/HRS/vascular/transplant/other/undifferentiated.",
+        "owner": "M8 with specialist owner"
+      },
+      {
+        "record": "RenalCauseReview",
+        "field": "evidence_for",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Each possibility links supporting evidence and relevant exclusions.",
+        "owner": "M8 with specialist owner"
+      },
+      {
+        "record": "RenalCauseReview",
+        "field": "evidence_against",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Negative evidence is dated and scope-limited.",
+        "owner": "M8 with specialist owner"
+      },
+      {
+        "record": "RenalCauseReview",
+        "field": "certainty",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "suspected/probable/confirmed/unassessed; confirmation authority explicit.",
+        "owner": "M8 with specialist owner"
+      },
+      {
+        "record": "RenalCauseReview",
+        "field": "obstruction_review",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Device patency, retention/bladder scan, ultrasound/CT and urology assessment where applicable.",
+        "owner": "M8 with specialist owner"
+      },
+      {
+        "record": "RenalCauseReview",
+        "field": "imaging",
+        "type": "ReportRef[]",
+        "requirement": "R",
+        "validation": "Anatomy, hydronephrosis, perfusion, bladder volume with acquisition/report times and limitations.",
+        "owner": "M8 with specialist owner"
+      },
+      {
+        "record": "RenalCauseReview",
+        "field": "immune_hematology",
+        "type": "ObservationRef[]",
+        "requirement": "O",
+        "validation": "Complement, ANA/ANCA/anti-GBM, dsDNA, monoclonal studies, hemolysis/platelets/smear/LDH/haptoglobin and relevant infection serology.",
+        "owner": "M8 with specialist owner"
+      },
+      {
+        "record": "RenalCauseReview",
+        "field": "rhabdomyolysis",
+        "type": "ObservationRef[]",
+        "requirement": "O",
+        "validation": "CK/myoglobin/urine context and actual timing; avoid single-marker diagnosis.",
+        "owner": "M8 with specialist owner"
+      },
+      {
+        "record": "RenalCauseReview",
+        "field": "hepatorenal_review",
+        "type": "SpecialistAssessment?",
+        "requirement": "O",
+        "validation": "Cirrhosis/ascites, hemodynamic/sepsis/structural alternatives and current approved criteria version; no automatic HRS label.",
+        "owner": "M8 with specialist owner"
+      },
+      {
+        "record": "RenalCauseReview",
+        "field": "biopsy",
+        "type": "ProcedureRef?",
+        "requirement": "O",
+        "validation": "Indication, consent, bleeding context, pathology and pending/deferral reason.",
+        "owner": "M8 with specialist owner"
+      },
+      {
+        "record": "RenalCauseReview",
+        "field": "nephrotoxic_exposure",
+        "type": "MedicationRef[]",
+        "requirement": "R",
+        "validation": "Actual exposure, route, dose times, contrast/procedure context; orders are not administrations.",
+        "owner": "M8 with specialist owner"
+      },
+      {
+        "record": "RenalCauseReview",
+        "field": "next_investigations",
+        "type": "PlanItem[]",
+        "requirement": "R",
+        "validation": "Justified targeted testing and responsible owner; no universal rare-test panel ordering.",
+        "owner": "M8 with specialist owner"
+      }
+    ]
+  },
+  {
+    "name": "KRTIndicationReview",
+    "owner": "M8",
+    "purpose": "Recognize documented urgent concerns for clinician review; never start from a creatinine cutoff alone.",
+    "fields": [
+      {
+        "record": "KRTIndicationReview",
+        "field": "review_time",
+        "type": "AwareInstant",
+        "requirement": "R",
+        "validation": "As-of assessment and exact evidence cutoff.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTIndicationReview",
+        "field": "electrolyte_concern",
+        "type": "ClinicalConcern",
+        "requirement": "R",
+        "validation": "Evidence, trends, symptoms/ECG, prior temporizing treatment/response and refractory-status author.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTIndicationReview",
+        "field": "acid_base_concern",
+        "type": "ClinicalConcern",
+        "requirement": "R",
+        "validation": "Sample type, pH/bicarbonate/context, intervention and response; local protocol required.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTIndicationReview",
+        "field": "overload_concern",
+        "type": "ClinicalConcern",
+        "requirement": "R",
+        "validation": "Clinical significance, respiratory/hemodynamic effects and response; M9 balance alone is insufficient.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTIndicationReview",
+        "field": "uremic_complication",
+        "type": "ClinicalConcern",
+        "requirement": "R",
+        "validation": "Pericarditis/encephalopathy/bleeding or specialist-assessed complication and alternative explanations.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTIndicationReview",
+        "field": "toxin_indication",
+        "type": "SpecialistConcern?",
+        "requirement": "O",
+        "validation": "Agent/formulation/exposure/level/time; toxicology-specific guidance and modality authority.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTIndicationReview",
+        "field": "trajectory_context",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Urine/function/illness trajectory and organ support; severe AKI alone does not force accelerated KRT.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTIndicationReview",
+        "field": "decision",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "continue_conservative/urgent_specialist_review/start_considered/defer/continue_KRT/stop_considered.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTIndicationReview",
+        "field": "goals_of_care",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Patient preference, capacity, consent/representative or emergency exception with jurisdiction/local policy.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTIndicationReview",
+        "field": "responsible_clinician",
+        "type": "ActorRef",
+        "requirement": "R",
+        "validation": "Nephrology/ICU decision authority and rationale.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTIndicationReview",
+        "field": "next_review",
+        "type": "ReviewPlan",
+        "requirement": "R",
+        "validation": "Due trigger/time, owner and closed-loop acknowledgement; not merely a displayed message.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "KRTEpisode",
+    "owner": "M8",
+    "purpose": "Treatment episode separate from orders, devices, circuits and modality segments.",
+    "fields": [
+      {
+        "record": "KRTEpisode",
+        "field": "episode_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Stable identifier for acute or chronic support episode.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "indication",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Reviewed indication record; distinguish AKI and chronic maintenance.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "modality",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "CVVH/CVVHD/CVVHDF/IHD/SLED_PIKRT/PD/isolated_UF/other/unknown with supported profile.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "episode_status",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "planned/ordered/prepared/running/paused/completed/stopped/cancelled/unknown; actual evidence required for running.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "ordered_start",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Intent, not delivered therapy.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "actual_start",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Actual event or explicit unavailable; do not copy from order.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "actual_end",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Explicit stop or open-ended unknown; no continuity inferred.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "intended_duration",
+        "type": "DurationOrUnavailable",
+        "requirement": "R",
+        "validation": "Order intent only; no default 24-hour delivery.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "goals",
+        "type": "ClinicalGoal[]",
+        "requirement": "R",
+        "validation": "Solute/acid-base/fluid/support objectives and reviewer rationale.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "access",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Device episode from M12; no parallel device list.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "prescription_versions",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Dated versions, approval and applicable modality segment.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "modality_segments",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Nonoverlapping authorized segments; transitions close old delivery semantics.",
+        "owner": "M8"
+      },
+      {
+        "record": "KRTEpisode",
+        "field": "treatment_consent",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Consent/decline/exception, actor/time, discussion and capacity.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "KRTAccess",
+    "owner": "M12",
+    "purpose": "M8 refers to the existing device owner.",
+    "fields": [
+      {
+        "record": "KRTAccess",
+        "field": "device_episode",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Stable access episode, replaced device receives new identity.",
+        "owner": "M12"
+      },
+      {
+        "record": "KRTAccess",
+        "field": "type",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "temporary_CVC/tunneled_CVC/AV_fistula/AV_graft/PD_catheter/other.",
+        "owner": "M12"
+      },
+      {
+        "record": "KRTAccess",
+        "field": "site_laterality",
+        "type": "CodeOrText",
+        "requirement": "R",
+        "validation": "Anatomy/site and laterality, unknown allowed with reason.",
+        "owner": "M12"
+      },
+      {
+        "record": "KRTAccess",
+        "field": "lumens",
+        "type": "Lumen[]",
+        "requirement": "R",
+        "validation": "Arterial/venous/other roles, labels and connection check.",
+        "owner": "M12"
+      },
+      {
+        "record": "KRTAccess",
+        "field": "size_length",
+        "type": "Quantity[]",
+        "requirement": "O",
+        "validation": "Source French size/length and manufacturer/model.",
+        "owner": "M12"
+      },
+      {
+        "record": "KRTAccess",
+        "field": "inserted_removed",
+        "type": "TimeAssertion[]",
+        "requirement": "R",
+        "validation": "Insertion, use authorization and removal times with uncertainty.",
+        "owner": "M12"
+      },
+      {
+        "record": "KRTAccess",
+        "field": "position_confirmation",
+        "type": "ReportRef?",
+        "requirement": "C",
+        "validation": "Required per local access policy; date/method and approver.",
+        "owner": "M12"
+      },
+      {
+        "record": "KRTAccess",
+        "field": "function",
+        "type": "StatusAssertion",
+        "requirement": "R",
+        "validation": "Flow limitation, recirculation suspicion, reversal and patency review.",
+        "owner": "M12"
+      },
+      {
+        "record": "KRTAccess",
+        "field": "complications",
+        "type": "EventRef[]",
+        "requirement": "R",
+        "validation": "Infection/bleeding/thrombosis/dislodgement and linked actions.",
+        "owner": "M12"
+      },
+      {
+        "record": "KRTAccess",
+        "field": "maintenance",
+        "type": "CareRecord[]",
+        "requirement": "R",
+        "validation": "Dressing/lock/care, responsible staff and review dates.",
+        "owner": "M12"
+      }
+    ]
+  },
+  {
+    "name": "CRRTPrescription",
+    "owner": "M8",
+    "purpose": "Approved intent separated from actual delivery; manufacturer-specific conventions required.",
+    "fields": [
+      {
+        "record": "CRRTPrescription",
+        "field": "prescription_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Immutable version with author/approval and valid interval.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "episode_segment",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "One CRRT modality segment; no reuse after transition without reapproval.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "device_profile",
+        "type": "SourceVersion",
+        "requirement": "R",
+        "validation": "Machine model/software, fluid accounting convention and approved limits.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "filter",
+        "type": "FilterSpec",
+        "requirement": "R",
+        "validation": "Membrane/model/surface characteristics and local availability; circuit reference.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "blood_flow",
+        "type": "Quantity",
+        "requirement": "R",
+        "validation": "mL/min with intended limits; no conversion to replacement flow.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "dialysate_flow",
+        "type": "Quantity",
+        "requirement": "R",
+        "validation": "mL/h and selected solution; zero explicit where modality uses none.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "prefilter_replacement_flow",
+        "type": "Quantity",
+        "requirement": "R",
+        "validation": "mL/h, location and solution; citrate-carrier accounting explicit.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "postfilter_replacement_flow",
+        "type": "Quantity",
+        "requirement": "R",
+        "validation": "mL/h, location and solution.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "machine_patient_removal",
+        "type": "Quantity",
+        "requirement": "R",
+        "validation": "mL/h net patient removal setting with direction/sign convention and validity period.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "gross_effluent_definition",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Exact device accounting components; prevent citrate/PBP double-counting.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "effluent_target",
+        "type": "Quantity",
+        "requirement": "R",
+        "validation": "Prescribed mL/h and optional normalized mL/kg/h with selected weight reference.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "normalization_weight",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Purpose and method/date; no automatic latest or dosing weight substitution.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "anticoagulation",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "none/citrate/heparin/other strategy and approved local protocol version.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "temperature_goal",
+        "type": "QuantityOrUnavailable",
+        "requirement": "R",
+        "validation": "Device/profile-specific heating target and monitoring.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "monitoring_plan",
+        "type": "PlanItem[]",
+        "requirement": "R",
+        "validation": "Systemic/circuit labs, pressure checks, frequency and escalation; no universal schedule.",
+        "owner": "M8"
+      },
+      {
+        "record": "CRRTPrescription",
+        "field": "fluid_removal_review",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "M7 tolerance and M9 goals/context; no MAP-only automatic UF changes.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "KRTSolution",
+    "owner": "Pharmacy/formulary referenced by M8",
+    "purpose": "Product and final composition both pinned; never infer chemistry from a brand name.",
+    "fields": [
+      {
+        "record": "KRTSolution",
+        "field": "product_reference",
+        "type": "SourceVersion",
+        "requirement": "R",
+        "validation": "Manufacturer/formulary version and bag/product identifier.",
+        "owner": "Pharmacy/formulary referenced by M8"
+      },
+      {
+        "record": "KRTSolution",
+        "field": "role",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "dialysate/pre_replacement/post_replacement/citrate/calcium/PD/other.",
+        "owner": "Pharmacy/formulary referenced by M8"
+      },
+      {
+        "record": "KRTSolution",
+        "field": "prepared_at_expires",
+        "type": "TimeAssertion[]",
+        "requirement": "R",
+        "validation": "Preparation/mixing/expiry/opening and responsible staff.",
+        "owner": "Pharmacy/formulary referenced by M8"
+      },
+      {
+        "record": "KRTSolution",
+        "field": "lot",
+        "type": "string",
+        "requirement": "O",
+        "validation": "Lot/batch traceability where supplied.",
+        "owner": "Pharmacy/formulary referenced by M8"
+      },
+      {
+        "record": "KRTSolution",
+        "field": "composition",
+        "type": "SoluteConcentration[]",
+        "requirement": "R",
+        "validation": "Na/K/Ca/Mg/Cl/bicarbonate/lactate/phosphate/glucose/citrate with species and units; absent is unknown, not zero.",
+        "owner": "Pharmacy/formulary referenced by M8"
+      },
+      {
+        "record": "KRTSolution",
+        "field": "additives",
+        "type": "PreparationRecord[]",
+        "requirement": "R",
+        "validation": "Actual additive amount/final volume/final concentration and independent checks.",
+        "owner": "Pharmacy/formulary referenced by M8"
+      },
+      {
+        "record": "KRTSolution",
+        "field": "final_volume",
+        "type": "Quantity",
+        "requirement": "R",
+        "validation": "Volume after preparation; no assumed nominal bag correction.",
+        "owner": "Pharmacy/formulary referenced by M8"
+      },
+      {
+        "record": "KRTSolution",
+        "field": "compatibility",
+        "type": "SourceVersion",
+        "requirement": "R",
+        "validation": "Approved product/circuit/modality compatibility; precipitate/contamination checks.",
+        "owner": "Pharmacy/formulary referenced by M8"
+      },
+      {
+        "record": "KRTSolution",
+        "field": "connected_interval",
+        "type": "IntervalAssertion",
+        "requirement": "R",
+        "validation": "Actual bag connections/disconnections and line role; intent separate.",
+        "owner": "Pharmacy/formulary referenced by M8"
+      }
+    ]
+  },
+  {
+    "name": "CircuitEpisode",
+    "owner": "M8 with M12 device links",
+    "purpose": "Filter life and circuit function tracked separately from patient treatment duration.",
+    "fields": [
+      {
+        "record": "CircuitEpisode",
+        "field": "circuit_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "One filter/circuit; replacement opens a new identity.",
+        "owner": "M8 with M12 device links"
+      },
+      {
+        "record": "CircuitEpisode",
+        "field": "machine_reference",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Model/serial/software reference; clock calibration status.",
+        "owner": "M8 with M12 device links"
+      },
+      {
+        "record": "CircuitEpisode",
+        "field": "filter_reference",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Model/lot and installation/priming record.",
+        "owner": "M8 with M12 device links"
+      },
+      {
+        "record": "CircuitEpisode",
+        "field": "access_reference",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Used access episode and lumen connection check.",
+        "owner": "M8 with M12 device links"
+      },
+      {
+        "record": "CircuitEpisode",
+        "field": "connected_at",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Actual patient connection, not setup completion.",
+        "owner": "M8 with M12 device links"
+      },
+      {
+        "record": "CircuitEpisode",
+        "field": "disconnected_at",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Actual end and uncertainty.",
+        "owner": "M8 with M12 device links"
+      },
+      {
+        "record": "CircuitEpisode",
+        "field": "stop_reason",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "clot/alarm/access/procedure/transport/planned_change/recovery/modality_change/death/other/unknown.",
+        "owner": "M8 with M12 device links"
+      },
+      {
+        "record": "CircuitEpisode",
+        "field": "blood_return",
+        "type": "StatusAssertion",
+        "requirement": "R",
+        "validation": "Returned/not_returned/unknown; blood-loss volume only if measured/reliably recorded.",
+        "owner": "M8 with M12 device links"
+      },
+      {
+        "record": "CircuitEpisode",
+        "field": "filter_life_basis",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "connected_wall_time/confirmed_running_time, both labelled with gaps.",
+        "owner": "M8 with M12 device links"
+      }
+    ]
+  },
+  {
+    "name": "DeliverySegment",
+    "owner": "M8",
+    "purpose": "Time-bounded actual treatment with known settings; no carry-forward across unknown gaps.",
+    "fields": [
+      {
+        "record": "DeliverySegment",
+        "field": "segment_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "One actual homogeneous setting segment linked to episode/modality/circuit.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliverySegment",
+        "field": "interval",
+        "type": "IntervalAssertion",
+        "requirement": "R",
+        "validation": "Start/end timezone and exact duration; no negative/overlapping segments.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliverySegment",
+        "field": "status",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "confirmed_running/confirmed_stopped/paused/unknown; missing device stream is unknown.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliverySegment",
+        "field": "actual_flows",
+        "type": "FlowAssertion[]",
+        "requirement": "R",
+        "validation": "Blood/dialysate/pre/post/relevant PBP and net removal rates with actual versus set distinction.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliverySegment",
+        "field": "measured_effluent",
+        "type": "QuantityOrUnavailable",
+        "requirement": "R",
+        "validation": "Measured bag volume or cumulative counter delta, basis and reset handling.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliverySegment",
+        "field": "measured_patient_removal",
+        "type": "QuantityOrUnavailable",
+        "requirement": "R",
+        "validation": "Separate machine net removal from total effluent.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliverySegment",
+        "field": "setting_reference",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Prescription/version and actual source; a prescription is not delivery proof.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliverySegment",
+        "field": "solutions",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Actual product/role/interval links.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliverySegment",
+        "field": "interruptions",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "All downtime spans, including known zero delivery and unobserved gaps separately.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliverySegment",
+        "field": "clock_quality",
+        "type": "QualityAssertion",
+        "requirement": "R",
+        "validation": "Machine versus EHR clock offset, drift and precision.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliverySegment",
+        "field": "coverage",
+        "type": "CoverageAssertion",
+        "requirement": "R",
+        "validation": "Known/unknown wall-time and run-time; denominator eligibility explicit.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "DowntimeEvent",
+    "owner": "M8",
+    "purpose": "Union of valid intervals avoids duplicate downtime counting.",
+    "fields": [
+      {
+        "record": "DowntimeEvent",
+        "field": "interval",
+        "type": "IntervalAssertion",
+        "requirement": "R",
+        "validation": "Actual start/end; open interval remains partial at as-of time.",
+        "owner": "M8"
+      },
+      {
+        "record": "DowntimeEvent",
+        "field": "reason",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "clot/access/alarm/procedure/transport/bag_change/pause/device_fault/unknown/other.",
+        "owner": "M8"
+      },
+      {
+        "record": "DowntimeEvent",
+        "field": "expected_resume",
+        "type": "TimeAssertion",
+        "requirement": "O",
+        "validation": "Plan rather than evidence of actual resumption.",
+        "owner": "M8"
+      },
+      {
+        "record": "DowntimeEvent",
+        "field": "actual_resume",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Actual event or unavailable, never inferred from expected time.",
+        "owner": "M8"
+      },
+      {
+        "record": "DowntimeEvent",
+        "field": "overlapping_events",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Original events retained; union known downtime for summary, do not sum overlaps.",
+        "owner": "M8"
+      },
+      {
+        "record": "DowntimeEvent",
+        "field": "delivery_zero_confirmed",
+        "type": "boolean?",
+        "requirement": "R",
+        "validation": "Only true when documented no delivery; missing telemetry is not zero.",
+        "owner": "M8"
+      },
+      {
+        "record": "DowntimeEvent",
+        "field": "response",
+        "type": "ActionRecord[]",
+        "requirement": "R",
+        "validation": "Nurse/device/senior review, steps and outcome; no autonomous restart.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "CircuitMonitoring",
+    "owner": "M8 device source",
+    "purpose": "Manufacturer/channel meaning and sign convention required before pressure interpretation.",
+    "fields": [
+      {
+        "record": "CircuitMonitoring",
+        "field": "channel",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "access/return/prefilter/postfilter/effluent/TMP/filter_drop/air_detector/other.",
+        "owner": "M8 device source"
+      },
+      {
+        "record": "CircuitMonitoring",
+        "field": "measurement",
+        "type": "Quantity",
+        "requirement": "R",
+        "validation": "Raw pressure/temperature/flow with units and actual timestamp.",
+        "owner": "M8 device source"
+      },
+      {
+        "record": "CircuitMonitoring",
+        "field": "setting_or_measured",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "set/measured/calculated_by_device/unknown.",
+        "owner": "M8 device source"
+      },
+      {
+        "record": "CircuitMonitoring",
+        "field": "device_algorithm",
+        "type": "SourceVersion?",
+        "requirement": "C",
+        "validation": "Required if reported TMP/drop/clearance is a device calculation.",
+        "owner": "M8 device source"
+      },
+      {
+        "record": "CircuitMonitoring",
+        "field": "sample_time",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "Source time and clock quality; not UI arrival time.",
+        "owner": "M8 device source"
+      },
+      {
+        "record": "CircuitMonitoring",
+        "field": "alarm",
+        "type": "DeviceAlarm?",
+        "requirement": "O",
+        "validation": "Native code/severity, raised/acknowledged/resolved times and operator.",
+        "owner": "M8 device source"
+      },
+      {
+        "record": "CircuitMonitoring",
+        "field": "signal_quality",
+        "type": "QualityAssertion",
+        "requirement": "R",
+        "validation": "Artifact/calibration/connection status and source limits.",
+        "owner": "M8 device source"
+      },
+      {
+        "record": "CircuitMonitoring",
+        "field": "response",
+        "type": "ActionRecord[]",
+        "requirement": "R",
+        "validation": "Documented troubleshooting; displayed alarms do not establish a safe circuit.",
+        "owner": "M8 device source"
+      }
+    ]
+  },
+  {
+    "name": "AnticoagulationPlan",
+    "owner": "M8 with medication owner",
+    "purpose": "Approved strategies and formulation-specific protocols; no universal infusion recommendations.",
+    "fields": [
+      {
+        "record": "AnticoagulationPlan",
+        "field": "strategy",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "none/regional_citrate/systemic_heparin/alternative/unknown.",
+        "owner": "M8 with medication owner"
+      },
+      {
+        "record": "AnticoagulationPlan",
+        "field": "protocol",
+        "type": "SourceVersion",
+        "requirement": "R",
+        "validation": "Local approved population/device/modality/product profile and expiry.",
+        "owner": "M8 with medication owner"
+      },
+      {
+        "record": "AnticoagulationPlan",
+        "field": "bleeding_thrombosis_context",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Active bleeding, HIT concern, platelet/coagulation and concurrent systemic therapy.",
+        "owner": "M8 with medication owner"
+      },
+      {
+        "record": "AnticoagulationPlan",
+        "field": "citrate_reference",
+        "type": "ExactRef?",
+        "requirement": "C",
+        "validation": "Required for citrate strategy; species/concentration/carrier and final formulation.",
+        "owner": "M8 with medication owner"
+      },
+      {
+        "record": "AnticoagulationPlan",
+        "field": "calcium_reference",
+        "type": "ExactRef?",
+        "requirement": "C",
+        "validation": "Required where protocol includes replacement; salt/elemental concentration/access route.",
+        "owner": "M8 with medication owner"
+      },
+      {
+        "record": "AnticoagulationPlan",
+        "field": "other_anticoagulant",
+        "type": "MedicationRef?",
+        "requirement": "C",
+        "validation": "Required for non-citrate drug; dose/rate and actual administrations referenced.",
+        "owner": "M8 with medication owner"
+      },
+      {
+        "record": "AnticoagulationPlan",
+        "field": "systemic_target",
+        "type": "TargetAssertion",
+        "requirement": "R",
+        "validation": "Approved patient assay/site/units and validity; not a postfilter target.",
+        "owner": "M8 with medication owner"
+      },
+      {
+        "record": "AnticoagulationPlan",
+        "field": "circuit_target",
+        "type": "TargetAssertion",
+        "requirement": "R",
+        "validation": "Approved postfilter target and sample location; not systemic calcium.",
+        "owner": "M8 with medication owner"
+      },
+      {
+        "record": "AnticoagulationPlan",
+        "field": "monitoring_due",
+        "type": "PlanItem[]",
+        "requirement": "R",
+        "validation": "Times/trigger after start/change/interruption and named owner.",
+        "owner": "M8 with medication owner"
+      },
+      {
+        "record": "AnticoagulationPlan",
+        "field": "metabolic_risk",
+        "type": "ClinicalAssessment",
+        "requirement": "R",
+        "validation": "Perfusion/lactate trajectory/liver dysfunction/shock context and specialist applicability review.",
+        "owner": "M8 with medication owner"
+      },
+      {
+        "record": "AnticoagulationPlan",
+        "field": "interruption_plan",
+        "type": "SourceVersion",
+        "requirement": "R",
+        "validation": "Coordinated citrate/calcium/blood-flow pause/resume plan with human checks; no pump commands.",
+        "owner": "M8 with medication owner"
+      }
+    ]
+  },
+  {
+    "name": "CitrateCalciumReview",
+    "owner": "M8",
+    "purpose": "Paired assays and actual delivery; a ratio is a warning-context input, not a standalone diagnosis.",
+    "fields": [
+      {
+        "record": "CitrateCalciumReview",
+        "field": "systemic_ica",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Actual patient sample/location; units and pH handling when supplied.",
+        "owner": "M8"
+      },
+      {
+        "record": "CitrateCalciumReview",
+        "field": "postfilter_ica",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Actual circuit sample/location; no swap with systemic sample.",
+        "owner": "M8"
+      },
+      {
+        "record": "CitrateCalciumReview",
+        "field": "total_calcium",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Eligible patient specimen, units and collection time.",
+        "owner": "M8"
+      },
+      {
+        "record": "CitrateCalciumReview",
+        "field": "pairing_window",
+        "type": "SourceVersion",
+        "requirement": "R",
+        "validation": "Approved maximum time gap with reason; no nearest-sample matching without policy.",
+        "owner": "M8"
+      },
+      {
+        "record": "CitrateCalciumReview",
+        "field": "ca_ratio",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "total_Ca/systemic_iCa only after species/unit/site/time matching; original measurements retained.",
+        "owner": "M8"
+      },
+      {
+        "record": "CitrateCalciumReview",
+        "field": "calcium_delivery",
+        "type": "MedicationRef[]",
+        "requirement": "R",
+        "validation": "Actual rate/bolus, concentration, line and interruptions; orders not delivery.",
+        "owner": "M8"
+      },
+      {
+        "record": "CitrateCalciumReview",
+        "field": "citrate_delivery",
+        "type": "MedicationRef[]",
+        "requirement": "R",
+        "validation": "Actual citrate exposure/flow and interruptions; separate from clearance/effluent terms.",
+        "owner": "M8"
+      },
+      {
+        "record": "CitrateCalciumReview",
+        "field": "metabolic_context",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "pH/bicarbonate/anion gap, lactate trend, Na/Mg and clinical perfusion/liver context.",
+        "owner": "M8"
+      },
+      {
+        "record": "CitrateCalciumReview",
+        "field": "concern",
+        "type": "ClinicalAssessment",
+        "requirement": "R",
+        "validation": "Possible accumulation/overload/inadequate_delivery/other/uncertain; clinician judgement and alternatives.",
+        "owner": "M8"
+      },
+      {
+        "record": "CitrateCalciumReview",
+        "field": "review_action",
+        "type": "ActionRecord",
+        "requirement": "R",
+        "validation": "Named operator/clinician and documented response; no automatic stop/start of either pump.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "DeliveredTreatmentSummary",
+    "owner": "M8",
+    "purpose": "Gross effluent is an exposure surrogate, not guaranteed clearance and not net patient removal.",
+    "fields": [
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "window",
+        "type": "IntervalAssertion",
+        "requirement": "R",
+        "validation": "Explicit reporting period and as-of cutoff; no assumed 24 hours.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "episodes",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Preserve modality/circuit segments; do not combine incomparable dose units.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "prescribed_volume",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Integral of eligible intended flows over intended interval; all amendments explicit.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "measured_effluent_volume",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Sum nonduplicated measured effluent deltas with coverage and resets handled.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "estimated_effluent_volume",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Integral of observed actual rates only; label estimate, do not call measured.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "run_time",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Union confirmed running intervals with unknown time separately.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "downtime",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Union confirmed stopped intervals; unknown telemetry remains a gap.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "selected_weight",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "One explicit weight basis per segment; changes split summaries or preserve pinned original basis.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "wall_time_effluent",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Eligible effluent mL divided by selected kg and full elapsed hours; unknown delivery withholds full-window result.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "on_treatment_effluent",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Eligible effluent mL divided by selected kg and confirmed running hours; distinct denominator.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "predilution_adjustment",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Method/version, Qb/Hct/preflow inputs and exclusions; label modeled surrogate, not measured clearance.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "clearance_measure",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Solute-specific effluent/plasma concentrations, saturation or sieving assumptions; absent means clearance not established.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "patient_net_removal",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Machine removal and all extracorporeal inputs according to explicit accounting profile; M9 whole-patient balance distinct.",
+        "owner": "M8"
+      },
+      {
+        "record": "DeliveredTreatmentSummary",
+        "field": "coverage",
+        "type": "CoverageAssertion",
+        "requirement": "R",
+        "validation": "Known/unknown time, missing flows, unit issues, exclusions and reasons; never hide underdelivery gaps.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "IntermittentKRTSession",
+    "owner": "M8",
+    "purpose": "IHD/SLED have their own treatment and adequacy semantics; no CRRT-dose carryover.",
+    "fields": [
+      {
+        "record": "IntermittentKRTSession",
+        "field": "modality_segment",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "IHD/SLED_PIKRT/isolated_UF episode segment and authority.",
+        "owner": "M8"
+      },
+      {
+        "record": "IntermittentKRTSession",
+        "field": "planned_actual_interval",
+        "type": "IntervalAssertion[]",
+        "requirement": "R",
+        "validation": "Intended versus actual time, interruptions and early termination.",
+        "owner": "M8"
+      },
+      {
+        "record": "IntermittentKRTSession",
+        "field": "prescription",
+        "type": "PrescriptionRef",
+        "requirement": "R",
+        "validation": "Qb/Qd, dialyzer, bath composition/temperature, UF goal, anticoagulation and monitoring.",
+        "owner": "M8"
+      },
+      {
+        "record": "IntermittentKRTSession",
+        "field": "delivered",
+        "type": "DeliveryRef[]",
+        "requirement": "R",
+        "validation": "Actual runtime/flows/cumulative volumes with access/recirculation concerns.",
+        "owner": "M8"
+      },
+      {
+        "record": "IntermittentKRTSession",
+        "field": "pre_post_weight",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Measurement method/time and fluid/food/clothing context.",
+        "owner": "M8"
+      },
+      {
+        "record": "IntermittentKRTSession",
+        "field": "pre_post_urea",
+        "type": "ExactRef[]",
+        "requirement": "C",
+        "validation": "Required for selected adequacy method; sample timing/technique and rebound explicit.",
+        "owner": "M8"
+      },
+      {
+        "record": "IntermittentKRTSession",
+        "field": "adequacy",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Selected URR/spKtV/eKtV/standardKtV method or unavailable; never infer one from another.",
+        "owner": "M8"
+      },
+      {
+        "record": "IntermittentKRTSession",
+        "field": "hemodynamic_events",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Hypotension/symptoms/rescue interventions and M7 source links.",
+        "owner": "M8"
+      },
+      {
+        "record": "IntermittentKRTSession",
+        "field": "next_session",
+        "type": "PlanItem",
+        "requirement": "R",
+        "validation": "Clinician plan and review criteria; not auto-scheduled from prior pattern.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "PeritonealDialysisExchange",
+    "owner": "M8",
+    "purpose": "Optional separately enabled modality; no fallback from missing extracorporeal data.",
+    "fields": [
+      {
+        "record": "PeritonealDialysisExchange",
+        "field": "pd_episode",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "PD modality segment, access, consent and prescription.",
+        "owner": "M8"
+      },
+      {
+        "record": "PeritonealDialysisExchange",
+        "field": "exchange_id",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Unique actual exchange; cycler/manual profile and pediatric eligibility.",
+        "owner": "M8"
+      },
+      {
+        "record": "PeritonealDialysisExchange",
+        "field": "solution",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Product/glucose/icodextrin/composition/final volume.",
+        "owner": "M8"
+      },
+      {
+        "record": "PeritonealDialysisExchange",
+        "field": "fill_dwell_drain",
+        "type": "IntervalAssertion[]",
+        "requirement": "R",
+        "validation": "Actual fill time, dwell, drain and incomplete exchange status.",
+        "owner": "M8"
+      },
+      {
+        "record": "PeritonealDialysisExchange",
+        "field": "instilled_drained",
+        "type": "Quantity[]",
+        "requirement": "R",
+        "validation": "Separate actual volumes, residual estimates and measurement quality.",
+        "owner": "M8"
+      },
+      {
+        "record": "PeritonealDialysisExchange",
+        "field": "net_uf",
+        "type": "DerivedResult",
+        "requirement": "R",
+        "validation": "Drain minus instilled only on eligible matched exchange; residual/leak caveats explicit.",
+        "owner": "M8"
+      },
+      {
+        "record": "PeritonealDialysisExchange",
+        "field": "effluent_findings",
+        "type": "ObservationRef[]",
+        "requirement": "R",
+        "validation": "Cloudy/bloody effluent, cell counts/culture source and collection.",
+        "owner": "M8"
+      },
+      {
+        "record": "PeritonealDialysisExchange",
+        "field": "complications",
+        "type": "EventRef[]",
+        "requirement": "R",
+        "validation": "Peritonitis concern, leak, respiratory/intolerance and actions.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "RenalMedicationReview",
+    "owner": "Medication owner; M8 applicability",
+    "purpose": "One review per medication/clinical context, including antibiotic owner M6.",
+    "fields": [
+      {
+        "record": "RenalMedicationReview",
+        "field": "medication",
+        "type": "MedicationRef",
+        "requirement": "R",
+        "validation": "Original order and actual administration identity/version.",
+        "owner": "Medication owner; M8 applicability"
+      },
+      {
+        "record": "RenalMedicationReview",
+        "field": "renal_context",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "AKI trajectory, recovery, native clearance, modality, delivered treatment and interruptions.",
+        "owner": "Medication owner; M8 applicability"
+      },
+      {
+        "record": "RenalMedicationReview",
+        "field": "review_reason",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "initiation/change_in_function/KRT_start_stop/modality_change/downtime/TDM/toxicity/other.",
+        "owner": "Medication owner; M8 applicability"
+      },
+      {
+        "record": "RenalMedicationReview",
+        "field": "method_required",
+        "type": "SourceVersion",
+        "requirement": "R",
+        "validation": "Drug label/formulary requires specified renal estimate or KRT regimen; avoid generic substitution.",
+        "owner": "Medication owner; M8 applicability"
+      },
+      {
+        "record": "RenalMedicationReview",
+        "field": "loading_maintenance",
+        "type": "PlanAssertion[]",
+        "requirement": "R",
+        "validation": "Separate reviewed intent, exposure and interval; M8 does not invent dosing.",
+        "owner": "Medication owner; M8 applicability"
+      },
+      {
+        "record": "RenalMedicationReview",
+        "field": "levels",
+        "type": "ObservationRef[]",
+        "requirement": "R",
+        "validation": "TDM sampling/dose times, assay, concentration and target authority.",
+        "owner": "Medication owner; M8 applicability"
+      },
+      {
+        "record": "RenalMedicationReview",
+        "field": "review_status",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "due/in_progress/completed/deferred/unavailable with responsible pharmacist/clinician.",
+        "owner": "Medication owner; M8 applicability"
+      },
+      {
+        "record": "RenalMedicationReview",
+        "field": "decision",
+        "type": "ActionRecord",
+        "requirement": "R",
+        "validation": "Signed decision/rationale/source version and next review; no silent order rewrite.",
+        "owner": "Medication owner; M8 applicability"
+      }
+    ]
+  },
+  {
+    "name": "ElectrolyteNutritionReview",
+    "owner": "M8 linked to M14/M17",
+    "purpose": "Measured losses and product contribution are not interchangeable with modeled estimates.",
+    "fields": [
+      {
+        "record": "ElectrolyteNutritionReview",
+        "field": "electrolyte_results",
+        "type": "ObservationRef[]",
+        "requirement": "R",
+        "validation": "K/Mg/phosphate/Ca/Na and acid-base/glucose collection times.",
+        "owner": "M8 linked to M14/M17"
+      },
+      {
+        "record": "ElectrolyteNutritionReview",
+        "field": "replacement_exposure",
+        "type": "MedicationRef[]",
+        "requirement": "R",
+        "validation": "Actual administration and renal/KRT timing; no autonomous replacement.",
+        "owner": "M8 linked to M14/M17"
+      },
+      {
+        "record": "ElectrolyteNutritionReview",
+        "field": "solution_contributions",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Pin actual composition/rates/delivery intervals and citrate chemistry.",
+        "owner": "M8 linked to M14/M17"
+      },
+      {
+        "record": "ElectrolyteNutritionReview",
+        "field": "measured_effluent_solutes",
+        "type": "ObservationRef[]",
+        "requirement": "O",
+        "validation": "Eligible solute-specific concentrations and paired volume interval.",
+        "owner": "M8 linked to M14/M17"
+      },
+      {
+        "record": "ElectrolyteNutritionReview",
+        "field": "nutrient_losses",
+        "type": "DerivedResult[]",
+        "requirement": "R",
+        "validation": "Measured/modelled/unavailable clearly separated; no universal amino-acid loss assumption.",
+        "owner": "M8 linked to M14/M17"
+      },
+      {
+        "record": "ElectrolyteNutritionReview",
+        "field": "nonfeed_energy",
+        "type": "DerivedResult[]",
+        "requirement": "R",
+        "validation": "Glucose/citrate substrate, delivered amount, uptake/metabolism model/version and uncertainty; no assumed complete metabolism.",
+        "owner": "M8 linked to M14/M17"
+      },
+      {
+        "record": "ElectrolyteNutritionReview",
+        "field": "nutrition_plan",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Original dietitian/M14 target and delivery; never copy as new prescription.",
+        "owner": "M8 linked to M14/M17"
+      },
+      {
+        "record": "ElectrolyteNutritionReview",
+        "field": "review_owner",
+        "type": "ActorTime",
+        "requirement": "R",
+        "validation": "Due trigger and documented clinical response.",
+        "owner": "M8 linked to M14/M17"
+      }
+    ]
+  },
+  {
+    "name": "RecoveryTransition",
+    "owner": "M8",
+    "purpose": "Recovery cannot be declared from a falling creatinine while extracorporeal clearance changes.",
+    "fields": [
+      {
+        "record": "RecoveryTransition",
+        "field": "continuing_indications",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Current concern review and rationale each review period.",
+        "owner": "M8"
+      },
+      {
+        "record": "RecoveryTransition",
+        "field": "native_function",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Urine coverage, clearance evidence, creatinine trajectory and actual KRT context.",
+        "owner": "M8"
+      },
+      {
+        "record": "RecoveryTransition",
+        "field": "trial_off_plan",
+        "type": "PlanItem",
+        "requirement": "R",
+        "validation": "Clinician authorization, timing, monitoring, restart/escalation criteria and owner.",
+        "owner": "M8"
+      },
+      {
+        "record": "RecoveryTransition",
+        "field": "actual_trial",
+        "type": "IntervalAssertion",
+        "requirement": "R",
+        "validation": "Observed off-support period and symptoms/labs, not planned stop.",
+        "owner": "M8"
+      },
+      {
+        "record": "RecoveryTransition",
+        "field": "modality_change",
+        "type": "TransitionRecord",
+        "requirement": "R",
+        "validation": "Close old segment, actual start of new, new prescription/medication review and gap exposure.",
+        "owner": "M8"
+      },
+      {
+        "record": "RecoveryTransition",
+        "field": "restart",
+        "type": "ActionRecord?",
+        "requirement": "O",
+        "validation": "Actual event, indication, new episode linkage and review.",
+        "owner": "M8"
+      },
+      {
+        "record": "RecoveryTransition",
+        "field": "catheter_plan",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "M12 removal/retention decision and daily indication; actual removal separately documented.",
+        "owner": "M8"
+      },
+      {
+        "record": "RecoveryTransition",
+        "field": "recovery_status",
+        "type": "ClinicalAssessment",
+        "requirement": "R",
+        "validation": "partial/complete/dialysis_dependent/uncertain with baseline and timing.",
+        "owner": "M8"
+      }
+    ]
+  },
+  {
+    "name": "AKIFollowup",
+    "owner": "M18 with M8 content",
+    "purpose": "Follow-up survives transfer and discharge; local service must own completion.",
+    "fields": [
+      {
+        "record": "AKIFollowup",
+        "field": "discharge_renal_state",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "AKI episode/stages uncertainty, current function, last actual KRT and recovery assessment.",
+        "owner": "M18 with M8 content"
+      },
+      {
+        "record": "AKIFollowup",
+        "field": "medication_reconciliation",
+        "type": "ExactRef",
+        "requirement": "R",
+        "validation": "Nephrotoxin/renal-dose plan and restart/withhold rationale with owner.",
+        "owner": "M18 with M8 content"
+      },
+      {
+        "record": "AKIFollowup",
+        "field": "followup_tests",
+        "type": "PlanItem[]",
+        "requirement": "R",
+        "validation": "Individualized early checks and approximately 3-month kidney review from published guidance where appropriate.",
+        "owner": "M18 with M8 content"
+      },
+      {
+        "record": "AKIFollowup",
+        "field": "appointment",
+        "type": "AppointmentRef",
+        "requirement": "R",
+        "validation": "Responsible clinic/date/confirmation/unconfirmed state and escalation for nonattendance.",
+        "owner": "M18 with M8 content"
+      },
+      {
+        "record": "AKIFollowup",
+        "field": "chronic_krt_handoff",
+        "type": "ExactRef?",
+        "requirement": "C",
+        "validation": "Required if continuing support; center, access, modality, next session and transport/consent.",
+        "owner": "M18 with M8 content"
+      },
+      {
+        "record": "AKIFollowup",
+        "field": "education",
+        "type": "CommunicationRecord",
+        "requirement": "R",
+        "validation": "Patient/caregiver understanding, red flags and sick-day advice per approved plan.",
+        "owner": "M18 with M8 content"
+      },
+      {
+        "record": "AKIFollowup",
+        "field": "outcome",
+        "type": "OutcomeRecord",
+        "requirement": "R",
+        "validation": "Recovery/readmission/death/dialysis dependence with denominator eligibility and missing follow-up explicit.",
+        "owner": "M18 with M8 content"
+      }
+    ]
+  },
+  {
+    "name": "DecisionResult",
+    "owner": "M8 governed inference",
+    "purpose": "Versioned, inspectable output with explicit missing information; no autonomous treatment.",
+    "fields": [
+      {
+        "record": "DecisionResult",
+        "field": "rule_id_version",
+        "type": "string",
+        "requirement": "R",
+        "validation": "Exact approved rule/profile/version/hash.",
+        "owner": "M8 governed inference"
+      },
+      {
+        "record": "DecisionResult",
+        "field": "inputs",
+        "type": "ExactRef[]",
+        "requirement": "R",
+        "validation": "Immutable input pins at patient/encounter/window/cutoff.",
+        "owner": "M8 governed inference"
+      },
+      {
+        "record": "DecisionResult",
+        "field": "eligibility",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "eligible/withheld/not_applicable/error with all reasons.",
+        "owner": "M8 governed inference"
+      },
+      {
+        "record": "DecisionResult",
+        "field": "output",
+        "type": "TypedResult?",
+        "requirement": "R",
+        "validation": "Null when withheld; retain criterion-specific known facts.",
+        "owner": "M8 governed inference"
+      },
+      {
+        "record": "DecisionResult",
+        "field": "evidence_time",
+        "type": "TimeAssertion",
+        "requirement": "R",
+        "validation": "No ingestion timestamp relabelled as clinical event time.",
+        "owner": "M8 governed inference"
+      },
+      {
+        "record": "DecisionResult",
+        "field": "limitations",
+        "type": "string[]",
+        "requirement": "R",
+        "validation": "Population, method, uncertainty and coverage.",
+        "owner": "M8 governed inference"
+      },
+      {
+        "record": "DecisionResult",
+        "field": "review_priority",
+        "type": "enum",
+        "requirement": "R",
+        "validation": "routine/prompt/urgent per approved clinical policy; no unsupported numeric alarm defaults.",
+        "owner": "M8 governed inference"
+      },
+      {
+        "record": "DecisionResult",
+        "field": "acknowledgement",
+        "type": "ActorTime?",
+        "requirement": "C",
+        "validation": "Required where clinical alert workflow demands closed-loop review.",
+        "owner": "M8 governed inference"
+      },
+      {
+        "record": "DecisionResult",
+        "field": "override",
+        "type": "ActionRecord?",
+        "requirement": "O",
+        "validation": "Signed reason; preserve original result and audit.",
+        "owner": "M8 governed inference"
+      }
+    ]
+  }
+]

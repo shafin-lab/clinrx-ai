@@ -1,0 +1,68 @@
+ClinRx M7 specification — design review and remaining acceptance work
+21 October 2026 | Proposed version0.1 | M7 only
+
+The clinician-facing requirement is four questions: pressure reliability/target,
+perfusion, likely problem, and next owned review. The 609-field inventory includes
+source metadata, nested values, knowledge governance and operational safety;
+it is not a mandatory bedside form. Advanced information uses progressive disclosure.
+
+The existing 15-family recorded evidence, selected-event timing inference,
+SyntheticPLVEligibility/1, strict timestamp admission, exact support/receipts,
+versioned routes and closed-by-default execution gate are preserved as the baseline.
+The proposed broader clinical review is additive. Its context watches and clinical
+profiles must not retroactively change historical selected-event statements.
+
+Design checks performed by the author:
+- Patient, shared knowledge and operational records have separate scope/envelopes.
+- Plain references are separate from evidence digest pins; source reverse lists
+  are projections, not circular hash dependencies.
+- Actual-known-at uses committed admission, separate from source reconstruction.
+- Relevant new facts invalidate clinical proposals, not only old pin changes.
+- Orders, preparation, actual delivery, gaps, estimates and source totals differ.
+- Fluid need, responsiveness and tolerance remain distinct.
+- Measured, calculated and hypothetical data remain distinct.
+- Critical acknowledgments pin actual communicated content/revision/attempt.
+- Draft content can lack approval; local parameters remain null and inactive.
+- Command absence cannot authorize automatic retry; terminal no-effect requires
+  durable fencing plus authoritative effect evidence.
+- All 27 workflows map to proposed operations, actors and typed input/output names.
+- Rule scenarios are explicitly outlines; 68 separate synthetic semantic vectors
+  have fixtures, digests and proposed structured expected outputs.
+- All application/clinical tests remain NOT EXECUTED.
+
+Artifact checks passed: HTML structure/anchors/local file links, named types,
+inheritance, IDs, JSON/CSV parity, rule/workflow/policy/source/test references,
+API contract-name coverage, all15 existing-family mappings, fixture hashes,
+and16 independent educational arithmetic assertions. These are document checks,
+not application verification, clinical validation or independent clinical review.
+A rendered browser inspection was not performed: the browser security policy
+blocked local-file URL access. No workaround was attempted. The two HTML documents
+remain available as ordinary local deliverables.
+
+Required before implementation acceptance:
+Compile closed runtime schemas/OpenAPI DTOs and all discriminated/conditional
+validators, including per-field allowed target kinds/scope. Freeze canonicalization,
+source timestamp/unit mapping, clinical-context watch and command/effect contracts.
+Implement the approved interfaces without changing existing canonical history.
+The current field/API registries are specifications, not those implementations.
+
+Required before real-time patient use:
+Resolve all11 clinical-policy groups, installed-source/device validation, population
+scope, clinical authority, current content rights, exact drug/formulation/dose,
+monitoring/test/target thresholds, contraindications, numerical algorithms, local
+urgency and source freshness. Independently approve and execute profile-specific
+oracles, source/regression/failure/human-factors tests and prospective shadow
+adjudication. Accept the local hazard log, monitored activation and rollback plan.
+No general clinical-readiness claim follows from catalog size or document checks.
+
+Research limits:
+Targeted primary-source review with19 source entries; no exhaustive systematic
+review, imported full guideline tables, complete device capability matrix or
+approved all-drug library is claimed. Per user instruction, work continued without
+Consensus or Firecrawl after their limits, using retrieved evidence and direct
+selected primary-source checks. Specialty/device areas remain explicit authoring
+and validation requirements.
+
+No application code, database, clinical gate, synced source file, real patient
+record or treatment was changed. This package includes only M7; M6/M8/M9/M10/M11/
+M12/etc. appear only as dependency ownership references, not exported module specs.

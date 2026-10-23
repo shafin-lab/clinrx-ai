@@ -1,14 +1,16 @@
 """RecordedPressureLactateVasopressorTiming/v1: pure approved synthetic eligibility."""
-from typing import Annotated
+from typing import Annotated, Literal
 from pydantic import AwareDatetime, Field, model_validator
 from app.models.clinical.common import Reference, LineageEdge, Provenance, Source, Text
 from app.models.clinical.facts import ClinicalInference
 from app.models.clinical import hemodynamics as h
 from app.models.clinical.recorded_v2 import Contract, Digest, instant, ref_key
 from app.persistence.canonical import canonical_payload
-from .patient_state_v3_support import consumed_binding_roles, consumed_provenance_references
+from .patient_state_v3_support import consumed_binding_roles, consumed_provenance_references, consumed_provenances, consumed_recorded_times
 from .patient_state_v3 import PatientStateScopeV3
 from .patient_state_v3_assembly import PatientStateAssemblyResultV3
+
+POLICY_VERSION = 'SyntheticPLVEligibility/1'
 
 METHOD = Reference(kind='inference_method',id='RecordedPressureLactateVasopressorTiming',version='1')
 LIMITATIONS = (
@@ -35,6 +37,7 @@ class EvidencePin(Contract):
 
 
 class CirculatoryTimingRequest(Contract):
+    eligibility_policy: Annotated[Literal['SyntheticPLVEligibility/1'] | None, Field(exclude_if=lambda v: v is None)] = None
     scope: PatientStateScopeV3
     pressure: EvidencePin
     lactate: EvidencePin
@@ -87,6 +90,7 @@ def _exact(t):
 def _build_circulatory_timing_inference(*, assembly, request):
     assembly=PatientStateAssemblyResultV3.model_validate(assembly)
     request=CirculatoryTimingRequest.model_validate(request)
+    require(request.eligibility_policy == POLICY_VERSION, 'unapproved_eligibility_policy')
     require(canonical_payload(assembly.request.scope)==canonical_payload(assembly.snapshot.scope),'invalid_assembly')
     require(canonical_payload(request.scope)==canonical_payload(assembly.request.scope),'scope_mismatch')
     require(assembly.canonical_digest==request.expected_assembly_digest,'assembly_digest_mismatch')
@@ -99,11 +103,13 @@ def _build_circulatory_timing_inference(*, assembly, request):
         f=item.fact
         require(f.binding.target==request.scope.target and f.binding.verification.status=='verified','unverified_binding')
         require(f.record_status=='recorded' and f.conflict not in ('unresolved',), 'invalid_selected_status')
-        require(instant(f.provenance.recorded_at)<=instant(request.executed_at),'future_recording')
-        if f.available.recorded.status=='known':
-            t=f.available.recorded
-            upper=t.upper or t.value
-            require(upper is not None and instant(upper)<=instant(request.executed_at),'future_availability')
+        require(all(instant(provenance.recorded_at)<=instant(request.executed_at) for provenance in consumed_provenances(f)),'future_recording')
+        axes=(f.available, f.occurred)
+        if isinstance(f,h.LactateResult):axes=(*axes,f.collected,f.measured,f.reported)
+        for t in (*tuple(axis.recorded for axis in axes),*consumed_recorded_times(f)):
+            if t.status=='known':
+                upper=t.upper or t.value
+                require(upper is not None and instant(upper)<=instant(request.executed_at),'future_availability')
         consumed.append(f)
     p,l,v=consumed[:3]
     require(type(p) is h.PressureObservation and type(l) is h.LactateResult and type(v) is h.VasoactiveEvent,'wrong_evidence_role')
@@ -117,7 +123,24 @@ def _build_circulatory_timing_inference(*, assembly, request):
     require(quality.status=='acceptable' and not quality.artifacts,'pressure_quality')
     if p.acquisition.method=='invasive_arterial':
         require(p.acquisition.calibration=='adequate' and p.acquisition.zeroing=='adequate','pressure_calibration')
-    require(l.acquisition.quality.status!='invalid','invalid_lactate_quality')
+    require(l.acquisition.quality.status=='acceptable' and not l.acquisition.quality.artifacts,'invalid_lactate_quality')
+    # Applicability covers this exact acquisition, including retrospective source
+    # attestations. Availability is evaluated separately from acquisition time.
+    for name in (('calibration','zeroing') if p.acquisition.method=='invasive_arterial' else ('calibration',)):
+        application=getattr(p.acquisition,name+'_application')
+        require(application is not None and application.acquisition==p.reference,'unknown_acquisition_applicability')
+        require(application.status=='applied' or
+            (p.acquisition.method=='automated_cuff' and application.status=='not_required'), 'unknown_acquisition_applicability')
+        if application.status=='applied':
+            require(getattr(p.acquisition,name)=='adequate','pressure_calibration')
+        require(h._exact_source(application.available.source_timestamp,application.available.timestamp_precision),'unavailable_acquisition_attestation')
+        available=application.available.recorded
+        require(available.status=='known' and available.precision=='instant' and
+            available.value is not None and instant(available.value)<=instant(request.executed_at), 'unavailable_acquisition_attestation')
+        require(instant(application.provenance.recorded_at)<=instant(request.executed_at),'future_acquisition_attestation')
+    expected_compartment={'arterial':'systemic_arterial','central_venous':'central_venous','mixed_venous':'pulmonary_arterial'}.get(l.blood_source)
+    if expected_compartment is not None and l.acquisition.compartment!='unknown':
+        require(l.acquisition.compartment==expected_compartment,'lactate_site_mismatch')
     require(l.report_status=='final' and l.change!='superseded','lactate_status')
     require(l.specimen is not None or l.collection_assertion is not None,'missing_specimen_assertion')
     _unit(l.result,'mmol/L','mmol/L')

@@ -13,7 +13,7 @@ permissions:
 jobs:
   backend:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 45
     env:
       PYTHONPATH: backend
       PYTHONDONTWRITEBYTECODE: '1'
@@ -55,7 +55,7 @@ jobs:
           actual=$("$RUNNER_TEMP/clinrx-backend/bin/alembic" -c backend/alembic.ini heads)
           printf '%s\n' "$actual" > "$RUNNER_TEMP/clinrx-backend-logs/schema-head.txt"
           cat "$RUNNER_TEMP/clinrx-backend-logs/schema-head.txt"
-          test "$actual" = 'm7_0008 (head)'
+          test "$actual" = 'm10_0011 (head)'
       - name: Full backend suite
         run: |
           set -o pipefail
@@ -122,7 +122,7 @@ jobs:
       - name: Full frontend tests
         run: |
           set -o pipefail
-          npm test 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/tests.txt"
+          npm test -- --maxWorkers=2 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/tests.txt"
       - name: TypeScript typecheck
         run: |
           set -o pipefail
@@ -131,6 +131,15 @@ jobs:
         run: |
           set -o pipefail
           npm run build 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/build.txt"
+      - name: Local synthetic RF2 authoring build
+        env:
+          VITE_SYNTHETIC_HOSTED: 'true'
+          VITE_SYNTHETIC_AUTHORING: 'true'
+          VITE_SYNTHETIC_RF1: 'true'
+          VITE_SYNTHETIC_RF2: 'true'
+        run: |
+          set -o pipefail
+          npm run build -- --outDir "$RUNNER_TEMP/clinrx-authoring-build" 2>&1 | tee "$RUNNER_TEMP/clinrx-frontend-logs/authoring-build.txt"
       # Only synthetic validation text is retained: no databases, fixtures, env dumps or build output.
       - name: Bound synthetic validation evidence
         if: always()
@@ -139,8 +148,8 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/clinrx-frontend-evidence"
           printf 'job_status=%s\n' "$VALIDATION_STATUS" > "$RUNNER_TEMP/clinrx-frontend-evidence/status.txt"
-          # Four allowlisted files, at most 64 KiB each; preserve failure summaries at the tail.
-          for name in environment tests typecheck build; do
+          # Five allowlisted files, at most 64 KiB each; preserve failure summaries at the tail.
+          for name in environment tests typecheck build authoring-build; do
             source="$RUNNER_TEMP/clinrx-frontend-logs/$name.txt"
             if test -f "$source"; then
               tail -c 65536 "$source" > "$RUNNER_TEMP/clinrx-frontend-evidence/$name.txt"

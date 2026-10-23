@@ -41,27 +41,27 @@ export function uuid(value: unknown): string {
   if (typeof value !== 'string' || !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(value)) return reject();
   return value;
 }
-function referenceName(ref: string): keyof typeof contracts {
+function referenceName(ref: string, registry: Readonly<Record<string, Schema>>): string {
   if (!ref.startsWith('#/$defs/')) return reject();
   const key = ref.slice(8);
-  if (!Object.hasOwn(contracts, key)) return reject();
-  return key as keyof typeof contracts;
+  if (!Object.hasOwn(registry, key)) return reject();
+  return key;
 }
-function matches(value: unknown, schema: Schema, depth: number): boolean {
-  try { validate(value, schema, depth); return true; } catch { return false; }
+function matches(value: unknown, schema: Schema, depth: number, registry: Readonly<Record<string, Schema>>): boolean {
+  try { validate(value, schema, depth, registry); return true; } catch { return false; }
 }
-function validate(value: unknown, schema: Schema, depth = 0): void {
+function validate(value: unknown, schema: Schema, depth = 0, registry: Readonly<Record<string, Schema>> = contracts): void {
   if (depth > 64) return reject();
-  if (schema.$ref) { const name=referenceName(schema.$ref); validate(value, contracts[name], depth+1); structure(name,value); return; }
+  if (schema.$ref) { const name=referenceName(schema.$ref,registry); validate(value, registry[name], depth+1,registry); structure(name,value); return; }
   if (Object.hasOwn(schema, 'const') && value !== schema.const) return reject();
   if (schema.enum && !schema.enum.includes(value)) return reject();
   if (schema.discriminator) {
     const tag = object(value)[schema.discriminator.propertyName];
     if (typeof tag !== 'string' || !Object.hasOwn(schema.discriminator.mapping, tag)) return reject();
-    return validate(value, {$ref:schema.discriminator.mapping[tag]}, depth+1);
+    return validate(value, {$ref:schema.discriminator.mapping[tag]}, depth+1,registry);
   }
-  if (schema.anyOf) { if (!schema.anyOf.some(s=>matches(value,s,depth+1))) reject(); return; }
-  if (schema.oneOf) { if (schema.oneOf.filter(s=>matches(value,s,depth+1)).length !== 1) reject(); return; }
+  if (schema.anyOf) { if (!schema.anyOf.some(s=>matches(value,s,depth+1,registry))) reject(); return; }
+  if (schema.oneOf) { if (schema.oneOf.filter(s=>matches(value,s,depth+1,registry)).length !== 1) reject(); return; }
   switch (schema.type) {
     case 'null': if (value !== null) reject(); return;
     case 'boolean': if (typeof value !== 'boolean') reject(); return;
@@ -81,6 +81,7 @@ function validate(value: unknown, schema: Schema, depth = 0): void {
       }
       if (schema.format === 'date-time') timestamp(value);
       else if (schema.format === 'uuid') uuid(value);
+      else if (schema.format === 'duration') { if (!/^-?P(?=.+)(?:\d+D)?(?:T(?=\d)(?:\d+H)?(?:\d+M)?(?:\d+(?:\.\d+)?S)?)?$/.test(value)) reject(); }
       else if (schema.format !== undefined) reject();
       return;
     }
@@ -94,7 +95,7 @@ function validate(value: unknown, schema: Schema, depth = 0): void {
         if (!descriptor || !('value' in descriptor)) reject();
         const child = schema.prefixItems?.[i] ?? schema.items;
         if (!child) reject();
-        validate(descriptor.value,child,depth+1);
+        validate(descriptor.value,child,depth+1,registry);
       }
       return;
     }
@@ -103,7 +104,7 @@ function validate(value: unknown, schema: Schema, depth = 0): void {
       for (const key of schema.required ?? []) if (!Object.hasOwn(record,key)) reject();
       for (const [key,child] of Object.entries(record)) {
         if (!Object.hasOwn(properties,key)) { if (schema.additionalProperties === false) reject(); }
-        else validate(child,properties[key],depth+1);
+        else validate(child,properties[key],depth+1,registry);
       }
       return;
     }
@@ -135,6 +136,9 @@ export function decodeContract<Name extends keyof typeof contracts>(name: Name, 
     correspondence?.(object(value));
     return value as Decoded<Name>;
   } catch { throw new DecodeFailure(); }
+}
+export function validateTransportSchema(value:unknown, schema:Schema, registry:Readonly<Record<string,Schema>>):void {
+  try {validate(value,schema,0,registry);} catch {throw new DecodeFailure();}
 }
 export interface ScopeIdentity { patient_id?: string; encounter_id?: string }
 export interface ExecutionIdentity { execution_id?: string; inference_reference?: {kind:string; id:string; version:string} }
@@ -192,7 +196,7 @@ function structure(name:string,value:unknown):void {
   }
 }
 // Exact integer microseconds are used solely for validating an explicitly supplied time interval.
-function instant(value:unknown):bigint {
+export function instant(value:unknown):bigint {
   const text=timestamp(value),m=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,6}))?(Z|[+-]\d{2}:\d{2})$/.exec(text)!;
   const [year,month,day,hour,minute,second]=m.slice(1,7).map(Number);
   const y=year-1,leap=year%4===0 && (year%100!==0 || year%400===0);
@@ -4312,6 +4316,7 @@ const contracts = {
     "properties": {
       "status": {
         "enum": [
+          "pending",
           "preliminary",
           "interim",
           "final",

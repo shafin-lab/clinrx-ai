@@ -197,7 +197,7 @@ def test_organism_name_does_not_define_isolate():
     assert final.stable_identity==isolate.stable_identity
 
 
-@pytest.mark.parametrize('status,disposition',[('final','corrected'),('preliminary','amended'),('interim','original'),('withdrawn','superseded')])
+@pytest.mark.parametrize('status,disposition',[('pending','original'),('final','corrected'),('preliminary','amended'),('interim','original'),('withdrawn','superseded')])
 def test_report_status_orthogonal(status,disposition):
     r=c.ReportState(status=status,change=disposition)
     assert r.status==status and r.change==disposition

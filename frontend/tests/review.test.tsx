@@ -150,7 +150,9 @@ it('M5 warns during pending/uncertain work and prevents duplicate execution whil
   await prepare(user);let leave=new Event('beforeunload',{cancelable:true});window.dispatchEvent(leave);expect(leave.defaultPrevented).toBe(false);
   await user.dblClick(screen.getByRole('button',{name:'Run protected review'}));expect(fetcher).toHaveBeenCalledTimes(3);
   leave=new Event('beforeunload',{cancelable:true});window.dispatchEvent(leave);expect(leave.defaultPrevented).toBe(true);expect(screen.getByLabelText('Review start')).toBeDisabled();
-  finish(json(result));await screen.findByRole('region',{name:'Review result'});
+  // The deferred network response originates outside a user event. Flush its
+  // React commit and effect cleanup before checking the browser listener.
+  await act(async()=>{finish(json(result));});await screen.findByRole('region',{name:'Review result'});
   leave=new Event('beforeunload',{cancelable:true});window.dispatchEvent(leave);expect(leave.defaultPrevented).toBe(false);
 });
 it('M5 unmount invalidates late preparation',async()=>{

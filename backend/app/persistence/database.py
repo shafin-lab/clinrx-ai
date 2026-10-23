@@ -39,12 +39,14 @@ def create_sqlite_engine(url: str | URL) -> Engine:
     return engine
 
 
-def require_schema(connection) -> None:
+def require_schema(connection, *, compatible_revisions: tuple[str, ...] = ()) -> None:
     from sqlalchemy.exc import OperationalError
 
     try:
         revisions = connection.execute(text('SELECT version_num FROM alembic_version')).scalars().all()
     except OperationalError as exc:
         raise SchemaMismatch('database requires the reviewed Alembic migration') from exc
-    if revisions != [SCHEMA_REVISION]:
+    if revisions != [SCHEMA_REVISION] and not (
+        len(revisions) == 1 and revisions[0] in compatible_revisions
+    ):
         raise SchemaMismatch('unsupported database schema revision')

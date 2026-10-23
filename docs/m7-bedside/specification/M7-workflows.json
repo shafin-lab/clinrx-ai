@@ -1,0 +1,1318 @@
+{
+  "version": "0.1-proposed",
+  "workflows": [
+    {
+      "id": "M7-W01",
+      "name": "Open a focused hemodynamic review",
+      "owner": "Treating clinician; bedside nurse",
+      "trigger": "Patient selected or instability review",
+      "steps": [
+        "Confirm identity/source health",
+        "read pressure target and reliability",
+        "assess perfusion",
+        "review likely problem/uncertainty",
+        "choose next review/action",
+        "record owner and reassessment"
+      ],
+      "input_contracts": [
+        "HemodynamicContext",
+        "HemodynamicEpisode",
+        "ClinicalSnapshot"
+      ],
+      "output_contracts": [
+        "ReviewProposal",
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "primary_operation": "GET /overview; POST /reviews",
+      "rule_ids": [
+        "M7-R001",
+        "M7-R002",
+        "M7-R003",
+        "M7-R004",
+        "M7-R005",
+        "M7-R006",
+        "M7-R007",
+        "M7-R008",
+        "M7-R009",
+        "M7-R010",
+        "M7-R021",
+        "M7-R022",
+        "M7-R023",
+        "M7-R024",
+        "M7-R025",
+        "M7-R026",
+        "M7-R027",
+        "M7-R028",
+        "M7-R029",
+        "M7-R030",
+        "M7-R067",
+        "M7-R068",
+        "M7-R069",
+        "M7-R070",
+        "M7-R071",
+        "M7-R072",
+        "M7-R073",
+        "M7-R074",
+        "M7-R075",
+        "M7-R076"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W02",
+      "name": "Intake, assignment and reliable acquisition",
+      "owner": "Clinical engineering; source operations; bedside nurse",
+      "trigger": "New source/channel/patient assignment",
+      "steps": [
+        "Authenticate source",
+        "verify patient/device assignment",
+        "preserve original clocks/units/quality",
+        "append admitted revision",
+        "show gaps and quality",
+        "resolve source-critical mismatch via bedside fallback"
+      ],
+      "input_contracts": [
+        "DeviceSession",
+        "AdmissionReceipt",
+        "FeedHealth"
+      ],
+      "output_contracts": [
+        "PressureObservation",
+        "SignalManifest",
+        "AuditEvent"
+      ],
+      "primary_operation": "source adapter; GET operations /feeds",
+      "rule_ids": [
+        "M7-R001",
+        "M7-R002",
+        "M7-R003",
+        "M7-R004",
+        "M7-R005",
+        "M7-R006",
+        "M7-R007",
+        "M7-R008",
+        "M7-R009",
+        "M7-R010",
+        "M7-R011",
+        "M7-R012",
+        "M7-R013",
+        "M7-R014",
+        "M7-R015",
+        "M7-R016",
+        "M7-R017",
+        "M7-R018",
+        "M7-R019",
+        "M7-R020"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W03",
+      "name": "Confirm arterial pressure reliability",
+      "owner": "Bedside nurse/ICU clinician",
+      "trigger": "New arterial setup, movement, discordance or artifact",
+      "steps": [
+        "Inspect source waveform and patient",
+        "confirm site/reference/leveling",
+        "inspect zero/calibration applicability and dynamic response",
+        "compare clinical/cuff context if appropriate",
+        "document reliable source or uncertainty",
+        "reassess current review"
+      ],
+      "input_contracts": [
+        "PressureObservation",
+        "MonitoringCheck",
+        "SignalManifest"
+      ],
+      "output_contracts": [
+        "MonitoringCheck",
+        "ReviewTask",
+        "ReviewDecision"
+      ],
+      "primary_operation": "POST /monitoring-checks",
+      "rule_ids": [
+        "M7-R011",
+        "M7-R012",
+        "M7-R013",
+        "M7-R014",
+        "M7-R015",
+        "M7-R016",
+        "M7-R017",
+        "M7-R018",
+        "M7-R019",
+        "M7-R020",
+        "M7-R077",
+        "M7-R078",
+        "M7-R079",
+        "M7-R080",
+        "M7-R081",
+        "M7-R082",
+        "M7-R083",
+        "M7-R084"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W04",
+      "name": "Confirm cuff BP and discordance",
+      "owner": "Bedside nurse/clinician",
+      "trigger": "Cuff concern or disagreement",
+      "steps": [
+        "Review actual cuff/site/position and rhythm",
+        "obtain indicated repeat/alternative assessment",
+        "compare contemporaneous sources",
+        "document chosen trustworthy method and limitations",
+        "retain urgency and original values"
+      ],
+      "input_contracts": [
+        "PressureObservation",
+        "CuffContext"
+      ],
+      "output_contracts": [
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "primary_operation": "POST /monitoring-checks",
+      "rule_ids": [
+        "M7-R011",
+        "M7-R012",
+        "M7-R013",
+        "M7-R014",
+        "M7-R015",
+        "M7-R016",
+        "M7-R017",
+        "M7-R018",
+        "M7-R019",
+        "M7-R020",
+        "M7-R077",
+        "M7-R078",
+        "M7-R079",
+        "M7-R080",
+        "M7-R081",
+        "M7-R082",
+        "M7-R083",
+        "M7-R084"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W05",
+      "name": "Set individualized goals",
+      "owner": "Treating clinician; relevant specialist",
+      "trigger": "Recognition, cause change or transfer",
+      "steps": [
+        "Review baseline/context",
+        "consider applicable guidance and competing goals",
+        "authorize parameter/range/limits",
+        "record rationale/effective time",
+        "set reassessment and owner"
+      ],
+      "input_contracts": [
+        "HemodynamicContext",
+        "HemodynamicEpisode"
+      ],
+      "output_contracts": [
+        "HemodynamicTarget",
+        "ReviewDecision"
+      ],
+      "primary_operation": "POST /targets",
+      "rule_ids": [
+        "M7-R011",
+        "M7-R012",
+        "M7-R013",
+        "M7-R014",
+        "M7-R015",
+        "M7-R016",
+        "M7-R017",
+        "M7-R018",
+        "M7-R019",
+        "M7-R020",
+        "M7-R021",
+        "M7-R022",
+        "M7-R023",
+        "M7-R024",
+        "M7-R025",
+        "M7-R026",
+        "M7-R027",
+        "M7-R028",
+        "M7-R029",
+        "M7-R030"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W06",
+      "name": "Phenotype hypotension and hypoperfusion",
+      "owner": "ICU/emergency clinician",
+      "trigger": "New or persistent circulatory concern",
+      "steps": [
+        "Separate pressure from perfusion",
+        "confirm measurement",
+        "review exam/rhythm/history",
+        "obtain appropriate source echo/flow",
+        "consider competing/mixed causes",
+        "document uncertainty/trajectory",
+        "escalate by urgency"
+      ],
+      "input_contracts": [
+        "PerfusionObservation",
+        "PressureObservation",
+        "EchoStudy",
+        "RhythmObservation"
+      ],
+      "output_contracts": [
+        "PhenotypeAssessment",
+        "HemodynamicEpisode",
+        "ReviewTask"
+      ],
+      "primary_operation": "POST /phenotype-assessments",
+      "rule_ids": [
+        "M7-R011",
+        "M7-R012",
+        "M7-R013",
+        "M7-R014",
+        "M7-R015",
+        "M7-R016",
+        "M7-R017",
+        "M7-R018",
+        "M7-R019",
+        "M7-R020",
+        "M7-R021",
+        "M7-R022",
+        "M7-R023",
+        "M7-R024",
+        "M7-R025",
+        "M7-R026",
+        "M7-R027",
+        "M7-R028",
+        "M7-R029",
+        "M7-R030",
+        "M7-R055",
+        "M7-R056",
+        "M7-R057",
+        "M7-R058",
+        "M7-R059",
+        "M7-R060",
+        "M7-R061",
+        "M7-R062",
+        "M7-R063",
+        "M7-R064",
+        "M7-R065",
+        "M7-R066",
+        "M7-R077",
+        "M7-R078",
+        "M7-R079",
+        "M7-R080",
+        "M7-R081",
+        "M7-R082",
+        "M7-R083",
+        "M7-R084"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W07",
+      "name": "Multimodal perfusion and lactate review",
+      "owner": "Treating clinician; nurse",
+      "trigger": "Initial or serial reassessment",
+      "steps": [
+        "Assess CRT/skin/mentation/interval urine context",
+        "inspect lactate collection/quality/drugs/metabolism",
+        "reconcile discordance",
+        "compare valid trends",
+        "decide owned next assessment without biomarker-only treatment"
+      ],
+      "input_contracts": [
+        "PerfusionObservation",
+        "LactateObservation",
+        "OxygenTransportObservation"
+      ],
+      "output_contracts": [
+        "ReviewProposal",
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "primary_operation": "POST /review-evaluations",
+      "rule_ids": [
+        "M7-R021",
+        "M7-R022",
+        "M7-R023",
+        "M7-R024",
+        "M7-R025",
+        "M7-R026",
+        "M7-R027",
+        "M7-R028",
+        "M7-R029",
+        "M7-R030",
+        "M7-R031",
+        "M7-R032",
+        "M7-R033",
+        "M7-R034",
+        "M7-R035",
+        "M7-R036",
+        "M7-R037",
+        "M7-R038",
+        "M7-R039",
+        "M7-R040",
+        "M7-R041",
+        "M7-R042"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W08",
+      "name": "Echo, flow and invasive profile review",
+      "owner": "Trained echo/critical-care/cardiology team",
+      "trigger": "Persistent shock or unclear phenotype",
+      "steps": [
+        "Confirm study/method/quality",
+        "distinguish source measurement and interpretation",
+        "check timing/loading/support",
+        "review LV/RV/valve/pericardial findings",
+        "reconcile PAC/flow when clinically indicated",
+        "document clinical interpretation"
+      ],
+      "input_contracts": [
+        "EchoStudy",
+        "EchoFinding",
+        "CardiacOutputObservation",
+        "PressureObservation"
+      ],
+      "output_contracts": [
+        "PhenotypeAssessment",
+        "CalculationResult",
+        "ReviewTask"
+      ],
+      "primary_operation": "POST /flow-evaluations",
+      "rule_ids": [
+        "M7-R021",
+        "M7-R022",
+        "M7-R023",
+        "M7-R024",
+        "M7-R025",
+        "M7-R026",
+        "M7-R027",
+        "M7-R028",
+        "M7-R029",
+        "M7-R030",
+        "M7-R031",
+        "M7-R032",
+        "M7-R033",
+        "M7-R034",
+        "M7-R035",
+        "M7-R036",
+        "M7-R037",
+        "M7-R038",
+        "M7-R039",
+        "M7-R040",
+        "M7-R041",
+        "M7-R042",
+        "M7-R055",
+        "M7-R056",
+        "M7-R057",
+        "M7-R058",
+        "M7-R059",
+        "M7-R060",
+        "M7-R061",
+        "M7-R062",
+        "M7-R063",
+        "M7-R064",
+        "M7-R065",
+        "M7-R066",
+        "M7-R077",
+        "M7-R078",
+        "M7-R079",
+        "M7-R080",
+        "M7-R081",
+        "M7-R082",
+        "M7-R083",
+        "M7-R084"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W09",
+      "name": "PPV/SVV suitability",
+      "owner": "Trained ICU clinician",
+      "trigger": "Dynamic index available",
+      "steps": [
+        "Verify method/sensor/software",
+        "verify rhythm/effort/VT/PBW/chest/RV/mechanics/IAP",
+        "assess measurement quality",
+        "apply only approved eligible threshold",
+        "show invalid/unknown where appropriate",
+        "retain separate tolerance/need"
+      ],
+      "input_contracts": [
+        "DynamicIndex",
+        "VentilationContext",
+        "RhythmObservation"
+      ],
+      "output_contracts": [
+        "FluidResponsivenessTest",
+        "ReviewProposal"
+      ],
+      "primary_operation": "POST /dynamic-assessments",
+      "rule_ids": [
+        "M7-R031",
+        "M7-R032",
+        "M7-R033",
+        "M7-R034",
+        "M7-R035",
+        "M7-R036",
+        "M7-R037",
+        "M7-R038",
+        "M7-R039",
+        "M7-R040",
+        "M7-R041",
+        "M7-R042"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W10",
+      "name": "Perform and review PLR",
+      "owner": "Trained clinician/nurse",
+      "trigger": "Need for further-fluid information",
+      "steps": [
+        "Confirm maneuver safety/applicability",
+        "acquire stable baseline approved flow variable",
+        "document actual posture/maneuver",
+        "capture defined response and recovery",
+        "assess confounding/precision",
+        "classify only under approved profile",
+        "review tolerance/need"
+      ],
+      "input_contracts": [
+        "FluidResponsivenessTest",
+        "ApplicabilityCheck",
+        "CardiacOutputObservation"
+      ],
+      "output_contracts": [
+        "FluidResponsivenessTest",
+        "CalculationResult",
+        "ReviewDecision"
+      ],
+      "primary_operation": "POST /dynamic-assessments",
+      "rule_ids": [
+        "M7-R031",
+        "M7-R032",
+        "M7-R033",
+        "M7-R034",
+        "M7-R035",
+        "M7-R036",
+        "M7-R037",
+        "M7-R038",
+        "M7-R039",
+        "M7-R040",
+        "M7-R041",
+        "M7-R042",
+        "M7-R077",
+        "M7-R078",
+        "M7-R079",
+        "M7-R080",
+        "M7-R081",
+        "M7-R082",
+        "M7-R083",
+        "M7-R084"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W11",
+      "name": "Advanced reversible tests",
+      "owner": "Trained ICU clinician",
+      "trigger": "PLR unavailable or approved alternate method",
+      "steps": [
+        "Review protocol and safety",
+        "verify ventilatory/method conditions",
+        "perform clinician-directed maneuver",
+        "document response/limitations",
+        "restore prior state under bedside practice",
+        "classify or withhold",
+        "select next clinical review"
+      ],
+      "input_contracts": [
+        "FluidResponsivenessTest",
+        "VentilationContext"
+      ],
+      "output_contracts": [
+        "FluidResponsivenessTest",
+        "ReviewTask"
+      ],
+      "primary_operation": "POST /dynamic-assessments",
+      "rule_ids": [
+        "M7-R031",
+        "M7-R032",
+        "M7-R033",
+        "M7-R034",
+        "M7-R035",
+        "M7-R036",
+        "M7-R037",
+        "M7-R038",
+        "M7-R039",
+        "M7-R040",
+        "M7-R041",
+        "M7-R042"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W12",
+      "name": "Fluid trial and harm reassessment",
+      "owner": "Prescriber; bedside nurse",
+      "trigger": "Clinician chooses fluid intervention",
+      "steps": [
+        "Assess need/urgency and prior actual delivery",
+        "assess applicable responsiveness/tolerance",
+        "prescribe exact product/volume/rate in host system",
+        "record actual administration",
+        "check endpoint and harm",
+        "document response and next plan"
+      ],
+      "input_contracts": [
+        "FluidIntervention",
+        "FluidToleranceAssessment",
+        "ClinicalSnapshot"
+      ],
+      "output_contracts": [
+        "InterventionResponse",
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "primary_operation": "POST /fluid-review-plans; source MAR/M9 adapter",
+      "rule_ids": [
+        "M7-R031",
+        "M7-R032",
+        "M7-R033",
+        "M7-R034",
+        "M7-R035",
+        "M7-R036",
+        "M7-R037",
+        "M7-R038",
+        "M7-R039",
+        "M7-R040",
+        "M7-R041",
+        "M7-R042"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W13",
+      "name": "Vasoactive preparation and dose review",
+      "owner": "Prescriber; pharmacist; nurse",
+      "trigger": "New/changed product or dose",
+      "steps": [
+        "Confirm agent/indication/target",
+        "verify product active basis and approved concentration",
+        "verify units/dosing weight/access",
+        "reconcile actual bag/pump rate",
+        "apply authorized checks",
+        "separate review from prescription and delivery"
+      ],
+      "input_contracts": [
+        "VasoactiveProduct",
+        "VasoactiveOrder",
+        "VasoactiveDeliveryEvent"
+      ],
+      "output_contracts": [
+        "CalculationResult",
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "primary_operation": "POST /vasoactive-evaluations",
+      "rule_ids": [
+        "M7-R043",
+        "M7-R044",
+        "M7-R045",
+        "M7-R046",
+        "M7-R047",
+        "M7-R048",
+        "M7-R049",
+        "M7-R050",
+        "M7-R051",
+        "M7-R052",
+        "M7-R053",
+        "M7-R054",
+        "M7-R077",
+        "M7-R078",
+        "M7-R079",
+        "M7-R080",
+        "M7-R081",
+        "M7-R082",
+        "M7-R083",
+        "M7-R084"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W14",
+      "name": "Bag/concentration/rate changeover",
+      "owner": "Bedside nurse/pharmacist; prescriber",
+      "trigger": "Bag/channel/concentration change",
+      "steps": [
+        "Verify exact patient/line/channel",
+        "compare intended dose with old/new concentration/rate/weight",
+        "inspect dead-space/carrier and continuity under local protocol",
+        "document actual changeover and safety check",
+        "verify delivered state and bedside response"
+      ],
+      "input_contracts": [
+        "VasoactiveDeliveryEvent",
+        "InfusionAccessAssessment"
+      ],
+      "output_contracts": [
+        "InfusionReconciliation",
+        "InterventionResponse"
+      ],
+      "primary_operation": "POST /infusion-reconciliations",
+      "rule_ids": [
+        "M7-R043",
+        "M7-R044",
+        "M7-R045",
+        "M7-R046",
+        "M7-R047",
+        "M7-R048",
+        "M7-R049",
+        "M7-R050",
+        "M7-R051",
+        "M7-R052",
+        "M7-R053",
+        "M7-R054",
+        "M7-R077",
+        "M7-R078",
+        "M7-R079",
+        "M7-R080",
+        "M7-R081",
+        "M7-R082",
+        "M7-R083",
+        "M7-R084"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W15",
+      "name": "Peripheral infusion surveillance",
+      "owner": "Bedside nurse; treating clinician",
+      "trigger": "Peripheral pressor initiation/check/concern",
+      "steps": [
+        "Confirm route/site/patency and local profile",
+        "retain urgent treatment pathway",
+        "record actual inspections",
+        "identify site/perfusion concerns",
+        "route immediate bedside action and access plan",
+        "document actual outcome"
+      ],
+      "input_contracts": [
+        "InfusionAccessAssessment",
+        "VasoactiveDeliveryEvent"
+      ],
+      "output_contracts": [
+        "CommunicationCase",
+        "ReviewTask",
+        "ReviewDecision"
+      ],
+      "primary_operation": "POST /access-assessments",
+      "rule_ids": [
+        "M7-R043",
+        "M7-R044",
+        "M7-R045",
+        "M7-R046",
+        "M7-R047",
+        "M7-R048",
+        "M7-R049",
+        "M7-R050",
+        "M7-R051",
+        "M7-R052",
+        "M7-R053",
+        "M7-R054"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W16",
+      "name": "Reconcile exposure and interruptions",
+      "owner": "Nurse/pharmacy/source operations",
+      "trigger": "Gap, stopped line or pump-MAR disagreement",
+      "steps": [
+        "Keep order separate",
+        "verify channel/infusion identity",
+        "identify actual overlapping/unknown segments",
+        "preserve source totals and estimates separately",
+        "reconcile with named owner",
+        "expose unresolved perfusion/delivery risk"
+      ],
+      "input_contracts": [
+        "InfusionReconciliation",
+        "VasoactiveDeliveryEvent",
+        "FeedHealth"
+      ],
+      "output_contracts": [
+        "InfusionReconciliation",
+        "ReviewTask"
+      ],
+      "primary_operation": "POST /infusion-reconciliations",
+      "rule_ids": [
+        "M7-R043",
+        "M7-R044",
+        "M7-R045",
+        "M7-R046",
+        "M7-R047",
+        "M7-R048",
+        "M7-R049",
+        "M7-R050",
+        "M7-R051",
+        "M7-R052",
+        "M7-R053",
+        "M7-R054"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W17",
+      "name": "Reassess escalation and weaning",
+      "owner": "Treating clinician; ICU team",
+      "trigger": "Rising needs, adverse response or stabilization",
+      "steps": [
+        "Confirm measurement and actual delivery",
+        "reassess perfusion/cause/volume/function/access",
+        "check individualized goals and adverse effects",
+        "obtain senior/specialist review when needed",
+        "document deliberate change plan and reassessment"
+      ],
+      "input_contracts": [
+        "HemodynamicTarget",
+        "InterventionResponse",
+        "VasoactiveDeliveryEvent"
+      ],
+      "output_contracts": [
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "primary_operation": "POST /review-evaluations; POST /reviews",
+      "rule_ids": [
+        "M7-R043",
+        "M7-R044",
+        "M7-R045",
+        "M7-R046",
+        "M7-R047",
+        "M7-R048",
+        "M7-R049",
+        "M7-R050",
+        "M7-R051",
+        "M7-R052",
+        "M7-R053",
+        "M7-R054"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W18",
+      "name": "Cardiogenic shock and shock-team escalation",
+      "owner": "Cardiology/ICU shock team",
+      "trigger": "Suspected cardiac shock or deterioration",
+      "steps": [
+        "Assess cause/ACS/mechanical/RV",
+        "confirm perfusion and reliable measurements",
+        "document supported SCAI stage/trajectory/modifiers",
+        "contact shock team without staging delay",
+        "consider selective invasive profile and definitive cause treatment",
+        "record transfer/support decision"
+      ],
+      "input_contracts": [
+        "ShockSeverityAssessment",
+        "PhenotypeAssessment",
+        "SpecialHemodynamicContext"
+      ],
+      "output_contracts": [
+        "ReviewDecision",
+        "ReviewTask",
+        "Handoff"
+      ],
+      "primary_operation": "POST /severity-assessments; POST /escalations",
+      "rule_ids": [
+        "M7-R021",
+        "M7-R022",
+        "M7-R023",
+        "M7-R024",
+        "M7-R025",
+        "M7-R026",
+        "M7-R027",
+        "M7-R028",
+        "M7-R029",
+        "M7-R030",
+        "M7-R055",
+        "M7-R056",
+        "M7-R057",
+        "M7-R058",
+        "M7-R059",
+        "M7-R060",
+        "M7-R061",
+        "M7-R062",
+        "M7-R063",
+        "M7-R064",
+        "M7-R065",
+        "M7-R066"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W19",
+      "name": "Urgent cause-specific pathways",
+      "owner": "ICU/emergency/anesthesia; responsible specialty",
+      "trigger": "Obstructive, hemorrhagic, anaphylactic, RV/PH or other cause",
+      "steps": [
+        "Identify time-critical clinical concern",
+        "invoke established bedside pathway",
+        "inspect relevant source findings",
+        "apply only supported specialist profile",
+        "coordinate procedural/source treatment",
+        "reassess perfusion and competing risks"
+      ],
+      "input_contracts": [
+        "SpecialHemodynamicContext",
+        "PhenotypeAssessment"
+      ],
+      "output_contracts": [
+        "ReviewTask",
+        "CommunicationCase",
+        "ReviewDecision"
+      ],
+      "primary_operation": "POST /escalations",
+      "rule_ids": [
+        "M7-R021",
+        "M7-R022",
+        "M7-R023",
+        "M7-R024",
+        "M7-R025",
+        "M7-R026",
+        "M7-R027",
+        "M7-R028",
+        "M7-R029",
+        "M7-R030",
+        "M7-R055",
+        "M7-R056",
+        "M7-R057",
+        "M7-R058",
+        "M7-R059",
+        "M7-R060",
+        "M7-R061",
+        "M7-R062",
+        "M7-R063",
+        "M7-R064",
+        "M7-R065",
+        "M7-R066"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W20",
+      "name": "Stabilization and de-resuscitation review",
+      "owner": "Treating clinician; renal/fluid teams",
+      "trigger": "Congestion with possible stabilization",
+      "steps": [
+        "Assess current perfusion/pressor trajectory",
+        "review congestion and authoritative balance",
+        "evaluate removal tolerance/constraints",
+        "link authorized M8/M9 plan",
+        "document adverse-response stop/review criteria",
+        "reassess; no automated removal settings"
+      ],
+      "input_contracts": [
+        "FluidToleranceAssessment",
+        "CongestionDeescalationPlan"
+      ],
+      "output_contracts": [
+        "CongestionDeescalationPlan",
+        "ReviewDecision"
+      ],
+      "primary_operation": "POST /deescalation-plans",
+      "rule_ids": [
+        "M7-R031",
+        "M7-R032",
+        "M7-R033",
+        "M7-R034",
+        "M7-R035",
+        "M7-R036",
+        "M7-R037",
+        "M7-R038",
+        "M7-R039",
+        "M7-R040",
+        "M7-R041",
+        "M7-R042",
+        "M7-R043",
+        "M7-R044",
+        "M7-R045",
+        "M7-R046",
+        "M7-R047",
+        "M7-R048",
+        "M7-R049",
+        "M7-R050",
+        "M7-R051",
+        "M7-R052",
+        "M7-R053",
+        "M7-R054",
+        "M7-R067",
+        "M7-R068",
+        "M7-R069",
+        "M7-R070",
+        "M7-R071",
+        "M7-R072",
+        "M7-R073",
+        "M7-R074",
+        "M7-R075",
+        "M7-R076"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W21",
+      "name": "Special-population review",
+      "owner": "Appropriate specialty with treating clinician",
+      "trigger": "Transplant, neuro, pregnancy, pediatric or other excluded context",
+      "steps": [
+        "Record relevant timing/baseline/competing conditions",
+        "identify validated profile or unsupported scope",
+        "reconcile specialist goals",
+        "preserve source evidence",
+        "route owned assessment without generic adult extrapolation"
+      ],
+      "input_contracts": [
+        "SpecialHemodynamicContext",
+        "HemodynamicTarget"
+      ],
+      "output_contracts": [
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "primary_operation": "POST /special-context-assessments",
+      "rule_ids": [
+        "M7-R055",
+        "M7-R056",
+        "M7-R057",
+        "M7-R058",
+        "M7-R059",
+        "M7-R060",
+        "M7-R061",
+        "M7-R062",
+        "M7-R063",
+        "M7-R064",
+        "M7-R065",
+        "M7-R066"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W22",
+      "name": "Mechanical support context and monitoring",
+      "owner": "MCS/device team; cardiology/ICU",
+      "trigger": "Device present or specialist consideration",
+      "steps": [
+        "Verify actual device episode and owner",
+        "review read-only source settings/complications",
+        "assess measurement applicability and mixing/nonpulsatile limits",
+        "escalate device issues to specialist",
+        "retain candidacy decision and evidence; no device control"
+      ],
+      "input_contracts": [
+        "MechanicalSupportContext",
+        "SignalManifest"
+      ],
+      "output_contracts": [
+        "ReviewDecision",
+        "ReviewTask"
+      ],
+      "primary_operation": "GET /support-context; POST /escalations",
+      "rule_ids": [
+        "M7-R055",
+        "M7-R056",
+        "M7-R057",
+        "M7-R058",
+        "M7-R059",
+        "M7-R060",
+        "M7-R061",
+        "M7-R062",
+        "M7-R063",
+        "M7-R064",
+        "M7-R065",
+        "M7-R066",
+        "M7-R077",
+        "M7-R078",
+        "M7-R079",
+        "M7-R080",
+        "M7-R081",
+        "M7-R082",
+        "M7-R083",
+        "M7-R084"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W23",
+      "name": "Calculations, trends and what-if",
+      "owner": "Clinician/pharmacist under supported method",
+      "trigger": "User requests numeric inspection",
+      "steps": [
+        "Select exact profile",
+        "validate source type/units/time/method",
+        "show explicit missingness/limits",
+        "calculate only eligible result",
+        "label measured/derived/hypothetical",
+        "save scenario independently",
+        "require source verification before adoption"
+      ],
+      "input_contracts": [
+        "CalculationProfile",
+        "ClinicalSnapshot",
+        "Scenario"
+      ],
+      "output_contracts": [
+        "CalculationResult",
+        "Scenario"
+      ],
+      "primary_operation": "POST /calculations; optional POST /scenarios",
+      "rule_ids": [
+        "M7-R001",
+        "M7-R002",
+        "M7-R003",
+        "M7-R004",
+        "M7-R005",
+        "M7-R006",
+        "M7-R007",
+        "M7-R008",
+        "M7-R009",
+        "M7-R010",
+        "M7-R067",
+        "M7-R068",
+        "M7-R069",
+        "M7-R070",
+        "M7-R071",
+        "M7-R072",
+        "M7-R073",
+        "M7-R074",
+        "M7-R075",
+        "M7-R076",
+        "M7-R077",
+        "M7-R078",
+        "M7-R079",
+        "M7-R080",
+        "M7-R081",
+        "M7-R082",
+        "M7-R083",
+        "M7-R084"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W24",
+      "name": "Critical communication and correction",
+      "owner": "Bedside team; clinical/source operations",
+      "trigger": "Source-critical or approved urgent finding/correction",
+      "steps": [
+        "Create exact-revision case",
+        "route by current roster",
+        "track each attempt/delivery",
+        "require explicit acknowledgment",
+        "record review/action/resolution separately",
+        "escalate failed/unaccepted duty",
+        "open corrected-result duty"
+      ],
+      "input_contracts": [
+        "CommunicationCase",
+        "CommunicationEvent"
+      ],
+      "output_contracts": [
+        "CommunicationEvent",
+        "ReviewTask"
+      ],
+      "primary_operation": "POST /communications/{case}/events",
+      "rule_ids": [
+        "M7-R001",
+        "M7-R002",
+        "M7-R003",
+        "M7-R004",
+        "M7-R005",
+        "M7-R006",
+        "M7-R007",
+        "M7-R008",
+        "M7-R009",
+        "M7-R010",
+        "M7-R067",
+        "M7-R068",
+        "M7-R069",
+        "M7-R070",
+        "M7-R071",
+        "M7-R072",
+        "M7-R073",
+        "M7-R074",
+        "M7-R075",
+        "M7-R076"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W25",
+      "name": "Transfer and transport",
+      "owner": "Sending/receiving clinical teams",
+      "trigger": "Ward/ICU/hospital movement",
+      "steps": [
+        "Reconcile actual targets/infusions/concentrations/weights/access",
+        "verify transport monitoring/pumps/resources",
+        "retain pending investigations/tasks/unknown commands",
+        "send exact M7 handoff",
+        "record receiving acceptance",
+        "re-establish source assignment and checks"
+      ],
+      "input_contracts": [
+        "Handoff",
+        "VasoactiveDeliveryEvent",
+        "ReviewTask"
+      ],
+      "output_contracts": [
+        "Handoff",
+        "CommunicationEvent"
+      ],
+      "primary_operation": "POST /handoffs",
+      "rule_ids": [
+        "M7-R043",
+        "M7-R044",
+        "M7-R045",
+        "M7-R046",
+        "M7-R047",
+        "M7-R048",
+        "M7-R049",
+        "M7-R050",
+        "M7-R051",
+        "M7-R052",
+        "M7-R053",
+        "M7-R054",
+        "M7-R067",
+        "M7-R068",
+        "M7-R069",
+        "M7-R070",
+        "M7-R071",
+        "M7-R072",
+        "M7-R073",
+        "M7-R074",
+        "M7-R075",
+        "M7-R076"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W26",
+      "name": "Governed content and release",
+      "owner": "ICU/cardiology/nursing/pharmacy/clinical engineering board",
+      "trigger": "New/versioned clinical capability",
+      "steps": [
+        "Define intended use/risks",
+        "seal clinical content",
+        "independently verify numerical and scenario oracles",
+        "validate installed sources and human factors",
+        "prospective shadow assessment",
+        "authorize limited capability/profile/environment",
+        "monitor/withdraw"
+      ],
+      "input_contracts": [
+        "ClinicalProfile",
+        "CalculationProfile",
+        "ContentApproval"
+      ],
+      "output_contracts": [
+        "FeatureActivation",
+        "AuditEvent"
+      ],
+      "primary_operation": "knowledge /profiles, /approvals, /activations",
+      "rule_ids": [
+        "M7-R067",
+        "M7-R068",
+        "M7-R069",
+        "M7-R070",
+        "M7-R071",
+        "M7-R072",
+        "M7-R073",
+        "M7-R074",
+        "M7-R075",
+        "M7-R076"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    },
+    {
+      "id": "M7-W27",
+      "name": "Downtime, command recovery and historical review",
+      "owner": "Clinical operations; treating clinician",
+      "trigger": "Outage, timeout or historical query",
+      "steps": [
+        "Expose affected source coverage",
+        "use existing bedside safety pathway",
+        "retain original command identity",
+        "recover exact receipt or explicit unknown",
+        "backfill source revisions idempotently",
+        "distinguish actual-known-at from reconstruction",
+        "restore claims only after verified coverage"
+      ],
+      "input_contracts": [
+        "CommandReceipt",
+        "ClinicalSnapshot",
+        "FeedHealth"
+      ],
+      "output_contracts": [
+        "ReviewTask",
+        "AuditEvent",
+        "ClinicalSnapshot"
+      ],
+      "primary_operation": "GET /commands/{id}; POST /commands/{id}/reconcile; operations /recovery",
+      "rule_ids": [
+        "M7-R001",
+        "M7-R002",
+        "M7-R003",
+        "M7-R004",
+        "M7-R005",
+        "M7-R006",
+        "M7-R007",
+        "M7-R008",
+        "M7-R009",
+        "M7-R010",
+        "M7-R067",
+        "M7-R068",
+        "M7-R069",
+        "M7-R070",
+        "M7-R071",
+        "M7-R072",
+        "M7-R073",
+        "M7-R074",
+        "M7-R075",
+        "M7-R076"
+      ],
+      "exceptions": "Retain urgent source/bedside pathways, honest missingness and owned review; no automatic medication, fluid, device or ventilator changes.",
+      "acceptance": "Independent source/contract, clinical/human-factors and failure-injection evidence required before capability activation."
+    }
+  ]
+}

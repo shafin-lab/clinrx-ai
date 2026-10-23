@@ -1,0 +1,25 @@
+id,name,formula,eligibility
+C01,Urine rate,volume_mL / elapsed_hours / selected_weight_kg,"Complete nonoverlapping urine intervals, mapped units, >0 duration/weight, assessed patency/losses; no chart timestamp duration inference."
+C02,Creatinine absolute change,current_mg_dL - earlier_mg_dL,Distinct eligible specimens and exact <=48h interval. Versioned conversion only; uncertainty retained.
+C03,Creatinine baseline ratio,current / selected_baseline,Eligible positive baseline and comparable units with known/presumed onset context; no back-calculated baseline.
+C04,Timed measured CrCl,urine_Cr * urine_volume_mL / (plasma_Cr * duration_min),"Matching concentration dimensions, complete collection, representative plasma sample, >0 denominator; label CrCl rather than GFR."
+C05,BSA deindexing,indexed_eGFR * selected_BSA / 1.73,Source indexed estimate and explicitly selected eligible BSA; output mL/min and method limitations.
+C06,FENa,100 * urine_Na * plasma_Cr / (plasma_Na * urine_Cr),"Paired eligible sample times/units; diuretics, sepsis, CKD and other limits; no etiology classifier."
+C07,FEurea,100 * urine_urea * plasma_Cr / (plasma_urea * urine_Cr),"Same species for urea/BUN or explicit approved conversion; paired samples, denominator >0 and confounders."
+C08,Measured effluent rate,sum(eligible_measured_effluent_mL) / elapsed_hours,"Nonduplicated actual measurements/counter deltas, resets validated and reporting coverage complete."
+C09,Estimated effluent volume,sum(actual_gross_effluent_rate_mL_h_i * running_hours_i),Piecewise confirmed actual segments; machine-specific accounting includes each flow once; not a measured volume.
+C10,Wall-time normalized effluent,eligible_effluent_mL / (selected_kg * full_window_hours),"Label measured/estimated basis, total elapsed denominator and unknown coverage; known downtime contributes zero only if confirmed."
+C11,On-treatment normalized effluent,eligible_effluent_mL / (selected_kg * confirmed_running_hours),Distinct label from wall-time dose; do not compare on-treatment value to a wall-time target silently.
+C12,Downtime and coverage,duration(union(known_stopped_intervals)); separately duration(unknown_intervals),"Clip to explicit window; reject impossible/ambiguous ordering; overlap union, not sum."
+C13,Predilution modeled surrogate,"profile-specific plasma-flow dilution model, for example Qp/(Qp+Qpre), Qp=Qb*(1-Hct)","Qb and Qpre same volume/time units, fractional Hct, replacement site and convective/diffusive assumptions. Illustrative model only; not one universal CVVHDF correction."
+C14,Solute-specific clearance,effluent_flow * eligible_effluent_concentration / eligible_plasma_concentration,"Representative paired specimens, >0 plasma concentration and modality-specific method; surrogate uncertainty explicit."
+C15,Systemic calcium ratio,total_calcium_mmol_L / systemic_ionized_calcium_mmol_L,"Matched site/time/quality, compatible units; calcium mg/dL conversion requires validated species-specific factor. No postfilter substitution."
+C16,Filtration fraction,profile-defined ultrafiltration_flow / plasma_water_flow,"Define denominator/replacement position, blood units/Hct, UF species, membrane model; no universal limit or one formula across all circuits."
+C17,Patient extracorporeal net removal,device_net_removal - separately_infused_external_circuit_inputs + explicitly_accounted_returns per device profile,Positive-removal convention stated. Patient-balance accounting and machine balance differ; no subtraction of already included replacement twice.
+C18,PD exchange net UF,actual_drained_mL - actual_instilled_mL,Same exchange and complete recovery; leaks/residual volume/unknowns block authoritative total.
+C19,Filter life,actual_disconnect - actual_connect; optionally confirmed_running_duration,Report wall-time and runtime separately; censored open circuits and reason retained.
+C20,URR and Kt/V,Exact selected validated intermittent adequacy formula/profile,"Appropriate pre/post urea technique, time, weight/UF and rebound semantics. Not implemented from memory; no CRRT substitution."
+C21,Drug-specific eCrCl/eGFR,Exact label/formulary-required equation and population profile,"Full demographics, assay and weight/BSA applicability; unstable renal function flags; no automatic choice."
+C22,CKD-EPI/cystatin/kinetic estimates,Registered separately versioned equation library,"Reference coefficients and full eligibility from published original method; kinetic estimates distinct, not assumed equivalent for dosing."
+C23,Electrolyte/nutrient losses,eligible_effluent_concentration * matched_effluent_volume,"Measured loss versus modelled loss separately, correct dimensions, sampling coverage and no generic concentration assumptions."
+C24,Glucose/citrate substrate contribution,product concentration * actual delivered volume * explicitly selected uptake/metabolism/energy model,"Product role/species, effluent removal and metabolic uncertainty; no complete citrate metabolism or automatic addition to M14 intake."

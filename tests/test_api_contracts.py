@@ -94,7 +94,10 @@ def test_factory_existing_routes_and_health(config):
                 '/temporal-executions/{execution_id}','/temporal-executions/{execution_id}/reconcile',
                 '/patient-state-v2','/micro-antimicrobial-review-preparations',
                 '/micro-antimicrobial-reviews','/micro-antimicrobial-reviews/{execution_id}',
-                '/micro-antimicrobial-review-reconciliations')}
+                '/micro-antimicrobial-review-reconciliations',
+                '/patient-state-v3','/circulatory-review-preparations','/circulatory-reviews',
+                '/circulatory-reviews/{execution_id}','/circulatory-review-reconciliations',
+                '/circulatory-evidence-history')}
         for path in ('/', '/health', '/knowledge'):
             assert 'cache-control' not in client.get(path).headers
     assert not config.database_path.exists()

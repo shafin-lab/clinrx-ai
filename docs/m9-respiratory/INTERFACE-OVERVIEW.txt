@@ -1,0 +1,79 @@
+ClinRx respiratory & ABG — approved bedside interface
+23 October 2026 | Design v0.2 | Working M9, original M10
+
+AUDIENCE
+One common clinical view for intensivists, pulmonologists, physicians and
+surgeons. Same facts and safeguards for everyone; expand advanced detail when
+needed. The approved bedside overview is integrated into the existing synthetic workspace. Engineering verification and clinical validation are separate gates.
+
+AT THE TOP
+Patient and encounter | Recorded review window | Evidence confirmation
+
+FOUR COMPACT PANELS
+
+BREATHING SUPPORT
+What was actually observed, and when?
+Device / mode | oxygen concentration or uncertainty | flow | PEEP
+Expand: set and measured values, support changes, interface and airway checks.
+
+BLOOD GAS
+Which specimen, and what support was present when it was collected?
+Selected specimen/time | pH | specimen-specific CO2/O2 | bicarbonate/base excess
+Sample-time oxygen and mode remain beside the gas. Later settings stay separate.
+Expand: full panel, co-oximetry, lactate/Hb links, quality, method and source history.
+
+LUNG MECHANICS
+Can these measurements be used?
+Available source assessment or explicit connection gap | measurement conditions
+Expand: tidal volume/PBW, plateau, total PEEP, effort/leak/hold limitations.
+Existing synthetic arithmetic must retain method/input/eligibility limits.
+Clinical interpretation and treatment activation require separate validation.
+
+REVIEW PLAN
+What did the clinician assess, and what happens next?
+Reviewer-entered concern | action | responsible reviewer | next review plan
+Expand: targets, working cause, condition pathway, positioning and liberation.
+An empty assessment remains “Not assessed”. No generated treatment instruction.
+
+BELOW THE PANELS
+Compact gas and actual support-change timeline; exact sample selection.
+Evidence drawer for original results, context and revision history.
+One short review form; advanced information opens only when needed.
+
+FOR SURGICAL PATIENTS
+Separate postoperative respiratory failure, prevention after planned extubation,
+and deterioration after extubation. Link original surgery, airway, analgesia,
+sedation, circulation and fluid records. Do not copy their facts into a new chart.
+
+EVIDENCE AND CLARITY
+Clear labels with familiar abbreviations; definitions on demand.
+Key uncertainty, specimen type and sample oxygen always visible.
+“Why?” shows the source/year and scope. Conditional guidance stays conditional.
+Accurate provenance is not society accreditation or product clinical validation.
+
+IMPLEMENTED AMENDMENT TO THE EXISTING WORKSPACE
+Concurrent work has added respiratory source entry/review, physiology and
+specialist tabs. Preserve that implementation; do not create a second workspace.
+The compact overview now links to the existing sections. Reconcile source/eligibility behaviour
+against the evidence crosswalk and acceptance inventory before clinical release.
+Fluid balance/output stays in M8. M11–M18 identifiers remain unchanged.
+
+DESIGN AND EVIDENCE
+Full design: ../superpowers/specs/2026-10-23-m9-respiratory-abg-design.md
+SOCIETY-EVIDENCE-CROSSWALK.json: 12 source records and 14 design mappings.
+ACCEPTANCE-CASES.json: 60 planned validation scenarios, not tests already passed.
+INSPECTION-AUDIT.json: inspected candidate identity and file hashes.
+
+CURRENT BOUNDARY
+The four panels summarize existing evidence and clinician-authored reviews.
+They add no new observation store or treatment activation. The complete shared
+clinical workflow remains a separate acceptance gate; M7-C remains gated and M9
+remains in progress. See IMPLEMENTATION-VERIFICATION.json for executed evidence.
+
+OPTIONAL EXAMINATION AND IMAGING CAPTURE
+The existing breathing view offers chest examination capture, including separate
+right/left air entry and examination site/limitations. The investigation view
+offers optional ultrasound, X-ray, CT/CTPA and MRI report fields. Blank fields
+remain absent; an unperformed study can retain its explicit source reason. No
+normal finding, completed test or image interpretation is generated. Each entry
+uses the existing source identity, review-before-save and correction-history flow.

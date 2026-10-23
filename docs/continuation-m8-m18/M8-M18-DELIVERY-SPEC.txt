@@ -1,0 +1,253 @@
+ClinRx M8–M18 — connected delivery specification
+21 October 2026 | Current user-supplied roadmap numbering
+
+USE THE EXISTING PATIENT SHELL
+M1–M5 are foundations; M6–M18 are capabilities supplying one patient picture.
+Retain the current overview, grouped findings, exact source/history details and
+clear unavailable/unconfirmed states. Add information will be one entry shell
+with appropriately owned typed records. Imaging, medication safety, liver/graft
+care and integrated reasoning remain cross-domain requirements.
+
+The broader existing clinical requirements report is referenced in START-HERE.txt.
+This document converts that direction into connected increments. It is not a
+complete clinical treatment protocol, a statement of completion or a live-use release.
+Future rule activation requires source-specific prerequisites and validation.
+
+M8 — RENAL PHYSIOLOGY / CRRT
+Reuse: bounded creatinine observations, recorded weight, urine and CRRT-context
+events in the existing renal/fluid source catalog. Preserve raw values and times.
+Extend: baseline creatinine with explicit selection/provenance, kidney history,
+urine investigations, source-reported eGFR, current medications/nephrotoxic exposure,
+obstruction/imaging and renal replacement modality, access, prescription, actual
+running intervals, interruptions, solutions, anticoagulation and recorded machine data.
+Connect CRRT fluid removal to M9, device/access to M12, nutrition to M14, glucose/
+electrolytes to M17 and relevant drug levels to the same investigation record.
+First acceptance: one CRRT source retains prescription, actual delivery and downtime
+as distinct assertions; patient net removal never becomes gross effluent.
+Withhold new AKI staging, clearance estimates and CRRT-dose calculations until their
+baseline/weight/interval/unit/eligibility rules are separately established.
+
+M9 — FLUID BALANCE / OUTPUT
+Reuse: individual oral/enteral/IV/blood input, urine, drain, other loss and CRRT events.
+Extend: episode/collection identity, interval precision, devices, source-reported
+totals versus individual collections, omissions, correction history and completeness.
+Link feeding water/flushes, administered products and relevant fluid-containing drugs
+without treating a prescription as actual administration or counting one volume twice.
+First acceptance: an individual drain collection and a source summary both remain
+inspectable; neither is silently added to the other. Zero, not measured and unknown
+are distinct. No balance calculation is enabled by this continuation.
+
+M10 — RESPIRATORY / ABG
+Reuse: existing circulatory oxygen/lactate and sample-time gas context when supplied.
+Extend: airway identity, oxygen device/mode, source flow/FiO2, ventilation settings,
+measured pressures/volumes, support changes, sample/specimen, collection time and
+method, imaging/report links, secretion and airway/procedure context.
+Link awakening/breathing assessments with M13 and airway/device history with M12.
+First acceptance: an ABG opens its recorded sample-time settings; a later FiO2 is
+not silently substituted. Arterial/venous/noninvasive readings stay distinguishable.
+P/F ratios, predicted body weight, acid–base interpretation and ventilation advice
+remain separately versioned capabilities requiring coherent inputs.
+
+M11 — COAGULATION / TRANSFUSION
+Reuse: source-reported product input where present, preserving actual supplied volume.
+Extend: original coagulation/haemostasis assays, anticoagulant exposure, bleeding/
+thrombotic assertions, TEG/ROTEM instrument/channel/reagent and time, blood-bank
+reports, consent/reaction records and ordered/issued/administered product states.
+Link procedures, organ support, liver/graft context and rare/prothrombotic results.
+First acceptance: a transfusion's actual volume is linked once to fluid records;
+units of product are not converted to an invented standard mL value. PT/INR, aPTT,
+anti-Xa calibrators and viscoelastic parameters retain their assay identity.
+Do not turn a thrombophilia finding into a diagnosis or an automatic anticoagulant
+or transfusion recommendation. Clinical score/threshold policies need separate review.
+
+M12 — DEVICES / DRAINS / PROCEDURES
+Own one stable device or drain episode: type, site/laterality, indication, inserted/
+changed/removed times with uncertainty, placement confirmation, status, settings,
+complications, maintenance/check records and relevant procedure references.
+Record procedure planned/performed/cancelled states, author, method, anatomy,
+reports, complications and follow-up. Device identity is not a collection identity.
+Include vascular/airway/feeding/urinary access, drains, CRRT/ECMO and neurological
+devices as applicable; procedure/device types remain extensible.
+Feeds use the recorded access episode; urine/drains use explicit source associations;
+sedation uses the actual administration and monitoring context. No second device list
+is created for nutrition or infection control.
+First acceptance: replacement creates a new device episode while preserving the old
+one; historical output retains its original association, and unresolved links remain.
+
+M13 — SEDATION / ANALGESIA / DELIRIUM
+Public benchmark sources inspected:
+- Vanderbilt/CIBS publishes CAM-ICU, RASS resources, training and a VUMC pain/
+  agitation/delirium order-set resource. Its public material supports a structured
+  assessment workflow, not a claim about the current installed hospital EHR.
+- UC San Diego's delirium education playbook is described on the Vanderbilt resource
+  site. It supplies training/standardisation context; it is not a treatment engine.
+- SCCM PADIS 2025 is an adult ICU focused update. PANDEM addresses critically ill
+  infants and children separately. Adult instruments/policies are not universal.
+
+Required owned records:
+Pain instrument/version, score/components, location/context, assessor, time and
+assessability; sedation target with reason and observed instrument/score; actual
+analgesic/sedative/neuromuscular-blocker administrations with dose/route/formulation,
+infusion changes and timing; delirium instrument/version, positive/negative/
+unassessable/not performed result, components, reason and baseline/context.
+Record awakening/breathing trial eligibility, deferred reason, actual occurrence and
+response using approved local protocol; link mobility, sleep, sensory support,
+family engagement, restraints, withdrawal surveillance and relevant adverse events.
+Device measurements such as processed EEG, pupillometry or infusion-pump records
+retain device/model, signal quality and timing. They do not replace bedside assessment.
+
+Workflow: see recorded goals and current assessability, record assessment/action once,
+review actual medication and support, then document response and review needs.
+Keep neurological confounders visible in M16. Paralysis is not proof of comfort.
+First acceptance: a positive screen followed by unassessability preserves both
+states; no negative screen is invented. No screen automatically orders a medication.
+Frequency, instrument rights/training, cutoffs and medication rules remain explicit
+institutional activation items. No adult target is automatically applied to children.
+
+M14 — NUTRITION
+Recovery status:
+- CAS-DOM-001 supplies the earlier Nutrition and Metabolism domain scope.
+- NUT-STATE-001 supplies nutritional reserve/body composition/function/context.
+- NUT-STATE-002 supplies metabolic state and explicitly excludes prescription and
+  expenditure calculation within the state object.
+- ADR-006 names Harris–Benedict as a calculation example, not a validated calculator.
+- The existing 21 October clinical report proposes a wider equation library. This
+  is additional planning, not recovery of the missing original formula inventory.
+- sources/ is currently empty; the inspected local files do not establish where the
+  full historic formula set is held. No formula was activated from memory.
+
+Required connected records:
+1. Assessment: intake/weight-change history, oral intake and assistance, allergies/
+   restrictions, swallowing, gastrointestinal context, nutritional risk instrument,
+   assessor/time and components. Keep risk screening separate from diagnosis.
+2. Anthropometry: age/DOB provenance, measured/reported height and weight, usual/dry/
+   selected calculation weight, method, times, oedema/ascites and uncertainty. A new
+   weight does not silently replace the weight used for an earlier target.
+3. Needs and targets: measured expenditure, estimated requirement and prescribed
+   energy/protein/fluid targets are distinct records with validity periods, selected
+   method/version, inputs, evidence, rationale and approving clinician/dietitian.
+4. Calorimetry: device, measurement interval, VO2/VCO2 and reported expenditure,
+   quality/calibration/limitations. A report is not automatically a valid estimate.
+5. Route and formulation: oral/enteral/parenteral access, prescribed diet/product,
+   formulation/version and supplied composition. Standard, concentrated, peptide or
+   disease-labelled products form a local formulary, not automatic recommendations.
+6. Delivery: prescription and actual delivery, route, bolus/infusion episodes, volume,
+   product identity, intervals, interruptions/reasons/restart plan and missing coverage.
+   Include recorded non-feed energy sources through original medication/support
+   records, with no product-density or metabolic-contribution assumption.
+7. Monitoring: tolerance symptoms, aspiration concerns, stool/vomiting/drain losses,
+   glucose/triglyceride/electrolyte context, refeeding risk and recorded supplements,
+   body composition/function, goals, response and next review.
+
+Applicable contexts, selected from recorded patient data with explicit uncertainty:
+Stable/noncritical adult; acute ICU/sepsis and resuscitation phase; postoperative/
+perioperative; recovery/rehabilitation; obesity; kidney disease/CRRT; liver/transplant;
+major trauma/burns/intestinal failure; pregnancy when applicable; infants/children.
+No compulsory specialty mode. Missing age/context is a gap, not an adult default.
+No one equation, protein target or escalation schedule serves every context.
+
+Formula registry to establish, preserving the existing proposed inventory:
+- Anthropometry, BMI and longitudinal weight change.
+- Indirect calorimetry/selected Weir method and reported respiratory quotient.
+- Versioned Mifflin–St Jeor, historical Harris–Benedict, selected ventilated-patient
+  method and governed weight-based estimates where individually applicable.
+- Recorded energy/protein targets versus eligible actual delivery, formulation
+  composition, non-feed energy, glucose infusion rate and selected nitrogen methods.
+- Separate age-appropriate paediatric methods; these are still to be curated.
+For each: exact source/equation/version, supported population/phase, exclusions,
+input units and provenance, valid time alignment, missingness rules, output precision,
+worked cases and failure cases, reviewer and activation status. Calculated estimates
+never become prescriptions by relabelling. No numeric engine is implemented here.
+
+Apply the operational discipline of the sedation workflow: assess, record a goal,
+reconcile delivered care, assess response and review. This is a ClinRx design proposal,
+not a claim that a nutrition bundle has ABCDEF's evidence or validated outcomes.
+First acceptance: a prescribed feed, delivered feed and an interruption appear through
+one patient record; no calories are generated from a rate that merely was ordered.
+Other cases: changed formulation; oedematous weight; new CRRT; refeeding monitoring;
+feeds stopped while insulin continues; missing age; supplement from two source lists.
+
+M15 — INFECTION CONTROL
+Record precautions/isolation, reason/organism, active/ended periods, authoritative
+policy version and responsible team; link screening/cultures and device episodes.
+Capture recorded prevention actions/barriers and suspected versus confirmed events.
+Do not equate colonisation with infection or apply surveillance definitions as bedside
+diagnoses. Local infection-prevention definitions and cessation policies remain needed.
+First acceptance: a corrected culture and changed precaution retain timing/reason;
+an ended precaution is not silently carried into transfer as active.
+
+M16 — NEUROLOGY
+Record baseline, examination/components, pupils, motor/sensory findings, mental
+status, assessor/time, instrument/version and assessability/confounders; seizure/EEG,
+imaging reports, procedures, neurological device measurements and relevant medicines.
+Preserve last-known-well, discovery, assessment and treatment times as distinct facts.
+Connect sedative/paralytic exposure, gases, glucose/electrolytes and liver/renal context.
+First acceptance: a sedated/unassessable component is not recorded as normal or as a
+new proven neurological deficit. Pending/corrected imaging stays clearly identified.
+Stroke windows, seizure-treatment logic and prognostication are separate protocols,
+not inferred from displaying the available data together.
+
+M17 — ENDOCRINE
+Minimum connected scope:
+- Diabetes type/history, actual insulin and other therapy, glucose source (lab/POC/
+  CGM), value/unit/time, quality and confirmation; HbA1c with source context.
+- Meals/enteral/PN/dextrose, glucocorticoids, catecholamines, kidney/liver function,
+  interrupted delivery and recorded hypoglycaemic events/treatment/response.
+- DKA/HHS-related recorded ketones, blood gases, sodium/potassium, osmolality,
+  medications/exposure, volume state and neurological context; no automatic diagnosis.
+- Adrenal/pituitary history, steroid exposure/formulation/timing/taper, cortisol/ACTH
+  and stimulation/suppression protocol with actual doses and sample times.
+- Thyroid studies and therapies, assay/illness/drug-interference context; pituitary,
+  gonadal, bone/mineral and rare endocrine reports as clinically supplied.
+- Water balance: serum/urine osmolality, sodium, urine output, relevant therapies,
+  recorded volume assessment and interval uncertainty; link the same M8/M9 records.
+- Pumps/CGM: device episode, source quality, capability/oversight record and backup
+  plan where applicable; device measurements do not automatically authorise dosing.
+
+Use separate applicability for adult noncritical/critical and paediatric/pregnancy
+care. The Endocrine Society 2022 inpatient hyperglycaemia resource inspected here
+specifically concerns noncritical adults; it is not a universal insulin protocol.
+First acceptance: feed cessation and ongoing insulin are visible together from exact
+sources. A future review prompt needs its own rule/evidence and monitored response
+path. No insulin adjustment, crisis classification, calculated osmolality, sodium
+correction advice or endocrine diagnosis is activated in this increment.
+
+M18 — DISCHARGE / TRANSFER
+Assemble course/problems, current supports, medications and intended changes,
+devices/drains, precautions, nutrition/functional needs, pending results and their
+follow-up owner, monitoring and destination requirements from the same record.
+Retain time of preparation, source cutoff, author/reviewer and unresolved gaps.
+Update after a material correction; do not silently alter a signed historical summary.
+First acceptance: transfer reuses the record without a manual selection/transcription
+step. A result returning later has an accountable follow-up route; generation alone
+does not establish receipt, sign-off or responsibility transfer.
+
+CONNECTED ENGINEERING SEQUENCE
+A. Completed in this increment: reusable routine-to-rare product catalog and explicit
+   presentation mappings consumed by the existing overview. Existing strict admission
+   rules remain intact. Broad imports are not enabled by catalog coverage.
+B. Subsequently authorised and implemented: recorded weight through the existing
+   RF2 owner, including corrections and local recovery. See WEIGHT-ENTRY-IMPLEMENTED.txt
+   for the exact synthetic gate, verification and remaining entry-type scope.
+C. General shared investigations: implement the versioned envelope, original report
+   owner, bounded assembly and exact history together. Integrate compatible M6 data
+   only with explicit same-patient/encounter/repository/cutoff correspondence.
+D. Add one owned source-to-overview slice at a time: device/access episodes, sedation
+   assessment, nutrition target/delivery and endocrine measurement/therapy context.
+   No independent module demos. Unsupported fields stay explicit gaps.
+E. Calculations and clinical interpretation follow their separate eligibility,
+   evidence/version, conflict and validation contracts. No execution here.
+
+PRIMARY SOURCES CHECKED FOR THIS CONTINUATION
+https://www.icudelirium.org/medical-professionals/delirium/monitoring-delirium-in-the-icu
+https://www.icudelirium.org/resource-downloads/icu-delirium-playbook
+https://www.sccm.org/clinical-resources/guidelines/guidelines/focused-update-padis-guideline
+https://www.sccm.org/clinical-resources/guidelines/guidelines/pandem-guidelines-for-infants-and-children
+https://www.espen.org/guidelines/espen-scientific-guidelines-pdf-versions
+https://www.espen.org/files/ESPEN-Guidelines/ESPEN_practical_and_partially_revised_guideline_Clinical_nutrition_in_the_intensive_care_unit.pdf
+https://www.endocrine.org/clinical-practice-guidelines/inpatient-hyperglycemia-guideline-resources
+
+The ESPEN index lists ICU 2023, surgery update 2025, hospital nutrition and specialised
+guidance; population-specific source curation is still required before formulas/rules.
+The sources inform record/workflow design. They do not validate ClinRx or prove a
+current hospital's installed devices, EHR configuration, local formulary or practice.

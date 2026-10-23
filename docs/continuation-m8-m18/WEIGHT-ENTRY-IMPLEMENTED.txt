@@ -1,0 +1,102 @@
+Recorded weight — connected candidate implementation
+21 October 2026
+
+The user explicitly authorised connecting Add information for recorded weight,
+including corrections and recovery, in the candidate only. This expands the
+previous read-only candidate scope for this one synthetic operation.
+
+WHAT WORKS
+Add information opens a compact recorded-weight dialog in the existing overview.
+It records exact decimal magnitude, kg/g, measured/reported/unknown acquisition,
+measurement time with explicit offset or unknown, recorder, optional method,
+source context, limitations and a reason for a new weighing. No numeric conversion,
+current-weight selection, inferred measurement time or dosing purpose is applied.
+
+Review weight validates through the existing RF2 owner. Save weight sends exactly
+that reviewed request, retains its confirmation and refreshes the same shared
+catalog. Weight findings are grouped once; separate sources stay inspectable.
+Source dosing weight remains distinct. Edit weight invalidates the prior review.
+
+Open source details → Correct recorded weight edits only an RF2-owned, recorded
+weight. It retains exact predecessor, stable record ID and source identity and
+requires a correction reason. The existing owner appends a new revision; originals
+and history remain intact. Generic/legacy observations are not cloned for correction.
+
+RECOVERY
+Editing drafts and reviewed commands are stored locally under a versioned key for
+the synthetic patient, encounter and repository. Storage is bounded and validated;
+duplicate JSON members, mismatched form/request, wrong scope and conflicting local
+changes are rejected without overwriting existing bytes. Storage failure blocks saves.
+Local browser recovery is synthetic-only; it is not a production PHI storage design.
+
+Before saving, the exact reviewed command is retained. Double actions are blocked.
+An interrupted response becomes unconfirmed. Closing/reloading and reopening Add
+information restores the command without automatic network operations or a retry.
+Check saved result uses the existing exact-request lookup. A confirmed save refreshes
+the overview; an absent result requires explicit review before retrying the identical
+command. Unknown outcome remains retained. A pending request cannot be discarded as
+though it were known absent. Done explicitly clears the completed local recovery item.
+
+New patient/repository scope blocks writes and lookup from the old dialog. A late
+save confirmation stays attributed to its original encounter and cannot refresh
+another patient. A failed post-save refresh preserves save confirmation separately
+from the explicitly unconfirmed prior overview data.
+
+ENABLEMENT AND ISOLATION
+The new UI requires all of:
+- VITE_SYNTHETIC_WEIGHT_ENTRY=true (new opt-in flag)
+- Existing SYNTHETIC_AUTHORING/RF2 flags, hosted synthetic configuration
+- IPv4 loopback browser host and exact synthetic-p1/synthetic-e1 context.
+It uses the existing loopback-only SyntheticRF2Gateway and owner. No production
+route, backend implementation, schema or clinical execution policy changed.
+Default builds retain the previous interface. The installed app was not rebuilt,
+replaced, restarted or written to. rf2-implementation remains clean at 0bfef829.
+
+Candidate preview: http://127.0.0.1:5225/
+Database: review-evidence/weight-entry/candidate.sqlite3, explicitly created for this
+exercise using existing migrations and synthetic fixtures. No live database is used.
+Local-file fault switches belong to the evidence server, not application endpoints.
+
+VERIFICATION
+63 frontend tests passed across five files. After strengthening the complete-chart
+recovery check, all 14 new weight-entry tests passed again. Both final default and
+weight-enabled RF2 builds include typecheck and passed. Existing bundle warnings remain.
+Four new real-API tests passed: add/correct/history, committed lookup/idempotency,
+absent/retry and stale-owner/wrong-repository rejection. The other 34 existing RF2
+protocol cases passed in the initial backend run. No full-suite acceptance is claimed.
+
+Real browser → unchanged RF2 API → disposable SQLite → overview checks confirmed:
+- New 70.0000 kg measurement with unknown time appears in the same overview.
+- Correction to 71.2500 kg retains the 70.0000 kg historical revision.
+- Deliberately lost response AFTER correction commit: reload, exact recovery lookup,
+  no second save; the recovered revision exists once in the database.
+- Deliberately rejected request BEFORE commit: lookup absent; explicit review/retry
+  sends the same command and creates one revision.
+- 71500.00 g and its explicit +05:30 offset stay raw; no conversion or unit merging.
+- Saved correction plus deliberately failed refresh retains confirmation, labels prior
+  overview data unconfirmed and disables writes/source actions until explicit refresh.
+- Desktop 1280×720 and narrow 360×800; narrow dialog 322px, document width 360px.
+- Keyboard reaches Weight; Escape closes the dialog and returns to Add information.
+- No captured final browser console errors. Controlled HTTP 503s are in request logs.
+- SQLite integrity/foreign-key checks pass; all clinical execution tables remain empty.
+
+INITIAL FINDINGS PRESERVED
+The first new backend test looked only in catalog.items. The real catalog carries
+shared assembly records once under combined; the corrected test reads both locations.
+The first run was 37 passed / 1 failed; the corrected four new tests all pass.
+A later recovery test found a null-new-collection-reason comparison problem for a
+source-keyed correction; fixed by complete expected-chart comparison. That run was
+62 passed / 1 failed. Two test-only type errors were fixed; failed logs remain.
+The first local server launch could not bind under the sandbox; the separately
+approved loopback process ran on 5225. The live service/port was not reused.
+
+EVIDENCE
+review-evidence/weight-entry/RESULTS.json
+review-evidence/weight-entry/source-sha256.json and source-snapshot/
+review-evidence/weight-entry/request-verification.json and requests.jsonl
+review-evidence/weight-entry/final-corrected-history.png
+review-evidence/weight-entry/narrow-review.png and keyboard.json
+
+Remaining: free notes, reports, general labs and other measurement types need their
+appropriate typed owners. No nutrition calculation, clinical interpretation, order
+or treatment execution was enabled. The candidate remains uncommitted.
