@@ -55,7 +55,7 @@ class AntibioticChartService(RF2Service):
         scope=PatientStateScopeV2(patient_id=TARGET.patient_id,encounter_id=TARGET.encounter_id,review_start=start,review_end=end,repository_cutoff=RepositoryCutoff.model_validate(renal['cutoff']))
         micro=self.micro(repo,scope)
         return self.bounded_dict({'version':'SyntheticAntibiotics/v1','renal':renal,'micro':micro.model_dump(mode='json'),'execution_enabled':False})
-    def check(self,repo,body):
+    def check(self,repo,body,prior_body=None):
         self.require_repo(repo,body.repository);fact=build_fact(body)
         if body.predecessor and body.predecessor.kind!=fact.kind:raise EvidenceConflict()
         if body.order:
@@ -65,7 +65,9 @@ class AntibioticChartService(RF2Service):
             culture=repo.load_fact(Reference.model_validate(body.culture_ref.model_dump()),target=TARGET).fact
             if culture.kind!='microbiology_susceptibility':raise EvidenceConflict()
             history=self.history_rows(repo,repo.capture_cutoff(),self.accounting(),culture.reference)
-            if not history or history[-1].fact.reference!=culture.reference:raise EvidenceConflict()
+            # An unchanged citation records the owned source's historical provenance only.
+            historical=prior_body is not None and prior_body.culture_ref==body.culture_ref
+            if not historical and (not history or history[-1].fact.reference!=culture.reference):raise EvidenceConflict()
         return fact
     def reply(self,body,status,fact=None,stored=None):
         out={'status':status,'request_canonical':canonical_payload(body),'request_digest':sha256(canonical_payload(body).encode()).hexdigest(),'execution_enabled':False}
@@ -79,16 +81,21 @@ class AntibioticChartService(RF2Service):
             if canonical_payload(existing.fact)!=canonical_payload(fact):raise EvidenceConflict()
             return self.reply(body,'saved',existing.fact,existing)
         if action=='lookup':return self.reply(body,'absent')
-        fact=self.check(repo,body)
+        # Authenticate the exact latest owned predecessor before allowing any
+        # historical culture citation; new/changed citations still need current AST.
+        rows=repo.list_bounded_history(target=TARGET,cutoff=repo.capture_cutoff(),identity=FactIdentity(kind=fact.kind,id=fact.id),budget=self.history_budget,accounting=self.accounting()).records
+        prior_body=None
+        if body.predecessor:
+            if body.predecessor.kind!=fact.kind or body.predecessor.id!=fact.id:raise EvidenceConflict()
+            prior=repo.load_fact(Reference.model_validate(body.predecessor.model_dump()),target=TARGET)
+            prior_body=metadata(prior.fact)
+            if not prior_body or sha256(canonical_payload(prior.fact).encode()).hexdigest()!=body.predecessor_digest or not rows or rows[-1].fact.reference!=prior.fact.reference:raise EvidenceConflict()
+        elif rows:raise EvidenceConflict()
+        fact=self.check(repo,body,prior_body)
         for previous in self.history_rows(repo,repo.capture_cutoff(),self.accounting()):
             if previous.fact.kind not in KINDS or previous.fact.id==fact.id:continue
             previous_body=metadata(previous.fact)
             if previous_body and previous_body.source_record==body.source_record and previous.fact.kind==fact.kind:raise EvidenceConflict()
-        rows=repo.list_bounded_history(target=TARGET,cutoff=repo.capture_cutoff(),identity=FactIdentity(kind=fact.kind,id=fact.id),budget=self.history_budget,accounting=self.accounting()).records
-        if body.predecessor:
-            prior=repo.load_fact(Reference.model_validate(body.predecessor.model_dump()),target=TARGET)
-            if not metadata(prior.fact) or sha256(canonical_payload(prior.fact).encode()).hexdigest()!=body.predecessor_digest or not rows or rows[-1].fact.reference!=prior.fact.reference:raise EvidenceConflict()
-        elif rows:raise EvidenceConflict()
         if action=='validate':return self.reply(body,'validated',fact)
         try:stored=repo.append_revision(fact,target=TARGET) if body.predecessor else repo.append_fact(fact,target=TARGET)
         except RecordConflict:raise EvidenceConflict() from None

@@ -81,3 +81,56 @@ def test_production_api_does_not_expose_candidate_routes(case):
     from app.main import create_app
     with TestClient(create_app(app.config)) as production:
         assert production.get(ABX,params={'review_start':'2026-10-08T08:00:00Z','review_end':'2026-10-08T10:00:00Z'}).status_code==404
+
+
+def test_owned_correction_retains_only_its_exact_historical_culture_reference(case):
+    import json
+    from app.demo.micro_antimicrobial import facts as micro_facts
+    from app.demo.patient_state import TARGET
+    from app.models.clinical.microbiology import SusceptibilityResult
+    client,app=case
+    engine=create_database(app.config.database_path)
+    with transaction(engine) as repo:
+        for fact in micro_facts():repo.append_fact(fact,target=TARGET)
+        ast=next(fact for fact in micro_facts() if fact.kind=='microbiology_susceptibility')
+        other_ast=SusceptibilityResult.model_validate({**ast.model_dump(),'id':'other-historical-ast'})
+        repo.append_fact(other_ast,target=TARGET)
+    v=catalog(client)
+    original={**draft(v['renal']['repository']),'mode':'prescription','schedule':'Every 24 hours','culture_ref':ast.reference.model_dump()}
+    response=post(client,'save',original);assert response.status_code==200,response.text
+    saved=response.json()
+    with transaction(engine) as repo:
+        successor=SusceptibilityResult.model_validate({**ast.model_dump(),'revision':'2','supersedes':ast.reference,'correction_reason':'Synthetic corrected AST','report':{**ast.report.model_dump(),'change':'corrected'},'interpretation':{**ast.interpretation.model_dump(),'raw':'R','category':'resistant'}})
+        repo.append_revision(successor,target=TARGET)
+        repo.append_revision(SusceptibilityResult.model_validate({**successor.model_dump(),'id':other_ast.id,'supersedes':other_ast.reference}),target=TARGET)
+    correction={**original,'revision':str(uuid4()),'amount':'2','predecessor':{'kind':'antimicrobial_order','id':original['id'],'version':original['revision']},'predecessor_digest':saved['digest'],'correction_reason':'Correct source transcription, retain historical citation'}
+    # New sources and corrections to sources without this citation cannot adopt stale AST.
+    assert post(client,'validate',{**original,'id':str(uuid4()),'revision':str(uuid4()),'source_record':'NEW-'+str(uuid4())}).status_code==409
+    unrelated=draft(v['renal']['repository']);other=post(client,'save',unrelated).json()
+    assert post(client,'validate',{**unrelated,'revision':str(uuid4()),'culture_ref':original['culture_ref'],'predecessor':{'kind':'antimicrobial_administration','id':unrelated['id'],'version':unrelated['revision']},'predecessor_digest':other['digest'],'correction_reason':'Cannot add historical citation'}).status_code==409
+    for invalid in ({'predecessor_digest':'0'*64},{'id':str(uuid4())},{'predecessor':{'kind':'antimicrobial_administration','id':unrelated['id'],'version':unrelated['revision']}}):
+        assert post(client,'validate',{**correction,**invalid}).status_code in (409,422)
+    assert post(client,'validate',{**correction,'culture_ref':other_ast.reference.model_dump()}).status_code==409
+    # A foreign source with the exact same historical citation cannot gain ownership.
+    from hashlib import sha256
+    from app.persistence.canonical import canonical_payload
+    from app.services.antibiotic_chart_service import build_fact
+    from app.api.schemas.antibiotic_chart import AntibioticDraft
+    foreign_body={**original,'id':str(uuid4()),'revision':str(uuid4()),'source_record':'FOREIGN-'+str(uuid4())}
+    foreign=build_fact(AntibioticDraft.model_validate(foreign_body)).model_copy(update={'source_identifiers':()})
+    with transaction(engine) as repo:repo.append_fact(foreign,target=TARGET)
+    foreign_correction={**foreign_body,'revision':str(uuid4()),'predecessor':foreign.reference.model_dump(),'predecessor_digest':sha256(canonical_payload(foreign).encode()).hexdigest(),'correction_reason':'Foreign source remains read-only'}
+    assert post(client,'validate',foreign_correction).status_code==409
+    accepted=post(client,'validate',correction);assert accepted.status_code==200,accepted.text
+    result=post(client,'save',correction);assert result.status_code==200,result.text
+    assert post(client,'save',correction).json()==result.json()
+    assert post(client,'lookup',original).json()==saved
+    assert post(client,'validate',{**correction,'revision':str(uuid4()),'amount':'3'}).status_code==409
+    metadata=next(c for c in result.json()['fact']['source_identifiers'] if c['namespace']=='clinrx.local.antibiotic-chart/v1')
+    assert json.loads(metadata['code'])['culture_ref']==original['culture_ref']
+    current=catalog(client)
+    history=post(client,'history',{'state_context':current['micro']['state_context'],'reference':{'kind':'antimicrobial_order','id':original['id'],'version':correction['revision']}})
+    assert history.status_code==200,history.text
+    assert [i['fact']['revision'] for i in history.json()['items']]==[original['revision'],correction['revision']]
+    assert [i['fact']['correction_reason'] for i in history.json()['items']]==[None,correction['correction_reason']]
+    engine.dispose()
