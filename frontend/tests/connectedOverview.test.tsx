@@ -31,6 +31,7 @@ it('organizes the overview as a recorded patient course with explicit clinical a
  expect(model.courseSections.map(section=>section.label)).toEqual([
   'Renal system',
   'Antimicrobials',
+  'Hematologic system',
   'Cardiovascular system',
   'Other recorded findings',
  ]);
@@ -55,6 +56,55 @@ it('orders individual course observations by source time and keeps report status
  render(<PatientOverview catalog={catalog} status="current" requested={config} guarded={false}/>);
  expect(screen.getAllByText('Preliminary')).toHaveLength(2);
  expect(screen.getByText(/Latest recorded in selected period · collected/)).toBeVisible();
+});
+it('routes legacy gases and oxygenation components to respiratory and blood-count/coagulation components to hematologic',async()=>{
+ const catalog=await load();
+ const report=(id:string,tests:[string,string][])=>courseEvidence(catalog,id,'laboratory',{kind:'laboratory_report',source_identity:{issuer_namespace:'synthetic-lab',source_report_id:id,source_version:'1'},specimen:{specimen_type:{raw_display:'Blood'}},report_status:'final',change_state:'original',times:{collected:{status:'known',value:'2026-10-08T09:00:00Z'},reported:{status:'not_recorded'},available:{status:'not_recorded'}},components:tests.map(([raw_display,mapped_concept])=>({test_code:{raw_display},mapped_concept,result:{kind:'numeric',raw_value:'1',unit:{raw_display:'mmol/L'}}}))});
+ catalog.laboratory_reports=[
+  report('legacy-abg',[['pH','pH'],['PaCO₂','paco2'],['PaO₂','pao2']]),
+  report('legacy-oximetry',[['SpO2','spo2'],['Respiratory rate','respiratory-rate']]),
+  report('legacy-hematology',[['Haemoglobin','hemoglobin'],['Platelet count','platelet-count'],['D-dimer','d-dimer']]),
+  report('mixed-panel',[['PaO₂','pao2'],['Haemoglobin','hemoglobin'],['Sodium','sodium']]),
+ ];
+ const before=JSON.stringify(catalog),model=patientOverviewModel(catalog,config);
+ expect(model.valid).toBe(true);
+ expect(model.courseSections.find(section=>section.id==='respiratory')?.events.map(event=>event.label)).toEqual(expect.arrayContaining(['pH','PaCO₂','PaO₂','SpO2','Respiratory rate']));
+ expect(model.courseSections.find(section=>section.id==='hematologic')?.events.map(event=>event.label)).toEqual(expect.arrayContaining(['Haemoglobin','Platelet count','D-dimer']));
+ expect(model.courseSections.find(section=>section.id==='kidney')?.events.map(event=>event.label)).toContain('Sodium');
+ expect(JSON.stringify(catalog)).toBe(before);
+});
+it('renders only the matching component beneath each component heading while preserving the full panel',async()=>{
+ const catalog=await load();catalog.laboratory_reports=[courseEvidence(catalog,'component-panel','laboratory',{kind:'laboratory_report',source_identity:{issuer_namespace:'synthetic-lab',source_report_id:'PANEL-1',source_version:'1'},specimen:{specimen_type:{raw_display:'Arterial blood'}},report_status:'final',change_state:'original',times:{collected:{status:'known',value:'2026-10-08T09:00:00Z'},reported:{status:'not_recorded'},available:{status:'not_recorded'}},components:[
+  {source_component_id:'ph',test_code:{namespace:'local',code:'PH',raw_display:'pH'},mapped_concept:'ph',result:{kind:'numeric',raw_value:'7.31',unit:{raw_display:'1'}}},
+  {source_component_id:'pao2',test_code:{namespace:'local',code:'PAO2',raw_display:'PaO₂'},mapped_concept:'pao2',result:{kind:'numeric',raw_value:'61',unit:{raw_display:'mmHg'}}},
+  {source_component_id:'hb',test_code:{namespace:'local',code:'HB',raw_display:'Haemoglobin'},mapped_concept:'hemoglobin',result:{kind:'numeric',raw_value:'10.2',unit:{raw_display:'g/dL'}}},
+  {source_component_id:'na',test_code:{namespace:'local',code:'NA',raw_display:'Sodium'},mapped_concept:'sodium',result:{kind:'numeric',raw_value:'138',unit:{raw_display:'mmol/L'}}},
+ ]})];
+ render(<PatientOverview catalog={catalog} status="current" requested={config} guarded={false}/>);
+ const pao2=screen.getByRole('heading',{name:'PaO₂'}).closest('article')!;expect(pao2).toHaveTextContent('PaO₂: 61 mmHg');expect(pao2).not.toHaveTextContent('Sodium: 138 mmol/L');
+ const haemoglobin=screen.getByRole('heading',{name:'Haemoglobin'}).closest('article')!;expect(haemoglobin).toHaveTextContent('Haemoglobin: 10.2 g/dL');expect(haemoglobin).not.toHaveTextContent('PaO₂: 61 mmHg');
+ fireEvent.click(within(pao2).getByText('View recorded details'));fireEvent.click(within(pao2).getByText('Complete original recorded content'));expect(pao2).toHaveTextContent('Sodium');expect(pao2).toHaveTextContent('138');
+});
+it('keeps valid unmapped panel components separate and keeps systemic oxygen transport cardiovascular',async()=>{
+ const catalog=await load();catalog.laboratory_reports=[courseEvidence(catalog,'unmapped-panel','laboratory',{kind:'laboratory_report',source_identity:{issuer_namespace:'synthetic-lab',source_report_id:'UNMAPPED-1',source_version:'1'},specimen:{specimen_type:{raw_display:'Serum'}},report_status:'final',change_state:'original',times:{collected:{status:'known',value:'2026-10-08T09:00:00Z'},reported:{status:'not_recorded'},available:{status:'not_recorded'}},components:[
+  {source_component_id:'local-a',test_code:{namespace:'local',code:'A-1',raw_display:'Unmapped assay A'},mapped_concept:null,result:{kind:'qualitative',raw_value:'Positive'}},
+  {source_component_id:'local-b',test_code:{namespace:'local',code:'B-2',raw_display:'Unmapped assay B'},mapped_concept:null,result:{kind:'qualitative',raw_value:'Trace'}},
+ ]})];
+ const before=JSON.stringify(catalog);const model=patientOverviewModel(catalog,config);expect(model.findings.filter(finding=>finding.label.startsWith('Unmapped assay'))).toHaveLength(2);expect(JSON.stringify(catalog)).toBe(before);
+ const circulation=courseEvidence(catalog,'systemic-do2','do2',{kind:'circulatory_oxygen',concept:'do2'});catalog.items=[circulation];const cardiopulmonary=patientOverviewModel(catalog,config);expect(cardiopulmonary.courseSections.find(section=>section.id==='circulation')?.events.map(event=>event.label)).toContain('Do2');expect(cardiopulmonary.courseSections.find(section=>section.id==='respiratory')?.events.map(event=>event.label)??[]).not.toContain('Do2');
+});
+it('hides a dimensionless laboratory unit code while keeping a missing unit explicit and preserving exact source content',async()=>{
+ const catalog=await load();
+ const report=courseEvidence(catalog,'dimensionless-result','laboratory',{kind:'laboratory_report',source_identity:{issuer_namespace:'synthetic-lab',source_report_id:'DIM-1',source_version:'1'},specimen:{specimen_type:{raw_display:'Serum'}},report_status:'final',change_state:'original',times:{collected:{status:'known',value:'2026-10-08T09:00:00Z'},reported:{status:'not_recorded'},available:{status:'not_recorded'}},components:[{test_code:{raw_display:'Normalized ratio'},mapped_concept:'synthetic-normalized-ratio',result:{kind:'numeric',raw_value:'1.00',unit:{raw_display:'1'}}}]});
+ const missing=courseEvidence(catalog,'missing-unit-result','laboratory',{kind:'laboratory_report',source_identity:{issuer_namespace:'synthetic-lab',source_report_id:'UNIT-NA',source_version:'1'},specimen:{specimen_type:{raw_display:'Serum'}},report_status:'final',change_state:'original',times:{collected:{status:'known',value:'2026-10-08T09:00:00Z'},reported:{status:'not_recorded'},available:{status:'not_recorded'}},components:[{test_code:{raw_display:'Missing unit'},mapped_concept:'synthetic-missing-unit',result:{kind:'numeric',raw_value:'0.8'}}]});
+ catalog.laboratory_reports=[report,missing];const original=JSON.stringify(report);
+ render(<PatientOverview catalog={catalog} status="current" requested={config} guarded={false}/>);
+ const result=screen.getByRole('heading',{name:'Normalized ratio'}).closest('article')!;expect(result).toHaveTextContent('Normalized ratio: 1.00');expect(result).not.toHaveTextContent('1.00 1');
+ expect(screen.getByRole('heading',{name:'Missing unit'}).closest('article')).toHaveTextContent('Missing unit: 0.8 unit unavailable');
+ fireEvent.click(within(result).getByText('View recorded details'));
+ fireEvent.click(within(result).getByText('Exact source and context'));
+ fireEvent.click(within(result).getByText('Complete original recorded content'));
+ expect(result).toHaveTextContent(/"raw_display": "1"/);expect(JSON.stringify(report)).toBe(original);
 });
 it('summarizes narrative, categorical, contextual and explicitly missing source content by type',async()=>{
  const catalog=await load();catalog.items=[
