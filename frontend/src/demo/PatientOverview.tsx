@@ -1,5 +1,5 @@
 import type {MicroState} from '../api/microTypes';
-import {m7ReviewEvidence,m9ReviewEvidence,sameReviewPins} from '../respiratory/reviewEvidenceContext';
+import {m7ReviewEvidence,m8ReviewEvidence,m9ReviewEvidence,sameReviewPins} from '../respiratory/reviewEvidenceContext';
 import {useEffect,useMemo,useRef,useState,type ReactNode} from 'react';
 import {RF2Client,type Catalog,type Evidence} from '../api/rf2Client';
 import {key,pin} from '../api/rf2Client';
@@ -129,11 +129,10 @@ const names:Record<string,string>={'body-weight':'Recorded weight'};
 const sameInstant=(a:string,b:string)=>Number.isFinite(Date.parse(a))&&Date.parse(a)===Date.parse(b);
 const reviewActions:Record<ReviewDomain,Record<string,string>>={M9:{review:'Respiratory review'},M7:{confirm:'Confirm measurement',perfusion:'Reassess perfusion',fluid:'Review fluid benefit and harm',vasoactive:'Review vasoactive delivery',specialist:'Seek senior or specialist review',continue:'Continue observation and reassess'},M8:{collection:'Check collection and catheter patency',baseline:'Review baseline and kidney trajectory',urgent:'Seek urgent renal or ICU review',delivery:'Review kidney support delivery',citrate:'Review citrate and metabolic context',medications:'Review renal medication dosing and levels',recovery:'Review kidney recovery',followup:'Plan renal follow-up'}};
 export function overviewReviewSummaries(catalog:Catalog,requested:Requested,micro?:MicroState){
- const scope=catalog.combined.context.scope,signature=JSON.stringify([scope.patient_id,scope.encounter_id,scope.review_start,scope.review_end,catalog.repository,catalog.cutoff.fact_watermark]);
  return (catalog.respiratory_records?['M7','M8','M9'] as const:['M7','M8'] as const).map(domain=>{
   const reviewScope:ReviewScope={domain,patient:requested.patient,encounter:requested.encounter,repository:catalog.repository},loaded=loadSavedReviews<Record<string,unknown>>(reviewScope);
-  const expected=domain==='M7'?m7ReviewEvidence(catalog.combined.circulatory,requested,catalog):domain==='M9'?m9ReviewEvidence(catalog,requested,micro):undefined;
-  return {domain,review:loaded.reviews[0] as SavedReview<Record<string,unknown>>|undefined,issue:loaded.issue??'',matchesCurrent:!!loaded.reviews[0]&&(expected?loaded.reviews[0].snapshot.signature===expected.signature&&sameReviewPins(loaded.reviews[0].snapshot.pins,expected.pins):loaded.reviews[0].snapshot.signature===signature)};
+  const expected=domain==='M7'?m7ReviewEvidence(catalog.combined.circulatory,requested,catalog):domain==='M9'?m9ReviewEvidence(catalog,requested,micro):m8ReviewEvidence(catalog.combined,requested,catalog);
+  return {domain,review:loaded.reviews[0] as SavedReview<Record<string,unknown>>|undefined,issue:loaded.issue??'',matchesCurrent:!!loaded.reviews[0]&&loaded.reviews[0].snapshot.signature===expected.signature&&sameReviewPins(loaded.reviews[0].snapshot.pins,expected.pins)};
  });
 }
 /** Presentation of an already-decoded shared catalog. No requests, inference or source mutation. */

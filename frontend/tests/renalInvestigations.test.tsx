@@ -10,7 +10,7 @@ it('makes all five core fields visible without inferring absent test results',()
  render(<RenalInvestigations sources={model().sources} current onOpen={vi.fn()}/>);const core=screen.getByRole('list',{name:'Core kidney investigation fields'});for(const label of ['Urea / BUN','Creatinine','Sodium','Potassium','Urine routine'])expect(within(core).getByText(label)).toBeInTheDocument();expect(within(core).getAllByText('No result supplied')).toHaveLength(4);expect(within(core).getByRole('button',{name:'Inspect sources for Creatinine'})).toBeEnabled();
 });
 it('opens original creatinine evidence without choosing the latest or calculating a trend',()=>{
- const open=vi.fn();render(<RenalInvestigations sources={model().sources} current onOpen={open}/>);fireEvent.click(screen.getByRole('button',{name:'Inspect sources for Creatinine'}));expect(open).toHaveBeenCalledWith('creatinine');expect(screen.queryByText(/improv|normal renal|stage [123]/i)).not.toBeInTheDocument();
+ const open=vi.fn();render(<RenalInvestigations sources={model().sources} current onOpen={open}/>);fireEvent.click(screen.getByRole('button',{name:'Inspect sources for Creatinine'}));expect(open).toHaveBeenCalledWith({keys:['["eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5","observation","demo-creatinine-A","2"]','["eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5","observation","demo-creatinine-B","1"]','["eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5","observation","rf1-creatinine-missing","1"]','["eb763eb6-094e-4ee0-8ff3-449e3ffe7ad5","observation","rf1-creatinine-unlike-unit","1"]'],group:'kidney',label:'Creatinine'});expect(screen.queryByText(/improv|normal renal|stage [123]/i)).not.toBeInTheDocument();
 });
 it('provides urine chemistry and measured osmolality options with distinct sample meanings',()=>{
  render(<RenalInvestigations sources={model().sources} current onOpen={vi.fn()}/>);fireEvent.click(screen.getByText('Urine studies and osmolality'));const list=screen.getByRole('list',{name:'Urine studies and osmolality'});for(const label of ['Urine sodium','Urine osmolality','Measured serum osmolality','Urine creatinine','Urine urea','Urine microscopy','Urine ACR','Urine PCR'])expect(within(list).getByText(label)).toBeInTheDocument();expect(screen.getByText(/Measured osmolality \(mOsm\/kg\)/)).toHaveTextContent('calculated osmolarity (mOsm/L)');expect(within(list).queryByRole('button')).not.toBeInTheDocument();
@@ -23,4 +23,16 @@ it('blocks source inspection and labels data unconfirmed during retrieval failur
 });
 it('does not claim a connected assay has been measured when no source was supplied',()=>{
  render(<RenalInvestigations sources={[]} current onOpen={vi.fn()}/>);expect(screen.getAllByText('No result supplied').length).toBeGreaterThan(0);expect(screen.queryByRole('button')).not.toBeInTheDocument();
+});
+
+it.each([['bun','BUN','Urea / BUN','kidney'],['potassium','K','Potassium','kidney'],['urine_ph','pH','Urine routine','urine'],['total_calcium','Ca','Total calcium','kidney']] as const)('opens exact counted %s contributors regardless of abbreviated labels', (concept,label,button,group)=>{
+ const source={...model().sources[0],key:'exact-'+concept,label,group,mappedConcept:concept,lab:undefined,entry:{fact:{kind:'laboratory_report'}} as any},open=vi.fn();
+ render(<RenalInvestigations sources={[source]} current onOpen={open}/>);
+ if(concept==='total_calcium')fireEvent.click(screen.getByText('Electrolytes, acid–base and CRRT monitoring'));
+ fireEvent.click(screen.getByRole('button',{name:'Inspect sources for '+button}));expect(open).toHaveBeenCalledWith({keys:['exact-'+concept],group,label:button});
+});
+it('keeps site-unresolved ionised calcium separate from systemic and post-filter sources',()=>{
+ const source={...model().sources[0],key:'ica',label:'iCa',mappedConcept:'ionised_calcium',lab:undefined,entry:{fact:{kind:'laboratory_report'}} as any};const tests=renalInvestigationPanels.flatMap(p=>p.tests);
+ expect(renalInvestigationSources(tests.find(t=>t.id==='systemic-ica')!,[source])).toEqual([]);expect(renalInvestigationSources(tests.find(t=>t.id==='postfilter-ica')!,[source])).toEqual([]);
+ render(<RenalInvestigations sources={[source]} current onOpen={vi.fn()}/>);fireEvent.click(screen.getByText('Electrolytes, acid–base and CRRT monitoring'));expect(screen.getByRole('button',{name:'Inspect sources for Ionised calcium · site unresolved'})).toBeEnabled();
 });

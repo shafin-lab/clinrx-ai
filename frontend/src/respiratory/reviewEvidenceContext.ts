@@ -1,5 +1,7 @@
 import {pin,stable,type Catalog,type Evidence} from '../api/rf2Client';
 import type {MicroState} from '../api/microTypes';
+import type {RenalFluidState} from '../api/renalFluidTypes';
+import {renalBedsideModel} from '../renal/renalBedsideModel';
 import type {CirculatoryState} from '../api/circulatoryTypes';
 import {bedsideModel,exactPin,type BedsideScope} from '../hemodynamics/bedsideModel';
 import {sharedPatientContext,sharedEvidencePins,uniqueSharedEvidence} from './patientContextModel';
@@ -19,4 +21,11 @@ export function m9ReviewEvidence(catalog:Catalog|undefined,requested:BedsideScop
  const microEvidence:Evidence[]=microConfirmed?(micro!.assembly.snapshot.items??[]).map(item=>({repository:catalog!.repository,fact:item.fact as Evidence['fact'],canonical_fact:stable(item.fact),digest:item.expected_digest,ingestion:item.ingestion as Evidence['ingestion'],cutoff:catalog!.cutoff.fact_watermark,terminal_reference:{kind:String(item.fact.kind),id:item.fact.id,version:item.fact.revision},superseded:false,metadata:null})):[];
  const evidence=uniqueSharedEvidence([...shared.evidence,...microEvidence]);
  return {...reviewEvidenceIdentity(shared.signature,sharedEvidencePins(evidence),{sharedCatalog:shared.valid,microbiology:microConfirmed}),microConfirmed,evidence};
+}
+
+/** Renal sources and the bounded shared catalog context; separate daily-fluid windows are excluded. */
+export function m8ReviewEvidence(state:RenalFluidState|undefined,requested:BedsideScope,catalog?:Catalog){
+ const model=renalBedsideModel(state,requested,catalog),shared=sharedPatientContext(catalog,requested);
+ const pins=[...new Map([...model.sources.map(s=>s.pin),...sharedEvidencePins(shared.evidence)].map(p=>[stable(p),p])).values()];
+ return reviewEvidenceIdentity(model.signature,pins,{renal:model.valid,sharedCatalog:!!catalog&&shared.valid});
 }
