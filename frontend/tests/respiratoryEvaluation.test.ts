@@ -41,3 +41,14 @@ it('resolves missing FiO2 from captured real current gateway catalog envelopes',
  support.cutoff=support.ingestion.ingestion_sequence;
  expect(resolveRespiratoryEvaluation(gas.fact as RespiratoryRecord,catalog).issues.join(' ')).toContain('cutoff');
 });
+
+it.each(['support','blood_gas'])('withholds external FiO2 when the captured %s has an explicit unresolved conflict',async category=>{
+ const {default:captured}=await import('./fixtures/respiratory-linked-catalog.json');
+ const catalog=structuredClone(captured) as unknown as Catalog;
+ const sample=catalog.respiratory_records!.find(e=>(e.fact as RespiratoryRecord).category==='blood_gas')!.fact as RespiratoryRecord;
+ const conflicted=catalog.respiratory_records!.find(e=>(e.fact as RespiratoryRecord).category===category)!.fact as RespiratoryRecord;
+ conflicted.conflict='unresolved';const before=JSON.stringify(catalog),evaluation=resolveRespiratoryEvaluation(sample,catalog);
+ expect(evaluation.inputs.size).toBe(0);expect(evaluation.issues.join(' ')).toMatch(/unresolved.*conflict/);
+ const pf=calculateRespiratoryPhysiology(sample,evaluation).find(r=>r.id==='pf_ratio')!;
+ expect(pf.value).toBeNull();expect(pf.reason).toContain(evaluation.issues[0]);expect(JSON.stringify(catalog)).toBe(before);
+});

@@ -16,6 +16,7 @@ export function resolveRespiratoryEvaluation(sample:RespiratoryRecord,catalog:Ca
  const current=(e:Evidence)=>e.repository===catalog.repository&&e.ingestion.repository_id===catalog.repository&&e.cutoff===cutoff&&e.ingestion.ingestion_sequence<=cutoff&&!e.superseded&&sameRef(e,e.terminal_reference)&&e.fact.binding.target.patient_id===scope.patient_id&&e.fact.binding.target.encounter_id===scope.encounter_id;
  const origins=records.filter(e=>sameRef(e,{kind:sample.kind,id:sample.id,version:sample.revision}));
  if(origins.length!==1||!current(origins[0])||stable(origins[0].fact)!==stable(sample))return held('sample revision is unresolved, historical or outside the confirmed evidence scope.');
+ if(sample.conflict==='unresolved')return held('sample has an unresolved source conflict.');
  if(sample.context.settings_confirmed_at_sample!==true)return held('settings are not explicitly confirmed at this exact sample.');
  if(!exact(sample.times.collected))return held('sample collection time is not a known exact instant.');
  const linked:Evidence[]=[];
@@ -27,6 +28,7 @@ export function resolveRespiratoryEvaluation(sample:RespiratoryRecord,catalog:Ca
  if(linked.length!==1)return held(linked.length?'multiple linked support sources are ambiguous.':'no exact linked support source is recorded.');
  const source=linked[0],record=source.fact as RespiratoryRecord;
  if(!current(source))return held('support source is superseded, stale, or outside the confirmed patient/encounter/repository/cutoff.');
+ if(record.conflict==='unresolved')return held('support source has an unresolved source conflict.');
  if(record.record_status!=='recorded'||!['final','corrected','preliminary','interim'].includes(record.report_status)||record.change_state==='superseded')return held('support record/report status is not usable.');
  if(!exact(record.times.occurred))return held('support acquisition time is not a known exact instant.');
  if(compareRespiratoryInstants(record.times.occurred.value!,sample.times.collected.value!)!==0)return held('support acquisition does not exactly equal sample collection; later or nearby settings cannot substitute.');
