@@ -1,4 +1,6 @@
 /** Source-transcribed adult candidate profiles. No unreviewed library dependency. */
+import {pin,stable,type Catalog,type Pin} from '../api/rf2Client';
+import {record} from '../demo/evidencePresentation';
 import {clearance,type ClearanceInputs} from './patientModel';
 export const DOSE_PROFILE_VERSION='ucsf-adult-renal-candidate-2026-10-22.1';
 export const DIALYSIS_SOURCE='https://idmp.ucsf.edu/antimicrobial-dosing-intermittent-continuous-hemodialysis';
@@ -21,7 +23,7 @@ export interface DoseContext {medicine:string;indication:string;route:string;inf
 export const blankDoseContext:DoseContext={medicine:'',indication:'',route:'',infusion:'',phase:'',bodySize:'',hepatic:'',special:'',safetyReviewed:false,renalFunction:'unknown',support:'unknown',cvvhMode:'',flow:'',flowDefinitionReviewed:false,residual:'',downtime:'',hdFlux:'',hdStable:'',hdInterval:'',hdTimingReviewed:false,cultureReviewed:false,cultureBlock:'',cultureSource:'',empiricReviewed:false};
 export interface Regimen {amount:string;unit:'g'|'mg';route:'IV'|'PO';schedule:string;display:string}
 export interface DoseResult {status:'suggested'|'review';reason:string;medicine?:ProfileName;maintenance?:Regimen;initial?:string;band?:string;source?:string;notes?:string[];version:string}
-export interface PrescriptionSeed {medicine:string;amount:string;unit:'g'|'mg';dose_detail:string;route:string;schedule:string;indication:string}
+export interface PrescriptionSeed {doseReview?:DoseReview;medicine:string;amount:string;unit:'g'|'mg';dose_detail:string;route:string;schedule:string;indication:string}
 const regimen=(amount:string,unit:'g'|'mg',route:'IV'|'PO',schedule:string):Regimen=>({amount,unit,route,schedule,display:`${amount} ${unit} ${route} · ${schedule}`});
 export function renalDose(inputs:ClearanceInputs,c:DoseContext,calculatedCrCl?:number):DoseResult{
  const hold=(reason:string):DoseResult=>({status:'review',reason,version:DOSE_PROFILE_VERSION});
@@ -83,4 +85,49 @@ export function renalDose(inputs:ClearanceInputs,c:DoseContext,calculatedCrCl?:n
   const iv=c.route==='IV',n=crcl??0,systemic=c.indication==='systemic';let schedule='Every 12 hours';if(hd)schedule='Every evening; confirm HD-day timing';else if(crrt)schedule=iv?'Every 8 hours':'Every 12 hours';else if(n<30)schedule=systemic&&!iv?'Every 12 hours':'Every 24 hours';else if(systemic&&iv&&n>50)schedule='Every 8 hours';const amount=iv?'400':systemic&&!iv&&!hd&&!crrt&&n>50?'750':'500';maintenance=regimen(amount,'mg',iv?'IV':'PO',schedule);
  }
  return {status:'suggested',reason:'Source-based dose suggestion for clinician review',medicine,maintenance,initial,band,source:hd||crrt?DIALYSIS_SOURCE:profileSources[medicine],notes,version:DOSE_PROFILE_VERSION};
+}
+
+
+/** Bounded candidate context, never a validated regimen. Scope owns repository/cutoff
+ * once; pins retain only actually used exact sources (up to weight, Cr and AST chain).
+ * An absent dose_review is absent from request/history canonical bytes. */
+export interface DoseSource {role:'weight'|'creatinine'|'ast'|'isolate'|'specimen';reference:Pin['reference'];digest:string;ingestion:number}
+export interface DoseScope {repository:string;patient:string;encounter:string;cutoff:number;start:string;end:string}
+export type ReviewContext=Omit<DoseContext,'medicine'|'route'|'cultureSource'|'cultureBlock'|'cultureReviewed'|'empiricReviewed'>;
+export interface DoseReview {version:'CandidateDoseReview/v1';profile_version:string;source:string;suggestion:{medicine:string;amount:string;unit:'g'|'mg';route:'IV'|'PO';schedule:string;initial:string|null;band:string};inputs:ClearanceInputs;crcl:number|null;context:ReviewContext;basis:'empiric'|'ast';scope:DoseScope;sources:DoseSource[]}
+export function doseScope(catalog:Catalog):DoseScope {const s=catalog.combined.context.scope;return {repository:catalog.repository,patient:s.patient_id,encounter:s.encounter_id,cutoff:catalog.cutoff.fact_watermark,start:s.review_start,end:s.review_end};}
+export interface RecordedClearanceInput {value:string;time:string;raw:string;conversion:string;source:DoseSource}
+export function recordedClearanceInputs(catalog?:Catalog):{weight?:RecordedClearanceInput;creatinine?:RecordedClearanceInput;reasons:{weight:string[];creatinine:string[]};context:string[];signature:string}{
+ const candidates:{weight:RecordedClearanceInput[];creatinine:RecordedClearanceInput[]}={weight:[],creatinine:[]},reasons:{weight:string[];creatinine:string[]}={weight:[],creatinine:[]},context:string[]=[];
+ if(!catalog)return {reasons:{weight:['No confirmed snapshot'],creatinine:['No confirmed snapshot']},context,signature:''};
+ const scope=doseScope(catalog),seen=new Map<string,string>();
+ for(const e of catalog.items){
+  const f=e.fact,c=e.metadata?.chart;
+  const role=c?.category==='weight'||c?.category==='dosing_weight'||f.kind==='observation'&&f.concept_id==='body-weight'?'weight':f.kind==='observation'&&f.concept_id==='synthetic-serum-creatinine'?'creatinine':undefined;
+  if(!role)continue;
+  const identity=stable([e.repository,f.kind,f.id,f.revision]),prior=seen.get(identity);if(prior===e.digest)continue;seen.set(identity,e.digest);
+  const why:string[]=[],target=f.binding.target;
+  if(prior)why.push('Conflicting source digest');
+  if(e.repository!==scope.repository||e.ingestion.repository_id!==scope.repository||target.patient_id!==scope.patient||target.encounter_id!==scope.encounter||e.cutoff!==scope.cutoff||e.ingestion.ingestion_sequence>scope.cutoff)why.push('Source scope is not confirmed');
+  if(e.superseded||e.terminal_reference.version!==f.revision)why.push('Superseded source');
+  let value='',unit='',time='',conversion='Source unit retained';
+  if(role==='weight'){
+   if(f.kind!=='circulatory_event'||c?.category!=='weight'||c.acquisition!=='measured'||c.purpose!==null)why.push('True measured body weight is not established; dosing weight is excluded');
+   if(f.record_status!=='recorded')why.push('Recorded status is not confirmed');
+   value=c?.amount??'';unit=c?.unit??'';time=c?.point??'';
+   if(unit==='g'){value=String(Number(value)/1000);conversion='Source g ÷ 1000 → kg';}else if(unit!=='kg')why.push('Supported weight unit (kg or g) required');
+  }else{
+   const v=record(f.value),q=record(v.value),u=record(q.unit),t=record(f.time);
+   value=typeof q.value==='string'?q.value:'';unit=typeof u.raw==='string'?u.raw:'';time=t.precision==='instant'&&typeof t.event==='string'?t.event:'';
+   if(v.status!=='known'||f.verification!=='verified'||f.conflict!=='none_known')why.push('Known verified non-conflicting creatinine required');
+   if(u.status!=='assessed'||u.system!=='UCUM'||u.code!==unit)why.push('Assessed source unit required');
+   if(unit==='umol/L'){value=String(Number(value)/88.4);conversion='Source µmol/L ÷ 88.4 → mg/dL';}else if(unit!=='mg/dL')why.push('Supported creatinine unit (mg/dL or umol/L) required');
+  }
+  const point=Date.parse(time);if(!time||!Number.isFinite(point)||point<Date.parse(scope.start)||point>Date.parse(scope.end))why.push('Exact in-window source time required');
+  if(!/^(?:\d+(?:\.\d+)?|\.\d+)$/.test(value)||!Number.isFinite(Number(value))||Number(value)<=0)why.push('Known positive numeric value required');
+  context.push(`${role==='weight'?'Weight':'Creatinine'} · ${c?.amount??record(record(f.value).value).value??'unknown'} ${unit} · ${time||'Time unknown'} · ${f.kind}/${f.id}/${f.revision}${why.length?' · '+why.join('; '):''}`);
+  if(why.length)reasons[role].push(...why);else{const p=pin(e);candidates[role].push({value,time,raw:`${c?.amount??record(record(f.value).value).value} ${unit}`,conversion,source:{role,reference:p.reference,digest:p.digest,ingestion:p.ingestion}});}
+ }
+ for(const role of ['weight','creatinine'] as const){if(candidates[role].length>1)reasons[role].push('Multiple distinct recorded sources; no automatic selection');if(!candidates[role].length&&!reasons[role].length)reasons[role].push('No supported measured source in this snapshot');}
+ return {weight:!reasons.weight.length&&candidates.weight.length===1?candidates.weight[0]:undefined,creatinine:!reasons.creatinine.length&&candidates.creatinine.length===1?candidates.creatinine[0]:undefined,reasons,context,signature:stable([scope,catalog.items.filter(e=>e.metadata?.chart?.category==='weight'||e.metadata?.chart?.category==='dosing_weight'||['body-weight','synthetic-serum-creatinine'].includes(String(e.fact.concept_id))).map(e=>[pin(e),e.superseded,e.fact,e.metadata])])};
 }

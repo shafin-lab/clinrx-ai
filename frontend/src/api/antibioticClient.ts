@@ -1,10 +1,11 @@
+import type {DoseReview} from '../antibioticWorkflow/renalDoseModel';
 import generated from './antibioticSchemas.json';
 import {readRF2JSON,parseRF2JSON} from './rf2JSON';
 import {decodeRF2Catalog,hash,stable,type Catalog,type Ref,type Fact} from './rf2Client';
 import {decodeMicroState} from './microDecoders';
 import type {MicroState} from './microTypes';
 import {decodeContract,object,reject,validateTransportSchema,type Schema} from './decoding';
-export interface AntibioticDraft{repository:string;id:string;revision:string;mode:'prescription'|'given'|'held'|'missed'|'refused'|'not_given';medicine:string;product:string;amount:string|null;unit:'mg'|'g'|'IU'|null;dose_detail:string|null;route:string;schedule:string|null;indication:string;point:string;actor:string;source_record:string;recorded_at:string;order:Ref|null;culture_ref:Ref|null;predecessor:Ref|null;predecessor_digest:string|null;correction_reason:string|null}
+export interface AntibioticDraft{dose_review?:DoseReview|null;repository:string;id:string;revision:string;mode:'prescription'|'given'|'held'|'missed'|'refused'|'not_given';medicine:string;product:string;amount:string|null;unit:'mg'|'g'|'IU'|null;dose_detail:string|null;route:string;schedule:string|null;indication:string;point:string;actor:string;source_record:string;recorded_at:string;order:Ref|null;culture_ref:Ref|null;predecessor:Ref|null;predecessor_digest:string|null;correction_reason:string|null}
 export interface AntibioticBundle{version:'SyntheticAntibiotics/v1';renal:Catalog;micro:MicroState;execution_enabled:false}
 export interface AntibioticResult{status:'validated'|'saved'|'absent';request_canonical:string;request_digest:string;execution_enabled:false;fact?:Fact;canonical_fact?:string;digest?:string;ingestion?:{repository_id:string;ingestion_sequence:number}|null}
 const schema=generated as unknown as {roots:Record<string,Schema>;definitions:Record<string,Schema>};

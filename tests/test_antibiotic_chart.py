@@ -134,3 +134,106 @@ def test_owned_correction_retains_only_its_exact_historical_culture_reference(ca
     assert [i['fact']['revision'] for i in history.json()['items']]==[original['revision'],correction['revision']]
     assert [i['fact']['correction_reason'] for i in history.json()['items']]==[None,correction['correction_reason']]
     engine.dispose()
+
+
+def candidate_context(repository):
+    return {'version':'CandidateDoseReview/v1','profile_version':'test-profile','source':'https://idmp.ucsf.edu/content/ceftriaxone',
+        'suggestion':{'medicine':'Ceftriaxone','amount':'2','unit':'g','route':'IV','schedule':'Every 24 hours','initial':None,'band':'CrCl 38'},
+        'inputs':{'age':'62','weight':'74','creatinine':'2.1','factor':'male'},'crcl':38.17460317460317,
+        'context':{'indication':'standard','infusion':'short','phase':'maintenance','bodySize':'standard','hepatic':'reviewed','special':'none','safetyReviewed':True,'renalFunction':'stable','support':'none','cvvhMode':'','flow':'','flowDefinitionReviewed':False,'residual':'','downtime':'','hdFlux':'','hdStable':'','hdInterval':'','hdTimingReviewed':False},
+        'basis':'empiric','scope':{'repository':repository,'patient':'synthetic-p1','encounter':'synthetic-e1','cutoff':0,'start':'2026-10-08T08:00:00Z','end':'2026-10-08T10:00:00Z'},'sources':[]}
+
+def test_optional_candidate_context_preserves_absent_canonical_and_explicit_null():
+    import json
+    from app.api.schemas.antibiotic_chart import AntibioticDraft
+    from app.persistence.canonical import canonical_payload
+    body=draft(str(uuid4()),culture_ref=None)
+    assert json.loads(canonical_payload(AntibioticDraft.model_validate(body)))==body
+    assert json.loads(canonical_payload(AntibioticDraft.model_validate({**body,'dose_review':None})))=={**body,'dose_review':None}
+
+def test_candidate_context_retained_through_save_retry_reload_and_correction(case):
+    import json
+    client,app=case;v=catalog(client);review=candidate_context(v['renal']['repository']);review['scope']['cutoff']=v['renal']['cutoff']['fact_watermark']
+    body={**draft(v['renal']['repository']),'mode':'prescription','schedule':'Every 24 hours','dose_review':review}
+    response=post(client,'validate',body);assert response.status_code==200,response.text
+    saved=post(client,'save',body);assert saved.status_code==200,saved.text
+    data=saved.json();assert data['execution_enabled'] is False
+    assert json.loads(data['request_canonical'])['dose_review']==review
+    assert post(client,'lookup',body).json()==data;assert post(client,'save',body).json()==data
+    corrected={**body,'amount':'3','revision':str(uuid4()),'predecessor':{'kind':'antimicrobial_order','id':body['id'],'version':body['revision']},'predecessor_digest':data['digest'],'correction_reason':'Final field correction'}
+    response=post(client,'save',corrected);assert response.status_code==200,response.text
+    assert json.loads(response.json()['request_canonical'])['dose_review']['suggestion']['amount']=='2'
+    fact=next(i['fact'] for i in catalog(client)['micro']['assembly']['snapshot']['items'] if i['fact']['id']==body['id'])
+    assert json.loads(next(c['code'] for c in fact['source_identifiers'] if c['namespace']=='clinrx.local.antibiotic-chart/v1'))['dose_review']==review
+
+def test_invalid_candidate_context_never_appends(case):
+    from copy import deepcopy
+    client,app=case;v=catalog(client);before=v['renal']['cutoff']['fact_watermark'];review=candidate_context(v['renal']['repository']);review['scope']['cutoff']=before
+    for change in ('version','oversize','scope','pin','future'):
+        bad=deepcopy(review)
+        if change=='version':bad['version']='validated-policy'
+        if change=='oversize':bad['suggestion']['schedule']='x'*5000
+        if change=='scope':bad['scope']['repository']=str(uuid4())
+        if change=='pin':bad['sources']=[{'role':'weight','reference':{'kind':'observation','id':'missing','version':'1'},'digest':'0'*64,'ingestion':1}]
+        if change=='future':bad['scope']['cutoff']=before+1000
+        response=post(client,'save',{**draft(v['renal']['repository']),'mode':'prescription','schedule':'daily','dose_review':bad})
+        assert response.status_code in (404,409,422),response.text
+    assert catalog(client)['renal']['cutoff']['fact_watermark']==before
+
+
+def test_five_source_candidate_metadata_bound_includes_complete_request():
+    from app.api.schemas.antibiotic_chart import AntibioticDraft
+    from app.persistence.canonical import canonical_payload
+    from app.services.antibiotic_chart_service import build_fact
+    from pydantic import ValidationError
+    repository=str(uuid4());review=candidate_context(repository);review['scope']['cutoff']=100;review['basis']='ast'
+    review['sources']=[{'role':role,'reference':{'kind':kind,'id':str(uuid4()),'version':str(uuid4())},'digest':'a'*64,'ingestion':1} for role,kind in [('weight','circulatory_event'),('creatinine','observation'),('ast','microbiology_susceptibility'),('isolate','microbiology_isolate'),('specimen','microbiology_specimen')]]
+    body={**draft(repository),'mode':'prescription','schedule':'Every 24 hours','culture_ref':review['sources'][2]['reference'],'dose_review':review}
+    model=AntibioticDraft.model_validate(body);size=len(canonical_payload(model).encode());assert size<4096,size
+    assert build_fact(model).source_identifiers[0].code==canonical_payload(model)
+    # Each field stays within its own bound, but their aggregate must still fail.
+    oversized={**body,'product':'x'*256,'indication':'x'*1000,'actor':'x'*256,'source_record':'x'*256}
+    with pytest.raises(ValidationError,match='metadata exceeds'):AntibioticDraft.model_validate(oversized)
+
+
+def test_legacy_fixture_canonical_request_fact_and_digest_are_byte_identical():
+    import json
+    from hashlib import sha256
+    from app.api.schemas.antibiotic_chart import AntibioticDraft
+    from app.persistence.canonical import canonical_payload
+    from app.services.antibiotic_chart_service import build_fact
+    fixture=json.loads((Path(__file__).resolve().parents[1]/'frontend/tests/fixtures/antibiotic-workflow.json').read_text())
+    body=AntibioticDraft.model_validate(fixture['draft']);reply=fixture['validated']
+    assert canonical_payload(body)==reply['request_canonical']
+    assert sha256(canonical_payload(body).encode()).hexdigest()==reply['request_digest']
+    original_code=next(c['code'] for c in reply['fact']['source_identifiers'] if c['namespace']=='clinrx.local.antibiotic-chart/v1')
+    # This older fixture predates culture_ref. Historical reconstruction must retain
+    # those original metadata bytes as well as the newer optional field's absence.
+    original=build_fact(body,metadata_payload=original_code)
+    assert canonical_payload(original)==reply['canonical_fact']
+    assert sha256(canonical_payload(original).encode()).hexdigest()==reply['digest']
+
+def test_exact_candidate_source_mismatch_staleness_and_historical_correction(case):
+    from copy import deepcopy
+    from app.models.clinical.facts import ClinicalObservation
+    from app.models.clinical.common import Reference
+    from app.demo.patient_state import TARGET
+    client,app=case;v=catalog(client);obs=v['renal']['combined']['laboratory']['observations'][0];fact=obs['fact'];review=candidate_context(v['renal']['repository']);review['scope']['cutoff']=v['renal']['cutoff']['fact_watermark']
+    review['sources']=[{'role':'creatinine','reference':{'kind':fact['kind'],'id':fact['id'],'version':fact['revision']},'digest':obs['expected_digest'],'ingestion':obs['ingestion']['ingestion_sequence']}]
+    body={**draft(v['renal']['repository']),'mode':'prescription','schedule':'Every 24 hours','dose_review':review}
+    bad=deepcopy(body);bad['dose_review']['sources'][0]['digest']='0'*64
+    assert post(client,'validate',bad).status_code==409
+    saved=post(client,'save',body);assert saved.status_code==200,saved.text;saved=saved.json()
+    engine=create_database(app.config.database_path)
+    with transaction(engine) as repo:
+        old=repo.load_fact(Reference.model_validate(review['sources'][0]['reference']),target=TARGET).fact
+        repo.append_revision(ClinicalObservation.model_validate({**old.model_dump(),'revision':'source-correction','supersedes':old.reference,'correction_reason':'Correct recorded creatinine'}),target=TARGET)
+    engine.dispose()
+    new={**body,'id':str(uuid4()),'revision':str(uuid4()),'source_record':'NEW-'+str(uuid4())}
+    assert post(client,'validate',new).status_code==409
+    correction={**body,'revision':str(uuid4()),'amount':'3','predecessor':{'kind':'antimicrobial_order','id':body['id'],'version':body['revision']},'predecessor_digest':saved['digest'],'correction_reason':'Correct final fields only'}
+    altered=deepcopy(correction);altered['dose_review']['suggestion']['amount']='3'
+    assert post(client,'validate',altered).status_code==409
+    response=post(client,'save',correction);assert response.status_code==200,response.text
+    assert response.json()['execution_enabled'] is False
+    assert post(client,'lookup',body).json()==saved
