@@ -131,21 +131,18 @@ class TransfusionService(RF2Service):
         if start>=end:raise ValueError('ordered nonempty review interval required')
         captured=repo.capture_cutoff()
         if cutoff is not None:
-            if cutoff>captured.fact_watermark:raise EvidenceConflict()
+            if cutoff<0 or cutoff>captured.fact_watermark:raise EvidenceConflict()
             captured=captured.model_copy(update={'fact_watermark':cutoff})
         rows=self.snapshot(repo,end,captured)
         # Unknown availability is visible but never becomes eligible at a past cutoff.
-        unknown=[]
-        if cutoff is None:
-            terminal={}
-            for s in self.rows(repo,captured):terminal[(s.fact.kind,s.fact.id)]=s
-            unknown=[self.evidence_item(s) for s in terminal.values() if isinstance(s.fact,M10Fact) and point(s.fact.available) is None]
-            # A terminal correction with unknown availability cannot certify the
-            # older positive assertion as current. Withhold both source owners;
-            # retain the correction visibly and keep historical cutoffs intact.
-            uncertain={(x['fact']['kind'],x['fact']['id']) for x in unknown}
-            uncertain.update(('medication_administration',str(uuid5(UUID(x['fact']['id']),'completed-medication'))) for x in unknown if x['fact']['kind']=='haemostatic_medication_course')
-            rows=[s for s in rows if (s.fact.kind,s.fact.id) not in uncertain]
+        terminal={}
+        for s in self.rows(repo,captured):terminal[(s.fact.kind,s.fact.id)]=s
+        unknown=[self.evidence_item(s) for s in terminal.values() if isinstance(s.fact,M10Fact) and point(s.fact.available) is None]
+        # Only revisions committed by this watermark participate. An unknown-time
+        # terminal correction withholds the older positive claim at that watermark.
+        uncertain={(x['fact']['kind'],x['fact']['id']) for x in unknown}
+        uncertain.update(('medication_administration',str(uuid5(UUID(x['fact']['id']),'completed-medication'))) for x in unknown if x['fact']['kind']=='haemostatic_medication_course')
+        rows=[s for s in rows if (s.fact.kind,s.fact.id) not in uncertain]
         m10=[s for s in rows if s.fact.kind in M10_FACTS]
         evidence=[s for s in rows if s.fact.kind in ('laboratory_report','respiratory_record','medication_administration','medication_order','circulatory_event')]
         out={'version':'SyntheticM10/v1','repository':str(captured.repository_id),'cutoff':captured.model_dump(mode='json'),'patient_id':TARGET.patient_id,'encounter_id':TARGET.encounter_id,'review_start':start.isoformat(),'review_end':end.isoformat(),'items':[self.evidence_item(s) for s in m10],'unknown_availability':unknown,'totals':received_totals(rows,start,end),'evidence':[self.evidence_item(s) for s in evidence],'medication_exposures':self.medication_exposures(rows),'retracted_medication_exposures':self.retracted_medications(rows),'fluid_reconciliation':self.fluid_projection(rows),'complete':True,'execution_enabled':False}

@@ -24,6 +24,30 @@ def pin(saved):return {'reference':{'kind':saved['fact']['kind'],'id':saved['fac
 def correction(body,saved,**data):
     return {**body,'command_id':str(uuid4()),'revision':str(uuid4()),'predecessor':pin(saved)['reference'],'predecessor_digest':saved['digest'],'correction_reason':'Correct original source','data':{**body['data'],**data}}
 
+def bounded_catalog(client,repository,cutoff):
+    return client.get(M10,params={'review_start':'2026-10-08T08:00:00Z','review_end':'2026-10-08T10:00:00Z','repository':repository,'cutoff':cutoff})
+
+def test_bounded_catalog_excludes_corrections_committed_after_selected_watermark(case):
+    c,_=case;b=draft(catalog(c)['repository']);s=save(c,b);before=catalog(c)
+    changed=correction(b,s,amounts=[{'dimension':'count','value':'1','unit':'units','basis':'PRBC units'}]);save(c,changed)
+    response=bounded_catalog(c,b['repository'],before['cutoff']['fact_watermark'])
+    assert response.status_code==200,response.text
+    view=response.json();assert view['cutoff']['fact_watermark']==before['cutoff']['fact_watermark']
+    assert view['repository']==before['repository']
+    assert view['items'][0]['fact']['revision']==b['revision']
+    assert view['totals']['groups'][0]['known_subtotal']=='2'
+
+@pytest.mark.parametrize('scope',['repository_only','cutoff_only','negative','future','foreign'])
+def test_bounded_catalog_rejects_partial_or_invalid_scope(case,scope):
+    c,_=case;view=catalog(c);params={'review_start':'2026-10-08T08:00:00Z','review_end':'2026-10-08T10:00:00Z','repository':view['repository'],'cutoff':view['cutoff']['fact_watermark']}
+    if scope=='repository_only':params.pop('cutoff')
+    elif scope=='cutoff_only':params.pop('repository')
+    elif scope=='negative':params['cutoff']=-1
+    elif scope=='future':params['cutoff']+=1
+    else:params['repository']=str(uuid4())
+    response=c.get(M10,params=params)
+    assert response.status_code==(409 if scope in ('future','foreign') else 422),response.text
+
 def test_durable_command_recovery_correction_and_cutoff(case):
     c,_=case;b=draft(catalog(c)['repository']);s=save(c,b)
     assert post(c,'lookup',b).json()==s

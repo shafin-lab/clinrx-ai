@@ -4,6 +4,7 @@ from pathlib import Path
 from uuid import UUID
 from typing import Annotated
 from fastapi import APIRouter,Depends,Query,HTTPException
+from pydantic import Field,model_validator
 from starlette.responses import JSONResponse,Response
 from app.api.routes.circulatory import service as circulatory_service
 from app.api.routes.patient_state import StateQuery
@@ -17,9 +18,18 @@ from app.persistence.shared_transaction import execution_transaction
 M10=PREFIX+'/synthetic-m10'
 router=APIRouter()
 def service(base=Depends(circulatory_service)):return TransfusionService(base.dependencies)
+class CatalogQuery(StateQuery):
+    repository:UUID|None=None
+    cutoff:Annotated[int,Field(ge=0)]|None=None
+    @model_validator(mode='after')
+    def paired_scope(self):
+        if (self.repository is None)!=(self.cutoff is None):raise ValueError('repository and cutoff must be supplied together')
+        return self
 @router.get(M10)
-def catalog(query:Annotated[StateQuery,Query()],app=Depends(service)):
-    with transaction(app.dependencies.engine) as repo:return app.catalog(repo,query.review_start,query.review_end)
+def catalog(query:Annotated[CatalogQuery,Query()],app=Depends(service)):
+    with transaction(app.dependencies.engine) as repo:
+        if query.repository is not None:app.require_repo(repo,query.repository)
+        return app.catalog(repo,query.review_start,query.review_end,query.cutoff)
 @router.post(M10+'/validate')
 def validate(body:M10Draft,app=Depends(service)):
     with transaction(app.dependencies.engine) as repo:return app.action(repo,body,'validate')

@@ -8,6 +8,7 @@ export function quantityText(value:unknown):string {const q=object(value);if(q.v
 export function validateProductEntry(v:{status:string;count?:string;volume?:string;dose?:string}):string|null {const amounts=[v.count,v.volume,v.dose].filter(x=>x!==undefined&&x!=='') as string[];if(amounts.some(x=>!/^\d+(?:\.\d+)?$/.test(x)))return 'Enter non-negative decimal quantities, or leave unknown amounts blank.';if(v.status==='not_given'&&amounts.some(x=>Number(x)>0))return 'A product not given cannot have a positive delivered quantity.';return null;}
 export interface LaboratoryRow {label:string;value:string;source:Evidence;component:string;time:string;status:string;raw:Record<string,any>}
 export interface LaboratoryProjection {rows:LaboratoryRow[];valid:boolean;error?:string}
+const m10LaboratoryConcepts=new Set(['hemoglobin','hematocrit','platelets','pt','inr','aptt','thrombin_time','fibrinogen','total_calcium','ionised_calcium','d_dimer','anti_xa']);
 /** Equal values across sources stay distinct; exact source conflicts withhold the projection. */
 export function laboratoryProjection(catalog:Catalog|undefined):LaboratoryProjection {
  if(!catalog)return {rows:[],valid:false,error:'Current laboratory evidence is unconfirmed.'};
@@ -25,7 +26,9 @@ export function laboratoryProjection(catalog:Catalog|undefined):LaboratoryProjec
    const id=String(m.source_component_id??m.concept??label),identity=componentIdentity(source,id),componentContent=stable(raw),previousComponent=seen.get(identity);
    if(previousComponent!==undefined){if(previousComponent!==componentContent)return conflict();continue;}
    seen.set(identity,componentContent);
-   if(!/ha?emoglobin|ha?ematocrit|platelet|fibrinogen|\binr\b|aptt|prothrombin|thrombin|calcium|anti.?xa|d.?dimer|\bpt\b|\bhb\b|\bhct\b/i.test(label))continue;
+   const mapped=fact.kind==='laboratory_report'&&m.mapping_status==='mapped';
+   const known=m10LaboratoryConcepts.has(String(mapped?m.mapped_concept:m.concept??m.concept_id??''));
+   if(!known&&(mapped||!/ha?emoglobin|ha?ematocrit|platelet|fibrinogen|\binr\b|aptt|prothrombin|thrombin|calcium|anti.?xa|d.?dimer|\bpt\b|\bhb\b|\bhct\b/i.test(label)))continue;
    const r=object(m.result),q=object(r.quantity),unit=object(r.unit);
    rows.push({raw:m,label,value:r.kind==='unavailable'?`${r.status}: ${r.reason}`:[r.comparator&&r.comparator!=='='?r.comparator:'',r.raw_value??r.value??q.value??r.status??'Not documented',unit.raw_display??unit.code??object(q.unit).raw??''].filter(Boolean).join(' '),source,component:id,time:String(object(object(fact.times).collected).value??object(object(fact.occurred).recorded).value??'Collection time not documented'),status:String(fact.report_status??fact.record_status??'Unknown')});
   }

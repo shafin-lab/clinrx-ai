@@ -1,5 +1,21 @@
 import {describe,it,expect} from 'vitest';
 import {quantityText,productLabel,extractLaboratory,laboratoryProjection,validateProductEntry} from '../src/transfusion/model';
+it.each(['hemoglobin','hematocrit','platelets','pt','inr','aptt','thrombin_time','fibrinogen','total_calcium','ionised_calcium','d_dimer','anti_xa'])('includes the existing mapped %s concept despite abbreviated original wording',concept=>{
+ const component={source_component_id:'original',mapping_status:'mapped',mapped_concept:concept,mapping_version:'source/v1',test_code:{raw_display:concept==='fibrinogen'?'FIB':'Original abbreviated result'},result:{kind:'numeric',raw_value:'1.00',unit:{raw_display:'source unit'}}};
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'mapped',revision:'1',components:[component]},digest:'a'};
+ const projection=laboratoryProjection({laboratory_reports:[source],items:[]} as any);
+ expect(projection.valid).toBe(true);expect(projection.rows).toHaveLength(1);expect(projection.rows[0].label).toBe(component.test_code.raw_display);expect(projection.rows[0].raw).toBe(component);expect(projection.rows[0].source).toBe(source);expect(projection.rows[0].value).toBe('1.00 source unit');
+});
+it('includes exact known calcium concepts in respiratory evidence while preserving the source abbreviation',()=>{
+ const source:any={repository:'repo',fact:{kind:'respiratory_record',id:'gas',revision:'1',measurements:[{concept:'ionised_calcium',label:'iCa',result:{kind:'numeric',raw_value:'0.92'}}]},digest:'a'};
+ const projection=laboratoryProjection({laboratory_reports:[],items:[],respiratory_records:[source]} as any);expect(projection.valid).toBe(true);expect(projection.rows).toHaveLength(1);expect(projection.rows[0].label).toBe('iCa');
+});
+it.each([
+ ['unsupported',null,'aPTT',1],['ambiguous',null,'Hct',1],['unsupported',null,'FIB',0],['mapped','bun','Hemoglobin',0],['mapped','fibrinogen_custom','Original abbreviated result',0],
+])('uses conservative original-label fallback without inventing mapped concepts: %s %s %s', (mapping_status,mapped_concept,label,count)=>{
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'other',revision:'1',components:[{source_component_id:'other',mapping_status,mapped_concept,test_code:{raw_display:label},result:{kind:'numeric',raw_value:'1'}}]},digest:'a'};
+ const projection=laboratoryProjection({laboratory_reports:[source],items:[]} as any);expect(projection.valid).toBe(true);expect(projection.rows).toHaveLength(count);
+});
 describe('transfusion clarity and original evidence',()=>{
  it('keeps RDP, SDP, pools and concentrate dose bases distinct',()=>{
   expect(productLabel('platelets_rdp')).toContain('random donor');
