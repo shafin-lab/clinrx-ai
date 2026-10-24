@@ -2,7 +2,7 @@ import {afterAll,beforeAll,expect,it,vi} from 'vitest';
 import {fireEvent,render,screen,waitFor,within} from '@testing-library/react';
 import fixture from './fixtures/rf2-api.json';
 import respiratory from './fixtures/respiratory-record.json';
-import {RF2Client,type Catalog,type Evidence} from '../src/api/rf2Client';
+import {RF2Client,stable,type Catalog,type Evidence} from '../src/api/rf2Client';
 import {RespiratoryWorkspace} from '../src/respiratory/RespiratoryWorkspace';
 import type {RespiratoryRecord} from '../src/respiratory/respiratoryTypes';
 const previous=globalThis.crypto;const {webcrypto}=await vi.importActual<{webcrypto:Crypto}>('node:crypto');beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}));afterAll(()=>Object.defineProperty(globalThis,'crypto',{value:previous,configurable:true}));
@@ -142,4 +142,18 @@ it('automatically evaluates exact linked support without a reuse action or sourc
  gas.measurements=gas.measurements.filter(m=>m.concept!=='fio2');gas.linked_sources=[{kind:f.kind,id:f.id,version:f.revision}];c.respiratory_records!.push(support);const before=JSON.stringify(c),transport={importRespiratory:vi.fn(),history:vi.fn().mockResolvedValue([support])};
  render(<RespiratoryWorkspace {...props(c)} transport={transport}/>);fireEvent.click(screen.getByRole('tab',{name:'Blood gases & physiology'}));fireEvent.click(screen.getAllByRole('button',{name:'Review this sample'})[0]);
  const result=screen.getByText('PaO2/FiO2 ratio').closest('article')!;expect(result).toHaveTextContent('200');expect(within(screen.getByRole('region',{name:'Recorded support context'})).getByText('Exact simultaneous support')).toBeVisible();expect(screen.queryByRole('button',{name:/reuse/i})).not.toBeInTheDocument();expect(transport.importRespiratory).not.toHaveBeenCalled();expect(JSON.stringify(c)).toBe(before);
+});
+it.each(['constructor','__proto__'])('renders automatic support safely for unknown mode %s',async mode=>{
+ localStorage.clear();const c=await catalog(),support=structuredClone(c.respiratory_records![0]),fact=support.fact as RespiratoryRecord;fact.id='unknown-mode-support';fact.category='support';fact.title='Support with custom mode';fact.context.ventilator_mode=mode;support.terminal_reference.id=fact.id;c.respiratory_records!.push(support);
+ render(<RespiratoryWorkspace {...props(c)}/>);expect(screen.getByRole('heading',{name:'Respiratory system'})).toBeVisible();fireEvent.click(screen.getByRole('tab',{name:'Blood gases & physiology'}));const context=screen.getByRole('region',{name:'Recorded support context'});expect(context).toHaveTextContent('Source mode: '+mode);expect(context).toHaveTextContent('Unknown or custom source mode');fireEvent.click(within(context).getByText('Mode parameter hints · semantic reference only'));expect(within(context).getByText('Retain source wording; confirm device-specific semantics separately')).toBeVisible();
+});
+it.each(['constructor','__proto__'])('renders entry hints safely for unknown mode %s',async mode=>{
+ const {RespiratoryEntry}=await import('../src/respiratory/RespiratoryEntry');const c=await catalog(),prior=c.respiratory_records![0];(prior.fact as RespiratoryRecord).context.ventilator_mode=mode;render(<RespiratoryEntry catalog={c} prior={prior} current transport={{importRespiratory:vi.fn()}} onRefresh={vi.fn().mockResolvedValue(undefined)} onClose={vi.fn()}/>);const d=screen.getByRole('dialog');fireEvent.click(within(d).getByText('Source mode parameter hints'));expect(within(d).getByText(mode+' · Unknown or custom source mode')).toBeVisible();expect(within(d).getByText('Retain source wording; confirm device-specific semantics separately')).toBeVisible();
+});
+it.each(['absent','explicit-null','present'] as const)('preserves acquisition %s exactly during narrative-only correction',async presence=>{
+ const {RespiratoryEntry}=await import('../src/respiratory/RespiratoryEntry');const c=await catalog(),prior=c.respiratory_records![0],source=prior.fact as RespiratoryRecord,m=source.measurements.find(x=>x.concept==='pao2')!;
+ if(presence==='absent')delete m.acquisition;else m.acquisition=presence==='explicit-null'?null:{breath_channel:'spontaneous',acquisition_id:'source-original-period'};
+ const original=structuredClone(source.measurements),before=JSON.stringify(source),importRespiratory=vi.fn().mockResolvedValue(prior);
+ render(<RespiratoryEntry catalog={c} prior={prior} current transport={{importRespiratory}} onRefresh={vi.fn().mockResolvedValue(undefined)} onClose={vi.fn()}/>);const d=screen.getByRole('dialog');fireEvent.change(within(d).getByLabelText('Source version'),{target:{value:'2'}});fireEvent.change(within(d).getByLabelText('Source correction reason'),{target:{value:'Narrative only'}});fireEvent.change(within(d).getByLabelText('Original findings or report'),{target:{value:'Corrected narrative'}});fireEvent.click(within(d).getByRole('button',{name:'Review source record'}));fireEvent.click(await within(d).findByRole('button',{name:'Confirm and save source record'}));await waitFor(()=>expect(importRespiratory).toHaveBeenCalledOnce());
+ const next=importRespiratory.mock.calls[0][1] as RespiratoryRecord;expect(next.measurements).toStrictEqual(original);expect(Object.hasOwn(next.measurements.find(x=>x.concept==='pao2')!,'acquisition')).toBe(presence!=='absent');expect(stable(next.measurements)).toBe(stable(original));expect(JSON.stringify(source)).toBe(before);
 });

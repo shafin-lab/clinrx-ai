@@ -74,3 +74,6 @@ describe('explicit mode and acquisition semantics',()=>{
 
 it.each(['VC–AC','VC-CMV','PC–AC','SIMV-VC','SIMV-PC','SIMV','PSV','CPAP','PRVC','APRV'])('keeps %s mode semantics versioned and non-executable',raw=>{const p=ventilatorModeProfile(raw);expect(p.raw).toBe(raw);expect(p.recognized).toBe(true);expect(p.version).toBe(VENTILATOR_MODE_VERSION);expect(p.executable).toBe(false);expect(p.hints.length).toBeGreaterThan(0);});
 it.each(['NIV','HFNC','Custom adaptive VC',null])('preserves %s without inventing a ventilator-mode equivalence',raw=>{const p=ventilatorModeProfile(raw);expect(p.raw).toBe(raw);expect(p.recognized).toBe(false);expect(p.conventionalVolumeControl).toBe(false);});
+it.each(['constructor','__proto__',' CONSTRUCTOR '])('returns a complete unknown profile for prototype-like source mode %s',raw=>{
+ expect(ventilatorModeProfile(raw)).toEqual({version:VENTILATOR_MODE_VERSION,raw,recognized:false,id:null,label:'Unknown or custom source mode',hints:['Retain source wording; confirm device-specific semantics separately'],conventionalVolumeControl:false,executable:false});
+});
