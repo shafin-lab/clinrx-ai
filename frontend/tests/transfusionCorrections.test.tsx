@@ -9,7 +9,7 @@ const shared:any={repository:'repo',cutoff:{fact_watermark:1},items:[],laborator
 const props={catalog:shared,requested,current:true,loading:false,onRefresh:vi.fn().mockResolvedValue(undefined)};
 function transport(){return {catalog:vi.fn().mockResolvedValue(snapshot),profiles:vi.fn().mockResolvedValue({devices:[{id:'teg6s',label:'TEG 6s Global Hemostasis',device:'TEG 6s',configuration:'Global Hemostasis',channels:[{assay:'CK',label:'CK',parameters:[{name:'R',unit:'min'},{name:'MA',unit:'mm'}]}],source_ids:[],mapping_status:'verified'}],protocols:[]}),validate:vi.fn().mockResolvedValue({status:'validated'}),save:vi.fn().mockResolvedValue({status:'saved'}),lookup:vi.fn().mockResolvedValue({status:'absent'}),history:vi.fn().mockResolvedValue({items:[]})} as unknown as M10Transport;}
 const fill=(d:HTMLElement,rows:string[][])=>rows.forEach(([label,value])=>fireEvent.change(within(d).getByLabelText(label),{target:{value}}));
-async function save(d:HTMLElement){fireEvent.click(within(d).getByRole('button',{name:'Review record'}));fireEvent.click(await within(d).findByRole('button',{name:'Confirm and save record'}));await within(d).findByText('Record saved and evidence refreshed.');}
+async function save(d:HTMLElement){fireEvent.click(within(d).getByRole('button',{name:'Review record'}));fireEvent.click(await within(d).findByRole('button',{name:'Confirm and save record'}));await within(d).findByText('Record saved.');}
 beforeEach(()=>{localStorage.clear();sessionStorage.clear();});afterEach(cleanup);
 it('offers seven products and starts a clean next transfusion after confirmed save',async()=>{
  const t=transport();render(<TransfusionWorkspace {...props} transport={t}/>);
