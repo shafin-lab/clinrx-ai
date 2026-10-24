@@ -1,3 +1,4 @@
+import {ventilatorModeProfile,VENTILATOR_MODE_VERSION} from '../src/respiratory/ventilatorModes';
 import {describe,expect,it} from 'vitest';
 import {calculateRespiratoryPhysiology} from '../src/respiratory/physiology';
 import type {RespiratoryRecord,RespiratoryMeasurement} from '../src/respiratory/respiratoryTypes';
@@ -8,7 +9,7 @@ function record(measurements:RespiratoryMeasurement[],context:Partial<Respirator
 function result(r:RespiratoryRecord,id:string){const v=calculateRespiratoryPhysiology(r).find(x=>x.id===id);expect(v,`output ${id}`).toBeDefined();return v!;}
 function value(r:RespiratoryRecord,id:string){const v=result(r,id);expect(v.value,v.reason).not.toBeNull();return Number(v.value);}
 const oxygen=()=>record([m('pao2',80,'mmHg'),m('fio2',40,'%'),m('spo2',92,'%'),m('mean_airway_pressure',12,'cmH2O')]);
-const mechanics=()=>record([m('tidal_volume',500,'mL'),m('respiratory_rate',12,'/min'),m('plateau_pressure',25,'cmH2O'),m('total_peep',10,'cmH2O'),m('peak_pressure',35,'cmH2O'),m('inspiratory_flow',60,'L/min',{method:'constant_inspiratory_flow'})],{ventilator_mode:'volume_control'});
+const mechanics=()=>record([m('tidal_volume',500,'mL',{acquisition:{breath_channel:'total',acquisition_id:'mechanics-period'}}),m('respiratory_rate',12,'/min',{acquisition:{breath_channel:'total',acquisition_id:'mechanics-period'}}),m('plateau_pressure',25,'cmH2O'),m('total_peep',10,'cmH2O'),m('peak_pressure',35,'cmH2O'),m('inspiratory_flow',60,'L/min',{method:'constant_inspiratory_flow'})],{ventilator_mode:'volume_control'});
 
 describe('respiratory physiology method boundaries',()=>{
  it('withholds oxygen content and delivery for unspecified or functional cooximetry saturation',()=>{const r=record([m('pao2',80,'mmHg'),m('sao2',95,'%',{method:'cooximetry'}),m('hemoglobin',10,'g/dL'),m('cardiac_output',5,'L/min'),m('carboxyhemoglobin',30,'%')]);expect(result(r,'arterial_oxygen_content').value).toBeNull();expect(result(r,'oxygen_delivery').value).toBeNull();});
@@ -62,3 +63,14 @@ describe('respiratory physiology method boundaries',()=>{
  it('withholds nonpositive PBW rather than reporting a negative adult equation result',()=>{const r=record([m('height',100,'cm'),m('equation_coefficient',45.5,'kg',{method:'ardsnet_adult_female'}),m('tidal_volume',300,'mL')]);expect(result(r,'predicted_body_weight').value).toBeNull();expect(result(r,'tidal_volume_per_pbw').value).toBeNull();});
  it('requires confirmed total-PEEP occlusion for dynamic compliance',()=>{const r=mechanics();r.context.occlusion_confirmed=null;expect(result(r,'dynamic_compliance').value).toBeNull();});
 });
+
+describe('explicit mode and acquisition semantics',()=>{
+ it.each(['VC–AC','VC-CMV','VC-AC'])('recognizes conventional %s only with existing passive/occlusion/flow gates',mode=>{const r=mechanics();r.context.ventilator_mode=mode;expect(value(r,'airway_resistance')).toBe(10);r.context.passive=null;expect(result(r,'airway_resistance').value).toBeNull();});
+ it.each(['PRVC','APRV','SIMV-VC','custom VC','PSV','PC–AC'])('holds resistance for %s',mode=>{const r=mechanics();r.context.ventilator_mode=mode;expect(result(r,'airway_resistance').value).toBeNull();expect(value(r,'static_compliance')).toBeCloseTo(33.333,3);});
+ it('withholds generic Vt/RR without acquisition metadata',()=>{const r=mechanics();for(const x of r.measurements)delete x.acquisition;for(const id of ['minute_ventilation','alveolar_ventilation'])expect(result(r,id).reason).toMatch(/channel|acquisition/);expect(result(r,'minute_ventilation').value).toBeNull();});
+ it.each(['total','spontaneous'] as const)('labels the matching %s channel estimate',breath_channel=>{const r=mechanics();for(const x of r.measurements.filter(x=>['tidal_volume','respiratory_rate'].includes(x.concept)))x.acquisition={breath_channel,acquisition_id:'same-period'};expect(value(r,'minute_ventilation')).toBe(6);expect(result(r,'minute_ventilation').label).toContain(breath_channel);});
+ it.each(['channel','acquisition','mandatory','set'])('holds generic estimate for incompatible %s',cause=>{const r=mechanics();r.measurements[0].acquisition={breath_channel:'total',acquisition_id:'period'};r.measurements[1].acquisition={breath_channel:'total',acquisition_id:'period'};if(cause==='channel')r.measurements[0].acquisition.breath_channel='mandatory';if(cause==='acquisition')r.measurements[1].acquisition.acquisition_id='different';if(cause==='mandatory')for(const m of r.measurements.slice(0,2))m.acquisition!.breath_channel='mandatory';if(cause==='set')r.measurements[0].role='set';expect(result(r,'minute_ventilation').value).toBeNull();});
+});
+
+it.each(['VC–AC','VC-CMV','PC–AC','SIMV-VC','SIMV-PC','SIMV','PSV','CPAP','PRVC','APRV'])('keeps %s mode semantics versioned and non-executable',raw=>{const p=ventilatorModeProfile(raw);expect(p.raw).toBe(raw);expect(p.recognized).toBe(true);expect(p.version).toBe(VENTILATOR_MODE_VERSION);expect(p.executable).toBe(false);expect(p.hints.length).toBeGreaterThan(0);});
+it.each(['NIV','HFNC','Custom adaptive VC',null])('preserves %s without inventing a ventilator-mode equivalence',raw=>{const p=ventilatorModeProfile(raw);expect(p.raw).toBe(raw);expect(p.recognized).toBe(false);expect(p.conventionalVolumeControl).toBe(false);});

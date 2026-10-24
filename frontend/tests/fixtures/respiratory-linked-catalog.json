@@ -1,0 +1,358 @@
+{
+  "repository": "bae7f49a-b64c-406c-955c-7b043a1e35c2",
+  "cutoff": {
+    "repository_id": "bae7f49a-b64c-406c-955c-7b043a1e35c2",
+    "fact_watermark": 19,
+    "captured_at": "2026-10-24T19:59:29.356763Z"
+  },
+  "respiratory_records": [
+    {
+      "repository": "bae7f49a-b64c-406c-955c-7b043a1e35c2",
+      "fact": {
+        "kind": "respiratory_record",
+        "id": "resp-18ef6bb309ab3894314641564b7dd44c",
+        "revision": "1",
+        "binding": {
+          "target": {
+            "patient_id": "synthetic-p1",
+            "encounter_id": "synthetic-e1",
+            "longitudinal_context_id": null
+          },
+          "verification": {
+            "status": "verified",
+            "method": "synthetic fixture mapping",
+            "verifier": "synthetic-import",
+            "assessed_at": "2026-10-08T09:00:00Z",
+            "source": {
+              "namespace": "lab.example",
+              "identifier": "system-a",
+              "version": "1",
+              "channel": "external_record"
+            },
+            "ambiguity": null
+          }
+        },
+        "origin": "reported",
+        "provenance": {
+          "source": {
+            "namespace": "lab.example",
+            "identifier": "system-a",
+            "version": "1",
+            "channel": "external_record"
+          },
+          "actor": "synthetic-import",
+          "recorded_at": "2026-10-08T09:00:00Z",
+          "upstream": [],
+          "lineage": "unknown",
+          "limitations": [
+            "Synthetic source report."
+          ]
+        },
+        "time": {
+          "event": null,
+          "recorded": null,
+          "effective_start": null,
+          "effective_end": null,
+          "retrieved": null,
+          "processed": null,
+          "precision": "unknown",
+          "uncertainty": null
+        },
+        "verification": "unverified",
+        "conflict": "unknown",
+        "temporal_status": "unknown",
+        "uncertainty": [],
+        "supersedes": null,
+        "correction_reason": null,
+        "contract_version": "2",
+        "source_identifiers": [],
+        "domain_bindings": [],
+        "disclosures": [],
+        "category": "support",
+        "source_identity": {
+          "issuer_namespace": "lab.example",
+          "source_report_id": "task3-support",
+          "source_version": "1",
+          "accession_id": "sample-1"
+        },
+        "title": "Exact simultaneous support",
+        "times": {
+          "occurred": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T09:00:00Z",
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "collected": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T09:00:00Z",
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "reported": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T09:00:00Z",
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "available": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T09:00:00Z",
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          }
+        },
+        "context": {
+          "sample_type": "arterial",
+          "specimen_id": null,
+          "collection_site": null,
+          "oxygen_device": null,
+          "ventilator_mode": null,
+          "airway_id": null,
+          "position": null,
+          "population": "adult",
+          "settings_confirmed_at_sample": true,
+          "passive": null,
+          "occlusion_confirmed": null,
+          "reference_equation": null
+        },
+        "measurements": [
+          {
+            "concept": "fio2",
+            "label": "Recorded FiO2",
+            "result": {
+              "kind": "numeric",
+              "raw_value": "40",
+              "comparator": "=",
+              "unit": {
+                "namespace": "UCUM",
+                "code": "%",
+                "version": null,
+                "raw_display": "%"
+              }
+            },
+            "role": "set",
+            "quality": "usable",
+            "method": null
+          }
+        ],
+        "narrative": "Original report text",
+        "report_status": "final",
+        "change_state": "original",
+        "record_status": "recorded",
+        "linked_sources": []
+      },
+      "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T09:00:00Z\",\"method\":\"synthetic fixture mapping\",\"source\":{\"channel\":\"external_record\",\"identifier\":\"system-a\",\"namespace\":\"lab.example\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-import\"}},\"category\":\"support\",\"change_state\":\"original\",\"conflict\":\"unknown\",\"context\":{\"airway_id\":null,\"collection_site\":null,\"occlusion_confirmed\":null,\"oxygen_device\":null,\"passive\":null,\"population\":\"adult\",\"position\":null,\"reference_equation\":null,\"sample_type\":\"arterial\",\"settings_confirmed_at_sample\":true,\"specimen_id\":null,\"ventilator_mode\":null},\"contract_version\":\"2\",\"correction_reason\":null,\"disclosures\":[],\"domain_bindings\":[],\"id\":\"resp-18ef6bb309ab3894314641564b7dd44c\",\"kind\":\"respiratory_record\",\"linked_sources\":[],\"measurements\":[{\"concept\":\"fio2\",\"label\":\"Recorded FiO2\",\"method\":null,\"quality\":\"usable\",\"result\":{\"comparator\":\"=\",\"kind\":\"numeric\",\"raw_value\":\"40\",\"unit\":{\"code\":\"%\",\"namespace\":\"UCUM\",\"raw_display\":\"%\",\"version\":null}},\"role\":\"set\"}],\"narrative\":\"Original report text\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-import\",\"limitations\":[\"Synthetic source report.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T09:00:00Z\",\"source\":{\"channel\":\"external_record\",\"identifier\":\"system-a\",\"namespace\":\"lab.example\",\"version\":\"1\"},\"upstream\":[]},\"record_status\":\"recorded\",\"report_status\":\"final\",\"revision\":\"1\",\"source_identifiers\":[],\"source_identity\":{\"accession_id\":\"sample-1\",\"issuer_namespace\":\"lab.example\",\"source_report_id\":\"task3-support\",\"source_version\":\"1\"},\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"times\":{\"available\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:00:00Z\"},\"collected\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:00:00Z\"},\"occurred\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:00:00Z\"},\"reported\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:00:00Z\"}},\"title\":\"Exact simultaneous support\",\"uncertainty\":[],\"verification\":\"unverified\"}",
+      "digest": "3a3fd3ab2bfa29c37a4542f67c63c3eb89b484bc79d721a737e288d3712f155a",
+      "ingestion": {
+        "repository_id": "bae7f49a-b64c-406c-955c-7b043a1e35c2",
+        "ingestion_sequence": 18,
+        "ingested_at": "2026-10-24T19:59:28.988984Z",
+        "payload_version": 1
+      },
+      "cutoff": 19,
+      "terminal_reference": {
+        "kind": "respiratory_record",
+        "id": "resp-18ef6bb309ab3894314641564b7dd44c",
+        "version": "1"
+      },
+      "superseded": false,
+      "metadata": null
+    },
+    {
+      "repository": "bae7f49a-b64c-406c-955c-7b043a1e35c2",
+      "fact": {
+        "kind": "respiratory_record",
+        "id": "resp-72fdebe0b1885749efa1f480d4fb194b",
+        "revision": "1",
+        "binding": {
+          "target": {
+            "patient_id": "synthetic-p1",
+            "encounter_id": "synthetic-e1",
+            "longitudinal_context_id": null
+          },
+          "verification": {
+            "status": "verified",
+            "method": "synthetic fixture mapping",
+            "verifier": "synthetic-import",
+            "assessed_at": "2026-10-08T09:00:00Z",
+            "source": {
+              "namespace": "lab.example",
+              "identifier": "system-a",
+              "version": "1",
+              "channel": "external_record"
+            },
+            "ambiguity": null
+          }
+        },
+        "origin": "reported",
+        "provenance": {
+          "source": {
+            "namespace": "lab.example",
+            "identifier": "system-a",
+            "version": "1",
+            "channel": "external_record"
+          },
+          "actor": "synthetic-import",
+          "recorded_at": "2026-10-08T09:00:00Z",
+          "upstream": [],
+          "lineage": "unknown",
+          "limitations": [
+            "Synthetic source report."
+          ]
+        },
+        "time": {
+          "event": null,
+          "recorded": null,
+          "effective_start": null,
+          "effective_end": null,
+          "retrieved": null,
+          "processed": null,
+          "precision": "unknown",
+          "uncertainty": null
+        },
+        "verification": "unverified",
+        "conflict": "unknown",
+        "temporal_status": "unknown",
+        "uncertainty": [],
+        "supersedes": null,
+        "correction_reason": null,
+        "contract_version": "2",
+        "source_identifiers": [],
+        "domain_bindings": [],
+        "disclosures": [],
+        "category": "blood_gas",
+        "source_identity": {
+          "issuer_namespace": "lab.example",
+          "source_report_id": "respiratory-1",
+          "source_version": "1",
+          "accession_id": "sample-1"
+        },
+        "title": "Original arterial blood gas",
+        "times": {
+          "occurred": {
+            "status": "not_recorded",
+            "precision": "unknown",
+            "value": null,
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "collected": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T09:00:00Z",
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "reported": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T09:00:00Z",
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          },
+          "available": {
+            "status": "known",
+            "precision": "instant",
+            "value": "2026-10-08T09:00:00Z",
+            "lower": null,
+            "upper": null,
+            "uncertainty": null
+          }
+        },
+        "context": {
+          "sample_type": "arterial",
+          "specimen_id": null,
+          "collection_site": null,
+          "oxygen_device": null,
+          "ventilator_mode": null,
+          "airway_id": null,
+          "position": null,
+          "population": "adult",
+          "settings_confirmed_at_sample": true,
+          "passive": null,
+          "occlusion_confirmed": null,
+          "reference_equation": null
+        },
+        "measurements": [
+          {
+            "concept": "pao2",
+            "label": "PO2 (source)",
+            "result": {
+              "kind": "numeric",
+              "raw_value": "80.00",
+              "comparator": "=",
+              "unit": {
+                "namespace": "UCUM",
+                "code": "mmHg",
+                "version": null,
+                "raw_display": "mmHg"
+              }
+            },
+            "role": "measured",
+            "quality": "usable",
+            "method": null
+          }
+        ],
+        "narrative": "Original report text",
+        "report_status": "final",
+        "change_state": "original",
+        "record_status": "recorded",
+        "linked_sources": [
+          {
+            "kind": "respiratory_record",
+            "id": "resp-18ef6bb309ab3894314641564b7dd44c",
+            "version": "1"
+          }
+        ]
+      },
+      "canonical_fact": "{\"binding\":{\"target\":{\"encounter_id\":\"synthetic-e1\",\"longitudinal_context_id\":null,\"patient_id\":\"synthetic-p1\"},\"verification\":{\"ambiguity\":null,\"assessed_at\":\"2026-10-08T09:00:00Z\",\"method\":\"synthetic fixture mapping\",\"source\":{\"channel\":\"external_record\",\"identifier\":\"system-a\",\"namespace\":\"lab.example\",\"version\":\"1\"},\"status\":\"verified\",\"verifier\":\"synthetic-import\"}},\"category\":\"blood_gas\",\"change_state\":\"original\",\"conflict\":\"unknown\",\"context\":{\"airway_id\":null,\"collection_site\":null,\"occlusion_confirmed\":null,\"oxygen_device\":null,\"passive\":null,\"population\":\"adult\",\"position\":null,\"reference_equation\":null,\"sample_type\":\"arterial\",\"settings_confirmed_at_sample\":true,\"specimen_id\":null,\"ventilator_mode\":null},\"contract_version\":\"2\",\"correction_reason\":null,\"disclosures\":[],\"domain_bindings\":[],\"id\":\"resp-72fdebe0b1885749efa1f480d4fb194b\",\"kind\":\"respiratory_record\",\"linked_sources\":[{\"id\":\"resp-18ef6bb309ab3894314641564b7dd44c\",\"kind\":\"respiratory_record\",\"version\":\"1\"}],\"measurements\":[{\"concept\":\"pao2\",\"label\":\"PO2 (source)\",\"method\":null,\"quality\":\"usable\",\"result\":{\"comparator\":\"=\",\"kind\":\"numeric\",\"raw_value\":\"80.00\",\"unit\":{\"code\":\"mmHg\",\"namespace\":\"UCUM\",\"raw_display\":\"mmHg\",\"version\":null}},\"role\":\"measured\"}],\"narrative\":\"Original report text\",\"origin\":\"reported\",\"provenance\":{\"actor\":\"synthetic-import\",\"limitations\":[\"Synthetic source report.\"],\"lineage\":\"unknown\",\"recorded_at\":\"2026-10-08T09:00:00Z\",\"source\":{\"channel\":\"external_record\",\"identifier\":\"system-a\",\"namespace\":\"lab.example\",\"version\":\"1\"},\"upstream\":[]},\"record_status\":\"recorded\",\"report_status\":\"final\",\"revision\":\"1\",\"source_identifiers\":[],\"source_identity\":{\"accession_id\":\"sample-1\",\"issuer_namespace\":\"lab.example\",\"source_report_id\":\"respiratory-1\",\"source_version\":\"1\"},\"supersedes\":null,\"temporal_status\":\"unknown\",\"time\":{\"effective_end\":null,\"effective_start\":null,\"event\":null,\"precision\":\"unknown\",\"processed\":null,\"recorded\":null,\"retrieved\":null,\"uncertainty\":null},\"times\":{\"available\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:00:00Z\"},\"collected\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:00:00Z\"},\"occurred\":{\"lower\":null,\"precision\":\"unknown\",\"status\":\"not_recorded\",\"uncertainty\":null,\"upper\":null,\"value\":null},\"reported\":{\"lower\":null,\"precision\":\"instant\",\"status\":\"known\",\"uncertainty\":null,\"upper\":null,\"value\":\"2026-10-08T09:00:00Z\"}},\"title\":\"Original arterial blood gas\",\"uncertainty\":[],\"verification\":\"unverified\"}",
+      "digest": "ef0c0e6fe8fd2f248bf772a1c05ae5d831d4026ad439947b43753ffd05cd099b",
+      "ingestion": {
+        "repository_id": "bae7f49a-b64c-406c-955c-7b043a1e35c2",
+        "ingestion_sequence": 19,
+        "ingested_at": "2026-10-24T19:59:29.348708Z",
+        "payload_version": 1
+      },
+      "cutoff": 19,
+      "terminal_reference": {
+        "kind": "respiratory_record",
+        "id": "resp-72fdebe0b1885749efa1f480d4fb194b",
+        "version": "1"
+      },
+      "superseded": false,
+      "metadata": null
+    }
+  ],
+  "execution_enabled": false,
+  "combined": {
+    "context": {
+      "scope": {
+        "contract_version": "3",
+        "patient_id": "synthetic-p1",
+        "encounter_id": "synthetic-e1",
+        "review_start": "2026-10-08T08:00:00Z",
+        "review_end": "2026-10-08T10:00:00Z",
+        "repository_cutoff": {
+          "repository_id": "bae7f49a-b64c-406c-955c-7b043a1e35c2",
+          "fact_watermark": 19,
+          "captured_at": "2026-10-24T19:59:29.356763Z"
+        }
+      }
+    },
+    "execution_enabled": false
+  },
+  "items": [],
+  "laboratory_reports": []
+}

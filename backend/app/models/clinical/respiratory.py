@@ -1,7 +1,7 @@
 """Bounded original respiratory evidence; calculations never rewrite source values."""
 from typing import Annotated, Literal
 from uuid import UUID
-from pydantic import Field, StrictBool, model_validator
+from pydantic import Field, StrictBool, model_validator, model_serializer
 from .common import DomainModel, Reference, Text
 from .laboratory import LaboratoryResult, LaboratorySourceIdentity, RawText
 from .recorded_v2 import RecordedFactV2, RecordedTime, missing_time
@@ -31,6 +31,11 @@ class RespiratoryContext(DomainModel):
     reference_equation: RawText | None = None
 
 
+class RespiratoryAcquisition(DomainModel):
+    breath_channel: Literal['total','spontaneous','mandatory','unknown']
+    acquisition_id: Annotated[str, Field(min_length=1, max_length=500)]
+
+
 class RespiratoryMeasurement(DomainModel):
     concept: Text
     label: RawText
@@ -38,6 +43,14 @@ class RespiratoryMeasurement(DomainModel):
     role: Literal['measured','set','reported','calculated_by_source','unknown'] = 'unknown'
     quality: Literal['usable','suspect','unknown'] = 'unknown'
     method: RawText | None = None
+    acquisition: RespiratoryAcquisition | None = None
+
+    @model_serializer(mode='wrap')
+    def preserve_legacy_serialization(self, handler):
+        data = handler(self)
+        if 'acquisition' not in self.model_fields_set:
+            data.pop('acquisition', None)
+        return data
 
 
 class RespiratoryRecord(RecordedFactV2):

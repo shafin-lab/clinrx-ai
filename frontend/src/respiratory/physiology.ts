@@ -1,7 +1,9 @@
+import {ventilatorModeProfile} from './ventilatorModes';
+import {respiratoryExternalInput,type RespiratoryEvaluation} from './respiratoryEvaluation';
 import type {PhysiologyResult, RespiratoryMeasurement, RespiratoryRecord} from './respiratoryTypes';
 
 /** Calculation versions describe arithmetic and eligibility, not disease classifications. */
-export const RESPIRATORY_PHYSIOLOGY_VERSION='m9-physiology-2026-10-23-v1';
+export const RESPIRATORY_PHYSIOLOGY_VERSION='m9-physiology-2026-10-25-v2';
 export const RESPIRATORY_METHOD_SOURCES={
  pbw:{version:'ARDSNet FACTT protocol, 2001',url:'https://biolincc.nhlbi.nih.gov/media/studies/factt/Protocol.pdf'},
  oxygenation:{version:'PALICC consensus, 2015, arithmetic only',url:'https://pubmed.ncbi.nlm.nih.gov/25647235/'},
@@ -50,8 +52,8 @@ const electrolytes=[concentration('sodium'),concentration('chloride'),concentrat
 const gasInputs=[fio2,pressure('paco2'),pressure('ambient_pressure'),s('water_vapor_pressure','pressure',{zero:true,roles:setting}),s('respiratory_quotient','number',{min:0.1,max:2,roles:setting})];
 const fmt=(n:number)=>String(Number(n.toFixed(3)));
 
-/** Only exact same-record measurements enter arithmetic; no assembly across reports. */
-export function calculateRespiratoryPhysiology(record:RespiratoryRecord):PhysiologyResult[]{
+/** Same-record arithmetic, with only strictly resolved missing FiO2 permitted externally. */
+export function calculateRespiratoryPhysiology(record:RespiratoryRecord,evaluation?:RespiratoryEvaluation):PhysiologyResult[]{
  const results:PhysiologyResult[]=[];
  const c=record.context;
  const recordFailure=record.record_status!=='recorded'?`Record status ${record.record_status} is not usable.`:
@@ -60,10 +62,13 @@ export function calculateRespiratoryPhysiology(record:RespiratoryRecord):Physiol
  const pin=`${record.id}@${record.revision}`;
  const scope=`Source ${pin}; sample=${c.sample_type}; population=${c.population}; specimen=${c.specimen_id??'unspecified'}; collected=${record.times.collected.value??record.times.collected.status}; settings_confirmed_at_sample=${c.settings_confirmed_at_sample}; passive=${c.passive}; occlusion_confirmed=${c.occlusion_confirmed}; ventilator_mode=${c.ventilator_mode??'unspecified'}; reference_equation=${c.reference_equation??'unspecified'}`;
  function read(spec:InputSpec):{value?:number;description:string;reason?:string}{
-  const matches=record.measurements.filter(m=>m.concept===spec.concept);
+  const local=record.measurements.filter(m=>m.concept===spec.concept);
+  const external=spec.concept==='fio2'&&!local.length?evaluation?.inputs.get('fio2'):undefined;
+  const matches=external?[external.measurement]:local;
+  if(!matches.length&&spec.concept==='fio2'&&evaluation?.issues.length)return {description:'fio2: missing',reason:evaluation.issues.join(' ')};
   if(matches.length!==1)return {description:`${spec.concept}: ${matches.length?'duplicate measurements':'missing'}`,reason:`${spec.concept}: ${matches.length?'duplicate measurements are ambiguous':'required measurement is missing'}.`};
   const m=matches[0];const r=m.result;
-  const description=`${spec.concept} (${m.label}): ${r.kind==='numeric'?`${r.comparator}${r.raw_value} ${r.unit?.code??'[no unit]'}`:r.kind==='unavailable'?`unavailable: ${r.reason}`:r.raw_value}; role=${m.role}; quality=${m.quality}; method=${m.method??'unspecified'}`;
+  const description=`${spec.concept} (${m.label}): ${r.kind==='numeric'?`${r.comparator}${r.raw_value} ${r.unit?.code??'[no unit]'}`:r.kind==='unavailable'?`unavailable: ${r.reason}`:r.raw_value}; role=${m.role}; quality=${m.quality}; method=${m.method??'unspecified'}; acquisition=${m.acquisition?JSON.stringify(m.acquisition):'unspecified'}${external?'; '+respiratoryExternalInput(external.source,m.concept):''}`;
   const bad=(reason:string)=>({description,reason:`${spec.concept}: ${reason}.`});
   if(m.quality!=='usable')return bad(`quality is ${m.quality}, not explicitly usable`);
   if(!(spec.roles??measured).includes(m.role))return bad(`role ${m.role} is incompatible with this method; requires ${(spec.roles??measured).join('/')}`);
@@ -96,15 +101,17 @@ export function calculateRespiratoryPhysiology(record:RespiratoryRecord):Physiol
  const arterialSettings=()=>arterial()??sampleSettings();
  const staticConditions=()=>c.passive!==true?'Passive respiratory conditions must be confirmed.':c.occlusion_confirmed!==true?'End-inspiratory and total-PEEP occlusion measurements must be confirmed.':null;
  const dynamicConditions=()=>c.passive!==true?'Passive respiratory conditions must be confirmed for the peak-pressure-based estimate.':c.occlusion_confirmed!==true?'Total-PEEP end-expiratory occlusion measurement must be confirmed.':null;
- const computed='Calculated from explicitly usable measurements in this coherent source record; no disease classification or treatment recommendation.';
+ const computed='Calculated from explicitly usable source measurements with exact inputs shown; no disease classification or treatment recommendation.';
 
  add('pf_ratio','PaO2/FiO2 ratio','mmHg','PaO2 [mmHg] / FiO2 [fraction]',[pressure('pao2'),fio2],arterialSettings,([p,f])=>p/f,computed);
  add('sf_ratio','SpO2/FiO2 ratio','1','SpO2 [%] / FiO2 [fraction]; SpO2 <=97%',[saturation,fio2],sampleSettings,([o,f])=>100*o/f,'S/F uses conventional percent-number saturation divided by fractional FiO2. It is a pulse-oximetry surrogate restricted here to SpO2 <=97%; it does not establish arterial PO2 or a diagnosis.');
  add('oxygenation_index','Oxygenation index','1','100 × FiO2 [fraction] × mean airway pressure [cmH2O] / PaO2 [mmHg]',[fio2,airway('mean_airway_pressure'),pressure('pao2')],arterialSettings,([f,p,o])=>100*f*p/o,'Arithmetic oxygenation index only; no age-specific disease or severity classification is applied.');
  add('oxygen_saturation_index','Oxygen saturation index','1','100 × FiO2 [fraction] × mean airway pressure [cmH2O] / SpO2 [%]',[fio2,airway('mean_airway_pressure'),saturation],sampleSettings,([f,p,o])=>f*p/o,'Arithmetic saturation index with SpO2 <=97%; no age-specific disease or severity classification is applied.');
 
- add('minute_ventilation','Calculated minute ventilation','L/min','Vt [mL] × respiratory rate [/min] / 1000',[vt,rr],ok,([v,r])=>v*r/1000,'Measured tidal volume and rate from this record; does not replace reported ventilator minute ventilation or account for leaks.');
- add('alveolar_ventilation','Alveolar ventilation (measured Bohr dead space)','L/min','(Vt − measured physiologic dead space) [mL] × rate [/min] / 1000',[vt,s('dead_space_volume','volume',{zero:true,methods:['bohr_volumetric_capnography']}),rr],ok,([v,d,r])=>d<=v?(v-d)*r/1000:NaN,'Requires measured physiologic dead space by Bohr volumetric capnography; anatomical dead space and body-weight estimates do not substitute.');
+ const channel=record.measurements.find(m=>m.concept==='tidal_volume')?.acquisition?.breath_channel;
+ const ventilationChannel=()=>{const v=record.measurements.filter(m=>m.concept==='tidal_volume'),r=record.measurements.filter(m=>m.concept==='respiratory_rate');const a=v[0]?.acquisition,b=r[0]?.acquisition;return v.length===1&&r.length===1&&a&&b&&['total','spontaneous'].includes(a.breath_channel)&&a.breath_channel===b.breath_channel&&a.acquisition_id.trim()&&a.acquisition_id===b.acquisition_id?null:'Measured Vt and rate require the same explicit total or spontaneous breath channel and source acquisition/averaging-period identity.';};
+ add('minute_ventilation',`Estimated ${channel==='total'||channel==='spontaneous'?channel+' ':''}minute ventilation`,'L/min','Vt [mL] × respiratory rate [/min] / 1000',[vt,rr],ventilationChannel,([v,r])=>v*r/1000,'Measured tidal volume and rate from this record; does not replace reported ventilator minute ventilation or account for leaks.');
+ add('alveolar_ventilation',`Estimated ${channel==='total'||channel==='spontaneous'?channel+' ':''}alveolar ventilation (measured Bohr dead space)`,'L/min','(Vt − measured physiologic dead space) [mL] × rate [/min] / 1000',[vt,s('dead_space_volume','volume',{zero:true,methods:['bohr_volumetric_capnography']}),rr],ventilationChannel,([v,d,r])=>d<=v?(v-d)*r/1000:NaN,'Requires measured physiologic dead space by Bohr volumetric capnography; anatomical dead space and body-weight estimates do not substitute.');
  const pbw=(h:number,b:number)=>{const weight=b+2.3*(h/2.54-60);return weight>0?weight:NaN;};
  const pbwGate=()=>{const population=adult();if(population)return population;const coefficient=record.measurements.filter(m=>m.concept==='equation_coefficient');if(coefficient.length===1){const m=coefficient[0];if(m.result.kind==='numeric'&&((m.method==='ardsnet_adult_male'&&Number(m.result.raw_value)!==50)||(m.method==='ardsnet_adult_female'&&Number(m.result.raw_value)!==45.5)))return 'Named adult equation coefficient does not match 50 kg (male equation) or 45.5 kg (female equation).';}return null;};
  add('predicted_body_weight','Predicted body weight (adult ARDSNet)','kg','Adult named coefficient (50 or 45.5 kg) + 2.3 × (height [inches] − 60)',pbwInputs,pbwGate,([h,b])=>pbw(h,b),'The source explicitly selects the adult sex-specific ARDSNet equation coefficient; actual body weight is not used. Height eligibility is restricted to 100–250 cm.');
@@ -112,7 +119,7 @@ export function calculateRespiratoryPhysiology(record:RespiratoryRecord):Physiol
  add('driving_pressure','Driving pressure (static respiratory system)','cmH2O','Measured plateau pressure − measured total PEEP',[airway('plateau_pressure'),airway('total_peep',true)],staticConditions,([p,e])=>p>e?p-e:NaN,'Static respiratory-system pressure difference; requires passive conditions and confirmed occlusion measurements. Set PEEP and peak pressure cannot substitute.');
  add('static_compliance','Static respiratory-system compliance','mL/cmH2O','Measured Vt / (plateau pressure − total PEEP)',[vt,airway('plateau_pressure'),airway('total_peep',true)],staticConditions,([v,p,e])=>p>e?v/(p-e):NaN,'Respiratory-system compliance includes lung and chest wall; it is not isolated lung compliance.');
  add('dynamic_compliance','Dynamic respiratory-system compliance estimate','mL/cmH2O','Measured Vt / (peak pressure − total PEEP)',[vt,airway('peak_pressure'),airway('total_peep',true)],dynamicConditions,([v,p,e])=>p>e?v/(p-e):NaN,'Peak-pressure-based estimate includes resistive pressure; it does not substitute for static compliance or plateau pressure.');
- add('airway_resistance','Inspiratory resistance estimate','cmH2O·s/L','(Peak pressure − plateau pressure) / constant inspiratory flow [L/s]',[airway('peak_pressure'),airway('plateau_pressure'),s('inspiratory_flow','flow',{methods:['constant_inspiratory_flow']})],()=>staticConditions()??(c.ventilator_mode==='volume_control'?null:'Exact volume_control mode with constant inspiratory flow is required.'),([p,l,f])=>p>=l?(p-l)/f:NaN,'Estimate includes endotracheal tube and respiratory-system resistive effects; requires measured constant flow in passive volume-control conditions.');
+ add('airway_resistance','Inspiratory resistance estimate','cmH2O·s/L','(Peak pressure − plateau pressure) / constant inspiratory flow [L/s]',[airway('peak_pressure'),airway('plateau_pressure'),s('inspiratory_flow','flow',{methods:['constant_inspiratory_flow']})],()=>staticConditions()??(ventilatorModeProfile(c.ventilator_mode).conventionalVolumeControl?null:'Explicit conventional volume-control mode with constant inspiratory flow is required; adaptive, mixed and unknown modes are not eligible.'),([p,l,f])=>p>=l?(p-l)/f:NaN,'Estimate includes endotracheal tube and respiratory-system resistive effects; requires measured constant flow in passive volume-control conditions.');
 
  const alveolar=([f,co2,pb,water,r]:number[])=>pb>water?f*(pb-water)-co2*(f+(1-f)/r):NaN;
  add('alveolar_oxygen_pressure','Alveolar oxygen pressure (general gas equation)','mmHg','PAO2 = FiO2 × (PB − PH2O) − PaCO2 × [FiO2 + (1 − FiO2) / RQ]',gasInputs,arterialSettings,v=>{const a=alveolar(v);return a>=0?a:NaN;},'Explicit barometric pressure, water vapour pressure and respiratory quotient are required. Assumes negligible inspired CO2, steady state and alveolar PCO2 approximated by measured arterial PCO2.');

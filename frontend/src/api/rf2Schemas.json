@@ -2523,6 +2523,33 @@
       "title": "StableIdentity",
       "type": "object"
     },
+    "RespiratoryAcquisition": {
+      "additionalProperties": false,
+      "properties": {
+        "breath_channel": {
+          "enum": [
+            "total",
+            "spontaneous",
+            "mandatory",
+            "unknown"
+          ],
+          "title": "Breath Channel",
+          "type": "string"
+        },
+        "acquisition_id": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Acquisition Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "breath_channel",
+        "acquisition_id"
+      ],
+      "title": "RespiratoryAcquisition",
+      "type": "object"
+    },
     "RespiratoryContext": {
       "additionalProperties": false,
       "properties": {
@@ -2764,6 +2791,17 @@
           ],
           "default": null,
           "title": "Method"
+        },
+        "acquisition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RespiratoryAcquisition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [

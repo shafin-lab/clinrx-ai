@@ -102,3 +102,33 @@ def test_m9_migration_preserves_all_171_original_fact_rows_and_links(tmp_path):
             assert c.exec_driver_sql('PRAGMA foreign_key_check').all()==[]
             assert c.exec_driver_sql('PRAGMA integrity_check').scalar_one()=='ok'
     finally:engine.dispose()
+
+
+def test_optional_acquisition_metadata_roundtrips_without_changing_old_canonical_bytes():
+    import json
+    from pathlib import Path
+    from app.persistence.canonical import canonical_payload
+    from app.models.clinical.respiratory import RespiratoryRecord
+    raw=Path('tests/fixtures/respiratory/legacy-source.json').read_bytes()
+    assert len(raw)==6381
+    assert sha256(raw).hexdigest()=='ad0fb4ff4311e2fa314ae77c78b6c55c5d5c32bcaac8da310b1eb11bf8eb38e2'
+    original=RespiratoryRecord.model_validate_json(raw)
+    assert canonical_payload(original)==raw.decode()
+    assert all('acquisition' not in m for m in original.model_dump(mode='json')['measurements'])
+    data=json.loads(raw);data['measurements'][0]['acquisition']={'breath_channel':'total','acquisition_id':'source-period-1'}
+    updated=RespiratoryRecord.model_validate(data)
+    assert updated.model_dump(mode='json')['measurements'][0]['acquisition']==data['measurements'][0]['acquisition']
+    assert canonical_payload(RespiratoryRecord.model_validate_json(canonical_payload(updated)))==canonical_payload(updated)
+
+
+def test_legacy_source_repository_exact_reimport_preserves_stored_bytes(registered):
+    from pathlib import Path
+    from app.models.clinical.respiratory import RespiratoryRecord
+    from app.persistence.canonical import canonical_payload
+    raw=Path('tests/fixtures/respiratory/legacy-source.json').read_text()
+    source=RespiratoryRecord.model_validate_json(raw)
+    with transaction(registered) as repo:
+        original=repo.append_fact(source,target=TARGET)
+        retried=repo.append_fact(RespiratoryRecord.model_validate_json(raw),target=TARGET)
+        assert retried==original
+        assert canonical_payload(repo.load_fact(source.reference,target=TARGET).fact)==raw

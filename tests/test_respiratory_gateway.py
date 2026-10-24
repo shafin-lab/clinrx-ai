@@ -122,3 +122,62 @@ def test_observed_bedside_source_is_admitted_and_inferred_origin_is_rejected(ws)
     before=rows(db);request=body(client);request['record']['origin']='inferred'
     assert client.post(RF2+'/respiratory',json=request).status_code==422
     assert rows(db)==before
+
+
+def test_respiratory_exact_reimport_keeps_payload_and_acquisition_persists(ws):
+    import json
+    from app.models.clinical.respiratory import RespiratoryRecord
+    client,db,_=ws
+    from app.persistence.canonical import canonical_payload
+    source=record()
+    raw=canonical_payload(source)
+    first=post(client,source)
+    assert first.status_code==200,first.text
+    assert first.json()['canonical_fact']==raw
+    before=rows(db)
+    replay=post(client,source)
+    assert replay.status_code==200,replay.text
+    assert replay.json()['canonical_fact']==raw
+    assert rows(db)==before
+    data=json.loads(raw)
+    data.update(revision='task3-acquisition',report_status='corrected',change_state='corrected',supersedes=source.reference.model_dump(),correction_reason='Explicit source acquisition metadata')
+    data['source_identity']['source_version']='task3-acquisition'
+    data['measurements'][0]['acquisition']={'breath_channel':'spontaneous','acquisition_id':'source-period'}
+    changed=post(client,RespiratoryRecord.model_validate(data))
+    assert changed.status_code==200,changed.text
+    assert changed.json()['fact']['measurements'][0]['acquisition']==data['measurements'][0]['acquisition']
+    history=client.post(RF2+'/history',json={'repository':changed.json()['repository'],'pins':[pin(changed.json())]})
+    assert history.status_code==200,history.text
+    assert history.json()['items'][0]['canonical_fact']==raw
+
+
+def linked_support_catalog(client):
+    """Real gateway envelopes used by the bounded resolver regression fixture."""
+    from hashlib import sha256
+    from app.models.clinical.respiratory import RespiratoryRecord
+    support=record().model_dump(mode='json')
+    support['source_identity']['source_report_id']='task3-support'
+    support['id']='resp-'+sha256(b'lab.example\0task3-support').hexdigest()[:32]
+    support['category']='support';support['title']='Exact simultaneous support'
+    support['times']['occurred']=deepcopy(support['times']['collected'])
+    support['measurements']=[{'concept':'fio2','label':'Recorded FiO2','role':'set','quality':'usable','method':None,'result':{'kind':'numeric','raw_value':'40','comparator':'=','unit':{'namespace':'UCUM','code':'%','raw_display':'%','version':None}}}]
+    s=RespiratoryRecord.model_validate(support)
+    response=post(client,s);assert response.status_code==200,response.text
+    gas=record().model_dump(mode='json');gas['measurements'][0]['result']['unit']['namespace']='UCUM'
+    gas['linked_sources']=[s.reference.model_dump()]
+    response=post(client,RespiratoryRecord.model_validate(gas));assert response.status_code==200,response.text
+    return client.get(RF2,params={'review_start':'2026-10-08T08:00:00Z','review_end':'2026-10-08T10:00:00Z'}).json()
+
+
+def test_current_linked_support_and_gas_share_selected_catalog_cutoff(ws):
+    catalog=linked_support_catalog(ws[0]);sources=catalog['respiratory_records']
+    assert len(sources)==2
+    for source in sources:
+        assert source['cutoff']==catalog['cutoff']['fact_watermark']
+        assert source['repository']==catalog['repository']
+        assert source['terminal_reference']=={'kind':source['fact']['kind'],'id':source['fact']['id'],'version':source['fact']['revision']}
+        assert not source['superseded']
+    gas=next(e['fact'] for e in sources if e['fact']['category']=='blood_gas')
+    support=next(e['fact'] for e in sources if e['fact']['category']=='support')
+    assert gas['times']['collected']==support['times']['occurred']
+    assert gas['context']['settings_confirmed_at_sample'] is True
