@@ -6,9 +6,10 @@ import {RF2FluidChart,type CatalogStatus} from './RF2FluidChart';
 import './rf2.css';
 const labels:Record<string,string>={output_urine:'Urine output',input_oral:'Oral intake',input_enteral:'Enteral intake',input_iv:'IV fluid intake',input_blood:'Blood-product intake',output_drain:'Drain output',output_other:'Other measured loss',output_crrt:'Recorded CRRT net removal',weight:'Weight',net_balance_reported:'Source-reported interval balance',urine_total_reported:'Source-reported urine total',balance_total_reported:'Source-reported cumulative balance'};
 export function evidenceText(e:Evidence){
+ const displayUnit=(unit:string|undefined|null)=>unit?.trim()==='1'?'':unit??'';
  if(e.fact.kind==='laboratory_report'){
   const components=(e.fact.components as {test_code:{raw_display:string};result:{kind:string;status?:string;reason?:string;comparator?:string;raw_value?:string;unit?:{raw_display:string}}}[]).map(c=>{
-   const r=c.result;const value=r.kind==='unavailable'?`${r.status}: ${r.reason??'reason not supplied'}`:`${r.comparator&&r.comparator!=='='?r.comparator:''}${r.raw_value??'result unavailable'}${r.unit?.raw_display?' '+r.unit.raw_display:''}`;
+   const r=c.result,unit=displayUnit(r.unit?.raw_display);const value=r.kind==='unavailable'?`${r.status}: ${r.reason??'reason not supplied'}`:`${r.comparator&&r.comparator!=='='?r.comparator:''}${r.raw_value??'result unavailable'}${unit?' '+unit:''}`;
    return `${c.test_code.raw_display}: ${value}`;
   });
   return components.join(' · ')||'No result components supplied';
@@ -16,10 +17,10 @@ export function evidenceText(e:Evidence){
  const q=e.fact.recorded_amount as {value:string;unit:{raw:string|null}}|null|undefined;
  const result=e.fact.result as {quantity?:{value:string;unit:{raw:string|null}};comparator?:string}|undefined;
  const quantity=q??result?.quantity;
- if(quantity)return `${result?.comparator&&result.comparator!=='='?result.comparator+' ':''}${quantity.value} ${quantity.unit.raw??'unit unavailable'}`;
+ if(quantity){const unit=quantity.unit.raw;return `${result?.comparator&&result.comparator!=='='?result.comparator+' ':''}${quantity.value}${unit?.trim()==='1'?'':` ${unit??'unit unavailable'}`}`;}
  const v=e.fact.value as {status:string;value:unknown;reason:string|null}|undefined;
  if(v){if(v.status!=='known')return `${v.status}: ${v.reason??'source reason unavailable'}`;
-  if(v.value&&typeof v.value==='object'){const value=v.value as {value:string;unit:{raw:string|null}};return `${value.value} ${value.unit.raw??'unit unavailable'}`;}
+  if(v.value&&typeof v.value==='object'){const value=v.value as {value:string;unit:{raw:string|null}},unit=value.unit.raw;return `${value.value}${unit?.trim()==='1'?'':` ${unit??'unit unavailable'}`}`;}
   return `Source assertion: ${String(v.value)}; no numeric quantity inferred`;
  }
  return e.metadata?.chart?.missing_reason??(e.metadata?.note?'Clinician-authored reassessment':'Source amount unavailable; inspect context');

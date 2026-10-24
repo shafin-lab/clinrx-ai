@@ -6,6 +6,6 @@ import { afterEach, vi } from 'vitest';
 configure({asyncUtilTimeout:5000});
 const lockTails=new Map<string,Promise<unknown>>();
 Object.defineProperty(navigator,'locks',{configurable:true,value:{request:async(name:string,callback:()=>unknown)=>{const previous=lockTails.get(name)??Promise.resolve();const next=previous.then(callback);lockTails.set(name,next.then(()=>undefined,()=>undefined));return next;}}});
-afterEach(()=>{cleanup();vi.restoreAllMocks();localStorage.clear();});
+afterEach(()=>{cleanup();vi.restoreAllMocks();localStorage.clear();window.history.replaceState(null,'','/');});
 HTMLDialogElement.prototype.showModal=function(){this.setAttribute('open','');};
 HTMLDialogElement.prototype.close=function(){this.removeAttribute('open');};
