@@ -79,11 +79,11 @@
 
 ## Task 5: Presentation continuity and recoverable M10 drafts
 
-**Files:** modify `frontend/src/hemodynamics/M7BedsideReview.tsx`, `frontend/src/respiratory/SharedPatientContext.tsx`, `frontend/src/demo/PatientWorkspace.tsx`, `frontend/src/transfusion/Entry.tsx`, small `draftRecovery.ts` helper if needed; tests `frontend/tests/hemodynamicBedside.test.tsx`, `m7SharedWorkspace.test.tsx`, `transfusionWorkspace.test.tsx`, `transfusionCorrections.test.tsx`, integrated workspace tests.
+**Files:** modify `frontend/src/hemodynamics/M7BedsideReview.tsx`, `frontend/src/respiratory/SharedPatientContext.tsx`, `frontend/src/demo/PatientWorkspace.tsx`, `frontend/src/demo/PatientOverview.tsx` for calculation-limit copy only, `frontend/src/transfusion/Entry.tsx`, small `draftRecovery.ts` helper if needed; tests `frontend/tests/hemodynamicBedside.test.tsx`, `m7SharedWorkspace.test.tsx`, `transfusionWorkspace.test.tsx`, `transfusionCorrections.test.tsx`, integrated workspace tests.
 
 **Interfaces:** a pure draft decoder distinguishes absent/valid/damaged with retained raw bytes, and separates stable patient/owner recovery identity from changing evidence identity. Do not change `M10Command` pending recovery or accounting. Existing compact vital/echo/BP/PFT/ABG surfaces are binding.
 
-- [ ] Red cases: primary results not redundantly expanded while source/trend access remains; relevant contextual records automatic across navigation; review wording matches browser persistence; source inspection does not create writes.
+- [ ] Red cases: primary results not redundantly expanded while source/trend access remains; relevant contextual records automatic across navigation; review wording matches browser persistence; overview limitations describe available qualified arithmetic truthfully rather than saying all automated calculations are inactive or that CrCl is manual-only; source inspection does not create writes.
 - [ ] Red recovery cases: malformed session draft bytes remain byte-identical after mount/edit attempt; safe discard explicit; exact same patient/owner recovery across evidence refresh is visible but stale save held; wrong patient/repository/predecessor not hydrated; confirmed receipt survives refresh error; pending command continues original lookup/retry.
 - [ ] Implement minimal progressive disclosure and protected session-draft handling. Avoid another navigation system, compulsory acknowledgments, or data-entry controls.
 - [ ] Run focused tests, full frontend suite, typecheck. Commit/report task paths.
