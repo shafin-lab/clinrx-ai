@@ -11,7 +11,7 @@ export interface LaboratoryProjection {rows:LaboratoryRow[];valid:boolean;error?
 /** Equal values across sources stay distinct; exact source conflicts withhold the projection. */
 export function laboratoryProjection(catalog:Catalog|undefined):LaboratoryProjection {
  if(!catalog)return {rows:[],valid:false,error:'Current laboratory evidence is unconfirmed.'};
- const rows:LaboratoryRow[]=[],seen=new Set<string>(),sources=new Map<string,{digest:string;fact:string}>();
+ const rows:LaboratoryRow[]=[],seen=new Map<string,string>(),sources=new Map<string,{digest:string;fact:string}>();
  const conflict=():LaboratoryProjection=>({rows:[],valid:false,error:'Conflicting laboratory source identity, digest or content. Current laboratory evidence is unconfirmed.'});
  for(const source of [...catalog.laboratory_reports,...(catalog.respiratory_records??[]),...catalog.items]){
   const fact=source.fact;
@@ -22,10 +22,11 @@ export function laboratoryProjection(catalog:Catalog|undefined):LaboratoryProjec
   const components=Array.isArray(fact.components)?fact.components:Array.isArray(fact.measurements)?fact.measurements:[fact];
   for(const raw of components){
    const m=object(raw),label=String(m.label??object(m.test_code).raw_display??m.mapped_concept??m.concept??m.concept_id??'');
+   const id=String(m.source_component_id??m.concept??label),identity=componentIdentity(source,id),componentContent=stable(raw),previousComponent=seen.get(identity);
+   if(previousComponent!==undefined){if(previousComponent!==componentContent)return conflict();continue;}
+   seen.set(identity,componentContent);
    if(!/ha?emoglobin|ha?ematocrit|platelet|fibrinogen|\binr\b|aptt|prothrombin|thrombin|calcium|anti.?xa|d.?dimer|\bpt\b|\bhb\b|\bhct\b/i.test(label))continue;
-   const r=object(m.result),q=object(r.quantity),unit=object(r.unit),id=String(m.source_component_id??m.concept??label),identity=componentIdentity(source,id);
-   if(seen.has(identity))continue;
-   seen.add(identity);
+   const r=object(m.result),q=object(r.quantity),unit=object(r.unit);
    rows.push({raw:m,label,value:r.kind==='unavailable'?`${r.status}: ${r.reason}`:[r.comparator&&r.comparator!=='='?r.comparator:'',r.raw_value??r.value??q.value??r.status??'Not documented',unit.raw_display??unit.code??object(q.unit).raw??''].filter(Boolean).join(' '),source,component:id,time:String(object(object(fact.times).collected).value??object(object(fact.occurred).recorded).value??'Collection time not documented'),status:String(fact.report_status??fact.record_status??'Unknown')});
   }
  }

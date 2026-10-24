@@ -47,3 +47,16 @@ it('detects source conflicts even when changed labels no longer match the M10 la
  const changed=structuredClone(source);changed.fact.components[0].test_code.raw_display='Unmapped result';
  expect(laboratoryProjection({laboratory_reports:[source,changed],items:[]} as any).valid).toBe(false);
 });
+it.each(['result','filtered label'] as const)('rejects conflicting repeated component identity within one report: %s',change=>{
+ const component={source_component_id:'hb',test_code:{raw_display:'Hb'},result:{kind:'numeric',raw_value:'9'}};
+ const changed=structuredClone(component);if(change==='result')changed.result.raw_value='8';else changed.test_code.raw_display='Unmapped result';
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'one-report',revision:'1',components:[component,changed]},digest:'a'.repeat(64)};
+ const projection=laboratoryProjection({laboratory_reports:[source],items:[]} as any);
+ expect(projection.valid).toBe(false);expect(projection.rows).toEqual([]);expect(projection.error).toMatch(/conflict/i);
+});
+it('collapses identical repeated components within one report into one original row',()=>{
+ const component={source_component_id:'hb',test_code:{raw_display:'Hb'},result:{kind:'numeric',raw_value:'9'}};
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'one-report',revision:'1',components:[component,structuredClone(component)]},digest:'a'.repeat(64)};
+ const projection=laboratoryProjection({laboratory_reports:[source],items:[]} as any);
+ expect(projection.valid).toBe(true);expect(projection.error).toBeUndefined();expect(projection.rows).toHaveLength(1);expect(projection.rows[0].raw).toBe(component);expect(projection.rows[0].value).toBe('9');
+});
