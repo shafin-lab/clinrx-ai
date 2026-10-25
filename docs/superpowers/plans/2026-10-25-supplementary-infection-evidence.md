@@ -28,10 +28,10 @@
 
 **Interfaces:** `supplementaryFor(infectionId: string, rowId?: string): SupplementaryEntry[]`; `SupplementaryEvidence({infectionId, rowId})`. Sources and entries have stable IDs; each entry owns its source-specific schedule or context and limits.
 
-- [ ] Write tests for the review-focus cases, actual approved teicoplanin schedule and source registry/binding uniqueness. Observe expected failure before implementation.
-- [ ] Implement static reviewed references and native expandable component; add beneath existing source panel. Keep source text unchanged and update only the introductory description to distinguish primary NCDC from optional external reading.
-- [ ] Run focused tests, full frontend suite with four workers, typecheck/build, whitespace and NCDC/database/original-preview manifest comparisons. Review any failures; no backend changes.
-- [ ] Freeze a local checkpoint and request independent code/content review. Resolve material findings with regression checks.
-- [ ] Publish the versioned candidate build at 5247 with rollback preserved. Browser-check opening/closing, context changes, unrelated infections, source links, navigation and reload without entering/saving patient data. Recheck preservation and record results.
+- [x] Write tests for the review-focus cases, actual approved teicoplanin schedule and source registry/binding uniqueness. Observe expected failure before implementation.
+- [x] Implement static reviewed references and native expandable component; add beneath existing source panel. Keep source text unchanged and update only the introductory description to distinguish primary NCDC from optional external reading.
+- [x] Run focused tests, full frontend suite with four workers, typecheck/build, whitespace and NCDC/database/original-preview manifest comparisons. Final: 1,562 passing tests, three existing skips; typecheck/build passed.
+- [x] Freeze a local checkpoint and request independent code/content review. No material findings; subsequent desktop CSS finding covered RED–GREEN with the actual global stylesheet.
+- [x] Publish the versioned candidate build at 5247 with rollback preserved. Browser-checked disclosure, context clearing, unrelated infections, source links, navigation and reload without entering/saving patient data. Final preservation record and screenshot are in the handoff.
 
 User's explicit implementation instruction supplies execution authorization; no additional design/plan approval requested.
