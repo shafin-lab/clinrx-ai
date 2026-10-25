@@ -79,7 +79,7 @@ def finalize(entry):
         entry['notes'].insert(0, 'Primary treatment source text (held for review): ' + raw)
         return
     # A source cross-reference never borrows a regimen from another source.
-    crossref = bool(re.search(r'\b(as per|same as|as mentioned|refer|see table|as above)\b', raw, re.I))
+    crossref = bool(re.search(r'\b(as\s+per|same\s+as|as\s+mentioned|refer|see\s+table|as\s+above)\b', raw, re.I))
     conditional = bool(re.search(r'\b(if|depending|based on|consider|followed|initially|mild|severe|PMA|PNA|neonat|maximum)\b|[±]|\+/-', raw, re.I))
     # Unit slashes are dose facts, not alternative treatments.
     branch_text = re.sub(r'(mg|g|units?|micrograms?)\s*/\s*(kg|day|dose|ml)', '', raw, flags=re.I)
@@ -277,23 +277,95 @@ def curate(infections):
     case(by['12.7'], 'Para-pneumonic effusion or empyema', [92,93], instructions=['Ceftriaxone 2g OD IV', 'Inj Amoxicillin-clavulanate 1.2g IV TDS'], duration='4 weeks', gaps=['MRSA coverage is conditional and is not automatically added.'], notes=['Pleural fluid microbiology, source control and pleural drainage/VATS decisions are specified in source comments. Page93 contains continuation of procedural comments, not the primary dose.'])
 
 
+def source_option(entry, label, parts, duration=None, gaps=None, source_branch=False):
+    option = {'id': entry['id'] + f"-regimen-{len(entry['regimens'])+1}",
+              'label': label, 'instructions': '\n\n'.join(parts), 'duration': duration,
+              'gaps': gaps or [], 'source_branch': source_branch, **FLAGS}
+    entry['regimens'].append(option)
+
+
+def curate_reported_corrections(infections):
+    by = {i['ncdcSection']: i for i in infections}
+    native, prosthetic, severe = by['1.1']['cases']
+    shared = [normal(note.removeprefix('Source comments: ')) for c in (native, prosthetic, severe) for note in c['notes'] if note.startswith('Source comments: ')]
+    shared += ['Echocardiography and infectious disease specialist or clinical microbiologist guidance are recommended in NCDC section 1.1. Empirical therapy must be revised using organism identification and susceptibility results; host factors and organ function require review.']
+    for c in (native, prosthetic, severe):
+        c['regimens'] = []
+        c['gaps'] = []
+        c['management'] = shared
+        c['pdfPages'] = [21,22]
+        c['locator'] = 'NCDC section 1.1; printed p. 14, 15; PDF p. 21, 22'
+        c['notes'] = [n for n in c['notes'] if not n.startswith('Alternative column')]
+    # Only contiguous, explicit source combinations are assembled. Ambiguous source
+    # branches remain readable, labelled source text rather than a complete regimen.
+    source_option(native, 'First line — Ampicillin + gentamicin', [
+        'Ampicillin 2g IV every 4 hours for 4 weeks',
+        'PLUS Gentamicin 1mg/kg IM or IV every 8 hours for the first 2 weeks'])
+    source_option(native, 'First-line source branch — Penicillin G', [
+        'Penicillin G 4 million units IV every 4 hours for 4 weeks'], source_branch=True,
+        gaps=['The source lists penicillin G OR ampicillin, followed by + gentamicin. The scope of gentamicin for the penicillin G branch is not explicit; this is source text, not an assembled monotherapy regimen. Confirm the complete combination in the original table.'])
+    source_option(native, 'Alternative first-line source branch — Vancomycin and gentamicin', [
+        'Vancomycin 15mg/kg IV every 12 hours (maximum 1g every 12 hours) for 4-6 weeks',
+        'Gentamicin 1mg/kg IM or IV every 8 hours for 4 weeks'], source_branch=True,
+        gaps=['The alternative cell lists these agents without an explicit connector. Combination scope requires confirmation; no connector or duration has been borrowed from another column.'])
+    source_option(prosthetic, 'First line — Vancomycin + gentamicin', [
+        'Vancomycin 15mg/kg IV every 12 hours (maximum 1g every 12 hours) for 6 weeks',
+        'PLUS Gentamicin 1mg/kg IM or IV every 8 hours for the first 2 weeks'])
+    source_option(prosthetic, 'Alternative first line — Daptomycin + gentamicin', [
+        'Daptomycin 10mg/kg every 24 hours',
+        'PLUS Gentamicin 1mg/kg IM or IV every 8 hours for the first 2 weeks'],
+        gaps=['Daptomycin route and duration are not supplied in this source cell; neither is inferred from vancomycin or the severe-sepsis row.'])
+    source_option(severe, 'First line — Vancomycin + meropenem', [
+        'Vancomycin 15mg/kg IV every 12 hours (maximum 1g every 12 hours) for 4-6 weeks',
+        'PLUS Meropenem 1g IV every 8 hours for 4-6 weeks'])
+    source_option(severe, 'First-line source branch — Teicoplanin + gentamicin', [
+        'Loading: Teicoplanin 12mg/kg IV every 12 hours for 3 doses',
+        'Maintenance: 6-12mg IV once daily depending upon severity (source wording)',
+        'PLUS Gentamicin 1mg/kg IM or IV every 8 hours for 4-6 weeks'], source_branch=True,
+        gaps=['Teicoplanin maintenance is printed as 6-12mg, without /kg, despite a weight-based loading dose. The maintenance unit requires source clarification; do not infer mg/kg. Teicoplanin total duration is not explicitly given for this branch.'])
+    source_option(severe, 'Alternative first line — Daptomycin + meropenem', [
+        'Daptomycin 10mg/kg IV once daily',
+        'PLUS Meropenem 1g IV every 8 hours'], duration='4-6 weeks')
+    acute = by['10.1']
+    common = [normal(n.removeprefix('Source comments: ')) for c in acute['cases'] for n in c['notes'] if n.startswith('Source comments: ')]
+    for c in acute['cases']:
+        c['management'] = common
+        for option in c['regimens']:
+            option['duration'] = '4-6 weeks'
+            option['gaps'] = [g for g in option['gaps'] if not g.startswith('Duration not supplied')]
+    complicated = acute['cases'][2]
+    raw = next(n.split(': ',1)[1] for n in complicated['notes'] if n.startswith('Primary treatment source text'))
+    complicated['gaps'] = []
+    source_option(complicated, 'First-line source branch — conditional combination', [normal(raw)], source_branch=True,
+        gaps=['The primary cell contains an optional clindamycin branch and vancomycin printed as mg/kg/day with an every-8-12-hour interval. Route, branch scope and dose basis require clarification; no fixed combination or corrected vancomycin dose is inferred.'])
+    source_option(complicated, 'Alternative — Cefoperazone-sulbactam', ['Cefoperazone-sulbactam 3g every 12 hours'], duration='4-6 weeks',
+        gaps=['Route is not supplied in this source alternative cell; it is not inferred from the general IV-to-oral comments.'])
+    chronic = by['10.2']['cases'][0]
+    instructions = chronic['regimens'][0]['instructions'] if chronic['regimens'] else next(n.split(': ',1)[1] for n in chronic['notes'] if n.startswith('Primary treatment source text'))
+    chronic['management'] = [normal(instructions)] + [normal(n.removeprefix('Source comments: ')) for n in chronic['notes'] if n.startswith('Source comments: ')]
+    chronic['regimens'] = []
+    chronic['gaps'] = []
+    chronic['reference'] = {'infectionId':'ncdc-10-1','label':'Empirical treatment referenced from NCDC acute osteomyelitis guidance.'}
+    chronic['notes'] = ['NCDC section 10.2 first-line column refers empirical therapy to acute osteomyelitis; its alternative column says Same as in acute osteomyelitis. This reference applies to acute-on-chronic disease accompanied by fever.']
+
+
 def mapping(data):
     contexts = [c for i in data['infections'] for c in i['cases']]
     source = data['sources'][0]
     lines = ['# NCDC infection source mapping', '',
              'NCDC is the sole source for the active infection library. Unreviewed, non-executable reference content; not approved hospital policy.', '',
-             f"Coverage: {len(data['groups'])} clinical groups; {len(data['infections'])}/87 named NCDC subsections; {len(contexts)} contexts; {sum(len(c['regimens']) for c in contexts)} selectable source options; {sum(not c['regimens'] for c in contexts)} contexts held for source review.", '',
+             f"Coverage: {len(data['groups'])} clinical groups; {len(data['infections'])}/87 named NCDC subsections; {len(contexts)} contexts; {sum(len(c['regimens']) for c in contexts)} selectable source options; {sum(not c['regimens'] and not c.get('reference') for c in contexts)} contexts held for source review.", '',
              f"Frozen source: {source['name']} — {source['version']}. SHA256 `{source['sha256']}`. [Publisher PDF]({source['url']}). Printed page = PDF page minus 7.", '',
-             'Heading coverage is not completed treatment curation. Endocarditis combination branches remain held, and the chronic osteomyelitis cross-reference remains unresolved. Removing supplemental guidance does not correct those NCDC extraction problems. Missing fields are not inferred. CRRT and monographs remain deferred.', '',
-             '## NCDC inventory', '', '| Section | Infection | PDF pages | Contexts / options / holds |', '| --- | --- | --- | --- |']
+             'Heading coverage is not completed treatment curation. Endocarditis combinations and the acute-on-chronic osteomyelitis reference have targeted source curation. Ambiguous source branches remain readable and explicitly marked as requiring clarification; they are not complete regimens. Other held contexts remain incomplete. Missing fields are not inferred. CRRT and monographs remain deferred.', '',
+             'Source options include source-stated branches requiring clarification; these are labelled in the UI and are not complete regimens. A valid same-source referral is not a held treatment context.', '', '## NCDC inventory', '', '| Section | Infection | PDF pages | Contexts / options / holds |', '| --- | --- | --- | --- |']
     for infection in data['infections']:
         cs = infection['cases']
         pages = sorted({p for c in cs for p in c['pdfPages']})
-        lines.append(f"| {infection['ncdcSection']} | {infection['name']} | {', '.join(map(str,pages))} | {len(cs)} / {sum(len(c['regimens']) for c in cs)} / {sum(not c['regimens'] for c in cs)} |")
+        lines.append(f"| {infection['ncdcSection']} | {infection['name']} | {', '.join(map(str,pages))} | {len(cs)} / {sum(len(c['regimens']) for c in cs)} / {sum(not c['regimens'] and not c.get('reference') for c in cs)} |")
     lines += ['', '## Held contexts', '']
     for infection in data['infections']:
         for c in infection['cases']:
-            if not c['regimens']:
+            if not c['regimens'] and not c.get('reference'):
                 lines.append(f"- {infection['name']} — {c['label']} ({c['locator']}): {' '.join(c['gaps'])}")
     lines += ['', 'Rebuild with `python tools/build_infection_guidance.py`; compare deterministic output with `--check`. Only the NCDC PDF and its extracted page-text file are read. Original source evidence is read-only.']
     return '\n'.join(lines)+'\n'
@@ -307,8 +379,9 @@ def build(evidence):
     groups, SECTIONS = toc(pages)
     infections = extract_ncdc(ncdc, SECTIONS)
     curate(infections)
+    curate_reported_corrections(infections)
     sources = [{'id':'ncdc','name':'NCDC / ICMR National Treatment Guidelines for Antimicrobial Use in Infectious Disease Syndromes','version':'Version 2.0 — November 2025','url':'https://ncdc.mohfw.gov.in/uploads/pdf/amr17.pdf','sha256':hashlib.sha256(ncdc.read_bytes()).hexdigest()}]
-    return {'version':'2026-10-25.2-ncdc-only', **FLAGS, 'sources':sources, 'groups':groups, 'infections':infections}
+    return {'version':'2026-10-25.3-source-corrections', **FLAGS, 'sources':sources, 'groups':groups, 'infections':infections}
 
 
 def main():
@@ -325,7 +398,7 @@ def main():
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content)
     contexts = [c for i in data['infections'] for c in i['cases']]
-    print(f"{len(data['groups'])} groups, {len(data['infections'])} infections, {len(contexts)} contexts, {sum(len(c['regimens']) for c in contexts)} options, {sum(not c['regimens'] for c in contexts)} held contexts")
+    print(f"{len(data['groups'])} groups, {len(data['infections'])} infections, {len(contexts)} contexts, {sum(len(c['regimens']) for c in contexts)} options, {sum(not c['regimens'] and not c.get('reference') for c in contexts)} held contexts")
 
 if __name__ == '__main__':
     main()

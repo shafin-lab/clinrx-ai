@@ -64,7 +64,7 @@ describe('source-owned infection catalogue', () => {
         expect(context.locator).toMatch(/PDF/);
         expect(context.pdfPages.length).toBeGreaterThan(0);
         expect(context.pdfPages.every((page: number) => Number.isInteger(page) && page > 0 && page <= (context.sourceId === 'ncdc' ? 157 : 104))).toBe(true);
-        expect(context.regimens.length > 0 || context.gaps.length > 0).toBe(true);
+        expect(context.regimens.length > 0 || context.gaps.length > 0 || !!context.reference).toBe(true);
         for (const regimen of context.regimens) {
           ids.push(regimen.id);
           expect(regimen.instructions.trim().length).toBeGreaterThan(0);

@@ -73,3 +73,51 @@ it('opens the library directly from its preview URL without starting an antibiot
  expect(screen.getByRole('button',{name:'Reference library'})).toHaveAttribute('aria-pressed','true');
  expect(screen.queryByRole('heading',{name:/Record antibiotic source/i})).not.toBeInTheDocument();
 });
+
+function infection(name:RegExp,category:RegExp){group(category);fireEvent.click(screen.getByRole('button',{name}));}
+function situation(name:RegExp,label='Clinical situation'){const select=screen.getByLabelText(label);const option=within(select).getByRole('option',{name});fireEvent.change(select,{target:{value:(option as HTMLOptionElement).value}});}
+it('shows prosthetic-valve combination components and their different durations without hiding treatment',()=>{
+ mount();infection(/^Infective Endocarditis/,/Cardiovascular/);situation(/Prosthetic/);
+ const panel=screen.getByRole('region',{name:'Selected treatment guidance'});
+ expect(panel).toHaveTextContent('Vancomycin 15mg/kg IV every 12 hours');
+ expect(panel).toHaveTextContent('maximum 1g every 12 hours');
+ expect(panel).toHaveTextContent('for 6 weeks');
+ expect(panel).toHaveTextContent('Gentamicin 1mg/kg IM or IV every 8 hours for the first 2 weeks');
+ expect(panel).not.toHaveTextContent('No fixed regimen');
+ expect(panel).not.toHaveTextContent('Daptomycin');
+ situation(/Daptomycin/,'Treatment option');
+ expect(panel).toHaveTextContent('Daptomycin 10mg/kg every 24 hours');
+ expect(panel).not.toHaveTextContent('Vancomycin');
+ expect(panel).toHaveTextContent(/route.*not.*supplied/i);
+});
+it('shows severe-sepsis source combinations and retains the teicoplanin unit anomaly explicitly',()=>{
+ mount();infection(/^Infective Endocarditis/,/Cardiovascular/);situation(/Severe Sepsis/);
+ const panel=screen.getByRole('region',{name:'Selected treatment guidance'});
+ expect(panel).toHaveTextContent('Meropenem 1g IV every 8 hours for 4-6 weeks');
+ expect(panel).toHaveTextContent('Vancomycin');
+ situation(/Teicoplanin/,'Treatment option');
+ expect(panel).toHaveTextContent('12mg/kg IV every 12 hours for 3 doses');
+ expect(panel).toHaveTextContent(/6.*12mg/);
+ expect(panel).toHaveTextContent(/maintenance.*unit|mg.*kg.*not/i);
+ expect(panel).not.toHaveTextContent('Meropenem');
+});
+it('resolves acute-on-chronic guidance in place only after choosing the applicable acute context',()=>{
+ mount();infection(/^Chronic Osteomyelitis/,/Musculoskeletal/);
+ const panel=screen.getByRole('region',{name:'Selected treatment guidance'});
+ expect(screen.getByText(/Empirical treatment referenced from NCDC acute osteomyelitis guidance/)).toBeInTheDocument();
+ expect(panel).not.toHaveTextContent('Cloxacillin');
+ expect(screen.getByRole('region',{name:'Management and treatment notes'})).toHaveTextContent(/Surgical debridement/);
+ situation(/Non Hematogenous/,'Acute osteomyelitis context');
+ expect(panel).toHaveTextContent('Inj Cloxacillin 2g IV q6h');
+ expect(panel).toHaveTextContent('4-6 weeks');
+ expect(screen.getByRole('link',{name:/Open referenced treatment source/})).toHaveAttribute('href','/assets/infection-sources/ncdc-2025.pdf#page=67');
+ situation(/Complicated osteomyelitis/,'Acute osteomyelitis context');
+ expect(panel).not.toHaveTextContent('Cloxacillin');
+ expect(panel).toHaveTextContent(/Piperacillin|Cefoperazone/);
+});
+it('reflows PDF column wrapping in displayed guidance and notes',()=>{
+ mount();infection(/^Chronic Osteomyelitis/,/Musculoskeletal/);
+ const notes=screen.getByRole('region',{name:'Management and treatment notes'});
+ expect(notes.textContent).toContain('Blood culture should be obtained before starting antimicrobial therapy.');
+ expect(notes.textContent).not.toMatch(/should be\nobtained/);
+});

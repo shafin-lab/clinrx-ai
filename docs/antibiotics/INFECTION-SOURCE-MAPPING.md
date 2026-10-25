@@ -2,17 +2,19 @@
 
 NCDC is the sole source for the active infection library. Unreviewed, non-executable reference content; not approved hospital policy.
 
-Coverage: 19 clinical groups; 87/87 named NCDC subsections; 210 contexts; 115 selectable source options; 119 contexts held for source review.
+Coverage: 19 clinical groups; 87/87 named NCDC subsections; 210 contexts; 124 selectable source options; 115 contexts held for source review.
 
 Frozen source: NCDC / ICMR National Treatment Guidelines for Antimicrobial Use in Infectious Disease Syndromes — Version 2.0 — November 2025. SHA256 `0debe52c37cf08dc5d112b8ef71d4ef322c323f04f712473a57a78f1bb68f90a`. [Publisher PDF](https://ncdc.mohfw.gov.in/uploads/pdf/amr17.pdf). Printed page = PDF page minus 7.
 
-Heading coverage is not completed treatment curation. Endocarditis combination branches remain held, and the chronic osteomyelitis cross-reference remains unresolved. Removing supplemental guidance does not correct those NCDC extraction problems. Missing fields are not inferred. CRRT and monographs remain deferred.
+Heading coverage is not completed treatment curation. Endocarditis combinations and the acute-on-chronic osteomyelitis reference have targeted source curation. Ambiguous source branches remain readable and explicitly marked as requiring clarification; they are not complete regimens. Other held contexts remain incomplete. Missing fields are not inferred. CRRT and monographs remain deferred.
+
+Source options include source-stated branches requiring clarification; these are labelled in the UI and are not complete regimens. A valid same-source referral is not a held treatment context.
 
 ## NCDC inventory
 
 | Section | Infection | PDF pages | Contexts / options / holds |
 | --- | --- | --- | --- |
-| 1.1 | Infective Endocarditis | 21 | 3 / 0 / 3 |
+| 1.1 | Infective Endocarditis | 21, 22 | 3 / 8 / 0 |
 | 1.2 | Acute Myocarditis | 23 | 1 / 1 / 0 |
 | 1.3 | Pericarditis | 23 | 2 / 2 / 0 |
 | 1.4 | Rheumatic fever | 24 | 1 / 0 / 1 |
@@ -60,8 +62,8 @@ Heading coverage is not completed treatment curation. Endocarditis combination b
 | 9.5 | Primary Pyomyositis | 62 | 1 / 0 / 1 |
 | 9.6 | Folliculitis | 62, 63, 64 | 6 / 4 / 3 |
 | 9.7 | Diabetic foot infections (DFI) | 65, 66 | 3 / 0 / 3 |
-| 10.1 | Acute Osteomyelitis | 67 | 3 / 2 / 1 |
-| 10.2 | Chronic Osteomyelitis | 68 | 1 / 1 / 0 |
+| 10.1 | Acute Osteomyelitis | 67 | 3 / 4 / 0 |
+| 10.2 | Chronic Osteomyelitis | 68 | 1 / 0 / 0 |
 | 10.3 | Gas gangrene | 68, 69 | 2 / 0 / 2 |
 | 10.4 | Septic arthritis | 69 | 1 / 0 / 1 |
 | 10.5 | Skin and soft tissue injuries | 70 | 2 / 0 / 2 |
@@ -102,9 +104,6 @@ Heading coverage is not completed treatment curation. Endocarditis combination b
 
 ## Held contexts
 
-- Infective Endocarditis — Uncomplicated - Native valve* (NCDC section 1.1; printed p. 14; PDF p. 21): Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen.
-- Infective Endocarditis — Uncomplicated - Prosthetic valve* (NCDC section 1.1; printed p. 14; PDF p. 21): Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen.
-- Infective Endocarditis — Complicated (In Severe Sepsis) (NCDC section 1.1; printed p. 14; PDF p. 21): Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen.
 - Rheumatic fever — Uncomplicated (NCDC section 1.4; printed p. 17; PDF p. 24): Source primary cell places weight-dependent benzathine penicillin and penicillin V without an explicit connector; branch scope requires review.
 - Brain Abscess — Uncomplicated (abscess <2.5cm & pa�ent neurologically stable) (NCDC section 2.1; printed p. 18; PDF p. 25): Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen.
 - Brain Abscess — Complicated (Pa�ent neurologically unstable) (NCDC section 2.1; printed p. 18; PDF p. 25): Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen.
@@ -155,7 +154,6 @@ Heading coverage is not completed treatment curation. Endocarditis combination b
 - Diabetic foot infections (DFI) — Mild: local infection with 0.5cm to < 2cm erythema (NCDC section 9.7; printed p. 58; PDF p. 65): Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen.
 - Diabetic foot infections (DFI) — Moderate: local infection with > 2cm erythema or involving deeper structures (such as abscess, osteomyelitis, septic arthritis or fasciitis) (NCDC section 9.7; printed p. 58; PDF p. 65): Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen.
 - Diabetic foot infections (DFI) — Severe: local infection with signs of a systemic inflammatory response. (NCDC section 9.7; printed p. 58, 59; PDF p. 65, 66): Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen.
-- Acute Osteomyelitis — Complicated osteomyelitis (diabetic foot infection or any other reason for diminished blood supply to the bones) (NCDC section 10.1; printed p. 60; PDF p. 67): Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen.
 - Gas gangrene — Traumatic gas gangrene: lethal infection of soft tissue and is synonymous with myonecrosis usually (NCDC section 10.3; printed p. 61; PDF p. 68): Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen. Traumatic/spontaneous source condition spans pages 68–69; exact branch attachment held for source review.
 - Gas gangrene — Spontaneous gas gangrene — source row continues traumatic-gangrene text (NCDC section 10.3; printed p. 62; PDF p. 69): Traumatic/spontaneous source condition spans pages 68–69; exact branch attachment held for source review.
 - Septic arthritis — Septic Arthritis (NCDC section 10.4; printed p. 62; PDF p. 69): Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen.

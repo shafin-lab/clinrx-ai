@@ -3,7 +3,7 @@
 set -eu
 TASK_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 TASK_DATABASE="$TASK_ROOT/runtime/infection-library/patient.sqlite3"
-TASK_FRONTEND="$TASK_ROOT/review-evidence/infection-library/build-ncdc-only"
+TASK_FRONTEND="$TASK_ROOT/review-evidence/infection-library/build-source-corrections"
 TASK_PYTHON=${CLINRX_PYTHON:-/Users/mohammedshafiqshajahan/Documents/clinrx-ai/backend/venv/bin/python}
 test -f "$TASK_DATABASE" || { echo 'Prepared candidate database is missing.' >&2; exit 1; }
 test -f "$TASK_FRONTEND/index.html" || { echo 'Reviewed frontend build is missing.' >&2; exit 1; }

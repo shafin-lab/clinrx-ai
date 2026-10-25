@@ -1,9 +1,10 @@
 export interface GuidanceSource {id:string;name:string;version:string;url:string;sha256:string}
 export interface GuidanceGroup {id:string;name:string}
-export interface GuidanceRegimen {id:string;label:string;instructions:string;duration:string|null;gaps:string[]}
-export interface InfectionCase {id:string;label:string;sourceId:string;locator:string;pdfPages:number[];regimens:GuidanceRegimen[];notes:string[];gaps:string[]}
+export interface GuidanceRegimen {id:string;label:string;instructions:string;duration:string|null;gaps:string[];source_branch?:boolean}
+export interface InfectionCase {id:string;label:string;sourceId:string;locator:string;pdfPages:number[];regimens:GuidanceRegimen[];notes:string[];gaps:string[];management?:string[];reference?:{infectionId:string;label:string}}
 export interface Infection {id:string;groupId:string;name:string;aliases:string[];cases:InfectionCase[]}
 export interface InfectionCatalogue {version:string;executable:false;clinical_use_eligible:false;review_status:'unreviewed';sources:GuidanceSource[];groups:GuidanceGroup[];infections:Infection[]}
+export function formatSourceText(text:string):string{return text.split(/\n\s*\n/).map(paragraph=>paragraph.replace(/\s+/g,' ').trim()).join('\n\n');}
 const normalize=(s:string)=>s.normalize('NFKC').toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 // Clinical synonyms belong to the source crosswalk; fuzzy case merging would be unsafe.
 export function effectiveCases(cases:InfectionCase[]):InfectionCase[]{
@@ -34,8 +35,10 @@ export function validateCatalogue(value:unknown):value is InfectionCatalogue{
   if(!record(i)||!text(i.id)||ids.has(i.id)||!text(i.groupId)||!groups.has(i.groupId)||!text(i.name)||!strings(i.aliases)||!Array.isArray(i.cases))return false;ids.add(i.id);
   for(const c of i.cases){
    if(!record(c)||!text(c.id)||caseIds.has(c.id)||!text(c.label)||!text(c.sourceId)||!sources.has(c.sourceId)||!text(c.locator)||!Array.isArray(c.pdfPages)||!c.pdfPages.length||!c.pdfPages.every(p=>Number.isInteger(p)&&p>0)||!Array.isArray(c.regimens)||!strings(c.notes)||!strings(c.gaps))return false;caseIds.add(c.id);
-   for(const r of c.regimens){if(!record(r)||!text(r.id)||regimenIds.has(r.id)||!text(r.label)||!text(r.instructions)||r.duration!==null&&typeof r.duration!=='string'||!strings(r.gaps))return false;regimenIds.add(r.id);}
+   if(c.management!==undefined&&!strings(c.management)||c.reference!==undefined&&(!record(c.reference)||!text(c.reference.infectionId)||!text(c.reference.label)))return false;
+   for(const r of c.regimens){if(!record(r)||!text(r.id)||regimenIds.has(r.id)||!text(r.label)||!text(r.instructions)||r.duration!==null&&typeof r.duration!=='string'||!strings(r.gaps)||r.source_branch!==undefined&&typeof r.source_branch!=='boolean')return false;regimenIds.add(r.id);}
   }
  }
+ for(const i of value.infections as unknown as Infection[]){for(const c of i.cases){if(c.reference){const target=(value.infections as unknown as Infection[]).find(t=>t.id===c.reference!.infectionId);if(c.regimens.length||!target||!target.cases.length||target.id===i.id||target.groupId!==i.groupId||target.cases.some(t=>t.reference))return false;}}}
  return sources.size>0&&groups.size>0&&ids.size>0;
 }

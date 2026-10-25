@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-25.2-ncdc-only",
+  "version": "2026-10-25.3-source-corrections",
   "executable": false,
   "clinical_use_eligible": false,
   "review_status": "unreviewed",
@@ -104,62 +104,167 @@
           "id": "ncdc-1-1-case-1",
           "label": "Uncomplicated - Native valve*",
           "sourceId": "ncdc",
-          "locator": "NCDC section 1.1; printed p. 14; PDF p. 21",
+          "locator": "NCDC section 1.1; printed p. 14, 15; PDF p. 21, 22",
           "pdfPages": [
-            21
+            21,
+            22
           ],
-          "regimens": [],
+          "regimens": [
+            {
+              "id": "ncdc-1-1-case-1-regimen-1",
+              "label": "First line — Ampicillin + gentamicin",
+              "instructions": "Ampicillin 2g IV every 4 hours for 4 weeks\n\nPLUS Gentamicin 1mg/kg IM or IV every 8 hours for the first 2 weeks",
+              "duration": null,
+              "gaps": [],
+              "source_branch": false,
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            },
+            {
+              "id": "ncdc-1-1-case-1-regimen-2",
+              "label": "First-line source branch — Penicillin G",
+              "instructions": "Penicillin G 4 million units IV every 4 hours for 4 weeks",
+              "duration": null,
+              "gaps": [
+                "The source lists penicillin G OR ampicillin, followed by + gentamicin. The scope of gentamicin for the penicillin G branch is not explicit; this is source text, not an assembled monotherapy regimen. Confirm the complete combination in the original table."
+              ],
+              "source_branch": true,
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            },
+            {
+              "id": "ncdc-1-1-case-1-regimen-3",
+              "label": "Alternative first-line source branch — Vancomycin and gentamicin",
+              "instructions": "Vancomycin 15mg/kg IV every 12 hours (maximum 1g every 12 hours) for 4-6 weeks\n\nGentamicin 1mg/kg IM or IV every 8 hours for 4 weeks",
+              "duration": null,
+              "gaps": [
+                "The alternative cell lists these agents without an explicit connector. Combination scope requires confirmation; no connector or duration has been borrowed from another column."
+              ],
+              "source_branch": true,
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            }
+          ],
           "notes": [
             "Primary treatment source text (held for review): Penicillin G 4 million units\nIV 4th hrly for 4 weeks\nOr\nAmpicillin 2g IV 4 hrly for\n4 weeks\n+\nGentamicin 1mg/kg IM or\nIV 8 hrly for first 2 weeks",
-            "Alternative column is not imported as competing primary guidance; consult source for alternatives.",
             "Source comments: These are among the few\nconditions where combination\nantimicrobial therapy is\ncontemplated as synergism of\nantimicrobials is established.\nIf patient is stable, ideally wait for\nblood cultures and modify\nantibiotics based on culture\nresults and complete 4-6 weeks\nof antibiotics.\nTwo sets of blood cultures within\n1 h of each other in patients with\nsuspected endocarditis and acute\nsepsis and three sets of blood\ncultures spaced ≥6 h apart in\ncases of suspected subacute or\nchronic endocarditis are\nrecommended for best results."
           ],
-          "gaps": [
-            "Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen."
-          ],
+          "gaps": [],
           "executable": false,
           "clinical_use_eligible": false,
-          "review_status": "unreviewed"
+          "review_status": "unreviewed",
+          "management": [
+            "These are among the few conditions where combination antimicrobial therapy is contemplated as synergism of antimicrobials is established. If patient is stable, ideally wait for blood cultures and modify antibiotics based on culture results and complete 4-6 weeks of antibiotics. Two sets of blood cultures within 1 h of each other in patients with suspected endocarditis and acute sepsis and three sets of blood cultures spaced ≥6 h apart in cases of suspected subacute or chronic endocarditis are recommended for best results.",
+            "Echocardiography and infectious disease specialist or clinical microbiologist guidance are recommended in NCDC section 1.1. Empirical therapy must be revised using organism identification and susceptibility results; host factors and organ function require review."
+          ]
         },
         {
           "id": "ncdc-1-1-case-2",
           "label": "Uncomplicated - Prosthetic valve*",
           "sourceId": "ncdc",
-          "locator": "NCDC section 1.1; printed p. 14; PDF p. 21",
+          "locator": "NCDC section 1.1; printed p. 14, 15; PDF p. 21, 22",
           "pdfPages": [
-            21
+            21,
+            22
           ],
-          "regimens": [],
+          "regimens": [
+            {
+              "id": "ncdc-1-1-case-2-regimen-1",
+              "label": "First line — Vancomycin + gentamicin",
+              "instructions": "Vancomycin 15mg/kg IV every 12 hours (maximum 1g every 12 hours) for 6 weeks\n\nPLUS Gentamicin 1mg/kg IM or IV every 8 hours for the first 2 weeks",
+              "duration": null,
+              "gaps": [],
+              "source_branch": false,
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            },
+            {
+              "id": "ncdc-1-1-case-2-regimen-2",
+              "label": "Alternative first line — Daptomycin + gentamicin",
+              "instructions": "Daptomycin 10mg/kg every 24 hours\n\nPLUS Gentamicin 1mg/kg IM or IV every 8 hours for the first 2 weeks",
+              "duration": null,
+              "gaps": [
+                "Daptomycin route and duration are not supplied in this source cell; neither is inferred from vancomycin or the severe-sepsis row."
+              ],
+              "source_branch": false,
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            }
+          ],
           "notes": [
-            "Primary treatment source text (held for review): Vancomycin 15mg/kg IV\n12 hrly (maximum 1g 12\nh) for 6 weeks\n+\nGentamicin 1mg/kg IM or\nIV 8 hrly for first 2 weeks",
-            "Alternative column is not imported as competing primary guidance; consult source for alternatives."
+            "Primary treatment source text (held for review): Vancomycin 15mg/kg IV\n12 hrly (maximum 1g 12\nh) for 6 weeks\n+\nGentamicin 1mg/kg IM or\nIV 8 hrly for first 2 weeks"
           ],
-          "gaps": [
-            "Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen."
-          ],
+          "gaps": [],
           "executable": false,
           "clinical_use_eligible": false,
-          "review_status": "unreviewed"
+          "review_status": "unreviewed",
+          "management": [
+            "These are among the few conditions where combination antimicrobial therapy is contemplated as synergism of antimicrobials is established. If patient is stable, ideally wait for blood cultures and modify antibiotics based on culture results and complete 4-6 weeks of antibiotics. Two sets of blood cultures within 1 h of each other in patients with suspected endocarditis and acute sepsis and three sets of blood cultures spaced ≥6 h apart in cases of suspected subacute or chronic endocarditis are recommended for best results.",
+            "Echocardiography and infectious disease specialist or clinical microbiologist guidance are recommended in NCDC section 1.1. Empirical therapy must be revised using organism identification and susceptibility results; host factors and organ function require review."
+          ]
         },
         {
           "id": "ncdc-1-1-case-3",
           "label": "Complicated (In Severe Sepsis)",
           "sourceId": "ncdc",
-          "locator": "NCDC section 1.1; printed p. 14; PDF p. 21",
+          "locator": "NCDC section 1.1; printed p. 14, 15; PDF p. 21, 22",
           "pdfPages": [
-            21
+            21,
+            22
           ],
-          "regimens": [],
+          "regimens": [
+            {
+              "id": "ncdc-1-1-case-3-regimen-1",
+              "label": "First line — Vancomycin + meropenem",
+              "instructions": "Vancomycin 15mg/kg IV every 12 hours (maximum 1g every 12 hours) for 4-6 weeks\n\nPLUS Meropenem 1g IV every 8 hours for 4-6 weeks",
+              "duration": null,
+              "gaps": [],
+              "source_branch": false,
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            },
+            {
+              "id": "ncdc-1-1-case-3-regimen-2",
+              "label": "First-line source branch — Teicoplanin + gentamicin",
+              "instructions": "Loading: Teicoplanin 12mg/kg IV every 12 hours for 3 doses\n\nMaintenance: 6-12mg IV once daily depending upon severity (source wording)\n\nPLUS Gentamicin 1mg/kg IM or IV every 8 hours for 4-6 weeks",
+              "duration": null,
+              "gaps": [
+                "Teicoplanin maintenance is printed as 6-12mg, without /kg, despite a weight-based loading dose. The maintenance unit requires source clarification; do not infer mg/kg. Teicoplanin total duration is not explicitly given for this branch."
+              ],
+              "source_branch": true,
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            },
+            {
+              "id": "ncdc-1-1-case-3-regimen-3",
+              "label": "Alternative first line — Daptomycin + meropenem",
+              "instructions": "Daptomycin 10mg/kg IV once daily\n\nPLUS Meropenem 1g IV every 8 hours",
+              "duration": "4-6 weeks",
+              "gaps": [],
+              "source_branch": false,
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            }
+          ],
           "notes": [
-            "Primary treatment source text (held for review): Vancomycin 15mg/kg IV\n12 hrly (maximum 1g 12\nh) for 4-6 weeks\n+\nMeropenem 1g IV q8h\nfor 4-6 weeks\nOr\nTeicoplanin 12mg/kg IV\n12 hrly x 3 doses\nfollowed by 6 - 12mg OD\nIV depending upon\nseverity\n+\nGentamicin 1mg/kg IM or\nIV 8 h for 4-6 weeks",
-            "Alternative column is not imported as competing primary guidance; consult source for alternatives."
+            "Primary treatment source text (held for review): Vancomycin 15mg/kg IV\n12 hrly (maximum 1g 12\nh) for 4-6 weeks\n+\nMeropenem 1g IV q8h\nfor 4-6 weeks\nOr\nTeicoplanin 12mg/kg IV\n12 hrly x 3 doses\nfollowed by 6 - 12mg OD\nIV depending upon\nseverity\n+\nGentamicin 1mg/kg IM or\nIV 8 h for 4-6 weeks"
           ],
-          "gaps": [
-            "Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen."
-          ],
+          "gaps": [],
           "executable": false,
           "clinical_use_eligible": false,
-          "review_status": "unreviewed"
+          "review_status": "unreviewed",
+          "management": [
+            "These are among the few conditions where combination antimicrobial therapy is contemplated as synergism of antimicrobials is established. If patient is stable, ideally wait for blood cultures and modify antibiotics based on culture results and complete 4-6 weeks of antibiotics. Two sets of blood cultures within 1 h of each other in patients with suspected endocarditis and acute sepsis and three sets of blood cultures spaced ≥6 h apart in cases of suspected subacute or chronic endocarditis are recommended for best results.",
+            "Echocardiography and infectious disease specialist or clinical microbiologist guidance are recommended in NCDC section 1.1. Empirical therapy must be revised using organism identification and susceptibility results; host factors and organ function require review."
+          ]
         }
       ]
     },
@@ -2971,10 +3076,8 @@
               "id": "ncdc-10-1-case-1-regimen-1",
               "label": "Primary source treatment",
               "instructions": "Inj Cloxacillin 2g IV\nq6h",
-              "duration": null,
-              "gaps": [
-                "Duration not supplied as a fixed value in this primary treatment cell; inspect the source comments."
-              ],
+              "duration": "4-6 weeks",
+              "gaps": [],
               "executable": false,
               "clinical_use_eligible": false,
               "review_status": "unreviewed"
@@ -2987,7 +3090,10 @@
           "gaps": [],
           "executable": false,
           "clinical_use_eligible": false,
-          "review_status": "unreviewed"
+          "review_status": "unreviewed",
+          "management": [
+            "Treatment based on culture results. Surgical debridement should be done to drain out the infected area, the extent of surgery may preferably be guided by ultrasound or MRI evaluation (if possible). Drain pus, rationalize antibiotics according to culture and susceptibility reports. Treatment starting with IV therapy to be continued until there are clinical signs of improvement (defervescence, other signs of septicemia reduced, CRP reduction, ESR reduction), then only consider change from IV to oral therapy. (total duration of antibiotics 4 – 6 weeks) In diabetic foot: before starting antibiotics, take blood sample for culture and renal function estimation."
+          ]
         },
         {
           "id": "ncdc-10-1-case-2",
@@ -3002,10 +3108,8 @@
               "id": "ncdc-10-1-case-2-regimen-1",
               "label": "Primary source treatment",
               "instructions": "Inj Cloxacillin 2g\nq6h IV",
-              "duration": null,
-              "gaps": [
-                "Duration not supplied as a fixed value in this primary treatment cell; inspect the source comments."
-              ],
+              "duration": "4-6 weeks",
+              "gaps": [],
               "executable": false,
               "clinical_use_eligible": false,
               "review_status": "unreviewed"
@@ -3017,7 +3121,10 @@
           "gaps": [],
           "executable": false,
           "clinical_use_eligible": false,
-          "review_status": "unreviewed"
+          "review_status": "unreviewed",
+          "management": [
+            "Treatment based on culture results. Surgical debridement should be done to drain out the infected area, the extent of surgery may preferably be guided by ultrasound or MRI evaluation (if possible). Drain pus, rationalize antibiotics according to culture and susceptibility reports. Treatment starting with IV therapy to be continued until there are clinical signs of improvement (defervescence, other signs of septicemia reduced, CRP reduction, ESR reduction), then only consider change from IV to oral therapy. (total duration of antibiotics 4 – 6 weeks) In diabetic foot: before starting antibiotics, take blood sample for culture and renal function estimation."
+          ]
         },
         {
           "id": "ncdc-10-1-case-3",
@@ -3027,17 +3134,45 @@
           "pdfPages": [
             67
           ],
-          "regimens": [],
+          "regimens": [
+            {
+              "id": "ncdc-10-1-case-3-regimen-1",
+              "label": "First-line source branch — conditional combination",
+              "instructions": "Piperacillin- tazobactam 4.5g 6 h +/- Clindamycin 900mg IV q8h Or Inj Vancomcyin 15- 20 mg/kg/day every 8-12 hrly",
+              "duration": null,
+              "gaps": [
+                "The primary cell contains an optional clindamycin branch and vancomycin printed as mg/kg/day with an every-8-12-hour interval. Route, branch scope and dose basis require clarification; no fixed combination or corrected vancomycin dose is inferred."
+              ],
+              "source_branch": true,
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            },
+            {
+              "id": "ncdc-10-1-case-3-regimen-2",
+              "label": "Alternative — Cefoperazone-sulbactam",
+              "instructions": "Cefoperazone-sulbactam 3g every 12 hours",
+              "duration": "4-6 weeks",
+              "gaps": [
+                "Route is not supplied in this source alternative cell; it is not inferred from the general IV-to-oral comments."
+              ],
+              "source_branch": false,
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            }
+          ],
           "notes": [
             "Primary treatment source text (held for review): Piperacillin-\ntazobactam 4.5g 6\nh\n+/-\nClindamycin 900mg\nIV q8h\nOr\nInj Vancomcyin 15-\n20 mg/kg/day\nevery 8-12 hrly",
             "Alternative column is not imported as competing primary guidance; consult source for alternatives."
           ],
-          "gaps": [
-            "Primary source text has unresolved alternatives, conditional branches, cross-references, or extraction continuity; source review is required before selecting a regimen."
-          ],
+          "gaps": [],
           "executable": false,
           "clinical_use_eligible": false,
-          "review_status": "unreviewed"
+          "review_status": "unreviewed",
+          "management": [
+            "Treatment based on culture results. Surgical debridement should be done to drain out the infected area, the extent of surgery may preferably be guided by ultrasound or MRI evaluation (if possible). Drain pus, rationalize antibiotics according to culture and susceptibility reports. Treatment starting with IV therapy to be continued until there are clinical signs of improvement (defervescence, other signs of septicemia reduced, CRP reduction, ESR reduction), then only consider change from IV to oral therapy. (total duration of antibiotics 4 – 6 weeks) In diabetic foot: before starting antibiotics, take blood sample for culture and renal function estimation."
+          ]
         }
       ]
     },
@@ -3056,26 +3191,22 @@
           "pdfPages": [
             68
           ],
-          "regimens": [
-            {
-              "id": "ncdc-10-2-case-1-regimen-1",
-              "label": "Primary source treatment",
-              "instructions": "Blood culture should be\nobtained before\nstarting antimicrobial\ntherapy.\nEmpirical treatment\nshould be started with\nnarrow spectrum\nantibiotic.\nDefinitive antibiotic\ntherapy should be\nstarted as soon as\nculture results are\navailable.\nEmpirical therapy as\nper guidelines for acute\nosteomyelitis.",
-              "duration": null,
-              "gaps": [],
-              "executable": false,
-              "clinical_use_eligible": false,
-              "review_status": "unreviewed"
-            }
-          ],
+          "regimens": [],
           "notes": [
-            "Alternative column is not imported as competing primary guidance; consult source for alternatives.",
-            "Source comments: It is a continuous bacterial\ninfection involving cortical\nbone.\nSurgical debridement of\nall diseased bone is often\nrequired as antibiotics\npenetrate poorly into\ninfected fluid collections\nsuch as abscesses and\ninjured or necrotic bone.\nOnce susceptibility data\nbecomes available,\nantibiotic therapy should\nbe narrowed for targeted\ncoverage of the\nsusceptible organisms."
+            "NCDC section 10.2 first-line column refers empirical therapy to acute osteomyelitis; its alternative column says Same as in acute osteomyelitis. This reference applies to acute-on-chronic disease accompanied by fever."
           ],
           "gaps": [],
           "executable": false,
           "clinical_use_eligible": false,
-          "review_status": "unreviewed"
+          "review_status": "unreviewed",
+          "management": [
+            "Blood culture should be obtained before starting antimicrobial therapy. Empirical treatment should be started with narrow spectrum antibiotic. Definitive antibiotic therapy should be started as soon as culture results are available. Empirical therapy as per guidelines for acute osteomyelitis.",
+            "It is a continuous bacterial infection involving cortical bone. Surgical debridement of all diseased bone is often required as antibiotics penetrate poorly into infected fluid collections such as abscesses and injured or necrotic bone. Once susceptibility data becomes available, antibiotic therapy should be narrowed for targeted coverage of the susceptible organisms."
+          ],
+          "reference": {
+            "infectionId": "ncdc-10-1",
+            "label": "Empirical treatment referenced from NCDC acute osteomyelitis guidance."
+          }
         }
       ]
     },
