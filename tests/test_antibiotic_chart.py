@@ -266,3 +266,21 @@ def test_exact_candidate_source_mismatch_staleness_and_historical_correction(cas
     response=post(client,'save',correction);assert response.status_code==200,response.text
     assert response.json()['execution_enabled'] is False
     assert post(client,'lookup',body).json()==saved
+
+def test_course_history_includes_previous_days_at_original_cutoff_and_excludes_future(case):
+    client,_=case;v=catalog(client);repository=v['renal']['repository']
+    order={**draft(repository),'mode':'prescription','point':'2026-10-08T08:30:00Z','schedule':'Every 24 hours'}
+    assert post(client,'save',order).status_code==200
+    reference={'kind':'antimicrobial_order','id':order['id'],'version':order['revision']}
+    for at in ('2026-10-06T09:00:00Z','2026-10-08T11:00:00Z'):
+        assert post(client,'save',{**draft(repository),'point':at,'order':reference}).status_code==200
+    selected=catalog(client);before=selected['renal']['cutoff']['fact_watermark']
+    assert post(client,'save',{**draft(repository),'point':'2026-10-07T09:00:00Z','order':reference}).status_code==200
+    response=post(client,'course-history',{'state_context':selected['micro']['state_context'],'reference':reference})
+    assert response.status_code==200,response.text
+    state=response.json();assert state['assembly']['request']['scope']['repository_cutoff']['fact_watermark']==before
+    times=[i['fact'].get('administered',{}).get('value') for i in state['assembly']['snapshot']['items']]
+    assert '2026-10-06T09:00:00Z' in times
+    assert '2026-10-08T11:00:00Z' not in times
+    assert '2026-10-07T09:00:00Z' not in times
+    assert catalog(client)['renal']['cutoff']['fact_watermark']==before+1

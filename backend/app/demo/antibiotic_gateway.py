@@ -30,6 +30,9 @@ def save(body:AntibioticDraft,app=Depends(service)):
 @router.post(ABX+'/history')
 def history(body:AntibioticHistoryRequest,app=Depends(service)):
     with transaction(app.dependencies.engine) as repo:return app.history(repo,body)
+@router.post(ABX+'/course-history')
+def course_history(body:AntibioticHistoryRequest,app=Depends(service)):
+    with transaction(app.dependencies.engine) as repo:return app.course_history(repo,body)
 class SyntheticAntibioticGateway(SyntheticRF2Gateway):
     def __init__(self,database,frontend,signing_key,origin):
         super().__init__(database,frontend,signing_key,origin);self.core.include_router(router)
@@ -37,7 +40,7 @@ class SyntheticAntibioticGateway(SyntheticRF2Gateway):
         if scope['type']=='http' and (scope['path']==ABX or scope['path'].startswith(ABX+'/')):
             headers=dict(scope.get('headers',()));path=scope['path'];method=scope['method']
             read=method=='GET' and path==ABX
-            write=method=='POST' and path in {ABX+'/'+a for a in ('validate','lookup','save','history')}
+            write=method=='POST' and path in {ABX+'/'+a for a in ('validate','lookup','save','history','course-history')}
             allowed=scope.get('client') and scope['client'][0] in ('127.0.0.1','::1') and headers.get(b'host',b'').decode()==self.host and headers.get(b'sec-fetch-site',b'none') in (b'none',b'same-origin') and (read or write and headers.get(b'origin',b'').decode()==self.origin and headers.get(b'content-type',b'').split(b';')[0]==b'application/json')
             if not allowed:return await JSONResponse({'code':'local_antibiotic_denied'},status_code=403)(scope,receive,send)
             async def no_store(message):

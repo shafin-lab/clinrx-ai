@@ -31,7 +31,7 @@ export function automaticRenalModel(catalog?:Catalog){
  const visited=new Set<string>();
  for(const e of [...catalog?.items??[],...catalog?.laboratory_reports??[]]){
   const f=e.fact,identity=stable([f.kind,f.id,f.revision]);if(visited.has(identity)||e.superseded)continue;visited.add(identity);
-  const common:string[]=[];if(!scoped(e))common.push('Source scope is not confirmed');if(conflicting.has(identity))common.push('Conflicting exact source bytes');if(e.terminal_reference.version!==f.revision)common.push('Terminal source revision not confirmed');
+  const common:string[]=[];if((f.kind==='observation'||f.kind==='laboratory_report'||!e.metadata)&&record(record(f.binding).verification).status!=='verified')common.push('Verified patient binding required');if(!scoped(e))common.push('Source scope is not confirmed');if(conflicting.has(identity))common.push('Conflicting exact source bytes');if(e.terminal_reference.version!==f.revision)common.push('Terminal source revision not confirmed');
   if(e.metadata?.note?.question===DOSE_CONTEXT_QUESTION){const time=evidenceEventTime(e);if(scope&&compare(time,scope.end)!==null&&compare(time,scope.end)!<=0)contextEntries.push({entry:e,time,context:!common.length&&f.record_status==='recorded'?parsePatientDoseContext(e.metadata.note.findings):undefined});else if(compare(time,time)===null)reasons.push('Patient dosing context timing is unresolved');continue;}
   function add(role:Candidate['role'],value:string,unit:string,time:string,available:string,extra:string[]=[],component?:string){
    if(!scope)return;
@@ -57,8 +57,8 @@ export function automaticRenalModel(catalog?:Catalog){
    const why:string[]=[];
    if(f.kind==='observation'){
     const v=record(f.value),q=record(v.value),u=record(q.unit),t=record(f.time);
-    if(v.status!=='known'||!['verified','clinician_confirmed'].includes(String(f.verification))||f.conflict!=='none_known'||u.status!=='assessed'||u.system!=='UCUM'||u.raw!==u.code)why.push('Verified measured body-weight observation and unit required');
-    if(t.precision==='instant')add('weight',String(q.value??''),String(u.code??''),String(t.event??''),String(t.event??''),why);
+    if(v.status!=='known'||!['verified','clinician_confirmed'].includes(String(f.verification))||f.conflict!=='none_known'||f.record_status==='withdrawn'||f.record_status==='invalid'||u.status!=='assessed'||u.system!=='UCUM'||u.raw!==u.code)why.push('Verified measured body-weight observation and unit required');
+    if(t.precision==='instant')add('weight',String(q.value??''),String(u.code??''),String(t.event??''),String(t.event??''),why);else reasons.push('A weight source has unresolved timing; review before using an older value');
    }else if(c){if(c.category!=='weight'||c.acquisition!=='measured'||c.purpose!==null||f.record_status!=='recorded')why.push('True measured body weight required; dosing weight excluded');add('weight',c.amount??'',c.unit??'',c.point??'',c.point??'',why);}
   }
   if(f.kind==='laboratory_report'){
@@ -101,6 +101,8 @@ export function automaticRenalModel(catalog?:Catalog){
   if(scope&&selected&&(Date.parse(scope.end)-Date.parse(selected.time)>24*3600000))reasons.push('Patient renal review exceeds the 24-hour preview limit');
   const oldWeight=selected?.entry.metadata?.note?.pins.find(p=>p.reference.kind===weight?.source.reference.kind&&p.reference.id===weight?.source.reference.id);
   if(weight&&(!oldWeight||oldWeight.digest!==weight.source.digest||oldWeight.reference.version!==weight.source.reference.version))reasons.push('Weight changed or its exact source was not retained in the patient dosing review');
+  const oldCreatinine=selected?.entry.metadata?.note?.pins.find(p=>p.reference.kind===creatinine?.source.reference.kind&&p.reference.id===creatinine?.source.reference.id);
+  if(creatinine&&(!oldCreatinine||oldCreatinine.digest!==creatinine.source.digest||oldCreatinine.reference.version!==creatinine.source.reference.version))reasons.push('Creatinine changed or its exact source was not retained in the patient dosing review');
  }
  if(creatinine){const latest=Number(creatinine.value),at=Date.parse(creatinine.time);for(const old of candidates.filter(x=>x.role==='creatinine'&&x.trendEligible&&compare(x.time,creatinine.time)!<0)){const hours=(at-Date.parse(old.time))/3600000;if(hours<=48&&latest-Number(old.value)>=0.3-1e-10||hours<=168&&latest/Number(old.value)>=1.5-1e-10){reasons.push('Creatinine rise requires clinical review; routine steady-state dosing is paused');break;}}}
  const sources:DoseSource[]=[...weight?[weight.source]:[],...creatinine?[creatinine.source]:[]];

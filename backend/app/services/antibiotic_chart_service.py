@@ -115,6 +115,18 @@ class AntibioticChartService(RF2Service):
         try:stored=repo.append_revision(fact,target=TARGET) if body.predecessor else repo.append_fact(fact,target=TARGET)
         except RecordConflict:raise EvidenceConflict() from None
         return self.reply(body,'saved',stored.fact,stored)
+    def course_history(self,repo,body):
+        from datetime import timedelta
+        context=MicroStateCodec(self.dependencies.config.envelope_signing_key).verify(body.state_context)
+        scope=context.assembly_request.scope
+        if scope.target!=TARGET:raise EvidenceConflict()
+        selected=self.micro(repo,scope)
+        if selected.assembly.canonical_digest!=context.assembly_digest:raise StorageIntegrityError('micro snapshot mismatch')
+        ref=Reference.model_validate(body.reference.model_dump())
+        if not any(i.fact.reference==ref and i.fact.kind in KINDS for i in selected.assembly.snapshot.items):raise RecordNotFound('medication source not retained in selected view')
+        # Widen only time, retaining the exact authenticated repository cutoff.
+        wider=scope.model_copy(update={'review_start':min(scope.review_start,scope.review_end-timedelta(days=7))})
+        return self.bounded_dict(self.micro(repo,wider).model_dump(mode='json'))
     def history(self,repo,body):
         context=MicroStateCodec(self.dependencies.config.envelope_signing_key).verify(body.state_context)
         if context.assembly_request.scope.target!=TARGET:raise EvidenceConflict()

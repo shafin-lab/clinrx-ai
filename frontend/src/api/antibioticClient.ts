@@ -43,6 +43,14 @@ export class AntibioticClient{
   if(draft.mode==='prescription'||draft.mode==='given'){if(object(dose.amount).value!==draft.amount||object(object(dose.amount).unit).raw!==draft.unit||dose.basis!==(draft.mode==='given'?'total_administered':'per_dose')||object(r.fact.route).raw_display!==draft.route)reject();}
   if(r.status==='saved'&&(!r.ingestion||r.ingestion.repository_id!==draft.repository||!Number.isSafeInteger(r.ingestion.ingestion_sequence)))reject();return r;
  }
+ async courseHistory(state:MicroState,reference:Ref){
+  const selected=(state.assembly.snapshot.items??[]).find(i=>i.fact.kind===reference.kind&&i.fact.id===reference.id&&i.fact.revision===reference.version);if(!selected)reject();
+  const result=decodeMicroState(await this.request('/course-history',{state_context:state.state_context,reference}),{patient_id:'synthetic-p1',encounter_id:'synthetic-e1'});
+  const before=state.assembly.request.scope,after=result.assembly.request.scope,start=Math.min(Date.parse(before.review_start),Date.parse(before.review_end)-7*86400000);
+  if(stable(before.repository_cutoff)!==stable(after.repository_cutoff)||Date.parse(after.review_end)!==Date.parse(before.review_end)||Date.parse(after.review_start)!==start)reject();
+  for(const item of result.assembly.snapshot.items??[]){if(await hash(stable(item.fact))!==item.expected_digest)reject();}
+  return result;
+ }
  async history(state:MicroState,reference:Ref){
   const raw=object(await this.request('/history',{state_context:state.state_context,reference}));if(raw.execution_enabled!==false||stable(raw.reference)!==stable(reference)||!Array.isArray(raw.items)||!raw.items.length||raw.items.length>128)reject();
   const selected=(state.assembly.snapshot.items??[]).find(i=>i.fact.kind===reference.kind&&i.fact.id===reference.id&&i.fact.revision===reference.version);if(!selected)reject();
