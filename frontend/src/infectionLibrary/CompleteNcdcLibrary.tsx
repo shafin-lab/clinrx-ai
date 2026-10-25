@@ -2,6 +2,7 @@ import {useMemo,useState} from 'react';
 import {infectionCatalogue} from './catalogue';
 import {formatSourceText,type InfectionCatalogue} from './model';
 import {doseNotes,formatTreatment,validateCompleteGuidance,type CompleteNcdcSection} from './completeNcdcModel';
+import {SupplementaryEvidence} from './SupplementaryEvidence';
 import './infectionLibrary.css';
 
 function Treatment({title,text}:{title:string;text:string}){
@@ -30,7 +31,7 @@ export function CompleteNcdcLibrary({patient,encounter,data,catalogue=infectionC
  const originalImages=(current:CompleteNcdcSection)=><details className="ncdc-original"><summary>Original NCDC section · source details</summary><p>{source.name} · {source.version}</p>{current.figures.filter(f=>!f.primary).map((figure,index)=><figure key={index}><img src={figure.imagePath} alt={figure.caption} loading="lazy"/><figcaption>{figure.caption}</figcaption></figure>)}<p><a href={'/assets/infection-sources/ncdc-2025.pdf#page='+current.pdfPages[0]} target="_blank" rel="noopener noreferrer">Open retained NCDC PDF · page {current.pdfPages[0]} ↗</a></p><p><a href={source.url+'#page='+current.pdfPages[0]} target="_blank" rel="noopener noreferrer">Open publisher’s source ↗</a></p><details><summary>Source identity</summary><code>{source.sha256}</code></details></details>;
  return <section className="infection-library" aria-label="Infection-based antibiotic library">
   <div className="infection-title"><div><p className="infection-eyebrow">Reference library</p><h2>Infections &amp; treatment</h2><p className="infection-subtitle">{patient} · Encounter {encounter}</p></div><span className="infection-badge">Unreviewed · reference only</span></div>
-  <p className="infection-rule">NCDC guidance only. Reference only — not a prescription or a patient-specific recommendation.</p>
+  <p className="infection-rule">NCDC is the primary guidance. Optional supplementary references are shown separately. Reference only — not a prescription or a patient-specific recommendation.</p>
   {unconfirmed&&<p className="infection-note">Patient evidence is unconfirmed. This general reference library is not matched to this patient.</p>}
   <div className="infection-layout"><aside className="infection-browser" aria-label="Browse infections">
    <label>Clinical group<select value={groupId} onChange={e=>{setGroupId(e.target.value);setQuery('');setInfectionId('');reset();}}>{catalogue.groups.map(g=><option key={g.id} value={g.id}>{g.name}</option>)}</select></label>
@@ -51,6 +52,7 @@ export function CompleteNcdcLibrary({patient,encounter,data,catalogue=infectionC
     {section.figures.filter(f=>f.primary).map((figure,index)=><figure className="ncdc-primary-figure" key={index}><img src={figure.imagePath} alt={figure.caption} loading="lazy"/><figcaption>{figure.caption}</figcaption></figure>)}
     {!section.rows.length&&!section.figures.some(f=>f.primary)&&<section className="infection-management">{section.figures.length?section.figures.map((figure,index)=><figure key={index}><img className="ncdc-fallback-image" src={figure.imagePath} alt={figure.caption} loading="lazy"/><figcaption>{figure.caption}</figcaption></figure>):<p>{formatSourceText(section.sourceText)}</p>}</section>}
     <div className="infection-evidence"><p className="infection-source-label">{source.name} · {source.version} · PDF page {section.pdfPages.join(', ')}</p>{originalImages(section)}</div>
+    <SupplementaryEvidence key={`${infection.id}:${row?.id??''}`} infectionId={infection.id} rowId={row?.id}/>
    </article>}
   </div></div>
  </section>;

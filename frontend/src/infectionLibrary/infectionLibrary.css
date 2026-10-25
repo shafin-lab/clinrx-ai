@@ -11,3 +11,12 @@
 
 .infection-library .infection-management{padding:16px 20px;border-top:1px solid var(--infection-border);font-size:14px;line-height:1.65}.infection-library .infection-management p{margin:0 0 12px}.infection-library .infection-management p:last-child{margin-bottom:0}
 .infection-library .ncdc-treatment{padding:18px 20px;border-top:1px solid var(--infection-border);font-size:15px;line-height:1.65}.infection-library .ncdc-treatment p{margin:0 0 10px}.infection-library .ncdc-treatment p:last-child{margin-bottom:0}.infection-library .ncdc-operator{font-weight:750;color:var(--infection-brand);margin:14px 0!important}.infection-library .ncdc-dose-note{font-size:13px;padding:10px 12px;background:#fff4df;border-left:3px solid #b07c29;color:#6c4b1b}.infection-library .ncdc-reference-prompt{padding:0 20px;font-size:13px;line-height:1.6}.infection-library .ncdc-original img,.infection-library .ncdc-primary-figure img,.infection-library .ncdc-fallback-image{display:block;max-width:100%;height:auto}.infection-library .ncdc-original figure,.infection-library .ncdc-primary-figure{margin:16px 0}.infection-library .ncdc-primary-figure{padding:0 20px}.infection-library figcaption{font-size:12px;color:var(--infection-muted);margin:8px 0}
+.infection-library .infection-supplement{border-top:1px solid var(--infection-border);padding:12px 20px;line-height:1.65}
+.infection-library .infection-supplement-entry{padding:18px 0;border-top:1px solid var(--infection-border);font-size:14px;overflow-wrap:anywhere}
+.infection-library .infection-supplement-heading{display:flex;gap:10px;align-items:baseline;justify-content:space-between;flex-wrap:wrap}
+.infection-library .infection-supplement-entry p{margin:8px 0 12px}
+.infection-library .infection-supplement-entry dl{margin:16px 0}
+.infection-library .infection-supplement-entry dl div{display:grid;grid-template-columns:minmax(90px,120px) minmax(0,1fr);gap:12px;padding:8px 0;border-bottom:1px solid var(--infection-border)}
+.infection-library .infection-supplement-entry dt{font-weight:600}.infection-library .infection-supplement-entry dd{margin:0}
+.infection-library .infection-supplement-entry a{color:var(--infection-brand)}
+@media(max-width:430px){.infection-library .infection-supplement{padding:12px 16px}.infection-library .infection-supplement-entry dl div{grid-template-columns:1fr;gap:4px}}
