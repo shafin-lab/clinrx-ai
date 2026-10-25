@@ -1,6 +1,6 @@
 # Infection Library Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Replace the active medicine-group reference entry point with the approved NCDC-first infection library, preserving all prior work and patient data.
 
@@ -29,22 +29,24 @@
 
 ### Task 1: Source catalogue and precedence
 **Files:** create `frontend/src/infectionLibrary/data/infection-guidance.json`, `tools/build_infection_guidance.py`, `docs/antibiotics/INFECTION-SOURCE-MAPPING.md`, `frontend/tests/infectionCatalogue.test.ts`.
-- [ ] Write failing source coverage/precedence tests, including CAP, source gaps, JIPMER renal/perinephric abscess additions, same-context precedence, all 19 groups, unique IDs and valid pages/hashes.
-- [ ] Run tests and record RED; extract/curate all NCDC named infection sections and map JIPMER system-specific contexts without duplicated overlap.
-- [ ] Verify sampled numerical/conditional fields against original source tables. Record held or missing fields explicitly; run tests GREEN.
-- [ ] Commit source catalogue, generator, crosswalk and tests.
+- [x] Write failing source coverage/precedence tests, including CAP, source gaps, JIPMER renal/perinephric abscess additions, same-context precedence, all 19 groups, unique IDs and valid pages/hashes.
+- [x] Run tests and record RED; extract/curate all NCDC named infection sections and map JIPMER system-specific contexts without duplicated overlap.
+- [x] Verify sampled numerical/conditional fields against original source tables. Record held or missing fields explicitly; run tests GREEN.
+- [x] Commit source catalogue, generator, crosswalk and tests.
 
 ### Task 2: Read-only integrated UI
 **Files:** create `frontend/src/infectionLibrary/InfectionLibrary.tsx`, `infectionLibrary.css`, `catalogue.ts`; preserve old `AntibioticReferences.tsx` as `LegacyAntibioticReferences.tsx`; replace active export; add `frontend/tests/infectionLibrary.test.tsx`, update legacy test import.
-- [ ] Write failing tests for all groups, real search, one source/case/regimen selection, JIPMER additions, empty states, no CRRT/medicine catalogue UI, no fetch/storage/prescription side effects and selection invalidation.
-- [ ] Run tests RED; implement from the shared data interface and existing page styling.
-- [ ] Run focused and full frontend tests, typecheck and build; preserve legacy content and other workspaces.
-- [ ] Commit implementation and tests.
+- [x] Write failing tests for all groups, real search, one source/case/regimen selection, JIPMER additions, empty states, no CRRT/medicine catalogue UI, no fetch/storage/prescription side effects and selection invalidation.
+- [x] Run tests RED; implement from the shared data interface and existing page styling.
+- [x] Run focused and full frontend tests, typecheck and build; preserve legacy content and other workspaces.
+- [x] Commit implementation and tests.
 
 ### Task 3: Independent checkpoint review and new preview
 **Files:** add launch instructions and verification/preservation record under `docs/antibiotics/` and ignored `review-evidence/infection-library/`.
-- [ ] Freeze the checkpoint and request a fresh whole-change review of source matching and UI behavior.
-- [ ] Correct material findings with reproducing tests and run relevant checks.
-- [ ] Back up the current synthetic SQLite database into this candidate's runtime directory; launch a new loopback origin using the reviewed frontend.
-- [ ] Verify browser group→infection→context→regimen workflow, JIPMER additions, returning to culture/patient/overview and reload; make no patient saves.
-- [ ] Recheck original build/database/sources hashes and SQLite integrity. Record exact coverage, tests, limitations, candidate URL and commit.
+- [x] Freeze the checkpoint and request a fresh whole-change review of source matching and UI behavior.
+- [x] Correct material findings with reproducing tests and run relevant checks.
+- [x] Back up the current synthetic SQLite database into this candidate's runtime directory; launch a new loopback origin using the reviewed frontend.
+- [x] Verify browser group→infection→context→regimen workflow, JIPMER additions, returning to culture/patient/overview and reload; make no patient saves.
+- [x] Recheck original build/database/sources hashes and SQLite integrity. Record exact coverage, tests, limitations, candidate URL and commit.
+
+Verification and qualified content coverage: `docs/antibiotics/INFECTION-LIBRARY-HANDOFF.md`. The original preview remains unchanged; this is an independently reviewed reference preview, not completed clinical content validation.
