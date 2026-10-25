@@ -298,7 +298,7 @@ def coverage_report(data,audits):
         for table in audit['tableSummaries']:
             lines.append(f"- PDF {table['pdfPage']}: {table['columns']} grid columns, {table['gridRows']} grid rows; {'projected as source treatment columns' if table['structured'] else 'original table retained in notes/text/image'}; source header/context: {table['header'].replace('|',' / ')}.")
         lines.append('')
-    return '\n'.join(lines)+'\n'
+    return '\n'.join(lines).rstrip()+'\n'
 
 
 def build(pdf_path,check):

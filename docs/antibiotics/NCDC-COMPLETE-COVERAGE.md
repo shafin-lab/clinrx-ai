@@ -654,4 +654,3 @@ Rebuild with bundled Python: `python tools/build_ncdc_complete_library.py`. Veri
 - PDF 122: 4 grid columns, 3 grid rows; projected as source treatment columns; source header/context: Type of Infection First Line (with Dosage Alternative (with Comments and Duration) dosage and Duration) Type of Infectio.
 - PDF 123: 4 grid columns, 4 grid rows; projected as source treatment columns; source header/context: Type of Infection First Line (with Dosage Alternative (with Comments and Duration) dosage and Duration) Type of Infectio.
 - PDF 124: 4 grid columns, 3 grid rows; projected as source treatment columns; source header/context: Type of Infection First Line (with Dosage Alternative (with Comments and Duration) dosage and Duration) Type of Infectio.
-
