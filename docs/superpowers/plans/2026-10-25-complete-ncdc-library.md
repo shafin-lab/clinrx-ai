@@ -25,16 +25,16 @@ Source agent owns NEW tools/build_ncdc_complete_library.py, NEW frontend/src/inf
 Projection schema: {source:{id,name,version,url,sha256},sections:[{infectionId,section,name,pdfPages,rows:[{id,label,firstLine,alternative,comments,pdfPages}],notes:[{text,pdfPages}],figures:[{imagePath,pdfPage,caption}],sourceText}]}. IDs match existing ncdc-X-Y infection IDs. Notes are outside the structured table cells, not repeated table text. Figures may be all exact section/page crops for full audit; parent avoids rendering duplicate tables by default.
 
 ### Task1: Complete source projection
-- [ ] Source agent writes failing coverage/content tests; extracts all rows/alternatives/notes and crops all section segments with exact heading boundaries.
-- [ ] Verify every section, source identity, page continuation and fallback coverage; commit only owned files.
+- [x] Source agent writes failing coverage/content tests; extracts all rows/alternatives/notes and crops all section segments with exact heading boundaries.
+- [x] Verify every section, source identity, page continuation and fallback coverage; commit only owned files.
 
 ### Task2: Clinician display
-- [ ] Parent writes failing pure component/model tests for native/prosthetic/severe endocarditis full firstLine OR/PLUS content, alternatives, no source-branch labels, source warnings, state resets and chronic reference.
-- [ ] Implement CompleteNcdcLibrary with existing19group navigation and selected clinical row, source-first labels, readable paragraphs/operators and source provenance.
-- [ ] Activate via existing AntibioticReferences wrapper once projection is ready. Retain previous curated component/tests as preserved work. Verify active shared-workspace integration.
+- [x] Parent writes failing pure component/model tests for native/prosthetic/severe endocarditis full firstLine OR/PLUS content, alternatives, no source-branch labels, source warnings, state resets and chronic reference.
+- [x] Implement CompleteNcdcLibrary with existing19group navigation and selected clinical row, source-first labels, readable paragraphs/operators and source provenance.
+- [x] Activate via existing AntibioticReferences wrapper once projection is ready. Retain previous curated component/tests as preserved work. Verify active shared-workspace integration.
 
 ### Task3: Review and publication
-- [ ] Freeze checkpoint, independent full-change review, correct material findings.
-- [ ] Run complete frontend suite, source tests, deterministic generator, typecheck, production build.
-- [ ] Back up current5247build; publish new build at5247 using unchanged database. Browser verify multiple groups, source alternatives, source algorithms, chronic reference, source links and reload; no saves.
-- [ ] Verify source/build/database preservation; update coverage ledger honestly and show preview.
+- [x] Freeze checkpoint, independent full-change review, correct material findings.
+- [x] Run complete frontend suite, source tests, deterministic generator, typecheck, production build.
+- [x] Back up current5247build; publish new build at5247 using unchanged database. Browser verify multiple groups, source alternatives, source algorithms, chronic reference, source links and reload; no saves.
+- [x] Verify source/build/database preservation; update coverage ledger honestly and show preview.
