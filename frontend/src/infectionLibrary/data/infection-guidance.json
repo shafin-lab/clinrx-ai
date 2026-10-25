@@ -101,9 +101,11 @@
     {
       "id": "ncdc-1-1",
       "groupId": "group-1",
-      "name": "Infective Endocarditis (Empirical therapy pending blood culture results)",
+      "name": "Infective Endocarditis",
       "ncdcSection": "1.1",
-      "aliases": [],
+      "aliases": [
+        "Infective Endocarditis (Empirical therapy pending blood culture results)"
+      ],
       "cases": [
         {
           "id": "ncdc-1-1-case-1",
@@ -1858,22 +1860,14 @@
           "pdfPages": [
             50
           ],
-          "regimens": [
-            {
-              "id": "ncdc-6-7-case-1-regimen-1",
-              "label": "Primary source treatment",
-              "instructions": "Ceftriaxone 500\nIM Stat\n+\nDoxycycline\n100mg BD for 10\ndays",
-              "duration": null,
-              "gaps": [],
-              "executable": false,
-              "clinical_use_eligible": false,
-              "review_status": "unreviewed"
-            }
-          ],
+          "regimens": [],
           "notes": [
+            "Primary treatment source text (held for review): Ceftriaxone 500\nIM Stat\n+\nDoxycycline\n100mg BD for 10\ndays",
             "Alternative column is not imported as competing primary guidance; consult source for alternatives."
           ],
-          "gaps": [],
+          "gaps": [
+            "Source dose unit is missing for ceftriaxone or penicillin V; no unit is inferred."
+          ],
           "executable": false,
           "clinical_use_eligible": false,
           "review_status": "unreviewed"
@@ -2717,73 +2711,15 @@
           "pdfPages": [
             60
           ],
-          "regimens": [
-            {
-              "id": "ncdc-9-3-case-1-regimen-1",
-              "label": "Primary source option 1",
-              "instructions": "Prefer β-lactams.\nPenicillin V 250-500\nq6h",
-              "duration": null,
-              "gaps": [
-                "Source treatment fields retained verbatim; missing routes or durations are not inferred."
-              ],
-              "executable": false,
-              "clinical_use_eligible": false,
-              "review_status": "unreviewed"
-            },
-            {
-              "id": "ncdc-9-3-case-1-regimen-2",
-              "label": "Primary source option 2",
-              "instructions": "Amoxicillin 500mg\nTDS (25-50\nmg/kg/day)",
-              "duration": null,
-              "gaps": [
-                "Source treatment fields retained verbatim; missing routes or durations are not inferred."
-              ],
-              "executable": false,
-              "clinical_use_eligible": false,
-              "review_status": "unreviewed"
-            },
-            {
-              "id": "ncdc-9-3-case-1-regimen-3",
-              "label": "Primary source option 3",
-              "instructions": "Cloxacillin 500mg\nQID (50mg/kg/day)",
-              "duration": null,
-              "gaps": [
-                "Source treatment fields retained verbatim; missing routes or durations are not inferred."
-              ],
-              "executable": false,
-              "clinical_use_eligible": false,
-              "review_status": "unreviewed"
-            },
-            {
-              "id": "ncdc-9-3-case-1-regimen-4",
-              "label": "Primary source option 4",
-              "instructions": "Cephalexin 250-\n500mg QID (25–50\nmg/kg/day)",
-              "duration": null,
-              "gaps": [
-                "Source treatment fields retained verbatim; missing routes or durations are not inferred."
-              ],
-              "executable": false,
-              "clinical_use_eligible": false,
-              "review_status": "unreviewed"
-            },
-            {
-              "id": "ncdc-9-3-case-1-regimen-5",
-              "label": "Primary source option 5",
-              "instructions": "Cefadroxil 500 mg\nq12h",
-              "duration": null,
-              "gaps": [
-                "Source treatment fields retained verbatim; missing routes or durations are not inferred."
-              ],
-              "executable": false,
-              "clinical_use_eligible": false,
-              "review_status": "unreviewed"
-            }
-          ],
+          "regimens": [],
           "notes": [
+            "Primary treatment source text (held for review): Prefer β-lactams.\nPenicillin V 250-500\nq6h\nOr\nAmoxicillin 500mg\nTDS (25-50\nmg/kg/day)\nOr\nCloxacillin 500mg\nQID (50mg/kg/day)\nOr\nCephalexin 250-\n500mg QID (25–50\nmg/kg/day)\nOr\nCefadroxil 500 mg\nq12h",
             "Alternative column is not imported as competing primary guidance; consult source for alternatives.",
             "Source comments: Duration of therapy is 5 to\n7 days based on clinical\nresponse."
           ],
-          "gaps": [],
+          "gaps": [
+            "Source dose unit is missing for ceftriaxone or penicillin V; no unit is inferred."
+          ],
           "executable": false,
           "clinical_use_eligible": false,
           "review_status": "unreviewed"
@@ -3851,6 +3787,66 @@
         },
         {
           "id": "ncdc-10-7-case-10",
+          "label": "Urology-Clean with entry into urinary tract — adult surgical prophylaxis",
+          "sourceId": "ncdc",
+          "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
+          "pdfPages": [
+            74
+          ],
+          "regimens": [],
+          "notes": [
+            "Source antibiotic cell: Cefazolin (the addition of a single dose of an aminoglycoside may be recommended for placement of prosthetic material [e.g., penile prosthesis])",
+            "Source adult dosage cell: blank"
+          ],
+          "gaps": [
+            "Source adult dosage is missing or incomplete; conditional prophylaxis guidance requires source review. No dose is inferred."
+          ],
+          "executable": false,
+          "clinical_use_eligible": false,
+          "review_status": "unreviewed"
+        },
+        {
+          "id": "ncdc-10-7-case-11",
+          "label": "Urology-Clean without entry into urinary tract — adult surgical prophylaxis",
+          "sourceId": "ncdc",
+          "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
+          "pdfPages": [
+            74
+          ],
+          "regimens": [],
+          "notes": [
+            "Source antibiotic cell: Cefazolin (the addition of a single dose of an aminoglycoside may be recommended for placement of prosthetic material [e.g., penile prosthesis])",
+            "Source adult dosage cell: blank"
+          ],
+          "gaps": [
+            "Source adult dosage is missing or incomplete; conditional prophylaxis guidance requires source review. No dose is inferred."
+          ],
+          "executable": false,
+          "clinical_use_eligible": false,
+          "review_status": "unreviewed"
+        },
+        {
+          "id": "ncdc-10-7-case-12",
+          "label": "Genitourinary Lower tract instrumentation with risk factors for infection (includes transrectal prostate biopsy] — adult surgical prophylaxis",
+          "sourceId": "ncdc",
+          "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
+          "pdfPages": [
+            74
+          ],
+          "regimens": [],
+          "notes": [
+            "Source antibiotic cell: Fluoroquinolones, Cefazolin",
+            "Source adult dosage cell: blank"
+          ],
+          "gaps": [
+            "Source adult dosage is missing or incomplete; conditional prophylaxis guidance requires source review. No dose is inferred."
+          ],
+          "executable": false,
+          "clinical_use_eligible": false,
+          "review_status": "unreviewed"
+        },
+        {
+          "id": "ncdc-10-7-case-13",
           "label": "Liver transplantation — adult surgical prophylaxis",
           "sourceId": "ncdc",
           "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
@@ -3859,7 +3855,7 @@
           ],
           "regimens": [
             {
-              "id": "ncdc-10-7-case-10-regimen-1",
+              "id": "ncdc-10-7-case-13-regimen-1",
               "label": "Primary source treatment",
               "instructions": "Piperacillin -tazobactam — 4.5 g",
               "duration": null,
@@ -3882,101 +3878,8 @@
           "review_status": "unreviewed"
         },
         {
-          "id": "ncdc-10-7-case-11",
-          "label": "Heart/Lung transplantation — adult surgical prophylaxis",
-          "sourceId": "ncdc",
-          "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
-          "pdfPages": [
-            74
-          ],
-          "regimens": [
-            {
-              "id": "ncdc-10-7-case-11-regimen-1",
-              "label": "Primary source treatment",
-              "instructions": "Cefazolin — 1-2 g IV",
-              "duration": null,
-              "gaps": [
-                "Duration not supplied as a fixed value in this primary treatment cell; inspect the source comments."
-              ],
-              "executable": false,
-              "clinical_use_eligible": false,
-              "review_status": "unreviewed"
-            }
-          ],
-          "notes": [
-            "Source table headers: Specific operations; Expected organism; Antibiotic of choice; Dosage in adults.",
-            "This is prophylaxis, not infection treatment. Source timing and duration context on PDF72 must be reviewed."
-          ],
-          "gaps": [],
-          "executable": false,
-          "clinical_use_eligible": false,
-          "review_status": "unreviewed"
-        },
-        {
-          "id": "ncdc-10-7-case-12",
-          "label": "Hysterectomy — adult surgical prophylaxis",
-          "sourceId": "ncdc",
-          "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
-          "pdfPages": [
-            74
-          ],
-          "regimens": [
-            {
-              "id": "ncdc-10-7-case-12-regimen-1",
-              "label": "Primary source treatment",
-              "instructions": "Cefazolin — 1-2 g IV",
-              "duration": null,
-              "gaps": [
-                "Duration not supplied as a fixed value in this primary treatment cell; inspect the source comments."
-              ],
-              "executable": false,
-              "clinical_use_eligible": false,
-              "review_status": "unreviewed"
-            }
-          ],
-          "notes": [
-            "Source table headers: Specific operations; Expected organism; Antibiotic of choice; Dosage in adults.",
-            "This is prophylaxis, not infection treatment. Source timing and duration context on PDF72 must be reviewed."
-          ],
-          "gaps": [],
-          "executable": false,
-          "clinical_use_eligible": false,
-          "review_status": "unreviewed"
-        },
-        {
-          "id": "ncdc-10-7-case-13",
-          "label": "Caesarean section — adult surgical prophylaxis",
-          "sourceId": "ncdc",
-          "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
-          "pdfPages": [
-            74
-          ],
-          "regimens": [
-            {
-              "id": "ncdc-10-7-case-13-regimen-1",
-              "label": "Primary source treatment",
-              "instructions": "Cefazolin — 1-2 g IV",
-              "duration": null,
-              "gaps": [
-                "Duration not supplied as a fixed value in this primary treatment cell; inspect the source comments."
-              ],
-              "executable": false,
-              "clinical_use_eligible": false,
-              "review_status": "unreviewed"
-            }
-          ],
-          "notes": [
-            "Source table headers: Specific operations; Expected organism; Antibiotic of choice; Dosage in adults.",
-            "This is prophylaxis, not infection treatment. Source timing and duration context on PDF72 must be reviewed."
-          ],
-          "gaps": [],
-          "executable": false,
-          "clinical_use_eligible": false,
-          "review_status": "unreviewed"
-        },
-        {
           "id": "ncdc-10-7-case-14",
-          "label": "Neurosurgery — adult surgical prophylaxis",
+          "label": "Heart/Lung transplantation — adult surgical prophylaxis",
           "sourceId": "ncdc",
           "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
           "pdfPages": [
@@ -4007,7 +3910,7 @@
         },
         {
           "id": "ncdc-10-7-case-15",
-          "label": "Small Intestine- Non obstructed — adult surgical prophylaxis",
+          "label": "Hysterectomy — adult surgical prophylaxis",
           "sourceId": "ncdc",
           "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
           "pdfPages": [
@@ -4017,7 +3920,7 @@
             {
               "id": "ncdc-10-7-case-15-regimen-1",
               "label": "Primary source treatment",
-              "instructions": "Cefazolin — 1-2 g IV+500 mg",
+              "instructions": "Cefazolin — 1-2 g IV",
               "duration": null,
               "gaps": [
                 "Duration not supplied as a fixed value in this primary treatment cell; inspect the source comments."
@@ -4038,7 +3941,7 @@
         },
         {
           "id": "ncdc-10-7-case-16",
-          "label": "Small intestine- obstructed — adult surgical prophylaxis",
+          "label": "Caesarean section — adult surgical prophylaxis",
           "sourceId": "ncdc",
           "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
           "pdfPages": [
@@ -4047,6 +3950,89 @@
           "regimens": [
             {
               "id": "ncdc-10-7-case-16-regimen-1",
+              "label": "Primary source treatment",
+              "instructions": "Cefazolin — 1-2 g IV",
+              "duration": null,
+              "gaps": [
+                "Duration not supplied as a fixed value in this primary treatment cell; inspect the source comments."
+              ],
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            }
+          ],
+          "notes": [
+            "Source table headers: Specific operations; Expected organism; Antibiotic of choice; Dosage in adults.",
+            "This is prophylaxis, not infection treatment. Source timing and duration context on PDF72 must be reviewed."
+          ],
+          "gaps": [],
+          "executable": false,
+          "clinical_use_eligible": false,
+          "review_status": "unreviewed"
+        },
+        {
+          "id": "ncdc-10-7-case-17",
+          "label": "Neurosurgery — adult surgical prophylaxis",
+          "sourceId": "ncdc",
+          "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
+          "pdfPages": [
+            74
+          ],
+          "regimens": [
+            {
+              "id": "ncdc-10-7-case-17-regimen-1",
+              "label": "Primary source treatment",
+              "instructions": "Cefazolin — 1-2 g IV",
+              "duration": null,
+              "gaps": [
+                "Duration not supplied as a fixed value in this primary treatment cell; inspect the source comments."
+              ],
+              "executable": false,
+              "clinical_use_eligible": false,
+              "review_status": "unreviewed"
+            }
+          ],
+          "notes": [
+            "Source table headers: Specific operations; Expected organism; Antibiotic of choice; Dosage in adults.",
+            "This is prophylaxis, not infection treatment. Source timing and duration context on PDF72 must be reviewed."
+          ],
+          "gaps": [],
+          "executable": false,
+          "clinical_use_eligible": false,
+          "review_status": "unreviewed"
+        },
+        {
+          "id": "ncdc-10-7-case-18",
+          "label": "Small Intestine- Non obstructed — adult surgical prophylaxis",
+          "sourceId": "ncdc",
+          "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
+          "pdfPages": [
+            74
+          ],
+          "regimens": [],
+          "notes": [
+            "Primary treatment source text (held for review): Cefazolin — 1-2 g IV+500 mg",
+            "Source table headers: Specific operations; Expected organism; Antibiotic of choice; Dosage in adults.",
+            "This is prophylaxis, not infection treatment. Source timing and duration context on PDF72 must be reviewed."
+          ],
+          "gaps": [
+            "Ambiguous source dose: the additional 500 mg has no identified agent; source clarification is required."
+          ],
+          "executable": false,
+          "clinical_use_eligible": false,
+          "review_status": "unreviewed"
+        },
+        {
+          "id": "ncdc-10-7-case-19",
+          "label": "Small intestine- obstructed — adult surgical prophylaxis",
+          "sourceId": "ncdc",
+          "locator": "NCDC section 10.7; printed p. 67; PDF p. 74",
+          "pdfPages": [
+            74
+          ],
+          "regimens": [
+            {
+              "id": "ncdc-10-7-case-19-regimen-1",
               "label": "Primary source treatment",
               "instructions": "Cefazolin + Metronidazole — 1-2g IV+500 mg",
               "duration": null,
@@ -4999,7 +4985,7 @@
               "id": "ncdc-12-6-case-1-regimen-1",
               "label": "Primary source option 1",
               "instructions": "Inj Clindamycin 600mg IV\nq8h",
-              "duration": null,
+              "duration": "4-6 weeks",
               "gaps": [
                 "Source treatment fields retained verbatim; missing routes or durations are not inferred."
               ],
@@ -5011,7 +4997,7 @@
               "id": "ncdc-12-6-case-1-regimen-2",
               "label": "Primary source option 2",
               "instructions": "Inj Amoxicillin-\nclavulanate 1.2g IV q8h",
-              "duration": null,
+              "duration": "4-6 weeks",
               "gaps": [
                 "Source treatment fields retained verbatim; missing routes or durations are not inferred."
               ],
@@ -5042,7 +5028,7 @@
               "id": "ncdc-12-6-case-2-regimen-1",
               "label": "Primary source option 1",
               "instructions": "Inj Piperacillin-\ntazobactam 4.5g IV q6h",
-              "duration": null,
+              "duration": "4-6 weeks",
               "gaps": [
                 "Source treatment fields retained verbatim; missing routes or durations are not inferred."
               ],
@@ -5054,7 +5040,7 @@
               "id": "ncdc-12-6-case-2-regimen-2",
               "label": "Primary source option 2",
               "instructions": "Cefoperazone-\nsulbactam 3g IV q12h",
-              "duration": null,
+              "duration": "4-6 weeks",
               "gaps": [
                 "Source treatment fields retained verbatim; missing routes or durations are not inferred."
               ],

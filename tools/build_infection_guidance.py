@@ -68,6 +68,16 @@ def finalize(entry):
     if not raw:
         return
     raw = re.sub(r'\bf\s+or\b', 'for', raw.strip())
+    # Preserve defective source amounts as explicit holds; never guess units or an unnamed agent.
+    anomaly = None
+    if re.search(r'Cefazolin\s*[—-]\s*1-2 g IV\+500 mg', raw):
+        anomaly = 'Ambiguous source dose: the additional 500 mg has no identified agent; source clarification is required.'
+    elif re.search(r'Ceftriaxone 500\s+IM|Penicillin V 250-500\s+q6h', raw):
+        anomaly = 'Source dose unit is missing for ceftriaxone or penicillin V; no unit is inferred.'
+    if anomaly:
+        entry['gaps'].append(anomaly)
+        entry['notes'].insert(0, 'Primary treatment source text (held for review): ' + raw)
+        return
     # A source cross-reference never borrows a regimen from another source.
     crossref = bool(re.search(r'\b(as per|same as|as mentioned|refer|see table|as above)\b', raw, re.I))
     conditional = bool(re.search(r'\b(if|depending|based on|consider|followed|initially|mild|severe|PMA|PNA|neonat|maximum)\b|[±]|\+/-', raw, re.I))
@@ -234,10 +244,22 @@ def curate(infections):
                 if page_no == 73 and 'Specific operations' not in header:
                     continue
                 for row in rows[1:] if page_no == 73 else rows:
-                    if not all(row[j] for j in (0,2,3)):
+                    if not row[0]:
+                        continue
+                    if not row[2] or not row[3]:
+                        case(by['10.7'], normal(row[0]) + ' — adult surgical prophylaxis', [page_no],
+                             notes=['Source antibiotic cell: ' + normal(row[2]), 'Source adult dosage cell: ' + (normal(row[3]) or 'blank')],
+                             gaps=['Source adult dosage is missing or incomplete; conditional prophylaxis guidance requires source review. No dose is inferred.'])
                         continue
                     entry = case(by['10.7'], normal(row[0]) + ' — adult surgical prophylaxis', [page_no], raw=normal(row[2]) + ' — ' + normal(row[3]), notes=['Source table headers: Specific operations; Expected organism; Antibiotic of choice; Dosage in adults.', 'This is prophylaxis, not infection treatment. Source timing and duration context on PDF72 must be reviewed.'])
                     finalize(entry)
+    by['1.1']['name'] = 'Infective Endocarditis'
+    by['1.1']['aliases'].append('Infective Endocarditis (Empirical therapy pending blood culture results)')
+    for c in by['12.6']['cases']:
+        # Both primary/secondary source comment cells explicitly state this duration (PDF91).
+        for regimen in c['regimens']:
+            regimen['duration'] = '4-6 weeks'
+            regimen['gaps'] = [gap for gap in regimen['gaps'] if not gap.startswith('Duration not supplied')]
     for c in by['11.1']['cases']:
         if c['label'] in ('Epithelial','Stromal','Endothelial'):
             c['label'] = 'Viral Keratitis — ' + c['label']

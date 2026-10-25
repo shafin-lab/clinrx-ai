@@ -36,7 +36,7 @@ it('lands an authoring deep link in the shared M7 view and returns to the existi
  window.history.replaceState(null,'','/?workspace=hemodynamics');const {send}=mount();await screen.findByRole('heading',{name:'Cardiovascular system'});await screen.findByRole('button',{name:'Record session review'});overview();await screen.findByRole('heading',{name:'Creatinine'});expect(send).toHaveBeenCalledTimes(1);
 });
 it.each([
- ['kidney','Renal system'],['hemodynamics','Cardiovascular system'],['respiratory','Respiratory system'],['antibiotics','Antimicrobial reference library'],['renal','Renal system'],['renal-review','Renal and fluid review'],['rf2','Renal charting and handover'],['evidence','Patient and evidence'],['entry','Source entry and reassessment'],['compare','Compare notes'],['handover','Handover'],
+ ['kidney','Renal system'],['hemodynamics','Cardiovascular system'],['respiratory','Respiratory system'],['antibiotics','Infections & treatment'],['renal','Renal system'],['renal-review','Renal and fluid review'],['rf2','Renal charting and handover'],['evidence','Patient and evidence'],['entry','Source entry and reassessment'],['compare','Compare notes'],['handover','Handover'],
 ])('restores enabled workspace route %s after a full remount',async(route,heading)=>{
  window.history.replaceState(null,'',`/?workspace=${route}&keep=present#record`);const page=mount();await screen.findByRole('heading',{name:heading});expect(new URL(window.location.href).searchParams.get('workspace')).toBe(route);page.unmount();mount();await screen.findByRole('heading',{name:heading});expect(new URL(window.location.href).searchParams.get('keep')).toBe('present');expect(new URL(window.location.href).hash).toBe('#record');
 });
@@ -69,9 +69,9 @@ it('does not let browser back bypass an open protected fluid-entry draft',async(
 },15000);
 it('retains the M7 session with one shared assessment catalog and a separate explicit daily chart read',async()=>{
  const {send}=mount();await screen.findByRole('heading',{name:'Creatinine'});hemo();fill();fireEvent.click(screen.getByRole('button',{name:'Record session review'}));await screen.findByRole('region',{name:'Session review records'});
- fireEvent.click(screen.getByRole('button',{name:'Antimicrobials'}));await screen.findByRole('heading',{name:'Antimicrobial reference library'}, {timeout:15000});fireEvent.change(await screen.findByLabelText('Find a medicine'),{target:{value:'teicoplanin'}});
- fireEvent.click(screen.getByRole('button',{name:/^Teicoplanin/}));expect(within(screen.getByRole('complementary',{name:'Antibiotic reference drawer'})).getByRole('heading',{name:'Teicoplanin'})).toBeInTheDocument();
- fireEvent.click(screen.getByRole('button',{name:'Open kidney evidence ↗'}));await screen.findByRole('heading',{name:'Renal system'});hemo();expect(screen.getByRole('region',{name:'Session review records'})).toHaveTextContent('Shared source review');expect(send).toHaveBeenCalledTimes(2);expect(String(send.mock.calls[1][0])).toContain('2026-10-09');
+ fireEvent.click(screen.getByRole('button',{name:'Antimicrobials'}));await screen.findByRole('heading',{name:'Infections & treatment'}, {timeout:15000});fireEvent.change(await screen.findByLabelText('Find an infection'),{target:{value:'pneumonia'}});
+ fireEvent.click(screen.getByRole('button',{name:/^Community Acquired Pneumonia/}));expect(screen.getByRole('heading',{name:'Community Acquired Pneumonia'})).toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'Renal system'}));await screen.findByRole('heading',{name:'Renal system'});hemo();expect(screen.getByRole('region',{name:'Session review records'})).toHaveTextContent('Shared source review');expect(send).toHaveBeenCalledTimes(2);expect(String(send.mock.calls[1][0])).toContain('2026-10-09');
 });
 
 it('keeps shared patient evidence confirmed while an antibiotic entry guard holds navigation and source interaction',async()=>{

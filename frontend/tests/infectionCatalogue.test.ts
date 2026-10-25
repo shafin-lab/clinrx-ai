@@ -4,6 +4,37 @@ import sourceCatalogue from '../src/infectionLibrary/data/infection-guidance.jso
 const catalogue = (): any => structuredClone(sourceCatalogue);
 
 describe('source-owned infection catalogue', () => {
+  it('holds source dose anomalies instead of offering incomplete drug amounts', () => {
+    const data = catalogue();
+    for (const section of ['10.7', '6.7', '9.3']) {
+      const infection = data.infections.find((item: any) => item.ncdcSection === section);
+      const anomaly = infection.cases.filter((context: any) => context.regimens.some((regimen: any) => /1-2 g IV\+500 mg|Ceftriaxone 500\s+IM|Penicillin V 250-500/.test(regimen.instructions)) || context.notes.some((note: string) => /1-2 g IV\+500 mg|Ceftriaxone 500\s+IM|Penicillin V 250-500/.test(note)));
+      expect(anomaly.length, `${section} source anomaly retained`).toBeGreaterThan(0);
+      for (const context of anomaly) {
+        expect(context.regimens).toHaveLength(0);
+        expect(context.gaps.join(' ')).toMatch(/unit|unattributed|ambiguous/i);
+      }
+    }
+  });
+
+  it('shows verified lung-abscess duration and neutral endocarditis heading', () => {
+    const data = catalogue();
+    expect(data.infections.find((item: any) => item.ncdcSection === '1.1').name).toBe('Infective Endocarditis');
+    const lung = data.infections.find((item: any) => item.ncdcSection === '12.6');
+    expect(lung.cases.flatMap((context: any) => context.regimens).every((regimen: any) => regimen.duration === '4-6 weeks')).toBe(true);
+  });
+
+  it('retains urological prophylaxis rows with missing doses as explicit holds', () => {
+    const infection = catalogue().infections.find((item: any) => item.ncdcSection === '10.7');
+    for (const pattern of [/Urology.*clean.*with entry/i, /Urology.*clean.*without entry/i, /Genitourinary.*instrumentation/i]) {
+      const context = infection.cases.find((item: any) => pattern.test(item.label));
+      expect(context).toBeDefined();
+      expect(context.regimens).toHaveLength(0);
+      expect(context.gaps.join(' ')).toMatch(/dose|dosage|missing/i);
+      expect(context.pdfPages).toContain(74);
+    }
+  });
+
   it('covers all 19 NCDC groups and all 87 named TOC subsections', () => {
     const data = catalogue();
     expect(data.groups).toHaveLength(19);
