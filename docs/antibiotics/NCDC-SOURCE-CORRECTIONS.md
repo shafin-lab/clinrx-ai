@@ -1,5 +1,7 @@
 # Targeted NCDC source-to-screen corrections
 
+Historical checkpoint: this targeted renderer is retained as existing work. The active library now uses the complete NCDC projection described in NCDC-COMPLETE-COVERAGE.md and NCDC-COMPLETE-HANDOFF.md. In particular, its former treatment-option/source-branch UI is superseded by complete first-line and alternative source columns; the verification below applies to the earlier checkpoint only.
+
 Scope: the user’s examples in endocarditis (section1.1), acute/chronic osteomyelitis (10.1/10.2), plus PDF column wrapping. This continues the NCDC-only library; no supplemental source, renal adjustment, prescription path or patient-data change is introduced.
 
 ## Source and representation

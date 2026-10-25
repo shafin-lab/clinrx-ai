@@ -1,10 +1,10 @@
 import {fireEvent,render,screen,within} from '@testing-library/react';
 import {expect,it,vi} from 'vitest';
-import {AntibioticReferences} from '../src/antibiotics/AntibioticReferences';
+import {InfectionLibrary} from '../src/infectionLibrary/InfectionLibrary';
 import {AntibioticWorkspace} from '../src/antibioticWorkflow/AntibioticWorkspace';
 
 const requested={patient:'synthetic-p1',encounter:'synthetic-e1',start:'2026-10-08T08:00:00Z',end:'2026-10-08T10:00:00Z'};
-function mount(){return render(<AntibioticReferences requested={requested} loading={false} onKidney={()=>{}}/>);}
+function mount(){return render(<InfectionLibrary patient={requested.patient} encounter={requested.encounter}/>);}
 function group(name:RegExp){const option=screen.getByRole('option',{name});fireEvent.change(screen.getByLabelText('Clinical group'),{target:{value:(option as HTMLOptionElement).value}});}
 
 it('opens the infection library with 19 clinical groups and no medicine or CRRT browsing controls',()=>{
@@ -53,7 +53,7 @@ it('browses reference guidance without calling patient APIs, writing browser sto
 });
 
 it('remains generally browsable when the patient snapshot is stale, without claiming patient applicability',()=>{
- render(<AntibioticReferences requested={requested} loading={false} retrievalError="Stale snapshot" onKidney={()=>{}}/>);
+ render(<InfectionLibrary patient={requested.patient} encounter={requested.encounter} unconfirmed/>);
  expect(screen.getByLabelText('Clinical group')).toBeEnabled();
  expect(screen.getByText(/not matched to this patient/i)).toBeInTheDocument();
 });
