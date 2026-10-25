@@ -52,7 +52,7 @@ describe('source-owned infection catalogue', () => {
     expect(data.review_status).toBe('unreviewed');
     expect(data.executable).toBe(false);
     expect(data.clinical_use_eligible).toBe(false);
-    expect(data.sources.map((source: any) => source.id)).toEqual(['ncdc', 'jipmer']);
+    expect(data.sources.map((source: any) => source.id)).toEqual(['ncdc']);
     for (const source of data.sources) expect(source.sha256).toMatch(/^[a-f0-9]{64}$/);
     const ids: string[] = [];
     for (const infection of data.infections) {
@@ -96,20 +96,6 @@ describe('source-owned infection catalogue', () => {
     expect(primary.regimens.every((regimen: any) => !/Piperacillin/i.test(regimen.instructions))).toBe(true);
   });
 
-  it('adds precise JIPMER renal/perinephric abscess entries without replacing NCDC urinary contexts', () => {
-    const infections = catalogue().infections;
-    for (const name of ['Renal abscess', 'Perinephric abscess']) {
-      const infection = infections.find((item: any) => item.name === name);
-      expect(infection).toBeDefined();
-      expect(infection.cases.every((context: any) => context.sourceId === 'jipmer')).toBe(true);
-      expect(infection.cases[0].pdfPages).toContain(49);
-    }
-    for (const section of ['5.1', '5.2']) {
-      const infection = infections.find((item: any) => item.ncdcSection === section);
-      expect(infection.cases.every((context: any) => context.sourceId === 'ncdc')).toBe(true);
-    }
-  });
-
   it('keeps unresolved source branches explicit instead of inventing missing dosing fields', () => {
     const infections = catalogue().infections;
     expect(infections.some((item: any) => item.cases.some((context: any) => context.gaps.length > 0))).toBe(true);
@@ -118,15 +104,13 @@ describe('source-owned infection catalogue', () => {
     expect(all).not.toMatch(/CRRT|continuous renal replacement/i);
   });
 
-  it('makes distinct JIPMER pathogen contexts searchable while preserving overlapping NCDC contexts', () => {
+  it('exposes only NCDC infections and contexts, without supplemental source entries', () => {
     const data = catalogue();
-    const cellulitis = data.infections.find((item: any) => item.ncdcSection === '9.3');
-    expect(cellulitis.cases.some((context: any) => context.sourceId === 'jipmer' && /Vibrio vulnificus/.test(context.label))).toBe(true);
-    expect(data.infections.some((item: any) => /Snake Bite Cellulitis/.test(item.name))).toBe(true);
-    expect(data.infections.some((item: any) => /Campylobacter/.test(item.name))).toBe(true);
+    expect(data.infections).toHaveLength(87);
+    expect(data.infections.every((infection: any) => infection.ncdcSection && infection.cases.every((context: any) => context.sourceId === 'ncdc'))).toBe(true);
+    expect(JSON.stringify(data)).not.toMatch(/jipmer/i);
     const endocarditis = data.infections.find((item: any) => item.ncdcSection === '1.1');
-    expect(endocarditis.cases.some((context: any) => context.sourceId === 'jipmer' && /Definitive.*HACEK/.test(context.label))).toBe(true);
-    expect(endocarditis.cases.filter((context: any) => /Uncomplicated/.test(context.label)).every((context: any) => context.sourceId === 'ncdc')).toBe(true);
+    expect(endocarditis.cases).toHaveLength(3);
   });
 
   it('does not treat surgical expected pathogens or isolated continuation tails as treatment regimens', () => {

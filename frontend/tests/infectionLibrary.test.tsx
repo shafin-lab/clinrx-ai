@@ -27,13 +27,12 @@ it('finds pneumonia, selects its ward context and shows only the selected source
  expect(screen.getByText(/Reference only.*not a prescription/i)).toBeInTheDocument();
 });
 
-it('puts JIPMER abscess additions in the same urinary group without retaining a previous pneumonia dose',()=>{
+it('shows NCDC-only urinary guidance with no removed supplemental infections or source labels',()=>{
  mount();group(/Urinary/i);
- fireEvent.change(screen.getByLabelText('Find an infection'),{target:{value:'perinephric'}});
- fireEvent.click(screen.getByRole('button',{name:/Perinephric abscess/i}));
- expect(screen.getByRole('heading',{name:/Perinephric abscess/i})).toBeInTheDocument();
- expect(screen.getByText(/JIPMER guidance/i)).toBeInTheDocument();
- expect(screen.queryByRole('heading',{name:/Community.acquired pneumonia/i})).not.toBeInTheDocument();
+ expect(screen.getByRole('button',{name:/Cystitis NCDC/i})).toBeInTheDocument();
+ expect(screen.getByRole('button',{name:/Pyelonephritis NCDC/i})).toBeInTheDocument();
+ expect(screen.queryByRole('button',{name:/Perinephric|Renal abscess/i})).not.toBeInTheDocument();
+ expect(screen.getByRole('region',{name:'Infection-based antibiotic library'})).not.toHaveTextContent(/JIPMER/i);
 });
 
 it('clears the treatment panel when a search has no match and restores it when the query clears',()=>{
@@ -62,9 +61,9 @@ it('remains generally browsable when the patient snapshot is stale, without clai
 it('opens the retained PDF belonging to the selected source rather than keeping the previous source link',()=>{
  mount();fireEvent.click(screen.getByText('Source details & treatment notes'));
  expect(screen.getByRole('link',{name:/Open retained source/})).toHaveAttribute('href',expect.stringMatching(/ncdc-2025\.pdf#page=/));
- group(/Urinary/i);fireEvent.change(screen.getByLabelText('Find an infection'),{target:{value:'perinephric'}});
+ group(/Urinary/i);fireEvent.change(screen.getByLabelText('Find an infection'),{target:{value:'pyelonephritis'}});
  fireEvent.click(screen.getByText('Source details & treatment notes'));
- expect(screen.getByRole('link',{name:/Open retained source/})).toHaveAttribute('href',expect.stringMatching(/jipmer-2026\.pdf#page=49$/));
+ expect(screen.getByRole('link',{name:/Open retained source/})).toHaveAttribute('href',expect.stringMatching(/ncdc-2025\.pdf#page=46$/));
 });
 
 it('opens the library directly from its preview URL without starting an antibiotic entry',async()=>{

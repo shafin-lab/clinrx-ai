@@ -1,3 +1,5 @@
+> Historical combined-source plan, superseded by the NCDC-only scope in `../specs/2026-10-25-infection-library-design.md` on 25 October 2026. Prior checkpoint and verification remain in Git history.
+
 # Infection Library Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.

@@ -8,7 +8,7 @@ const normalize=(s:string)=>s.normalize('NFKC').toLocaleLowerCase().replace(/[^\
 // Clinical synonyms belong to the source crosswalk; fuzzy case merging would be unsafe.
 export function effectiveCases(cases:InfectionCase[]):InfectionCase[]{
  const result=new Map<string,InfectionCase>();
- for(const c of cases){const key=normalize(c.label),prior=result.get(key);if(!prior||c.sourceId==='ncdc'&&prior.sourceId!=='ncdc')result.set(key,c);}
+ for(const c of cases){if(c.sourceId!=='ncdc')continue;const key=normalize(c.label);if(!result.has(key))result.set(key,c);}
  return [...result.values()];
 }
 export function filterInfections(infections:Infection[],groupId:string,query:string):Infection[]{
@@ -28,7 +28,7 @@ export function validateCatalogue(value:unknown):value is InfectionCatalogue{
  if(!record(value)||!referenceOnly(value)||value.executable!==false||value.clinical_use_eligible!==false||value.review_status!=='unreviewed'||!text(value.version))return false;
  if(!Array.isArray(value.sources)||!Array.isArray(value.groups)||!Array.isArray(value.infections))return false;
  const sources=new Set<string>(),groups=new Set<string>(),ids=new Set<string>(),caseIds=new Set<string>(),regimenIds=new Set<string>();
- for(const s of value.sources){if(!record(s)||!text(s.id)||!['ncdc','jipmer'].includes(s.id)||sources.has(s.id)||!text(s.name)||!text(s.version)||typeof s.url!=='string'||!/^https:\/\//.test(s.url)||typeof s.sha256!=='string'||!/^[a-f\d]{64}$/i.test(s.sha256))return false;sources.add(s.id);}
+ for(const s of value.sources){if(!record(s)||!text(s.id)||s.id!=='ncdc'||sources.has(s.id)||!text(s.name)||!text(s.version)||typeof s.url!=='string'||!/^https:\/\//.test(s.url)||typeof s.sha256!=='string'||!/^[a-f\d]{64}$/i.test(s.sha256))return false;sources.add(s.id);}
  for(const g of value.groups){if(!record(g)||!text(g.id)||groups.has(g.id)||!text(g.name))return false;groups.add(g.id);}
  for(const i of value.infections){
   if(!record(i)||!text(i.id)||ids.has(i.id)||!text(i.groupId)||!groups.has(i.groupId)||!text(i.name)||!strings(i.aliases)||!Array.isArray(i.cases))return false;ids.add(i.id);

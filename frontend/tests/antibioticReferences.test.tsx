@@ -36,3 +36,5 @@ it('keeps library search separate from the inspected medicine and can return to 
 it('uses an explicit unlisted-medicine gap without inheriting another product reference',()=>{
  mount();fireEvent.change(screen.getByLabelText('Find a medicine'),{target:{value:'unlisted synthesis compound'}});fireEvent.click(screen.getByRole('button',{name:/Inspect unlisted medicine/}));const drawer=screen.getByRole('complementary');expect(drawer).toHaveTextContent('Unlisted medicine');expect(drawer).toHaveTextContent('No national guidance is mapped');expect(drawer.querySelectorAll('.supplemental-dose-reference')).toHaveLength(0);
 });
+
+it('contains no withdrawn supplemental source content',()=>{expect(JSON.stringify(supplementalGuidance)).not.toMatch(/JIPMER/i);});
