@@ -17,8 +17,11 @@ export function CompleteNcdcLibrary({patient,encounter,data,catalogue=infectionC
  const complete=useMemo(()=>validateCompleteGuidance(data)?data:null,[data]);
  const [groupId,setGroupId]=useState(()=>catalogue?.groups.find(g=>/respiratory/i.test(g.name))?.id??catalogue?.groups[0]?.id??'');
  const [query,setQuery]=useState(''),[infectionId,setInfectionId]=useState(''),[rowId,setRowId]=useState(''),[referenceId,setReferenceId]=useState('');
- const terms=normalize(query).split(' ').filter(Boolean);
- const matches=(catalogue?.infections??[]).filter(infection=>infection.groupId===groupId&&terms.every(term=>normalize([infection.name,...infection.aliases,...(complete?.sections.find(s=>s.infectionId===infection.id)?.rows.map(r=>r.label)??[])].join(' ')).includes(term)));
+ const normalizedQuery=normalize(query);
+ const terms=normalizedQuery.split(' ').filter(Boolean);
+ const searching=terms.length>0;
+ const matches=(catalogue?.infections??[]).filter(infection=>(searching||infection.groupId===groupId)&&terms.every(term=>normalize([infection.name,...infection.aliases,...(complete?.sections.find(s=>s.infectionId===infection.id)?.rows.map(r=>r.label)??[])].join(' ')).includes(term)))
+  .sort((a,b)=>Number(normalize(b.name)===normalizedQuery)-Number(normalize(a.name)===normalizedQuery));
  const infection=matches.find(i=>i.id===infectionId)??matches[0];
  const section=complete?.sections.find(s=>s.infectionId===infection?.id);
  const row=section?.rows.find(r=>r.id===rowId)??section?.rows[0];
@@ -34,10 +37,10 @@ export function CompleteNcdcLibrary({patient,encounter,data,catalogue=infectionC
   <p className="infection-rule">NCDC is the primary guidance. Optional supplementary references are shown separately. Reference only — not a prescription or a patient-specific recommendation.</p>
   {unconfirmed&&<p className="infection-note">Patient evidence is unconfirmed. This general reference library is not matched to this patient.</p>}
   <div className="infection-layout"><aside className="infection-browser" aria-label="Browse infections">
+   <label>Find an infection<input type="search" value={query} placeholder="Search all infections" onChange={e=>{setQuery(e.target.value);setInfectionId('');reset();}}/></label>
    <label>Clinical group<select value={groupId} onChange={e=>{setGroupId(e.target.value);setQuery('');setInfectionId('');reset();}}>{catalogue.groups.map(g=><option key={g.id} value={g.id}>{g.name}</option>)}</select></label>
-   <label>Find an infection<input type="search" value={query} placeholder="Infection, syndrome or clinical situation" onChange={e=>{setQuery(e.target.value);setInfectionId('');reset();}}/></label>
-   <p role="status" className="infection-count">{matches.length?`${matches.length} infections in this group`:'No matching infections. Try another search or clinical group.'}</p>
-   <div className="infection-list">{matches.map(i=><button key={i.id} type="button" aria-pressed={i.id===infection?.id} onClick={()=>{setInfectionId(i.id);reset();}}><span>{i.name}</span>{' '}<small>NCDC</small></button>)}</div>
+   <p role="status" className="infection-count">{matches.length?`${matches.length} ${matches.length===1?'infection':'infections'} ${searching?'across all clinical groups':'in this group'}`:'No matching infections. Try another search or browse a clinical group.'}</p>
+   <div className="infection-list">{matches.map(i=><button key={i.id} type="button" aria-pressed={i.id===infection?.id} onClick={()=>{setGroupId(i.groupId);setInfectionId(i.id);reset();}}><span>{i.name}</span>{' '}<small>{searching?`${catalogue.groups.find(g=>g.id===i.groupId)?.name??''} · `:''}NCDC</small></button>)}</div>
   </aside><div className="infection-selected" aria-live="polite">
    {!infection?<div className="infection-empty"><h3>No infection selected</h3><p>No previous treatment is retained when the search has no match.</p></div>:!section?<div className="infection-empty"><h3>{infection.name}</h3><p role="alert">This NCDC section is unavailable.</p></div>:<article className="infection-detail" key={infection.id}>
     <header><div className="infection-detail-title"><h3>{infection.name}</h3><span className="infection-badge">NCDC guidance</span></div><p className="infection-subtitle">NCDC section {section.section} · {section.name}</p></header>
