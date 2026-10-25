@@ -143,6 +143,35 @@ def candidate_context(repository):
         'context':{'indication':'standard','infusion':'short','phase':'maintenance','bodySize':'standard','hepatic':'reviewed','special':'none','safetyReviewed':True,'renalFunction':'stable','support':'none','cvvhMode':'','flow':'','flowDefinitionReviewed':False,'residual':'','downtime':'','hdFlux':'','hdStable':'','hdInterval':'','hdTimingReviewed':False},
         'basis':'empiric','scope':{'repository':repository,'patient':'synthetic-p1','encounter':'synthetic-e1','cutoff':0,'start':'2026-10-08T08:00:00Z','end':'2026-10-08T10:00:00Z'},'sources':[]}
 
+def test_candidate_context_can_pin_shared_patient_context_and_exact_lab_component():
+    from app.api.schemas.antibiotic_chart import DoseReview
+    from app.persistence.canonical import canonical_payload
+    import json
+    review=candidate_context(str(uuid4()));review['scope']['cutoff']=20
+    review['sources']=[
+        {'role':'patient_context','reference':{'kind':'circulatory_event','id':'ctx','version':'1'},'digest':'a'*64,'ingestion':10},
+        {'role':'creatinine','reference':{'kind':'laboratory_report','id':'panel','version':'1'},'digest':'b'*64,'ingestion':11,'component':'serum-cr'}]
+    parsed=DoseReview.model_validate(review)
+    assert json.loads(canonical_payload(parsed))==review
+    with pytest.raises(ValueError):DoseReview.model_validate({**review,'sources':[{**review['sources'][0],'reference':{'kind':'observation','id':'wrong','version':'1'}}]})
+    with pytest.raises(ValueError):DoseReview.model_validate({**review,'sources':[{**review['sources'][1],'component':''}]})
+
+def test_serum_creatinine_is_a_supported_explicit_lab_mapping():
+    from app.models.clinical.laboratory import LaboratoryComponent
+    item=LaboratoryComponent.model_validate({'source_component_id':'cr','test_code':{'namespace':'source.lab','code':'CREAT','raw_display':'Creatinine'},'mapping_status':'mapped','mapped_concept':'creatinine','mapping_version':'clinrx-shared-labs/2','result':{'kind':'numeric','comparator':'=','raw_value':'3.0','unit':{'namespace':'UCUM','code':'mg/dL','raw_display':'mg/dL'}}})
+    assert item.mapped_concept=='creatinine'
+
+def test_explicit_new_dose_review_correction_keeps_original_review_in_history(case):
+    from copy import deepcopy
+    client,_=case;v=catalog(client);review=candidate_context(v['renal']['repository']);review['scope']['cutoff']=v['renal']['cutoff']['fact_watermark']
+    original={**draft(v['renal']['repository']),'mode':'prescription','schedule':'Every 24 hours','dose_review':review}
+    saved=post(client,'save',original);assert saved.status_code==200,saved.text
+    updated=deepcopy(review);updated['suggestion']['amount']='1'
+    correction={**original,'revision':str(uuid4()),'amount':'1','dose_review':updated,'dose_review_amendment':True,'predecessor':{'kind':'antimicrobial_order','id':original['id'],'version':original['revision']},'predecessor_digest':saved.json()['digest'],'correction_reason':'Reviewed dose after changed patient evidence'}
+    result=post(client,'save',correction);assert result.status_code==200,result.text
+    assert post(client,'lookup',original).json()['request_canonical']==saved.json()['request_canonical']
+    assert result.json()['fact']['prescribed_dose']['amount']['value']=='1'
+
 def test_optional_candidate_context_preserves_absent_canonical_and_explicit_null():
     import json
     from app.api.schemas.antibiotic_chart import AntibioticDraft

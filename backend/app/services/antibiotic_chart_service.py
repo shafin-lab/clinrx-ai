@@ -61,9 +61,10 @@ class AntibioticChartService(RF2Service):
         if body.order:
             order=repo.load_fact(Reference.model_validate(body.order.model_dump()),target=TARGET).fact
             if order.kind!='antimicrobial_order' or order.antimicrobial.raw_display!=body.medicine or order.antimicrobial.formulation!=body.product or not order.route or order.route.raw_display!=body.route:raise EvidenceConflict()
-        if prior_body is not None and (body.dose_review!=prior_body.dose_review or ('dose_review' in body.model_fields_set)!=('dose_review' in prior_body.model_fields_set)):
+        changed_review=prior_body is not None and (body.dose_review!=prior_body.dose_review or ('dose_review' in body.model_fields_set)!=('dose_review' in prior_body.model_fields_set))
+        if changed_review and not body.dose_review_amendment:
             raise EvidenceConflict()  # Original candidate context is immutable on correction.
-        if body.dose_review and prior_body is None:
+        if body.dose_review and (prior_body is None or changed_review):
             review=body.dose_review;scope=review.scope;cutoff=repo.capture_cutoff()
             if scope.patient!=TARGET.patient_id or scope.encounter!=TARGET.encounter_id or scope.cutoff>cutoff.fact_watermark:raise EvidenceConflict()
             for pin in review.sources:
@@ -71,6 +72,9 @@ class AntibioticChartService(RF2Service):
                 if stored.ingestion.ingestion_sequence!=pin.ingestion or sha256(canonical_payload(stored.fact).encode()).hexdigest()!=pin.digest:raise EvidenceConflict()
                 history=self.history_rows(repo,cutoff,self.accounting(),stored.fact.reference)
                 if not history or history[-1].fact.reference!=stored.fact.reference:raise EvidenceConflict()
+                if pin.component is not None:
+                    components=[c for c in getattr(stored.fact,'components',()) if c.source_component_id==pin.component]
+                    if len(components)!=1 or components[0].mapped_concept!='creatinine' or components[0].mapping_status!='mapped':raise EvidenceConflict()
             # Pins are authenticated recorded context, never a server dose/policy check.
         if body.culture_ref:
             culture=repo.load_fact(Reference.model_validate(body.culture_ref.model_dump()),target=TARGET).fact

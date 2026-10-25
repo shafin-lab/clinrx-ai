@@ -58,7 +58,7 @@ it('discards late antibiotic history after the reviewer opens another exact sour
  vi.spyOn(AntibioticClient.prototype,'history').mockReturnValueOnce(late as ReturnType<AntibioticClient['history']>).mockResolvedValueOnce([{fact:second.fact,digest:second.expected_digest,ingestion:second.ingestion}] as never);
  render(<AntibioticWorkspace bundle={bundle} loading={false} error="" onRefresh={async()=>{}} onGuardChange={()=>{}} requested={{patient:'synthetic-p1',encounter:'synthetic-e1',start,end}} onKidney={()=>{}}/>);
  fireEvent.click(screen.getByRole('button',{name:'Prescriptions & administrations'}));
- const historyButtons=screen.getAllByRole('button',{name:'Inspect revision history'});expect(historyButtons).toHaveLength(2);fireEvent.click(historyButtons[0]);fireEvent.click(historyButtons[1]);
+ const detailsButtons=screen.getAllByRole('button',{name:/Details & history/});expect(detailsButtons).toHaveLength(2);fireEvent.click(detailsButtons[0]);fireEvent.click(screen.getByText('Prescription source, duration & revisions'));fireEvent.click(screen.getByRole('button',{name:'Inspect revision history'}));fireEvent.click(detailsButtons[1]);fireEvent.click(screen.getByText('Prescription source, duration & revisions'));fireEvent.click(screen.getByRole('button',{name:'Inspect revision history'}));
  const history=await screen.findByRole('region',{name:'Retained revision history'});expect(history).toHaveTextContent('current-history-source-B');
  await act(async()=>{resolveLate([{fact:first.fact,digest:first.expected_digest,ingestion:first.ingestion}]);await Promise.resolve();});
  expect(history).toHaveTextContent('current-history-source-B');expect(history).not.toHaveTextContent('late-history-source-A');

@@ -14,6 +14,19 @@
           ],
           "default": null
         },
+        "dose_review_amendment": {
+          "anyOf": [
+            {
+              "const": true,
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dose Review Amendment"
+        },
         "repository": {
           "format": "uuid",
           "title": "Repository",
@@ -304,7 +317,7 @@
           "items": {
             "$ref": "#/$defs/DoseReviewSource"
           },
-          "maxItems": 5,
+          "maxItems": 6,
           "title": "Sources",
           "type": "array"
         }
@@ -527,6 +540,7 @@
           "enum": [
             "weight",
             "creatinine",
+            "patient_context",
             "ast",
             "isolate",
             "specimen"
@@ -546,6 +560,20 @@
           "minimum": 1,
           "title": "Ingestion",
           "type": "integer"
+        },
+        "component": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Component"
         }
       },
       "required": [

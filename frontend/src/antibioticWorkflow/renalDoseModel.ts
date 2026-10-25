@@ -91,7 +91,7 @@ export function renalDose(inputs:ClearanceInputs,c:DoseContext,calculatedCrCl?:n
 /** Bounded candidate context, never a validated regimen. Scope owns repository/cutoff
  * once; pins retain only actually used exact sources (up to weight, Cr and AST chain).
  * An absent dose_review is absent from request/history canonical bytes. */
-export interface DoseSource {role:'weight'|'creatinine'|'ast'|'isolate'|'specimen';reference:Pin['reference'];digest:string;ingestion:number}
+export interface DoseSource {role:'weight'|'creatinine'|'patient_context'|'ast'|'isolate'|'specimen';reference:Pin['reference'];digest:string;ingestion:number;component?:string}
 export interface DoseScope {repository:string;patient:string;encounter:string;cutoff:number;start:string;end:string}
 export type ReviewContext=Omit<DoseContext,'medicine'|'route'|'cultureSource'|'cultureBlock'|'cultureReviewed'|'empiricReviewed'>;
 export interface DoseReview {version:'CandidateDoseReview/v1';profile_version:string;source:string;suggestion:{medicine:string;amount:string;unit:'g'|'mg';route:'IV'|'PO';schedule:string;initial:string|null;band:string};inputs:ClearanceInputs;crcl:number|null;context:ReviewContext;basis:'empiric'|'ast';scope:DoseScope;sources:DoseSource[]}

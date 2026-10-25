@@ -55,10 +55,11 @@ class DoseReviewScope(DTO):
         if TypeAdapter(AwareTimestamp).validate_python(self.start)>TypeAdapter(AwareTimestamp).validate_python(self.end):raise ValueError('ordered review interval required')
         return self
 class DoseReviewSource(DTO):
-    role: Literal['weight','creatinine','ast','isolate','specimen']
+    role: Literal['weight','creatinine','patient_context','ast','isolate','specimen']
     reference: ExactReference
     digest: Digest
     ingestion: Annotated[int,Field(strict=True,ge=1)]
+    component: Short | None = Field(default=None,exclude_if=lambda value:value is None)
 class DoseReview(DTO):
     version: Literal['CandidateDoseReview/v1']
     profile_version: Short
@@ -69,18 +70,20 @@ class DoseReview(DTO):
     context: DoseReviewContext
     basis: Literal['empiric','ast']
     scope: DoseReviewScope
-    sources: Annotated[list[DoseReviewSource],Field(max_length=5)]
+    sources: Annotated[list[DoseReviewSource],Field(max_length=6)]
     @model_validator(mode='after')
     def exact_roles(self):
         roles=[s.role for s in self.sources]
-        kinds={'weight':'circulatory_event','creatinine':'observation','ast':'microbiology_susceptibility','isolate':'microbiology_isolate','specimen':'microbiology_specimen'}
-        if any(s.reference.kind!=kinds[s.role] for s in self.sources):raise ValueError('source kind does not match its role')
+        kinds={'weight':{'circulatory_event','observation'},'creatinine':{'observation','laboratory_report'},'patient_context':{'circulatory_event'},'ast':{'microbiology_susceptibility'},'isolate':{'microbiology_isolate'},'specimen':{'microbiology_specimen'}}
+        if any(s.reference.kind not in kinds[s.role] for s in self.sources):raise ValueError('source kind does not match its role')
+        if any((s.component is not None)!=(s.role=='creatinine' and s.reference.kind=='laboratory_report') for s in self.sources):raise ValueError('laboratory creatinine requires one exact component')
         if len(set(roles))!=len(roles) or any(s.ingestion>self.scope.cutoff for s in self.sources):raise ValueError('unique in-cutoff source roles required')
         if (self.basis=='ast')!=all(role in roles for role in ('ast','isolate','specimen')) or self.basis=='empiric' and any(r in roles for r in ('ast','isolate','specimen')):raise ValueError('exact AST chain or explicit empiric basis required')
         return self
 
 class AntibioticDraft(DTO):
     dose_review: DoseReview | None = None
+    dose_review_amendment: Literal[True] | None = None
     repository: UUID
     id: UUID
     revision: UUID
@@ -107,6 +110,7 @@ class AntibioticDraft(DTO):
     def preserve_legacy_serialization(self, handler):
         data=handler(self)
         if 'dose_review' not in self.model_fields_set:data.pop('dose_review',None)
+        if 'dose_review_amendment' not in self.model_fields_set:data.pop('dose_review_amendment',None)
         return data
 
     @model_validator(mode='after')
@@ -130,6 +134,7 @@ class AntibioticDraft(DTO):
             if self.mode!='prescription' or r.scope.repository!=self.repository:raise ValueError('candidate context belongs to its prescription repository')
             ast=next((s.reference for s in r.sources if s.role=='ast'),None)
             if ast!=self.culture_ref:raise ValueError('candidate AST and retained culture citation differ')
+        if self.dose_review_amendment and (not self.dose_review or not self.predecessor or self.mode!='prescription'):raise ValueError('explicit dose review amendment requires a prescription predecessor and new review')
         from app.persistence.canonical import canonical_payload
         if len(canonical_payload(self).encode('utf-8'))>4096:raise ValueError('source metadata exceeds bound')
         return self
