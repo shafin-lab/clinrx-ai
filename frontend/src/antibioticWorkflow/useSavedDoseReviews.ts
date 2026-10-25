@@ -1,5 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import type {Item} from '../api/microTypes';
+import {compareRespiratoryInstants as compare} from '../respiratory/exactTime';
 import {stable} from '../api/rf2Client';
 import type {AutomaticRenalModel} from './automaticRenalModel';
 import {medicationDoseReview,type MedicineAssessment} from './medicationDoseModel';
@@ -45,7 +46,7 @@ export function useSavedDoseReviews({courses,model,current,blocked,cultures,hist
     const now=runtime.current,matching=now.courses.find(c=>{const scope=scopeFor(c,now.model);return scope&&reviewKey(scope)===s.key;});
     if(!alive.current||!now.current||now.blocked||!now.historyReady||!matching||matching.conflict)return false;
     const currentAssessment=now.drafts[s.key]?.value??s.assessment;
-    return stable(currentAssessment)===stable(assessment)&&stable(dependenciesFor(matching,now.model,now.cultures,now.historyItems??[],assessment))===stable(dependencies)&&now.model.scope!.cutoff>=atScope.cutoff;
+    return stable(currentAssessment)===stable(assessment)&&stable(dependenciesFor(matching,now.model,now.cultures,now.historyItems??[],assessment))===stable(dependencies)&&now.model.scope!.cutoff>=atScope.cutoff&&compare(now.model.scope!.end,atScope.end)!>=0;
    });
    if(!alive.current)return;
    setRetained(old=>({...old,[s.key]:{bytes,log:readReviewLog(bytes,s.scope!)}}));

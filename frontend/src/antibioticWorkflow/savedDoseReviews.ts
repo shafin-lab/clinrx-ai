@@ -6,7 +6,7 @@ import {compareRespiratoryInstants as compare} from '../respiratory/exactTime';
 import type {AutomaticRenalModel} from './automaticRenalModel';
 import {blankMedicineAssessment,medicineIndications,type MedicineAssessment,ANIDULAFUNGIN_SOURCE} from './medicationDoseModel';
 import {DOSE_PROFILE_VERSION,profileName,profileSources,type DoseSource} from './renalDoseModel';
-import {orderReference,ownedMetadata,therapyDose,therapyTime,type TherapyCourse} from './therapyModel';
+import {orderReference,ownedMetadata,therapyTime,type TherapyCourse} from './therapyModel';
 
 export interface ReviewScope {repository:string;patient:string;encounter:string;orderId:string}
 export interface ReviewDependencies {product:string;treatment:string;patient:string;rationale:string;history:string;profile:string}
@@ -25,12 +25,19 @@ export function initialMedicineAssessment(course:TherapyCourse):MedicineAssessme
  const review=course.order&&ownedMetadata(course.order)?.dose_review;
  return review?{indication:review.context.indication,phase:review.context.phase,infusion:review.context.infusion,empiricReviewed:review.basis==='empiric',productReviewed:false}:{...blankMedicineAssessment,indication:medicineIndications(course.medicine).find(i=>i.label===record(course.order?.fact).recorded_indication)?.id??''};
 }
+// Decimal display scale is not a change in a known per-administration amount.
+function sameMaintenanceDose(given:Item,order:Item){
+ const a=record(record(given.fact).administered_dose),b=record(record(order.fact).prescribed_dose),aq=record(a.amount),bq=record(b.amount);
+ const normalize=(value:unknown)=>{if(typeof value!=='string'||!/^\d+(?:\.\d+)?$/.test(value))return;const [whole,fraction='']=value.split('.');return (whole.replace(/^0+(?=\d)/,'')||'0')+(fraction.replace(/0+$/,'')?'.'+fraction.replace(/0+$/,''):'');};
+ const av=normalize(aq.value),bv=normalize(bq.value),unit=record(aq.unit).raw;
+ return av!==undefined&&av!=='0'&&av===bv&&typeof unit==='string'&&unit.length>0&&unit===record(bq.unit).raw&&['total_administered','per_dose'].includes(String(a.basis))&&b.basis==='per_dose'&&stable(record(given.fact).route)===stable(record(order.fact).route);
+}
 export function dependenciesFor(course:TherapyCourse,model:AutomaticRenalModel,cultures:Item[],history:Item[],assessment:MedicineAssessment):ReviewDependencies {
  const f=record(course.order?.fact),a=record(f.antimicrobial),dose=record(f.prescribed_dose),name=profileName(course.medicine);
  const exceptional=history.filter(i=>{
   const ref=orderReference(i);if(!ref||ref.id!==course.order?.fact.id)return false;
   const time=therapyTime(i);if(time&&model.scope&&(compare(time,model.scope.end)!>0||Date.parse(time)<Date.parse(model.scope.end)-7*86400000))return false;
-  return assessment.phase==='initiation'||i.fact.kind!=='antimicrobial_administration'||!time||record(i.fact).completion!=='completed'||therapyDose(i)!==therapyDose(course.order!)||stable(record(i.fact).route)!==stable(f.route);
+  return assessment.phase==='initiation'||i.fact.kind!=='antimicrobial_administration'||!time||record(i.fact).completion!=='completed'||!sameMaintenanceDose(i,course.order!);
  }).map(i=>[i.fact.kind,i.fact.id,i.fact.revision,i.expected_digest]).sort((a,b)=>stable(a).localeCompare(stable(b)));
  return {
   product:stable({medicine:course.medicine,identity:{canonical_id:a.canonical_id,ingredient_ids:a.ingredient_ids,source_code:a.source_code,product:a.product,formulation:a.formulation,raw_display:a.raw_display,mapping_status:a.mapping_status},route:f.route,basis:dose.basis,basis_detail:dose.basis_detail,unit:record(dose.amount).unit}),
