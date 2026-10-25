@@ -336,6 +336,7 @@ def curate_reported_corrections(infections):
     complicated = acute['cases'][2]
     raw = next(n.split(': ',1)[1] for n in complicated['notes'] if n.startswith('Primary treatment source text'))
     complicated['gaps'] = []
+    complicated['notes'] = [n for n in complicated['notes'] if not n.startswith('Alternative column')]
     source_option(complicated, 'First-line source branch — conditional combination', [normal(raw)], source_branch=True,
         gaps=['The primary cell contains an optional clindamycin branch and vancomycin printed as mg/kg/day with an every-8-12-hour interval. Route, branch scope and dose basis require clarification; no fixed combination or corrected vancomycin dose is inferred.'])
     source_option(complicated, 'Alternative — Cefoperazone-sulbactam', ['Cefoperazone-sulbactam 3g every 12 hours'], duration='4-6 weeks',

@@ -1,6 +1,12 @@
-# NCDC-only infection library — current checkpoint
+# NCDC-only infection library — handoff
 
 The user removed the supplemental institutional policy source on 25 October 2026. NCDC is now the sole infection-library source. The previous combined-source checkpoint remains in Git history at `ec853a2`; its served build is retained under ignored `review-evidence/infection-library/ncdc-only/previous-build/`.
+
+## Latest source corrections
+
+[Current preview](http://127.0.0.1:5247/?workspace=antibiotics&antibioticView=library&reviewBuild=ncdc-corrections) includes the targeted corrections to NCDC sections1.1/10.1/10.2 and paragraph reflow. See [NCDC-SOURCE-CORRECTIONS.md](NCDC-SOURCE-CORRECTIONS.md) for source scope and remaining ambiguities. One selected source option is displayed at a time; uncertain branches are readable with explicit clarification warnings. Chronic guidance uses the existing acute record after selecting the applicable clinical pattern.
+
+Final checks: 1,540 frontend tests passed / three skipped; parser regression passed; typecheck and production build passed. Independent review approved the bounded corrections, and its minor wording issue was removed. Browser checks and unchanged original/candidate database hashes are recorded in the correction ledger. The prior source-removal record below is historical; its assertion of unchanged NCDC entries applies to that removal step, not these later targeted corrections.
 
 ## Preview and scope
 
@@ -10,7 +16,7 @@ The original preview at port 5246 is separate and unchanged. The updated port 52
 
 The active catalogue has 19 clinical groups, 87 NCDC infection entries, 210 clinical contexts, 115 selectable source options and 119 held contexts. All pre-existing NCDC source objects, groups, infection objects, clinical contexts, treatment text and identifiers match the previous checkpoint exactly. Withdrawn-source-only infections and appended contexts are removed. The source registry, UI, generator and published PDF assets are NCDC-only. Related entries and comparison notes are also removed from the retained legacy supplemental data.
 
-**Known defects remain:** NCDC endocarditis combinations are held rather than fully curated; the chronic osteomyelitis reference to acute osteomyelitis is unresolved; extracted PDF line breaks still affect prose display. This removal does not fix those problems or imply complete clinical-content validation. No automatic source-reference resolution, dose calculation or prescribing is added. CRRT and monographs remain deferred from this library.
+**At the source-removal checkpoint**, endocarditis, the chronic reference and paragraph formatting were unresolved. The later targeted corrections above address those reported workflows. Genuine source ambiguities and other uncurated contexts remain; complete clinical-content validation is not claimed. No automatic source-reference resolution, dose calculation or prescribing is added. CRRT and monographs remain deferred from this library.
 
 ## Verification record
 
@@ -27,4 +33,4 @@ Evidence: `review-evidence/infection-library/ncdc-only/` includes the new regres
 
 ## Relaunch
 
-After building the NCDC-only frontend into `review-evidence/infection-library/build-ncdc-only`, run `sh tools/launch_infection_library_preview.sh`. It binds only loopback port 5247 and requires the prepared copied database and adjacent signing key. Do not restart or replace port 5246.
+After building the NCDC-only frontend into `review-evidence/infection-library/build-source-corrections`, run `sh tools/launch_infection_library_preview.sh`. It binds only loopback port 5247 and requires the prepared copied database and adjacent signing key. Do not restart or replace port 5246.
