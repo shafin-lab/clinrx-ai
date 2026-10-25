@@ -3,6 +3,9 @@ import {expect,it,vi} from 'vitest';
 import {CompleteNcdcLibrary} from '../src/infectionLibrary/CompleteNcdcLibrary';
 import complete from '../src/infectionLibrary/data/ncdc-complete-guidance.json';
 import {infectionCatalogue} from '../src/infectionLibrary/catalogue';
+const {readFileSync}=await vi.importActual<{readFileSync:(path:string,encoding:'utf8')=>string}>('node:fs');
+const applicationCss=readFileSync('src/styles.css','utf8');
+const libraryCss=readFileSync('src/infectionLibrary/infectionLibrary.css','utf8');
 
 function mount(){return render(<CompleteNcdcLibrary patient="synthetic-p1" encounter="synthetic-e1" data={complete}/>);}
 function openSection(number:string){
@@ -91,4 +94,13 @@ it('browses and expands supplementary evidence without source fetches, storage w
   expect(fetchSpy).not.toHaveBeenCalled();expect(storage).not.toHaveBeenCalled();
   expect(screen.queryByRole('button',{name:/save|prescribe|calculate|apply/i})).not.toBeInTheDocument();
  }finally{storage.mockRestore();vi.unstubAllGlobals();}
+});
+
+it('keeps dosing rows vertically stacked when the application-wide definition-list grid is loaded',()=>{
+ const styles=document.createElement('style');styles.textContent=applicationCss+'\n'+libraryCss;document.head.append(styles);
+ try{
+  mount();openSection('1.1');row(2);const details=expand();
+  const card=within(details).getByRole('region',{name:'Teicoplanin: additional dosing information'});
+  expect(getComputedStyle(card.querySelector('dl')!).display).toBe('block');
+ }finally{styles.remove();}
 });
