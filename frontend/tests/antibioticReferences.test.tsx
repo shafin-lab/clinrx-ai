@@ -1,6 +1,7 @@
 import {fireEvent,render,screen,within} from '@testing-library/react';
 import {expect,it,vi} from 'vitest';
-import {AntibioticReferences} from '../src/antibiotics/AntibioticReferences';
+// Retained legacy collection; the active entry point is covered in infectionLibrary.test.tsx.
+import {AntibioticReferences} from '../src/antibiotics/LegacyAntibioticReferences';
 import {assertUnreviewed,catalogue,library,nationalGuidance,supplementalGuidance,referenceDataValid,guidanceForMedicine,supplementalForMedicine,supplementalSource} from '../src/antibiotics/referenceData';
 const requested={patient:'synthetic-p1',encounter:'synthetic-e1',start:'2026-10-08T08:00:00Z',end:'2026-10-08T10:00:00Z'};
 function mount(){const onKidney=vi.fn();return {onKidney,...render(<AntibioticReferences requested={requested} loading={false} onKidney={onKidney}/>)};}

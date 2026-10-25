@@ -1,0 +1,9 @@
+# Infection-based antibiotic library
+
+Approved in conversation on 2026-10-25: implement the reviewed infection-library mockup. NCDC's 19 clinical groups form the navigation. NCDC wins for the same infection and clinical context; JIPMER supplies genuinely uncovered infections/context. Show one source-owned treatment selection at a time, with dose, route, frequency and duration where supplied; gaps remain explicit. CRRT references, drug monographs and automatic renal adjustment are deferred.
+
+This is a read-only, unreviewed reference library in the existing Antimicrobials workspace, not a treatment engine. It must never create a prescription, infer a patient's applicability, write patient/browser review storage, or import patient examples. Existing culture review, prescriptions and administrations remain intact. Preserve old reference data/code, all existing worktrees, the served 5246 build and its database. Do not edit synced sources/.
+
+Use an isolated linked checkout based on the served 9909e23 checkpoint. The separate uncommitted navigation patch and the main chat's display candidate remain untouched. Deliver a new loopback preview with a SQLite backup copy of the existing synthetic database; do not replace the original server. Keep source identity, edition, PDF page and hashes. Catalogue completeness is measured against source headings/context rows, and unsafe extraction becomes an explicit source-review gap rather than an invented regimen.
+
+The primary page has a group selector, infection search/list, clinical-context selector and one selected primary-regimen panel. JIPMER additions live in the same groups. Same-name source entries are merged by clinical context, not duplicated. Source details and unresolved alternative/conditional fields remain inspectable, without presenting conflicting source regimens as peers. No CRRT or monograph navigation is mounted.
