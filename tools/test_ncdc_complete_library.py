@@ -100,7 +100,8 @@ class CompleteNcdcLibraryTests(unittest.TestCase):
         self.assertTrue(any('table' in n['text'].lower() for n in prophylaxis['notes']))
         fungal = self.section('17.4')
         self.assertIn('Letermovir', fungal['sourceText'])
-        self.assertIn('CMV', '\n'.join(n['text'] for n in fungal['notes']))
+        self.assertIn('CMV', fungal['sourceText'])
+        self.assertTrue(all(any(f['primary'] and f['pdfPage']==page for f in fungal['figures']) for page in (108,109)))
         ie_notes = '\n'.join(n['text'] for n in self.section('1.1')['notes'])
         self.assertIn('Echocardiography', ie_notes)
         self.assertIn('Host factors', ie_notes)
@@ -120,6 +121,53 @@ class CompleteNcdcLibraryTests(unittest.TestCase):
         for section in self.sections.values():
             for note in section['notes']:
                 self.assertTrue(note['text'].strip())
+
+    def test_mrsa_cellulitis_keeps_mild_and_moderate_severe_treatments_paired(self):
+        rows = [r for r in self.section('9.3')['rows'] if 'MRSA risk' in r['label']]
+        self.assertEqual(len(rows), 2)
+        mild = next(r for r in rows if norm(r['label']).endswith('Mild'))
+        severe = next(r for r in rows if norm(r['label']).endswith('Moderate to Severe'))
+        self.assertIn('Trimethoprim-', mild['firstLine'])
+        self.assertIn('800 mg/160 mg BD', norm(mild['firstLine']))
+        self.assertNotIn('Vancomycin', mild['firstLine'])
+        self.assertEqual(norm(mild['alternative']), 'Doxycycline 100 mg q12h')
+        self.assertIn('Vancomycin 15 to 20 mg/kg/dose every 8 to 12 hours.', norm(severe['firstLine']))
+        self.assertNotIn('Trimethoprim', severe['firstLine'])
+        self.assertEqual(norm(severe['alternative']), 'Inj Linezolid 600mg q12 h')
+        for row in rows:
+            self.assertEqual(row['pdfPages'],[60])
+            self.assertIn('based on severity', norm(row['comments']))
+
+    def test_viral_keratitis_merged_heading_is_context_not_a_fabricated_regimen(self):
+        section = self.section('11.1')
+        for row in section['rows']:
+            self.assertNotIn('HSV is the most common cause', row['firstLine'])
+            self.assertNotIn('HSV is the most common cause', row['alternative'])
+            self.assertNotIn('HSV is the most common cause', row['comments'])
+        for subtype in ['Epithelial','Stromal','Endothelial']:
+            row = next(r for r in section['rows'] if norm(r['label']).endswith(subtype))
+            self.assertEqual(norm(row['label']), 'Viral Keratitis — '+subtype)
+            self.assertIn('Acyclovir', row['firstLine'])
+        self.assertTrue(any('HSV is the most common cause' in n['text'] for n in section['notes']))
+        fungal = next(r for r in section['rows'] if 'Fungal Keratitis' in r['label'])
+        self.assertNotIn('Viral Keratitis', fungal['label'])
+
+    def test_private_use_neonatal_criteria_have_primary_exact_source_fallback(self):
+        section = self.section('19.1')
+        self.assertIn('\uf0a3',section['sourceText'])
+        for page in (120,121):
+            self.assertTrue(any(f['primary'] and f['pdfPage']==page and 'text-layer' in f['caption'] for f in section['figures']), page)
+
+    def test_nonstandard_table_doses_are_not_repeated_as_flattened_narrative(self):
+        notes = '\n'.join(n['text'] for n in self.section('10.7')['notes'])
+        self.assertNotIn('Paediatric dose', notes)
+        self.assertNotIn('Esophagus S. aureus',norm(notes))
+        self.assertNotIn('Ceftriaxone 2g 12 OD',norm(notes))
+        self.assertIn('If Cefazolin is not available',norm(notes))
+        bmt_notes = '\n'.join(n['text'] for n in self.section('17.4')['notes'])
+        self.assertNotIn('Letermovir',bmt_notes)
+        detail_images = [f for section in self.sections.values() for f in section['figures'] if f['primary'] and 'Different-layout source table' in f['caption']]
+        self.assertEqual(len(detail_images),13)
 
     def test_adjacent_section_content_and_annexures_do_not_bleed(self):
         self.assertNotIn('1.3 Pericarditis', self.section('1.2')['sourceText'])

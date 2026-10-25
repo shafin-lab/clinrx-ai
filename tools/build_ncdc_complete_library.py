@@ -12,6 +12,7 @@ import hashlib
 import json
 import math
 import re
+import unicodedata
 from pathlib import Path
 
 import pdfplumber
@@ -93,6 +94,46 @@ def table_columns(table):
     return None
 
 
+def unsupported_glyphs(text):
+    # A private-use code point has no standard Unicode meaning. Preserve it in
+    # source text, but always expose the printed table rather than guessing.
+    return any(char == '\ufffd' or unicodedata.category(char) == 'Co' for char in text)
+
+
+def fullwidth_row(table, row):
+    cells = [cell for cell in row.cells if cell]
+    return (len(cells) == 1 and abs(cells[0][0]-table.bbox[0]) < 1 and
+            abs(cells[0][2]-table.bbox[2]) < 1)
+
+
+def mrsa_severity_rows(crop, gridrow, fields):
+    """Split the visually verified PDF60 cell by its printed severity alignment.
+
+    The frozen source places the second pair of medicines lower in the same
+    bordered cell. Source-word coordinates determine the split; no drug text,
+    route, frequency or duration is authored here. Its common comment is retained
+    for both severity subrows exactly as printed.
+    """
+    first_box, alternate_box = gridrow.cells[1:3]
+    first_words = crop.crop(first_box).extract_words()
+    alternate_words = crop.crop(alternate_box).extract_words()
+    anchors = [next(word['top'] for word in first_words if word['text'] == 'Vancomycin'),
+               next(word['top'] for word in alternate_words if word['text'] == 'Linezolid')]
+    split = min(anchors)-1
+    prefix = fields[0].split('Mild',1)[0].strip()
+    def source_part(box, top, bottom):
+        return (crop.crop((box[0],top,box[2],bottom)).extract_text(x_tolerance=2,y_tolerance=3) or '').strip()
+    mild = [prefix+'\nMild',source_part(first_box,first_box[1],split),
+            source_part(alternate_box,alternate_box[1],split),fields[3]]
+    severe = [prefix+'\nModerate to Severe',source_part(first_box,split,first_box[3]),
+              source_part(alternate_box,split,alternate_box[3]),fields[3]]
+    assert 'Trimethoprim-' in mild[1] and 'Vancomycin' not in mild[1]
+    assert 'Doxycycline' in mild[2] and 'Linezolid' not in mild[2]
+    assert 'Vancomycin' in severe[1] and 'Trimethoprim' not in severe[1]
+    assert 'Linezolid' in severe[2] and 'Doxycycline' not in severe[2]
+    return [mild,severe]
+
+
 def resolved_table_rows(table):
     values = table.extract(x_tolerance=2,y_tolerance=3)
     mapping = {tuple(cell):value or '' for row,fields in zip(table.rows,values)
@@ -102,7 +143,7 @@ def resolved_table_rows(table):
     for row,fields in zip(table.rows,values):
         resolved = []
         for index,(cell,value) in enumerate(zip(row.cells,fields)):
-            if value is None and centers and index < 4:
+            if value is None and centers and index < 4 and not fullwidth_row(table,row):
                 point = centers[index], row.bbox[1]+1
                 owner = next((box for box in mapping if box[0] <= point[0] <= box[2] and box[1] <= point[1] < box[3]),None)
                 value = mapping.get(owner,'')
@@ -147,10 +188,10 @@ def project_section(pdf, section, following, render_doc, check):
         text_chunks.append(f'PDF page {number} · printed page {number-7}\n'+full_text)
         if 'in BMT settings' in full_text:
             subheading = 'BMT settings'
-        audit['encoding'] |= '\ufffd' in full_text or '\uf0b3' in full_text
+        audit['encoding'] |= unsupported_glyphs(full_text)
         clean = crop.filter(lambda obj: obj['object_type'] != 'rect' or obj['width'] < 2 or obj['height'] < 2)
         tables = clean.find_tables(SETTINGS)
-        main_boxes = []
+        all_table_boxes = [table.bbox for table in tables]
         primary_images = []
         for table in sorted(tables,key=lambda t:t.bbox[1]):
             if not table.rows:
@@ -173,8 +214,7 @@ def project_section(pdf, section, following, render_doc, check):
                     audit['otherTables'] += 1
                     primary_images.append((table.bbox,f'Different-layout source table ({width} columns)'))
                 continue
-            main_boxes.append(table.bbox)
-            if any('\ufffd' in value or '\uf0b3' in value for _,fields in rows for value in fields):
+            if any(unsupported_glyphs(value) for _,fields in rows for value in fields):
                 primary_images.append((table.bbox,'Original treatment table: text-layer symbols require the printed image'))
             audit['mainTables'] += 1
             if centers:
@@ -182,12 +222,18 @@ def project_section(pdf, section, following, render_doc, check):
             previous_main_page = number
             body = rows[1:] if header else rows
             fourth_is_allergy = 'Penicillin' in first and 'allergy' in first and 'Comments' not in first
+            aligned_body = []
             for index,(gridrow,fields) in enumerate(body):
+                if section['section'] == '9.3' and number == 60 and 'MRSA risk' in fields[0] and 'Moderate to Severe' in fields[0]:
+                    aligned_body.extend((index,gridrow,part) for part in mrsa_severity_rows(crop,gridrow,fields))
+                else:
+                    aligned_body.append((index,gridrow,fields))
+            for index,gridrow,fields in aligned_body:
                 if not any(field.strip() for field in fields):
                     continue
-                if row_heading(fields):
-                    subheading = norm(fields[0])
-                    output['notes'].append({'text':subheading,'pdfPages':[number]})
+                if fullwidth_row(table,gridrow) or row_heading(fields):
+                    subheading = norm(fields[0].splitlines()[0])
+                    output['notes'].append({'text':fields[0].strip(),'pdfPages':[number]})
                     continue
                 if fourth_is_allergy and fields[3]:
                     fields[3] = 'Penicillin allergy column: '+fields[3]
@@ -203,6 +249,8 @@ def project_section(pdf, section, following, render_doc, check):
                     audit['continuations'] += 1
                     continue
                 label = fields[0].strip()
+                if subheading == 'Viral Keratitis' and norm(label) not in {'Epithelial','Stromal','Endothelial'}:
+                    subheading = ''
                 if subheading and not label.startswith(subheading):
                     label = subheading+' — '+label
                 previous = {'id':output['infectionId']+'-source-row-'+str(len(output['rows'])+1),
@@ -210,16 +258,17 @@ def project_section(pdf, section, following, render_doc, check):
                             'comments':fields[3].strip(), 'pdfPages':[number]}
                 output['rows'].append(previous)
         if audit['otherTables'] and any(t['pdfPage']==number and not t['structured'] and t['columns']>1 for t in audit['tableSummaries']):
-            output['notes'].append({'text':'This page includes a table with a different column layout. Its original wording is retained below and in the exact section image; columns are not reassigned to first-line/alternative fields.', 'pdfPages':[number]})
-        def outside_main(obj):
+            output['notes'].append({'text':'This page includes a table with a different column layout. Its original layout is shown in the exact source image; complete text remains in the original section details. Columns are not reassigned to first-line/alternative fields.', 'pdfPages':[number]})
+        def outside_tables(obj):
             if obj['object_type'] != 'char':
                 return True
             x = (obj['x0']+obj['x1'])/2
             y = (obj['top']+obj['bottom'])/2
-            return not any(box[0]-1 <= x <= box[2]+1 and box[1]-1 <= y <= box[3]+1 for box in main_boxes)
-        narrative = crop.filter(outside_main).extract_text(x_tolerance=2,y_tolerance=3) or ''
-        # Notes are exclusively outside structured source table boxes. This keeps
-        # main first-line/alternative cells from being repeated as narrative.
+            return not any(box[0]-1 <= x <= box[2]+1 and box[1]-1 <= y <= box[3]+1 for box in all_table_boxes)
+        narrative = crop.filter(outside_tables).extract_text(x_tolerance=2,y_tolerance=3) or ''
+        # All discovered table boxes are excluded from narrative notes. Main
+        # tables have structured cells; other layouts have primary exact images.
+        # Their flattened text remains in original-source details only.
         if narrative.strip():
             output['notes'].append({'text':narrative.strip(),'pdfPages':[number]})
         figure_titles = [line['text'] for line in crop.extract_text_lines(return_chars=False) if re.match(r'^Figure\s+\d',line['text'],re.I)]
@@ -264,17 +313,17 @@ def coverage_report(data,audits):
     lines = ['# Complete NCDC source projection', '',
              f"Source: {data['source']['name']} — {data['source']['version']}. SHA-256 `{SHA256}`.", '',
              f'All 19 groups and 87 named clinical subsections are projected. There are {total_rows} structured clinical source rows, {images} exact section/page images and complete section text/notes. First-line, alternative and comment columns remain separate; OR, +, maxima, staged doses, age/weight conditions and referrals are retained as printed source content.', '',
-             f'Table-by-table audit: {all_tables} discovered source grids; {main_tables} mapped to separate treatment columns and {other_tables} different-layout grids retained as primary exact-image crops plus source text/notes. There are {primary_images} primary detail images in total, including the nonstandard grids, original algorithms and text-layer-symbol fallbacks. Grid row counts in the detailed audit include table headers.', '',
+             f'Table-by-table audit: {all_tables} discovered source grids; {main_tables} mapped to separate treatment columns and {other_tables} different-layout grids retained as primary exact-image crops plus complete original source text. There are {primary_images} primary detail images in total, including the nonstandard grids, original algorithms and text-layer-symbol fallbacks. Grid row counts in the detailed audit include table headers.', '',
              'This is a source projection, not a new prescription or a clinical validation. It contains no other guideline source. Existing curated records remain separate and untouched. No renal adjustment, patient matching or prescribing action is performed.', '',
              '## What completeness means', '',
              'Each section is bounded by its actual PDF heading and the next heading, including all intervening pages through the end of neonatal section 19.1 on PDF126. Chapter headings and printed page numbers are excluded from neighboring section content. Every retained segment has an exact raster crop as an independent visual record. These images include every treatment table, alternative column, additional-information paragraph, referral, reference and figure in that segment.', '',
-             'Main four-column treatment grids are projected by source column. Vertically merged comment cells are copied only to source rows lying inside that same source cell. Continuation text is appended within its original column, with both PDF pages cited. Nonstandard column layouts are not forced into treatment fields: they remain visible in outside-table notes, complete section text and the exact image. No valid row is removed because it contains OR, a combination, a maximum or a conditional instruction.', '',
-             'Notes exclude the structured main-table rectangles, avoiding dose duplication in the main notes view. Images with primary=true are separate crops of nonstandard tables or source figures/algorithms, suitable for the main section view without repeating the entire structured table; primary=false images are complete section/page proof crops for original-source details. Complete sourceText intentionally retains the entire section for original-source inspection. Text encoding imperfections remain explicit and the raster image is authoritative for those glyphs. Source anomalies such as an unexpected unit are preserved, not silently corrected.', '',
+             'Main four-column treatment grids are projected by source column. Vertically merged comment cells are copied only to source rows lying inside that same source cell. Continuation text is appended within its original column, with both PDF pages cited. Nonstandard column layouts are not forced into treatment fields: they remain visible in primary exact images and complete original section text, with surrounding non-table notes retained. No valid row is removed because it contains OR, a combination, a maximum or a conditional instruction.', '',
+             'Notes exclude all discovered table rectangles, avoiding dose duplication or flattened nonstandard table associations in the main notes view. Images with primary=true are separate crops of nonstandard tables or source figures/algorithms, suitable for the main section view without repeating the entire structured table; primary=false images are complete section/page proof crops for original-source details. Complete sourceText intentionally retains the entire section for original-source inspection. Text encoding imperfections remain explicit and the raster image is authoritative for those glyphs. Source anomalies such as an unexpected unit are preserved, not silently corrected.', '',
              'The inventory below audits every section and each discovered table layout; the claim is source-content coverage, not that every nonstandard table has been semantically curated into a prescription-ready structure.', '',
              '## Verification', '',
              'TDD RED: all seven initial content/provenance tests failed against the absent new projection. Tests then cover full endocarditis first-line/alternative cells, shared comments, chronic osteomyelitis referrals in both columns, CAP continuation, source-only identity, all section images, algorithms and additional information, and section boundaries.', '',
              'Rebuild with bundled Python: `python tools/build_ncdc_complete_library.py`. Verify deterministic JSON/report and image existence with `--check`. Run focused tests with `python -m unittest tools/test_ncdc_complete_library.py -v`. No frontend full-suite run is part of this source-only task.', '',
-             '## Every-section coverage audit', '',
+             '## Source-semantics regression corrections', '', 'The PDF60 MRSA cellulitis cell is projected as two severity subrows using verified vertical source-word coordinates: mild treatment columns remain distinct from moderate-to-severe treatment columns; their source common comment is retained for both. Full-width merged headings are recognized before cell propagation, so Viral Keratitis is contextual metadata for Epithelial/Stromal/Endothelial and never copied into treatment columns. Subsequent VZV/fungal rows do not inherit that HSV context. All Unicode private-use characters and replacement characters trigger primary exact-table crops; no clinical symbol is guessed. All nonstandard tables remain primary images, with their flattened table text removed from narrative notes.', '', '## Every-section coverage audit', '',
              '| Section | Name | PDF pages | Clinical rows | Main grids / other grids | Column continuations | Image or text considerations |',
              '| --- | --- | --- | --- | --- | --- | --- |']
     for section,audit in zip(data['sections'],audits):
@@ -296,7 +345,7 @@ def coverage_report(data,audits):
             image = next(f for f in section['figures'] if f['pdfPage']==page['pdfPage'])
             lines.append(f"- PDF {page['pdfPage']} (printed {page['pdfPage']-7}), crop points [{rect}]: [{Path(image['imagePath']).name}](../../frontend/public{image['imagePath']}).")
         for table in audit['tableSummaries']:
-            lines.append(f"- PDF {table['pdfPage']}: {table['columns']} grid columns, {table['gridRows']} grid rows; {'projected as source treatment columns' if table['structured'] else 'original table retained in notes/text/image'}; source header/context: {table['header'].replace('|',' / ')}.")
+            lines.append(f"- PDF {table['pdfPage']}: {table['columns']} grid columns, {table['gridRows']} grid rows; {'projected as source treatment columns' if table['structured'] else 'original table retained in primary image/original source text'}; source header/context: {table['header'].replace('|',' / ')}.")
         lines.append('')
     return '\n'.join(lines).rstrip()+'\n'
 
