@@ -14,7 +14,14 @@ The active catalogue has 19 clinical groups, 87 NCDC infection entries, 210 clin
 
 ## Verification record
 
-Final verification for this removal is recorded below after checkpoint review and preview checks. The older combined-source full-suite result is historical and does not establish correctness of this change.
+Removal checkpoint: `8654a70d4024d8a197bb4460aa72787e48a265cd`.
+
+- Full frontend run: 1,534 passed, 3 skipped; 66 passed files / 2 skipped; exit 0 with maxWorkers=2. Focused regressions: 51 passed. Initial removal tests: six expected failures before implementation.
+- TypeScript `tsc --noEmit`, production build, deterministic generator `--check`, shell syntax and whitespace checks passed. Existing large-chunk build warning remains.
+- Independent read-only review of `ec853a2..8654a70` approved the bounded removal with no Critical/Important findings. Reviewer verified exact preservation of NCDC objects, rejection of other sources and no dangling legacy supplemental source IDs. This approval does not certify clinical-content completeness.
+- Published build text/assets contain no withdrawn-source references. Removed PDF returns HTTP404; retained NCDC PDF returns HTTP200. Browser verified NCDC-only labels, seven respiratory entries, two urinary entries, CAP display and reload. No patient save was performed.
+- Original and copied patient database hashes match the pre-removal baseline, pass integrity check, and retain 209 fact revisions / four existing commands. All 14 original preservation-manifest entries remain unchanged.
+- Mobile checks deferred. Backend code unchanged; backend suite not rerun for this source-removal change.
 
 Evidence: `review-evidence/infection-library/ncdc-only/` includes the new regression RED/GREEN logs, NCDC before/after comparison and database baseline hashes. Full NCDC source/hold inventory: [INFECTION-SOURCE-MAPPING.md](INFECTION-SOURCE-MAPPING.md).
 
