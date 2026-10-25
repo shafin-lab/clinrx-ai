@@ -43,3 +43,40 @@ it('renders every published structured NCDC treatment row without dropping sourc
   if(!section.rows.length)expect(screen.getAllByRole('img').length+section.notes.length).toBeGreaterThan(0);
  }
 },60000);
+function openSection(sectionNumber:string){
+ const section=complete.sections.find(s=>s.section===sectionNumber)!;
+ const entry=infectionCatalogue!.infections.find(i=>i.id===section.infectionId)!;
+ select('Clinical group',entry.groupId);
+ const button=within(screen.getByRole('complementary',{name:'Browse infections'})).getAllByRole('button').find(b=>b.textContent?.startsWith(entry.name))!;
+ fireEvent.click(button);
+}
+it('keeps mild and moderate/severe MRSA cellulitis treatments in their own clinical situations',()=>{
+ mount();openSection('9.3');
+ const options=within(screen.getByLabelText('Clinical situation')).getAllByRole('option');
+ const mild=options.find(o=>/MRSA/i.test(o.textContent??'')&&/Mild/i.test(o.textContent??''))!;
+ expect(mild).toBeDefined();expect(mild).not.toHaveTextContent(/Moderate/i);
+ select('Clinical situation',(mild as HTMLOptionElement).value);
+ expect(screen.getByRole('region',{name:'First-line treatment'})).toHaveTextContent(/Trimethoprim.*800 mg\/160 mg BD/i);
+ expect(screen.getByRole('region',{name:'First-line treatment'})).not.toHaveTextContent(/Vancomycin/i);
+ expect(screen.getByRole('region',{name:'Alternative treatment'})).toHaveTextContent(/Doxycycline 100 mg q12h/i);
+ expect(screen.getByRole('region',{name:'Alternative treatment'})).not.toHaveTextContent(/Linezolid/i);
+ const severe=options.find(o=>/MRSA/i.test(o.textContent??'')&&/Moderate/i.test(o.textContent??''))!;
+ select('Clinical situation',(severe as HTMLOptionElement).value);
+ expect(screen.getByRole('region',{name:'First-line treatment'})).toHaveTextContent(/Vancomycin 15 to 20 mg\/kg\/dose every 8 to 12 hours/i);
+ expect(screen.getByRole('region',{name:'First-line treatment'})).not.toHaveTextContent(/Trimethoprim/i);
+ expect(screen.getByRole('region',{name:'Alternative treatment'})).toHaveTextContent(/Linezolid 600mg q12 h/i);
+});
+it('shows viral keratitis subtype context without inventing a heading-only treatment',()=>{
+ mount();openSection('11.1');
+ const options=within(screen.getByLabelText('Clinical situation')).getAllByRole('option');
+ for(const subtype of ['Epithelial','Stromal','Endothelial']){
+  const option=options.find(o=>o.textContent?.includes(subtype))!;
+  expect(option).toHaveTextContent(/Viral Keratitis/i);
+ }
+ expect(options.some(o=>o.textContent?.trim()==='Viral Keratitis HSV is the most common cause of viral keratitis')).toBe(false);
+});
+it('shows the exact neonatal PDF120 table alongside the affected printed age criteria',()=>{
+ mount();openSection('19.1');
+ const image=screen.getAllByRole('img').find(i=>/PDF page 120/.test(i.getAttribute('alt')??'')&&!i.closest('details'));
+ expect(image).toBeDefined();
+});
