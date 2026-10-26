@@ -25,3 +25,9 @@ Preserve sources/, original databases, open browser drafts, previous assets, sou
 
 ## Ledger
 Baseline 2135531; existing feature checkout reused, only untracked frontend/node_modules present. Explicit implement approval covers the demonstrated design; no additional approval gate needed. Task 1 DTO consumed by Task 2 editor and transport; optional fields must be omitted on legacy requests to preserve canonical receipts. Task 3 consumes Task 1/2 release; no original patient writes.
+
+Tasks 1 and 2 complete at 902f105. Backend 2 new regressions RED→GREEN, focused frontend 82 passed. Initial full frontend 1675 passed/3 skipped. Maintained backend run pending. Bare pytest collected a PDF-import helper unavailable in the backend venv; that helper passes separately (1 test) using the bundled PDF runtime with the existing pytest path, without package changes.
+
+Independent read-only checkpoint review (2135531..902f105): one P2, repeated DST local time silently chose earlier occurrence. Fixed with regression against actual checkpoint source RED→GREEN: reject ambiguous new entries with actionable exact-offset fallback; edits on the same source day preserve the recorded offset. Exact offset source entry stays inside Source details. No other findings or deferred minors.
+
+Final: fixed DST repeated-time finding — recordForm DST subprocess regression against checkpoint source RED→GREEN; current typecheck clean. Full frontend post-fix run: 1679 passed, 3 skipped; a final added exact-offset calendar validation test also passes in the 15-test helper/form run. Final release suite will include it. Browser copy save succeeded with blank preparation, explicit combined 500 mg, Every 12 hours, duration/review and instructions; no administration inferred.
