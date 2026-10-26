@@ -41,8 +41,9 @@ export function useSharedDoseReviews({catalog,courses,cultures,current,blocked,h
  function acknowledge(c:TherapyCourse,yes:boolean){const s=status(c);setAcks(old=>({...old,[s.id]:yes?stable(s.dependencies):''}));}
  const draftCurrent=!!activeDraft&&model.browserAssessment?.id===activeDraft.context.id&&base.scope!.start===activeDraft.context.scope.start&&base.scope!.end===activeDraft.context.scope.end;
  const concurrent=!!activeDraft&&!!here&&(activeDraft.expected!==here.bytes||Object.entries(activeDraft.legacy).some(([k,v])=>{const id=courses.find(c=>{const cs=scopeFor(c,base);return cs&&reviewKey(cs)===k;})?.order?.fact.id;return !!id&&here.legacy[id]?.bytes!==v;}));
- const candidates=courses.filter(c=>{const s=status(c);return s.active&&!s.valid&&!s.error&&s.result.status==='suggested'&&(!s.needsAck||s.acknowledged);});
- const canSave=!!here&&!here.error&&!!activeDraft&&draftCurrent&&!concurrent&&historyReady&&current&&!blocked&&!busy&&model.routineEligible&&candidates.length>0&&!!activeDraft.reviewer.trim();
+ const candidates=courses.filter(c=>{const s=status(c);return s.active&&!s.valid&&!s.error&&s.result.status==='suggested';});
+ const acknowledgedAll=candidates.every(c=>{const s=status(c);return !s.needsAck||s.acknowledged;});
+ const canSave=!!here&&!here.error&&!!activeDraft&&draftCurrent&&!concurrent&&historyReady&&current&&!blocked&&!busy&&model.routineEligible&&acknowledgedAll&&candidates.length>0&&!!activeDraft.reviewer.trim();
  async function save(){if(working.current||!canSave||!activeDraft||!here)return;working.current=true;setBusy(true);setMessage('');const atScope={...model.scope!},id=crypto.randomUUID(),at=new Date().toISOString();
   const selected=candidates.map(c=>({course:c,...status(c)}));const context={...activeDraft.context,id,scope:atScope};const receipt:SharedAssessment={version:1,id,reviewer:activeDraft.reviewer.trim(),savedAt:at,context,reviews:selected.map(s=>({orderId:s.id,review:{version:1,id:crypto.randomUUID(),reviewer:activeDraft.reviewer.trim(),savedAt:at,cutoff:atScope.cutoff,reviewEnd:atScope.end,assessment:{...s.assessment},dependencies:s.dependencies,evidence:model.sources}}))};
   try{const bytes=await appendSharedReview(scope,receipt,activeDraft.expected,activeDraft.legacy,()=>{
