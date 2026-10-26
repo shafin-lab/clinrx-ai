@@ -3,6 +3,17 @@
     "AntibioticDraft": {
       "additionalProperties": false,
       "properties": {
+        "prescription_details": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PrescriptionDetails"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "dose_review": {
           "anyOf": [
             {
@@ -62,7 +73,6 @@
         },
         "product": {
           "maxLength": 256,
-          "minLength": 1,
           "title": "Product",
           "type": "string"
         },
@@ -681,6 +691,34 @@
         "version"
       ],
       "title": "ExactReference",
+      "type": "object"
+    },
+    "PrescriptionDetails": {
+      "additionalProperties": false,
+      "properties": {
+        "frequency": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Frequency",
+          "type": "string"
+        },
+        "duration_review": {
+          "default": "",
+          "maxLength": 256,
+          "title": "Duration Review",
+          "type": "string"
+        },
+        "administration_instructions": {
+          "default": "",
+          "maxLength": 256,
+          "title": "Administration Instructions",
+          "type": "string"
+        }
+      },
+      "required": [
+        "frequency"
+      ],
+      "title": "PrescriptionDetails",
       "type": "object"
     }
   }

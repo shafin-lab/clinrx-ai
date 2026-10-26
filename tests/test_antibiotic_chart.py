@@ -64,7 +64,7 @@ def test_exact_culture_susceptibility_is_retained_with_prescription_draft(case):
 
 def test_invalid_dose_scope_and_gateway_origin_do_not_append(case):
     client,app=case;v=catalog(client);before=v['renal']['cutoff']['fact_watermark'];body=draft(v['renal']['repository'])
-    for change in ({'amount':'0'},{'point':'2026-10-08T09:00:00'},{'repository':str(uuid4())},{'dose_detail':None}):assert post(client,'save',{**body,**change}).status_code in (409,422)
+    for change in ({'amount':'0'},{'point':'2026-10-08T09:00:00'},{'repository':str(uuid4())},{'dose_detail':''}):assert post(client,'save',{**body,**change}).status_code in (409,422)
     assert client.post(ABX+'/save',json=body,headers={'origin':'http://elsewhere.example'}).status_code==403
     assert catalog(client)['renal']['cutoff']['fact_watermark']==before
 
@@ -284,3 +284,30 @@ def test_course_history_includes_previous_days_at_original_cutoff_and_excludes_f
     assert '2026-10-08T11:00:00Z' not in times
     assert '2026-10-07T09:00:00Z' not in times
     assert catalog(client)['renal']['cutoff']['fact_watermark']==before+1
+
+
+def test_simple_form_omits_preparation_and_component_without_inventing_them(case):
+    client,_=case;v=catalog(client)
+    body={**draft(v['renal']['repository']),'mode':'prescription','product':'','dose_detail':None,'amount':'500','unit':'mg','schedule':'Every 12 hours'}
+    saved=post(client,'save',body);assert saved.status_code==200,saved.text
+    fact=saved.json()['fact'];assert fact['antimicrobial']['formulation'] is None
+    assert fact['prescribed_dose']['basis_detail'] is None
+    assert post(client,'lookup',body).json()==saved.json()
+    held={**draft(v['renal']['repository']),'product':'','mode':'held','amount':None,'unit':None,'dose_detail':None,'order':{'kind':'antimicrobial_order','id':body['id'],'version':body['revision']}}
+    result=post(client,'save',held);assert result.status_code==200,result.text
+    assert 'administered_dose' not in result.json()['fact']
+
+
+def test_optional_prescription_details_roundtrip_without_changing_legacy_bytes(case):
+    from app.api.schemas.antibiotic_chart import AntibioticDraft
+    from app.persistence.canonical import canonical_payload
+    import json
+    client,_=case;v=catalog(client);legacy=draft(v['renal']['repository'])
+    assert 'prescription_details' not in json.loads(canonical_payload(AntibioticDraft.model_validate(legacy)))
+    details={'frequency':'Every 12 hours','duration_review':'Review in 48 hours','administration_instructions':'Infuse over 30 minutes'}
+    body={**legacy,'mode':'prescription','prescription_details':details,'schedule':'Every 12 hours; Duration / review: Review in 48 hours; Administration instructions: Infuse over 30 minutes'}
+    response=post(client,'save',body);assert response.status_code==200,response.text
+    assert response.json()['fact']['schedule']==body['schedule']
+    assert post(client,'lookup',body).json()==response.json()
+    assert post(client,'validate',{**body,'schedule':'Every 8 hours'}).status_code==422
+    assert post(client,'validate',{**legacy,'prescription_details':details}).status_code==422
