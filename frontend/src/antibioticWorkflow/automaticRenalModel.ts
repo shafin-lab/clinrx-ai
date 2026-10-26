@@ -3,7 +3,7 @@ import {parseRF2JSON} from '../api/rf2JSON';
 import {record} from '../demo/evidencePresentation';
 import {compareRespiratoryInstants as compare} from '../respiratory/exactTime';
 import {clearance,type ClearanceInputs} from './patientModel';
-import {doseScope,type DoseSource} from './renalDoseModel';
+import {doseScope,type DoseSource,type DoseScope} from './renalDoseModel';
 
 export const DOSE_CONTEXT_QUESTION='Patient medication dosing context/v1';
 export interface PatientDoseContext {version:1;birthDate:string;factor:''|'male'|'female';renalFunction:'unknown'|'stable'|'changing';support:'unknown'|'none'|'ihd'|'crrt'|'other';weightReviewed:boolean;bodySize:''|'standard'|'complex';hepatic:''|'reviewed'|'unresolved';special:''|'none'|'present';safetyReviewed:boolean}
@@ -21,7 +21,9 @@ type Candidate=AutomaticInput&{role:'weight'|'creatinine';available:string;trend
 const exact=(t:unknown)=>{const r=record(t);return r.status==='known'&&r.precision==='instant'&&typeof r.value==='string'&&compare(r.value,r.value)===0?r.value:'';};
 export const evidenceEventTime=(e:Evidence)=>String(e.metadata?.chart?.point??record(e.fact.occurred).source_timestamp??record(e.fact.time).event??'');
 const positive=(s:string)=>/^(?:\d+(?:\.\d+)?|\.\d+)$/.test(s)&&Number.isFinite(Number(s))&&Number(s)>0;
-export function automaticRenalModel(catalog?:Catalog){
+export interface ContextAssessment {id:string;scope:DoseScope;context:PatientDoseContext;sources:DoseSource[];baseContext:string}
+export function contextSourceIdentity(entry?:Evidence){return stable(entry?{reference:{kind:entry.fact.kind,id:entry.fact.id,version:entry.fact.revision},digest:entry.digest,ingestion:entry.ingestion.ingestion_sequence}:null);}
+export function automaticRenalModel(catalog?:Catalog,assessment?:ContextAssessment){
  const inputs:ClearanceInputs={age:'',factor:'',weight:'',creatinine:''},reasons:string[]=[],candidates:Candidate[]=[],contextEntries:{entry:Evidence;time:string;context?:PatientDoseContext}[]=[];
  const signature=stable(catalog?[doseScope(catalog),catalog.items.map(e=>[pin(e),e.superseded,e.fact,e.metadata]),catalog.laboratory_reports.map(e=>[pin(e),e.superseded,e.fact])]:[]);
  const scope=catalog?doseScope(catalog):undefined;
@@ -85,7 +87,11 @@ export function automaticRenalModel(catalog?:Catalog){
   return top;
  }
  const weight=latest('weight'),creatinine=latest('creatinine');inputs.weight=weight?.value??'';inputs.creatinine=creatinine?.value??'';
- contextEntries.sort((a,b)=>compare(b.time,a.time)??0);const selected=contextEntries[0],context=selected&&contextEntries.filter(x=>compare(x.time,selected.time)===0).length===1?selected.context:undefined;
+ contextEntries.sort((a,b)=>compare(b.time,a.time)??0);const selected=contextEntries[0],sourceContext=selected&&contextEntries.filter(x=>compare(x.time,selected.time)===0).length===1?selected.context:undefined;
+ const exactSources:DoseSource[]=[...weight?[weight.source]:[],...creatinine?[creatinine.source]:[]];
+ if(sourceContext&&selected){const p=pin(selected.entry);exactSources.push({role:'patient_context',reference:p.reference,digest:p.digest,ingestion:p.ingestion});}
+ const reviewed=assessment&&scope&&assessment.scope.repository===scope.repository&&assessment.scope.patient===scope.patient&&assessment.scope.encounter===scope.encounter&&Number.isSafeInteger(assessment.scope.cutoff)&&assessment.scope.cutoff<=scope.cutoff&&assessment.scope.cutoff>0&&compare(assessment.scope.end,scope.end)!<=0&&Date.parse(scope.end)-Date.parse(assessment.scope.end)<=24*3600000&&assessment.baseContext===contextSourceIdentity(sourceContext?selected?.entry:undefined)&&(!selected||!!sourceContext)&&!!weight&&!!creatinine&&stable(assessment.sources)===stable(exactSources)&&parsePatientDoseContext(stable(assessment.context))?assessment:undefined;
+ const context=reviewed?.context??sourceContext;
  if(context&&scope){
   const date=scope.end.slice(0,10),birth=context.birthDate;
   if(birth){const age=Number(date.slice(0,4))-Number(birth.slice(0,4))-(date.slice(5)<birth.slice(5)?1:0);if(age>=18&&age<140)inputs.age=String(age);else reasons.push('Explicit adult date of birth required');}
@@ -98,15 +104,15 @@ export function automaticRenalModel(catalog?:Catalog){
   if(context.renalFunction!=='stable')reasons.push('Stable renal function has not been confirmed');
   if(context.support!=='none')reasons.push('Kidney replacement therapy is present or not assessed');
   if(!context.weightReviewed)reasons.push('Calculation weight applicability has not been reviewed');
-  if(scope&&selected&&(Date.parse(scope.end)-Date.parse(selected.time)>24*3600000))reasons.push('Patient renal review exceeds the 24-hour preview limit');
+  if(context.bodySize!=='standard'||context.hepatic!=='reviewed'||context.special!=='none'||!context.safetyReviewed)reasons.push('Patient applicability, hepatic status, special circumstances or safety review needs confirmation');
+  if(!reviewed&&scope&&selected&&(Date.parse(scope.end)-Date.parse(selected.time)>24*3600000))reasons.push('Patient renal review exceeds the 24-hour preview limit');
   const oldWeight=selected?.entry.metadata?.note?.pins.find(p=>p.reference.kind===weight?.source.reference.kind&&p.reference.id===weight?.source.reference.id);
-  if(weight&&(!oldWeight||oldWeight.digest!==weight.source.digest||oldWeight.reference.version!==weight.source.reference.version))reasons.push('Weight changed or its exact source was not retained in the patient dosing review');
+  if(!reviewed&&weight&&(!oldWeight||oldWeight.digest!==weight.source.digest||oldWeight.reference.version!==weight.source.reference.version))reasons.push('Weight changed or its exact source was not retained in the patient dosing review');
   const oldCreatinine=selected?.entry.metadata?.note?.pins.find(p=>p.reference.kind===creatinine?.source.reference.kind&&p.reference.id===creatinine?.source.reference.id);
-  if(creatinine&&(!oldCreatinine||oldCreatinine.digest!==creatinine.source.digest||oldCreatinine.reference.version!==creatinine.source.reference.version))reasons.push('Creatinine changed or its exact source was not retained in the patient dosing review');
+  if(!reviewed&&creatinine&&(!oldCreatinine||oldCreatinine.digest!==creatinine.source.digest||oldCreatinine.reference.version!==creatinine.source.reference.version))reasons.push('Creatinine changed or its exact source was not retained in the patient dosing review');
  }
  if(creatinine){const latest=Number(creatinine.value),at=Date.parse(creatinine.time);for(const old of candidates.filter(x=>x.role==='creatinine'&&x.trendEligible&&compare(x.time,creatinine.time)!<0)){const hours=(at-Date.parse(old.time))/3600000;if(hours<=48&&latest-Number(old.value)>=0.3-1e-10||hours<=168&&latest/Number(old.value)>=1.5-1e-10){reasons.push('Creatinine rise requires clinical review; routine steady-state dosing is paused');break;}}}
- const sources:DoseSource[]=[...weight?[weight.source]:[],...creatinine?[creatinine.source]:[]];
- if(context&&selected){const p=pin(selected.entry);sources.push({role:'patient_context',reference:p.reference,digest:p.digest,ingestion:p.ingestion});}
- return {inputs,crcl,weight,creatinine,context,contextEntry:context?selected?.entry:undefined,reasons:[...new Set(reasons)],routineEligible:!!crcl&&!reasons.length,sources,signature,scope,candidates};
+ const sources=exactSources;
+ return {inputs,crcl,weight,creatinine,context,browserAssessment:reviewed,contextEntry:sourceContext?selected?.entry:undefined,reasons:[...new Set(reasons)],routineEligible:!!crcl&&!reasons.length,sources,signature,scope,candidates};
 }
 export type AutomaticRenalModel=ReturnType<typeof automaticRenalModel>;
