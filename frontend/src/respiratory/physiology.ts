@@ -3,7 +3,7 @@ import {respiratoryExternalInput,type RespiratoryEvaluation} from './respiratory
 import type {PhysiologyResult, RespiratoryMeasurement, RespiratoryRecord} from './respiratoryTypes';
 
 /** Calculation versions describe arithmetic and eligibility, not disease classifications. */
-export const RESPIRATORY_PHYSIOLOGY_VERSION='m9-physiology-2026-10-27-v3';
+export const RESPIRATORY_PHYSIOLOGY_VERSION='m9-physiology-2026-10-27-v4';
 export const RESPIRATORY_METHOD_SOURCES={
  pbw:{version:'ARDSNet FACTT protocol, 2001',url:'https://biolincc.nhlbi.nih.gov/media/studies/factt/Protocol.pdf'},
  oxygenation:{version:'PALICC consensus, 2015, arithmetic only',url:'https://pubmed.ncbi.nlm.nih.gov/25647235/'},
@@ -97,7 +97,7 @@ export function calculateRespiratoryPhysiology(record:RespiratoryRecord,evaluati
  const arterial=()=>c.sample_type==='arterial'?null:'An explicitly arterial blood sample is required; venous and capillary gases cannot substitute.';
  const adult=()=>c.population==='adult'?null:'This method requires confirmed adult population; child, neonate and unknown populations are not eligible.';
  const arterialAdult=()=>arterial()??adult();
- const sampleSettings=()=>c.settings_confirmed_at_sample===true||evaluation?.inputs.has('fio2')?null:'FiO2/support settings must be explicitly confirmed at the time of the sample/measurement.';
+ const sampleSettings=()=>evaluation?.settingsConflict?evaluation.issues.join(' '):c.settings_confirmed_at_sample===true||evaluation?.inputs.has('fio2')?null:'FiO2/support settings must be explicitly confirmed at the time of the sample/measurement.';
  const arterialSettings=()=>arterial()??sampleSettings();
  const staticConditions=()=>c.passive!==true?'Passive respiratory conditions must be confirmed.':c.occlusion_confirmed!==true?'End-inspiratory and total-PEEP occlusion measurements must be confirmed.':null;
  const dynamicConditions=()=>c.passive!==true?'Passive respiratory conditions must be confirmed for the peak-pressure-based estimate.':c.occlusion_confirmed!==true?'Total-PEEP end-expiratory occlusion measurement must be confirmed.':null;
