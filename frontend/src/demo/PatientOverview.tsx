@@ -15,6 +15,8 @@ import type {WeightScope} from './weightRecovery';
 import {loadSavedReviews,type ReviewDomain,type ReviewScope,type SavedReview} from '../clinical/savedReviewStore';
 import {respiratoryCategories} from '../respiratory/respiratoryCatalog';
 import {RespiratorySourceDialog} from '../respiratory/RespiratorySources';
+import {supportSummary} from '../respiratory/supportModel';
+import type {RespiratoryRecord} from '../respiratory/respiratoryTypes';
 import {sourceSummary} from '../respiratory/respiratoryModel';
 import './patientOverview.css';
 
@@ -34,7 +36,7 @@ const COURSE_AREAS:Pick<CourseSection,'id'|'label'>[]=[
 const asRecord=(value:unknown):Record<string,unknown>=>value&&typeof value==='object'&&!Array.isArray(value)?value as Record<string,unknown>:{};
 function courseTimestamp(e:Evidence):{timestamp:string|null;timeLabel:string}{
  const fact=asRecord(e.fact);
- if(fact.kind==='respiratory_record'){const times=asRecord(fact.times);for(const [key,timeLabel] of [['collected','Collected'],['occurred','Observed'],['reported','Reported'],['available','Available']] as const){const point=asRecord(times[key]);if(point.status==='known'&&typeof point.value==='string')return {timestamp:point.value,timeLabel};}return {timestamp:null,timeLabel:'Time not established'};}
+ if(fact.kind==='respiratory_record'){const times=asRecord(fact.times);for(const [key,timeLabel] of (fact.category==='blood_gas'?[['collected','Collected'],['occurred','Observed'],['reported','Reported'],['available','Available']]:[['occurred','Observed'],['collected','Collected'],['reported','Reported'],['available','Available']])){const point=asRecord(times[key]);if(point.status==='known'&&typeof point.value==='string')return {timestamp:point.value,timeLabel};}return {timestamp:null,timeLabel:'Time not established'};}
  if(fact.kind==='laboratory_report'){
   const times=asRecord(fact.times);
   for(const [key,timeLabel] of [['collected','Collected'],['reported','Reported'],['available','Available']] as const){const point=asRecord(times[key]);if(point.status==='known'&&typeof point.value==='string')return {timestamp:point.value,timeLabel};}
@@ -106,7 +108,7 @@ function laboratoryComponentSummary(component:LaboratoryComponent):string{
 }
 function courseSummary(e:Evidence,component?:LaboratoryComponent):string{
  const fact=asRecord(e.fact),chart=e.metadata?.chart,note=asRecord(e.metadata?.note),lab=fact.kind==='laboratory_report';
- if(fact.kind==='respiratory_record')return sourceSummary(e);
+ if(fact.kind==='respiratory_record')return fact.category==='support'?supportSummary(e.fact as RespiratoryRecord):sourceSummary(e);
  if(lab)return component?laboratoryComponentSummary(component):evidenceText(e);
  const quantity=asRecord(fact.recorded_amount),result=asRecord(fact.result),resultQuantity=asRecord(result.quantity),value=asRecord(fact.value),valueQuantity=asRecord(value.value);
  if(typeof quantity.value==='string'||typeof resultQuantity.value==='string'||value.status==='known'&&typeof valueQuantity.value==='string')return evidenceText(e);
