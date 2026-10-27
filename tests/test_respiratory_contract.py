@@ -31,6 +31,29 @@ def test_exact_measurement_source_and_unknown_concept_survive():
     assert preserved.context.reference_equation is None
 
 
+def test_support_episode_roundtrip_preserves_legacy_payload():
+    original=record();data=original.model_dump(mode='json')
+    assert 'support_episode' not in data['context']
+    assert type(original).model_validate(data).model_dump(mode='json')==data
+    data['category']='support';data['times']['occurred']=data['times']['collected']
+    data['context']['support_episode']={'type':'hfnc','until':None}
+    episode=type(original).model_validate(data)
+    assert episode.context.support_episode.type=='hfnc'
+    assert episode.model_dump(mode='json')['context']['support_episode']=={'type':'hfnc','until':None}
+
+
+@pytest.mark.parametrize('mutation',['before_start','uncertain_end','wrong_category','unknown_type'])
+def test_invalid_support_episode_is_rejected(mutation):
+    data=record(category='support').model_dump(mode='json')
+    data['times']['occurred']=data['times']['collected']
+    data['context']['support_episode']={'type':'hfnc','until':None}
+    if mutation=='before_start':data['context']['support_episode']['until']={'status':'known','precision':'instant','value':'2026-10-08T08:00:00Z'}
+    if mutation=='uncertain_end':data['context']['support_episode']['until']={'status':'unknown'}
+    if mutation=='wrong_category':data['category']='blood_gas'
+    if mutation=='unknown_type':data['context']['support_episode']['type']='invented'
+    with pytest.raises(ValidationError):type(record()).model_validate(data)
+
+
 @pytest.mark.parametrize('mutation',['version','duplicate','float','unbounded','correction','withdrawn','self_link'])
 def test_invalid_contract_cannot_enter_storage(mutation):
     item=record();data=item.model_dump(mode='json')

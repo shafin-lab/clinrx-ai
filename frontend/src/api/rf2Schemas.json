@@ -2711,6 +2711,17 @@
           ],
           "default": null,
           "title": "Reference Equation"
+        },
+        "support_episode": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RespiratorySupportEpisode"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "title": "RespiratoryContext",
@@ -2810,6 +2821,43 @@
         "result"
       ],
       "title": "RespiratoryMeasurement",
+      "type": "object"
+    },
+    "RespiratorySupportEpisode": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "room_air",
+            "nasal_cannula",
+            "simple_mask",
+            "venturi_mask",
+            "reservoir_mask",
+            "hfnc",
+            "niv",
+            "invasive",
+            "other",
+            "unknown"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "until": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedTime"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "RespiratorySupportEpisode",
       "type": "object"
     },
     "RespiratoryTimes": {

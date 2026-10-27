@@ -20,6 +20,7 @@ def test_respiratory_admission_retry_correction_resolve_and_history(ws):
     evidence=saved.json();snapshot=rows(db)
     assert evidence['fact']['measurements'][0]['result']['raw_value']=='80.00'
     assert post(client,original).json()['fact']==evidence['fact']
+
     assert rows(db)==snapshot
     corrected=record('2',supersedes=original.reference,change_state='corrected',report_status='corrected',correction_reason='Issuer correction')
     revised=post(client,corrected);assert revised.status_code==200,revised.text
@@ -31,6 +32,23 @@ def test_respiratory_admission_retry_correction_resolve_and_history(ws):
     assert history.status_code==200,history.text
     assert [x['fact']['revision'] for x in history.json()['items']]==['1','2']
     assert post(client,original).json()['fact']==evidence['fact']
+
+
+def test_support_episode_survives_catalog_reload_and_source_correction(ws):
+    client,db,_=ws;data=record(category='support').model_dump(mode='json')
+    data['times']['occurred']=deepcopy(data['times']['collected'])
+    data['context']['support_episode']={'type':'hfnc','until':None}
+    from app.models.clinical.respiratory import RespiratoryRecord
+    original=RespiratoryRecord.model_validate(data)
+    saved=post(client,original);assert saved.status_code==200,saved.text
+    before=rows(db);assert post(client,original).status_code==200;assert rows(db)==before
+    reloaded=client.get(RF2).json()['respiratory_records'][0]
+    assert reloaded['fact']['context']['support_episode']=={'type':'hfnc','until':None}
+    data.update(revision='2',change_state='corrected',report_status='corrected',supersedes=original.reference.model_dump(),correction_reason='Correct oxygen device')
+    data['source_identity']['source_version']='2';data['context']['support_episode']['type']='nasal_cannula'
+    corrected=post(client,RespiratoryRecord.model_validate(data));assert corrected.status_code==200,corrected.text
+    history=client.post(RF2+'/history',json={'repository':client.get(RF2).json()['repository'],'pins':[pin(corrected.json())]})
+    assert [x['fact']['context']['support_episode']['type'] for x in history.json()['items']]==['hfnc','nasal_cannula']
 
 
 def test_later_correction_retains_last_available_revision_and_hides_its_future_history(ws):

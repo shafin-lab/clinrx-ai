@@ -1,6 +1,7 @@
 import {pin,stable,type Catalog,type Evidence} from '../api/rf2Client';
 import type {RecordedTime,RespiratoryMeasurement,RespiratoryRecord} from './respiratoryTypes';
 import {compareRespiratoryInstants} from './exactTime';
+import {supportAtTime} from './supportModel';
 export interface RespiratoryEvaluation {inputs:ReadonlyMap<string,{measurement:RespiratoryMeasurement;source:Evidence}>;issues:string[]}
 const exact=(t:RecordedTime)=>t.status==='known'&&t.precision==='instant'&&t.value!==null&&compareRespiratoryInstants(t.value,t.value)===0;
 /** Resolve missing FiO2 only; never alter any source or infer a support episode. */
@@ -17,8 +18,17 @@ export function resolveRespiratoryEvaluation(sample:RespiratoryRecord,catalog:Ca
  const origins=records.filter(e=>sameRef(e,{kind:sample.kind,id:sample.id,version:sample.revision}));
  if(origins.length!==1||!current(origins[0])||stable(origins[0].fact)!==stable(sample))return held('sample revision is unresolved, historical or outside the confirmed evidence scope.');
  if(sample.conflict==='unresolved')return held('sample has an unresolved source conflict.');
- if(sample.context.settings_confirmed_at_sample!==true)return held('settings are not explicitly confirmed at this exact sample.');
  if(!exact(sample.times.collected))return held('sample collection time is not a known exact instant.');
+ const automatic=sample.linked_sources.length===0?supportAtTime(catalog,sample.times.collected.value!):undefined;
+ if(automatic?.status==='matched'&&(automatic.source!.fact as RespiratoryRecord).context.support_episode){
+  const source=automatic.source!,record=source.fact as RespiratoryRecord;
+  if(['nasal_cannula','simple_mask','reservoir_mask','venturi_mask','other','unknown'].includes(record.context.support_episode!.type))return held('this device does not establish an exact delivered FiO2 for calculation.');
+  const values=record.measurements.filter(m=>m.concept==='fio2'),m=values[0],r=m?.result;
+  if(values.length!==1||m.quality!=='usable'||!['set','measured','reported'].includes(m.role)||r?.kind!=='numeric'||r.comparator!=='='||!r.unit||!['UCUM','ucum','http://unitsofmeasure.org'].includes(r.unit.namespace)||!['%','1'].includes(r.unit.code))return held('episode FiO2 needs one usable exact result, compatible role and standard unit.');
+  const fraction=Number(r.raw_value)*(r.unit.code==='%'?0.01:1);if(!Number.isFinite(fraction)||fraction<0.21||fraction>1)return held('episode FiO2 is outside the permitted physiologic range.');
+  inputs.set('fio2',{measurement:m,source});return {inputs,issues};
+ }
+ if(sample.context.settings_confirmed_at_sample!==true)return held('settings are not explicitly confirmed at this exact sample.');
  const linked:Evidence[]=[];
  for(const ref of sample.linked_sources.filter(r=>r.kind==='respiratory_record')){
   const matches=records.filter(e=>sameRef(e,ref));
