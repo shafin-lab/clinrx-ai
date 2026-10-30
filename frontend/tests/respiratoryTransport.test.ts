@@ -1,6 +1,7 @@
 import {afterAll,beforeAll,expect,it,vi} from 'vitest';
 import fixture from './fixtures/rf2-api.json';
 import respiratory from './fixtures/respiratory-record.json';
+import type {RecordedTime,RespiratoryRecord} from '../src/respiratory/respiratoryTypes';
 import {decodeRF2Catalog,decodeEvidence,hash,RF2Client,stable,type Evidence} from '../src/api/rf2Client';
 const previous=globalThis.crypto;const {webcrypto}=await vi.importActual<{webcrypto:Crypto}>('node:crypto');
 beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}));afterAll(()=>Object.defineProperty(globalThis,'crypto',{value:previous,configurable:true}));
@@ -33,4 +34,32 @@ it('rejects changed microseconds and source content despite valid response hashe
   e.canonical_fact=stable(e.fact);e.digest=await hash(e.canonical_fact);
   await expect(new RF2Client(async()=>new Response(JSON.stringify(e))).importRespiratory(e.repository,request)).rejects.toThrow();
  }
+});
+
+it.each([
+ ['instant', '2026-10-08T10:00:00.000Z', '2026-10-08T10:00:00Z'],
+ ['instant', '2026-10-08T10:00:00.382Z', '2026-10-08T10:00:00.382000Z'],
+ ['bounded', '2026-10-08T10:00:00.382Z', '2026-10-08T10:00:00.382000Z'],
+] as const)('confirms a support episode when its %s until timestamps retain their exact instants (%s)',async(precision,sent,stored)=>{
+ const e=await evidence(),request=structuredClone(e.fact) as unknown as RespiratoryRecord,response=e.fact as unknown as RespiratoryRecord;
+ const until:RecordedTime={status:'known',precision,value:precision==='instant'?sent:null,lower:precision==='bounded'?sent:null,upper:precision==='bounded'?'2026-10-08T11:00:00.000Z':null,uncertainty:null};
+ request.context.support_episode={type:'nasal_cannula',until};response.context.support_episode=structuredClone(request.context.support_episode);
+ const saved=response.context.support_episode.until!;
+ if(precision==='instant')saved.value=stored;else{saved.lower=stored;saved.upper='2026-10-08T11:00:00Z';}
+ e.canonical_fact=stable(e.fact);e.digest=await hash(e.canonical_fact);
+ const before=stable(request),result=await new RF2Client(async()=>new Response(JSON.stringify(e))).importRespiratory(e.repository,request);
+ expect((result.fact as RespiratoryRecord).context.support_episode?.until).toEqual({...until,...(precision==='instant'?{value:stored}:{lower:stored,upper:'2026-10-08T11:00:00Z'})});
+ expect(stable(request)).toBe(before);
+});
+it.each(['value','lower','upper','uncertainty','narrative'] as const)('rejects changed support-until %s or untyped source text despite a valid response hash',async(field)=>{
+ const e=await evidence(),request=structuredClone(e.fact) as unknown as RespiratoryRecord,response=e.fact as unknown as RespiratoryRecord;
+ const bounded=field==='lower'||field==='upper';
+ request.context.support_episode={type:'nasal_cannula',until:{status:'known',precision:bounded?'bounded':'instant',value:bounded?null:'2026-10-08T10:00:00.382001Z',lower:bounded?'2026-10-08T10:00:00.382001Z':null,upper:bounded?'2026-10-08T11:00:00.382001Z':null,uncertainty:null}};
+ if(field==='uncertainty')request.context.support_episode.until!.uncertainty='2026-10-08T10:00:00.382Z';
+ if(field==='narrative')request.narrative='2026-10-08T10:00:00.382Z';
+ response.context.support_episode=structuredClone(request.context.support_episode);response.narrative=request.narrative;
+ if(field==='narrative')response.narrative='2026-10-08T10:00:00.382000Z';
+ else response.context.support_episode.until![field]=field==='uncertainty'?'2026-10-08T10:00:00.382000Z':field==='upper'?'2026-10-08T11:00:00.382002Z':'2026-10-08T10:00:00.382002Z';
+ e.canonical_fact=stable(e.fact);e.digest=await hash(e.canonical_fact);
+ await expect(new RF2Client(async()=>new Response(JSON.stringify(e))).importRespiratory(e.repository,request)).rejects.toThrow();
 });

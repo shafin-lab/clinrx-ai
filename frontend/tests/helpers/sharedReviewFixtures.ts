@@ -1,0 +1,9 @@
+import fixture from '../fixtures/antibiotic-workflow.json';
+import type {Item} from '../../src/api/microTypes';
+import {renalCatalog} from './medicationFixtures';
+import {automaticRenalModel,contextSourceIdentity} from '../../src/antibioticWorkflow/automaticRenalModel';
+import {therapyCourses} from '../../src/antibioticWorkflow/therapyModel';
+import {dependenciesFor,type SavedDoseReview} from '../../src/antibioticWorkflow/savedDoseReviews';
+export const confirmedMedicine={indication:'standard',phase:'maintenance',infusion:'short',productReviewed:true,empiricReviewed:true};
+export function sharedOrder(id='shared-order',name='Meropenem'):Item{return {fact:{...structuredClone(fixture.validated.fact),kind:'antimicrobial_order',id,revision:'1',antimicrobial:{...fixture.validated.fact.antimicrobial,raw_display:name},route:{raw_display:'IV'},order_status:'active',prescribed_dose:{amount:{value:'1',unit:{raw:'g'}},basis:'per_dose'},schedule:'Every 8 hours',recorded_indication:'Standard dosing'},expected_digest:'a'.repeat(64),inclusion:'in_window'} as unknown as Item;}
+export async function sharedFixture(){const catalog=await renalCatalog(),model=automaticRenalModel(catalog),course=therapyCourses([sharedOrder()])[0],at=new Date().toISOString(),id=crypto.randomUUID(),review:SavedDoseReview={version:1,id:crypto.randomUUID(),reviewer:'Demo reviewer',savedAt:at,cutoff:model.scope!.cutoff,reviewEnd:model.scope!.end,assessment:confirmedMedicine,dependencies:dependenciesFor(course,model,[],[],confirmedMedicine),evidence:model.sources};return {catalog,model,course,receipt:{version:1 as const,id,reviewer:'Demo reviewer',savedAt:at,context:{id,scope:model.scope!,context:model.context!,sources:model.sources,baseContext:contextSourceIdentity(model.contextEntry)},reviews:[{orderId:course.order!.fact.id,review}]}};}

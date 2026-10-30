@@ -5,10 +5,13 @@ import renalFixture from './fixtures/renalFluid.json';
 import rf2Fixture from './fixtures/rf2-api.json';
 import type {RenalFluidState} from '../src/api/renalFluidTypes';
 import {RenalFluidClient} from '../src/api/renalFluidClient';
-import {RF2Client,type Catalog} from '../src/api/rf2Client';
+import {RF2Client,type Catalog,type Evidence} from '../src/api/rf2Client';
 import {EvidenceEntryClient} from '../src/api/evidenceEntryClient';
 import {PatientWorkspace} from '../src/demo/PatientWorkspace';
 import {RenalBedsideReview} from '../src/renal/RenalBedsideReview';
+import {m8ReviewEvidence} from '../src/respiratory/reviewEvidenceContext';
+import {overviewReviewSummaries} from '../src/demo/PatientOverview';
+import {loadSavedReviews,reviewStoragePrefix} from '../src/clinical/savedReviewStore';
 import {newRenalDraft,renalBedsideModel,validateRenalReview} from '../src/renal/renalBedsideModel';
 vi.mock('../src/demo/ComprehensiveDemo',()=>({ComprehensiveDemo:()=> <p>Existing evidence viewer</p>}));
 vi.mock('../src/demo/EvidenceEntryWorkspace',()=>({EvidenceEntryWorkspace:()=> <p>Existing evidence editor</p>}));
@@ -117,4 +120,44 @@ it('rejects invalid review options and field limits',()=>{
 });
 it('uses one shared catalog across overview, M7 and M8 and retains renal session notes on view changes',async()=>{
  vi.stubEnv('VITE_SYNTHETIC_RF2','true');vi.stubEnv('VITE_SYNTHETIC_AUTHORING','true');const send=vi.fn().mockResolvedValue(new Response(JSON.stringify(structuredClone(rf2Fixture.catalog))));vi.stubGlobal('fetch',send);render(<PatientWorkspace client={client()} entry={new EvidenceEntryClient()} config={config}/>);await screen.findByRole('heading',{name:'Creatinine'});fireEvent.click(screen.getByRole('button',{name:'Renal system'}));await screen.findByRole('heading',{name:'Renal system'});fill();recordReview();await screen.findByRole('region',{name:'Renal session review records'});fireEvent.click(screen.getByRole('button',{name:'Cardiovascular system'}));expect(screen.getByRole('heading',{name:'Cardiovascular system'})).toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'Renal system'}));expect(screen.getByRole('region',{name:'Renal session review records'})).toHaveTextContent('Check the documented collection gap');expect(send).toHaveBeenCalledTimes(2);expect(String(send.mock.calls[1][0])).toContain('2026-10-09');
+});
+
+function withPanel(c:Catalog){
+ const source:Evidence={...structuredClone(c.items[0]),fact:{kind:'laboratory_report',id:'exact-panel',revision:'1',binding:{target:{patient_id:config.patient,encounter_id:config.encounter}},report_status:'final',record_status:'invalid',specimen:{specimen_type:{raw_display:'Serum'}},times:{available:{status:'known',value:'2026-10-08T09:00:00Z'},collected:{status:'not_recorded'}},components:[['bun','BUN'],['potassium','K'],['urine_ph','pH'],['total_calcium','Ca'],['ionised_calcium','iCa']].map(([mapped_concept,label])=>({source_component_id:mapped_concept,test_code:{raw_display:label},mapping_status:'mapped',mapped_concept,result:{kind:'numeric',raw_value:'1.000',comparator:'=',unit:{raw_display:'source unit'}},source_flags:[{raw_display:'Source abnormal'}],source_interference_flags:[{raw_display:'Haemolysis'}],source_critical_flag:'flagged'}))},digest:'c'.repeat(64),terminal_reference:{kind:'laboratory_report',id:'exact-panel',version:'1'},superseded:false,metadata:null};c.laboratory_reports=[source];return c;
+}
+it.each([['Urea / BUN','BUN','Kidney tests'],['Potassium','K','Kidney tests'],['Urine routine','pH','Urine']] as const)('drills %s into exactly the counted source and correct group',async(button,label,group)=>{
+ const c=withPanel(await decodeCatalog());render(<RenalBedsideReview {...props(c.combined)} catalog={c}/>);fireEvent.click(screen.getByRole('button',{name:'Inspect sources for '+button}));const drawer=screen.getByRole('complementary',{name:'Renal evidence drawer'});
+ expect(within(drawer).getByRole('button',{name:group})).toHaveAttribute('aria-pressed','true');expect(within(drawer).getByRole('status')).toHaveTextContent('1 recorded renal sources');fireEvent.click(drawer.querySelector('.m7-source-card')!);expect(screen.getByRole('region',{name:'Exact renal source'})).toHaveTextContent(label);
+});
+it('retains invalid record status and original flags in final mapped laboratory display',async()=>{
+ const c=withPanel(await decodeCatalog()),before=JSON.stringify(c),m=renalBedsideModel(c.combined,config,c),source=m.sources.find(s=>s.mappedConcept==='potassium')!;
+ expect(source.status).toContain('invalid');expect(source.status).toContain('final');expect(source.limitations.join(' ')).toContain('Haemolysis');expect(source.limitations.join(' ')).toContain('Source abnormal');expect(source.limitations.join(' ')).toContain('flagged');expect(m.sources.find(s=>s.mappedConcept==='ionised_calcium')?.label).toContain('site unresolved');expect(JSON.stringify(c)).toBe(before);
+ render(<RenalBedsideReview {...props(c.combined)} catalog={c}/>);fireEvent.click(screen.getByRole('button',{name:'Inspect sources for Potassium'}));const drawer=screen.getByRole('complementary',{name:'Renal evidence drawer'});expect(drawer).toHaveTextContent('invalid');fireEvent.click(drawer.querySelector('.m7-source-card')!);expect(screen.getByRole('region',{name:'Exact renal source'})).toHaveTextContent('Haemolysis');
+});
+it('marks same-cutoff changed pins and catalog coverage historical consistently in M8 and overview',async()=>{
+ const c=await decodeCatalog(),p=props(c.combined),r=render(<RenalBedsideReview {...p} catalog={c}/>);fill();recordReview();await screen.findByRole('region',{name:'Renal session review records'});expect(overviewReviewSummaries(c,config).find(s=>s.domain==='M8')?.matchesCurrent).toBe(true);
+ const changed=withPanel(structuredClone(c));r.rerender(<RenalBedsideReview {...p} catalog={changed} state={changed.combined}/>);expect(screen.getByRole('region',{name:'Renal session review records'})).toHaveTextContent('Historical renal session review');expect(overviewReviewSummaries(changed,config).find(s=>s.domain==='M8')?.matchesCurrent).toBe(false);
+ r.rerender(<RenalBedsideReview {...p}/>);expect(screen.getByRole('region',{name:'Renal session review records'})).toHaveTextContent('Historical renal session review');
+});
+it('blocks queued renal save when same-cutoff exact laboratory pins change',async()=>{
+ const c=await decodeCatalog();let release!:()=>void;const waiting=new Promise<void>(resolve=>{release=resolve;});vi.stubGlobal('navigator',{locks:{request:async(_name:string,callback:()=>unknown)=>{await waiting;return callback();}}});
+ const p=props(c.combined),r=render(<RenalBedsideReview {...p} catalog={c}/>);fill();recordReview();expect(screen.getByRole('button',{name:'Saving…'})).toBeDisabled();const changed=withPanel(structuredClone(c));r.rerender(<RenalBedsideReview {...p} state={changed.combined} catalog={changed}/>);await act(async()=>{release();await Promise.resolve();});expect(await screen.findByText('Evidence changed before the review could be saved. Review the current sources again.')).toHaveAttribute('role','alert');expect(screen.queryByRole('region',{name:'Renal session review records'})).not.toBeInTheDocument();
+});
+it('preserves old signature-only renal notes as historical legacy evidence',async()=>{
+ const c=await decodeCatalog(),p=props(c.combined),r=render(<RenalBedsideReview {...p} catalog={c}/>);fill();recordReview();await screen.findByRole('region',{name:'Renal session review records'});r.unmount();const scope={domain:'M8' as const,patient:config.patient,encounter:config.encounter,repository:c.repository},saved=loadSavedReviews(scope).reviews[0];saved.snapshot.signature=renalBedsideModel(c.combined,config,c).signature;const key=reviewStoragePrefix(scope)+saved.id,bytes=JSON.stringify(saved);localStorage.setItem(key,bytes);
+ render(<RenalBedsideReview {...p} catalog={c}/>);expect(screen.getByRole('region',{name:'Renal session review records'})).toHaveTextContent('Historical renal session review');expect(overviewReviewSummaries(c,config).find(s=>s.domain==='M8')?.matchesCurrent).toBe(false);expect(localStorage.getItem(key)).toBe(bytes);
+});
+
+it('keeps exact M8 pins and identity stable under token and capture rotation',async()=>{
+ const c=await decodeCatalog(),before=m8ReviewEvidence(c.combined,config,c),rotated=structuredClone(c),state=rotated.combined;
+ state.state_context='rotated-token';const captured='2026-10-08T10:01:00Z';rotated.cutoff.captured_at=captured;state.context.scope.repository_cutoff.captured_at=captured;state.circulatory.assembly.request.scope.repository_cutoff.captured_at=captured;state.laboratory.scope.repository_cutoff.captured_at=captured;state.context.circulatory_digest='rotated';state.circulatory.assembly_digest='rotated';
+ expect(m8ReviewEvidence(state,config,rotated)).toEqual(before);
+});
+it('fails closed without throwing when an exact renal source identity has conflicting digests',async()=>{
+ const c=withPanel(await decodeCatalog());c.laboratory_reports.push({...c.laboratory_reports[0],digest:'d'.repeat(64)});expect(renalBedsideModel(c.combined,config,c).valid).toBe(false);
+ render(<RenalBedsideReview {...props(c.combined)} catalog={c}/>);expect(screen.getByRole('button',{name:'Record renal session review'})).toBeDisabled();expect(screen.getAllByRole('alert').some(e=>e.textContent?.includes('could not be confirmed'))).toBe(true);
+});
+it('uses repository, kind, ID and revision in every renal source key',async()=>{
+ const c=withPanel(await decodeCatalog()),m=renalBedsideModel(c.combined,config,c);
+ for(const source of m.sources)expect(JSON.parse(source.key).slice(0,4)).toEqual([c.repository,source.pin.kind,source.pin.id,source.pin.version]);
 });

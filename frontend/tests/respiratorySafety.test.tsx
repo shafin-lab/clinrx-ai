@@ -17,8 +17,8 @@ function catalog(){
  return {...c,items:[],respiratory_records:[e]};
 }
 function props(c:Catalog){return {catalog:c,requested,loading:false,current:true,onRefresh:vi.fn().mockResolvedValue(undefined)};}
-function openPhysiology(){fireEvent.click(screen.getByRole('tab',{name:'Blood gases & physiology'}));}
-function chooseSample(c:Catalog){fireEvent.change(screen.getByLabelText('Sample or measurement set'),{target:{value:respiratoryModel(c,requested).samples[0].id}});}
+function openPhysiology(){fireEvent.click(screen.getByRole('tab',{name:'Blood gases & trends'}));}
+function chooseSample(c:Catalog){fireEvent.change(screen.getByLabelText('Blood gas sample'),{target:{value:respiratoryModel(c,requested).samples[0].id}});}
 
 it('rejects different review instants that share a JavaScript millisecond',()=>{
  const c=catalog();c.combined.context.scope.review_start='2026-10-08T08:00:00.000001Z';
@@ -41,20 +41,15 @@ it.each(['bounded','not_recorded'] as const)('does not use report time for a gas
  f.times.collected={status:state==='bounded'?'known':'not_recorded',precision:state==='bounded'?'bounded':'unknown',value:null,lower:state==='bounded'?'2026-10-08T08:45:00Z':null,upper:state==='bounded'?'2026-10-08T09:15:00Z':null,uncertainty:null};
  const model=respiratoryModel(c,requested);expect(model.samples).toHaveLength(0);expect(model.contextItems).toHaveLength(1);
 });
-it('requires explicit sample selection before displaying arithmetic',()=>{
- const c=catalog();render(<RespiratoryWorkspace {...props(c)}/>);openPhysiology();
- expect(screen.getByLabelText('Sample or measurement set')).toHaveValue('');
- expect(screen.queryByText('Calculations supported by this evidence')).not.toBeInTheDocument();
- chooseSample(c);expect(screen.getByText('Calculations supported by this evidence')).toBeVisible();expect(screen.getByText('Acidemia')).toBeVisible();
-});
+it('automatically displays the latest sample while keeping optional arithmetic behind details',()=>{const c=catalog();render(<RespiratoryWorkspace {...props(c)}/>);openPhysiology();expect(screen.getByLabelText('Blood gas sample')).not.toHaveValue('');expect(screen.getByText('Acidemia')).not.toBeVisible();fireEvent.click(screen.getByText('Physiology calculations and other measurement sets'));expect(screen.getByText('Acidemia')).toBeVisible();});
 it('withholds arithmetic and sample actions when a selected view becomes unconfirmed',()=>{
- const c=catalog(),p=props(c),view=render(<RespiratoryWorkspace {...p}/>);openPhysiology();chooseSample(c);expect(screen.getByText('Acidemia')).toBeVisible();
+ const c=catalog(),p=props(c),view=render(<RespiratoryWorkspace {...p}/>);openPhysiology();chooseSample(c);fireEvent.click(screen.getByText('Physiology calculations and other measurement sets'));expect(screen.getByText('Acidemia')).toBeVisible();
  view.rerender(<RespiratoryWorkspace {...p} current={false}/>);
- expect(screen.queryByText('Acidemia')).not.toBeInTheDocument();expect(screen.getByLabelText('Sample or measurement set')).toBeDisabled();
- for(const button of screen.getAllByRole('button',{name:'Review this sample'}))expect(button).toBeDisabled();
+ expect(screen.queryByText('Acidemia')).not.toBeInTheDocument();expect(screen.getByLabelText('Blood gas sample')).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Record blood gas'})).toBeDisabled();
 });
 it('treats a retrieval error as unconfirmed even if a caller leaves current true',()=>{
  const c=catalog();render(<RespiratoryWorkspace {...props(c)} error="Refresh failed"/>);openPhysiology();
- expect(screen.getByRole('button',{name:'Add respiratory information'})).toBeDisabled();expect(screen.getByLabelText('Sample or measurement set')).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Add respiratory information'})).toBeDisabled();expect(screen.getByLabelText('Blood gas sample')).toBeDisabled();
  expect(screen.queryByText('Calculations supported by this evidence')).not.toBeInTheDocument();
 });

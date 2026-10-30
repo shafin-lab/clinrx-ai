@@ -3,6 +3,41 @@
     "AntibioticDraft": {
       "additionalProperties": false,
       "properties": {
+        "prescription_details": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PrescriptionDetails"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "dose_review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DoseReview"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "dose_review_amendment": {
+          "anyOf": [
+            {
+              "const": true,
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dose Review Amendment"
+        },
         "repository": {
           "format": "uuid",
           "title": "Repository",
@@ -38,7 +73,6 @@
         },
         "product": {
           "maxLength": 256,
-          "minLength": 1,
           "title": "Product",
           "type": "string"
         },
@@ -237,6 +271,398 @@
     }
   },
   "definitions": {
+    "DoseReview": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "CandidateDoseReview/v1",
+          "title": "Version",
+          "type": "string"
+        },
+        "profile_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Profile Version",
+          "type": "string"
+        },
+        "source": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "suggestion": {
+          "$ref": "#/$defs/DoseReviewSuggestion"
+        },
+        "inputs": {
+          "$ref": "#/$defs/DoseReviewInputs"
+        },
+        "crcl": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Crcl"
+        },
+        "context": {
+          "$ref": "#/$defs/DoseReviewContext"
+        },
+        "basis": {
+          "enum": [
+            "empiric",
+            "ast"
+          ],
+          "title": "Basis",
+          "type": "string"
+        },
+        "scope": {
+          "$ref": "#/$defs/DoseReviewScope"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DoseReviewSource"
+          },
+          "maxItems": 6,
+          "title": "Sources",
+          "type": "array"
+        }
+      },
+      "required": [
+        "version",
+        "profile_version",
+        "source",
+        "suggestion",
+        "inputs",
+        "crcl",
+        "context",
+        "basis",
+        "scope",
+        "sources"
+      ],
+      "title": "DoseReview",
+      "type": "object"
+    },
+    "DoseReviewContext": {
+      "additionalProperties": false,
+      "properties": {
+        "indication": {
+          "maxLength": 64,
+          "title": "Indication",
+          "type": "string"
+        },
+        "infusion": {
+          "maxLength": 64,
+          "title": "Infusion",
+          "type": "string"
+        },
+        "phase": {
+          "maxLength": 64,
+          "title": "Phase",
+          "type": "string"
+        },
+        "bodySize": {
+          "maxLength": 64,
+          "title": "Bodysize",
+          "type": "string"
+        },
+        "hepatic": {
+          "maxLength": 64,
+          "title": "Hepatic",
+          "type": "string"
+        },
+        "special": {
+          "maxLength": 64,
+          "title": "Special",
+          "type": "string"
+        },
+        "safetyReviewed": {
+          "title": "Safetyreviewed",
+          "type": "boolean"
+        },
+        "renalFunction": {
+          "maxLength": 64,
+          "title": "Renalfunction",
+          "type": "string"
+        },
+        "support": {
+          "maxLength": 64,
+          "title": "Support",
+          "type": "string"
+        },
+        "cvvhMode": {
+          "maxLength": 64,
+          "title": "Cvvhmode",
+          "type": "string"
+        },
+        "flow": {
+          "maxLength": 64,
+          "title": "Flow",
+          "type": "string"
+        },
+        "flowDefinitionReviewed": {
+          "title": "Flowdefinitionreviewed",
+          "type": "boolean"
+        },
+        "residual": {
+          "maxLength": 64,
+          "title": "Residual",
+          "type": "string"
+        },
+        "downtime": {
+          "maxLength": 64,
+          "title": "Downtime",
+          "type": "string"
+        },
+        "hdFlux": {
+          "maxLength": 64,
+          "title": "Hdflux",
+          "type": "string"
+        },
+        "hdStable": {
+          "maxLength": 64,
+          "title": "Hdstable",
+          "type": "string"
+        },
+        "hdInterval": {
+          "maxLength": 64,
+          "title": "Hdinterval",
+          "type": "string"
+        },
+        "hdTimingReviewed": {
+          "title": "Hdtimingreviewed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "indication",
+        "infusion",
+        "phase",
+        "bodySize",
+        "hepatic",
+        "special",
+        "safetyReviewed",
+        "renalFunction",
+        "support",
+        "cvvhMode",
+        "flow",
+        "flowDefinitionReviewed",
+        "residual",
+        "downtime",
+        "hdFlux",
+        "hdStable",
+        "hdInterval",
+        "hdTimingReviewed"
+      ],
+      "title": "DoseReviewContext",
+      "type": "object"
+    },
+    "DoseReviewInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "age": {
+          "maxLength": 64,
+          "title": "Age",
+          "type": "string"
+        },
+        "weight": {
+          "maxLength": 64,
+          "title": "Weight",
+          "type": "string"
+        },
+        "creatinine": {
+          "maxLength": 64,
+          "title": "Creatinine",
+          "type": "string"
+        },
+        "factor": {
+          "maxLength": 64,
+          "title": "Factor",
+          "type": "string"
+        }
+      },
+      "required": [
+        "age",
+        "weight",
+        "creatinine",
+        "factor"
+      ],
+      "title": "DoseReviewInputs",
+      "type": "object"
+    },
+    "DoseReviewScope": {
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "format": "uuid",
+          "title": "Repository",
+          "type": "string"
+        },
+        "patient": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Patient",
+          "type": "string"
+        },
+        "encounter": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Encounter",
+          "type": "string"
+        },
+        "cutoff": {
+          "minimum": 0,
+          "title": "Cutoff",
+          "type": "integer"
+        },
+        "start": {
+          "maxLength": 64,
+          "minLength": 20,
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "maxLength": 64,
+          "minLength": 20,
+          "title": "End",
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "patient",
+        "encounter",
+        "cutoff",
+        "start",
+        "end"
+      ],
+      "title": "DoseReviewScope",
+      "type": "object"
+    },
+    "DoseReviewSource": {
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "enum": [
+            "weight",
+            "creatinine",
+            "patient_context",
+            "ast",
+            "isolate",
+            "specimen"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "reference": {
+          "$ref": "#/$defs/ExactReference"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "ingestion": {
+          "minimum": 1,
+          "title": "Ingestion",
+          "type": "integer"
+        },
+        "component": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Component"
+        }
+      },
+      "required": [
+        "role",
+        "reference",
+        "digest",
+        "ingestion"
+      ],
+      "title": "DoseReviewSource",
+      "type": "object"
+    },
+    "DoseReviewSuggestion": {
+      "additionalProperties": false,
+      "properties": {
+        "medicine": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Medicine",
+          "type": "string"
+        },
+        "amount": {
+          "maxLength": 64,
+          "title": "Amount",
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "g",
+            "mg"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "route": {
+          "enum": [
+            "IV",
+            "PO"
+          ],
+          "title": "Route",
+          "type": "string"
+        },
+        "schedule": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Schedule",
+          "type": "string"
+        },
+        "initial": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Initial"
+        },
+        "band": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Band",
+          "type": "string"
+        }
+      },
+      "required": [
+        "medicine",
+        "amount",
+        "unit",
+        "route",
+        "schedule",
+        "initial",
+        "band"
+      ],
+      "title": "DoseReviewSuggestion",
+      "type": "object"
+    },
     "ExactReference": {
       "additionalProperties": false,
       "properties": {
@@ -265,6 +691,34 @@
         "version"
       ],
       "title": "ExactReference",
+      "type": "object"
+    },
+    "PrescriptionDetails": {
+      "additionalProperties": false,
+      "properties": {
+        "frequency": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Frequency",
+          "type": "string"
+        },
+        "duration_review": {
+          "default": "",
+          "maxLength": 256,
+          "title": "Duration Review",
+          "type": "string"
+        },
+        "administration_instructions": {
+          "default": "",
+          "maxLength": 256,
+          "title": "Administration Instructions",
+          "type": "string"
+        }
+      },
+      "required": [
+        "frequency"
+      ],
+      "title": "PrescriptionDetails",
       "type": "object"
     }
   }

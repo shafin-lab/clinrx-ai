@@ -1,4 +1,4 @@
-import {act,fireEvent,render,screen,within} from '@testing-library/react';
+import {act,fireEvent,render,screen,waitFor,within} from '@testing-library/react';
 import {describe,it,expect,vi} from 'vitest';
 import fixtures from './fixtures/circulatory.json';
 import {decodeCirculatoryState} from '../src/api/circulatoryDecoders';
@@ -14,6 +14,7 @@ function mount(state=original()){
  const props={state,requested,loading:false,retrievalError:'',onRefresh,client:client as unknown as CirculatoryClient};
  return {...render(<M7BedsideReview {...props}/>),props,client,onRefresh};
 }
+const readingsTimeline=()=>{const region=screen.getByRole('region',{name:'Recorded readings in time order'}),details=region.querySelector('details');if(details&&!details.open)fireEvent.click(within(region).getByText('Recorded readings in time order'));return region;};
 const fill=()=>{
  fireEvent.change(screen.getByLabelText('Next step'),{target:{value:'perfusion'}});
  fireEvent.change(screen.getByLabelText('Reviewer'),{target:{value:'Synthetic reviewer'}});
@@ -162,11 +163,12 @@ describe('M7 bedside clinician workflow',()=>{
 function withVitalSigns(){
  const state=original(),items=state.assembly.snapshot.items;
  function add(kind:string,template:string,id:string,concept:string,amount:string,unit:string){
-  const item=structuredClone(items.find(i=>i.fact.kind===template)!);item.fact.kind=kind;item.fact.id=id;item.fact.concept=concept;item.fact.result={result_type:'numeric',quantity:{value:amount,unit:{raw:unit}},comparator:'='};item.inclusion='in_window';items.push(item);return item;
+  const item=structuredClone(items.find(i=>i.fact.kind===template)!);item.fact.kind=kind;item.fact.id=id;item.fact.concept=concept;item.fact.result={result_type:'numeric',quantity:{value:amount,unit:{raw:unit,status:'unresolved',system:null,code:null,limitation:'Synthetic source unit.'}},comparator:'='};item.inclusion='in_window';items.push(item);return item;
  }
  add('circulatory_ecg','circulatory_ecg','vital-HR','heart_rate','88.00','/min');
  add('circulatory_pressure','circulatory_pressure','vital-SBP','systemic_systolic','104.00','mmHg');
  add('circulatory_pressure','circulatory_pressure','vital-DBP','systemic_diastolic','58.0','mmHg');
+ items.find(i=>i.fact.id==='m7-P')!.fact.id='vital-MAP';
  add('circulatory_oxygen','circulatory_oxygen','vital-SPO2','spo2','97.0','%');
  add('circulatory_oxygen','circulatory_oxygen','vital-SAO2','sao2','95.00','%');
  add('circulatory_oxygen','circulatory_oxygen','vital-RR','respiratory_rate','22.00','/min');
@@ -200,7 +202,117 @@ describe('M7 recorded vital signs',()=>{
   const state=withVitalSigns();state.assembly.request.scope.patient_id='foreign';expect(bedsideModel(state,requested).heartRates).toEqual([]);
  });
 });
+function withDocumentedPressureParameters(){
+ const state=withVitalSigns();
+ for(const item of state.assembly.snapshot.items.filter(i=>i.fact.kind==='circulatory_pressure')){
+  const acquisition=item.fact.acquisition as Record<string,unknown>;
+  acquisition.parameter={namespace:'synthetic.monitor.parameter',code:String(item.fact.concept),version:'1',raw_display:'Monitor '+String(item.fact.concept)};
+  acquisition.parameter_concept=item.fact.concept;acquisition.parameter_support='source_documented';acquisition.support_provenance=structuredClone(item.fact.provenance);
+  acquisition.interval_start={status:'known',precision:'instant',value:'2026-10-08T07:59:00Z',lower:null,upper:null,uncertainty:null};
+  acquisition.interval_end={status:'known',precision:'instant',value:'2026-10-08T08:00:00Z',lower:null,upper:null,uncertainty:null};
+ }
+ return state;
+}
+describe('M7 documented pressure components',()=>{
+ it.each([['vital-SBP','systemic_systolic'],['vital-DBP','systemic_diastolic'],['vital-MAP','systemic_mean']])('combines distinct supported parameters and opens the exact %s source',async(id,concept)=>{
+  const state=withDocumentedPressureParameters();mount(state);
+  const rows=within(readingsTimeline()).getAllByRole('row',{name:/Blood pressure/});
+  expect(rows).toHaveLength(1);expect(rows[0]).toHaveTextContent('104/58 (65) mmHg');expect(screen.getByRole('button',{name:/Blood pressure/})).toHaveTextContent('104/58 (65) mmHg');
+  expect(within(rows[0]).getAllByRole('button',{name:/Inspect exact source/})).toHaveLength(3);
+  fireEvent.click(within(rows[0]).getByText(new RegExp('Inspect exact source.*'+id)));const source=screen.getByRole('region',{name:'Exact source details'});
+  expect(source).toHaveTextContent(id+' / 1');expect(source).toHaveTextContent('Source quality: acceptable');expect(source).toHaveTextContent('Source statusrecorded');
+  fireEvent.click(within(source).getByText('Original source, timing and provenance'));await waitFor(()=>expect(source).toHaveTextContent('Monitor '+concept));expect(source).toHaveTextContent('source_documented');
+ });
+});
+describe('M7 common acquisition safeguards',()=>{
+ it.each(['parameter','support_provenance','parameter_concept'])('does not pair a source-documented component with invalid %s',field=>{
+  const state=withDocumentedPressureParameters(),acquisition=state.assembly.snapshot.items.find(i=>i.fact.id==='vital-DBP')!.fact.acquisition as Record<string,unknown>;
+  acquisition[field]=field==='parameter_concept'?'systemic_systolic':null;mount(state);
+  const rows=within(readingsTimeline()).getAllByRole('row',{name:/Blood pressure/});expect(rows).toHaveLength(2);
+  expect(rows.find(row=>row.textContent?.includes('—/58 (—)'))).toBeInTheDocument();expect(screen.getByRole('button',{name:/Blood pressure/})).not.toHaveTextContent('104/58 (65)');
+ });
+ it.each(['unknown method','empty source namespace','empty source identifier'])('does not assert a common acquisition with %s',missing=>{
+  const state=withVitalSigns();for(const item of state.assembly.snapshot.items.filter(i=>i.fact.kind==='circulatory_pressure')){
+   if(missing==='unknown method')(item.fact.acquisition as Record<string,unknown>).method='unknown';
+   else ((item.fact.provenance as Record<string,unknown>).source as Record<string,unknown>)[missing==='empty source namespace'?'namespace':'identifier']='';
+  }
+  mount(state);expect(within(readingsTimeline()).getAllByRole('row',{name:/Blood pressure/})).toHaveLength(3);expect(screen.getByRole('button',{name:/Blood pressure/})).not.toHaveTextContent('104/58 (65)');
+ });
+ it.each(['episode','site','laterality','position','source','device','source_method'])('retains incompatible %s context with valid component mappings',context=>{
+  const state=withDocumentedPressureParameters(),item=state.assembly.snapshot.items.find(i=>i.fact.id==='vital-DBP')!,acquisition=item.fact.acquisition as Record<string,unknown>;
+  const code={namespace:'synthetic.monitor',code:'different',version:'1',raw_display:'Different source context'};
+  if(context==='source')((item.fact.provenance as Record<string,unknown>).source as Record<string,unknown>).identifier='different-source';
+  else acquisition[context]=context==='laterality'?'right':context==='position'||context==='site'?{raw_display:'Different source context',coding:null}:context==='device'?{identity_version:'1',manufacturer:code,platform:'other',product:code,sensor:null,catheter:null,technology:'other',software:null,serial_identity:'different-device',limitations:[]}:code;
+  mount(state);const rows=within(readingsTimeline()).getAllByRole('row',{name:/Blood pressure/});expect(rows).toHaveLength(2);expect(rows.find(row=>row.textContent?.includes('—/58 (—)'))).toBeInTheDocument();expect(screen.getByRole('button',{name:/Blood pressure/})).toHaveTextContent('Review source acquisition');
+ });
+});
+describe('M7 complete recorded BP unit identity',()=>{
+ it.each(['code','system','status','raw'])('separates explicit %s differences even when raw unit display is absent or equal',field=>{
+  const state=withVitalSigns(),pressures=state.assembly.snapshot.items.filter(i=>['vital-SBP','vital-DBP','vital-MAP'].includes(i.fact.id));
+  for(const item of pressures)(item.fact.result as any).quantity.unit={status:'assessed',system:'UCUM',code:'mm[Hg]',raw:null,limitation:null};
+  const diastolic=pressures.find(i=>i.fact.id==='vital-DBP')!,unit=(diastolic.fact.result as any).quantity.unit;unit[field]=field==='code'?'kPa':field==='system'?'source.pressure.units':field==='status'?'normalized':'mmHg';
+  mount(state);const rows=within(readingsTimeline()).getAllByRole('row',{name:/Blood pressure/});expect(rows).toHaveLength(2);
+  expect(rows.find(row=>row.textContent?.includes('104/— (65)'))).toBeInTheDocument();expect(rows.find(row=>row.textContent?.includes('—/58 (—)'))).toBeInTheDocument();
+  expect(screen.getByRole('button',{name:/Blood pressure/})).toHaveTextContent('Review source units');expect(screen.getByRole('button',{name:/Blood pressure/})).not.toHaveTextContent('104/58 (65)');
+ });
+ it('combines matching assessed recorded units without inventing a raw unit label',()=>{
+  const state=withVitalSigns();for(const item of state.assembly.snapshot.items.filter(i=>['vital-SBP','vital-DBP','vital-MAP'].includes(i.fact.id)))(item.fact.result as any).quantity.unit={status:'assessed',system:'UCUM',code:'mm[Hg]',raw:null,limitation:null};
+  mount(state);const rows=within(readingsTimeline()).getAllByRole('row',{name:/Blood pressure/});expect(rows).toHaveLength(1);expect(rows[0]).toHaveTextContent('104/58 (65)');expect(screen.getByRole('button',{name:/Blood pressure/})).toHaveTextContent('104/58 (65)');expect(rows[0]).not.toHaveTextContent('mmHg');
+ });
+});
+describe('M7 source measurement windows',()=>{
+ it.each(['interval_start','interval_end'])('separates equal-time pressure readings when %s differs',async boundary=>{
+  const state=withVitalSigns(),items=state.assembly.snapshot.items.filter(i=>i.fact.kind==='circulatory_pressure');
+  for(const item of items){const acquisition=item.fact.acquisition as Record<string,unknown>;acquisition.interval_start={status:'known',precision:'instant',value:'2026-10-08T07:55:00Z',lower:null,upper:null,uncertainty:null};acquisition.interval_end={status:'known',precision:'instant',value:'2026-10-08T08:00:00Z',lower:null,upper:null,uncertainty:null};}
+  const diastolic=items.find(i=>i.fact.id==='vital-DBP')!;((diastolic.fact.acquisition as Record<string,unknown>)[boundary] as Record<string,unknown>).value=boundary==='interval_start'?'2026-10-08T07:56:00Z':'2026-10-08T07:59:00Z';
+  mount(state);const rows=within(readingsTimeline()).getAllByRole('row',{name:/Blood pressure/});
+  expect(rows).toHaveLength(2);expect(rows.find(row=>row.textContent?.includes('104/— (65) mmHg'))).toBeInTheDocument();expect(rows.find(row=>row.textContent?.includes('—/58 (—) mmHg'))).toBeInTheDocument();
+  expect(screen.getByRole('button',{name:/Blood pressure/})).toHaveTextContent('Review source acquisition');
+  fireEvent.click(within(rows.find(row=>row.textContent?.includes('vital-DBP'))!).getByRole('button',{name:/Inspect exact source/}));
+  const source=screen.getByRole('region',{name:'Exact source details'});expect(source).toHaveTextContent('vital-DBP / 1');
+  fireEvent.click(within(source).getByText('Original source, timing and provenance'));await waitFor(()=>expect(source).toHaveTextContent(boundary==='interval_start'?'2026-10-08T07:56:00Z':'2026-10-08T07:59:00Z'));
+ });
+ it('keeps a supplied pressure window separate from an unrecorded window',()=>{
+  const state=withVitalSigns(),acquisition=state.assembly.snapshot.items.find(i=>i.fact.id==='vital-DBP')!.fact.acquisition as Record<string,unknown>;
+  acquisition.interval_start={status:'known',precision:'instant',value:'2026-10-08T07:55:00Z',lower:null,upper:null,uncertainty:null};
+  mount(state);expect(within(readingsTimeline()).getAllByRole('row',{name:/Blood pressure/})).toHaveLength(2);
+ });
+});
 describe('M7 chronological presentation',()=>{
+ it('shows SBP/DBP (MAP) together in one time-matched blood-pressure row',()=>{
+  const state=withVitalSigns();mount(state);
+  const timeline=readingsTimeline();
+  const pressureRows=within(timeline).getAllByRole('row',{name:/Blood pressure/});
+  expect(pressureRows).toHaveLength(1);expect(pressureRows[0]).toHaveTextContent('104/58 (65) mmHg');
+  expect(pressureRows[0]).toHaveTextContent('vital-SBP');expect(pressureRows[0]).toHaveTextContent('vital-DBP');expect(pressureRows[0]).toHaveTextContent('vital-MAP');
+ });
+ it('keeps blood-pressure components in one row per exact source time instead of combining different times',()=>{
+  const state=withVitalSigns();state.assembly.snapshot.items.find(i=>i.fact.id==='vital-DBP')!.fact.occurred={source_timestamp:'2026-10-08T08:05:00Z'};mount(state);
+  const vitals=screen.getByRole('region',{name:'Recorded vital signs'});
+  expect(within(vitals).getByRole('button',{name:/Blood pressure/})).toHaveTextContent('Review source times');
+  const timeline=readingsTimeline();
+  const pressureRows=within(timeline).getAllByRole('row',{name:/Blood pressure/});expect(pressureRows).toHaveLength(2);
+  expect(pressureRows.find(row=>row.textContent?.includes('104/— (65)'))).toBeInTheDocument();expect(pressureRows.find(row=>row.textContent?.includes('—/58 (—)'))).toBeInTheDocument();
+ });
+ it('does not combine same-time pressures with different acquisition methods or unknown times',()=>{
+  const state=withVitalSigns(),items=state.assembly.snapshot.items;(items.find(i=>i.fact.id==='vital-DBP')!.fact.acquisition as any).method='noninvasive_cuff';
+  items.find(i=>i.fact.id==='vital-SBP')!.fact.occurred={source_timestamp:null};items.find(i=>i.fact.id==='vital-DBP')!.fact.occurred={source_timestamp:null};
+  mount(state);const timeline=readingsTimeline();expect(within(timeline).getAllByRole('row',{name:/Blood pressure/})).toHaveLength(3);
+ });
+ it('keeps matching timestamps separate when pressure acquisition positions differ',()=>{
+  const state=withVitalSigns(),items=state.assembly.snapshot.items;(items.find(i=>i.fact.id==='vital-DBP')!.fact.acquisition as any).position='supine';
+  mount(state);const timeline=readingsTimeline();expect(within(timeline).getAllByRole('row',{name:/Blood pressure/})).toHaveLength(2);
+ });
+ it('keeps duplicate same-time pressure components separate instead of pairing ambiguously',()=>{
+  const state=withVitalSigns(),items=state.assembly.snapshot.items,duplicate=structuredClone(items.find(i=>i.fact.id==='vital-SBP')!);duplicate.fact.id='vital-SBP-SECOND';duplicate.fact.result={result_type:'numeric',quantity:{value:'106',unit:{raw:'mmHg',status:'unresolved',system:null,code:null,limitation:'Synthetic source unit.'}},comparator:'='};items.push(duplicate);mount(state);const timeline=readingsTimeline();expect(within(timeline).getAllByRole('row',{name:/Blood pressure/})).toHaveLength(4);expect(within(timeline).getAllByRole('row',{name:/Blood pressure/}).some(row=>row.textContent?.includes('104/58'))).toBe(false);
+ });
+ it('keeps different pressure units in separate rows and flags the compact summary',()=>{
+  const state=withVitalSigns(),diastolic=state.assembly.snapshot.items.find(i=>i.fact.id==='vital-DBP')!;(diastolic.fact.result as any).quantity.unit.raw='kPa';mount(state);
+  expect(screen.getByRole('button',{name:/Blood pressure/})).toHaveTextContent('Review source units');const timeline=readingsTimeline();const rows=within(timeline).getAllByRole('row',{name:/Blood pressure/});expect(rows).toHaveLength(2);expect(rows.some(row=>row.textContent?.includes('104/— (65) mmHg'))).toBe(true);expect(rows.some(row=>row.textContent?.includes('—/58 (—) kPa'))).toBe(true);
+ });
+ it('labels a withdrawn pressure component without showing its old number as current',()=>{
+  const state=withVitalSigns();state.assembly.snapshot.items.find(i=>i.fact.id==='vital-SBP')!.fact.record_status='withdrawn';mount(state);const timeline=readingsTimeline();const row=within(timeline).getAllByRole('row',{name:/Blood pressure/}).find(item=>item.textContent?.includes('Withdrawn'))!;expect(row).toHaveTextContent('Withdrawn');expect(row).not.toHaveTextContent('104/');expect(screen.getByRole('button',{name:/Blood pressure/})).toHaveTextContent('SBP: Source withdrawn');
+ });
  it('orders dated readings by source timestamp and leaves undated readings last without inventing a time',()=>{
   const state=withVitalSigns(),items=state.assembly.snapshot.items;
   items.find(i=>i.fact.id==='vital-HR')!.fact.occurred={source_timestamp:'2026-10-08T08:20:00Z'};
@@ -219,7 +331,7 @@ describe('M7 chronological presentation',()=>{
   items.find(i=>i.fact.id==='vital-RR')!.fact.occurred={source_timestamp:'2026-10-08T08:30:00Z'};
   items.find(i=>i.fact.id==='vital-SBP')!.fact.occurred=undefined;
   mount(state);
-  const timeline=screen.getByRole('region',{name:'Recorded readings in time order'});
+  const timeline=readingsTimeline();
   const rows=within(timeline).getAllByRole('button');
   expect(rows[0]).toHaveAccessibleName(/2026-10-08T08:30:00Z.*Respiratory rate.*22/);
   expect(rows[1]).toHaveAccessibleName(/2026-10-08T08:20:00Z.*Heart rate.*88/);
@@ -237,3 +349,25 @@ describe('M7 chronological presentation',()=>{
   expect(rows[1]).toHaveTextContent('Position change');expect(rows[1]).toHaveTextContent('2026-10-08T08:20:00Z');
  });
 });
+
+it('places exact echo observations in one report table with source inspection',()=>{
+ const {client}=mount();
+ fireEvent.click(screen.getByRole('button',{name:'Flow & echo'}));
+ const table=screen.getByRole('table',{name:'Echo and POCUS report'});
+ expect(within(table).getByText('TAPSE')).toBeInTheDocument();expect(within(table).getByText('18 mm')).toBeInTheDocument();
+ expect(within(table).getByText('m7-ECHO / 1')).toBeInTheDocument();
+ expect(within(table).getAllByRole('button',{name:/Inspect TAPSE m7-ECHO/})).toHaveLength(1);
+ expect(client.circulatoryExecute).not.toHaveBeenCalled();
+});
+it('keeps distinct echo reports and their findings in the same table',()=>{
+ const state=original(),first=state.assembly.snapshot.items.find(item=>item.fact.id==='m7-ECHO')!,second=structuredClone(first);second.fact.id='m7-ECHO-SECOND';second.fact.concept='left_ventricular_ejection_fraction';second.fact.result={result_type:'numeric',quantity:{value:'63',unit:{raw:'%'}},comparator:'='};second.fact.report={namespace:'lab.example',code:'report-2',version:'1',raw_display:'report-2'};second.fact.study={namespace:'lab.example',code:'study-2',version:'1',raw_display:'study-2'};state.assembly.snapshot.items.push(second);mount(state);fireEvent.click(screen.getByRole('button',{name:'Flow & echo'}));const table=screen.getByRole('table',{name:'Echo and POCUS report'});expect(within(table).getAllByRole('row')).toHaveLength(3);expect(within(table).getByText('report-2 · revision 1')).toBeInTheDocument();expect(within(table).getByText('63 %')).toBeInTheDocument();expect(within(table).getAllByRole('button',{name:/Inspect/})).toHaveLength(2);
+});
+
+it.each([['contextual','suspect','recorded'],['unplaced','invalid','withdrawn']])('shows echo %s / %s / %s qualifications in the report row',async(inclusion,quality,status)=>{
+ const state=original(),echo=state.assembly.snapshot.items.find(item=>item.fact.id==='m7-ECHO')!;echo.inclusion=inclusion as CirculatoryItem['inclusion'];(echo.fact.acquisition as any).quality.status=quality;echo.fact.record_status=status;const before=JSON.stringify(echo.fact);
+ mount(state);fireEvent.click(screen.getByRole('button',{name:'Flow & echo'}));const table=screen.getByRole('table',{name:'Echo and POCUS report'}),row=within(table).getByRole('button',{name:/Inspect TAPSE m7-ECHO/}).closest('tr')!;
+ expect(within(row).getByText(inclusion)).toBeVisible();expect(within(row).getByText('Source quality: '+quality)).toBeVisible();expect(within(row).getByText('Source status: '+status)).toBeVisible();expect(row).toHaveTextContent('18 mm');
+ fireEvent.click(within(row).getByRole('button',{name:/Inspect TAPSE m7-ECHO/}));const source=screen.getByRole('region',{name:'Exact source details'});expect(source).toHaveTextContent('m7-ECHO / 1');expect(source).toHaveTextContent('Source quality: '+quality);expect(JSON.stringify(echo.fact)).toBe(before);
+});
+
+it('keeps compact vital readings primary while the repeated time-order table is disclosed on demand',()=>{const state=original(),client=mockClient();render(<M7BedsideReview state={state} requested={requested} loading={false} onRefresh={vi.fn()} client={client as unknown as CirculatoryClient}/>);expect(screen.getByRole('region',{name:'Recorded vital signs'})).toBeVisible();const toggle=screen.getByText('Recorded readings in time order');expect(toggle.closest('details')).not.toHaveAttribute('open');expect(screen.getByRole('table',{name:'Recorded cardiovascular readings'})).not.toBeVisible();fireEvent.click(toggle);expect(screen.getByRole('table',{name:'Recorded cardiovascular readings'})).toBeVisible();expect(screen.getAllByRole('button',{name:/Inspect.*source/}).length).toBeGreaterThan(0);expect(client.circulatoryPrepare).not.toHaveBeenCalled();expect(client.circulatoryExecute).not.toHaveBeenCalled();});

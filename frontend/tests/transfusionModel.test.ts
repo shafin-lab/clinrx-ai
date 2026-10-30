@@ -1,5 +1,21 @@
 import {describe,it,expect} from 'vitest';
-import {quantityText,productLabel,extractLaboratory,validateProductEntry} from '../src/transfusion/model';
+import {quantityText,productLabel,extractLaboratory,laboratoryProjection,validateProductEntry} from '../src/transfusion/model';
+it.each(['hemoglobin','hematocrit','platelets','pt','inr','aptt','thrombin_time','fibrinogen','total_calcium','ionised_calcium','d_dimer','anti_xa'])('includes the existing mapped %s concept despite abbreviated original wording',concept=>{
+ const component={source_component_id:'original',mapping_status:'mapped',mapped_concept:concept,mapping_version:'source/v1',test_code:{raw_display:concept==='fibrinogen'?'FIB':'Original abbreviated result'},result:{kind:'numeric',raw_value:'1.00',unit:{raw_display:'source unit'}}};
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'mapped',revision:'1',components:[component]},digest:'a'};
+ const projection=laboratoryProjection({laboratory_reports:[source],items:[]} as any);
+ expect(projection.valid).toBe(true);expect(projection.rows).toHaveLength(1);expect(projection.rows[0].label).toBe(component.test_code.raw_display);expect(projection.rows[0].raw).toBe(component);expect(projection.rows[0].source).toBe(source);expect(projection.rows[0].value).toBe('1.00 source unit');
+});
+it('includes exact known calcium concepts in respiratory evidence while preserving the source abbreviation',()=>{
+ const source:any={repository:'repo',fact:{kind:'respiratory_record',id:'gas',revision:'1',measurements:[{concept:'ionised_calcium',label:'iCa',result:{kind:'numeric',raw_value:'0.92'}}]},digest:'a'};
+ const projection=laboratoryProjection({laboratory_reports:[],items:[],respiratory_records:[source]} as any);expect(projection.valid).toBe(true);expect(projection.rows).toHaveLength(1);expect(projection.rows[0].label).toBe('iCa');
+});
+it.each([
+ ['unsupported',null,'aPTT',1],['ambiguous',null,'Hct',1],['unsupported',null,'FIB',0],['mapped','bun','Hemoglobin',0],['mapped','fibrinogen_custom','Original abbreviated result',0],
+])('uses conservative original-label fallback without inventing mapped concepts: %s %s %s', (mapping_status,mapped_concept,label,count)=>{
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'other',revision:'1',components:[{source_component_id:'other',mapping_status,mapped_concept,test_code:{raw_display:label},result:{kind:'numeric',raw_value:'1'}}]},digest:'a'};
+ const projection=laboratoryProjection({laboratory_reports:[source],items:[]} as any);expect(projection.valid).toBe(true);expect(projection.rows).toHaveLength(count);
+});
 describe('transfusion clarity and original evidence',()=>{
  it('keeps RDP, SDP, pools and concentrate dose bases distinct',()=>{
   expect(productLabel('platelets_rdp')).toContain('random donor');
@@ -17,4 +33,46 @@ describe('transfusion clarity and original evidence',()=>{
   const rows=extractLaboratory({items:[],laboratory_reports:[],respiratory_records:[source]} as any);
   expect(rows).toHaveLength(1);expect(rows[0].label).toBe('Ionised calcium');expect(rows[0].value).toContain('0.92');expect(rows[0].source).toBe(source);
  });
+});
+
+it('retains same-ID cross-kind and cross-repository laboratory rows while collapsing exact repeats',()=>{
+ const lab:any={repository:'repo-a',fact:{kind:'laboratory_report',id:'same',revision:'1',components:[{source_component_id:'hb',test_code:{raw_display:'Hb'},result:{kind:'numeric',raw_value:'9.0'}}]},digest:'a'.repeat(64)};
+ const respiratory:any={...lab,fact:{kind:'respiratory_record',id:'same',revision:'1',measurements:[{source_component_id:'hb',label:'Hb',result:{kind:'numeric',raw_value:'9.0'}}]}};const elsewhere={...lab,repository:'repo-b'};
+ const rows=extractLaboratory({laboratory_reports:[lab,lab,elsewhere],respiratory_records:[respiratory],items:[]} as any);expect(rows).toHaveLength(3);expect(rows.map(r=>r.source)).toEqual([lab,elsewhere,respiratory]);
+});
+it('withholds conflicting digest variants of an identical laboratory component',()=>{
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'same',revision:'1',components:[{source_component_id:'hb',test_code:{raw_display:'Hb'},result:{kind:'numeric',raw_value:'9'}}]},digest:'a'.repeat(64)};
+ expect(extractLaboratory({laboratory_reports:[source,{...source,digest:'b'.repeat(64)}],items:[]} as any)).toEqual([]);
+});
+
+it('preserves equal-valued serial laboratory sources with distinct IDs',()=>{
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'first',revision:'1',components:[{source_component_id:'hb',test_code:{raw_display:'Hb'},result:{kind:'numeric',raw_value:'9'}}]},digest:'a'.repeat(64)};
+ const later={...source,fact:{...source.fact,id:'later'}};expect(extractLaboratory({laboratory_reports:[source,later],items:[]} as any).map(r=>r.source.fact.id)).toEqual(['first','later']);
+});
+it('withholds conflicting content for an identical component even if the declared digest is repeated',()=>{
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'same',revision:'1',components:[{source_component_id:'hb',test_code:{raw_display:'Hb'},result:{kind:'numeric',raw_value:'9'}}]},digest:'a'.repeat(64)};
+ const changed=structuredClone(source);changed.fact.components[0].result.raw_value='8';expect(extractLaboratory({laboratory_reports:[source,changed],items:[]} as any)).toEqual([]);
+});
+
+it('exposes laboratory identity conflicts as invalid evidence rather than true absence',()=>{
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'same',revision:'1',components:[{source_component_id:'hb',test_code:{raw_display:'Hb'},result:{kind:'numeric',raw_value:'9'}}]},digest:'a'.repeat(64)};
+ const result=laboratoryProjection({laboratory_reports:[source,{...source,digest:'b'.repeat(64)}],items:[]} as any);expect(result.valid).toBe(false);expect(result.rows).toEqual([]);expect(result.error).toMatch(/conflict/i);expect(laboratoryProjection({laboratory_reports:[],items:[]} as any)).toEqual({valid:true,rows:[]});
+});
+it('detects source conflicts even when changed labels no longer match the M10 laboratory filter',()=>{
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'same',revision:'1',components:[{source_component_id:'hb',test_code:{raw_display:'Hb'},result:{kind:'numeric',raw_value:'9'}}]},digest:'a'.repeat(64)};
+ const changed=structuredClone(source);changed.fact.components[0].test_code.raw_display='Unmapped result';
+ expect(laboratoryProjection({laboratory_reports:[source,changed],items:[]} as any).valid).toBe(false);
+});
+it.each(['result','filtered label'] as const)('rejects conflicting repeated component identity within one report: %s',change=>{
+ const component={source_component_id:'hb',test_code:{raw_display:'Hb'},result:{kind:'numeric',raw_value:'9'}};
+ const changed=structuredClone(component);if(change==='result')changed.result.raw_value='8';else changed.test_code.raw_display='Unmapped result';
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'one-report',revision:'1',components:[component,changed]},digest:'a'.repeat(64)};
+ const projection=laboratoryProjection({laboratory_reports:[source],items:[]} as any);
+ expect(projection.valid).toBe(false);expect(projection.rows).toEqual([]);expect(projection.error).toMatch(/conflict/i);
+});
+it('collapses identical repeated components within one report into one original row',()=>{
+ const component={source_component_id:'hb',test_code:{raw_display:'Hb'},result:{kind:'numeric',raw_value:'9'}};
+ const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'one-report',revision:'1',components:[component,structuredClone(component)]},digest:'a'.repeat(64)};
+ const projection=laboratoryProjection({laboratory_reports:[source],items:[]} as any);
+ expect(projection.valid).toBe(true);expect(projection.error).toBeUndefined();expect(projection.rows).toHaveLength(1);expect(projection.rows[0].raw).toBe(component);expect(projection.rows[0].value).toBe('9');
 });

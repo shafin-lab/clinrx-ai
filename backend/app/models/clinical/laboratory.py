@@ -15,7 +15,7 @@ Digest = Annotated[str, Field(pattern=r'^[0-9a-f]{64}$')]
 SUPPORTED_LAB_MAPPINGS = frozenset({
     'hemoglobin', 'hematocrit', 'platelets', 'pt', 'inr', 'aptt', 'thrombin_time',
     'fibrinogen', 'total_calcium', 'ionised_calcium', 'd_dimer', 'anti_xa',
-    'urea', 'bun', 'sodium', 'potassium', 'urine_appearance', 'urine_colour',
+    'creatinine', 'urea', 'bun', 'sodium', 'potassium', 'urine_appearance', 'urine_colour',
     'urine_specific_gravity', 'urine_ph', 'urine_protein', 'urine_glucose',
     'urine_ketones', 'urine_blood', 'urine_leukocyte_esterase', 'urine_nitrite',
     'urine_bilirubin', 'urine_urobilinogen', 'urine_rbc', 'urine_wbc',

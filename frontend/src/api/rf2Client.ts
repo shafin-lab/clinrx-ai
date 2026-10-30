@@ -59,7 +59,7 @@ export function validateRespiratoryImport(repository:string,record:Fact){validat
 // Accept only exact-instant equivalence at these contract paths; source text,
 // measurements, identities, nulls and every other field must remain identical.
 function sameTimestampSerializedRecord(sent:unknown,stored:unknown,path=''):boolean{
- const timestamp=/^(?:binding\.verification\.assessed_at|provenance\.recorded_at|time\.(?:event|recorded|effective_start|effective_end|retrieved|processed)|times\.(?:occurred|collected|received|measured|reported|available)\.(?:value|lower|upper)|domain_bindings\.\d+\.provenance\.recorded_at)$/;
+ const timestamp=/^(?:binding\.verification\.assessed_at|provenance\.recorded_at|time\.(?:event|recorded|effective_start|effective_end|retrieved|processed)|times\.(?:occurred|collected|received|measured|reported|available)\.(?:value|lower|upper)|domain_bindings\.\d+\.provenance\.recorded_at|context\.support_episode\.until\.(?:value|lower|upper))$/;
  if(typeof sent==='string'&&typeof stored==='string'&&timestamp.test(path))return compareRespiratoryInstants(sent,stored)===0;
  if(sent===null||stored===null||typeof sent!=='object'||typeof stored!=='object')return sent===stored;
  if(Array.isArray(sent)!==Array.isArray(stored))return false;

@@ -259,20 +259,6 @@
       "clinical_use_eligible": false
     },
     {
-      "id": "IN-JIPMER-2026",
-      "title": "JIPMER Antibiotic Policy 2026 — selected antimicrobial dosing",
-      "url": "https://www.jipmer.edu.in/sites/default/files/JIPMER%20Antibiotic%20Policy%202026.pdf",
-      "issuer": "JIPMER, Puducherry",
-      "version": "Version 1.0 (202604061000), 2026; institutional policy",
-      "jurisdiction": "India",
-      "type": "institutional guideline",
-      "retrieved_date": "2026-10-21",
-      "capture_file": "evidence/icu-priority-renal-crrt/jipmer-antibiotic-policy-2026.pdf",
-      "capture_sha256": "c8b4078d80cf375a0503c2ca4e38e0ba869dca2ac44d08e107dc7b227565f4d4",
-      "review_status": "unreviewed",
-      "clinical_use_eligible": false
-    },
-    {
       "id": "POLYMYXIN-CONSENSUS-2019",
       "title": "International consensus guidelines for optimal polymyxin use",
       "url": "https://researchmgt.monash.edu/ws/portalfiles/portal/313487867/274512555_oa.pdf",
@@ -486,56 +472,6 @@
           "status": "specialist_review",
           "review_status": "unreviewed",
           "clinical_use_eligible": false
-        },
-        {
-          "source_id": "IN-JIPMER-2026",
-          "scope": "IV amikacin, traditional initial dosing; not an extended-interval nomogram.",
-          "assumptions": [
-            "Adult native-renal reference only; not CRRT or intermittent HD.",
-            "Choose the source’s indication-specific baseline first. Printed gaps and cutoffs are not interpolated.",
-            "JIPMER institutional reference for review; not a national guideline or this hospital’s approved policy."
-          ],
-          "tables": [
-            {
-              "title": "Source-specific adult reference",
-              "headers": [
-                "Source context",
-                "Unreviewed source reference"
-              ],
-              "rows": [
-                {
-                  "cells": [
-                    "CrCl ≥50 mL/min",
-                    "7.5 mg/kg every 12 hours"
-                  ]
-                },
-                {
-                  "cells": [
-                    "CrCl 10–49 mL/min",
-                    "7.5 mg/kg every 24 hours"
-                  ]
-                },
-                {
-                  "cells": [
-                    "CrCl <10 mL/min",
-                    "7.5 mg/kg every 48 hours"
-                  ]
-                }
-              ]
-            }
-          ],
-          "notes": [
-            "These are initial intervals; use measured peak/trough levels for subsequent dosing. The policy uses actual weight unless total weight exceeds 125% of ideal weight, then adjusted weight = IBW + 0.4 × (TBW − IBW). Do not substitute UCSF’s different obesity threshold.",
-            "JIPMER excludes its once-daily approach when CrCl <50 mL/min and in ascites, major burns, cystic fibrosis, endocarditis and pregnancy. This table is not a CRRT schedule."
-          ],
-          "locator": "§XVII.2; printed pages 70–71; physical PDF pages 79–80",
-          "status": "numerical_reference",
-          "review_status": "unreviewed",
-          "clinical_use_eligible": false,
-          "pages": [
-            79,
-            80
-          ]
         }
       ],
       "crrt": [
@@ -2294,51 +2230,7 @@
       "medicine": "Cefoperazone",
       "review_status": "unreviewed",
       "clinical_use_eligible": false,
-      "renal": [
-        {
-          "source_id": "IN-JIPMER-2026",
-          "scope": "Parenteral cefoperazone ALONE; not cefoperazone/sulbactam.",
-          "assumptions": [
-            "Adult native-renal reference only; not CRRT or intermittent HD.",
-            "Choose the source’s indication-specific baseline first. Printed gaps and cutoffs are not interpolated.",
-            "JIPMER institutional reference for review; not a national guideline or this hospital’s approved policy."
-          ],
-          "tables": [
-            {
-              "title": "Source-specific adult reference",
-              "headers": [
-                "Source context",
-                "Unreviewed source reference"
-              ],
-              "rows": [
-                {
-                  "cells": [
-                    "Renal impairment alone, usual adult source regimen",
-                    "No renal reduction; usual 2–4 g/day divided every 12 hours"
-                  ]
-                },
-                {
-                  "cells": [
-                    "Both hepatic dysfunction and significant renal disease",
-                    "Do not exceed 1–2 g/day without close serum-concentration monitoring"
-                  ]
-                }
-              ]
-            }
-          ],
-          "notes": [
-            "Higher-dose or biliary-obstruction regimens require separate source review. Monitor INR and hepatic function. The sulbactam component of combination products has different renal requirements."
-          ],
-          "locator": "§XVII.4; physical PDF pages 83–85",
-          "status": "numerical_reference",
-          "review_status": "unreviewed",
-          "clinical_use_eligible": false,
-          "pages": [
-            83,
-            85
-          ]
-        }
-      ],
+      "renal": [],
       "crrt": [],
       "gap": "No supplemental regimen mapped for this medicine, route and support mode. This does not establish absence of evidence."
     },
@@ -2356,53 +2248,7 @@
       "medicine": "Cefoperazone-sulbactam",
       "review_status": "unreviewed",
       "clinical_use_eligible": false,
-      "renal": [
-        {
-          "source_id": "IN-JIPMER-2026",
-          "scope": "IV cefoperazone/sulbactam; the limits below are SULBACTAM-component limits, not total combination grams.",
-          "assumptions": [
-            "Adult native-renal reference only; not CRRT or intermittent HD.",
-            "Choose the source’s indication-specific baseline first. Printed gaps and cutoffs are not interpolated.",
-            "JIPMER institutional reference for review; not a national guideline or this hospital’s approved policy."
-          ],
-          "tables": [
-            {
-              "title": "Source-specific adult reference",
-              "headers": [
-                "Source context",
-                "Unreviewed source reference"
-              ],
-              "rows": [
-                {
-                  "cells": [
-                    "CrCl 15–30 mL/min",
-                    "Maximum sulbactam 1 g every 12 hours (2 g/day)"
-                  ]
-                },
-                {
-                  "cells": [
-                    "CrCl <15 mL/min",
-                    "Maximum sulbactam 500 mg every 12 hours (1 g/day)"
-                  ]
-                }
-              ]
-            }
-          ],
-          "notes": [
-            "Identify the ratio: a 1:1 2 g vial has cefoperazone 1 g + sulbactam 1 g; a 2:1 3 g vial has cefoperazone 2 g + sulbactam 1 g. These are product compositions, not universal regimens.",
-            "Select the intended cefoperazone exposure independently. Additional plain cefoperazone may be required; do not derive a total combination schedule from a sulbactam cap. Combined hepatic/renal dysfunction needs a separate cefoperazone limit and serum review. Monitor INR, liver function and renal function."
-          ],
-          "locator": "§XVII.4; printed pages 74–76; physical PDF pages 83–85",
-          "status": "numerical_reference",
-          "review_status": "unreviewed",
-          "clinical_use_eligible": false,
-          "pages": [
-            83,
-            84,
-            85
-          ]
-        }
-      ],
+      "renal": [],
       "crrt": [
         {
           "source_id": "MALAYSIA-MOH-2020",
@@ -2448,9 +2294,7 @@
               ]
             }
           ],
-          "notes": [
-            "This does not replace the JIPMER native-renal sulbactam caps and does not establish a combination schedule for other CRRT modes. Match pathogen susceptibility, product ratio, hepatic function and delivered therapy; specialist review remains required."
-          ],
+          "notes": [],
           "locator": "Table 4 and Recommendation 10; physical PDF page 5 (journal page 162); discussion physical page 6",
           "status": "numerical_reference",
           "review_status": "unreviewed",
@@ -4264,7 +4108,6 @@
           "notes": [
             "Verify the actual vial’s IU/CBA convention with pharmacy. The consensus approximates 1 million IU as 33 mg CBA; no unit conversion or product dose is calculated here.",
             "Target average plasma colistin concentration 2 mg/L; this does not guarantee lung efficacy. Monitor kidney function, neurotoxicity and drug levels where available.",
-            "R9 starts maintenance 12–24 hours after loading; for a q12h maintenance interval the source describes starting 12 hours later. The JIPMER 2026 example gives 442 mg CBA/day from its arithmetic; the two source statements are not averaged.",
             "Nebraska 2023 has a different CVVHD schedule and CVVH appendix. Its values are not combined with this consensus protocol."
           ],
           "locator": "R8–R9, R14, R19–R21; physical PDF pages 7–9 and 12–13",
@@ -4275,42 +4118,6 @@
             7,
             9,
             12
-          ]
-        },
-        {
-          "source_id": "IN-JIPMER-2026",
-          "scope": "IV colistimethate sodium (CMS), the prodrug used for IV colistin; doses are mg COLISTIN BASE ACTIVITY (CBA), not mg chemical CMS. Not colistin sulfate, oral, inhaled or intrathecal dosing.",
-          "assumptions": [
-            "JIPMER institutional reference for review; not a national guideline or this hospital’s approved policy.",
-            "Printed CRRT example assumes 24 hours of therapy; modality, filter and effluent rate are not specified."
-          ],
-          "tables": [
-            {
-              "title": "Source-specific adult reference",
-              "headers": [
-                "Source context",
-                "Unreviewed source reference"
-              ],
-              "rows": [
-                {
-                  "cells": [
-                    "CRRT source example",
-                    "442 mg CBA total daily dose, divided every 12 hours"
-                  ]
-                }
-              ]
-            }
-          ],
-          "notes": [
-            "The policy adds 10% of a 130 mg CBA baseline per CRRT hour. This is not a programmed formula. The international 2019 consensus instead states 440 mg CBA/day; preserve both source values for review, not averaged.",
-            "Do not use the non-dialysis maximum in the preceding JIPMER table as a CRRT maximum; verify CMS versus CBA units and actual delivered treatment with pharmacy."
-          ],
-          "locator": "§XVII.1; printed page 68; physical PDF page 77",
-          "status": "numerical_reference",
-          "review_status": "unreviewed",
-          "clinical_use_eligible": false,
-          "pages": [
-            77
           ]
         }
       ],

@@ -106,3 +106,16 @@ def test_unknown_delivery_cannot_make_other_periods_look_complete(case):
     for summary in view['summaries'].values():
         assert summary['complete'] is False
         assert any('Availability unknown' in e['reason'] for e in summary['excluded'])
+
+def test_explicit_cutoff_keeps_unknown_terminal_retraction_visible_and_holds_old_positive(case):
+    from app.persistence.repository import transaction
+    from app.services.transfusion_service import TransfusionService
+    c,app=case;b=pcc(catalog(c)['repository']);s=save(c,b)
+    changed=correction(b,s,status='not_given',promote_to_medication=False,completed_as=None,amounts=[],missing_amount_reason='Incorrect original claim')
+    changed['available_at']=None;save(c,changed);cutoff=catalog(c)['cutoff']['fact_watermark']
+    with transaction(app.core.state.dependencies.engine) as repo:
+        view=TransfusionService(app.core.state.dependencies).catalog(repo,'2026-10-08T08:00:00Z','2026-10-08T10:00:00Z',cutoff)
+    assert view['medication_exposures']==[]
+    assert view['totals']['groups']==[]
+    assert view['unknown_availability'][0]['fact']['revision']==changed['revision']
+    for summary in view['summaries'].values():assert summary['complete'] is False

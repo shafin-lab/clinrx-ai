@@ -1,10 +1,10 @@
 """Bounded original respiratory evidence; calculations never rewrite source values."""
 from typing import Annotated, Literal
 from uuid import UUID
-from pydantic import Field, StrictBool, model_validator
+from pydantic import Field, StrictBool, model_validator, model_serializer
 from .common import DomainModel, Reference, Text
 from .laboratory import LaboratoryResult, LaboratorySourceIdentity, RawText
-from .recorded_v2 import RecordedFactV2, RecordedTime, missing_time
+from .recorded_v2 import RecordedFactV2, RecordedTime, missing_time, instant
 
 RespiratoryCategory = Literal['bedside','support','blood_gas','mechanics','imaging','procedure','treatment','liberation','lung_function','sleep','extracorporeal','assessment']
 
@@ -14,6 +14,11 @@ class RespiratoryTimes(DomainModel):
     collected: RecordedTime = Field(default_factory=missing_time)
     reported: RecordedTime = Field(default_factory=missing_time)
     available: RecordedTime = Field(default_factory=missing_time)
+
+
+class RespiratorySupportEpisode(DomainModel):
+    type: Literal['room_air','nasal_cannula','simple_mask','venturi_mask','reservoir_mask','hfnc','niv','invasive','other','unknown']
+    until: RecordedTime | None = None
 
 
 class RespiratoryContext(DomainModel):
@@ -29,6 +34,19 @@ class RespiratoryContext(DomainModel):
     passive: StrictBool | None = None
     occlusion_confirmed: StrictBool | None = None
     reference_equation: RawText | None = None
+    support_episode: RespiratorySupportEpisode | None = None
+
+    @model_serializer(mode='wrap')
+    def preserve_legacy_serialization(self, handler):
+        data = handler(self)
+        if 'support_episode' not in self.model_fields_set:
+            data.pop('support_episode', None)
+        return data
+
+
+class RespiratoryAcquisition(DomainModel):
+    breath_channel: Literal['total','spontaneous','mandatory','unknown']
+    acquisition_id: Annotated[str, Field(min_length=1, max_length=500)]
 
 
 class RespiratoryMeasurement(DomainModel):
@@ -38,6 +56,14 @@ class RespiratoryMeasurement(DomainModel):
     role: Literal['measured','set','reported','calculated_by_source','unknown'] = 'unknown'
     quality: Literal['usable','suspect','unknown'] = 'unknown'
     method: RawText | None = None
+    acquisition: RespiratoryAcquisition | None = None
+
+    @model_serializer(mode='wrap')
+    def preserve_legacy_serialization(self, handler):
+        data = handler(self)
+        if 'acquisition' not in self.model_fields_set:
+            data.pop('acquisition', None)
+        return data
 
 
 class RespiratoryRecord(RecordedFactV2):
@@ -62,6 +88,14 @@ class RespiratoryRecord(RecordedFactV2):
 
     @model_validator(mode='after')
     def respiratory_integrity(self):
+        episode = self.context.support_episode
+        if episode is not None:
+            start = self.times.occurred
+            if self.category != 'support' or start.status != 'known' or start.precision != 'instant' or start.value is None:
+                raise ValueError('a support episode requires a support record and exact start time')
+            end = episode.until
+            if end is not None and (end.status != 'known' or end.precision != 'instant' or end.value is None or instant(end.value) <= instant(start.value)):
+                raise ValueError('support episode end must be an exact instant after its start')
         if self.revision != self.source_identity.source_version:
             raise ValueError('record revision must preserve exact source version')
         concepts=[item.concept for item in self.measurements]

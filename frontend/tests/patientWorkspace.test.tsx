@@ -58,7 +58,7 @@ it('invalidates an in-flight inspector history on shared refresh and does not sh
 },15000);
 it('rejects a stale source handoff rather than replacing the entry selection',async()=>{
  const state=decodeCirculatoryState({...structuredClone(fixture),execution_enabled:false});const item=state.assembly.snapshot.items[0],entry={validate:vi.fn(),save:vi.fn(),lookup:vi.fn()};
- render(<EvidenceEntryWorkspace client={{} as CirculatoryClient} entry={entry as unknown as EvidenceEntryClient} config={config} shared={{state,loading:false,error:'',refresh:vi.fn()}} handoff={{token:1,item,context:'stale-context'}}/>);
+ render(<EvidenceEntryWorkspace client={{} as CirculatoryClient} entry={entry as unknown as EvidenceEntryClient} config={config} shared={{m10:{loading:false},state,loading:false,error:'',refresh:vi.fn()}} handoff={{token:1,item,context:'stale-context'}}/>);
  expect(await screen.findByRole('alert')).toHaveTextContent('Exact source handoff is stale');expect(screen.queryByText('Original retained:')).not.toBeInTheDocument();expect(entry.validate).not.toHaveBeenCalled();
 },15000);
 
@@ -143,7 +143,7 @@ it('starts a separate reassessment after confirmation with no copied evidence se
 it('withholds post-save handover navigation if the refreshed snapshot does not confirm the exact saved digest',async()=>{
  window.localStorage.clear();const {entry,client,getState,view}=setup();await correction();
  client.circulatoryState.mockImplementationOnce(async()=>{const next=structuredClone(getState());const item=next.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!;item.expected_digest='b'.repeat(64);return {data:next};});
- step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await waitFor(()=>expect(screen.getByRole('button',{name:'Add saved record to handover'})).toBeEnabled());step('Add saved record to handover');
+ step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await waitFor(()=>expect(screen.getByRole('button',{name:'Add saved record to handover'})).toBeEnabled());await waitFor(()=>expect(screen.getByRole('button',{name:'Handover'})).toBeEnabled());step('Add saved record to handover');
  expect(await screen.findByRole('alert')).toHaveTextContent('exact saved revision is not confirmed');expect(screen.getByRole('heading',{name:'Review before append'})).toBeInTheDocument();expect(entry.save).toHaveBeenCalledTimes(1);expect(client.circulatoryExecute).not.toHaveBeenCalled();view.unmount();window.localStorage.clear();
 },15000);
 it('keeps post-save actions blocked after an unconfirmed refresh',async()=>{
@@ -157,7 +157,7 @@ it('completes a cardiac-output correction through readable history, separate not
   const baseline=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-30')!,intervention=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-D-CHANGE')!,followup=s.assembly.snapshot.items.find(i=>i.fact.id==='m7-CO')!;
   originalNote={...followup,fact:structuredClone(buildGuided('reassessment',{baseline:evidenceKey(baseline.fact),intervention:evidenceKey(intervention.fact),followup:evidenceKey(followup.fact),question:'Earlier flow review',findings:'Recorded source assertions.',possibilities:'No relationship confirmed.',uncertainty:'Synthetic context and source limitations.'},'Earlier reviewer',s.assembly.snapshot.items,'flow-original-note','2026-10-08T08:10:00Z'))};s.assembly.snapshot.items.push(originalNote);
  });
- const beforeNote=JSON.stringify(originalNote);await ready();step('Inspect Cardiac output m7-CO');step('Correct this exact source');
+ const beforeNote=JSON.stringify(originalNote);await ready();step('Inspect Cardiac output m7-CO');await screen.findByRole('button',{name:'Correct this exact source'});step('Correct this exact source');
  const draftForm=()=>within(screen.getByRole('region',{name:'Evidence draft'}));
  fireEvent.change(draftForm().getByRole('textbox',{name:'Actor name'}),{target:{value:'Milestone reviewer'}});fireEvent.change(draftForm().getByRole('textbox',{name:'Reason for correction or withdrawal'}),{target:{value:'Source transcription correction; not a new measurement'}});fireEvent.change(draftForm().getByRole('textbox',{name:'Recorded numeric value (raw unit preserved)'}),{target:{value:'4.5500'}});
  const original=first.getState().assembly.snapshot.items.find(i=>i.fact.id==='m7-CO')!;
@@ -204,7 +204,7 @@ it('M1: repository refresh does not remount the editor or replace an uncertain p
  const state=decodeCirculatoryState({...structuredClone(fixture),execution_enabled:false});state.assembly.snapshot.items=state.assembly.snapshot.items.filter(i=>i.fact.id==='fs-PH-60');
  const repository=state.assembly.request.scope.repository_cutoff.repository_id;
  const entry={validate:vi.fn(async(body:Draft)=>({repository_id:body.repository_id,fact:body.fact,expected_digest:'a'.repeat(64),canonical_fact:JSON.stringify(body.fact),ingestion:null} as Evidence)),save:vi.fn(async(_body:Draft)=>{throw Error('lost_delivery');}),lookup:vi.fn(async(_body:Draft)=>({status:'absent'}))};
- const client={} as CirculatoryClient,refresh=vi.fn(async()=>{}),shared={state,loading:false,error:'',refresh};
+ const client={} as CirculatoryClient,refresh=vi.fn(async()=>{}),shared={m10:{loading:false},state,loading:false,error:'',refresh};
  const view=render(<EvidenceEntryWorkspace client={client} entry={entry as unknown as EvidenceEntryClient} config={config} shared={shared}/>);
  fireEvent.click(screen.getByRole('region',{name:'Recorded evidence'}).querySelector('.entry-list button')!);
  fireEvent.change(screen.getByRole('textbox',{name:'Actor name'}),{target:{value:'Synthetic reviewer'}});fireEvent.change(screen.getByRole('textbox',{name:'Reason for correction or withdrawal'}),{target:{value:'Transcription correction'}});fireEvent.change(screen.getByRole('textbox',{name:'Recorded numeric value (raw unit preserved)'}),{target:{value:'7.3600'}});

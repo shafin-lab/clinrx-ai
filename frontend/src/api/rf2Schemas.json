@@ -2523,6 +2523,33 @@
       "title": "StableIdentity",
       "type": "object"
     },
+    "RespiratoryAcquisition": {
+      "additionalProperties": false,
+      "properties": {
+        "breath_channel": {
+          "enum": [
+            "total",
+            "spontaneous",
+            "mandatory",
+            "unknown"
+          ],
+          "title": "Breath Channel",
+          "type": "string"
+        },
+        "acquisition_id": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Acquisition Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "breath_channel",
+        "acquisition_id"
+      ],
+      "title": "RespiratoryAcquisition",
+      "type": "object"
+    },
     "RespiratoryContext": {
       "additionalProperties": false,
       "properties": {
@@ -2684,6 +2711,17 @@
           ],
           "default": null,
           "title": "Reference Equation"
+        },
+        "support_episode": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RespiratorySupportEpisode"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "title": "RespiratoryContext",
@@ -2764,6 +2802,17 @@
           ],
           "default": null,
           "title": "Method"
+        },
+        "acquisition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RespiratoryAcquisition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
@@ -2772,6 +2821,43 @@
         "result"
       ],
       "title": "RespiratoryMeasurement",
+      "type": "object"
+    },
+    "RespiratorySupportEpisode": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "room_air",
+            "nasal_cannula",
+            "simple_mask",
+            "venturi_mask",
+            "reservoir_mask",
+            "hfnc",
+            "niv",
+            "invasive",
+            "other",
+            "unknown"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "until": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedTime"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "RespiratorySupportEpisode",
       "type": "object"
     },
     "RespiratoryTimes": {

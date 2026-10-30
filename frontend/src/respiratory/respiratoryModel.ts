@@ -85,3 +85,9 @@ export function groupRespiratoryObservations(items:Evidence[]){
  for(const e of items){const concept=e.fact.kind==='circulatory_lactate'?'lactate':String(e.fact.concept??e.fact.kind);groups.set(concept,[...(groups.get(concept)??[]),e]);}
  return [...groups].sort(([a],[b])=>{const x=order.indexOf(a),y=order.indexOf(b);return (x<0?order.length:x)-(y<0?order.length:y)||a.localeCompare(b);}).map(([concept,rows])=>({concept,items:[...rows].sort((a,b)=>{const x=respiratoryTime(a),y=respiratoryTime(b);return x&&y?compareRespiratoryInstants(y,x)??0:x?-1:y?1:0;})}));
 }
+
+/** Eligibility for automatic report selection; historical sources remain explicitly inspectable. */
+export function usableBloodGas(sample:RespiratorySample,catalog:Catalog):boolean {
+ const r=sample.record;
+ return r.category==='blood_gas'&&r.record_status==='recorded'&&['final','corrected','preliminary','interim'].includes(r.report_status)&&r.change_state!=='superseded'&&r.conflict!=='unresolved'&&r.times.collected.status==='known'&&r.times.collected.precision==='instant'&&!!r.times.collected.value&&sample.evidence.length>0&&sample.evidence.every(e=>!e.superseded&&e.cutoff===catalog.cutoff.fact_watermark&&e.terminal_reference.id===e.fact.id&&e.terminal_reference.version===e.fact.revision&&e.fact.record_status==='recorded'&&e.fact.conflict!=='unresolved');
+}
