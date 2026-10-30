@@ -143,7 +143,7 @@ it('starts a separate reassessment after confirmation with no copied evidence se
 it('withholds post-save handover navigation if the refreshed snapshot does not confirm the exact saved digest',async()=>{
  window.localStorage.clear();const {entry,client,getState,view}=setup();await correction();
  client.circulatoryState.mockImplementationOnce(async()=>{const next=structuredClone(getState());const item=next.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-60')!;item.expected_digest='b'.repeat(64);return {data:next};});
- step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await waitFor(()=>expect(screen.getByRole('button',{name:'Add saved record to handover'})).toBeEnabled());step('Add saved record to handover');
+ step('Confirm append to local database');await screen.findByText(/Exact revision saved and confirmed/);await waitFor(()=>expect(screen.getByRole('button',{name:'Add saved record to handover'})).toBeEnabled());await waitFor(()=>expect(screen.getByRole('button',{name:'Handover'})).toBeEnabled());step('Add saved record to handover');
  expect(await screen.findByRole('alert')).toHaveTextContent('exact saved revision is not confirmed');expect(screen.getByRole('heading',{name:'Review before append'})).toBeInTheDocument();expect(entry.save).toHaveBeenCalledTimes(1);expect(client.circulatoryExecute).not.toHaveBeenCalled();view.unmount();window.localStorage.clear();
 },15000);
 it('keeps post-save actions blocked after an unconfirmed refresh',async()=>{
@@ -157,7 +157,7 @@ it('completes a cardiac-output correction through readable history, separate not
   const baseline=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-PH-30')!,intervention=s.assembly.snapshot.items.find(i=>i.fact.id==='fs-D-CHANGE')!,followup=s.assembly.snapshot.items.find(i=>i.fact.id==='m7-CO')!;
   originalNote={...followup,fact:structuredClone(buildGuided('reassessment',{baseline:evidenceKey(baseline.fact),intervention:evidenceKey(intervention.fact),followup:evidenceKey(followup.fact),question:'Earlier flow review',findings:'Recorded source assertions.',possibilities:'No relationship confirmed.',uncertainty:'Synthetic context and source limitations.'},'Earlier reviewer',s.assembly.snapshot.items,'flow-original-note','2026-10-08T08:10:00Z'))};s.assembly.snapshot.items.push(originalNote);
  });
- const beforeNote=JSON.stringify(originalNote);await ready();step('Inspect Cardiac output m7-CO');step('Correct this exact source');
+ const beforeNote=JSON.stringify(originalNote);await ready();step('Inspect Cardiac output m7-CO');await screen.findByRole('button',{name:'Correct this exact source'});step('Correct this exact source');
  const draftForm=()=>within(screen.getByRole('region',{name:'Evidence draft'}));
  fireEvent.change(draftForm().getByRole('textbox',{name:'Actor name'}),{target:{value:'Milestone reviewer'}});fireEvent.change(draftForm().getByRole('textbox',{name:'Reason for correction or withdrawal'}),{target:{value:'Source transcription correction; not a new measurement'}});fireEvent.change(draftForm().getByRole('textbox',{name:'Recorded numeric value (raw unit preserved)'}),{target:{value:'4.5500'}});
  const original=first.getState().assembly.snapshot.items.find(i=>i.fact.id==='m7-CO')!;

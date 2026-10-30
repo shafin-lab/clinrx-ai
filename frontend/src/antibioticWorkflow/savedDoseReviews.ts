@@ -42,7 +42,7 @@ export function dependenciesFor(course:TherapyCourse,model:AutomaticRenalModel,c
  return {
   product:stable({medicine:course.medicine,identity:{canonical_id:a.canonical_id,ingredient_ids:a.ingredient_ids,source_code:a.source_code,product:a.product,formulation:a.formulation,raw_display:a.raw_display,mapping_status:a.mapping_status},route:f.route,basis:dose.basis,basis_detail:dose.basis_detail,unit:record(dose.amount).unit}),
   treatment:stable({dose:f.prescribed_dose,schedule:f.schedule,frequency:f.frequency,status:f.order_status,start:f.intended_start,end:f.intended_end,purpose:f.therapy_purpose,priorReview:course.order&&ownedMetadata(course.order)?.dose_review?.context}),
-  patient:stable({inputs:model.inputs,context:model.context??null,eligible:model.routineEligible,crcl:model.crcl??null,reasons:[...model.reasons].sort()}),
+  patient:stable({inputs:model.inputs,context:model.context??null,sources:model.sources.filter(s=>s.role==='weight'||s.role==='creatinine').sort((a,b)=>stable(a).localeCompare(stable(b))),eligible:model.routineEligible,crcl:model.crcl??null,reasons:[...model.reasons].sort()}),
   rationale:stable({indication:f.recorded_indication??'',cultures:cultures.filter(i=>String(i.fact.kind).startsWith('microbiology_')||String(i.fact.kind).startsWith('blood_culture_')).map(i=>[i.fact.kind,i.fact.id,i.fact.revision,i.expected_digest]).sort((a,b)=>stable(a).localeCompare(stable(b)))}),
   history:stable(exceptional),
   profile:stable(course.medicine.toLowerCase()==='anidulafungin'?['anidulafungin-smPC-2026-10-26/1',ANIDULAFUNGIN_SOURCE]:[DOSE_PROFILE_VERSION,name?profileSources[name]:'unsupported'])
