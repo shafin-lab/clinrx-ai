@@ -28,6 +28,7 @@ def test_complete_admission_registry_includes_only_explicitly_supported_domains(
         'circulatory_assessment':h.DynamicAssessment,'circulatory_event':h.CirculatoryEvent,
         'circulatory_signal':h.SignalManifest,
         'laboratory_report':__import__('app.models.clinical.laboratory',fromlist=['LaboratoryReport']).LaboratoryReport,
+        'gastrointestinal_record':__import__('app.models.clinical.gastrointestinal',fromlist=['GastrointestinalRecord']).GastrointestinalRecord,
         'respiratory_record':__import__('app.models.clinical.respiratory',fromlist=['RespiratoryRecord']).RespiratoryRecord,
         'transfusion_administration':t.TransfusionAdministration,
         'haemostatic_medication_course':t.HaemostaticMedicationCourse,

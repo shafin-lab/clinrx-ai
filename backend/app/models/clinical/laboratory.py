@@ -13,6 +13,7 @@ DecimalText = Annotated[str, StringConstraints(pattern=r'^[+-]?(?:0|[1-9]\d*)(?:
 Digest = Annotated[str, Field(pattern=r'^[0-9a-f]{64}$')]
 
 SUPPORTED_LAB_MAPPINGS = frozenset({
+    'total_bilirubin', 'direct_bilirubin', 'ast', 'alt', 'alp', 'ggt', 'albumin', 'total_protein', 'amylase', 'lipase',
     'hemoglobin', 'hematocrit', 'platelets', 'pt', 'inr', 'aptt', 'thrombin_time',
     'fibrinogen', 'total_calcium', 'ionised_calcium', 'd_dimer', 'anti_xa',
     'creatinine', 'urea', 'bun', 'sodium', 'potassium', 'urine_appearance', 'urine_colour',

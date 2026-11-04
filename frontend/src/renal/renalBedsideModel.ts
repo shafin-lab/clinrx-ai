@@ -52,7 +52,7 @@ export function renalBedsideModel(state:RenalFluidState|undefined,requested:Beds
  if(catalog){
   const catalogSeen=new Set<string>();
   for(const e of catalog.items){const f=e.fact,t=f.binding.target,k=JSON.stringify([f.kind,f.id,f.revision]);
-   if(catalogSeen.has(k)||e.repository!==cutoff.repository_id||e.cutoff!==cutoff.fact_watermark||e.ingestion.repository_id!==cutoff.repository_id||!Number.isSafeInteger(e.ingestion.ingestion_sequence)||e.ingestion.ingestion_sequence<1||e.ingestion.ingestion_sequence>cutoff.fact_watermark||t.patient_id!==requested.patient||t.encounter_id!==requested.encounter)return empty;
+   if(catalogSeen.has(k)||e.repository!==cutoff.repository_id||e.cutoff>cutoff.fact_watermark||e.cutoff<e.ingestion.ingestion_sequence||e.ingestion.repository_id!==cutoff.repository_id||!Number.isSafeInteger(e.ingestion.ingestion_sequence)||e.ingestion.ingestion_sequence<1||e.ingestion.ingestion_sequence>cutoff.fact_watermark||t.patient_id!==requested.patient||t.encounter_id!==requested.encounter)return empty;
    catalogSeen.add(k);
    const original=[...state.laboratory.observations,...base.items].find(i=>JSON.stringify([i.fact.kind,i.fact.id,i.fact.revision])===k);if(seen.has(k)){if(!original||original.expected_digest!==e.digest||!equal(original.fact,e.fact)||!equal(original.ingestion,e.ingestion))return empty;const s=sources.find(s=>s.key===sourceKey(f.kind,f.id,f.revision));if(s){s.entry=e;continue;}}
    seen.add(k);const c=e.metadata?.chart,group=e.metadata?.note?'reviews':c?groupFor(c.category):undefined;if(!group)continue;
@@ -61,10 +61,10 @@ export function renalBedsideModel(state:RenalFluidState|undefined,requested:Beds
  }
  if(catalog){
   for(const e of catalog.laboratory_reports){const f=e.fact as unknown as {kind:string;id:string;revision:string;binding:{target:{patient_id:string;encounter_id:string}};components:{source_component_id:string;test_code:{raw_display:string};mapping_status:string;mapped_concept?:string|null;source_flags?:{raw_display:string}[];source_interference_flags?:{raw_display:string}[];source_critical_flag?:string;result:{kind:string;status?:string;reason?:string;comparator?:string;raw_value?:string;unit?:{raw_display:string}|null};assay?:{raw_display:string}|null}[];times:{available:{status:string;value?:string|null};collected:{status:string;value?:string|null}};report_status:string;record_status?:string;specimen:{specimen_type?:{raw_display:string}|null}};const t=f.binding.target;
-   if(f.kind!=='laboratory_report'||!admit(f.kind,f.id,f.revision,t.patient_id,t.encounter_id,e.ingestion.repository_id,e.ingestion.ingestion_sequence)||e.repository!==cutoff.repository_id||e.cutoff!==cutoff.fact_watermark)return empty;
+   if(f.kind!=='laboratory_report'||!admit(f.kind,f.id,f.revision,t.patient_id,t.encounter_id,e.ingestion.repository_id,e.ingestion.ingestion_sequence)||e.repository!==cutoff.repository_id||e.cutoff>cutoff.fact_watermark||e.cutoff<e.ingestion.ingestion_sequence)return empty;
    for(const component of f.components){
     if(component.mapping_status!=='mapped'||!component.mapped_concept)continue;
-    const concept=String(component.mapped_concept),group=concept.startsWith('urine_')?'urine':'kidney';
+    const concept=String(component.mapped_concept);if(['total_bilirubin','direct_bilirubin','ast','alt','alp','ggt','albumin','total_protein','amylase','lipase'].includes(concept))continue;const group=concept.startsWith('urine_')?'urine':'kidney';
     const result=component.result,value=result.kind==='unavailable'?`${result.status} · ${result.reason}`:result.kind==='numeric'?`${result.comparator==='='?'':result.comparator}${result.raw_value??'Result unavailable'}${result.unit?.raw_display?' '+result.unit.raw_display:''}`:result.raw_value??'Result unavailable';
     const at=f.times.available.status==='known'?String(f.times.available.value):'Availability time not recorded';
     const placed=f.times.available.status==='known'?(Date.parse(at)>=Date.parse(requested.start)&&Date.parse(at)<=Date.parse(requested.end)?'in_window':'outside_window'):'unplaced';

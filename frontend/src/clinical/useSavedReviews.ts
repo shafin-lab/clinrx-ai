@@ -9,10 +9,10 @@ export function useSavedReviews<T extends object>(scope:ReviewScope|undefined){
   if(!domain||!patient||!encounter||!repository){setReviews([]);setIssue('');setLoadedKey('');return;}
   const result=loadSavedReviews<T>({domain,patient,encounter,repository});setReviews(result.reviews);setIssue(result.issue??'');setLoadedKey(key);
  },[domain,encounter,key,patient,repository]);
- useEffect(()=>{refresh();if(!key)return;const onStorage=(event:StorageEvent)=>{if(event.key?.startsWith(key))refresh();};window.addEventListener('storage',onStorage);return()=>window.removeEventListener('storage',onStorage);},[key,refresh]);
+ useEffect(()=>{refresh();if(!key)return;const onStorage=(event:StorageEvent)=>{if(event.key?.startsWith(key))refresh();};window.addEventListener('storage',onStorage);window.addEventListener('clinrx:local-review-saved',refresh);return()=>{window.removeEventListener('storage',onStorage);window.removeEventListener('clinrx:local-review-saved',refresh);};},[key,refresh]);
  const save=useCallback(async(review:SavedReview<T>,stillCurrent:()=>boolean)=>{
   if(!scope)throw new Error('Patient evidence scope is unavailable. No review was saved.');
-  await appendSavedReview(scope,review,stillCurrent);refresh();
+  await appendSavedReview(scope,review,stillCurrent);refresh();window.dispatchEvent(new Event('clinrx:local-review-saved'));
  },[domain,encounter,patient,refresh,repository]);
  return useMemo(()=>({reviews:loadedKey===key?reviews:[],issue:loadedKey===key?issue:'',save,ready:loadedKey===key}),[issue,key,loadedKey,reviews,save]);
 }

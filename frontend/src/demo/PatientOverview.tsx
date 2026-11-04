@@ -1,3 +1,7 @@
+import {GISource} from '../gastrointestinal/GISource';
+import {GIReview} from '../gastrointestinal/GIReview';
+import {gastrointestinalModel} from '../gastrointestinal/model';
+import {giCategories,giLabLabels} from '../gastrointestinal/types';
 import type {MicroState} from '../api/microTypes';
 import {m7ReviewEvidence,m8ReviewEvidence,m9ReviewEvidence,sameReviewPins} from '../respiratory/reviewEvidenceContext';
 import {useEffect,useMemo,useRef,useState,type ReactNode} from 'react';
@@ -23,7 +27,7 @@ import './patientOverview.css';
 type Requested={patient:string;encounter:string;start:string;end:string};
 type LaboratoryComponent={source_component_id?:string;test_code?:{namespace?:string;code?:string;raw_display?:string};mapped_concept?:string|null;result?:Record<string,unknown>};
 interface Finding {id:string;label:string;records:Evidence[];componentRecords?:Map<string,LaboratoryComponent>}
-type CourseAreaId='kidney'|'infection'|'hematologic'|'circulation'|'respiratory'|'other';
+type CourseAreaId='kidney'|'infection'|'hematologic'|'circulation'|'respiratory'|'gastrointestinal'|'other';
 interface CourseEvent {id:string;label:string;evidence:Evidence;timestamp:string|null;timeLabel:string;component?:LaboratoryComponent}
 interface CourseSection {id:CourseAreaId;label:string;events:CourseEvent[]}
 const COURSE_AREAS:Pick<CourseSection,'id'|'label'>[]=[
@@ -31,12 +35,13 @@ const COURSE_AREAS:Pick<CourseSection,'id'|'label'>[]=[
  {id:'infection',label:'Antimicrobials'},
  {id:'hematologic',label:'Hematologic system'},
  {id:'circulation',label:'Cardiovascular system'},
+ {id:'gastrointestinal',label:'Gastrointestinal & liver'},
  {id:'other',label:'Other recorded findings'},
 ];
 const asRecord=(value:unknown):Record<string,unknown>=>value&&typeof value==='object'&&!Array.isArray(value)?value as Record<string,unknown>:{};
 function courseTimestamp(e:Evidence):{timestamp:string|null;timeLabel:string}{
  const fact=asRecord(e.fact);
- if(fact.kind==='respiratory_record'){const times=asRecord(fact.times);for(const [key,timeLabel] of (fact.category==='blood_gas'?[['collected','Collected'],['occurred','Observed'],['reported','Reported'],['available','Available']]:[['occurred','Observed'],['collected','Collected'],['reported','Reported'],['available','Available']])){const point=asRecord(times[key]);if(point.status==='known'&&typeof point.value==='string')return {timestamp:point.value,timeLabel};}return {timestamp:null,timeLabel:'Time not established'};}
+ if(fact.kind==='respiratory_record'||fact.kind==='gastrointestinal_record'){const times=asRecord(fact.times);for(const [key,timeLabel] of (fact.category==='blood_gas'?[['collected','Collected'],['occurred','Observed'],['reported','Reported'],['available','Available']]:[['occurred','Observed'],['collected','Collected'],['reported','Reported'],['available','Available']])){const point=asRecord(times[key]);if(point.status==='known'&&typeof point.value==='string')return {timestamp:point.value,timeLabel};}return {timestamp:null,timeLabel:'Time not established'};}
  if(fact.kind==='laboratory_report'){
   const times=asRecord(fact.times);
   for(const [key,timeLabel] of [['collected','Collected'],['reported','Reported'],['available','Available']] as const){const point=asRecord(times[key]);if(point.status==='known'&&typeof point.value==='string')return {timestamp:point.value,timeLabel};}
@@ -51,6 +56,7 @@ function courseTimestamp(e:Evidence):{timestamp:string|null;timeLabel:string}{
  return {timestamp:null,timeLabel:'Time not established'};
 }
 function areaForFinding(finding:Finding):CourseAreaId{
+ if(finding.records.some(e=>e.fact.kind==='gastrointestinal_record')||Array.from(finding.componentRecords?.values()??[]).some(c=>c.mapped_concept&&Object.hasOwn(giLabLabels,c.mapped_concept)&&!['pt','inr'].includes(c.mapped_concept)))return 'gastrointestinal';
  if(finding.records.some(e=>e.fact.kind==='respiratory_record'))return 'respiratory';
  const respiratoryLegacyConcepts=new Set(['ph','paco2','pao2','pvo2','bicarbonate','base_excess','sao2','svo2','scvo2','spo2','respiratory_rate']);
  if(finding.records.some(e=>e.fact.kind==='circulatory_oxygen'&&respiratoryLegacyConcepts.has(String(e.fact.concept).toLowerCase())))return 'respiratory';
@@ -69,7 +75,7 @@ function areaForFinding(finding:Finding):CourseAreaId{
 }
 function courseSections(findings:Finding[],withRespiratory=false):CourseSection[]{
  const areas=withRespiratory||findings.some(finding=>areaForFinding(finding)==='respiratory')?[...COURSE_AREAS.slice(0,4),{id:'respiratory' as const,label:'Respiratory system'},...COURSE_AREAS.slice(4)]:COURSE_AREAS;
- const sections=areas.map(area=>({...area,events:[] as CourseEvent[]}));
+ const sections=areas.filter(area=>area.id!=='gastrointestinal'||findings.some(f=>areaForFinding(f)==='gastrointestinal')).map(area=>({...area,events:[] as CourseEvent[]}));
  for(const finding of findings)for(const evidence of finding.records){const time=courseTimestamp(evidence),label=finding.label?(/[a-z][A-Z]/.test(finding.label)?finding.label:finding.label[0].toUpperCase()+finding.label.slice(1)):'Recorded finding';sections.find(section=>section.id===areaForFinding(finding))!.events.push({id:JSON.stringify([finding.id,key(pin(evidence))]),label,evidence,component:finding.componentRecords?.get(key(pin(evidence))),...time});}
  for(const section of sections)section.events.sort((a,b)=>{
   const left=a.timestamp?Date.parse(a.timestamp):Number.NaN,right=b.timestamp?Date.parse(b.timestamp):Number.NaN;
@@ -108,6 +114,7 @@ function laboratoryComponentSummary(component:LaboratoryComponent):string{
 }
 function courseSummary(e:Evidence,component?:LaboratoryComponent):string{
  const fact=asRecord(e.fact),chart=e.metadata?.chart,note=asRecord(e.metadata?.note),lab=fact.kind==='laboratory_report';
+ if(fact.kind==='gastrointestinal_record')return String(fact.narrative??'Source finding not recorded');
  if(fact.kind==='respiratory_record')return fact.category==='support'?supportSummary(e.fact as RespiratoryRecord):sourceSummary(e);
  if(lab)return component?laboratoryComponentSummary(component):evidenceText(e);
  const quantity=asRecord(fact.recorded_amount),result=asRecord(fact.result),resultQuantity=asRecord(result.quantity),value=asRecord(fact.value),valueQuantity=asRecord(value.value);
@@ -129,7 +136,7 @@ function withdrawalDetail(e:Evidence):string|undefined{
 const categories:Record<string,string>={weight:'Recorded weight',input_oral:'Oral intake',input_enteral:'Enteral intake',input_iv:'IV fluid input',input_blood:'Blood-product input',output_urine:'Urine output',output_drain:'Drain output',output_other:'Other measured loss',output_crrt:'CRRT net fluid removal',output_crrt_net:'Recorded CRRT net removal',output_crrt_effluent:'Recorded CRRT effluent',net_balance_reported:'Reported interval fluid balance',urine_total_reported:'Reported cumulative urine volume',balance_total_reported:'Reported cumulative chart balance'};
 const names:Record<string,string>={'body-weight':'Recorded weight'};
 const sameInstant=(a:string,b:string)=>Number.isFinite(Date.parse(a))&&Date.parse(a)===Date.parse(b);
-const reviewActions:Record<ReviewDomain,Record<string,string>>={M9:{review:'Respiratory review'},M7:{confirm:'Confirm measurement',perfusion:'Reassess perfusion',fluid:'Review fluid benefit and harm',vasoactive:'Review vasoactive delivery',specialist:'Seek senior or specialist review',continue:'Continue observation and reassess'},M8:{collection:'Check collection and catheter patency',baseline:'Review baseline and kidney trajectory',urgent:'Seek urgent renal or ICU review',delivery:'Review kidney support delivery',citrate:'Review citrate and metabolic context',medications:'Review renal medication dosing and levels',recovery:'Review kidney recovery',followup:'Plan renal follow-up'}};
+const reviewActions:Record<ReviewDomain,Record<string,string>>={M11:{review:'GI/liver review'},M9:{review:'Respiratory review'},M7:{confirm:'Confirm measurement',perfusion:'Reassess perfusion',fluid:'Review fluid benefit and harm',vasoactive:'Review vasoactive delivery',specialist:'Seek senior or specialist review',continue:'Continue observation and reassess'},M8:{collection:'Check collection and catheter patency',baseline:'Review baseline and kidney trajectory',urgent:'Seek urgent renal or ICU review',delivery:'Review kidney support delivery',citrate:'Review citrate and metabolic context',medications:'Review renal medication dosing and levels',recovery:'Review kidney recovery',followup:'Plan renal follow-up'}};
 export function overviewReviewSummaries(catalog:Catalog,requested:Requested,micro?:MicroState){
  return (catalog.respiratory_records?['M7','M8','M9'] as const:['M7','M8'] as const).map(domain=>{
   const reviewScope:ReviewScope={domain,patient:requested.patient,encounter:requested.encounter,repository:catalog.repository},loaded=loadSavedReviews<Record<string,unknown>>(reviewScope);
@@ -142,10 +149,10 @@ export function patientOverviewModel(catalog:Catalog,requested:Requested){
  const scope=catalog.combined.context.scope,circ=catalog.combined.circulatory.assembly.request.scope;
  const sameScope=(s:typeof scope)=>s.patient_id===requested.patient&&s.encounter_id===requested.encounter&&sameInstant(s.review_start,requested.start)&&sameInstant(s.review_end,requested.end)&&s.repository_cutoff.repository_id===catalog.repository&&s.repository_cutoff.fact_watermark===catalog.cutoff.fact_watermark;
  const seen=new Set<string>();
- const allEvidence=[...catalog.items,...catalog.laboratory_reports,...(catalog.respiratory_records??[])];
+ const allEvidence=[...catalog.items,...catalog.laboratory_reports,...(catalog.respiratory_records??[]),...(catalog.gastrointestinal_records??[])];
  const valid=catalog.execution_enabled===false&&catalog.combined.execution_enabled===false&&catalog.combined.circulatory.execution_enabled===false&&catalog.cutoff.repository_id===catalog.repository&&sameScope(scope)&&sameScope(circ)&&sameScope(catalog.combined.laboratory.scope)&&allEvidence.every(e=>{
   const k=key(pin(e));if(seen.has(k))return false;seen.add(k);
-  return e.repository===catalog.repository&&(e.fact.kind==='respiratory_record'?e.cutoff<=catalog.cutoff.fact_watermark:e.cutoff===catalog.cutoff.fact_watermark)&&e.ingestion.ingestion_sequence<=e.cutoff&&e.ingestion.repository_id===catalog.repository&&e.ingestion.ingestion_sequence<=e.cutoff&&e.fact.binding.target.patient_id===requested.patient&&e.fact.binding.target.encounter_id===requested.encounter;
+  return e.repository===catalog.repository&&(['respiratory_record','laboratory_report','gastrointestinal_record'].includes(e.fact.kind)?e.cutoff<=catalog.cutoff.fact_watermark:e.cutoff===catalog.cutoff.fact_watermark)&&e.ingestion.ingestion_sequence<=e.cutoff&&e.ingestion.repository_id===catalog.repository&&e.ingestion.ingestion_sequence<=e.cutoff&&e.fact.binding.target.patient_id===requested.patient&&e.fact.binding.target.encounter_id===requested.encounter;
  });
  if(!valid)return {valid:false,findings:[] as Finding[],courseSections:[] as CourseSection[]};
  const groups=new Map<string,Finding>();
@@ -171,11 +178,12 @@ export function patientOverviewModel(catalog:Catalog,requested:Requested){
   }
  }
  for(const e of catalog.respiratory_records??[]){const category=String(e.fact.category) as keyof typeof respiratoryCategories;const id=JSON.stringify(['respiratory',category]);if(!groups.has(id))groups.set(id,{id,label:respiratoryCategories[category]?.label??'Respiratory record',records:[]});groups.get(id)!.records.push(e);}
+ for(const e of catalog.gastrointestinal_records??[]){const category=String(e.fact.category) as keyof typeof giCategories;const id=JSON.stringify(['gastrointestinal',category]);if(!groups.has(id))groups.set(id,{id,label:giCategories[category]??'GI record',records:[]});groups.get(id)!.records.push(e);}
  const findings=[...groups.values()];
  return {valid:true,findings,courseSections:courseSections(findings,catalog.respiratory_records!==undefined||findings.some(finding=>areaForFinding(finding)==='respiratory'))};
 }
-interface Props {onRespiratory?:()=>void;manualClearanceAvailable?:boolean;catalog?:Catalog;status:CatalogStatus;requested:Requested;retrievalMessage?:string;guarded:boolean;onRefresh?:()=>void|Promise<void>;transport?:Pick<RF2Client,'history'>;laboratoryTransport?:Pick<RF2Client,'importLaboratory'>;weightEntryEnabled?:boolean;weightTransport?:Pick<RF2Client,'action'>;onCharting?:()=>void;micro?:MicroState;antibioticOverview?:ReactNode;transfusionOverview?:ReactNode}
-export function PatientOverview({onRespiratory,manualClearanceAvailable=false,catalog,status,requested,retrievalMessage,guarded,onRefresh,transport:providedTransport,laboratoryTransport,weightEntryEnabled=false,weightTransport,onCharting,antibioticOverview,micro,transfusionOverview}:Props){
+interface Props {onGastrointestinal?:()=>void;onRespiratory?:()=>void;manualClearanceAvailable?:boolean;catalog?:Catalog;status:CatalogStatus;requested:Requested;retrievalMessage?:string;guarded:boolean;onRefresh?:()=>void|Promise<void>;transport?:Pick<RF2Client,'history'>;laboratoryTransport?:Pick<RF2Client,'importLaboratory'>;weightEntryEnabled?:boolean;weightTransport?:Pick<RF2Client,'action'>;onCharting?:()=>void;micro?:MicroState;antibioticOverview?:ReactNode;transfusionOverview?:ReactNode}
+export function PatientOverview({onGastrointestinal,onRespiratory,manualClearanceAvailable=false,catalog,status,requested,retrievalMessage,guarded,onRefresh,transport:providedTransport,laboratoryTransport,weightEntryEnabled=false,weightTransport,onCharting,antibioticOverview,micro,transfusionOverview}:Props){
  const [defaultTransport]=useState(()=>new RF2Client()),[selection,setSelection]=useState<SourceSelection>(),[addInformationOpen,setAddInformationOpen]=useState(false),[labEntryOpen,setLabEntryOpen]=useState(false);
  const [entry,setEntry]=useState<{scope:WeightScope;source?:Evidence;trigger:HTMLButtonElement}>();
  const addInformation=useRef<HTMLButtonElement>(null),addInformationDialog=useRef<HTMLDialogElement>(null);
@@ -193,6 +201,7 @@ export function PatientOverview({onRespiratory,manualClearanceAvailable=false,ca
   {catalog&&!model?.valid&&<p role="alert" className="connected-warning">Overview withheld — patient, encounter, period or repository/cutoff correspondence could not be confirmed. No different source was substituted.</p>}
   {catalog&&model?.valid&&<>
    {transfusionOverview}
+   {catalog.gastrointestinal_records&&<GIReview compact catalog={catalog} requested={requested} model={gastrointestinalModel(catalog,requested,micro)} current={current&&!!model?.valid&&!guarded} onOpen={onGastrointestinal}/>}
    <section className="connected-course" aria-label="Recorded course by area"><div><h3>Recorded course by area</h3><p>Review changes during the selected period, grouped by area. Source time orders records only; no diagnosis or severity ranking is generated.</p><p>{catalog.items.length+catalog.laboratory_reports.length?'The selected period includes records, and recorded assertions or source reports are available together.':'No recorded assertions or source reports are supplied in this bounded view.'}</p><p className="connected-caveat">Recorded evidence only. A combined clinical interpretation has not been generated. Expand a finding to inspect each source and its correction history.</p></div><div className="connected-course-grid">{model.courseSections.map(section=>{const grouped=new Map<string,CourseEvent[]>();for(const event of section.events){if(!grouped.has(event.label))grouped.set(event.label,[]);grouped.get(event.label)!.push(event);}return <section className="connected-course-area" aria-label={section.label} key={section.id}><h4>{section.label}</h4>{grouped.size?Array.from(grouped.values(),courseFinding):section.id==='infection'&&!antibioticOverview?<p>No culture finding is available in this patient response. This does not establish that no culture reports exist.</p>:section.id==='infection'?null:<p>No finding is supplied in this area for the selected view. This does not establish normal findings.</p>}{section.id==='infection'&&antibioticOverview}{section.id==='respiratory'&&onRespiratory&&<button type="button" disabled={guarded} onClick={onRespiratory}>Open respiratory review</button>}</section>;})}</div></section>
    <section className="connected-review-summaries" aria-label="Clinician reviews and next plans"><h3>Clinician reviews and next plans</h3><p>Latest saved review for this patient, encounter and repository. Notes are saved in this browser and are not shared chart documentation.</p><div className="connected-review-grid">{reviewSummaries.map(({domain,review,issue,matchesCurrent})=>{const action=String(review?.draft.action??'');const actionLabel=reviewActions[domain][action]??action.replaceAll('_',' ').replace(/^\w/,character=>character.toUpperCase());return <article key={domain}><h4>{domain} review</h4>{review?<><strong>{actionLabel}</strong><p>{String(review.draft.rationale)}</p><p><span>{matchesCurrent&&current?'Current evidence snapshot':'Historical · evidence snapshot differs or is unconfirmed'}</span></p><small>{String(review.draft.reviewer)} · Reviewed {review.recordedAt}</small><p><b>Next review plan:</b> {String(review.draft.nextReview)} <small>No reminder is scheduled.</small></p></>:<p>{issue||'No saved review is available in this browser for this encounter and repository.'}</p>}</article>})}</div></section>
    <aside className="connected-warning" aria-label="Overview limitations"><h3>Still unresolved</h3><p>Completeness and clinical interpretation. {manualClearanceAvailable?'Qualified arithmetic is available only with eligible inputs and source evidence. Antibiotics includes creatinine clearance with eligible recorded creatinine and weight, or local calculator inputs; age and equation coefficient require entry. Clinical execution remains disabled.':'Calculation availability depends on eligible inputs and source evidence. Clinical execution remains disabled.'} Domains not supplied by this catalog are not treated as normal.</p></aside>
@@ -202,8 +211,9 @@ export function PatientOverview({onRespiratory,manualClearanceAvailable=false,ca
   {onRefresh&&<button type="button" disabled={status==='loading'||guarded||!!entry} onClick={()=>{void Promise.resolve(onRefresh()).catch(()=>{});}}>Refresh records</button>}
   {addInformationOpen&&<dialog ref={addInformationDialog} className="connected-source-dialog add-information-dialog" aria-labelledby="add-information-title" onCancel={event=>{event.preventDefault();closeAddInformation();}}><header><h2 id="add-information-title">Add information</h2><button type="button" onClick={closeAddInformation}>Close</button></header><p>Choose a supported source-entry workflow for this synthetic encounter.</p><div className="add-information-options">{weightEntryEnabled&&<button type="button" onClick={()=>{const trigger=addInformation.current;if(!trigger||!catalog)return;closeAddInformation();setEntry({scope:{patient:requested.patient,encounter:requested.encounter,repository:catalog.repository},trigger});}}>Recorded weight</button>}{onCharting&&<button type="button" onClick={()=>{closeAddInformation();onCharting();}}>Fluid or urine chart entry</button>}<button type="button" onClick={()=>{closeAddInformation();setLabEntryOpen(true);}}>Laboratory result</button>{onRespiratory&&<button type="button" onClick={()=>{closeAddInformation();onRespiratory();}}>Respiratory information</button>}</div><p className="m7-caption">Only listed entry types are available here. Results retain their source context.</p></dialog>}
   {labEntryOpen&&catalog&&<LaboratoryEntryDialog catalog={catalog} transport={laboratoryTransport??defaultTransport} onRefresh={async()=>{await onRefresh?.();}} onClose={()=>{setLabEntryOpen(false);addInformation.current?.focus();}}/>}
+  {selection&&model?.valid&&catalog?.repository===selection.evidence.repository&&selection.evidence.fact.kind==='gastrointestinal_record'&&<GISource evidence={selection.evidence} transport={transport} current={current} onClose={()=>setSelection(undefined)}/>}
   {selection&&model?.valid&&catalog?.repository===selection.evidence.repository&&selection.evidence.fact.kind==='respiratory_record'&&<RespiratorySourceDialog evidence={selection.evidence} transport={transport} current={current} onClose={()=>setSelection(undefined)}/>}
-  {selection&&model?.valid&&catalog?.repository===selection.evidence.repository&&selection.evidence.fact.kind!=='respiratory_record'&&<PatientSourceDialog selection={selection} transport={transport} current={current} onClose={()=>setSelection(undefined)} onCorrect={weightEntryEnabled&&current&&!guarded&&onRefresh?()=>{const selected=selection;setSelection(undefined);setEntry({scope:{patient:requested.patient,encounter:requested.encounter,repository:catalog.repository},source:selected.evidence,trigger:selected.trigger});}:undefined}/>}
+  {selection&&model?.valid&&catalog?.repository===selection.evidence.repository&&!['respiratory_record','gastrointestinal_record'].includes(selection.evidence.fact.kind)&&<PatientSourceDialog selection={selection} transport={transport} current={current} onClose={()=>setSelection(undefined)} onCorrect={weightEntryEnabled&&current&&!guarded&&onRefresh?()=>{const selected=selection;setSelection(undefined);setEntry({scope:{patient:requested.patient,encounter:requested.encounter,repository:catalog.repository},source:selected.evidence,trigger:selected.trigger});}:undefined}/>}
   {entry&&<WeightEntryDialog {...entry} currentScope={{patient:requested.patient,encounter:requested.encounter,repository:catalog?.repository??''}} current={current&&!!model?.valid&&!guarded} transport={weightTransport??defaultTransport} onRefresh={async()=>{await onRefresh?.();}} onClose={()=>setEntry(undefined)} onReturnFocus={()=>addInformation.current?.focus()}/>}
   {!catalog&&status!=='loading'&&<p>This overview requires the existing RF2 shared catalog. Separate source snapshots are not combined to simulate a connected patient.</p>}
  </section>;
