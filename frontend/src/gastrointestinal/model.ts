@@ -1,3 +1,4 @@
+import {laboratoryResultText} from './laboratoryPresentation';
 import {type Catalog,type Evidence,key,pin,stable} from '../api/rf2Client';
 import {asObject} from '../respiratory/respiratoryModel';
 import {compareRespiratoryInstants} from '../respiratory/exactTime';
@@ -17,7 +18,7 @@ export function gastrointestinalModel(c:Catalog|undefined,requested:GIScope,micr
   const component=asObject(raw),concept=String(component.mapped_concept??'');
   if(component.mapping_status!=='mapped'||!component.mapping_version){unsupported=true;continue;}if(!giLabLabels[concept])continue;
   const result=asObject(component.result),unit=asObject(result.unit),status=String(e.fact.record_status??'unknown'),report=String(e.fact.report_status??'unknown');
-  const text=status==='withdrawn'?'Withdrawn source record':status!=='recorded'?'Record '+status:!['final','corrected','preliminary','interim'].includes(report)?'Report '+report:result.kind==='unavailable'?String(result.status)+': '+String(result.reason):String(result.comparator&&result.comparator!=='='?result.comparator:'')+String(result.raw_value??'Not recorded')+(result.kind==='numeric'?' '+String(unit.raw_display??'Unit not recorded'):'');
+  const text=status==='withdrawn'?'Withdrawn source record':status!=='recorded'?'Record '+status:!['final','corrected','preliminary','interim'].includes(report)?'Report '+report:result.kind==='unavailable'?String(result.status)+': '+String(result.reason):laboratoryResultText(component);
   labs.push({evidence:e,component,concept,label:giLabLabels[concept],text:text.trim(),time:giTime(e)});
  }if(unsupported)unmapped.push(e);}
  const records=(c.gastrointestinal_records??[]).filter(e=>available(e,requested.end));
@@ -30,3 +31,15 @@ export function gastrointestinalModel(c:Catalog|undefined,requested:GIScope,micr
 }
 /** The saved receipt retains exact cutoff pins; current matching ignores an unrelated newer repository watermark. */
 export function giReviewIdentity(model:ReturnType<typeof gastrointestinalModel>){return stable([model.signature,model.evidence.map(e=>[e.repository,e.fact.kind,e.fact.id,e.fact.revision,e.digest,e.ingestion.ingestion_sequence]).sort((a,b)=>stable(a).localeCompare(stable(b)))]);}
+
+/** A signature is a receipt label, never a substitute for validating its actual source support. */
+export function giReviewMatches(review:import('../clinical/savedReviewStore').SavedReview<unknown>,model:ReturnType<typeof gastrointestinalModel>){
+ if(!model.valid||review.domain!=='M11'||review.snapshot.signature!==giReviewIdentity(model))return false;
+ const scope=JSON.parse(model.signature) as string[];
+ if(review.patient!==scope[0]||review.encounter!==scope[1]||review.repository!==scope[4]||compareRespiratoryInstants(review.period.start,scope[2])!==0||compareRespiratoryInstants(review.period.end,scope[3])!==0)return false;
+ const cutoff=asObject(review.snapshot.cutoff);if(cutoff.repository_id!==review.repository||!Number.isSafeInteger(cutoff.fact_watermark))return false;
+ const pins=review.snapshot.pins.map(p=>asObject(p));if(pins.length!==model.evidence.length||pins.some(p=>p.repository!==review.repository||typeof p.kind!=='string'||typeof p.id!=='string'||typeof p.version!=='string'||typeof p.digest!=='string'||!Number.isSafeInteger(p.ingestion)||!Number.isSafeInteger(p.cutoff)||Number(p.cutoff)<Number(p.ingestion)||Number(p.cutoff)>Number(cutoff.fact_watermark)))return false;
+ const identity=(p:Record<string,unknown>)=>stable([p.repository,p.kind,p.id,p.version,p.digest,p.ingestion]);
+ const actual=pins.map(identity).sort(),expected=model.evidence.map(e=>stable([e.repository,e.fact.kind,e.fact.id,e.fact.revision,e.digest,e.ingestion.ingestion_sequence])).sort();
+ return new Set(actual).size===actual.length&&stable(actual)===stable(expected);
+}
