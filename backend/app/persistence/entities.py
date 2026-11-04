@@ -2,7 +2,7 @@
 from sqlalchemy import CheckConstraint, ForeignKey, ForeignKeyConstraint, Integer, Text, UniqueConstraint, String, LargeBinary
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-SCHEMA_REVISION = 'm10_0011'
+SCHEMA_REVISION = 'm11_0012'
 PAYLOAD_VERSION = 1
 
 
@@ -53,7 +53,7 @@ class FactRow(Envelope, Base):
         ForeignKeyConstraint(['encounter_id', 'patient_id'],
                              ['encounter.encounter_id', 'encounter.patient_id'],
                              name='fk_fact_encounter_owner'),
-        CheckConstraint("kind IN ('observation', 'medication_order', 'medication_administration', 'inference', 'microbiology_specimen', 'microbiology_direct_examination', 'microbiology_culture', 'microbiology_isolate', 'microbiology_susceptibility', 'microbiology_resistance', 'microbiology_molecular', 'blood_culture_set', 'blood_culture_bottle', 'antimicrobial_order', 'antimicrobial_administration', 'antimicrobial_non_delivery', 'circulatory_pressure', 'circulatory_cardiac', 'circulatory_volume', 'circulatory_dynamic', 'circulatory_device_prediction', 'circulatory_perfusion', 'circulatory_oxygen', 'circulatory_lactate', 'circulatory_echo', 'circulatory_ecg', 'circulatory_vasoactive', 'circulatory_monitoring', 'circulatory_assessment', 'circulatory_event', 'circulatory_signal', 'laboratory_report', 'respiratory_record', 'transfusion_administration', 'haemostatic_medication_course', 'transfusion_request', 'transfusion_prescription', 'blood_product_disposition', 'transfusion_compatibility', 'transfusion_reaction', 'haemorrhage_episode', 'm10_assessment', 'transfusion_coverage_link', 'fluid_administration_link', 'm10_medication_detail', 'viscoelastic_report')",
+        CheckConstraint("kind IN ('observation', 'medication_order', 'medication_administration', 'inference', 'microbiology_specimen', 'microbiology_direct_examination', 'microbiology_culture', 'microbiology_isolate', 'microbiology_susceptibility', 'microbiology_resistance', 'microbiology_molecular', 'blood_culture_set', 'blood_culture_bottle', 'antimicrobial_order', 'antimicrobial_administration', 'antimicrobial_non_delivery', 'circulatory_pressure', 'circulatory_cardiac', 'circulatory_volume', 'circulatory_dynamic', 'circulatory_device_prediction', 'circulatory_perfusion', 'circulatory_oxygen', 'circulatory_lactate', 'circulatory_echo', 'circulatory_ecg', 'circulatory_vasoactive', 'circulatory_monitoring', 'circulatory_assessment', 'circulatory_event', 'circulatory_signal', 'laboratory_report', 'respiratory_record', 'gastrointestinal_record', 'transfusion_administration', 'haemostatic_medication_course', 'transfusion_request', 'transfusion_prescription', 'blood_product_disposition', 'transfusion_compatibility', 'transfusion_reaction', 'haemorrhage_episode', 'm10_assessment', 'transfusion_coverage_link', 'fluid_administration_link', 'm10_medication_detail', 'viscoelastic_report')",
                         name='ck_fact_supported_kind'),
         CheckConstraint('payload_version = 1', name='ck_fact_payload_version'),
         {'sqlite_autoincrement': True},

@@ -10,6 +10,8 @@ from app.models.clinical.recorded_v2 import SourceCode, ExactQuantity, RecordedC
 from app.models.clinical.facts import ClinicalObservation
 from app.models.clinical.laboratory import LaboratoryReport
 from app.models.clinical.respiratory import RespiratoryRecord
+from app.models.clinical.gastrointestinal import GastrointestinalRecord
+from app.services.gastrointestinal_service import save_gastrointestinal_record
 from app.services.respiratory_service import available_by, save_respiratory_record
 from app.models.clinical.common import Reference
 from app.persistence.canonical import canonical_payload
@@ -87,7 +89,7 @@ def time(text):
     return ClinicalInstant.model_validate({'timestamp_precision':'M7ExactTimestampInput/v1','recorded':{'status':'known','precision':'instant','value':text},'source_timestamp':text,'clock':'unknown'}) if text else ClinicalInstant()
 
 def allowed(fact):
-    return isinstance(fact,(LaboratoryReport,RespiratoryRecord)) or (isinstance(fact,ClinicalObservation) and fact.concept_id in ('synthetic-serum-creatinine','body-weight')) or isinstance(fact,CirculatoryEvent) or fact.kind.startswith('circulatory_')
+    return isinstance(fact,(LaboratoryReport,RespiratoryRecord,GastrointestinalRecord)) or (isinstance(fact,ClinicalObservation) and fact.concept_id in ('synthetic-serum-creatinine','body-weight')) or isinstance(fact,CirculatoryEvent) or fact.kind.startswith('circulatory_')
 
 class RF2Service(RenalFluidProductService):
     def accounting(self):return HistoryAccounting(self.aggregate_budget)
@@ -116,7 +118,7 @@ class RF2Service(RenalFluidProductService):
         for p in body.pins:
             s=self.pin_record(repo,p,accounting)
             cutoff=repo.capture_cutoff()
-            if isinstance(s.fact,RespiratoryRecord):cutoff=cutoff.model_copy(update={'fact_watermark':p.cutoff})
+            if isinstance(s.fact,(RespiratoryRecord,GastrointestinalRecord,LaboratoryReport)):cutoff=cutoff.model_copy(update={'fact_watermark':p.cutoff})
             out.append(self.evidence(repo,s,cutoff,accounting))
         return self.bounded_dict({'repository':str(body.repository),'items':out,'execution_enabled':False})
     def history(self,repo,body):
@@ -147,9 +149,21 @@ class RF2Service(RenalFluidProductService):
         extras=[s for s in selected if (s.fact.kind,s.fact.id,s.fact.revision) not in base_keys]
         # Keep later-issued source reports out of an earlier review window. Reports
         # with no usable availability time remain visible with their time gap explicit.
-        laboratory_reports=[self.evidence(repo,s,cutoff,a) for s in terminals.values()
-            if isinstance(s.fact,LaboratoryReport)
-            and (s.fact.semantic_time.anchor is None or s.fact.semantic_time.anchor <= end)]
+        laboratory_visible={}
+        for stored in rows:
+            if isinstance(stored.fact,LaboratoryReport) and available_by(stored.fact,end) and (stored.fact.semantic_time.anchor is None or stored.fact.semantic_time.anchor<=end):
+                laboratory_visible[stored.fact.id]=stored
+        laboratory_reports=[]
+        for stored in laboratory_visible.values():
+            visible_cutoff=cutoff if terminals[(stored.fact.kind,stored.fact.id)]==stored else cutoff.model_copy(update={'fact_watermark':stored.ingestion.ingestion_sequence})
+            laboratory_reports.append(self.evidence(repo,stored,visible_cutoff,a))
+        gi_visible={}
+        for stored in rows:
+            if isinstance(stored.fact,GastrointestinalRecord) and available_by(stored.fact,end) and (stored.fact.semantic_time.anchor is None or stored.fact.semantic_time.anchor<=end):gi_visible[stored.fact.id]=stored
+        gastrointestinal_records=[]
+        for stored in gi_visible.values():
+            visible_cutoff=cutoff if terminals[(stored.fact.kind,stored.fact.id)]==stored else cutoff.model_copy(update={'fact_watermark':stored.ingestion.ingestion_sequence})
+            gastrointestinal_records.append(self.evidence(repo,stored,visible_cutoff,a))
         # Select terminals after availability filtering so later corrections cannot
         # erase a predecessor that was available at the requested review time.
         respiratory_visible={}
@@ -161,7 +175,9 @@ class RF2Service(RenalFluidProductService):
             terminal=terminals[(stored.fact.kind,stored.fact.id)]
             visible_cutoff=cutoff if terminal==stored else cutoff.model_copy(update={'fact_watermark':stored.ingestion.ingestion_sequence})
             respiratory_records.append(self.evidence(repo,stored,visible_cutoff,a))
-        return self.bounded_dict({'repository':str(cutoff.repository_id),'cutoff':cutoff.model_dump(mode='json'),'combined':base.model_dump(mode='json'),'items':[self.evidence(repo,s,cutoff,a) for s in extras],'laboratory_reports':laboratory_reports,'respiratory_records':respiratory_records,'execution_enabled':False})
+        return self.bounded_dict({'repository':str(cutoff.repository_id),'cutoff':cutoff.model_dump(mode='json'),'combined':base.model_dump(mode='json'),'items':[self.evidence(repo,s,cutoff,a) for s in extras],'laboratory_reports':laboratory_reports,'respiratory_records':respiratory_records,'gastrointestinal_records':gastrointestinal_records,'execution_enabled':False})
+    def save_gastrointestinal_record(self,repo,repository,record):
+        return save_gastrointestinal_record(self,repo,repository,record)
     def save_respiratory_record(self,repo,repository,record):
         return save_respiratory_record(self,repo,repository,record)
     def save_laboratory_report(self,repo,report):

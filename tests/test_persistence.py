@@ -535,5 +535,5 @@ def assert_fact_kind_extension_only(before, after):
             'circulatory_pressure', 'circulatory_cardiac', 'circulatory_volume', 'circulatory_dynamic',
             'circulatory_device_prediction', 'circulatory_perfusion', 'circulatory_oxygen', 'circulatory_lactate',
             'circulatory_echo', 'circulatory_ecg', 'circulatory_vasoactive', 'circulatory_monitoring',
-            'circulatory_assessment', 'circulatory_event', 'circulatory_signal', 'laboratory_report', 'respiratory_record', 'transfusion_administration', 'haemostatic_medication_course', 'transfusion_request', 'transfusion_prescription', 'blood_product_disposition', 'transfusion_compatibility', 'transfusion_reaction', 'haemorrhage_episode', 'm10_assessment', 'transfusion_coverage_link', 'fluid_administration_link', 'm10_medication_detail', 'viscoelastic_report'}
+            'circulatory_assessment', 'circulatory_event', 'circulatory_signal', 'laboratory_report', 'respiratory_record', 'gastrointestinal_record', 'transfusion_administration', 'haemostatic_medication_course', 'transfusion_request', 'transfusion_prescription', 'blood_product_disposition', 'transfusion_compatibility', 'transfusion_reaction', 'haemorrhage_episode', 'm10_assessment', 'transfusion_coverage_link', 'fluid_administration_link', 'm10_medication_detail', 'viscoelastic_report'}
         assert old_kinds <= new_kinds
