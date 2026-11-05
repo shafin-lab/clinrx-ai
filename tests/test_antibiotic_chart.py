@@ -311,3 +311,50 @@ def test_optional_prescription_details_roundtrip_without_changing_legacy_bytes(c
     assert post(client,'lookup',body).json()==response.json()
     assert post(client,'validate',{**body,'schedule':'Every 8 hours'}).status_code==422
     assert post(client,'validate',{**legacy,'prescription_details':details}).status_code==422
+
+
+def test_pinned_micro_slice_retains_one_cutoff_during_concurrent_append(case):
+    client,app=case;before=catalog(client);scope=before['renal']['cutoff'];body=draft(scope['repository_id'])
+    assert post(client,'save',body).status_code==200
+    query={'review_start':'2026-10-08T08:00:00Z','review_end':'2026-10-08T10:00:00Z','repository':scope['repository_id'],'cutoff':scope['fact_watermark'],'captured_at':scope['captured_at']}
+    response=client.get(ABX+'/micro',params=query);assert response.status_code==200,response.text
+    value=response.json();assert value['assembly']['request']['scope']['repository_cutoff']==scope
+    assert all(i['fact']['id']!=body['id'] for i in value['assembly']['snapshot']['items'])
+    later=catalog(client);assert any(i['fact']['id']==body['id'] for i in later['micro']['assembly']['snapshot']['items'])
+    for change in ({'repository':str(uuid4())},{'cutoff':999999},{'cutoff':-1},{'captured_at':'2999-01-01T00:00:00Z'}):
+        assert client.get(ABX+'/micro',params={**query,**change}).status_code in (409,422)
+    for missing in ('repository','cutoff','captured_at'):
+        assert client.get(ABX+'/micro',params={k:v for k,v in query.items() if k!=missing}).status_code==422
+    assert client.get(ABX+'/micro',params=query,headers={'sec-fetch-site':'cross-site'}).status_code==403
+    assert client.post(ABX+'/micro',json=query,headers={'origin':'http://127.0.0.1:5290'}).status_code==403
+
+
+def test_response_guard_counts_actual_compact_utf8_json_without_raising_limit():
+    from types import SimpleNamespace
+    import json
+    from app.services.renal_fluid_entry_service import RF2Service
+    from app.persistence.errors import QueryLimitExceeded
+    value={'note':'α'*500};size=len(json.dumps(value,ensure_ascii=False,separators=(',',':')).encode())
+    service=object.__new__(RF2Service);service.dependencies=SimpleNamespace(config=SimpleNamespace(max_response_bytes=size))
+    assert service.bounded_dict(value)==value
+    with pytest.raises(QueryLimitExceeded):service.bounded_dict({'note':value['note']+'a'})
+
+
+def test_split_reads_keep_all_evidence_when_combined_response_exceeds_configured_cap(case):
+    import json
+    from app.api.dependencies import get_config
+    from app.demo.renal_fluid_entry_gateway import RF2
+    client,app=case;original=catalog(client)
+    size=lambda v:len(json.dumps(v,ensure_ascii=False,separators=(',',':')).encode())
+    limit=max(size(original['renal']),size(original['micro']))+1024
+    assert size(original)>limit
+    app.core.dependency_overrides[get_config]=lambda:app.config.model_copy(update={'max_response_bytes':limit})
+    assert client.get(ABX,params={'review_start':'2026-10-08T08:00:00Z','review_end':'2026-10-08T10:00:00Z'}).status_code==422
+    shared=client.get(RF2);assert shared.status_code==200,shared.text;renal=shared.json()
+    result=client.get(ABX+'/micro',params={'review_start':'2026-10-08T08:00:00Z','review_end':'2026-10-08T10:00:00Z','repository':renal['repository'],'cutoff':renal['cutoff']['fact_watermark'],'captured_at':renal['cutoff']['captured_at']})
+    assert result.status_code==200,result.text
+    assert result.json()['assembly']['request']['scope']['repository_cutoff']==renal['cutoff']
+    identities=lambda value:{(i['fact']['kind'],i['fact']['id'],i['fact']['revision'],i['expected_digest']) for i in value['assembly']['snapshot']['items']}
+    assert identities(result.json())==identities(original['micro'])
+    for name in ('items','laboratory_reports','respiratory_records','gastrointestinal_records'):assert renal[name]==original['renal'][name]
+    assert len(shared.content)<=limit and len(result.content)<=limit

@@ -55,6 +55,13 @@ class AntibioticChartService(RF2Service):
         scope=PatientStateScopeV2(patient_id=TARGET.patient_id,encounter_id=TARGET.encounter_id,review_start=start,review_end=end,repository_cutoff=RepositoryCutoff.model_validate(renal['cutoff']))
         micro=self.micro(repo,scope)
         return self.bounded_dict({'version':'SyntheticAntibiotics/v1','renal':renal,'micro':micro.model_dump(mode='json'),'execution_enabled':False})
+    def micro_catalog(self,repo,start,end,repository,watermark,captured_at):
+        self.require_repo(repo,repository);self.window(start,end)
+        captured=repo.capture_cutoff()
+        if watermark>captured.fact_watermark or captured_at>captured.captured_at:raise EvidenceConflict()
+        cutoff=captured.model_copy(update={'fact_watermark':watermark,'captured_at':captured_at})
+        scope=PatientStateScopeV2(patient_id=TARGET.patient_id,encounter_id=TARGET.encounter_id,review_start=start,review_end=end,repository_cutoff=cutoff)
+        return self.bounded_dict(self.micro(repo,scope).model_dump(mode='json'))
     def check(self,repo,body,prior_body=None):
         self.require_repo(repo,body.repository);fact=build_fact(body)
         if body.predecessor and body.predecessor.kind!=fact.kind:raise EvidenceConflict()
