@@ -2,6 +2,9 @@
 import os,secrets
 from pathlib import Path
 from typing import Annotated
+from uuid import UUID
+from pydantic import Field
+from app.api.schemas.common import AwareTimestamp
 from fastapi import APIRouter,Depends,Query
 from starlette.responses import JSONResponse
 from app.api.routes.circulatory import service as circulatory_service
@@ -18,6 +21,13 @@ def service(base=Depends(circulatory_service)):return AntibioticChartService(bas
 @router.get(ABX)
 def catalog(query:Annotated[StateQuery,Query()],app=Depends(service)):
     with transaction(app.dependencies.engine) as repo:return app.catalog(repo,query.review_start,query.review_end)
+class PinnedMicroQuery(StateQuery):
+    repository:UUID
+    captured_at:AwareTimestamp
+    cutoff:Annotated[int,Field(ge=0,le=9007199254740991)]
+@router.get(ABX+'/micro')
+def micro_catalog(query:Annotated[PinnedMicroQuery,Query()],app=Depends(service)):
+    with transaction(app.dependencies.engine) as repo:return app.micro_catalog(repo,query.review_start,query.review_end,query.repository,query.cutoff,query.captured_at)
 @router.post(ABX+'/validate')
 def validate(body:AntibioticDraft,app=Depends(service)):
     with transaction(app.dependencies.engine) as repo:return app.action(repo,body,'validate')
@@ -39,7 +49,7 @@ class SyntheticAntibioticGateway(SyntheticRF2Gateway):
     async def __call__(self,scope,receive,send):
         if scope['type']=='http' and (scope['path']==ABX or scope['path'].startswith(ABX+'/')):
             headers=dict(scope.get('headers',()));path=scope['path'];method=scope['method']
-            read=method=='GET' and path==ABX
+            read=method=='GET' and path in (ABX,ABX+'/micro')
             write=method=='POST' and path in {ABX+'/'+a for a in ('validate','lookup','save','history','course-history')}
             allowed=scope.get('client') and scope['client'][0] in ('127.0.0.1','::1') and headers.get(b'host',b'').decode()==self.host and headers.get(b'sec-fetch-site',b'none') in (b'none',b'same-origin') and (read or write and headers.get(b'origin',b'').decode()==self.origin and headers.get(b'content-type',b'').split(b';')[0]==b'application/json')
             if not allowed:return await JSONResponse({'code':'local_antibiotic_denied'},status_code=403)(scope,receive,send)

@@ -1,7 +1,8 @@
+import {compareRespiratoryInstants} from '../respiratory/exactTime';
 import type {DoseReview} from '../antibioticWorkflow/renalDoseModel';
 import generated from './antibioticSchemas.json';
 import {readRF2JSON,parseRF2JSON} from './rf2JSON';
-import {decodeRF2Catalog,hash,stable,type Catalog,type Ref,type Fact} from './rf2Client';
+import {RF2Client,decodeRF2Catalog,hash,stable,type Catalog,type Ref,type Fact} from './rf2Client';
 import {decodeMicroState} from './microDecoders';
 import type {MicroState} from './microTypes';
 import {decodeContract,object,reject,validateTransportSchema,type Schema} from './decoding';
@@ -24,6 +25,21 @@ export class AntibioticClient{
   const raw=object(await this.request('?'+new URLSearchParams({review_start:start,review_end:end})));if(Object.keys(raw).sort().join()!=='execution_enabled,micro,renal,version'||raw.version!=='SyntheticAntibiotics/v1'||raw.execution_enabled!==false)reject();
   const renal=await decodeRF2Catalog(raw.renal,start,end),micro=decodeMicroState(raw.micro,{patient_id:'synthetic-p1',encounter_id:'synthetic-e1'});
   const scope=micro.assembly.request.scope;if(stable(scope.repository_cutoff)!==stable(renal.cutoff)||Date.parse(scope.review_start)!==Date.parse(start)||Date.parse(scope.review_end)!==Date.parse(end))reject();
+  return {version:'SyntheticAntibiotics/v1',renal,micro,execution_enabled:false};
+ }
+ /** Compose two bounded reads at one cutoff; never substitute a newer microbial snapshot. */
+ async sharedCatalog(start:string,end:string,shared?:Catalog):Promise<AntibioticBundle>{
+  // A shared Catalog has already passed RF2Client's wire decoder, which expands
+  // derived views. Re-decoding it would duplicate those sources and mutate it.
+  const renal=shared??await new RF2Client(this.send).catalog(start,end),sharedScope=renal.combined.context.scope;
+  if(renal.execution_enabled!==false||renal.combined.execution_enabled!==false||renal.repository!==renal.cutoff.repository_id||stable(sharedScope.repository_cutoff)!==stable(renal.cutoff)||sharedScope.patient_id!=='synthetic-p1'||sharedScope.encounter_id!=='synthetic-e1'||compareRespiratoryInstants(sharedScope.review_start,start)!==0||compareRespiratoryInstants(sharedScope.review_end,end)!==0)reject();
+  const query=new URLSearchParams({review_start:start,review_end:end,repository:renal.repository,cutoff:String(renal.cutoff.fact_watermark),captured_at:renal.cutoff.captured_at});
+  const micro=decodeMicroState(await this.request('/micro?'+query),{patient_id:'synthetic-p1',encounter_id:'synthetic-e1'}),scope=micro.assembly.request.scope;
+  if(stable(scope.repository_cutoff)!==stable(renal.cutoff)||compareRespiratoryInstants(scope.review_start,start)!==0||compareRespiratoryInstants(scope.review_end,end)!==0)reject();
+  for(const item of micro.assembly.snapshot.items??[]){
+   const ingestion=item.ingestion;
+   if(!ingestion||ingestion.repository_id!==renal.repository||!Number.isSafeInteger(ingestion.ingestion_sequence)||ingestion.ingestion_sequence<1||ingestion.ingestion_sequence>renal.cutoff.fact_watermark||await hash(stable(item.fact))!==item.expected_digest)reject();
+  }
   return {version:'SyntheticAntibiotics/v1',renal,micro,execution_enabled:false};
  }
  async action(action:'validate'|'save'|'lookup',draft:AntibioticDraft):Promise<AntibioticResult>{

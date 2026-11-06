@@ -131,7 +131,7 @@ class RF2Service(RenalFluidProductService):
         if len(rows)>128:raise QueryLimitExceeded('history family limit')
         return self.bounded_dict({'repository':str(body.repository),'selected':p.model_dump(mode='json'),'items':[self.evidence(repo,x,cutoff,a) for x in rows],'execution_enabled':False})
     def bounded_dict(self,v):
-        if len(json.dumps(v,ensure_ascii=False).encode())>self.dependencies.config.max_response_bytes:raise QueryLimitExceeded('response budget exceeded')
+        if len(json.dumps(v,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode())>self.dependencies.config.max_response_bytes:raise QueryLimitExceeded('response budget exceeded')
         return v
     def catalog(self,repo,start=None,end=None):
         self.require_closed();cutoff=repo.capture_cutoff();a=self.accounting();rows=self.history_rows(repo,cutoff,a)
