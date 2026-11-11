@@ -1,11 +1,22 @@
 import {afterAll,beforeAll,afterEach,expect,it,vi} from 'vitest';
 import fixture from './fixtures/rf2-api.json';
-import {RF2Client,stable,hash,type Draft} from '../src/api/rf2Client';
+import {RF2Client,stable,hash,validateReproductiveImport,type Draft} from '../src/api/rf2Client';
+import gastrointestinal from './fixtures/gastrointestinal-record.json';
 const {webcrypto}=await vi.importActual<{webcrypto:Crypto}>('node:crypto');
 const oldCrypto=globalThis.crypto;
 beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}));
 afterAll(()=>Object.defineProperty(globalThis,'crypto',{value:oldCrypto,configurable:true}));
 afterEach(()=>vi.unstubAllGlobals());
+
+it('accepts a calendar due date in a reproductive source and rejects impossible dates',()=>{
+ const source={...gastrointestinal,kind:'reproductive_record',category:'pregnancy_status',
+  pregnancy:{phase:'antepartum',gestational_weeks:32,gestational_days:4,estimated_due_date:'2026-11-29',
+   fetus_count:1,dating_basis:'First-trimester ultrasound'}};
+ expect(()=>validateReproductiveImport(fixture.catalog.repository,source)).not.toThrow();
+ for(const date of ['2026-02-29','2026-11-29T00:00:00Z','2026-11-29\n']){
+  expect(()=>validateReproductiveImport(fixture.catalog.repository,{...source,pregnancy:{...source.pregnancy,estimated_due_date:date}})).toThrow();
+ }
+});
 it.each(['default','injected'] as const)('calls %s fetch without rebinding its receiver on catalog and pending lookup',async source=>{
  const calls:{url:string;body:unknown}[]=[];
  const draft=structuredClone(fixture.weight_draft) as Draft;

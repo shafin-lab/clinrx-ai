@@ -80,6 +80,10 @@ function validate(value: unknown, schema: Schema, depth = 0, registry: Readonly<
         if (!match || schema.pattern.endsWith('$') && match.index + match[0].length !== value.length) reject();
       }
       if (schema.format === 'date-time') timestamp(value);
+      else if (schema.format === 'date') {
+        if (value.length !== 10 || !/^\d{4}-\d{2}-\d{2}$/.test(value)) reject();
+        timestamp(value+'T00:00:00Z');
+      }
       else if (schema.format === 'uuid') uuid(value);
       else if (schema.format === 'duration') { if (!/^-?P(?=.+)(?:\d+D)?(?:T(?=\d)(?:\d+H)?(?:\d+M)?(?:\d+(?:\.\d+)?S)?)?$/.test(value)) reject(); }
       else if (schema.format !== undefined) reject();
