@@ -10,6 +10,7 @@ from app.api.schemas.renal_fluid_entry import RF2Draft, ResolveRequest
 from app.models.clinical.laboratory import LaboratoryReport
 from app.models.clinical.respiratory import RespiratoryImport
 from app.models.clinical.gastrointestinal import GastrointestinalImport
+from app.models.clinical.reproductive import ReproductiveImport
 from app.demo.renal_fluid_gateway import SyntheticRenalFluidGateway
 from app.demo.hosting import PREFIX
 from app.services.renal_fluid_entry_service import RF2Service,SourceReviewChanged
@@ -57,6 +58,18 @@ def save_gastrointestinal(body:GastrointestinalImport,app=Depends(service)):
 def lookup_gastrointestinal(body:GastrointestinalImport,app=Depends(service)):
     from app.services.gastrointestinal_service import lookup_gastrointestinal_record
     with transaction(app.dependencies.engine) as repo:return lookup_gastrointestinal_record(app,repo,body.repository,body.record)
+
+@router.post(RF2+'/reproductive')
+def save_reproductive(body:ReproductiveImport,app=Depends(service)):
+    with execution_transaction(app.dependencies.engine) as tx:
+        return app.save_reproductive_record(tx.repository,body.repository,body.record)
+
+@router.post(RF2+'/reproductive/lookup')
+def lookup_reproductive(body:ReproductiveImport,app=Depends(service)):
+    from app.services.reproductive_service import lookup_reproductive_record
+    with transaction(app.dependencies.engine) as repo:
+        return lookup_reproductive_record(app,repo,body.repository,body.record)
+
 
 class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
     def __init__(self,database,frontend,signing_key,origin):
@@ -120,7 +133,7 @@ class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
             return await super().__call__(scope,original_body,send)
         if scope['type']=='http' and (scope['path']==RF2 or scope['path'].startswith(RF2+'/')):
             headers=dict(scope.get('headers',()))
-            paths={RF2+'/history',RF2+'/resolve',RF2+'/validate',RF2+'/lookup',RF2+'/save',RF2+'/laboratory',RF2+'/respiratory',RF2+'/gastrointestinal',RF2+'/gastrointestinal/lookup'}
+            paths={RF2+'/history',RF2+'/resolve',RF2+'/validate',RF2+'/lookup',RF2+'/save',RF2+'/laboratory',RF2+'/respiratory',RF2+'/gastrointestinal',RF2+'/gastrointestinal/lookup',RF2+'/reproductive',RF2+'/reproductive/lookup'}
             allowed=(scope['path']==RF2 and scope['method']=='GET') or (scope['path'] in paths and scope['method']=='POST' and headers.get(b'origin',b'').decode()==self.origin and headers.get(b'content-type',b'').split(b';')[0]==b'application/json')
             if not scope.get('client') or scope['client'][0] not in ('127.0.0.1','::1') or headers.get(b'host',b'').decode()!=self.host or headers.get(b'sec-fetch-site',b'same-origin') not in (b'same-origin',b'none') or not allowed:
                 return await JSONResponse({'code':'local_rf2_denied'},status_code=403)(scope,receive,send)

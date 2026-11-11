@@ -11,12 +11,14 @@ from app.api.schemas.renal_fluid_entry import Chart, RenalNote, SourceReview
 from app.demo.authoring import TARGET, EvidenceConflict
 from app.execution.patient_state_v3 import PatientStateScopeV3
 from app.models.clinical.hemodynamics import CirculatoryEvent, ClinicalInstant, RecordedCirculatoryInterval, EvidenceBinding
-from app.models.clinical.recorded_v2 import SourceCode, ExactQuantity, RecordedConcept
+from app.models.clinical.recorded_v2 import SourceCode, ExactQuantity, RecordedConcept, instant
 from app.models.clinical.facts import ClinicalObservation
 from app.models.clinical.laboratory import LaboratoryReport
 from app.models.clinical.respiratory import RespiratoryRecord
 from app.models.clinical.gastrointestinal import GastrointestinalRecord
+from app.models.clinical.reproductive import ReproductiveRecord
 from app.services.gastrointestinal_service import save_gastrointestinal_record
+from app.services.reproductive_service import save_reproductive_record
 from app.services.respiratory_service import available_by, save_respiratory_record
 from app.models.clinical.common import Reference
 from app.persistence.canonical import canonical_payload
@@ -93,8 +95,16 @@ def material(chart):
 def time(text):
     return ClinicalInstant.model_validate({'timestamp_precision':'M7ExactTimestampInput/v1','recorded':{'status':'known','precision':'instant','value':text},'source_timestamp':text,'clock':'unknown'}) if text else ClinicalInstant()
 
+SUPPLEMENTAL_SECTIONS = {
+    LaboratoryReport: 'laboratory_reports',
+    RespiratoryRecord: 'respiratory_records',
+    GastrointestinalRecord: 'gastrointestinal_records',
+    ReproductiveRecord: 'reproductive_records',
+}
+
+
 def allowed(fact):
-    return isinstance(fact,(LaboratoryReport,RespiratoryRecord,GastrointestinalRecord)) or (isinstance(fact,ClinicalObservation) and fact.concept_id in ('synthetic-serum-creatinine','body-weight')) or isinstance(fact,CirculatoryEvent) or fact.kind.startswith('circulatory_')
+    return type(fact) in SUPPLEMENTAL_SECTIONS or (isinstance(fact,ClinicalObservation) and fact.concept_id in ('synthetic-serum-creatinine','body-weight')) or isinstance(fact,CirculatoryEvent) or fact.kind.startswith('circulatory_')
 
 class CatalogCursor(DTO):
     scope: PatientStateScopeV3
@@ -132,7 +142,7 @@ class RF2Service(RenalFluidProductService):
         for p in body.pins:
             s=self.pin_record(repo,p,accounting)
             cutoff=repo.capture_cutoff()
-            if isinstance(s.fact,(RespiratoryRecord,GastrointestinalRecord,LaboratoryReport)):cutoff=cutoff.model_copy(update={'fact_watermark':p.cutoff})
+            if type(s.fact) in SUPPLEMENTAL_SECTIONS:cutoff=cutoff.model_copy(update={'fact_watermark':p.cutoff})
             out.append(self.evidence(repo,s,cutoff,accounting))
         return self.bounded_dict({'repository':str(body.repository),'items':out,'execution_enabled':False})
     def history(self,repo,body):
@@ -177,19 +187,21 @@ class RF2Service(RenalFluidProductService):
         extras=[s for s in selected if (s.fact.kind,s.fact.id,s.fact.revision) not in base_keys]
         # Keep later-issued source reports out of an earlier review window. Reports
         # with no usable availability time remain visible with their time gap explicit.
-        visible={'laboratory_reports':{},'respiratory_records':{},'gastrointestinal_records':{}}
+        visible={section: {} for section in SUPPLEMENTAL_SECTIONS.values()}
         for stored in rows:
             fact=stored.fact
-            if isinstance(fact,RespiratoryRecord):
-                section='respiratory_records'
+            section=SUPPLEMENTAL_SECTIONS.get(type(fact))
+            if section is None or not available_by(fact,end):
+                continue
+            if isinstance(fact,ReproductiveRecord):
+                point=fact.semantic_time
+                latest=point.upper or point.anchor
+                if latest is not None and instant(latest)>instant(end):
+                    continue
             elif isinstance(fact,(LaboratoryReport,GastrointestinalRecord)):
                 if fact.semantic_time.anchor is not None and fact.semantic_time.anchor>end:
                     continue
-                section='laboratory_reports' if isinstance(fact,LaboratoryReport) else 'gastrointestinal_records'
-            else:
-                continue
-            if available_by(fact,end):
-                visible[section][fact.id]=stored
+            visible[section][fact.id]=stored
 
         # Each continuation traverses the same ordered ingestion prefix and window.
         entries=[('items',stored,cutoff) for stored in extras]
@@ -199,7 +211,7 @@ class RF2Service(RenalFluidProductService):
                 visible_cutoff=cutoff if terminal==stored else cutoff.model_copy(update={'fact_watermark':stored.ingestion.ingestion_sequence})
                 entries.append((section,stored,visible_cutoff))
         payload={'repository':str(cutoff.repository_id),'cutoff':cutoff.model_dump(mode='json'),
-                 'items':[],'laboratory_reports':[],'respiratory_records':[],'gastrointestinal_records':[],'execution_enabled':False}
+                 'items':[],**{section: [] for section in visible},'execution_enabled':False}
         if cursor is None:
             payload['combined']=base.model_dump(mode='json')
         if paginate:
@@ -239,6 +251,8 @@ class RF2Service(RenalFluidProductService):
         return self.bounded_dict(payload)
     def save_gastrointestinal_record(self,repo,repository,record):
         return save_gastrointestinal_record(self,repo,repository,record)
+    def save_reproductive_record(self,repo,repository,record):
+        return save_reproductive_record(self,repo,repository,record)
     def save_respiratory_record(self,repo,repository,record):
         return save_respiratory_record(self,repo,repository,record)
     def save_laboratory_report(self,repo,report):

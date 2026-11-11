@@ -1015,6 +1015,267 @@
       "title": "GastrointestinalImport",
       "type": "object"
     },
+    "ReproductiveRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "reproductive_record",
+          "default": "reproductive_record",
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "origin": {
+          "enum": [
+            "observed",
+            "reported"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/BoundedProvenance"
+        },
+        "time": {
+          "$ref": "#/$defs/ClinicalTime"
+        },
+        "verification": {
+          "default": "unverified",
+          "enum": [
+            "unverified",
+            "verified",
+            "clinician_confirmed"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "conflict": {
+          "default": "unknown",
+          "enum": [
+            "none_known",
+            "unresolved",
+            "resolved",
+            "unknown"
+          ],
+          "title": "Conflict",
+          "type": "string"
+        },
+        "temporal_status": {
+          "enum": [
+            "current",
+            "historical",
+            "unknown"
+          ],
+          "title": "Temporal Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "correction_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        },
+        "contract_version": {
+          "const": "2",
+          "default": "2",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "source_identifiers": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceCode"
+          },
+          "maxItems": 16,
+          "title": "Source Identifiers",
+          "type": "array"
+        },
+        "domain_bindings": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DomainBinding"
+          },
+          "maxItems": 16,
+          "title": "Domain Bindings",
+          "type": "array"
+        },
+        "disclosures": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Disclosures",
+          "type": "array"
+        },
+        "category": {
+          "enum": [
+            "pregnancy_status",
+            "maternal_assessment",
+            "fetal_assessment",
+            "labour_delivery",
+            "postpartum",
+            "gynecology",
+            "reproductive_care",
+            "imaging",
+            "procedure"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "narrative": {
+          "maxLength": 16384,
+          "minLength": 1,
+          "title": "Narrative",
+          "type": "string"
+        },
+        "source_identity": {
+          "$ref": "#/$defs/LaboratorySourceIdentity"
+        },
+        "times": {
+          "$ref": "#/$defs/ReproductiveTimes"
+        },
+        "report_status": {
+          "enum": [
+            "pending",
+            "preliminary",
+            "interim",
+            "final",
+            "corrected",
+            "withdrawn",
+            "cancelled",
+            "unknown"
+          ],
+          "title": "Report Status",
+          "type": "string"
+        },
+        "record_status": {
+          "default": "recorded",
+          "enum": [
+            "recorded",
+            "withdrawn",
+            "invalid",
+            "unknown"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "change_state": {
+          "default": "original",
+          "enum": [
+            "original",
+            "amended",
+            "corrected",
+            "superseded"
+          ],
+          "title": "Change State",
+          "type": "string"
+        },
+        "linked_sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "maxItems": 32,
+          "title": "Linked Sources",
+          "type": "array"
+        },
+        "pregnancy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedPregnancyStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "binding",
+        "origin",
+        "provenance",
+        "time",
+        "temporal_status",
+        "category",
+        "title",
+        "narrative",
+        "source_identity",
+        "times",
+        "report_status"
+      ],
+      "title": "ReproductiveRecord",
+      "type": "object"
+    },
+    "ReproductiveImport": {
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "format": "uuid",
+          "title": "Repository",
+          "type": "string"
+        },
+        "record": {
+          "$ref": "#/$defs/ReproductiveRecord"
+        }
+      },
+      "required": [
+        "repository",
+        "record"
+      ],
+      "title": "ReproductiveImport",
+      "type": "object"
+    },
     "IngestionMetadata": {
       "additionalProperties": false,
       "properties": {
@@ -3623,6 +3884,353 @@
         "report_status"
       ],
       "title": "GastrointestinalRecord",
+      "type": "object"
+    },
+    "RecordedPregnancyStatus": {
+      "additionalProperties": false,
+      "properties": {
+        "phase": {
+          "enum": [
+            "antepartum",
+            "in_labour",
+            "postpartum",
+            "not_pregnant",
+            "pregnancy_loss",
+            "unknown"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "gestational_weeks": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gestational Weeks"
+        },
+        "gestational_days": {
+          "anyOf": [
+            {
+              "maximum": 6,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gestational Days"
+        },
+        "estimated_due_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Estimated Due Date"
+        },
+        "fetus_count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fetus Count"
+        },
+        "dating_basis": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dating Basis"
+        }
+      },
+      "required": [
+        "phase"
+      ],
+      "title": "RecordedPregnancyStatus",
+      "type": "object"
+    },
+    "ReproductiveTimes": {
+      "additionalProperties": false,
+      "properties": {
+        "occurred": {
+          "$ref": "#/$defs/RecordedTime"
+        },
+        "reported": {
+          "$ref": "#/$defs/RecordedTime"
+        },
+        "available": {
+          "$ref": "#/$defs/RecordedTime"
+        }
+      },
+      "title": "ReproductiveTimes",
+      "type": "object"
+    },
+    "ReproductiveRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "reproductive_record",
+          "default": "reproductive_record",
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "origin": {
+          "enum": [
+            "observed",
+            "reported"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/BoundedProvenance"
+        },
+        "time": {
+          "$ref": "#/$defs/ClinicalTime"
+        },
+        "verification": {
+          "default": "unverified",
+          "enum": [
+            "unverified",
+            "verified",
+            "clinician_confirmed"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "conflict": {
+          "default": "unknown",
+          "enum": [
+            "none_known",
+            "unresolved",
+            "resolved",
+            "unknown"
+          ],
+          "title": "Conflict",
+          "type": "string"
+        },
+        "temporal_status": {
+          "enum": [
+            "current",
+            "historical",
+            "unknown"
+          ],
+          "title": "Temporal Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "correction_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        },
+        "contract_version": {
+          "const": "2",
+          "default": "2",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "source_identifiers": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceCode"
+          },
+          "maxItems": 16,
+          "title": "Source Identifiers",
+          "type": "array"
+        },
+        "domain_bindings": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DomainBinding"
+          },
+          "maxItems": 16,
+          "title": "Domain Bindings",
+          "type": "array"
+        },
+        "disclosures": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Disclosures",
+          "type": "array"
+        },
+        "category": {
+          "enum": [
+            "pregnancy_status",
+            "maternal_assessment",
+            "fetal_assessment",
+            "labour_delivery",
+            "postpartum",
+            "gynecology",
+            "reproductive_care",
+            "imaging",
+            "procedure"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "narrative": {
+          "maxLength": 16384,
+          "minLength": 1,
+          "title": "Narrative",
+          "type": "string"
+        },
+        "source_identity": {
+          "$ref": "#/$defs/LaboratorySourceIdentity"
+        },
+        "times": {
+          "$ref": "#/$defs/ReproductiveTimes"
+        },
+        "report_status": {
+          "enum": [
+            "pending",
+            "preliminary",
+            "interim",
+            "final",
+            "corrected",
+            "withdrawn",
+            "cancelled",
+            "unknown"
+          ],
+          "title": "Report Status",
+          "type": "string"
+        },
+        "record_status": {
+          "default": "recorded",
+          "enum": [
+            "recorded",
+            "withdrawn",
+            "invalid",
+            "unknown"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "change_state": {
+          "default": "original",
+          "enum": [
+            "original",
+            "amended",
+            "corrected",
+            "superseded"
+          ],
+          "title": "Change State",
+          "type": "string"
+        },
+        "linked_sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "maxItems": 32,
+          "title": "Linked Sources",
+          "type": "array"
+        },
+        "pregnancy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedPregnancyStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "binding",
+        "origin",
+        "provenance",
+        "time",
+        "temporal_status",
+        "category",
+        "title",
+        "narrative",
+        "source_identity",
+        "times",
+        "report_status"
+      ],
+      "title": "ReproductiveRecord",
       "type": "object"
     }
   }

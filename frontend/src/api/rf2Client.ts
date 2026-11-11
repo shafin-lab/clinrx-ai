@@ -15,7 +15,7 @@ export const needsHistoricalReview=(r:SourceReview)=>!equal(r.selected,r.termina
 export interface Draft {source_review?:SourceReview[];repository:string;id:string;revision:string;actor:string;recorded_at:string;chart:Chart|null;note:RenalNote|null;predecessor:Pin|null;reason:string|null}
 export interface Fact {kind:string;id:string;revision:string;binding:{target:{patient_id:string;encounter_id:string}};[key:string]:unknown}
 export interface Evidence {repository:string;fact:Fact;canonical_fact:string;digest:string;ingestion:{repository_id:string;ingestion_sequence:number;[key:string]:unknown};cutoff:number;terminal_reference:Ref;superseded:boolean;metadata:{version:1;chart:Chart|null;note:RenalNote|null;source_review?:SourceReview[]}|null}
-export interface Catalog {repository:string;cutoff:{repository_id:string;fact_watermark:number;captured_at:string};items:Evidence[];laboratory_reports:Evidence[];respiratory_records?:Evidence[];gastrointestinal_records?:Evidence[];combined:RenalFluidState;execution_enabled:false}
+export interface Catalog {repository:string;cutoff:{repository_id:string;fact_watermark:number;captured_at:string};items:Evidence[];laboratory_reports:Evidence[];respiratory_records?:Evidence[];gastrointestinal_records?:Evidence[];reproductive_records?:Evidence[];combined:RenalFluidState;execution_enabled:false}
 export interface Result {source_review?:SourceReview[];status:'validated'|'saved'|'source_replay'|'absent';request_digest:string;request_canonical:string;evidence?:Evidence;fact?:Fact;replay_reference?:Ref|null;execution_enabled:false}
 const bundle=schemas as unknown as {roots:Record<string,Schema>;definitions:Record<string,Schema>};
 export const stable=(v:unknown):string=>JSON.stringify(v,(_k,x:unknown)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.entries(x).sort(([a],[b])=>a<b?-1:a>b?1:0)):x);
@@ -36,9 +36,10 @@ export async function decodeEvidence(raw:unknown,repository:string,expected?:Pin
  if(f.kind==='observation')validateTransportSchema(f,bundle.roots.ClinicalObservation,bundle.definitions);
  else if(f.kind==='laboratory_report')validateTransportSchema(f,bundle.roots.LaboratoryReport,bundle.definitions);
  else if(f.kind==='gastrointestinal_record')validateTransportSchema(f,bundle.roots.GastrointestinalRecord,bundle.definitions);
+ else if(f.kind==='reproductive_record')validateTransportSchema(f,bundle.roots.ReproductiveRecord,bundle.definitions);
  else if(f.kind==='respiratory_record')validateTransportSchema(f,bundle.roots.RespiratoryRecord,bundle.definitions);
  else{const c=circulatory as unknown as {definitions:Record<string,Schema>};validateTransportSchema({fact:e.fact,ingestion:e.ingestion},c.definitions.CirculatoryHistoricalFact,c.definitions);}
- if(!['observation','laboratory_report','respiratory_record','gastrointestinal_record','circulatory_event'].includes(e.fact.kind)&&!e.fact.kind.startsWith('circulatory_'))reject();
+ if(!['observation','laboratory_report','respiratory_record','gastrointestinal_record','reproductive_record','circulatory_event'].includes(e.fact.kind)&&!e.fact.kind.startsWith('circulatory_'))reject();
  if(e.fact.kind==='observation'&&!['body-weight','synthetic-serum-creatinine'].includes(String(f.concept_id)))reject();
  if(e.terminal_reference.kind!==e.fact.kind||e.terminal_reference.id!==e.fact.id||typeof e.terminal_reference.version!=='string'||e.superseded!==(e.terminal_reference.version!==e.fact.revision))reject();
  if(expected&&(expected.repository!==repository||!equal(expected.reference,{kind:e.fact.kind,id:e.fact.id,version:e.fact.revision})||expected.digest!==e.digest||expected.ingestion!==e.ingestion.ingestion_sequence||expected.cutoff>e.cutoff))reject();
@@ -55,6 +56,7 @@ export async function decodeEvidence(raw:unknown,repository:string,expected?:Pin
  return e;
 }
 export class RF2DefiniteRejection extends Error {constructor(message:string){super(message);this.name='RF2DefiniteRejection';}}
+export function validateReproductiveImport(repository:string,record:Fact){validateTransportSchema({repository,record},bundle.roots.ReproductiveImport,bundle.definitions);}
 export function validateGastrointestinalImport(repository:string,record:Fact){validateTransportSchema({repository,record},bundle.roots.GastrointestinalImport,bundle.definitions);}
 export function validateRespiratoryImport(repository:string,record:Fact){validateTransportSchema({repository,record},bundle.roots.RespiratoryImport,bundle.definitions);}
 // Pydantic serializes typed datetimes with six fractional digits (or none).
@@ -70,7 +72,7 @@ function sameTimestampSerializedRecord(sent:unknown,stored:unknown,path=''):bool
 }
 export class RF2ReviewChanged extends Error {constructor(){super('Selected-source review changed; this request was rejected before append.');}}
 const catalogCollections = {
- items:4096, laboratory_reports:1024, respiratory_records:1024, gastrointestinal_records:1024,
+ items:4096, laboratory_reports:1024, respiratory_records:1024, gastrointestinal_records:1024, reproductive_records:1024,
 } as const;
 const collectionNames = Object.keys(catalogCollections) as (keyof typeof catalogCollections)[];
 const maxCatalogRecords = Object.values(catalogCollections).reduce((a,b) => a+b, 0);
@@ -79,14 +81,16 @@ async function assembleCatalogPages(first: Record<string, unknown>, next: (curso
  validateTransportSchema(first.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);
  const cutoff = first.cutoff as Catalog['cutoff'];
  if (first.repository !== cutoff.repository_id) reject();
+ const names=collectionNames.filter(name=>name!=='reproductive_records'||name in first);
  const catalog = {...first, items:[] as unknown[], laboratory_reports:[] as unknown[],
-  respiratory_records:[] as unknown[], gastrointestinal_records:[] as unknown[]};
+  respiratory_records:[] as unknown[], gastrointestinal_records:[] as unknown[], reproductive_records:[] as unknown[]};
+ if(!names.includes('reproductive_records'))delete (catalog as Record<string,unknown>).reproductive_records;
  delete (catalog as Record<string,unknown>).pagination;
  const cursors = new Set<string>();
  let page = first, offset = 0, total: number | undefined;
  while (true) {
   const initial = page === first;
-  exactKeys(page,['repository','cutoff','execution_enabled','pagination',...collectionNames,...(initial?['combined']:[])]);
+  exactKeys(page,['repository','cutoff','execution_enabled','pagination',...names,...(initial?['combined']:[])]);
   if (page.execution_enabled !== false || page.repository !== first.repository || !equal(page.cutoff,cutoff)) reject();
   const marker = object(page.pagination);
   exactKeys(marker,['offset','total','next_cursor']);
@@ -95,7 +99,7 @@ async function assembleCatalogPages(first: Record<string, unknown>, next: (curso
       pageTotal < 0 || pageTotal > maxCatalogRecords || (total !== undefined && pageTotal !== total)) reject();
   total = pageTotal;
   const before = offset;
-  for (const name of collectionNames) {
+  for (const name of names) {
    const records = page[name];
    if (!Array.isArray(records) || records.length + catalog[name].length > catalogCollections[name]) reject();
    catalog[name].push(...records);
@@ -113,7 +117,7 @@ async function assembleCatalogPages(first: Record<string, unknown>, next: (curso
 }
 
 export async function decodeRF2Catalog(raw:unknown,start:string,end:string):Promise<Catalog>{const c=object(raw) as unknown as Catalog;
-  exactKeys(c,['repository','cutoff','items','laboratory_reports','combined','execution_enabled',...('respiratory_records' in c?['respiratory_records']:[]),...('gastrointestinal_records' in c?['gastrointestinal_records']:[])]);validateTransportSchema(c.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);if(c.execution_enabled!==false||c.repository!==c.cutoff.repository_id||!Array.isArray(c.items)||c.items.length>4096||!Array.isArray(c.laboratory_reports)||c.laboratory_reports.length>1024)reject();if(c.respiratory_records!==undefined&&(!Array.isArray(c.respiratory_records)||c.respiratory_records.length>1024))reject();if(c.gastrointestinal_records!==undefined&&(!Array.isArray(c.gastrointestinal_records)||c.gastrointestinal_records.length>1024))reject();const combined=await decodeRenalFluid(c.combined,{patient_id:'synthetic-p1',encounter_id:'synthetic-e1',start,end});if(!equal(combined.context.scope.repository_cutoff,c.cutoff))reject();
+  exactKeys(c,['repository','cutoff','items','laboratory_reports','combined','execution_enabled',...('respiratory_records' in c?['respiratory_records']:[]),...('gastrointestinal_records' in c?['gastrointestinal_records']:[]),...('reproductive_records' in c?['reproductive_records']:[])]);validateTransportSchema(c.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);if(c.execution_enabled!==false||c.repository!==c.cutoff.repository_id||!Array.isArray(c.items)||c.items.length>4096||!Array.isArray(c.laboratory_reports)||c.laboratory_reports.length>1024)reject();if(c.respiratory_records!==undefined&&(!Array.isArray(c.respiratory_records)||c.respiratory_records.length>1024))reject();if(c.gastrointestinal_records!==undefined&&(!Array.isArray(c.gastrointestinal_records)||c.gastrointestinal_records.length>1024))reject();if(c.reproductive_records!==undefined&&(!Array.isArray(c.reproductive_records)||c.reproductive_records.length>1024))reject();const combined=await decodeRenalFluid(c.combined,{patient_id:'synthetic-p1',encounter_id:'synthetic-e1',start,end});if(!equal(combined.context.scope.repository_cutoff,c.cutoff))reject();
   // Existing facts travel once in the combined response. Build a typed view, not another stored record.
   const baseFacts=[...combined.circulatory.assembly.snapshot.items,...combined.laboratory.observations];
   const derived:Evidence[]=[];
@@ -122,7 +126,7 @@ export async function decodeRF2Catalog(raw:unknown,start:string,end:string):Prom
    derived.push({repository:c.repository,fact:f,canonical_fact:raw,digest:item.expected_digest,ingestion:item.ingestion,cutoff:c.cutoff.fact_watermark,terminal_reference:{kind:f.kind,id:f.id,version:f.revision},superseded:false,metadata});
   }
   c.items=[...derived,...c.items];
-  const keys=new Set<string>();for(const item of [...c.items,...c.laboratory_reports,...(c.respiratory_records??[]),...(c.gastrointestinal_records??[])]){await decodeEvidence(item,c.repository);if((['respiratory_record','gastrointestinal_record','laboratory_report'].includes(item.fact.kind)?item.cutoff>c.cutoff.fact_watermark:item.cutoff!==c.cutoff.fact_watermark)||keys.has(key(pin(item))))reject();keys.add(key(pin(item)));}if(c.laboratory_reports.some(item=>item.fact.kind!=='laboratory_report')||c.respiratory_records?.some(item=>item.fact.kind!=='respiratory_record')||c.gastrointestinal_records?.some(item=>item.fact.kind!=='gastrointestinal_record'))reject();return c;
+  const keys=new Set<string>();for(const item of [...c.items,...c.laboratory_reports,...(c.respiratory_records??[]),...(c.gastrointestinal_records??[]),...(c.reproductive_records??[])]){await decodeEvidence(item,c.repository);if((['respiratory_record','gastrointestinal_record','reproductive_record','laboratory_report'].includes(item.fact.kind)?item.cutoff>c.cutoff.fact_watermark:item.cutoff!==c.cutoff.fact_watermark)||keys.has(key(pin(item))))reject();keys.add(key(pin(item)));}if(c.laboratory_reports.some(item=>item.fact.kind!=='laboratory_report')||c.respiratory_records?.some(item=>item.fact.kind!=='respiratory_record')||c.gastrointestinal_records?.some(item=>item.fact.kind!=='gastrointestinal_record')||c.reproductive_records?.some(item=>item.fact.kind!=='reproductive_record'))reject();return c;
  }
 export class RF2Client {
  private reviewed=new Map<string,Fact>();
@@ -131,7 +135,7 @@ export class RF2Client {
   const send=this.send;
   const abort=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
   const deadline=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{abort.abort();reject(Error('Request timed out; completion is unconfirmed.'));},15000);});
-  try{return await Promise.race([(async()=>{const r=await send('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'same-origin',redirect:'error',signal:abort.signal});if(['/respiratory','/gastrointestinal','/gastrointestinal/lookup'].includes(path)&&r.status>=400&&r.status<500&&![408,429].includes(r.status))throw new RF2DefiniteRejection(r.status===409?'Source identity/version conflict. Review the existing source and correct the draft before resubmitting.':'The source request was rejected before append. Correct the draft and review it again.');if(r.status===409&&body!==undefined&&(path==='/save'||path==='/validate')){const failure=object(await readRF2JSON(r));if(failure.code==='rf2_source_review_changed'){exactKeys(failure,['code','request_digest','execution_enabled']);if(failure.execution_enabled!==false||failure.request_digest!==await hash(stable(body)))reject();throw new RF2ReviewChanged();}throw Error('Source conflict: review the original record; no replacement was inserted.');}if(!r.ok)throw Error(r.status===409?'Source conflict: review the original record; no replacement was inserted.':'The exact result could not be confirmed.');return readRF2JSON(r);})(),deadline]);}finally{clearTimeout(timer);}
+  try{return await Promise.race([(async()=>{const r=await send('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'same-origin',redirect:'error',signal:abort.signal});if(['/respiratory','/gastrointestinal','/gastrointestinal/lookup','/reproductive','/reproductive/lookup'].includes(path)&&r.status>=400&&r.status<500&&![408,429].includes(r.status))throw new RF2DefiniteRejection(r.status===409?'Source identity/version conflict. Review the existing source and correct the draft before resubmitting.':'The source request was rejected before append. Correct the draft and review it again.');if(r.status===409&&body!==undefined&&(path==='/save'||path==='/validate')){const failure=object(await readRF2JSON(r));if(failure.code==='rf2_source_review_changed'){exactKeys(failure,['code','request_digest','execution_enabled']);if(failure.execution_enabled!==false||failure.request_digest!==await hash(stable(body)))reject();throw new RF2ReviewChanged();}throw Error('Source conflict: review the original record; no replacement was inserted.');}if(!r.ok)throw Error(r.status===409?'Source conflict: review the original record; no replacement was inserted.':'The exact result could not be confirmed.');return readRF2JSON(r);})(),deadline]);}finally{clearTimeout(timer);}
  }
  async catalog(start:string,end:string):Promise<Catalog>{
   const query = new URLSearchParams({review_start:start,review_end:end,paginate:'true'});
@@ -141,6 +145,21 @@ export class RF2Client {
    return this.request('?'+query);
   }) : first;
   return decodeRF2Catalog(raw,start,end);
+ }
+ async importReproductive(repository:string,record:Fact):Promise<Evidence>{
+  validateReproductiveImport(repository,record);
+  const saved=await decodeEvidence(await this.request('/reproductive',{repository,record}),repository);
+  if(saved.fact.kind!=='reproductive_record'||!sameTimestampSerializedRecord(record,saved.fact))reject();
+  return saved;
+ }
+ async lookupReproductive(repository:string,record:Fact):Promise<'absent'|'committed_match'>{
+  validateReproductiveImport(repository,record);
+  const raw=object(await this.request('/reproductive/lookup',{repository,record}));
+  if(raw.status==='absent'&&Object.keys(raw).length===1)return 'absent';
+  if(raw.status!=='committed_match')reject();
+  const e=await decodeEvidence(raw.evidence,repository);
+  if(!sameTimestampSerializedRecord(record,e.fact))reject();
+  return 'committed_match';
  }
  async importGastrointestinal(repository:string,record:Fact):Promise<Evidence>{validateTransportSchema({repository,record},bundle.roots.GastrointestinalImport,bundle.definitions);const saved=await decodeEvidence(await this.request('/gastrointestinal',{repository,record}),repository);if(saved.fact.kind!=='gastrointestinal_record'||!sameTimestampSerializedRecord(record,saved.fact))reject();return saved;}
  async lookupGastrointestinal(repository:string,record:Fact):Promise<{status:'absent'}|{status:'committed_match';evidence:Evidence}>{validateTransportSchema({repository,record},bundle.roots.GastrointestinalImport,bundle.definitions);const raw=object(await this.request('/gastrointestinal/lookup',{repository,record}));if(raw.status==='absent'&&Object.keys(raw).length===1)return {status:'absent'};if(raw.status!=='committed_match')reject();const e=await decodeEvidence(raw.evidence,repository);if(!sameTimestampSerializedRecord(record,e.fact))reject();return {status:'committed_match',evidence:e};}
