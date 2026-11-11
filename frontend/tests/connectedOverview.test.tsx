@@ -48,14 +48,14 @@ it('orders individual course observations by source time and keeps report status
  const catalog=await load(),repo=catalog.repository,cutoff=catalog.cutoff.fact_watermark;
  const observation=(id:string,category:string,at:string,sequence:number)=>({repository:repo,cutoff,canonical_fact:'{}',digest:id,ingestion:{repository_id:repo,ingestion_sequence:sequence},terminal_reference:{kind:'observation',id,version:'1'},superseded:false,metadata:{version:1,chart:{category,amount:'1.20',unit:'mg/dL'},note:null},fact:{kind:'observation',id,revision:'1',binding:{target:{patient_id:config.patient,encounter_id:config.encounter}},recorded_amount:{value:'1.20',unit:{raw:'mg/dL'}},occurred:{recorded:{value:at}},record_status:'recorded'}});
  catalog.items=[observation('creatinine-0830','creatinine','2026-10-08T08:30:00Z',1) as unknown as Evidence,observation('creatinine-0930','creatinine','2026-10-08T09:30:00Z',2) as unknown as Evidence,observation('map-0900','mean_arterial_pressure','2026-10-08T09:00:00Z',3) as unknown as Evidence];
- const pending={...observation('potassium-preliminary','laboratory','2026-10-08T09:15:00Z',4),fact:{kind:'laboratory_report',id:'potassium-preliminary',revision:'1',binding:{target:{patient_id:config.patient,encounter_id:config.encounter}},source_identity:{issuer_namespace:'synthetic-lab',source_report_id:'K-1',source_version:'1'},specimen:{specimen_type:{raw_display:'Serum'}},report_status:'preliminary',change_state:'original',components:[{test_code:{raw_display:'Potassium'},mapped_concept:'potassium',result:{kind:'numeric',raw_value:'4.2',unit:{raw_display:'mmol/L'}}}],times:{collected:{status:'known',value:'2026-10-08T09:45:00Z'},reported:{status:'not_recorded'},available:{status:'not_recorded'}}}} as unknown as Evidence;
+ const pending={...observation('potassium-preliminary','laboratory','2026-10-08T09:15:00Z',4),fact:{kind:'laboratory_report',id:'potassium-preliminary',revision:'1',binding:{target:{patient_id:config.patient,encounter_id:config.encounter}},source_identity:{issuer_namespace:'synthetic-lab',source_report_id:'K-1',source_version:'1'},specimen:{specimen_type:{raw_display:'Serum'}},report_status:'preliminary',change_state:'original',components:[{test_code:{raw_display:'Potassium'},mapped_concept:'potassium',result:{kind:'numeric',raw_value:'4.2',unit:{raw_display:'mmol/L'}}}],times:{collected:{status:'known',precision:'instant',value:'2026-10-08T09:45:00Z'},reported:{status:'not_recorded'},available:{status:'not_recorded'}}}} as unknown as Evidence;
  catalog.laboratory_reports=[pending];
  const model=patientOverviewModel(catalog,config);
  expect(model.courseSections.find(section=>section.id==='kidney')?.events.map(event=>event.label)).toEqual(['Potassium','Creatinine','Creatinine']);
  expect(model.courseSections.find(section=>section.id==='kidney')?.events.map(event=>event.timestamp)).toEqual(['2026-10-08T09:45:00Z','2026-10-08T09:30:00Z','2026-10-08T08:30:00Z']);
  render(<PatientOverview catalog={catalog} status="current" requested={config} guarded={false}/>);
  expect(screen.getAllByText('Preliminary')).toHaveLength(2);
- expect(screen.getByText(/Latest recorded in selected period · collected/)).toBeVisible();
+ expect(screen.getByText(/Latest specimen · collected/)).toBeVisible();
 });
 it('routes legacy gases and oxygenation components to respiratory and blood-count/coagulation components to hematologic',async()=>{
  const catalog=await load();
@@ -171,3 +171,23 @@ it('surfaces the latest M7 and M8 reviews with current versus historical evidenc
 });
 
 it('describes qualified arithmetic availability without claiming all calculations or recorded CrCl inputs are inactive',async()=>{const catalog=await load();render(<PatientOverview catalog={catalog} status="current" requested={config} guarded={false} manualClearanceAvailable/>);const limits=screen.getByRole('complementary',{name:'Overview limitations'});expect(limits).not.toHaveTextContent('Automated calculations remain inactive');expect(limits).not.toHaveTextContent('manual-input');expect(limits).toHaveTextContent(/eligible.*source/i);expect(limits).toHaveTextContent(/creatinine clearance/i);expect(limits).toHaveTextContent(/clinical.*disabled/i);});
+
+it('retains INR source units and withholds a latest label when collection times tie or are uncertain',async()=>{
+ const catalog=await load();
+ const exact=(value:string)=>({status:'known',precision:'instant',value});
+ const collections=[exact('2026-10-08T09:00:00Z'),exact('2026-10-08T14:30:00+05:30'),{status:'not_recorded'}];
+ catalog.laboratory_reports=collections.map((collected,i)=>courseEvidence(catalog,'inr-'+i,'laboratory',{
+  kind:'laboratory_report',report_status:'final',record_status:'recorded',
+  source_identity:{issuer_namespace:'synthetic-lab',source_report_id:'INR-'+i,source_version:'1'},
+  specimen:{specimen_type:{raw_display:'Citrated plasma'}},times:{collected,reported:exact('2026-10-08T09:45:00Z'),available:exact('2026-10-08T09:45:00Z')},
+  components:[{source_component_id:'inr',test_code:{raw_display:'INR'},mapped_concept:'inr',
+   result:{kind:'numeric',raw_value:'1.6',unit:{raw_display:'1'}}}],
+ }));
+ const original=JSON.stringify(catalog.laboratory_reports);
+ render(<PatientOverview catalog={catalog} status="current" requested={config} guarded={false}/>);
+ const card=screen.getByRole('heading',{name:/^INR$/}).closest('article')!;
+ expect(within(card).getAllByText('INR: 1.6',{exact:true}).length).toBeGreaterThan(0);
+ expect(within(card).queryByText(/Latest (recorded|specimen)/)).toBeNull();
+ expect(within(card).getByText('Collection time not recorded',{exact:true})).toBeInTheDocument();
+ expect(JSON.stringify(catalog.laboratory_reports)).toBe(original);
+});

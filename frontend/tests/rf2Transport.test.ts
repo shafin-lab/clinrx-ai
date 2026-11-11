@@ -27,3 +27,35 @@ it.each(['default','injected'] as const)('calls %s fetch without rebinding its r
  expect(calls[1].url).toMatch(/\/synthetic-rf2\/lookup$/);
  expect(calls[1].body).toBe(JSON.stringify(draft));
 });
+
+it.each(['complete', 'different cutoff', 'skipped offset', 'premature end', 'duplicate record'] as const)(
+ 'loads a paginated catalog only when the same snapshot is complete (%s)', async variant => {
+  const first = structuredClone(fixture.catalog);
+  const evidence = structuredClone(fixture.weight);
+  evidence.fact.id = '12345678-1234-4234-8234-123456789abc';
+  evidence.terminal_reference.id = evidence.fact.id;
+  evidence.cutoff = first.cutoff.fact_watermark;
+  evidence.canonical_fact = stable(evidence.fact);
+  evidence.digest = await hash(evidence.canonical_fact);
+  const total = variant === 'duplicate record' ? 2 : 1;
+  const header = {repository:first.repository, cutoff:first.cutoff, execution_enabled:false,
+   items:[], laboratory_reports:[], respiratory_records:[], gastrointestinal_records:[]};
+  const pages = [
+   {...header, combined:first.combined, pagination:{offset:0, total, next_cursor:'second.page'}},
+   {...header, cutoff:variant === 'different cutoff' ? {...first.cutoff, fact_watermark:7} : first.cutoff,
+    items:variant === 'premature end' ? [] : [evidence],
+    pagination:{offset:variant === 'skipped offset' ? 1 : 0, total, next_cursor:variant === 'duplicate record' ? 'third.page' : null}},
+   {...header, items:[evidence], pagination:{offset:1, total, next_cursor:null}},
+  ];
+  const send = vi.fn<typeof fetch>().mockImplementation(async () => new Response(JSON.stringify(pages.shift())));
+  const catalog = new RF2Client(send).catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');
+  if (variant === 'complete') {
+   expect((await catalog).items.filter(item => item.fact.id === evidence.fact.id)).toEqual([evidence]);
+   const queries = send.mock.calls.map(([url]) => new URL(String(url), 'http://localhost').searchParams);
+   expect(queries[0].get('paginate')).toBe('true');
+   expect(queries[1].get('cursor')).toBe('second.page');
+   expect(queries[1].get('review_end')).toBe(queries[0].get('review_end'));
+  } else {
+   await expect(catalog).rejects.toThrow();
+  }
+ });

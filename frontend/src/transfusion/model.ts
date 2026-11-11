@@ -1,3 +1,4 @@
+import {displayLaboratoryUnit,laboratoryCollection} from '../clinicalEvidence/laboratoryDisplay';
 import {stable} from '../api/rf2Client';
 import {componentIdentity} from '../clinicalEvidence/componentIdentity';
 import type {Catalog,Evidence} from '../api/rf2Client';
@@ -30,7 +31,15 @@ export function laboratoryProjection(catalog:Catalog|undefined):LaboratoryProjec
    const known=m10LaboratoryConcepts.has(String(mapped?m.mapped_concept:m.concept??m.concept_id??''));
    if(!known&&(mapped||!/ha?emoglobin|ha?ematocrit|platelet|fibrinogen|\binr\b|aptt|prothrombin|thrombin|calcium|anti.?xa|d.?dimer|\bpt\b|\bhb\b|\bhct\b/i.test(label)))continue;
    const r=object(m.result),q=object(r.quantity),unit=object(r.unit);
-   rows.push({raw:m,label,value:r.kind==='unavailable'?`${r.status}: ${r.reason}`:[r.comparator&&r.comparator!=='='?r.comparator:'',r.raw_value??r.value??q.value??r.status??'Not documented',unit.raw_display??unit.code??object(q.unit).raw??''].filter(Boolean).join(' '),source,component:id,time:String(object(object(fact.times).collected).value??object(object(fact.occurred).recorded).value??'Collection time not documented'),status:String(fact.report_status??fact.record_status??'Unknown')});
+   const sourceUnit=String(unit.raw_display??unit.code??object(q.unit).raw??'');
+   const laboratory=fact.kind==='laboratory_report';
+   const shownUnit=laboratory&&r.kind==='numeric'?displayLaboratoryUnit(sourceUnit):sourceUnit;
+   const value=r.kind==='unavailable'
+    ? `${r.status}: ${r.reason}`
+    : [r.comparator&&r.comparator!=='='?r.comparator:'',r.raw_value??r.value??q.value??r.status??'Not documented',shownUnit].filter(Boolean).join(' ');
+   const time=laboratory ? laboratoryCollection(fact).text :
+    String(object(object(fact.times).collected).value??object(object(fact.occurred).recorded).value??'Collection time not documented');
+   rows.push({raw:m,label,value,source,component:id,time,status:String(fact.report_status??fact.record_status??'Unknown')});
   }
  }
  return {rows,valid:true};

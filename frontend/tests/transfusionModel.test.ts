@@ -1,4 +1,5 @@
 import {describe,it,expect} from 'vitest';
+import type {Evidence} from '../src/api/rf2Client';
 import {quantityText,productLabel,extractLaboratory,laboratoryProjection,validateProductEntry} from '../src/transfusion/model';
 it.each(['hemoglobin','hematocrit','platelets','pt','inr','aptt','thrombin_time','fibrinogen','total_calcium','ionised_calcium','d_dimer','anti_xa'])('includes the existing mapped %s concept despite abbreviated original wording',concept=>{
  const component={source_component_id:'original',mapping_status:'mapped',mapped_concept:concept,mapping_version:'source/v1',test_code:{raw_display:concept==='fibrinogen'?'FIB':'Original abbreviated result'},result:{kind:'numeric',raw_value:'1.00',unit:{raw_display:'source unit'}}};
@@ -75,4 +76,17 @@ it('collapses identical repeated components within one report into one original 
  const source:any={repository:'repo',fact:{kind:'laboratory_report',id:'one-report',revision:'1',components:[component,structuredClone(component)]},digest:'a'.repeat(64)};
  const projection=laboratoryProjection({laboratory_reports:[source],items:[]} as any);
  expect(projection.valid).toBe(true);expect(projection.error).toBeUndefined();expect(projection.rows).toHaveLength(1);expect(projection.rows[0].raw).toBe(component);expect(projection.rows[0].value).toBe('9');
+});
+
+it('shows dimensionless INR without its unit marker and retains the original report',()=>{
+ const component={source_component_id:'inr',mapping_status:'mapped',mapped_concept:'inr',
+  test_code:{raw_display:'INR'},result:{kind:'numeric',raw_value:'1.6',unit:{code:'1',raw_display:'1'}}};
+ const fact={kind:'laboratory_report',id:'coag',revision:'1',components:[component],
+  times:{collected:{status:'known',precision:'bounded',lower:'2026-10-08T08:30:00Z',upper:'2026-10-08T09:30:00Z',value:'2026-10-08T09:00:00Z'}}};
+ const source={repository:'repo',fact,digest:'a'} as unknown as Evidence;
+ const [row]=extractLaboratory({laboratory_reports:[source],items:[]} as unknown as Parameters<typeof extractLaboratory>[0]);
+ expect(row.value).toBe('1.6');
+ expect(row.time).toMatch(/Collection window.*08:30:00Z/);
+ expect(row.raw.result.unit.raw_display).toBe('1');
+ expect(row.source).toBe(source);
 });
