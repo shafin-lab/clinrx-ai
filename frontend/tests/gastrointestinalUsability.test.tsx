@@ -17,8 +17,45 @@ it('does not hide unknown-time or tied findings and orders exact fractional inst
 });
 it('summarizes missing critical flags once with result attribution and keeps actual warnings inline',()=>{
  const c=structuredClone(fixture.catalog) as unknown as Catalog,e=finding(c,'lab','2026-10-08T09:00:00Z');e.fact={...e.fact,kind:'laboratory_report',specimen:{source_specimen_id:'serum-1'},times:{collected:gi.times.occurred,reported:gi.times.reported,available:gi.times.available},components:['ast','alt'].map((concept,i)=>({source_component_id:concept,test_code:{raw_display:concept.toUpperCase()},mapping_status:'mapped',mapped_concept:concept,mapping_version:'1',source_critical_flag:i===0?'unknown':'flagged',source_flags:[],source_interference_flags:i===0?[]:[{raw_display:'Haemolysis'}],result:{kind:'numeric',raw_value:'42',comparator:'=',unit:{raw_display:'U/L'}}}))};e.fact.conflict='unresolved';c.laboratory_reports=[e];show(c);
- const panel=within(screen.getByRole('tabpanel',{name:'Overview'})),table=within(panel.getByRole('table',{name:'Latest liver profile with earlier samples'}));expect(table.queryByText('Source quality / critical flag not established')).toBeNull();const alt=table.getByRole('row',{name:/^ALT/});expect(alt).toHaveTextContent('Haemolysis');expect(alt).toHaveTextContent('Source flagged critical');expect(alt).toHaveTextContent('Unresolved source conflict');const summary=panel.getByText('Critical-flag status not supplied · 1 report');fireEvent.click(summary);expect(summary.closest('details')).toHaveTextContent('AST');expect(summary.closest('details')).not.toHaveTextContent('ALT');
+ const panel=within(screen.getByRole('tabpanel',{name:'Overview'})),table=within(panel.getByRole('table',{name:'Recorded liver profile'}));expect(table.queryByText('Source quality / critical flag not established')).toBeNull();const alt=table.getByRole('row',{name:/^ALT/});expect(alt).toHaveTextContent('Haemolysis');expect(alt).toHaveTextContent('Source flagged critical');expect(alt).toHaveTextContent('Unresolved source conflict');const summary=panel.getByText('Critical-flag status not supplied · 1 report');fireEvent.click(summary);expect(summary.closest('details')).toHaveTextContent('AST');expect(summary.closest('details')).not.toHaveTextContent('ALT');
 });
 it('attributes an unknown critical flag to its exact component when one report repeats a mapped test',()=>{
  const c=structuredClone(fixture.catalog) as unknown as Catalog,e=finding(c,'repeated-lab','2026-10-08T09:00:00Z');e.fact={...e.fact,kind:'laboratory_report',specimen:{source_specimen_id:'serum-duplicate'},times:{collected:gi.times.occurred,reported:gi.times.reported,available:gi.times.available},components:[['ast-unknown','42','unknown'],['ast-known','84','not_flagged']].map(([id,value,flag])=>({source_component_id:id,test_code:{raw_display:'AST'},mapping_status:'mapped',mapped_concept:'ast',mapping_version:'1',source_critical_flag:flag,source_flags:[],source_interference_flags:[],result:{kind:'numeric',raw_value:value,comparator:'=',unit:{raw_display:'U/L'}}}))};c.laboratory_reports=[e];show(c);const panel=within(screen.getByRole('tabpanel',{name:'Overview'})),summary=panel.getByText('Critical-flag status not supplied · 1 report');fireEvent.click(summary);const detail=summary.closest('details')!;expect(detail).toHaveTextContent('AST · 42 U/L · Component ast-unknown');expect(detail).not.toHaveTextContent('84 U/L');expect(detail).not.toHaveTextContent('ast-known');const table=panel.getByRole('table');expect(table).toHaveTextContent('Component ast-unknown');expect(table).toHaveTextContent('Component ast-known');fireEvent.click(screen.getByRole('tab',{name:'Results & trends'}));const full=within(screen.getByRole('table',{name:'GI, liver and pancreatic laboratory results'}));expect(full.getByRole('row',{name:/ast-unknown/})).toHaveTextContent('42 U/L');expect(full.getByRole('row',{name:/ast-known/})).toHaveTextContent('84 U/L');
+});
+
+it('keeps tied and uncertain collections neutral and compares exact fractional instants',()=>{
+ const c=structuredClone(fixture.catalog) as unknown as Catalog;
+ const exact=(value:string)=>({status:'known',precision:'instant',value});
+ function lab(id:string,concept:string,value:string,collected:Record<string,unknown>,unit='U/L'){
+  const e=finding(c,id,null);
+  e.fact={...e.fact,kind:'laboratory_report',record_status:'recorded',report_status:'final',times:{collected},
+   components:[{source_component_id:concept,mapped_concept:concept,mapping_status:'mapped',mapping_version:'1',
+    source_critical_flag:'not_flagged',result:{kind:'numeric',raw_value:value,unit:{raw_display:unit}}}]};
+  return e;
+ }
+ c.laboratory_reports=[
+  lab('ast-earlier','ast','42',exact('2026-10-08T09:30:00.000001Z')),
+  lab('ast-later','ast','84',exact('2026-10-08T09:30:00.000002Z')),
+  lab('inr-one','inr','1.6',exact('2026-10-08T09:30:00Z'),'1'),
+  lab('inr-tie','inr','1.7',exact('2026-10-08T15:00:00+05:30'),'1'),
+  lab('alt-exact','alt','51',exact('2026-10-08T09:00:00Z')),
+  lab('alt-range','alt','52',{status:'known',precision:'bounded',lower:'2026-10-08T08:30:00Z',upper:'2026-10-08T09:30:00Z'}),
+  lab('alt-missing','alt','53',{status:'not_recorded',precision:'unknown'}),
+ ];
+ const original=JSON.stringify(c);
+ show(c);
+ const overview=within(screen.getByRole('tabpanel',{name:'Overview'}));
+ const ast=overview.getByRole('row',{name:/^AST/});
+ expect(within(ast).getAllByRole('cell')[0]).toHaveTextContent(/84 U\/L.*Latest specimen.*000002Z/);
+ expect(within(ast).getAllByRole('cell')[1]).toHaveTextContent(/42 U\/L.*Earlier specimen.*000001Z/);
+ const inr=overview.getByRole('row',{name:/^INR/});
+ expect(within(inr).getByText('1.6',{exact:true})).toBeVisible();
+ expect(inr).not.toHaveTextContent(/Latest specimen|Earlier specimen/);
+ expect(overview.getByRole('row',{name:/^ALT/})).not.toHaveTextContent(/Latest specimen|Earlier specimen/);
+ fireEvent.click(screen.getByRole('tab',{name:'Results & trends'}));
+ const full=within(screen.getByRole('tabpanel',{name:'Results & trends'}));
+ expect(full.getByText(/Collection window.*08:30:00Z/)).toBeVisible();
+ expect(full.getByText('Collection time not recorded')).toBeVisible();
+ expect(full.queryByText('Earlier specimen')).toBeNull();
+ expect(JSON.stringify(c)).toBe(original);
 });

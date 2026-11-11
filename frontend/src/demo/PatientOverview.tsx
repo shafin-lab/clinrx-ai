@@ -1,3 +1,5 @@
+import {displayLaboratoryUnit,hasUniqueLatestCollection,laboratoryCollection} from '../clinicalEvidence/laboratoryDisplay';
+import {compareRespiratoryInstants} from '../respiratory/exactTime';
 import {GISource} from '../gastrointestinal/GISource';
 import {GIReview} from '../gastrointestinal/GIReview';
 import {gastrointestinalModel} from '../gastrointestinal/model';
@@ -43,8 +45,13 @@ function courseTimestamp(e:Evidence):{timestamp:string|null;timeLabel:string}{
  const fact=asRecord(e.fact);
  if(fact.kind==='respiratory_record'||fact.kind==='gastrointestinal_record'){const times=asRecord(fact.times);for(const [key,timeLabel] of (fact.category==='blood_gas'?[['collected','Collected'],['occurred','Observed'],['reported','Reported'],['available','Available']]:[['occurred','Observed'],['collected','Collected'],['reported','Reported'],['available','Available']])){const point=asRecord(times[key]);if(point.status==='known'&&typeof point.value==='string')return {timestamp:point.value,timeLabel};}return {timestamp:null,timeLabel:'Time not established'};}
  if(fact.kind==='laboratory_report'){
+  const collection=laboratoryCollection(fact);
+  if(collection.instant)return {timestamp:collection.instant,timeLabel:'Collected'};
   const times=asRecord(fact.times);
-  for(const [key,timeLabel] of [['collected','Collected'],['reported','Reported'],['available','Available']] as const){const point=asRecord(times[key]);if(point.status==='known'&&typeof point.value==='string')return {timestamp:point.value,timeLabel};}
+  for(const [key,timeLabel] of [['reported','Reported'],['available','Available']] as const){
+   const point=asRecord(times[key]);
+   if(point.status==='known'&&point.precision==='instant'&&typeof point.value==='string')return {timestamp:point.value,timeLabel};
+  }
   return {timestamp:null,timeLabel:'Time not established'};
  }
  const chart=e.metadata?.chart;
@@ -79,6 +86,10 @@ function courseSections(findings:Finding[],withRespiratory=false):CourseSection[
  for(const finding of findings)for(const evidence of finding.records){const time=courseTimestamp(evidence),label=finding.label?(/[a-z][A-Z]/.test(finding.label)?finding.label:finding.label[0].toUpperCase()+finding.label.slice(1)):'Recorded finding';sections.find(section=>section.id===areaForFinding(finding))!.events.push({id:JSON.stringify([finding.id,key(pin(evidence))]),label,evidence,component:finding.componentRecords?.get(key(pin(evidence))),...time});}
  for(const section of sections)section.events.sort((a,b)=>{
   const left=a.timestamp?Date.parse(a.timestamp):Number.NaN,right=b.timestamp?Date.parse(b.timestamp):Number.NaN;
+  if(a.timestamp&&b.timestamp){
+   const exact=compareRespiratoryInstants(b.timestamp,a.timestamp);
+   if(exact)return exact;
+  }
   if(Number.isFinite(left)&&Number.isFinite(right)&&left!==right)return right-left;
   if(Number.isFinite(left)!==Number.isFinite(right))return Number.isFinite(left)?-1:1;
   const label=a.label.localeCompare(b.label);return label||a.id.localeCompare(b.id);
@@ -109,7 +120,7 @@ function laboratoryComponentSummary(component:LaboratoryComponent):string{
  const label=component.test_code?.raw_display??component.test_code?.code??'Laboratory result',result=asRecord(component.result),kind=result.kind,status=recordedText(result.status),reason=recordedText(result.reason),unit=recordedText(asRecord(result.unit).raw_display);
  if(kind==='unavailable')return `${label}: ${status??'unavailable'}${reason?` · ${reason}`:''}`;
  const raw=recordedText(result.raw_value)??recordedText(result.value)??recordedText(result.finding)??recordedText(result.interpretation)??recordedText(result.category);
- const comparator=recordedText(result.comparator),unitSuffix=unit?.trim()==='1'?'':kind==='numeric'?(unit?` ${unit}`:' unit unavailable'):unit?` ${unit}`:'',value=raw?`${comparator&&comparator!=='='?comparator:''}${raw}${unitSuffix}`:status??'Result content unavailable';
+ const comparator=recordedText(result.comparator),shownUnit=displayLaboratoryUnit(unit??''),unitSuffix=unit?(shownUnit?` ${shownUnit}`:''):kind==='numeric'?' unit unavailable':'',value=raw?`${comparator&&comparator!=='='?comparator:''}${raw}${unitSuffix}`:status??'Result content unavailable';
  return `${label}: ${value}`;
 }
 function courseSummary(e:Evidence,component?:LaboratoryComponent):string{
@@ -182,6 +193,17 @@ export function patientOverviewModel(catalog:Catalog,requested:Requested){
  const findings=[...groups.values()];
  return {valid:true,findings,courseSections:courseSections(findings,catalog.respiratory_records!==undefined||findings.some(finding=>areaForFinding(finding)==='respiratory'))};
 }
+function courseHeadlineTime(event: CourseEvent, related: CourseEvent[]) {
+ const timestamp = event.timestamp;
+ if (event.evidence.fact.kind !== 'laboratory_report') {
+  return timestamp ? `Latest recorded in selected period · ${event.timeLabel.toLowerCase()} ${timestamp}` : 'Time not established';
+ }
+ const collection = laboratoryCollection(event.evidence.fact);
+ if (!collection.instant) return collection.text;
+ const uniquelyLatest = hasUniqueLatestCollection(related.map(source => laboratoryCollection(source.evidence.fact).instant));
+ return uniquelyLatest ? `Latest specimen · collected ${collection.instant}` : `Collected ${collection.instant}`;
+}
+
 interface Props {onGastrointestinal?:()=>void;onRespiratory?:()=>void;manualClearanceAvailable?:boolean;catalog?:Catalog;status:CatalogStatus;requested:Requested;retrievalMessage?:string;guarded:boolean;onRefresh?:()=>void|Promise<void>;transport?:Pick<RF2Client,'history'>;laboratoryTransport?:Pick<RF2Client,'importLaboratory'>;weightEntryEnabled?:boolean;weightTransport?:Pick<RF2Client,'action'>;onCharting?:()=>void;micro?:MicroState;antibioticOverview?:ReactNode;transfusionOverview?:ReactNode}
 export function PatientOverview({onGastrointestinal,onRespiratory,manualClearanceAvailable=false,catalog,status,requested,retrievalMessage,guarded,onRefresh,transport:providedTransport,laboratoryTransport,weightEntryEnabled=false,weightTransport,onCharting,antibioticOverview,micro,transfusionOverview}:Props){
  const [defaultTransport]=useState(()=>new RF2Client()),[selection,setSelection]=useState<SourceSelection>(),[addInformationOpen,setAddInformationOpen]=useState(false),[labEntryOpen,setLabEntryOpen]=useState(false);
@@ -193,7 +215,9 @@ export function PatientOverview({onGastrointestinal,onRespiratory,manualClearanc
  const model=useMemo(()=>catalog?patientOverviewModel(catalog,requested):undefined,[catalog,requested.patient,requested.encounter,requested.start,requested.end]);
  const reviewSummaries=model?.valid&&catalog?overviewReviewSummaries(catalog,requested,micro):[];
  const current=status==='current';
- const courseFinding=(ordered:CourseEvent[])=>{const latest=ordered[0];if(!latest)return null;const latestStates=sourceState(latest.evidence),withdrawn=latest.evidence.fact.record_status==='withdrawn',summary=courseSummary(latest.evidence,latest.component);return <article className="connected-finding course-finding" key={latest.label}><h4>{latest.label}</h4>{withdrawn?<><p className="course-latest-value course-withdrawn"><strong>Withdrawn source record</strong></p><p className="course-historical-value">Historical value: {summary}</p><p className="course-latest-time">Historical source time: {latest.timestamp??'Time not established'}</p>{withdrawalDetail(latest.evidence)&&<p className="course-state">{withdrawalDetail(latest.evidence)}</p>}</>:<><p className="course-latest-value">{summary}</p><p className="course-latest-time">{latest.timestamp?`Latest recorded in selected period · ${latest.timeLabel.toLowerCase()} ${latest.timestamp}`:'Time not established'}</p>{latestStates.length>0&&<p className="course-state">{latestStates.join(' · ')}</p>}</>}<details><summary>View recorded details</summary><p>{ordered.length} recorded sources</p><div className="course-history"><p className="course-history-note">Source entries are ordered by their supplied timestamps. This is not a current-state selection or clinical ranking.</p>{ordered.map(event=>{const e=event.evidence,states=sourceState(e),isWithdrawn=e.fact.record_status==='withdrawn';return <div className="course-event" key={event.id}>{isWithdrawn&&<p className="course-withdrawn"><strong>Withdrawn source record</strong></p>}<p><time>{event.timestamp?`${event.timeLabel}: ${event.timestamp}`:'Time not established'}</time> · <strong>{isWithdrawn?`Historical value: ${courseSummary(e,event.component)}`:courseSummary(e,event.component)}</strong></p>{states.length>0&&<p className="course-state">{states.join(' · ')}</p>}{withdrawalDetail(e)&&<p>{withdrawalDetail(e)}</p>}<details><summary>Exact source and context</summary><p>{sourceContext(e,catalog!)}</p><p>Recorded status: {String(e.fact.record_status??'Not supplied')}</p>{e.metadata?.note&&<p>Clinician-authored review — not a generated clinical conclusion.</p>}<button type="button" disabled={!current||guarded} aria-label={`Open recorded source ${e.fact.id} / ${e.fact.revision}`} onClick={click=>setSelection({evidence:e,catalog:catalog!,label:event.label,trigger:click.currentTarget})}>Open source details</button><details><summary>Source method, timing and exact reference</summary><pre>{JSON.stringify({reference:pin(e),time:e.fact.time,occurred:e.fact.occurred,interval:e.fact.recorded_interval,acquisition:e.fact.acquisition,uncertainty:e.fact.uncertainty},null,2)}</pre></details><details><summary>Complete original recorded content</summary><pre>{JSON.stringify({fact:e.fact,metadata:e.metadata},null,2)}</pre></details></details></div>;})}</div></details></article>;};
+ const courseFinding=(ordered:CourseEvent[])=>{const latest=ordered[0];if(!latest)return null;const latestStates=sourceState(latest.evidence),withdrawn=latest.evidence.fact.record_status==='withdrawn',summary=courseSummary(latest.evidence,latest.component);return <article className="connected-finding course-finding" key={latest.label}><h4>{latest.label}</h4>{withdrawn?<><p className="course-latest-value course-withdrawn"><strong>Withdrawn source record</strong></p><p className="course-historical-value">Historical value: {summary}</p><p className="course-latest-time">Historical source time: {latest.timestamp??'Time not established'}</p>{withdrawalDetail(latest.evidence)&&<p className="course-state">{withdrawalDetail(latest.evidence)}</p>}</>:<><p className="course-latest-value">{summary}</p><p className="course-latest-time">{courseHeadlineTime(latest,ordered)}</p>{latestStates.length>0&&<p className="course-state">{latestStates.join(' · ')}</p>}</>}<details><summary>View recorded details</summary><p>{ordered.length} recorded sources</p><div className="course-history"><p className="course-history-note">Source entries are ordered by their supplied timestamps. This is not a current-state selection or clinical ranking.</p>{ordered.map(event=>{const e=event.evidence,states=sourceState(e),isWithdrawn=e.fact.record_status==='withdrawn';return <div className="course-event" key={event.id}>{isWithdrawn&&<p className="course-withdrawn"><strong>Withdrawn source record</strong></p>}<p><time>{event.evidence.fact.kind==='laboratory_report' && event.timeLabel!=='Collected'
+ ? laboratoryCollection(event.evidence.fact).text + (event.timestamp ? ` · ${event.timeLabel}: ${event.timestamp}` : '')
+ : event.timestamp ? `${event.timeLabel}: ${event.timestamp}` : 'Time not established'}</time> · <strong>{isWithdrawn?`Historical value: ${courseSummary(e,event.component)}`:courseSummary(e,event.component)}</strong></p>{states.length>0&&<p className="course-state">{states.join(' · ')}</p>}{withdrawalDetail(e)&&<p>{withdrawalDetail(e)}</p>}<details><summary>Exact source and context</summary><p>{sourceContext(e,catalog!)}</p><p>Recorded status: {String(e.fact.record_status??'Not supplied')}</p>{e.metadata?.note&&<p>Clinician-authored review — not a generated clinical conclusion.</p>}<button type="button" disabled={!current||guarded} aria-label={`Open recorded source ${e.fact.id} / ${e.fact.revision}`} onClick={click=>setSelection({evidence:e,catalog:catalog!,label:event.label,trigger:click.currentTarget})}>Open source details</button><details><summary>Source method, timing and exact reference</summary><pre>{JSON.stringify({reference:pin(e),time:e.fact.time,occurred:e.fact.occurred,interval:e.fact.recorded_interval,acquisition:e.fact.acquisition,uncertainty:e.fact.uncertainty},null,2)}</pre></details><details><summary>Complete original recorded content</summary><pre>{JSON.stringify({fact:e.fact,metadata:e.metadata},null,2)}</pre></details></details></div>;})}</div></details></article>;};
  return <section className="connected-overview" aria-label="Connected patient overview">
   <div className="connected-heading"><div><p className="connected-eyebrow">One patient · Shared recorded evidence</p><h2>Patient overview</h2></div>{onRefresh?<button ref={addInformation} type="button" disabled={!current||!model?.valid||guarded||!!entry||labEntryOpen} onClick={()=>setAddInformationOpen(true)}>Add information</button>:<span className="connected-readonly">Read-only source connection</span>}</div>
   <p className="connected-period">Selected period: {requested.start} → {requested.end}. Source timestamps retain their recorded offsets.</p>

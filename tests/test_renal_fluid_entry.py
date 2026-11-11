@@ -48,6 +48,64 @@ def test_chart_correction_replay_and_read_preservation(ws):
     before=rows(db);r=post(c,'/save',fresh);assert r.status_code==200,r.text;e=r.json()['evidence'];assert e['fact']==original['fact'] and e['superseded'] and e['terminal_reference']['version']==successor['fact']['revision'];assert rows(db)==before
     r=post(c,'/resolve',{'repository':b['repository'],'pins':[pin(original),pin(successor)]});assert r.status_code==200,r.text;assert len(r.json()['items'])==2;assert rows(db)==before
 
+
+def test_catalog_pages_keep_all_reports_at_the_first_watermark(ws, monkeypatch):
+    from dataclasses import replace
+    from hashlib import sha256
+    from tests.test_laboratory_contract import report
+
+    c, db, app = ws
+
+    def add_report(n):
+        source = f'PAGE-{n}'
+        owner = 'lab-' + sha256(('lab.example\0' + source).encode()).hexdigest()[:32]
+        lab = report(source_report=source, fact_id=owner, report_body='Exact report text é\n' * 500)
+        response = post(c, '/laboratory', lab.model_dump(mode='json'))
+        assert response.status_code == 200, response.text
+
+    for n in range(5):
+        add_report(n)
+    window = {'review_start': '2026-10-01T10:00:00Z', 'review_end': '2026-10-08T10:00:00Z'}
+    original = c.get(RF2, params=window)
+    assert original.status_code == 200, original.text
+    expected = original.json()
+    limit = len(original.content) - 25000
+    deps = app.core.state.dependencies
+    monkeypatch.setattr(app.core.state, 'dependencies', replace(
+        deps, config=deps.config.model_copy(update={'max_response_bytes': limit})))
+    assert c.get(RF2, params=window).json()['code'] == 'bounded_view_limit_exceeded'
+    query = dict(window, paginate=True)
+    response = c.get(RF2, params=query)
+    assert response.status_code == 200, response.text
+    first = response.json()
+    assert len(response.content) <= limit
+    assert first['combined']['context']['scope']['repository_cutoff'] == first['cutoff']
+    assert first['pagination']['offset'] == 0
+    assert first['pagination']['next_cursor']
+    cursor = first['pagination']['next_cursor']
+    assert c.get(RF2, params=dict(query, cursor=cursor + 'x')).status_code == 422
+    assert c.get(RF2, params=dict(query, cursor=cursor, review_start='2026-10-02T10:00:00Z')).status_code == 422
+
+    add_report(5)
+    before = rows(db)
+    names = ('items', 'laboratory_reports', 'respiratory_records', 'gastrointestinal_records')
+    collected = {name: list(first[name]) for name in names}
+    while cursor:
+        response = c.get(RF2, params=dict(query, cursor=cursor))
+        assert response.status_code == 200, response.text
+        assert len(response.content) <= limit
+        page = response.json()
+        assert 'combined' not in page
+        assert page['cutoff'] == first['cutoff']
+        assert page['pagination']['offset'] == sum(map(len, collected.values()))
+        assert page['pagination']['total'] == first['pagination']['total']
+        for name in names:
+            collected[name].extend(page[name])
+        cursor = page['pagination']['next_cursor']
+    assert collected == {name: expected[name] for name in names}
+    assert sum(map(len, collected.values())) == first['pagination']['total']
+    assert rows(db) == before
+
 def test_note_mixed_pins_and_weight_purpose(ws):
     c,db,_=ws;w=saved(c,draft(c,'weight'));catalog=c.get(RF2).json();lab0=next(x for x in catalog['combined']['laboratory']['observations'] if x['fact']['id']=='demo-creatinine-A');lab={'repository':catalog['repository'],'fact':lab0['fact'],'digest':lab0['expected_digest'],'ingestion':lab0['ingestion'],'cutoff':catalog['cutoff']['fact_watermark']};before=rows(db)
     note=draft(c);note['chart']=None;note['note']={'question':'Review source records','findings':'Recorded weight and creatinine','possibilities':'No conclusion established','gaps':'Source uncertainty remains','plan':'Unscheduled clinician review','pins':[pin(w),pin(lab)]}

@@ -20,11 +20,12 @@ RF2=PREFIX+'/synthetic-rf2'
 router=APIRouter()
 def service(base=Depends(circulatory_service)):return RF2Service(base.dependencies)
 @router.get(RF2)
-def catalog(review_start:str='2026-10-08T08:00:00+00:00',review_end:str='2026-10-08T10:00:00+00:00',app=Depends(service)):
+def catalog(review_start:str='2026-10-08T08:00:00+00:00',review_end:str='2026-10-08T10:00:00+00:00',
+            paginate:bool=False,cursor:Annotated[str|None,Query(min_length=1,max_length=4096)]=None,app=Depends(service)):
     from pydantic import TypeAdapter
     from app.api.schemas.common import AwareTimestamp
     start=TypeAdapter(AwareTimestamp).validate_python(review_start);end=TypeAdapter(AwareTimestamp).validate_python(review_end)
-    with transaction(app.dependencies.engine) as repo:return app.catalog(repo,start,end)
+    with transaction(app.dependencies.engine) as repo:return app.catalog(repo,start,end,paginate=paginate,cursor=cursor)
 @router.post(RF2+'/resolve')
 def resolve(body:ResolveRequest,app=Depends(service)):
     with transaction(app.dependencies.engine) as repo:return app.resolve(repo,body)

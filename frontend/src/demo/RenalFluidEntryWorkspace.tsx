@@ -1,3 +1,4 @@
+import {displayLaboratoryUnit,laboratoryCollection} from '../clinicalEvidence/laboratoryDisplay';
 import {useEffect,useRef,useState} from 'react';
 import {RF2Client,RF2ReviewChanged,chartDefaults,type Chart,type Catalog,type Draft,type Evidence,type Pin,type RenalNote,type SourceReview,needsHistoricalReview,pin,key} from '../api/rf2Client';
 import {decodeRF2Saved,storageKey,type SavedRF2} from './rf2Handover';
@@ -6,10 +7,9 @@ import {RF2FluidChart,type CatalogStatus} from './RF2FluidChart';
 import './rf2.css';
 const labels:Record<string,string>={output_urine:'Urine output',input_oral:'Oral intake',input_enteral:'Enteral intake',input_iv:'IV fluid intake',input_blood:'Blood-product intake',output_drain:'Drain output',output_other:'Other measured loss',output_crrt:'Recorded CRRT net removal',weight:'Weight',net_balance_reported:'Source-reported interval balance',urine_total_reported:'Source-reported urine total',balance_total_reported:'Source-reported cumulative balance'};
 export function evidenceText(e:Evidence){
- const displayUnit=(unit:string|undefined|null)=>unit?.trim()==='1'?'':unit??'';
  if(e.fact.kind==='laboratory_report'){
   const components=(e.fact.components as {test_code:{raw_display:string};result:{kind:string;status?:string;reason?:string;comparator?:string;raw_value?:string;unit?:{raw_display:string}}}[]).map(c=>{
-   const r=c.result,unit=displayUnit(r.unit?.raw_display);const value=r.kind==='unavailable'?`${r.status}: ${r.reason??'reason not supplied'}`:`${r.comparator&&r.comparator!=='='?r.comparator:''}${r.raw_value??'result unavailable'}${unit?' '+unit:''}`;
+   const r=c.result,unit=displayLaboratoryUnit(r.unit?.raw_display??'');const value=r.kind==='unavailable'?`${r.status}: ${r.reason??'reason not supplied'}`:`${r.comparator&&r.comparator!=='='?r.comparator:''}${r.raw_value??'result unavailable'}${unit?' '+unit:''}`;
    return `${c.test_code.raw_display}: ${value}`;
   });
   return components.join(' · ')||'No result components supplied';
@@ -29,7 +29,8 @@ export function sourceContext(e:Evidence,catalog:Catalog){
  if(e.fact.kind==='laboratory_report'){
   const f=e.fact as Evidence['fact']&{source_identity:{issuer_namespace:string;source_report_id:string;source_version:string};specimen:{specimen_type?:{raw_display:string}|null};times:{collected:{status:string;value?:string|null};reported:{status:string;value?:string|null};available:{status:string;value?:string|null}};report_status:string;change_state:string};
   const stamp=(t:{status:string;value?:string|null})=>t.status==='known'?t.value??'Unknown':'Not recorded';
-  return [`Source ${f.source_identity.issuer_namespace} · report ${f.source_identity.source_report_id} · version ${f.source_identity.source_version}`,`Specimen ${f.specimen.specimen_type?.raw_display??'not supplied'}`,`Collected ${stamp(f.times.collected)} · reported ${stamp(f.times.reported)} · available ${stamp(f.times.available)}`,`Report status ${f.report_status} · source revision ${f.change_state}`,`Exact source values and units retained; no range interpretation or unit conversion.`].join(' · ');
+  const collection=laboratoryCollection(f);
+  return [`Source ${f.source_identity.issuer_namespace} · report ${f.source_identity.source_report_id} · version ${f.source_identity.source_version}`,`Specimen ${f.specimen.specimen_type?.raw_display??'not supplied'}`,`${collection.instant ? `Collected ${collection.instant}` : collection.text} · reported ${stamp(f.times.reported)} · available ${stamp(f.times.available)}`,`Report status ${f.report_status} · source revision ${f.change_state}`,`Exact source values and units retained; no range interpretation or unit conversion.`].join(' · ');
  }
  const record=(v:unknown):Record<string,unknown>=>v&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,unknown>:{};
  const scopeItem=catalog.combined.circulatory.assembly.snapshot.items.find(x=>x.fact.kind===e.fact.kind&&x.fact.id===e.fact.id&&x.fact.revision===e.fact.revision);

@@ -69,6 +69,49 @@ function sameTimestampSerializedRecord(sent:unknown,stored:unknown,path=''):bool
  return keys.length===Object.keys(b).length&&keys.every(k=>Object.hasOwn(b,k)&&sameTimestampSerializedRecord(a[k],b[k],path?`${path}.${k}`:k));
 }
 export class RF2ReviewChanged extends Error {constructor(){super('Selected-source review changed; this request was rejected before append.');}}
+const catalogCollections = {
+ items:4096, laboratory_reports:1024, respiratory_records:1024, gastrointestinal_records:1024,
+} as const;
+const collectionNames = Object.keys(catalogCollections) as (keyof typeof catalogCollections)[];
+const maxCatalogRecords = Object.values(catalogCollections).reduce((a,b) => a+b, 0);
+
+async function assembleCatalogPages(first: Record<string, unknown>, next: (cursor:string) => Promise<unknown>) {
+ validateTransportSchema(first.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);
+ const cutoff = first.cutoff as Catalog['cutoff'];
+ if (first.repository !== cutoff.repository_id) reject();
+ const catalog = {...first, items:[] as unknown[], laboratory_reports:[] as unknown[],
+  respiratory_records:[] as unknown[], gastrointestinal_records:[] as unknown[]};
+ delete (catalog as Record<string,unknown>).pagination;
+ const cursors = new Set<string>();
+ let page = first, offset = 0, total: number | undefined;
+ while (true) {
+  const initial = page === first;
+  exactKeys(page,['repository','cutoff','execution_enabled','pagination',...collectionNames,...(initial?['combined']:[])]);
+  if (page.execution_enabled !== false || page.repository !== first.repository || !equal(page.cutoff,cutoff)) reject();
+  const marker = object(page.pagination);
+  exactKeys(marker,['offset','total','next_cursor']);
+  const {next_cursor:cursor,total:pageTotal} = marker;
+  if (marker.offset !== offset || typeof pageTotal !== 'number' || !Number.isSafeInteger(pageTotal) ||
+      pageTotal < 0 || pageTotal > maxCatalogRecords || (total !== undefined && pageTotal !== total)) reject();
+  total = pageTotal;
+  const before = offset;
+  for (const name of collectionNames) {
+   const records = page[name];
+   if (!Array.isArray(records) || records.length + catalog[name].length > catalogCollections[name]) reject();
+   catalog[name].push(...records);
+   offset += records.length;
+  }
+  if (offset > total || (!initial && offset === before)) reject();
+  if (offset === total) {
+   if (cursor !== null) reject();
+   return catalog;
+  }
+  if (typeof cursor !== 'string' || !/^[A-Za-z0-9_.=-]{1,4096}$/.test(cursor) || cursors.has(cursor)) reject();
+  cursors.add(cursor);
+  page = object(await next(cursor));
+ }
+}
+
 export async function decodeRF2Catalog(raw:unknown,start:string,end:string):Promise<Catalog>{const c=object(raw) as unknown as Catalog;
   exactKeys(c,['repository','cutoff','items','laboratory_reports','combined','execution_enabled',...('respiratory_records' in c?['respiratory_records']:[]),...('gastrointestinal_records' in c?['gastrointestinal_records']:[])]);validateTransportSchema(c.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);if(c.execution_enabled!==false||c.repository!==c.cutoff.repository_id||!Array.isArray(c.items)||c.items.length>4096||!Array.isArray(c.laboratory_reports)||c.laboratory_reports.length>1024)reject();if(c.respiratory_records!==undefined&&(!Array.isArray(c.respiratory_records)||c.respiratory_records.length>1024))reject();if(c.gastrointestinal_records!==undefined&&(!Array.isArray(c.gastrointestinal_records)||c.gastrointestinal_records.length>1024))reject();const combined=await decodeRenalFluid(c.combined,{patient_id:'synthetic-p1',encounter_id:'synthetic-e1',start,end});if(!equal(combined.context.scope.repository_cutoff,c.cutoff))reject();
   // Existing facts travel once in the combined response. Build a typed view, not another stored record.
@@ -90,7 +133,15 @@ export class RF2Client {
   const deadline=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{abort.abort();reject(Error('Request timed out; completion is unconfirmed.'));},15000);});
   try{return await Promise.race([(async()=>{const r=await send('/api/v1/patients/synthetic-p1/encounters/synthetic-e1/synthetic-rf2'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',credentials:'same-origin',redirect:'error',signal:abort.signal});if(['/respiratory','/gastrointestinal','/gastrointestinal/lookup'].includes(path)&&r.status>=400&&r.status<500&&![408,429].includes(r.status))throw new RF2DefiniteRejection(r.status===409?'Source identity/version conflict. Review the existing source and correct the draft before resubmitting.':'The source request was rejected before append. Correct the draft and review it again.');if(r.status===409&&body!==undefined&&(path==='/save'||path==='/validate')){const failure=object(await readRF2JSON(r));if(failure.code==='rf2_source_review_changed'){exactKeys(failure,['code','request_digest','execution_enabled']);if(failure.execution_enabled!==false||failure.request_digest!==await hash(stable(body)))reject();throw new RF2ReviewChanged();}throw Error('Source conflict: review the original record; no replacement was inserted.');}if(!r.ok)throw Error(r.status===409?'Source conflict: review the original record; no replacement was inserted.':'The exact result could not be confirmed.');return readRF2JSON(r);})(),deadline]);}finally{clearTimeout(timer);}
  }
- async catalog(start:string,end:string):Promise<Catalog>{return decodeRF2Catalog(await this.request('?'+new URLSearchParams({review_start:start,review_end:end})),start,end);}
+ async catalog(start:string,end:string):Promise<Catalog>{
+  const query = new URLSearchParams({review_start:start,review_end:end,paginate:'true'});
+  const first = object(await this.request('?'+query));
+  const raw = 'pagination' in first ? await assembleCatalogPages(first,cursor => {
+   query.set('cursor',cursor);
+   return this.request('?'+query);
+  }) : first;
+  return decodeRF2Catalog(raw,start,end);
+ }
  async importGastrointestinal(repository:string,record:Fact):Promise<Evidence>{validateTransportSchema({repository,record},bundle.roots.GastrointestinalImport,bundle.definitions);const saved=await decodeEvidence(await this.request('/gastrointestinal',{repository,record}),repository);if(saved.fact.kind!=='gastrointestinal_record'||!sameTimestampSerializedRecord(record,saved.fact))reject();return saved;}
  async lookupGastrointestinal(repository:string,record:Fact):Promise<{status:'absent'}|{status:'committed_match';evidence:Evidence}>{validateTransportSchema({repository,record},bundle.roots.GastrointestinalImport,bundle.definitions);const raw=object(await this.request('/gastrointestinal/lookup',{repository,record}));if(raw.status==='absent'&&Object.keys(raw).length===1)return {status:'absent'};if(raw.status!=='committed_match')reject();const e=await decodeEvidence(raw.evidence,repository);if(!sameTimestampSerializedRecord(record,e.fact))reject();return {status:'committed_match',evidence:e};}
  async importRespiratory(repository:string,record:Fact):Promise<Evidence>{validateRespiratoryImport(repository,record);const saved=await decodeEvidence(await this.request('/respiratory',{repository,record}),repository);if(saved.fact.kind!=='respiratory_record'||!sameTimestampSerializedRecord(record,saved.fact))reject();return saved;}

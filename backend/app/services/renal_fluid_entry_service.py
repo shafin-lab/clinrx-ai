@@ -1,10 +1,15 @@
 """Opt-in synthetic RF2 composition. No new clinical fact or execution semantics."""
 import json
+from datetime import datetime
 from decimal import Decimal
 from hashlib import sha256
-from pydantic import ValidationError
+from typing import Annotated
+from pydantic import Field, ValidationError
+from app.api.review_commands import InvalidStateContext, _Envelope
+from app.api.schemas.common import DTO
 from app.api.schemas.renal_fluid_entry import Chart, RenalNote, SourceReview
 from app.demo.authoring import TARGET, EvidenceConflict
+from app.execution.patient_state_v3 import PatientStateScopeV3
 from app.models.clinical.hemodynamics import CirculatoryEvent, ClinicalInstant, RecordedCirculatoryInterval, EvidenceBinding
 from app.models.clinical.recorded_v2 import SourceCode, ExactQuantity, RecordedConcept
 from app.models.clinical.facts import ClinicalObservation
@@ -91,6 +96,15 @@ def time(text):
 def allowed(fact):
     return isinstance(fact,(LaboratoryReport,RespiratoryRecord,GastrointestinalRecord)) or (isinstance(fact,ClinicalObservation) and fact.concept_id in ('synthetic-serum-creatinine','body-weight')) or isinstance(fact,CirculatoryEvent) or fact.kind.startswith('circulatory_')
 
+class CatalogCursor(DTO):
+    scope: PatientStateScopeV3
+    offset: Annotated[int, Field(strict=True, ge=0)]
+
+
+def wire_bytes(value):
+    return len(json.dumps(value, ensure_ascii=False, separators=(',', ':'), allow_nan=False).encode('utf-8'))
+
+
 class RF2Service(RenalFluidProductService):
     def accounting(self):return HistoryAccounting(self.aggregate_budget)
     def require_repo(self,repo,repository):
@@ -131,17 +145,31 @@ class RF2Service(RenalFluidProductService):
         if len(rows)>128:raise QueryLimitExceeded('history family limit')
         return self.bounded_dict({'repository':str(body.repository),'selected':p.model_dump(mode='json'),'items':[self.evidence(repo,x,cutoff,a) for x in rows],'execution_enabled':False})
     def bounded_dict(self,v):
-        if len(json.dumps(v,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode())>self.dependencies.config.max_response_bytes:raise QueryLimitExceeded('response budget exceeded')
+        if wire_bytes(v)>self.dependencies.config.max_response_bytes:raise QueryLimitExceeded('response budget exceeded')
         return v
-    def catalog(self,repo,start=None,end=None):
-        self.require_closed();cutoff=repo.capture_cutoff();a=self.accounting();rows=self.history_rows(repo,cutoff,a)
+    def catalog(self,repo,start=None,end=None,*,paginate=False,cursor=None):
+        self.require_closed()
+        start=start or datetime.fromisoformat('2026-10-08T08:00:00+00:00')
+        end=end or datetime.fromisoformat('2026-10-08T10:00:00+00:00')
+        self.window(start,end)
+        cutoff=repo.capture_cutoff()
+        scope=PatientStateScopeV3(patient_id=TARGET.patient_id,encounter_id=TARGET.encounter_id,review_start=start,review_end=end,repository_cutoff=cutoff)
+        offset=0
+        if paginate:
+            codec=_Envelope(self.dependencies.config.envelope_signing_key,'synthetic-rf2-catalog',CatalogCursor,InvalidStateContext)
+            if cursor is not None:
+                page=codec.verify(cursor)
+                pinned=page.scope.repository_cutoff
+                if (page.scope.target!=TARGET or pinned.repository_id!=cutoff.repository_id or
+                    pinned.fact_watermark>cutoff.fact_watermark or page.scope.review_start!=start or page.scope.review_end!=end):
+                    raise InvalidStateContext('catalog cursor scope mismatch')
+                scope,cutoff,offset=page.scope,pinned,page.offset
+        elif cursor is not None:
+            raise InvalidStateContext('catalog cursor requires pagination')
+
+        a=self.accounting();rows=self.history_rows(repo,cutoff,a)
         terminals={}
         for s in rows:terminals[(s.fact.kind,s.fact.id)]=s
-        from datetime import datetime
-        from app.execution.patient_state_v3 import PatientStateScopeV3
-        start=start or datetime.fromisoformat('2026-10-08T08:00:00+00:00');end=end or datetime.fromisoformat('2026-10-08T10:00:00+00:00')
-        self.window(start,end)
-        scope=PatientStateScopeV3(patient_id=TARGET.patient_id,encounter_id=TARGET.encounter_id,review_start=start,review_end=end,repository_cutoff=cutoff)
         base=self.build(repo,scope,a)
         # Source ownership remains explicit; generic weights are read-only.
         selected=[s for s in terminals.values() if category(s.fact) or s.fact.kind in ('circulatory_pressure','circulatory_cardiac','circulatory_lactate','circulatory_oxygen','circulatory_perfusion','circulatory_vasoactive') or (isinstance(s.fact,ClinicalObservation) and s.fact.concept_id in ('body-weight','synthetic-serum-creatinine'))]
@@ -149,33 +177,66 @@ class RF2Service(RenalFluidProductService):
         extras=[s for s in selected if (s.fact.kind,s.fact.id,s.fact.revision) not in base_keys]
         # Keep later-issued source reports out of an earlier review window. Reports
         # with no usable availability time remain visible with their time gap explicit.
-        laboratory_visible={}
+        visible={'laboratory_reports':{},'respiratory_records':{},'gastrointestinal_records':{}}
         for stored in rows:
-            if isinstance(stored.fact,LaboratoryReport) and available_by(stored.fact,end) and (stored.fact.semantic_time.anchor is None or stored.fact.semantic_time.anchor<=end):
-                laboratory_visible[stored.fact.id]=stored
-        laboratory_reports=[]
-        for stored in laboratory_visible.values():
-            visible_cutoff=cutoff if terminals[(stored.fact.kind,stored.fact.id)]==stored else cutoff.model_copy(update={'fact_watermark':stored.ingestion.ingestion_sequence})
-            laboratory_reports.append(self.evidence(repo,stored,visible_cutoff,a))
-        gi_visible={}
-        for stored in rows:
-            if isinstance(stored.fact,GastrointestinalRecord) and available_by(stored.fact,end) and (stored.fact.semantic_time.anchor is None or stored.fact.semantic_time.anchor<=end):gi_visible[stored.fact.id]=stored
-        gastrointestinal_records=[]
-        for stored in gi_visible.values():
-            visible_cutoff=cutoff if terminals[(stored.fact.kind,stored.fact.id)]==stored else cutoff.model_copy(update={'fact_watermark':stored.ingestion.ingestion_sequence})
-            gastrointestinal_records.append(self.evidence(repo,stored,visible_cutoff,a))
-        # Select terminals after availability filtering so later corrections cannot
-        # erase a predecessor that was available at the requested review time.
-        respiratory_visible={}
-        for stored in rows:
-            if isinstance(stored.fact,RespiratoryRecord) and available_by(stored.fact,end):
-                respiratory_visible[stored.fact.id]=stored
-        respiratory_records=[]
-        for stored in respiratory_visible.values():
-            terminal=terminals[(stored.fact.kind,stored.fact.id)]
-            visible_cutoff=cutoff if terminal==stored else cutoff.model_copy(update={'fact_watermark':stored.ingestion.ingestion_sequence})
-            respiratory_records.append(self.evidence(repo,stored,visible_cutoff,a))
-        return self.bounded_dict({'repository':str(cutoff.repository_id),'cutoff':cutoff.model_dump(mode='json'),'combined':base.model_dump(mode='json'),'items':[self.evidence(repo,s,cutoff,a) for s in extras],'laboratory_reports':laboratory_reports,'respiratory_records':respiratory_records,'gastrointestinal_records':gastrointestinal_records,'execution_enabled':False})
+            fact=stored.fact
+            if isinstance(fact,RespiratoryRecord):
+                section='respiratory_records'
+            elif isinstance(fact,(LaboratoryReport,GastrointestinalRecord)):
+                if fact.semantic_time.anchor is not None and fact.semantic_time.anchor>end:
+                    continue
+                section='laboratory_reports' if isinstance(fact,LaboratoryReport) else 'gastrointestinal_records'
+            else:
+                continue
+            if available_by(fact,end):
+                visible[section][fact.id]=stored
+
+        # Each continuation traverses the same ordered ingestion prefix and window.
+        entries=[('items',stored,cutoff) for stored in extras]
+        for section, records in visible.items():
+            for stored in records.values():
+                terminal=terminals[(stored.fact.kind,stored.fact.id)]
+                visible_cutoff=cutoff if terminal==stored else cutoff.model_copy(update={'fact_watermark':stored.ingestion.ingestion_sequence})
+                entries.append((section,stored,visible_cutoff))
+        payload={'repository':str(cutoff.repository_id),'cutoff':cutoff.model_dump(mode='json'),
+                 'items':[],'laboratory_reports':[],'respiratory_records':[],'gastrointestinal_records':[],'execution_enabled':False}
+        if cursor is None:
+            payload['combined']=base.model_dump(mode='json')
+        if paginate:
+            return self.catalog_page(repo,scope,offset,codec,payload,entries,a)
+        for section,stored,visible_cutoff in entries:
+            payload[section].append(self.evidence(repo,stored,visible_cutoff,a))
+        return self.bounded_dict(payload)
+
+    def catalog_page(self,repo,scope,offset,codec,payload,entries,accounting):
+        total=len(entries)
+        if offset and offset>=total:
+            raise InvalidStateContext('catalog cursor offset is unavailable')
+        limit=min(self.dependencies.config.max_response_bytes,2*1024*1024)
+        pagination={'offset':offset,'total':total,'next_cursor':None}
+        payload['pagination']=pagination
+        size=wire_bytes(payload)
+        # The encoded token for the largest offset reserves enough bytes for any successor.
+        largest=codec.issue(CatalogCursor(scope=scope,offset=total))
+        cursor_overhead=wire_bytes(largest)-wire_bytes(None)
+        next_offset=offset
+        for section,stored,visible_cutoff in entries[offset:]:
+            item=self.evidence(repo,stored,visible_cutoff,accounting)
+            increment=wire_bytes(item)+bool(payload[section])
+            remaining=next_offset+1<total
+            if size+increment+(cursor_overhead if remaining else 0)>limit:
+                break
+            payload[section].append(item)
+            size+=increment
+            next_offset+=1
+        if next_offset<total:
+            if 'combined' not in payload and next_offset==offset:
+                raise QueryLimitExceeded('catalog evidence item exceeds page budget')
+            pagination['next_cursor']=codec.issue(CatalogCursor(scope=scope,offset=next_offset))
+            size+=wire_bytes(pagination['next_cursor'])-wire_bytes(None)
+        if size>limit:
+            raise QueryLimitExceeded('catalog page exceeds response budget')
+        return self.bounded_dict(payload)
     def save_gastrointestinal_record(self,repo,repository,record):
         return save_gastrointestinal_record(self,repo,repository,record)
     def save_respiratory_record(self,repo,repository,record):
