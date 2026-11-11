@@ -237,11 +237,13 @@ def test_m12_upgrade_preserves_revision_links_repository_identity_and_sequence(t
     assert after.pop('alembic_version') == [('m12_0013',)]
     assert before.pop('alembic_version') == [('m11_0012',)]
     assert after == before
-    with transaction(engine) as repository:
-        retained_cutoff = repository.capture_cutoff()
-        assert retained_cutoff.repository_id == original_cutoff.repository_id
-        assert retained_cutoff.fact_watermark == original_cutoff.fact_watermark
-        assert repository.load_fact(successor.reference, target=TARGET).fact == successor
-        following = repository.append_fact(fact(id='next'), target=TARGET)
-        assert following.ingestion.ingestion_sequence == 81
+    with monkeypatch.context() as patch:
+        patch.setattr(database_module, 'SCHEMA_REVISION', 'm12_0013')
+        with transaction(engine) as repository:
+            retained_cutoff = repository.capture_cutoff()
+            assert retained_cutoff.repository_id == original_cutoff.repository_id
+            assert retained_cutoff.fact_watermark == original_cutoff.fact_watermark
+            assert repository.load_fact(successor.reference, target=TARGET).fact == successor
+            following = repository.append_fact(fact(id='next'), target=TARGET)
+            assert following.ingestion.ingestion_sequence == 81
     engine.dispose()

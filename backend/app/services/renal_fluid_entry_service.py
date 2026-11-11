@@ -12,12 +12,14 @@ from app.demo.authoring import TARGET, EvidenceConflict
 from app.execution.patient_state_v3 import PatientStateScopeV3
 from app.models.clinical.hemodynamics import CirculatoryEvent, ClinicalInstant, RecordedCirculatoryInterval, EvidenceBinding
 from app.models.clinical.recorded_v2 import SourceCode, ExactQuantity, RecordedConcept, instant
-from app.models.clinical.facts import ClinicalObservation
+from app.models.clinical.facts import ClinicalObservation, MedicationAdministration
 from app.models.clinical.laboratory import LaboratoryReport
 from app.models.clinical.respiratory import RespiratoryRecord
 from app.models.clinical.gastrointestinal import GastrointestinalRecord
+from app.models.clinical.neurological import NeurologicalRecord
 from app.models.clinical.reproductive import ReproductiveRecord
 from app.services.gastrointestinal_service import save_gastrointestinal_record
+from app.services.neurological_service import save_neurological_record
 from app.services.reproductive_service import save_reproductive_record
 from app.services.respiratory_service import available_by, save_respiratory_record
 from app.models.clinical.common import Reference
@@ -100,11 +102,29 @@ SUPPLEMENTAL_SECTIONS = {
     RespiratoryRecord: 'respiratory_records',
     GastrointestinalRecord: 'gastrointestinal_records',
     ReproductiveRecord: 'reproductive_records',
+    NeurologicalRecord: 'neurological_records',
+    MedicationAdministration: 'medication_administrations',
 }
 
 
 def allowed(fact):
     return type(fact) in SUPPLEMENTAL_SECTIONS or (isinstance(fact,ClinicalObservation) and fact.concept_id in ('synthetic-serum-creatinine','body-weight')) or isinstance(fact,CirculatoryEvent) or fact.kind.startswith('circulatory_')
+
+def supplemental_available_by(fact, end):
+    if isinstance(fact, MedicationAdministration):
+        times = (fact.administered_at, fact.time.recorded, fact.provenance.recorded_at)
+        return all(point is None or instant(point) <= instant(end) for point in times)
+    if not available_by(fact, end):
+        return False
+    if isinstance(fact, (ReproductiveRecord, NeurologicalRecord)):
+        point = fact.semantic_time
+        latest = point.upper or point.anchor
+        return latest is None or instant(latest) <= instant(end)
+    if isinstance(fact, (LaboratoryReport, GastrointestinalRecord)):
+        anchor = fact.semantic_time.anchor
+        return anchor is None or anchor <= end
+    return True
+
 
 class CatalogCursor(DTO):
     scope: PatientStateScopeV3
@@ -191,16 +211,8 @@ class RF2Service(RenalFluidProductService):
         for stored in rows:
             fact=stored.fact
             section=SUPPLEMENTAL_SECTIONS.get(type(fact))
-            if section is None or not available_by(fact,end):
+            if section is None or not supplemental_available_by(fact, end):
                 continue
-            if isinstance(fact,ReproductiveRecord):
-                point=fact.semantic_time
-                latest=point.upper or point.anchor
-                if latest is not None and instant(latest)>instant(end):
-                    continue
-            elif isinstance(fact,(LaboratoryReport,GastrointestinalRecord)):
-                if fact.semantic_time.anchor is not None and fact.semantic_time.anchor>end:
-                    continue
             visible[section][fact.id]=stored
 
         # Each continuation traverses the same ordered ingestion prefix and window.
@@ -253,6 +265,8 @@ class RF2Service(RenalFluidProductService):
         return save_gastrointestinal_record(self,repo,repository,record)
     def save_reproductive_record(self,repo,repository,record):
         return save_reproductive_record(self,repo,repository,record)
+    def save_neurological_record(self,repo,repository,record):
+        return save_neurological_record(self,repo,repository,record)
     def save_respiratory_record(self,repo,repository,record):
         return save_respiratory_record(self,repo,repository,record)
     def save_laboratory_report(self,repo,report):

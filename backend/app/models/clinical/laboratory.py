@@ -16,7 +16,7 @@ SUPPORTED_LAB_MAPPINGS = frozenset({
     'total_bilirubin', 'direct_bilirubin', 'ast', 'alt', 'alp', 'ggt', 'albumin', 'total_protein', 'amylase', 'lipase',
     'hemoglobin', 'hematocrit', 'platelets', 'pt', 'inr', 'aptt', 'thrombin_time',
     'fibrinogen', 'total_calcium', 'ionised_calcium', 'd_dimer', 'anti_xa',
-    'creatinine', 'urea', 'bun', 'sodium', 'potassium', 'urine_appearance', 'urine_colour',
+    'creatinine', 'urea', 'bun', 'sodium', 'potassium', 'glucose', 'urine_appearance', 'urine_colour',
     'urine_specific_gravity', 'urine_ph', 'urine_protein', 'urine_glucose',
     'urine_ketones', 'urine_blood', 'urine_leukocyte_esterase', 'urine_nitrite',
     'urine_bilirubin', 'urine_urobilinogen', 'urine_rbc', 'urine_wbc',

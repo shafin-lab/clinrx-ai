@@ -15,7 +15,7 @@ export const needsHistoricalReview=(r:SourceReview)=>!equal(r.selected,r.termina
 export interface Draft {source_review?:SourceReview[];repository:string;id:string;revision:string;actor:string;recorded_at:string;chart:Chart|null;note:RenalNote|null;predecessor:Pin|null;reason:string|null}
 export interface Fact {kind:string;id:string;revision:string;binding:{target:{patient_id:string;encounter_id:string}};[key:string]:unknown}
 export interface Evidence {repository:string;fact:Fact;canonical_fact:string;digest:string;ingestion:{repository_id:string;ingestion_sequence:number;[key:string]:unknown};cutoff:number;terminal_reference:Ref;superseded:boolean;metadata:{version:1;chart:Chart|null;note:RenalNote|null;source_review?:SourceReview[]}|null}
-export interface Catalog {repository:string;cutoff:{repository_id:string;fact_watermark:number;captured_at:string};items:Evidence[];laboratory_reports:Evidence[];respiratory_records?:Evidence[];gastrointestinal_records?:Evidence[];reproductive_records?:Evidence[];combined:RenalFluidState;execution_enabled:false}
+export interface Catalog {repository:string;cutoff:{repository_id:string;fact_watermark:number;captured_at:string};items:Evidence[];laboratory_reports:Evidence[];respiratory_records?:Evidence[];gastrointestinal_records?:Evidence[];reproductive_records?:Evidence[];neurological_records?:Evidence[];medication_administrations?:Evidence[];combined:RenalFluidState;execution_enabled:false}
 export interface Result {source_review?:SourceReview[];status:'validated'|'saved'|'source_replay'|'absent';request_digest:string;request_canonical:string;evidence?:Evidence;fact?:Fact;replay_reference?:Ref|null;execution_enabled:false}
 const bundle=schemas as unknown as {roots:Record<string,Schema>;definitions:Record<string,Schema>};
 export const stable=(v:unknown):string=>JSON.stringify(v,(_k,x:unknown)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.entries(x).sort(([a],[b])=>a<b?-1:a>b?1:0)):x);
@@ -30,16 +30,18 @@ function sourceReviews(raw:unknown,pins:Pin[]):SourceReview[]{
 }
 function exactKeys(v:object,names:string[]){if(Object.keys(v).sort().join()!==names.sort().join())reject();}
 function canonical(raw:string){const v:unknown=parseRF2JSON(raw);if(stable(v)!==raw)reject();return v;}
+const clinicalRecordSchemas:Record<string,string>={
+ observation:'ClinicalObservation',laboratory_report:'LaboratoryReport',
+ gastrointestinal_record:'GastrointestinalRecord',reproductive_record:'ReproductiveRecord',
+ respiratory_record:'RespiratoryRecord',neurological_record:'NeurologicalRecord',
+ medication_administration:'MedicationAdministration',
+};
 export async function decodeEvidence(raw:unknown,repository:string,expected?:Pin):Promise<Evidence>{
  const e=object(raw) as unknown as Evidence;exactKeys(e,['repository','fact','canonical_fact','digest','ingestion','cutoff','terminal_reference','superseded','metadata']);const f=object(e.fact);validateTransportSchema(e.ingestion,bundle.roots.IngestionMetadata,bundle.definitions);
  if(e.repository!==repository||f.binding===undefined||e.fact.binding.target.patient_id!=='synthetic-p1'||e.fact.binding.target.encounter_id!=='synthetic-e1'||typeof e.canonical_fact!=='string'||!equal(canonical(e.canonical_fact),e.fact)||await hash(e.canonical_fact)!==e.digest||e.ingestion.repository_id!==repository||!Number.isSafeInteger(e.ingestion.ingestion_sequence)||e.ingestion.ingestion_sequence<1||!Number.isSafeInteger(e.cutoff)||e.cutoff<e.ingestion.ingestion_sequence)reject();
- if(f.kind==='observation')validateTransportSchema(f,bundle.roots.ClinicalObservation,bundle.definitions);
- else if(f.kind==='laboratory_report')validateTransportSchema(f,bundle.roots.LaboratoryReport,bundle.definitions);
- else if(f.kind==='gastrointestinal_record')validateTransportSchema(f,bundle.roots.GastrointestinalRecord,bundle.definitions);
- else if(f.kind==='reproductive_record')validateTransportSchema(f,bundle.roots.ReproductiveRecord,bundle.definitions);
- else if(f.kind==='respiratory_record')validateTransportSchema(f,bundle.roots.RespiratoryRecord,bundle.definitions);
+ if(typeof f.kind==='string'&&Object.hasOwn(clinicalRecordSchemas,f.kind))validateTransportSchema(f,bundle.roots[clinicalRecordSchemas[f.kind]],bundle.definitions);
  else{const c=circulatory as unknown as {definitions:Record<string,Schema>};validateTransportSchema({fact:e.fact,ingestion:e.ingestion},c.definitions.CirculatoryHistoricalFact,c.definitions);}
- if(!['observation','laboratory_report','respiratory_record','gastrointestinal_record','reproductive_record','circulatory_event'].includes(e.fact.kind)&&!e.fact.kind.startsWith('circulatory_'))reject();
+ if(!Object.hasOwn(clinicalRecordSchemas,e.fact.kind)&&!e.fact.kind.startsWith('circulatory_'))reject();
  if(e.fact.kind==='observation'&&!['body-weight','synthetic-serum-creatinine'].includes(String(f.concept_id)))reject();
  if(e.terminal_reference.kind!==e.fact.kind||e.terminal_reference.id!==e.fact.id||typeof e.terminal_reference.version!=='string'||e.superseded!==(e.terminal_reference.version!==e.fact.revision))reject();
  if(expected&&(expected.repository!==repository||!equal(expected.reference,{kind:e.fact.kind,id:e.fact.id,version:e.fact.revision})||expected.digest!==e.digest||expected.ingestion!==e.ingestion.ingestion_sequence||expected.cutoff>e.cutoff))reject();
@@ -73,19 +75,24 @@ function sameTimestampSerializedRecord(sent:unknown,stored:unknown,path=''):bool
 export class RF2ReviewChanged extends Error {constructor(){super('Selected-source review changed; this request was rejected before append.');}}
 const catalogCollections = {
  items:4096, laboratory_reports:1024, respiratory_records:1024, gastrointestinal_records:1024, reproductive_records:1024,
+ neurological_records:1024, medication_administrations:1024,
 } as const;
 const collectionNames = Object.keys(catalogCollections) as (keyof typeof catalogCollections)[];
 const maxCatalogRecords = Object.values(catalogCollections).reduce((a,b) => a+b, 0);
+const paginatedRequired = ['items','laboratory_reports','respiratory_records','gastrointestinal_records'];
+const expectedKinds = {
+ laboratory_reports:'laboratory_report', respiratory_records:'respiratory_record', gastrointestinal_records:'gastrointestinal_record',
+ reproductive_records:'reproductive_record', neurological_records:'neurological_record', medication_administrations:'medication_administration',
+} as const;
+const historicalKinds=new Set<string>(Object.values(expectedKinds));
 
 async function assembleCatalogPages(first: Record<string, unknown>, next: (cursor:string) => Promise<unknown>) {
  validateTransportSchema(first.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);
  const cutoff = first.cutoff as Catalog['cutoff'];
  if (first.repository !== cutoff.repository_id) reject();
- const names=collectionNames.filter(name=>name!=='reproductive_records'||name in first);
- const catalog = {...first, items:[] as unknown[], laboratory_reports:[] as unknown[],
-  respiratory_records:[] as unknown[], gastrointestinal_records:[] as unknown[], reproductive_records:[] as unknown[]};
- if(!names.includes('reproductive_records'))delete (catalog as Record<string,unknown>).reproductive_records;
- delete (catalog as Record<string,unknown>).pagination;
+ const names=collectionNames.filter(name=>paginatedRequired.includes(name)||name in first);
+ const {pagination:_,...catalog}=first;
+ const accumulated:Record<string,unknown[]>=Object.fromEntries(names.map(name=>[name,[]]));
  const cursors = new Set<string>();
  let page = first, offset = 0, total: number | undefined;
  while (true) {
@@ -101,14 +108,14 @@ async function assembleCatalogPages(first: Record<string, unknown>, next: (curso
   const before = offset;
   for (const name of names) {
    const records = page[name];
-   if (!Array.isArray(records) || records.length + catalog[name].length > catalogCollections[name]) reject();
-   catalog[name].push(...records);
+   if (!Array.isArray(records) || records.length + accumulated[name].length > catalogCollections[name]) reject();
+   accumulated[name].push(...records);
    offset += records.length;
   }
   if (offset > total || (!initial && offset === before)) reject();
   if (offset === total) {
    if (cursor !== null) reject();
-   return catalog;
+   return {...catalog,...accumulated};
   }
   if (typeof cursor !== 'string' || !/^[A-Za-z0-9_.=-]{1,4096}$/.test(cursor) || cursors.has(cursor)) reject();
   cursors.add(cursor);
@@ -117,7 +124,13 @@ async function assembleCatalogPages(first: Record<string, unknown>, next: (curso
 }
 
 export async function decodeRF2Catalog(raw:unknown,start:string,end:string):Promise<Catalog>{const c=object(raw) as unknown as Catalog;
-  exactKeys(c,['repository','cutoff','items','laboratory_reports','combined','execution_enabled',...('respiratory_records' in c?['respiratory_records']:[]),...('gastrointestinal_records' in c?['gastrointestinal_records']:[]),...('reproductive_records' in c?['reproductive_records']:[])]);validateTransportSchema(c.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);if(c.execution_enabled!==false||c.repository!==c.cutoff.repository_id||!Array.isArray(c.items)||c.items.length>4096||!Array.isArray(c.laboratory_reports)||c.laboratory_reports.length>1024)reject();if(c.respiratory_records!==undefined&&(!Array.isArray(c.respiratory_records)||c.respiratory_records.length>1024))reject();if(c.gastrointestinal_records!==undefined&&(!Array.isArray(c.gastrointestinal_records)||c.gastrointestinal_records.length>1024))reject();if(c.reproductive_records!==undefined&&(!Array.isArray(c.reproductive_records)||c.reproductive_records.length>1024))reject();const combined=await decodeRenalFluid(c.combined,{patient_id:'synthetic-p1',encounter_id:'synthetic-e1',start,end});if(!equal(combined.context.scope.repository_cutoff,c.cutoff))reject();
+  const names=collectionNames.filter(name=>name==='items'||name==='laboratory_reports'||name in c);
+  exactKeys(c,['repository','cutoff','combined','execution_enabled',...names]);
+  validateTransportSchema(c.cutoff,bundle.roots.RepositoryCutoff,bundle.definitions);
+  if(c.execution_enabled!==false||c.repository!==c.cutoff.repository_id)reject();
+  for(const name of names){const rows=c[name];if(!Array.isArray(rows)||rows.length>catalogCollections[name])reject();}
+  const combined=await decodeRenalFluid(c.combined,{patient_id:'synthetic-p1',encounter_id:'synthetic-e1',start,end});
+  if(!equal(combined.context.scope.repository_cutoff,c.cutoff))reject();
   // Existing facts travel once in the combined response. Build a typed view, not another stored record.
   const baseFacts=[...combined.circulatory.assembly.snapshot.items,...combined.laboratory.observations];
   const derived:Evidence[]=[];
@@ -126,7 +139,15 @@ export async function decodeRF2Catalog(raw:unknown,start:string,end:string):Prom
    derived.push({repository:c.repository,fact:f,canonical_fact:raw,digest:item.expected_digest,ingestion:item.ingestion,cutoff:c.cutoff.fact_watermark,terminal_reference:{kind:f.kind,id:f.id,version:f.revision},superseded:false,metadata});
   }
   c.items=[...derived,...c.items];
-  const keys=new Set<string>();for(const item of [...c.items,...c.laboratory_reports,...(c.respiratory_records??[]),...(c.gastrointestinal_records??[]),...(c.reproductive_records??[])]){await decodeEvidence(item,c.repository);if((['respiratory_record','gastrointestinal_record','reproductive_record','laboratory_report'].includes(item.fact.kind)?item.cutoff>c.cutoff.fact_watermark:item.cutoff!==c.cutoff.fact_watermark)||keys.has(key(pin(item))))reject();keys.add(key(pin(item)));}if(c.laboratory_reports.some(item=>item.fact.kind!=='laboratory_report')||c.respiratory_records?.some(item=>item.fact.kind!=='respiratory_record')||c.gastrointestinal_records?.some(item=>item.fact.kind!=='gastrointestinal_record')||c.reproductive_records?.some(item=>item.fact.kind!=='reproductive_record'))reject();return c;
+  const keys=new Set<string>();
+  for(const name of names)for(const item of c[name]??[]){
+   await decodeEvidence(item,c.repository);
+   const itemKey=key(pin(item));
+   if(keys.has(itemKey)||item.cutoff>c.cutoff.fact_watermark||
+      (name==='items'?!historicalKinds.has(item.fact.kind)&&item.cutoff!==c.cutoff.fact_watermark:item.fact.kind!==expectedKinds[name]))reject();
+   keys.add(itemKey);
+  }
+  return c;
  }
 export class RF2Client {
  private reviewed=new Map<string,Fact>();

@@ -20,6 +20,7 @@ from app.models.clinical.antimicrobials import (AntimicrobialOrder,
 from app.models.clinical.laboratory import LaboratoryReport
 from app.models.clinical.respiratory import RespiratoryRecord
 from app.models.clinical.gastrointestinal import GastrointestinalRecord
+from app.models.clinical.neurological import NeurologicalRecord
 from app.models.clinical.reproductive import ReproductiveRecord
 from app.models.clinical.transfusion import M10_FACTS, M10Record
 
@@ -46,6 +47,7 @@ SUPPORTED_FACTS = {
     'respiratory_record': RespiratoryRecord,
     'gastrointestinal_record': GastrointestinalRecord,
     'reproductive_record': ReproductiveRecord,
+    'neurological_record': NeurologicalRecord,
 }
 SupportedFact = (ClinicalObservation | MedicationOrder | MedicationAdministration | ClinicalInference
     | Specimen | DirectExamination | CultureFinding | IsolateIdentification | SusceptibilityResult | ResistanceFinding | MolecularResult | BloodCultureSet | BloodCultureBottle | AntimicrobialOrder | CompletedAntimicrobialAdministration | AntimicrobialNonDelivery | LaboratoryReport | RespiratoryRecord | GastrointestinalRecord | ReproductiveRecord)

@@ -8,6 +8,28 @@ beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configu
 afterAll(()=>Object.defineProperty(globalThis,'crypto',{value:oldCrypto,configurable:true}));
 afterEach(()=>vi.unstubAllGlobals());
 
+it('assembles a source-pinned neurological examination from the shared catalog pages',async()=>{
+ const first=structuredClone(fixture.catalog);
+ const fact={...gastrointestinal,kind:'neurological_record',category:'exam',medication:null,
+  exam:{eye:3,verbal:'untestable',motor:6,verbal_reason:'Intubated',rass:-1,pupils:'Equal and reactive'}};
+ const canonical_fact=stable(fact);
+ const record={repository:first.repository,fact,canonical_fact,digest:await hash(canonical_fact),
+  ingestion:fixture.weight.ingestion,cutoff:first.cutoff.fact_watermark,
+  terminal_reference:{kind:fact.kind,id:fact.id,version:fact.revision},superseded:false,metadata:null};
+ const header={repository:first.repository,cutoff:first.cutoff,execution_enabled:false,items:[],
+  laboratory_reports:[],respiratory_records:[],gastrointestinal_records:[],reproductive_records:[],
+  neurological_records:[],medication_administrations:[]};
+ const responses=[
+  {...header,combined:first.combined,pagination:{offset:0,total:1,next_cursor:'exam.page'}},
+  {...header,neurological_records:[record],pagination:{offset:0,total:1,next_cursor:null}},
+ ];
+ const send=vi.fn<typeof fetch>().mockImplementation(async()=>new Response(JSON.stringify(responses.shift())));
+ const result=await new RF2Client(send).catalog('2026-10-08T08:00:00Z','2026-10-08T10:00:00Z');
+ expect(result.neurological_records).toEqual([record]);
+ expect(result.medication_administrations).toEqual([]);
+ expect(send).toHaveBeenCalledTimes(2);
+});
+
 it('accepts a calendar due date in a reproductive source and rejects impossible dates',()=>{
  const source={...gastrointestinal,kind:'reproductive_record',category:'pregnancy_status',
   pregnancy:{phase:'antepartum',gestational_weeks:32,gestational_days:4,estimated_due_date:'2026-11-29',

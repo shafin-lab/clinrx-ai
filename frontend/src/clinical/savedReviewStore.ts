@@ -1,6 +1,6 @@
 import {parseRF2JSON} from '../api/rf2JSON';
 
-export type ReviewDomain='M7'|'M8'|'M9'|'M11'|'M12';
+export type ReviewDomain='M7'|'M8'|'M9'|'M11'|'M12'|'M13';
 export interface ReviewScope {domain:ReviewDomain;patient:string;encounter:string;repository:string}
 export interface SavedReview<T=Record<string,unknown>> {
  format:'clinrx-local-review';version:1;id:string;domain:ReviewDomain;patient:string;encounter:string;repository:string;
@@ -27,7 +27,7 @@ export function validReview(value:unknown,scope:ReviewScope,id:string):value is 
  if(!ownRecord(value.period)||!validTime(value.period.start)||!validTime(value.period.end)||Date.parse(value.period.end as string)<=Date.parse(value.period.start as string))return false;
  if(!ownRecord(value.snapshot)||!nonempty(value.snapshot.signature,32768)||value.snapshot.cutoff===null||value.snapshot.cutoff===undefined||!Array.isArray(value.snapshot.pins)||value.snapshot.pins.length>MAX_PINS||!value.snapshot.pins.every(validPin))return false;
  if(!ownRecord(value.draft)||!nonempty(value.draft.reviewer,120)||!nonempty(value.draft.rationale,2000)||!nonempty(value.draft.nextReview,250)||!validTime(value.recordedAt))return false;
- if(scope.domain==='M12'&&(typeof value.draft.plan!=='string'||value.draft.plan.length>2000))return false;
+ if((scope.domain==='M12'||scope.domain==='M13')&&(typeof value.draft.plan!=='string'||value.draft.plan.length>2000))return false;
  try{return JSON.stringify(value).length<=MAX_RECORD_BYTES;}catch{return false;}
 }
 function getStorage(storage?:ReviewStorage):ReviewStorage{
