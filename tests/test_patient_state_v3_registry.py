@@ -2,6 +2,7 @@
 import pytest
 from app.persistence import mapping as m
 from app.models.clinical import hemodynamics as h
+from app.models.clinical.neurological import NeurologicalRecord
 from app.models.clinical.reproductive import ReproductiveRecord
 from app.models.clinical import transfusion as t
 from app.execution.patient_state_v3_inference import build_circulatory_timing_inference, CirculatoryInferenceError
@@ -31,6 +32,7 @@ def test_complete_admission_registry_includes_only_explicitly_supported_domains(
         'laboratory_report':__import__('app.models.clinical.laboratory',fromlist=['LaboratoryReport']).LaboratoryReport,
         'gastrointestinal_record':__import__('app.models.clinical.gastrointestinal',fromlist=['GastrointestinalRecord']).GastrointestinalRecord,
         'reproductive_record':ReproductiveRecord,
+        'neurological_record':NeurologicalRecord,
         'respiratory_record':__import__('app.models.clinical.respiratory',fromlist=['RespiratoryRecord']).RespiratoryRecord,
         'transfusion_administration':t.TransfusionAdministration,
         'haemostatic_medication_course':t.HaemostaticMedicationCourse,

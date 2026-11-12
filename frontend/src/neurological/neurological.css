@@ -1,0 +1,28 @@
+.m13-workspace { max-width: 1040px; margin: 1.4rem auto; color: #20373d; }
+.m13-heading, .m13-summary { display: flex; justify-content: space-between; align-items: center; gap: .8rem; flex-wrap: wrap; }
+.m13-heading h2 { font-size: clamp(1.55rem, 3vw, 2.05rem); margin: .25rem 0; }
+.m13-tabs { display: flex; flex-wrap: wrap; gap: .28rem; margin: 1rem 0; border-bottom: 1px solid #c6dadd; }
+.m13-card, .m13-summary { background: white; border: 1px solid #c6dadd; border-radius: .75rem; padding: 1rem 1.2rem; margin-block: .75rem; }
+.m13-card article + article, .m13-history article + article { border-top: 1px solid #d7e1e8; margin-top: .85rem; padding-top: .7rem; }
+.m13-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 1rem; }
+.m13-card h3, .m13-card h4, .m13-summary h3 { margin: .3rem 0 .65rem; }
+.m13-workspace p, .m13-summary p { margin: .35rem 0 .65rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.m13-workspace small { display: block; color: #4c666e; margin: .3rem 0; }
+.m13-workspace button, .m13-summary button { padding: .5rem .7rem; border: 1px solid #b5ced3; border-radius: 6px; background: #f4f9f9; color: #224952; margin: .2rem .25rem .2rem 0; }
+.m13-tabs button[aria-selected=true] { background: #126775; border-color: #126775; color: #fff; }
+.m13-workspace button:disabled { opacity: .55; }
+.m13-workspace .m13-link { background: transparent; border: 0; text-decoration: underline; text-align: left; padding: .25rem .3rem; }
+.m13-medications, .m13-medication-context ul { padding-left: 1.25rem; }
+.m13-medication-context { margin-top: .8rem; }
+.m13-laboratory { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: left; }
+.m13-laboratory th, .m13-laboratory td { overflow-wrap: anywhere; padding: .5rem .3rem; border-bottom: 1px solid #d8e5e6; vertical-align: top; }
+.m13-card fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.m13-card label { display: block; margin-bottom: .75rem; }
+.m13-card label input, .m13-card label textarea { display: block; box-sizing: border-box; width: min(100%, 40rem); padding: .6rem; border: 1px solid #b5ced3; border-radius: 6px; font: inherit; color: #20373d; }
+.m13-card label textarea { min-height: 84px; }
+.m13-workspace dialog { width: min(36rem, 90vw); border: 1px solid #a8bac5; border-radius: .75rem; padding: 1.25rem; }
+.m13-workspace dialog::backdrop { background: #10293899; }
+.m13-workspace pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.m13-workspace [role=alert] { padding: .65rem; background: #fff1d5; color: #67450d; }
+.m13-workspace [hidden] { display: none !important; }
+@media (max-width: 540px) { .m13-laboratory { font-size: .9rem; } }

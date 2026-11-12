@@ -284,7 +284,7 @@ def test_additive_migration_preserves_old_storage(tmp_path,monkeypatch,fail):
             after=snapshot()
             assert set(after)-set(before)=={'micro_antimicrobial_execution','circulatory_execution', 'm10_command', 'm10_attachment'}
             assert all(after[k]==v for k,v in before.items() if k!='alembic_version')
-            assert after['alembic_version']==[('m12_0013',)]
+            assert after['alembic_version']==[('m13_0014',)]
     finally:
         if fail:event.remove(engine,'after_cursor_execute',crash)
         engine.dispose()
@@ -298,7 +298,7 @@ def test_schema_head_and_metadata(database):
     from app.persistence.entities import Base
     from test_persistence import ROOT
     scripts=ScriptDirectory.from_config(Config(str(ROOT/'backend/alembic.ini')))
-    assert scripts.get_heads()==['m12_0013']
+    assert scripts.get_heads()==['m13_0014']
     assert scripts.get_revision('m6_0007').down_revision=='m6_0006'
     with database.connect() as conn: assert compare_metadata(MigrationContext.configure(conn),Base.metadata)==[]
 
