@@ -8,13 +8,14 @@ import type {CirculatoryState} from '../api/circulatoryTypes';
 import {M10Client,matchesM10Snapshot} from '../transfusion/client';
 import type {M10Read} from '../transfusion/types';
 export interface PatientEvidenceState {antibiotics?:AntibioticBundle;antibioticError?:string;rf2?:Catalog;retainedRF2?:Catalog;state?:CirculatoryState;renalFluid?:RenalFluidState;retainedState?:CirculatoryState;m10:M10Read;loading:boolean;error:string;refresh:()=>Promise<void>}
-export function usePatientEvidenceState(client:CirculatoryClient,config:{patient:string;encounter:string;start:string;end:string}):PatientEvidenceState{
+export function usePatientEvidenceState(client:CirculatoryClient,config:{patient:string;encounter:string;start:string;end:string},{offline=false}:{offline?:boolean}={}):PatientEvidenceState{
  const [antibiotics,setAntibiotics]=useState<AntibioticBundle>();const [antibioticError,setAntibioticError]=useState('');
  const [rf2,setRF2]=useState<Catalog>();const retainedRF2=useRef<Catalog|undefined>(undefined);const [renalFluid,setRenalFluid]=useState<RenalFluidState>();
  const [state,setState]=useState<CirculatoryState>(),[loading,setLoading]=useState(true),[error,setError]=useState('');
  const [m10Client]=useState(()=>new M10Client()),[m10,setM10]=useState<M10Read>({loading:import.meta.env.VITE_SYNTHETIC_M10==='true'});
  const generation=useRef(0),retained=useRef<CirculatoryState|undefined>(undefined);
  const refresh=useCallback(async()=>{
+  if(offline){setLoading(false);return;}
   const m10Enabled=import.meta.env.VITE_SYNTHETIC_M10==='true';
   const token=++generation.current;setLoading(true);setM10({loading:m10Enabled});setAntibiotics(undefined);setAntibioticError('');setState(undefined);setRenalFluid(undefined);setRF2(undefined);setError('');
   let abx:AntibioticBundle|undefined,catalog:Catalog|undefined,abxFailure='';
@@ -49,7 +50,7 @@ export function usePatientEvidenceState(client:CirculatoryClient,config:{patient
    if(token===generation.current){if(m10Enabled)setM10({loading:false,error:'Shared patient evidence is unconfirmed; hematologic actions are unavailable.'});if(abxFailure)setAntibioticError(abxFailure);setError('The patient evidence or disabled execution gate could not be confirmed. Refresh to check again; no source was replaced.');}
    throw Error('patient_evidence_unconfirmed');
   }finally{if(token===generation.current)setLoading(false);}
- },[client,m10Client,config.patient,config.encounter,config.start,config.end]);
+ },[client,m10Client,config.patient,config.encounter,config.start,config.end,offline]);
  useEffect(()=>{void refresh().catch(()=>{});return()=>{generation.current++;};},[refresh]);
  return {antibiotics,antibioticError,rf2,retainedRF2:retainedRF2.current,state,renalFluid,retainedState:retained.current,m10,loading,error,refresh};
 }

@@ -19,6 +19,7 @@ from app.models.clinical.antimicrobials import (AntimicrobialOrder,
     CompletedAntimicrobialAdministration, AntimicrobialNonDelivery)
 from app.models.clinical.endocrine import EndocrineRecord
 from app.models.clinical.wound import WoundRecord
+from app.models.clinical.musculoskeletal import MusculoskeletalRecord
 from app.models.clinical.laboratory import LaboratoryReport
 from app.models.clinical.respiratory import RespiratoryRecord
 from app.models.clinical.gastrointestinal import GastrointestinalRecord
@@ -52,9 +53,10 @@ SUPPORTED_FACTS = {
     'neurological_record': NeurologicalRecord,
     'endocrine_record': EndocrineRecord,
     'wound_record': WoundRecord,
+    'musculoskeletal_record': MusculoskeletalRecord,
 }
 SupportedFact = (ClinicalObservation | MedicationOrder | MedicationAdministration | ClinicalInference
-    | Specimen | DirectExamination | CultureFinding | IsolateIdentification | SusceptibilityResult | ResistanceFinding | MolecularResult | BloodCultureSet | BloodCultureBottle | AntimicrobialOrder | CompletedAntimicrobialAdministration | AntimicrobialNonDelivery | LaboratoryReport | RespiratoryRecord | GastrointestinalRecord | ReproductiveRecord | NeurologicalRecord | EndocrineRecord | WoundRecord)
+    | Specimen | DirectExamination | CultureFinding | IsolateIdentification | SusceptibilityResult | ResistanceFinding | MolecularResult | BloodCultureSet | BloodCultureBottle | AntimicrobialOrder | CompletedAntimicrobialAdministration | AntimicrobialNonDelivery | LaboratoryReport | RespiratoryRecord | GastrointestinalRecord | ReproductiveRecord | NeurologicalRecord | EndocrineRecord | WoundRecord | MusculoskeletalRecord)
 
 
 SUPPORTED_FACTS = {**SUPPORTED_FACTS, **M7_FACTS, **M10_FACTS}

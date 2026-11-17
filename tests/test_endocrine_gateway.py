@@ -155,7 +155,7 @@ def test_m14_upgrade_preserves_original_neurology_revision_chain(tmp_path, monke
         assert connection.exec_driver_sql('PRAGMA foreign_key_check').all() == []
         assert connection.exec_driver_sql("SELECT seq FROM sqlite_sequence WHERE name='fact_revision'").scalar_one() == 80
     after = rows(path)
-    assert after.pop('alembic_version') == [('m15_0016',)]
+    assert after.pop('alembic_version') == [('m16_0017',)]
     assert before.pop('alembic_version') == [('m13_0014',)]
     assert after == before
     with transaction(engine) as repo:
