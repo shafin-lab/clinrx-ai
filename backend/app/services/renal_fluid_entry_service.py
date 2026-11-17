@@ -12,10 +12,11 @@ from app.demo.authoring import TARGET, EvidenceConflict
 from app.execution.patient_state_v3 import PatientStateScopeV3
 from app.models.clinical.hemodynamics import CirculatoryEvent, ClinicalInstant, RecordedCirculatoryInterval, EvidenceBinding
 from app.models.clinical.recorded_v2 import SourceCode, ExactQuantity, RecordedConcept, instant
-from app.models.clinical.facts import ClinicalObservation, MedicationAdministration
+from app.models.clinical.facts import ClinicalObservation, MedicationAdministration, MedicationOrder
 from app.models.clinical.laboratory import LaboratoryReport
 from app.models.clinical.respiratory import RespiratoryRecord
 from app.models.clinical.gastrointestinal import GastrointestinalRecord
+from app.models.clinical.endocrine import EndocrineRecord
 from app.models.clinical.neurological import NeurologicalRecord
 from app.models.clinical.reproductive import ReproductiveRecord
 from app.services.gastrointestinal_service import save_gastrointestinal_record
@@ -104,6 +105,8 @@ SUPPLEMENTAL_SECTIONS = {
     ReproductiveRecord: 'reproductive_records',
     NeurologicalRecord: 'neurological_records',
     MedicationAdministration: 'medication_administrations',
+    MedicationOrder: 'medication_orders',
+    EndocrineRecord: 'endocrine_records',
 }
 
 
@@ -114,6 +117,14 @@ def supplemental_available_by(fact, end):
     if isinstance(fact, MedicationAdministration):
         times = (fact.administered_at, fact.time.recorded, fact.provenance.recorded_at)
         return all(point is None or instant(point) <= instant(end) for point in times)
+    if isinstance(fact, MedicationOrder):
+        times = (fact.time.event, fact.time.recorded, fact.provenance.recorded_at)
+        return all(point is None or instant(point) <= instant(end) for point in times)
+    if isinstance(fact, EndocrineRecord):
+        occurred = fact.times.occurred.upper or fact.times.occurred.anchor
+        times = (occurred, fact.time.recorded, fact.provenance.recorded_at)
+        if any(point is not None and instant(point) > instant(end) for point in times):
+            return False
     if not available_by(fact, end):
         return False
     if isinstance(fact, (ReproductiveRecord, NeurologicalRecord)):

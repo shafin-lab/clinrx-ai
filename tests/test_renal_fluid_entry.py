@@ -89,7 +89,8 @@ def test_catalog_pages_keep_all_reports_at_the_first_watermark(ws, monkeypatch):
     add_report(5)
     before = rows(db)
     names = ('items', 'laboratory_reports', 'respiratory_records', 'gastrointestinal_records',
-             'reproductive_records', 'neurological_records', 'medication_administrations')
+             'reproductive_records', 'neurological_records', 'medication_administrations',
+             'medication_orders', 'endocrine_records')
     collected = {name: list(first[name]) for name in names}
     while cursor:
         response = c.get(RF2, params=dict(query, cursor=cursor))
