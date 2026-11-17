@@ -1,9 +1,7 @@
 import {useLayoutEffect, useRef, useState, type FormEvent} from 'react';
-import {type Catalog, type Pin, pin} from '../api/rf2Client';
-import type {ReviewScope, SavedReview} from '../clinical/savedReviewStore';
-import {useSavedReviews} from '../clinical/useSavedReviews';
-import type {OpenSource} from './EndocrineWorkspace';
-import {type EndocrineScope, type EndocrineModel} from './model';
+import {type Catalog, type Evidence, type Pin, pin} from '../api/rf2Client';
+import type {ReviewScope, SavedReview} from './savedReviewStore';
+import {useSavedReviews} from './useSavedReviews';
 import {asObject} from '../respiratory/respiratoryModel';
 
 interface Draft {
@@ -15,16 +13,27 @@ interface Draft {
 
 const blank: Draft = {reviewer: '', nextReview: '', rationale: '', plan: ''};
 
-export function useEndocrineReview(catalog: Catalog | undefined, requested: EndocrineScope) {
+type Requested = Pick<ReviewScope, 'patient' | 'encounter'> & {start: string; end: string};
+type ReviewModel = {
+  identity: string;
+  signature: string;
+  pins: unknown[];
+  sources: Evidence[];
+  matches: (review: SavedReview<unknown>) => boolean;
+};
+
+export function useSourcePinnedReview(domain: ReviewScope['domain'], catalog: Catalog | undefined, requested: Requested) {
   const scope: ReviewScope | undefined = catalog
-    ? {domain: 'M14', patient: requested.patient, encounter: requested.encounter, repository: catalog.repository}
+    ? {domain, patient: requested.patient, encounter: requested.encounter, repository: catalog.repository}
     : undefined;
   return {scope, ...useSavedReviews<Draft>(scope)};
 }
 
-export function EndocrineReview({catalog, requested, model, current, guarded, saved, onOpenSource, onResolveSource}: {
-  catalog?: Catalog; requested: EndocrineScope; model: EndocrineModel;
-  current: boolean; guarded: boolean; saved: ReturnType<typeof useEndocrineReview>; onOpenSource: OpenSource;
+export function SourcePinnedReview({catalog, requested, model, current, guarded, saved, onOpenSource, onResolveSource, cardClassName}: {
+  catalog?: Catalog; requested: Requested; model: ReviewModel;
+  current: boolean; guarded: boolean; saved: ReturnType<typeof useSourcePinnedReview>;
+  onOpenSource: (source: Evidence, trigger: HTMLButtonElement) => void;
+  cardClassName: string;
   onResolveSource: (pin: Pin, trigger: HTMLButtonElement) => Promise<void>;
 }) {
   const [draft, setDraft] = useState(blank);
@@ -93,7 +102,7 @@ export function EndocrineReview({catalog, requested, model, current, guarded, sa
   }
 
   return <>
-    <form className="m14-card" onSubmit={event => void submit(event)}>
+    <form className={cardClassName} onSubmit={event => void submit(event)}>
       <h3>Author a review</h3>
       <p>Saved reviews are available in this browser for this encounter.</p>
       <fieldset disabled={saving || guarded || !current || !model.pins.length || !saved.ready}>
@@ -108,7 +117,7 @@ export function EndocrineReview({catalog, requested, model, current, guarded, sa
       {(error || saved.issue) && <p role="alert">{error || saved.issue}</p>}
       {status && <p role="status">{status}</p>}
     </form>
-    <section className="m14-card">
+    <section className={cardClassName}>
       <h3>Saved reviews</h3>
       {sourceError && <p role="alert">{sourceError}</p>}
       {!saved.reviews.length && <p>No review saved in this browser for this encounter.</p>}
