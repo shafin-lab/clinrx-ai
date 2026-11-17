@@ -1,7 +1,7 @@
 import {useId, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {key, pin, RF2Client, type Catalog, type Evidence, type Pin} from '../api/rf2Client';
 import {GISource} from '../gastrointestinal/GISource';
-import {EndocrineReview, useEndocrineReview} from './EndocrineReview';
+import {SourcePinnedReview, useSourcePinnedReview} from '../clinical/SourcePinnedReview';
 import {EndocrineSource} from './EndocrineSource';
 import {displayEvent, endocrineModel, type EndocrineModel, type EndocrineScope, type LabRow} from './model';
 import '../gastrointestinal/gastrointestinal.css';
@@ -33,7 +33,7 @@ function glucoseSummary(model: EndocrineModel) {
 
 export function EndocrineSummary({catalog, requested, current, guarded, onOpen}: SharedProps & {onOpen: () => void}) {
   const model = useMemo(() => endocrineModel(catalog, requested), [catalog, requested]);
-  const saved = useEndocrineReview(model.valid ? catalog : undefined, requested);
+  const saved = useSourcePinnedReview('M14', model.valid ? catalog : undefined, requested);
   if (!model.sources.length && !saved.reviews.length) return null;
   const review = current ? saved.reviews.find(model.matches) : undefined;
   const items = [glucoseSummary(model)];
@@ -110,7 +110,7 @@ export function EndocrineWorkspace({catalog, requested, current, guarded = false
   const [client] = useState(() => new RF2Client());
   const tabId = useId();
   const confirmed = current && !loading && model.valid;
-  const saved = useEndocrineReview(model.valid ? catalog : undefined, requested);
+  const saved = useSourcePinnedReview('M14', model.valid ? catalog : undefined, requested);
   const review = confirmed ? saved.reviews.find(model.matches) : undefined;
   const scopeKey = JSON.stringify([catalog?.repository, requested.patient, requested.encounter, requested.start, requested.end]);
   const source = model.valid && selected?.scope === scopeKey ? selected.source : undefined;
@@ -202,7 +202,7 @@ export function EndocrineWorkspace({catalog, requested, current, guarded = false
       {tab === 1 && confirmed && <fieldset className="m14-readonly" disabled={guarded}><Timeline model={model} open={openSource}/></fieldset>}
       {tab === 2 && confirmed && <fieldset className="m14-readonly" disabled={guarded}><OtherResults model={model} open={openSource}/></fieldset>}
       <div hidden={tab !== 3}>
-        <EndocrineReview key={scopeKey} catalog={catalog} requested={requested} model={model}
+        <SourcePinnedReview cardClassName="m14-card" key={scopeKey} catalog={catalog} requested={requested} model={model}
           current={confirmed} guarded={guarded} saved={saved} onOpenSource={openSource} onResolveSource={resolveSource}/>
       </div>
     </div>
