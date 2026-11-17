@@ -153,7 +153,7 @@ def test_m13_upgrade_preserves_m12_reproductive_revisions_and_sequence(tmp_path,
     before = rows(path)
     with engine.begin() as connection:
         config.attributes['connection'] = connection
-        command.upgrade(config, 'head')
+        command.upgrade(config, 'm13_0014')
         assert connection.exec_driver_sql('PRAGMA foreign_key_check').all() == []
         assert connection.exec_driver_sql("SELECT seq FROM sqlite_sequence WHERE name='fact_revision'").scalar_one() == 80
     after = rows(path)
@@ -162,13 +162,15 @@ def test_m13_upgrade_preserves_m12_reproductive_revisions_and_sequence(tmp_path,
     assert after == before
 
     from app.models.clinical.neurological import NeurologicalRecord
-    with transaction(engine) as repo:
-        cutoff = repo.capture_cutoff()
-        assert cutoff.repository_id == retained_cutoff.repository_id
-        assert cutoff.fact_watermark == retained_cutoff.fact_watermark
-        assert repo.load_fact(revised.reference, target=TARGET).fact == revised
-        added = repo.append_fact(NeurologicalRecord.model_validate(neurological()), target=TARGET)
-        assert added.ingestion.ingestion_sequence == 81
+    with monkeypatch.context() as patch:
+        patch.setattr(database_module, 'SCHEMA_REVISION', 'm13_0014')
+        with transaction(engine) as repo:
+            cutoff = repo.capture_cutoff()
+            assert cutoff.repository_id == retained_cutoff.repository_id
+            assert cutoff.fact_watermark == retained_cutoff.fact_watermark
+            assert repo.load_fact(revised.reference, target=TARGET).fact == revised
+            added = repo.append_fact(NeurologicalRecord.model_validate(neurological()), target=TARGET)
+            assert added.ingestion.ingestion_sequence == 81
     engine.dispose()
 
 
