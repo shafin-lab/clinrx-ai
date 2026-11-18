@@ -2,7 +2,7 @@
 from sqlalchemy import CheckConstraint, ForeignKey, ForeignKeyConstraint, Integer, Text, UniqueConstraint, String, LargeBinary
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-SCHEMA_REVISION = 'm16_0017'
+SCHEMA_REVISION = 'm19_0019'
 PAYLOAD_VERSION = 1
 
 
@@ -148,3 +148,19 @@ class M10AttachmentRow(Base):
     digest: Mapped[str] = mapped_column(String(64), primary_key=True)
     media_type: Mapped[str] = mapped_column(String(128), nullable=False)
     payload: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
+
+
+class DeviceHistoryRow(Envelope, Base):
+    __tablename__ = 'device_history'
+    sequence: Mapped[int] = mapped_column(Integer, primary_key=True)
+    patient_id: Mapped[str] = mapped_column(Text, nullable=False)
+    encounter_id: Mapped[str] = mapped_column(Text, nullable=False)
+    kind: Mapped[str] = mapped_column(Text, nullable=False)
+    record_id: Mapped[str] = mapped_column(Text, nullable=False)
+    revision: Mapped[str] = mapped_column(Text, nullable=False)
+    __table_args__ = (
+        ForeignKeyConstraint(['encounter_id', 'patient_id'], ['encounter.encounter_id', 'encounter.patient_id']),
+        UniqueConstraint('encounter_id', 'kind', 'record_id', 'revision', name='uq_device_history_exact'),
+        CheckConstraint("kind IN ('device_episode', 'observation', 'procedure_record')", name='ck_device_history_kind'),
+        CheckConstraint('payload_version = 1', name='ck_device_history_version'),
+    )
