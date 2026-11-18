@@ -8,6 +8,7 @@ from app.models.clinical.laboratory import LaboratoryReport
 from app.models.clinical.endocrine import EndocrineRecord, EndocrineImport
 from app.models.clinical.wound import WoundRecord, WoundImport
 from app.models.clinical.musculoskeletal import MusculoskeletalRecord
+from app.models.clinical.nutrition import NutritionRecord
 from app.models.clinical.neurological import NeurologicalRecord, NeurologicalImport
 from app.models.clinical.respiratory import RespiratoryRecord, RespiratoryImport
 from app.models.clinical.reproductive import ReproductiveRecord, ReproductiveImport
@@ -15,7 +16,7 @@ from app.persistence.metadata import IngestionMetadata, RepositoryCutoff
 
 def bundle():
     roots={};definitions={}
-    for model in (RF2Draft,ResolveRequest,ClinicalObservation,MedicationAdministration,LaboratoryReport,RespiratoryRecord,RespiratoryImport,GastrointestinalRecord,GastrointestinalImport,ReproductiveRecord,ReproductiveImport,NeurologicalRecord,NeurologicalImport,IngestionMetadata,RepositoryCutoff,MedicationOrder,EndocrineRecord,EndocrineImport,WoundRecord,WoundImport,MusculoskeletalRecord):
+    for model in (RF2Draft,ResolveRequest,ClinicalObservation,MedicationAdministration,LaboratoryReport,RespiratoryRecord,RespiratoryImport,GastrointestinalRecord,GastrointestinalImport,ReproductiveRecord,ReproductiveImport,NeurologicalRecord,NeurologicalImport,IngestionMetadata,RepositoryCutoff,MedicationOrder,EndocrineRecord,EndocrineImport,WoundRecord,WoundImport,MusculoskeletalRecord,NutritionRecord):
         schema=model.model_json_schema(mode='serialization')
         for name,s in schema.pop('$defs',{}).items():
             if name in definitions and definitions[name]!=s:raise ValueError('conflicting definition')
