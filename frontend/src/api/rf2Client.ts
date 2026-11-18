@@ -15,7 +15,7 @@ export const needsHistoricalReview=(r:SourceReview)=>!equal(r.selected,r.termina
 export interface Draft {source_review?:SourceReview[];repository:string;id:string;revision:string;actor:string;recorded_at:string;chart:Chart|null;note:RenalNote|null;predecessor:Pin|null;reason:string|null}
 export interface Fact {kind:string;id:string;revision:string;binding:{target:{patient_id:string;encounter_id:string}};[key:string]:unknown}
 export interface Evidence {repository:string;fact:Fact;canonical_fact:string;digest:string;ingestion:{repository_id:string;ingestion_sequence:number;[key:string]:unknown};cutoff:number;terminal_reference:Ref;superseded:boolean;metadata:{version:1;chart:Chart|null;note:RenalNote|null;source_review?:SourceReview[]}|null}
-export interface Catalog {repository:string;cutoff:{repository_id:string;fact_watermark:number;captured_at:string};items:Evidence[];laboratory_reports:Evidence[];respiratory_records?:Evidence[];gastrointestinal_records?:Evidence[];reproductive_records?:Evidence[];neurological_records?:Evidence[];medication_administrations?:Evidence[];medication_orders?:Evidence[];endocrine_records?:Evidence[];wound_records?:Evidence[];musculoskeletal_records?:Evidence[];nutrition_records?:Evidence[];combined:RenalFluidState;execution_enabled:false}
+export interface Catalog {repository:string;cutoff:{repository_id:string;fact_watermark:number;captured_at:string};items:Evidence[];laboratory_reports:Evidence[];respiratory_records?:Evidence[];gastrointestinal_records?:Evidence[];reproductive_records?:Evidence[];neurological_records?:Evidence[];medication_administrations?:Evidence[];medication_orders?:Evidence[];endocrine_records?:Evidence[];wound_records?:Evidence[];musculoskeletal_records?:Evidence[];nutrition_records?:Evidence[];precaution_records?:Evidence[];combined:RenalFluidState;execution_enabled:false}
 export interface Result {source_review?:SourceReview[];status:'validated'|'saved'|'source_replay'|'absent';request_digest:string;request_canonical:string;evidence?:Evidence;fact?:Fact;replay_reference?:Ref|null;execution_enabled:false}
 const bundle=schemas as unknown as {roots:Record<string,Schema>;definitions:Record<string,Schema>};
 export const stable=(v:unknown):string=>JSON.stringify(v,(_k,x:unknown)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.entries(x).sort(([a],[b])=>a<b?-1:a>b?1:0)):x);
@@ -34,7 +34,7 @@ const clinicalRecordSchemas:Record<string,string>={
  observation:'ClinicalObservation',laboratory_report:'LaboratoryReport',
  gastrointestinal_record:'GastrointestinalRecord',reproductive_record:'ReproductiveRecord',
  respiratory_record:'RespiratoryRecord',neurological_record:'NeurologicalRecord',
- medication_administration:'MedicationAdministration',medication_order:'MedicationOrder',endocrine_record:'EndocrineRecord',wound_record:'WoundRecord',musculoskeletal_record:'MusculoskeletalRecord',nutrition_record:'NutritionRecord',
+ medication_administration:'MedicationAdministration',medication_order:'MedicationOrder',endocrine_record:'EndocrineRecord',wound_record:'WoundRecord',musculoskeletal_record:'MusculoskeletalRecord',nutrition_record:'NutritionRecord',precaution_record:'PrecautionRecord',
 };
 export async function decodeEvidence(raw:unknown,repository:string,expected?:Pin):Promise<Evidence>{
  const e=object(raw) as unknown as Evidence;exactKeys(e,['repository','fact','canonical_fact','digest','ingestion','cutoff','terminal_reference','superseded','metadata']);const f=object(e.fact);validateTransportSchema(e.ingestion,bundle.roots.IngestionMetadata,bundle.definitions);
@@ -75,7 +75,7 @@ function sameTimestampSerializedRecord(sent:unknown,stored:unknown,path=''):bool
 export class RF2ReviewChanged extends Error {constructor(){super('Selected-source review changed; this request was rejected before append.');}}
 const catalogCollections = {
  items:4096, laboratory_reports:1024, respiratory_records:1024, gastrointestinal_records:1024, reproductive_records:1024,
- neurological_records:1024, medication_administrations:1024, medication_orders:1024, endocrine_records:1024, wound_records:1024, musculoskeletal_records:1024, nutrition_records:1024,
+ neurological_records:1024, medication_administrations:1024, medication_orders:1024, endocrine_records:1024, wound_records:1024, musculoskeletal_records:1024, nutrition_records:1024,precaution_records:1024,
 } as const;
 const collectionNames = Object.keys(catalogCollections) as (keyof typeof catalogCollections)[];
 const maxCatalogRecords = Object.values(catalogCollections).reduce((a,b) => a+b, 0);
@@ -83,7 +83,7 @@ const paginatedRequired = ['items','laboratory_reports','respiratory_records','g
 const expectedKinds = {
  laboratory_reports:'laboratory_report', respiratory_records:'respiratory_record', gastrointestinal_records:'gastrointestinal_record',
  reproductive_records:'reproductive_record', neurological_records:'neurological_record', medication_administrations:'medication_administration',
- medication_orders:'medication_order', endocrine_records:'endocrine_record', wound_records:'wound_record', musculoskeletal_records:'musculoskeletal_record', nutrition_records:'nutrition_record',
+ medication_orders:'medication_order', endocrine_records:'endocrine_record', wound_records:'wound_record', musculoskeletal_records:'musculoskeletal_record', nutrition_records:'nutrition_record',precaution_records:'precaution_record',
 } as const;
 const historicalKinds=new Set<string>(Object.values(expectedKinds));
 
