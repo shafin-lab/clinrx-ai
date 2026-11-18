@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClinRx · Nutrition</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7fa;color:#172838;font:16px/1.55 system-ui,sans-serif}header{background:#102938;color:white;padding:16px max(5vw,20px);display:flex;justify-content:space-between;gap:12px}main{max-width:1040px;margin:auto;padding:28px 20px 56px}h1{font-size:clamp(28px,5vw,42px);margin:0}h2{font-size:21px;margin:0 0 10px}h3{font-size:17px;margin:0}p{margin:6px 0 12px}small,.muted{color:#4d6474}nav{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 14px}button{font:inherit;cursor:pointer;border:1px solid #a8bac5;background:white;color:#164759;border-radius:8px;padding:7px 12px}button[aria-current=true],button[type=submit]{background:#0a5c61;border-color:#0a5c61;color:white}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #287bab;outline-offset:2px}.card{background:white;border:1px solid #d7e1e8;border-radius:12px;padding:20px;margin-bottom:14px}.summary{border-left:5px solid #0a7777}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:18px}.row{border-top:1px solid #d7e1e8;padding:14px 0}.row:last-child{padding-bottom:0}.source{font-size:.88rem;padding:3px 9px}label{display:block;font-weight:650;margin-bottom:14px}input,textarea{width:100%;font:inherit;padding:8px;border:1px solid #a8bac5;border-radius:6px}textarea{min-height:75px}dialog{max-width:min(580px,90vw);border:1px solid #a8bac5;border-radius:12px;padding:22px;color:inherit}dialog::backdrop{background:#10293899}
+</style>
+<style>
+table{width:100%;border-collapse:collapse;text-align:left}th,td{padding:.65rem;border-bottom:1px solid #d7e1e8}caption{text-align:left;margin-bottom:.5rem;color:#4d6474}.table-wrap{overflow-x:auto}
+</style>
+<header><strong>ClinRx</strong><span>Fictional review case</span></header>
+<main>
+<p class="muted">Patient workspace / Nutrition</p>
+<h1>Nutrition</h1>
+<p>Case M17-01 · ICU day 4 · 18 Nov 2026 · Times in IST</p>
+<nav aria-label="Nutrition workspace">
+<button data-view="overview" aria-current="true">Overview</button>
+<button data-view="assessment">Assessment &amp; targets</button>
+<button data-view="delivery">Support &amp; intake</button>
+<button data-view="review">Tolerance &amp; review</button>
+</nav>
+<section id="overview" class="view">
+<article class="card summary"><h2>Bedside summary</h2>
+<p><strong>Enteral feeding via nasogastric tube.</strong> During the completed 24-hour intake window, 920 of 1,200 mL prescribed formula was delivered. The intake chart records a four-hour pause for imaging.</p>
+<div class="grid">
+<div><h3>Assessment</h3><p>Dietitian identified recent reduced intake and recorded a 70 kg pre-admission weight for estimating needs.</p><button class="source" data-source="dietitian">Open dietitian assessment</button></div>
+<div><h3>Intake delivered</h3><p>1,380 kcal and 69 g protein from documented formula. See the chart for the reporting window and route.</p><button class="source" data-source="intake">Open intake chart</button></div>
+<div><h3>Next review</h3><p>Dietitian review at 16:00 IST. Reconcile post-restart delivery and repeat electrolyte results when available.</p><button class="source" data-source="review">Open clinician review</button></div>
+</div></article>
+</section>
+<section id="assessment" class="view card" hidden><h2>Nutrition assessment &amp; targets</h2>
+<article class="row"><h3>Dietitian assessment</h3><p>17 Nov, 14:10. Patient reported eating about half of usual intake for six days before admission. Measured bedside weight was 74 kg with oedema documented. Dietitian used the reported 70 kg pre-admission weight as the estimate basis.</p><button class="source" data-source="dietitian">Open dietitian assessment</button></article>
+<article class="row"><h3>Recorded targets and method</h3><p>1,750–2,100 kcal/day and 84–105 g protein/day. Dietitian recorded weight-based estimates of 25–30 kcal/kg/day and 1.2–1.5 g/kg/day using 70 kg.</p><button class="source" data-source="dietitian">Open target source</button></article>
+</section>
+<section id="delivery" class="view card" hidden><h2>Nutrition support &amp; intake</h2>
+<div class="table-wrap"><table><caption>Completed 24-hour window · 17 Nov 06:00 to 18 Nov 06:00 IST</caption>
+<thead><tr><th scope="col">Route</th><th scope="col">Prescribed</th><th scope="col">Documented delivery</th></tr></thead>
+<tbody><tr><th scope="row">Enteral</th><td>1,200 mL · 1,800 kcal · 90 g protein</td><td>920 mL · 1,380 kcal · 69 g protein</td></tr>
+<tr><th scope="row">Oral</th><td>Oral intake deferred pending swallow review</td><td>No oral intake recorded</td></tr>
+<tr><th scope="row">Parenteral nutrition</th><td>No order recorded</td><td>No administration recorded</td></tr></tbody></table></div>
+<p>Enteral values use the prescribed formula composition of 1.5 kcal and 0.075 g protein per mL. The intake chart records a 280 mL gap and documents the imaging pause separately.</p>
+<button class="source" data-source="order">Open nutrition order</button> <button class="source" data-source="intake">Open intake chart</button>
+</section>
+<section id="review" class="view card" hidden><h2>Tolerance &amp; reassessment</h2>
+<article class="row"><h3>Tolerance and interruption</h3><p>Feeds paused for imaging from 18:00 to 22:00 on 17 Nov, then restarted. Nursing documented no emesis overnight and a soft abdomen at 05:30. Swallow assessment remains pending.</p><button class="source" data-source="nursing">Open nursing record</button></article>
+<article class="row"><h3>Shared laboratory results</h3><p>Collected 18 Nov at 05:00, final at 05:45. Phosphate 0.72 mmol/L, magnesium 0.80 mmol/L, potassium 3.8 mmol/L.</p><button class="source" data-source="lab">Open electrolyte report</button></article>
+<article class="row"><h3>Clinician-authored review</h3><small>Dietitian Mira Desai · 09:10 IST · Next review 16:00 IST</small><p>Documented enteral delivery fell below the prescribed intake in the completed window. Reconcile delivery after restart, review repeat electrolytes when available, and check swallow assessment status at the next review.</p><button class="source" data-source="review">Open clinician review</button></article>
+</section>
+</main>
+<dialog aria-labelledby="source-title"><h2 id="source-title"></h2><p id="source-detail"></p><form method="dialog"><button>Close source</button></form></dialog>
+<script>
+const records = {
+  dietitian: ['Dietitian assessment · NUT-171410 · Revision 1', '17 Nov 2026, 14:10 IST. Reduced intake by patient report. Current measured weight 74 kg with oedema documented. Dietitian used reported pre-admission weight 70 kg with factors of 25–30 kcal/kg/day and 1.2–1.5 g protein/kg/day to record targets of 1,750–2,100 kcal/day and 84–105 g protein/day.'],
+  order: ['Nutrition order · EN-161530 · Revision 1', 'Order recorded 16 Nov, 15:30 IST. Window totals from the active formula order: 1,200 mL enteral formula at 1.5 kcal/mL and 0.075 g protein/mL. Oral intake deferred pending swallow review. No parenteral nutrition order in this encounter.'],
+  intake: ['Nutrition intake chart · IN-180600 · Revision 1', '17 Nov 06:00 to 18 Nov 06:00 IST. Prescribed 1,200 mL formula. Delivered 920 mL, equivalent to 1,380 kcal and 69 g protein using the order composition. No oral intake or parenteral nutrition administration recorded.'],
+  nursing: ['Nursing record · NS-180530 · Revision 1', '17 Nov: enteral feed paused at 18:00 for imaging and restarted at 22:00. 18 Nov 05:30: no emesis documented overnight, abdomen soft. Swallow assessment remains pending.'],
+  lab: ['Electrolyte report · LAB-180500 · Final · Revision 1', '18 Nov 2026, specimen collected 05:00 IST and verified 05:45 IST. Phosphate 0.72 mmol/L, magnesium 0.80 mmol/L, potassium 3.8 mmol/L.'],
+  review: ['Dietitian review · REV-180910 · Revision 1', '18 Nov, 09:10 IST. Mira Desai documented delivery below prescription. At the 16:00 reassessment, reconcile post-restart delivery, check repeat electrolytes and follow swallow assessment status.']
+};
+const dialog = document.querySelector('dialog');
+document.querySelectorAll('[data-source]').forEach(button => {
+  button.addEventListener('click', () => {
+    const [title, detail] = records[button.dataset.source];
+    document.querySelector('#source-title').textContent = title;
+    document.querySelector('#source-detail').textContent = detail;
+    dialog.showModal();
+  });
+});
+const tabs = document.querySelectorAll('[data-view]');
+tabs.forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('.view').forEach(view => { view.hidden = view.id !== button.dataset.view; });
+    tabs.forEach(tab => { tab.setAttribute('aria-current', String(tab === button)); });
+  });
+});
+</script>
+</html>

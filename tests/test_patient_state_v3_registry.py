@@ -5,6 +5,7 @@ from app.models.clinical import hemodynamics as h
 from app.models.clinical.endocrine import EndocrineRecord
 from app.models.clinical.wound import WoundRecord
 from app.models.clinical.musculoskeletal import MusculoskeletalRecord
+from app.models.clinical.nutrition import NutritionRecord
 from app.models.clinical.neurological import NeurologicalRecord
 from app.models.clinical.reproductive import ReproductiveRecord
 from app.models.clinical import transfusion as t
@@ -39,6 +40,7 @@ def test_complete_admission_registry_includes_only_explicitly_supported_domains(
         'endocrine_record':EndocrineRecord,
         'wound_record':WoundRecord,
         'musculoskeletal_record':MusculoskeletalRecord,
+        'nutrition_record':NutritionRecord,
         'respiratory_record':__import__('app.models.clinical.respiratory',fromlist=['RespiratoryRecord']).RespiratoryRecord,
         'transfusion_administration':t.TransfusionAdministration,
         'haemostatic_medication_course':t.HaemostaticMedicationCourse,
