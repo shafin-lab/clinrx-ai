@@ -116,7 +116,7 @@ def test_m9_migration_preserves_all_171_original_fact_rows_and_links(tmp_path):
             config.attributes['connection']=connection;command.upgrade(config,'head')
         after=snapshot()
         assert {name:after[name] for name in before}==before
-        assert set(after)-set(before)=={'m10_command','m10_attachment'}
+        assert set(after)-set(before)=={'m10_command','m10_attachment', 'device_history'}
         assert after['m10_command']==after['m10_attachment']==[]
         with transaction(engine) as repo:
             assert repo.load_fact(original.reference,target=TARGET).fact==original
