@@ -20,6 +20,7 @@ SUPPORTED_LAB_MAPPINGS = frozenset({
     'urine_specific_gravity', 'urine_ph', 'urine_protein', 'urine_glucose',
     'urine_ketones', 'urine_blood', 'urine_leukocyte_esterase', 'urine_nitrite',
     'hba1c', 'beta_hydroxybutyrate', 'tsh', 'free_t4', 'cortisol',
+    'crp', 'esr', 'rheumatoid_factor', 'anti_ccp',
     'serum_osmolality', 'urine_osmolality', 'phosphate', 'magnesium', 'pth',
     'urine_bilirubin', 'urine_urobilinogen', 'urine_rbc', 'urine_wbc',
     'urine_epithelial_cells', 'urine_casts', 'urine_crystals', 'urine_bacteria',

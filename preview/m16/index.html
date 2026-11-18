@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClinRx · Musculoskeletal & rehabilitation</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7fa;color:#172838;font:16px/1.55 system-ui,sans-serif}header{background:#102938;color:white;padding:16px max(5vw,20px);display:flex;justify-content:space-between;gap:12px}main{max-width:1040px;margin:auto;padding:28px 20px 56px}h1{font-size:clamp(28px,5vw,42px);margin:0}h2{font-size:21px;margin:0 0 10px}h3{font-size:17px;margin:0}p{margin:6px 0 12px}small,.muted{color:#4d6474}nav{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 14px}button{font:inherit;cursor:pointer;border:1px solid #a8bac5;background:white;color:#164759;border-radius:8px;padding:7px 12px}button[aria-current=true],button[type=submit]{background:#0a5c61;border-color:#0a5c61;color:white}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #287bab;outline-offset:2px}.card{background:white;border:1px solid #d7e1e8;border-radius:12px;padding:20px;margin-bottom:14px}.summary{border-left:5px solid #0a7777}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:18px}.row{border-top:1px solid #d7e1e8;padding:14px 0}.row:last-child{padding-bottom:0}.source{font-size:.88rem;padding:3px 9px}label{display:block;font-weight:650;margin-bottom:14px}input,textarea{width:100%;font:inherit;padding:8px;border:1px solid #a8bac5;border-radius:6px}textarea{min-height:75px}dialog{max-width:min(580px,90vw);border:1px solid #a8bac5;border-radius:12px;padding:22px;color:inherit}dialog::backdrop{background:#10293899}
+</style>
+<header><strong>ClinRx</strong><span>Fictional review case</span></header>
+<main>
+<p class="muted">Patient workspace / Musculoskeletal &amp; rehabilitation</p>
+<h1>Musculoskeletal &amp; rehabilitation</h1>
+<p>Case M16-01 · Orthopaedic ward · 17 Nov 2026 · Times in IST</p>
+<nav aria-label="M16 workspace">
+<button data-view="overview" aria-current="true">Overview</button>
+<button data-view="msk">Musculoskeletal</button>
+<button data-view="rheum">Rheumatology</button>
+<button data-view="mobility">Mobility &amp; rehab</button>
+</nav>
+<section id="overview" class="view">
+<article class="card summary"><h2>Bedside summary</h2>
+<p><strong>Postoperative day 2 after left ankle fixation.</strong> Left leg remains non-weight-bearing per the orthopaedic order. At the latest PT session, the patient transferred with one-person assistance and a walker.</p>
+<div class="grid">
+<div><h3>Left ankle</h3><p>Toes warm with active movement documented at 08:20.</p><button class="source" data-source="ortho">Open orthopaedic exam</button></div>
+<div><h3>Right wrist</h3><p>Swelling and pain with grip. Rheumatology review is pending.</p><button class="source" data-source="wrist">Open wrist assessment</button></div>
+<div><h3>Mobility</h3><p>Bed-to-chair transfer completed at 10:15. Stairs remain unassessed.</p><button class="source" data-source="pt">Open PT record</button></div>
+</div></article>
+<article class="card"><h2>Clinician review</h2><small>Dr Kavya Rao · 11:15 IST · Next review 16:00 IST</small>
+<p>Right wrist symptoms limited walker use during PT. Recheck the wrist and confirm a suitable transfer aid with PT and OT. The home entry has three steps and stair assessment is pending.</p></article>
+</section>
+<section id="msk" class="view card" hidden><h2>Musculoskeletal findings</h2>
+<article class="row"><h3>Left ankle · postoperative exam</h3><p>17 Nov · 08:20. Splint in place. Toes warm with active movement and intact light touch documented.</p><button class="source" data-source="ortho">Open orthopaedic exam</button></article>
+<article class="row"><h3>Orthopaedic restriction</h3><p>Left leg non-weight-bearing. Review at orthopaedic follow-up.</p><button class="source" data-source="order">Open weight-bearing order</button></article>
+<article class="row"><h3>Postoperative ankle radiograph</h3><p>16 Nov · Final report 14:45. Fixation hardware in place with alignment maintained.</p><button class="source" data-source="xray">Open radiograph report</button></article>
+</section>
+<section id="rheum" class="view card" hidden><h2>Rheumatology</h2>
+<article class="row"><h3>Right wrist swelling</h3><p>Documented at 09:05. Tender with reduced active extension and pain on grip. Prior rheumatoid arthritis is documented in the admission history. Cause of current swelling is undetermined.</p><button class="source" data-source="wrist">Open wrist assessment</button></article>
+<article class="row"><h3>Inflammatory investigations</h3><p>CRP 42 mg/L · Collected 07:40 · Final 08:30. No joint fluid result is available in this encounter.</p><button class="source" data-source="lab">Open lab report</button></article>
+</section>
+<section id="mobility" class="view card" hidden><h2>Mobility &amp; rehabilitation</h2>
+<article class="row"><h3>Baseline and current function</h3><p>Baseline independent indoors with a cane outdoors. At 10:15, bed-to-chair transfer required one-person assistance and a walker while maintaining the documented weight-bearing restriction.</p><button class="source" data-source="pt">Open PT record</button></article>
+<article class="row"><h3>Rehab goals and barriers</h3><p>PT goal for the next session is transfer with supervision using an aid compatible with wrist symptoms and the left-leg restriction. OT documented assistance with lower-body dressing and three steps at home entry. Stair assessment remains pending.</p><button class="source" data-source="pt">Open PT record</button> <button class="source" data-source="ot">Open OT record</button></article>
+</section>
+</main>
+<dialog aria-labelledby="source-title"><h2 id="source-title"></h2><p id="source-detail"></p><form method="dialog"><button>Close source</button></form></dialog>
+<script>
+const records = {
+  ortho: ['Orthopaedic exam · ORTH-0820 · Revision 1', '17 Nov 2026, 08:20 IST. Left ankle splint in place. Toes warm, active toe movement present and light touch intact. Recorded by Dr Kavya Rao.'],
+  order: ['Weight-bearing order · ORD-1516 · Revision 1', '15 Nov 2026, 16:30 IST. Left lower limb non-weight-bearing. Reassess at orthopaedic follow-up.'],
+  xray: ['Ankle radiograph · XR-1645 · Final · Revision 1', '16 Nov 2026, acquired 14:20 IST and reported 14:45 IST. Postoperative fixation hardware in place. Alignment maintained.'],
+  wrist: ['Wrist assessment · WR-0905 · Revision 1', '17 Nov 2026, 09:05 IST. Right wrist swollen and tender with limited active extension and pain on grip. Admission history records rheumatoid arthritis. Rheumatology review pending.'],
+  lab: ['Inflammatory markers · LAB-0740 · Final · Revision 1', '17 Nov 2026, collected 07:40 IST and verified 08:30 IST. C-reactive protein 42 mg/L.'],
+  pt: ['Physiotherapy note · PT-1015 · Revision 1', '17 Nov 2026, 10:15 IST. Independent indoors at baseline; cane outdoors. One-person assistance for bed-to-chair transfer with walker. Left-leg restriction maintained. Right wrist pain limited grip. Next session goal is transfer with supervision using a suitable aid.'],
+  ot: ['Occupational therapy note · OT-1045 · Revision 1', '17 Nov 2026, 10:45 IST. Assistance required for lower-body dressing. Three steps reported at home entry. Stair ability remains unassessed.']
+};
+const dialog = document.querySelector('dialog');
+document.querySelectorAll('[data-source]').forEach(button => {
+  button.addEventListener('click', () => {
+    const [title, detail] = records[button.dataset.source];
+    document.querySelector('#source-title').textContent = title;
+    document.querySelector('#source-detail').textContent = detail;
+    dialog.showModal();
+  });
+});
+const tabs = document.querySelectorAll('[data-view]');
+tabs.forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('.view').forEach(view => { view.hidden = view.id !== button.dataset.view; });
+    tabs.forEach(tab => { tab.setAttribute('aria-current', String(tab === button)); });
+  });
+});
+</script>
+</html>

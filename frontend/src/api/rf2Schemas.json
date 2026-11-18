@@ -2503,6 +2503,214 @@
       ],
       "title": "WoundImport",
       "type": "object"
+    },
+    "MusculoskeletalRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "musculoskeletal_record",
+          "default": "musculoskeletal_record",
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "origin": {
+          "enum": [
+            "observed",
+            "reported"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/BoundedProvenance"
+        },
+        "time": {
+          "$ref": "#/$defs/ClinicalTime"
+        },
+        "verification": {
+          "default": "unverified",
+          "enum": [
+            "unverified",
+            "verified",
+            "clinician_confirmed"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "conflict": {
+          "default": "unknown",
+          "enum": [
+            "none_known",
+            "unresolved",
+            "resolved",
+            "unknown"
+          ],
+          "title": "Conflict",
+          "type": "string"
+        },
+        "temporal_status": {
+          "enum": [
+            "current",
+            "historical",
+            "unknown"
+          ],
+          "title": "Temporal Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "correction_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correction Reason"
+        },
+        "contract_version": {
+          "const": "2",
+          "default": "2",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "source_identifiers": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceCode"
+          },
+          "maxItems": 16,
+          "title": "Source Identifiers",
+          "type": "array"
+        },
+        "domain_bindings": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DomainBinding"
+          },
+          "maxItems": 16,
+          "title": "Domain Bindings",
+          "type": "array"
+        },
+        "disclosures": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Disclosures",
+          "type": "array"
+        },
+        "category": {
+          "enum": [
+            "exam",
+            "restriction",
+            "imaging",
+            "rheumatology",
+            "physiotherapy",
+            "occupational_therapy"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "narrative": {
+          "maxLength": 16384,
+          "minLength": 1,
+          "title": "Narrative",
+          "type": "string"
+        },
+        "source_identity": {
+          "$ref": "#/$defs/LaboratorySourceIdentity"
+        },
+        "times": {
+          "$ref": "#/$defs/EndocrineTimes"
+        },
+        "report_status": {
+          "enum": [
+            "pending",
+            "preliminary",
+            "interim",
+            "final",
+            "corrected",
+            "withdrawn",
+            "cancelled",
+            "unknown"
+          ],
+          "title": "Report Status",
+          "type": "string"
+        },
+        "record_status": {
+          "default": "recorded",
+          "enum": [
+            "recorded",
+            "withdrawn",
+            "invalid",
+            "unknown"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "binding",
+        "origin",
+        "provenance",
+        "time",
+        "temporal_status",
+        "category",
+        "title",
+        "narrative",
+        "source_identity",
+        "times",
+        "report_status"
+      ],
+      "title": "MusculoskeletalRecord",
+      "type": "object"
     }
   },
   "definitions": {

@@ -18,6 +18,7 @@ from app.models.clinical.respiratory import RespiratoryRecord
 from app.models.clinical.gastrointestinal import GastrointestinalRecord
 from app.models.clinical.endocrine import EndocrineRecord
 from app.models.clinical.wound import WoundRecord
+from app.models.clinical.musculoskeletal import MusculoskeletalRecord
 from app.models.clinical.neurological import NeurologicalRecord
 from app.models.clinical.reproductive import ReproductiveRecord
 from app.services.gastrointestinal_service import save_gastrointestinal_record
@@ -109,6 +110,7 @@ SUPPLEMENTAL_SECTIONS = {
     MedicationOrder: 'medication_orders',
     EndocrineRecord: 'endocrine_records',
     WoundRecord: 'wound_records',
+    MusculoskeletalRecord: 'musculoskeletal_records',
 }
 
 
@@ -122,7 +124,7 @@ def supplemental_available_by(fact, end):
     if isinstance(fact, MedicationOrder):
         times = (fact.time.event, fact.time.recorded, fact.provenance.recorded_at)
         return all(point is None or instant(point) <= instant(end) for point in times)
-    if isinstance(fact, (EndocrineRecord, WoundRecord)):
+    if isinstance(fact, (EndocrineRecord, WoundRecord, MusculoskeletalRecord)):
         occurred = fact.times.occurred.upper or fact.times.occurred.anchor
         times = (occurred, fact.time.recorded, fact.provenance.recorded_at)
         if any(point is not None and instant(point) > instant(end) for point in times):

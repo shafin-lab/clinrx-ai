@@ -113,7 +113,7 @@ def test_m15_upgrade_preserves_the_m14_endocrine_revision_chain(tmp_path, monkey
             command.upgrade(config, 'head')
             assert connection.exec_driver_sql('PRAGMA foreign_key_check').all() == []
         after = rows(path)
-        assert after.pop('alembic_version') == [('m15_0016',)]
+        assert after.pop('alembic_version') == [('m16_0017',)]
         assert before.pop('alembic_version') == [('m14_0015',)]
         assert after == before
         with transaction(engine) as repo:
