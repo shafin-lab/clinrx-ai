@@ -117,3 +117,15 @@ is pending or completion is unresolved. Browser policy controls whether a prompt
 shown. This is not persistent recovery: force-close, reload, or an externally imposed
 component unmount can still discard memory-held commands. The current app has no SPA
 router to guard. M5 now invalidates asynchronous callbacks on unmount, matching M6.
+
+### Device and procedure history
+
+Build the local hosted RF2 workspace with `VITE_SYNTHETIC_HOSTED=true`,
+`VITE_SYNTHETIC_AUTHORING=true`, `VITE_SYNTHETIC_RF2=true`, and `VITE_SYNTHETIC_M19=true`. Open **Device and
+procedure history** from the patient overview. The view covers the synthetic
+encounter and displays links to exact recorded device and output revisions.
+
+The local RF2 gateway accepts a `DeviceHistoryImport` at `POST /synthetic-rf2/devices`
+under the synthetic patient and encounter API path. Supply the current repository
+ID and source records. Drain-output links reference an existing observation
+revision. The workspace reads persisted history from the same endpoint with GET.

@@ -7,8 +7,10 @@ from sqlalchemy import Engine, func, or_, select
 from sqlalchemy.orm import Session
 
 from app.models.clinical.common import ContextTarget, Reference
+from app.models.clinical.devices import DeviceHistory, DeviceOutputLink
 from app.models.clinical.facts import EncounterContext, PatientContext
 from .database import require_schema
+from .device_history import load_history, make_row, records
 from .entities import EncounterRow, FactRow, PAYLOAD_VERSION, PatientRow, RepositoryIdentity, RevisionLink
 from .errors import (
     PersistenceInputError, RecordConflict, RecordNotFound, ScopeMismatch, StorageIntegrityError,
@@ -98,6 +100,41 @@ class PatientRepository:
             raise UnsupportedOperation('longitudinal-context persistence is deferred')
         self.load_encounter(patient_id=target.patient_id, encounter_id=target.encounter_id)
         return target
+
+    @_operation
+    def load_device_history(self, *, target: ContextTarget) -> DeviceHistory:
+        return load_history(self._session, self._target(target))
+
+    @_operation
+    def append_device_history(self, history: DeviceHistory, *, target: ContextTarget) -> DeviceHistory:
+        target = self._target(target)
+        history = DeviceHistory.model_validate(history)
+        retained = load_history(self._session, target)
+        existing = dict(records(retained))
+        pending = {}
+        for reference, record in records(history):
+            if record.context != target:
+                raise ScopeMismatch('device history record does not belong to the requested encounter')
+            prior = existing.get(reference)
+            if prior is not None:
+                if canonical_payload(prior) != canonical_payload(record):
+                    raise RecordConflict('device history exact revision already has different content')
+                continue
+            if isinstance(record, DeviceOutputLink):
+                self.load_fact(record.output, target=target)
+            pending[reference] = record
+
+        # Revalidate associations against prior batches before writing anything.
+        merged = DeviceHistory(
+            episodes=retained.episodes + tuple(record for record in history.episodes if record.reference in pending),
+            outputs=retained.outputs + tuple(record for record in history.outputs if record.output in pending),
+            procedures=retained.procedures + tuple(record for record in history.procedures
+                                                   if record.reference in pending),
+        )
+        ingested_at = _now().isoformat()
+        self._session.add_all(make_row(ref, record, ingested_at) for ref, record in pending.items())
+        self._session.flush()
+        return merged
 
     def _chain(self, kind, fact_id, target=None):
         """Validate the entire encountered chain, including links leaving its scope."""

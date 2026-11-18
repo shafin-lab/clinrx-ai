@@ -7,6 +7,8 @@ from app.api.routes.patient_state import StateQuery
 from starlette.responses import JSONResponse
 from app.api.routes.circulatory import service as circulatory_service
 from app.api.schemas.renal_fluid_entry import RF2Draft, ResolveRequest
+from app.demo.authoring import TARGET
+from app.models.clinical.devices import DeviceHistory, DeviceHistoryImport
 from app.models.clinical.endocrine import EndocrineImport
 from app.models.clinical.wound import WoundImport
 from app.models.clinical.laboratory import LaboratoryReport
@@ -21,6 +23,7 @@ from app.persistence.repository import transaction
 from app.persistence.shared_transaction import execution_transaction
 
 RF2=PREFIX+'/synthetic-rf2'
+DEVICES=RF2+'/devices'
 router=APIRouter()
 def service(base=Depends(circulatory_service)):return RF2Service(base.dependencies)
 @router.get(RF2)
@@ -114,6 +117,20 @@ def lookup_wound(body: WoundImport, app=Depends(service)):
         return lookup_wound_record(app, repo, body.repository, body.record)
 
 
+@router.get(DEVICES)
+def get_device_history(app=Depends(service)) -> DeviceHistory:
+    app.require_closed()
+    with transaction(app.dependencies.engine) as repo:
+        return repo.load_device_history(target=TARGET)
+
+
+@router.post(DEVICES)
+def save_device_history(body: DeviceHistoryImport, app=Depends(service)) -> DeviceHistory:
+    with transaction(app.dependencies.engine) as repo:
+        app.require_repo(repo, body.repository)
+        return repo.append_device_history(body.history, target=TARGET)
+
+
 class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
     def __init__(self,database,frontend,signing_key,origin):
         super().__init__(database,frontend,signing_key,origin)
@@ -124,7 +141,7 @@ class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
     async def __call__(self,scope,receive,send):
         # RF2 owns its structured facts even when the advanced legacy editor is used.
         # Exact retained requests and read-only lookup preserve original recovery.
-        from app.demo.authoring import ENTRY, TARGET
+        from app.demo.authoring import ENTRY
         legacy=scope['type']=='http' and scope.get('path') in (ENTRY,ENTRY+'/validate',ENTRY+'/lookup') and scope.get('method')=='POST'
         if legacy:
             headers=dict(scope.get('headers',()))
@@ -176,8 +193,8 @@ class SyntheticRF2Gateway(SyntheticRenalFluidGateway):
             return await super().__call__(scope,original_body,send)
         if scope['type']=='http' and (scope['path']==RF2 or scope['path'].startswith(RF2+'/')):
             headers=dict(scope.get('headers',()))
-            paths={RF2+'/history',RF2+'/resolve',RF2+'/validate',RF2+'/lookup',RF2+'/save',RF2+'/laboratory',RF2+'/respiratory',RF2+'/gastrointestinal',RF2+'/gastrointestinal/lookup',RF2+'/reproductive',RF2+'/reproductive/lookup',RF2+'/neurological',RF2+'/neurological/lookup',RF2+'/endocrine',RF2+'/endocrine/lookup',RF2+'/wound',RF2+'/wound/lookup'}
-            allowed=(scope['path']==RF2 and scope['method']=='GET') or (scope['path'] in paths and scope['method']=='POST' and headers.get(b'origin',b'').decode()==self.origin and headers.get(b'content-type',b'').split(b';')[0]==b'application/json')
+            paths={DEVICES,RF2+'/history',RF2+'/resolve',RF2+'/validate',RF2+'/lookup',RF2+'/save',RF2+'/laboratory',RF2+'/respiratory',RF2+'/gastrointestinal',RF2+'/gastrointestinal/lookup',RF2+'/reproductive',RF2+'/reproductive/lookup',RF2+'/neurological',RF2+'/neurological/lookup',RF2+'/endocrine',RF2+'/endocrine/lookup',RF2+'/wound',RF2+'/wound/lookup'}
+            allowed=(scope['path'] in (RF2,DEVICES) and scope['method']=='GET') or (scope['path'] in paths and scope['method']=='POST' and headers.get(b'origin',b'').decode()==self.origin and headers.get(b'content-type',b'').split(b';')[0]==b'application/json')
             if not scope.get('client') or scope['client'][0] not in ('127.0.0.1','::1') or headers.get(b'host',b'').decode()!=self.host or headers.get(b'sec-fetch-site',b'same-origin') not in (b'same-origin',b'none') or not allowed:
                 return await JSONResponse({'code':'local_rf2_denied'},status_code=403)(scope,receive,send)
             if scope['method']=='POST':
