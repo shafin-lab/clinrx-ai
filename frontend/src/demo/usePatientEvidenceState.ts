@@ -21,7 +21,7 @@ export function usePatientEvidenceState(client:CirculatoryClient,config:{patient
   let abx:AntibioticBundle|undefined,catalog:Catalog|undefined,abxFailure='';
   const rf2Enabled=import.meta.env.VITE_SYNTHETIC_RF2==='true',abxEnabled=import.meta.env.VITE_SYNTHETIC_ANTIBIOTICS==='true';
   if(rf2Enabled||abxEnabled)try{catalog=await new RF2Client().catalog(config.start,config.end);}catch{/* Core circulatory retrieval can still be checked independently. */}
-  if(abxEnabled){
+  if(abxEnabled||import.meta.env.VITE_SYNTHETIC_M20==='true'&&rf2Enabled){
    if(catalog)try{abx=await new AntibioticClient().sharedCatalog(config.start,config.end,catalog);}catch{abxFailure='The antibiotic patient bundle is unavailable. Antibiotic review, culture matching and source actions are blocked until it can be confirmed.';}
    else abxFailure='Shared patient evidence is unavailable. Antibiotic review is blocked until it can be confirmed.';
   }

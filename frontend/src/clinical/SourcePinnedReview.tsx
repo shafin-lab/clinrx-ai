@@ -135,7 +135,8 @@ export function SourcePinnedReview({catalog, requested, model, current, guarded,
               exact.reference.id === stored.id && exact.reference.version === stored.version &&
               exact.digest === stored.digest && exact.ingestion === stored.ingestion;
           });
-          const label = typeof stored.id === 'string' ? stored.id + ' · Revision ' + String(stored.version) : 'Retained source reference';
+          const reference = typeof stored.id === 'string' ? stored : asObject(stored.reference);
+          const label = typeof reference.id === 'string' ? reference.id + ' · Revision ' + String(reference.version) : 'Retained source reference';
           const exact: Pin | undefined = current && !guarded && typeof stored.repository === 'string' &&
             typeof stored.kind === 'string' && typeof stored.id === 'string' && typeof stored.version === 'string' &&
             typeof stored.digest === 'string' && typeof stored.ingestion === 'number' && typeof stored.cutoff === 'number'
