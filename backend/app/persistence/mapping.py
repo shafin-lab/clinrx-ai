@@ -22,6 +22,7 @@ from app.models.clinical.wound import WoundRecord
 from app.models.clinical.musculoskeletal import MusculoskeletalRecord
 from app.models.clinical.nutrition import NutritionRecord
 from app.models.clinical.precaution import PrecautionRecord
+from app.models.clinical.discharge import DischargeRecord
 from app.models.clinical.laboratory import LaboratoryReport
 from app.models.clinical.respiratory import RespiratoryRecord
 from app.models.clinical.gastrointestinal import GastrointestinalRecord
@@ -58,9 +59,10 @@ SUPPORTED_FACTS = {
     'musculoskeletal_record': MusculoskeletalRecord,
     'nutrition_record': NutritionRecord,
     'precaution_record': PrecautionRecord,
+    'discharge_record': DischargeRecord,
 }
 SupportedFact = (ClinicalObservation | MedicationOrder | MedicationAdministration | ClinicalInference
-    | Specimen | DirectExamination | CultureFinding | IsolateIdentification | SusceptibilityResult | ResistanceFinding | MolecularResult | BloodCultureSet | BloodCultureBottle | AntimicrobialOrder | CompletedAntimicrobialAdministration | AntimicrobialNonDelivery | LaboratoryReport | RespiratoryRecord | GastrointestinalRecord | ReproductiveRecord | NeurologicalRecord | EndocrineRecord | WoundRecord | MusculoskeletalRecord | NutritionRecord | PrecautionRecord)
+    | Specimen | DirectExamination | CultureFinding | IsolateIdentification | SusceptibilityResult | ResistanceFinding | MolecularResult | BloodCultureSet | BloodCultureBottle | AntimicrobialOrder | CompletedAntimicrobialAdministration | AntimicrobialNonDelivery | LaboratoryReport | RespiratoryRecord | GastrointestinalRecord | ReproductiveRecord | NeurologicalRecord | EndocrineRecord | WoundRecord | MusculoskeletalRecord | NutritionRecord | PrecautionRecord | DischargeRecord)
 
 
 SUPPORTED_FACTS = {**SUPPORTED_FACTS, **M7_FACTS, **M10_FACTS}

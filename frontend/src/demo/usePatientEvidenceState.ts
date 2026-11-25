@@ -16,12 +16,12 @@ export function usePatientEvidenceState(client:CirculatoryClient,config:{patient
  const generation=useRef(0),retained=useRef<CirculatoryState|undefined>(undefined);
  const refresh=useCallback(async()=>{
   if(offline){setLoading(false);return;}
-  const m10Enabled=import.meta.env.VITE_SYNTHETIC_M10==='true';
+  const m10Enabled=import.meta.env.VITE_SYNTHETIC_M10==='true'||import.meta.env.VITE_SYNTHETIC_M21==='true';
   const token=++generation.current;setLoading(true);setM10({loading:m10Enabled});setAntibiotics(undefined);setAntibioticError('');setState(undefined);setRenalFluid(undefined);setRF2(undefined);setError('');
   let abx:AntibioticBundle|undefined,catalog:Catalog|undefined,abxFailure='';
   const rf2Enabled=import.meta.env.VITE_SYNTHETIC_RF2==='true',abxEnabled=import.meta.env.VITE_SYNTHETIC_ANTIBIOTICS==='true';
   if(rf2Enabled||abxEnabled)try{catalog=await new RF2Client().catalog(config.start,config.end);}catch{/* Core circulatory retrieval can still be checked independently. */}
-  if(abxEnabled||import.meta.env.VITE_SYNTHETIC_M20==='true'&&rf2Enabled){
+  if(abxEnabled||rf2Enabled&&(import.meta.env.VITE_SYNTHETIC_M20==='true'||import.meta.env.VITE_SYNTHETIC_M21==='true')){
    if(catalog)try{abx=await new AntibioticClient().sharedCatalog(config.start,config.end,catalog);}catch{abxFailure='The antibiotic patient bundle is unavailable. Antibiotic review, culture matching and source actions are blocked until it can be confirmed.';}
    else abxFailure='Shared patient evidence is unavailable. Antibiotic review is blocked until it can be confirmed.';
   }

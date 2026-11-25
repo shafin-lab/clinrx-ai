@@ -21,14 +21,16 @@ type Output = {context: Context; output: ExactRef; device: ExactRef | null};
 export type DeviceHistory = {episodes: Episode[]; procedures: Procedure[]; outputs: Output[]};
 export type DeviceState = {status: 'loading'} | {status: 'error'} | {status: 'ready'; history: DeviceHistory};
 
-export function useDeviceHistory(enabled: boolean, patient: string, encounter: string): DeviceState {
+export function useDeviceHistory(enabled: boolean, patient: string, encounter: string, revision?: number): DeviceState {
   const [state, setState] = useState<DeviceState>({status: 'loading'});
+  const [loadedScope, setLoadedScope] = useState('');
+  const scope = JSON.stringify([patient, encounter, revision]);
   useEffect(() => {
     if (!enabled) return;
     const abort = new AbortController();
     const timer = window.setTimeout(() => {
       abort.abort();
-      setState({status: 'error'});
+      setState({status: 'error'}); setLoadedScope(scope);
     }, 15000);
     setState({status: 'loading'});
     async function load() {
@@ -42,9 +44,9 @@ export function useDeviceHistory(enabled: boolean, patient: string, encounter: s
         if (sections.some(section => !Array.isArray(section) || section.some(
           item => item.context?.patient_id !== patient || item.context?.encounter_id !== encounter
         ))) throw Error('Device history context mismatch');
-        if (!abort.signal.aborted) setState({status: 'ready', history});
+        if (!abort.signal.aborted) {setState({status: 'ready', history}); setLoadedScope(scope);}
       } catch {
-        if (!abort.signal.aborted) setState({status: 'error'});
+        if (!abort.signal.aborted) {setState({status: 'error'}); setLoadedScope(scope);}
       } finally {
         window.clearTimeout(timer);
       }
@@ -54,6 +56,6 @@ export function useDeviceHistory(enabled: boolean, patient: string, encounter: s
       abort.abort();
       window.clearTimeout(timer);
     };
-  }, [enabled, patient, encounter]);
-  return enabled ? state : {status: 'loading'};
+  }, [enabled, patient, encounter, scope]);
+  return enabled && loadedScope === scope ? state : {status: 'loading'};
 }
