@@ -1,4 +1,4 @@
-import {useLayoutEffect, useRef, useState, type FormEvent} from 'react';
+import {useLayoutEffect, useRef, useState, type FormEvent, type ReactNode} from 'react';
 import {type Catalog, type Evidence, type Pin, pin} from '../api/rf2Client';
 import type {ReviewScope, SavedReview} from './savedReviewStore';
 import {useSavedReviews} from './useSavedReviews';
@@ -17,6 +17,7 @@ type Requested = Pick<ReviewScope, 'patient' | 'encounter'> & {start: string; en
 type ReviewModel = {
   identity: string;
   signature: string;
+  context?: Record<string, string>;
   pins: unknown[];
   sources: Evidence[];
   matches: (review: SavedReview<unknown>) => boolean;
@@ -29,11 +30,12 @@ export function useSourcePinnedReview(domain: ReviewScope['domain'], catalog: Ca
   return {scope, ...useSavedReviews<Draft>(scope)};
 }
 
-export function SourcePinnedReview({catalog, requested, model, current, guarded, saved, onOpenSource, onResolveSource, cardClassName}: {
+export function SourcePinnedReview({catalog, requested, model, current, guarded, saved, onOpenSource, onResolveSource, cardClassName, renderSavedContext}: {
   catalog?: Catalog; requested: Requested; model: ReviewModel;
   current: boolean; guarded: boolean; saved: ReturnType<typeof useSourcePinnedReview>;
   onOpenSource: (source: Evidence, trigger: HTMLButtonElement) => void;
   cardClassName: string;
+  renderSavedContext?: (review: SavedReview<Draft>) => ReactNode;
   onResolveSource: (pin: Pin, trigger: HTMLButtonElement) => Promise<void>;
 }) {
   const [draft, setDraft] = useState(blank);
@@ -86,7 +88,7 @@ export function SourcePinnedReview({catalog, requested, model, current, guarded,
       const review: SavedReview<Draft> = {
         ...scope, format: 'clinrx-local-review', version: 1, id: crypto.randomUUID(),
         period: {start: requested.start, end: requested.end},
-        snapshot: {signature: model.signature, cutoff: catalog.cutoff, pins: model.pins},
+        snapshot: {signature: model.signature, cutoff: catalog.cutoff, pins: model.pins, ...(model.context ? {context: model.context} : {})},
         draft: cleaned, recordedAt: new Date().toISOString(),
       };
       await saved.save(review, () => latest.current === started);
@@ -126,6 +128,7 @@ export function SourcePinnedReview({catalog, requested, model, current, guarded,
         <p><strong>{current && model.matches(review) ? 'Matches current evidence' : 'Historical evidence review'}</strong> · Next review {review.draft.nextReview}</p>
         <p>{review.draft.rationale}</p>
         {review.draft.plan && <p>{review.draft.plan}</p>}
+        {renderSavedContext?.(review)}
         <small>Period {review.period.start} → {review.period.end} · Saved {review.recordedAt}</small>
         <details><summary>Reviewed source revisions</summary><ul>{review.snapshot.pins.map((value, index) => {
           const stored = asObject(value);

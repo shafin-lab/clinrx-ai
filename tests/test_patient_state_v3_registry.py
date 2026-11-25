@@ -7,6 +7,7 @@ from app.models.clinical.wound import WoundRecord
 from app.models.clinical.musculoskeletal import MusculoskeletalRecord
 from app.models.clinical.nutrition import NutritionRecord
 from app.models.clinical.precaution import PrecautionRecord
+from app.models.clinical.discharge import DischargeRecord
 from app.models.clinical.neurological import NeurologicalRecord
 from app.models.clinical.reproductive import ReproductiveRecord
 from app.models.clinical import transfusion as t
@@ -43,6 +44,7 @@ def test_complete_admission_registry_includes_only_explicitly_supported_domains(
         'musculoskeletal_record':MusculoskeletalRecord,
         'nutrition_record':NutritionRecord,
         'precaution_record':PrecautionRecord,
+        'discharge_record':DischargeRecord,
         'respiratory_record':__import__('app.models.clinical.respiratory',fromlist=['RespiratoryRecord']).RespiratoryRecord,
         'transfusion_administration':t.TransfusionAdministration,
         'haemostatic_medication_course':t.HaemostaticMedicationCourse,
